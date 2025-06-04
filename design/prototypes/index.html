@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sapphire Mall - 交互原型演示</title>
+    <title>Sapphire Mall - 项目原型演示</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -32,156 +32,88 @@
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
-        .module-frame {
-            border: 2px solid #374151;
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .tab-button.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid #1f2937;
+        }
+        .demo-frame {
+            height: calc(100vh - 200px);
             border-radius: 12px;
+            border: 2px solid #374151;
             overflow: hidden;
             background: white;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            height: 100vh;
-            max-height: 900px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
-        .module-frame:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
-            border-color: #3b82f6;
-        }
-        .browser-header {
-            background: #1f2937;
-            padding: 12px 16px;
-            border-bottom: 1px solid #374151;
-            display: flex;
-            align-items: center;
-            justify-between;
-        }
-        .browser-controls {
-            display: flex;
-            gap: 8px;
-        }
-        .browser-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        .browser-url {
-            background: #374151;
-            color: #d1d5db;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 12px;
-            flex: 1;
-            max-width: 400px;
-            text-align: center;
-        }
-        .module-content {
-            height: calc(100% - 50px);
-            overflow: hidden;
-        }
-        .module-content iframe {
+        .demo-frame iframe {
             width: 100%;
             height: 100%;
             border: none;
         }
-        .nav-tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #374151;
-            justify-content: center;
+        .project-info {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .nav-tab {
-            padding: 12px 24px;
-            background: transparent;
-            border: none;
-            color: #9ca3af;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s ease;
-            font-size: 16px;
-        }
-        .nav-tab.active {
-            color: #3b82f6;
-            border-bottom-color: #3b82f6;
-        }
-        .nav-tab:hover {
-            color: #60a5fa;
-        }
-        .module-section {
-            display: none;
-        }
-        .module-section.active {
-            display: block;
-        }
-        .dapp-nav {
-            background: #374151;
-            padding: 8px 16px;
-            border-bottom: 1px solid #4b5563;
-            display: flex;
-            gap: 1rem;
-            overflow-x: auto;
-        }
-        .dapp-nav-item {
-            padding: 6px 12px;
-            background: transparent;
-            border: none;
-            color: #d1d5db;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            font-size: 12px;
-        }
-        .dapp-nav-item.active {
-            background: #3b82f6;
+        .feature-badge {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
         }
-        .dapp-nav-item:hover {
-            background: #4b5563;
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
         }
-        .wallet-dropdown {
-            position: relative;
-            display: inline-block;
+        .status-completed {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
         }
-        .wallet-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: #374151;
-            border: 1px solid #4b5563;
-            border-radius: 6px;
-            padding: 8px 0;
-            min-width: 200px;
-            z-index: 1000;
+        .status-developing {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
         }
-        .wallet-menu.show {
-            display: block;
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
         }
-        .wallet-menu-item {
-            padding: 8px 16px;
-            color: #d1d5db;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .wallet-menu-item:hover {
-            background: #4b5563;
-        }
-        .management-section {
-            display: none;
-        }
-        .management-section.active {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 2rem;
-        }
-        .module-intro {
-            text-align: center;
-            padding: 2rem;
-            background: rgba(59, 130, 246, 0.1);
-            border-radius: 12px;
-            margin-bottom: 2rem;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
     </style>
 </head>
@@ -192,32 +124,33 @@
             <div class="flex items-center justify-between">
                 <!-- Logo -->
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-xl flex items-center justify-center">
                         <i class="fas fa-gem text-white text-lg"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
-                        <p class="text-xs text-gray-400">交互原型演示</p>
+                        <h1 class="text-2xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
+                        <p class="text-sm text-gray-400">Web3虚拟商品交易平台 - 项目原型演示</p>
                     </div>
                 </div>
 
-                <!-- Navigation -->
-                <nav class="nav-tabs">
-                    <button onclick="showModule('homepage')" class="nav-tab active" id="tab-homepage">
-                        <i class="fas fa-home mr-2"></i>官网首页
-                    </button>
-                    <button onclick="showModule('dapp')" class="nav-tab" id="tab-dapp">
-                        <i class="fas fa-cube mr-2"></i>DApp应用
-                    </button>
-                    <button onclick="showModule('management')" class="nav-tab" id="tab-management">
-                        <i class="fas fa-cog mr-2"></i>后台管理
-                    </button>
-                </nav>
-
-                <!-- Info -->
-                <div class="text-right">
-                    <p class="text-sm text-gray-400">Web3虚拟商品交易平台</p>
-                    <p class="text-xs text-gray-500">原型交互演示</p>
+                <!-- Project Info -->
+                <div class="project-info rounded-xl px-6 py-3">
+                    <div class="flex items-center space-x-6">
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-sapphire-400">v1.0</div>
+                            <div class="text-xs text-gray-400">版本</div>
+                        </div>
+                        <div class="w-px h-8 bg-gray-600"></div>
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-green-400">3</div>
+                            <div class="text-xs text-gray-400">核心模块</div>
+                        </div>
+                        <div class="w-px h-8 bg-gray-600"></div>
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-purple-400">Web3</div>
+                            <div class="text-xs text-gray-400">技术栈</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -225,239 +158,138 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-6 py-8">
-        <!-- Homepage Module -->
-        <div id="module-homepage" class="module-section active">
-            <div class="module-intro">
-                <h2 class="text-2xl font-bold mb-4">官网首页</h2>
-                <p class="text-gray-400">Sapphire Mall官方网站首页，展示平台品牌形象、核心价值主张和产品功能介绍</p>
-            </div>
-            
-            <div class="module-frame mx-auto">
-                <div class="browser-header">
-                    <div class="browser-controls">
-                        <div class="browser-dot bg-red-500"></div>
-                        <div class="browser-dot bg-yellow-500"></div>
-                        <div class="browser-dot bg-green-500"></div>
-                    </div>
-                    <div class="browser-url">https://sapphiremall.com</div>
-                    <div class="flex items-center space-x-2 text-gray-400">
-                        <i class="fas fa-shield-alt text-green-400"></i>
-                        <i class="fas fa-refresh"></i>
-                    </div>
-                </div>
-                <div class="module-content">
-                    <iframe src="./homepage.html" title="Sapphire Mall Homepage"></iframe>
-                </div>
-            </div>
-        </div>
-
-        <!-- DApp Module -->
-        <div id="module-dapp" class="module-section">
-            <div class="module-intro">
-                <h2 class="text-2xl font-bold mb-4">DApp应用</h2>
-                <p class="text-gray-400">Web3去中心化应用主界面，通过导航栏切换不同功能页面</p>
-                <div class="mt-4 text-sm text-yellow-400">
-                    <i class="fas fa-lightbulb mr-2"></i>
-                    使用下方导航栏切换不同页面，模拟真实的DApp使用体验
-                </div>
-            </div>
-            
-            <div class="module-frame mx-auto">
-                <div class="browser-header">
-                    <div class="browser-controls">
-                        <div class="browser-dot bg-red-500"></div>
-                        <div class="browser-dot bg-yellow-500"></div>
-                        <div class="browser-dot bg-green-500"></div>
-                    </div>
-                    <div class="browser-url" id="dapp-url">https://app.sapphiremall.com</div>
-                    <div class="flex items-center space-x-2 text-gray-400">
-                        <i class="fas fa-shield-alt text-green-400"></i>
-                        <div class="wallet-dropdown">
-                            <button class="wallet-menu-trigger flex items-center space-x-2 bg-green-600 text-white px-3 py-1 rounded text-xs" onclick="toggleWalletMenu()">
-                                <i class="fas fa-wallet"></i>
-                                <span>0x742d...4B8f</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <div class="wallet-menu" id="wallet-menu">
-                                <div class="wallet-menu-item" onclick="showManagementFromWallet('user')">
-                                    <i class="fas fa-user mr-2"></i>个人中心
-                                </div>
-                                <div class="wallet-menu-item" onclick="showManagementFromWallet('merchant')">
-                                    <i class="fas fa-store mr-2"></i>商家后台
-                                </div>
-                                <div class="wallet-menu-item" onclick="showManagementFromWallet('admin')">
-                                    <i class="fas fa-shield-alt mr-2"></i>管理员后台
-                                </div>
-                                <hr class="border-gray-600 my-2">
-                                <div class="wallet-menu-item">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>断开连接
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- DApp Navigation -->
-                <div class="dapp-nav">
-                    <button onclick="showDAppPage('dapp.html', 'DApp首页')" class="dapp-nav-item active">
-                        <i class="fas fa-home mr-1"></i>首页
+        <!-- Tab Navigation -->
+        <div class="flex justify-center mb-8">
+            <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-2 border border-gray-700">
+                <div class="flex space-x-2">
+                    <button 
+                        onclick="switchTab('homepage')" 
+                        class="tab-button active px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center space-x-3"
+                        id="tab-homepage">
+                        <i class="fas fa-home"></i>
+                        <span>官网首页</span>
+                        <span class="status-indicator status-completed">
+                            <div class="pulse-dot"></div>
+                            已完成
+                        </span>
                     </button>
-                    <button onclick="showDAppPage('marketplace.html', '代币商城')" class="dapp-nav-item">
-                        <i class="fas fa-store mr-1"></i>商城
+                    <button 
+                        onclick="switchTab('dapp')" 
+                        class="tab-button px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-gray-700"
+                        id="tab-dapp">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>DApp平台</span>
+                        <span class="status-indicator status-developing">
+                            <div class="pulse-dot"></div>
+                            开发中
+                        </span>
                     </button>
-                    <button onclick="showDAppPage('product-list.html', '商品列表')" class="dapp-nav-item">
-                        <i class="fas fa-list mr-1"></i>商品
+                    <button 
+                        onclick="switchTab('admin')" 
+                        class="tab-button px-8 py-4 rounded-lg font-semibold transition-all duration-300 flex items-center space-x-3 text-gray-300 hover:text-white hover:bg-gray-700"
+                        id="tab-admin">
+                        <i class="fas fa-cog"></i>
+                        <span>后台管理</span>
+                        <span class="status-indicator status-developing">
+                            <div class="pulse-dot"></div>
+                            开发中
+                        </span>
                     </button>
-                    <button onclick="showDAppPage('liquidity-staking.html', '流动性质押')" class="dapp-nav-item">
-                        <i class="fas fa-coins mr-1"></i>质押
-                    </button>
-                    <button onclick="showDAppPage('liquidity-rewards.html', '质押收益')" class="dapp-nav-item">
-                        <i class="fas fa-chart-line mr-1"></i>收益
-                    </button>
-                    <button onclick="showDAppPage('token-exchange.html', '代币兑换')" class="dapp-nav-item">
-                        <i class="fas fa-exchange-alt mr-1"></i>兑换
-                    </button>
-                    <button onclick="showDAppPage('dao-governance.html', 'DAO治理')" class="dapp-nav-item">
-                        <i class="fas fa-vote-yea mr-1"></i>治理
-                    </button>
-                    <button onclick="showDAppPage('user-profile.html', '个人资料')" class="dapp-nav-item">
-                        <i class="fas fa-user mr-1"></i>资料
-                    </button>
-                    <button onclick="showDAppPage('wallet-connect.html', '钱包连接')" class="dapp-nav-item">
-                        <i class="fas fa-wallet mr-1"></i>钱包
-                    </button>
-                    <button onclick="showDAppPage('kyc-verification.html', 'KYC认证')" class="dapp-nav-item">
-                        <i class="fas fa-id-card mr-1"></i>认证
-                    </button>
-                    <button onclick="showDAppPage('language-settings.html', '语言设置')" class="dapp-nav-item">
-                        <i class="fas fa-language mr-1"></i>语言
-                    </button>
-                    <button onclick="showDAppPage('help.html', '帮助中心')" class="dapp-nav-item">
-                        <i class="fas fa-question-circle mr-1"></i>帮助
-                    </button>
-                </div>
-                
-                <div class="module-content">
-                    <iframe id="dapp-iframe" src="./dapp.html" title="DApp Page"></iframe>
                 </div>
             </div>
         </div>
 
-        <!-- Management Module -->
-        <div id="module-management" class="module-section">
-            <div class="module-intro">
-                <h2 class="text-2xl font-bold mb-4">后台管理</h2>
-                <p class="text-gray-400">不同角色的专属后台管理界面，通过钱包连接后的个人中心进入</p>
-                <div class="mt-4 text-sm text-blue-400">
-                    <i class="fas fa-info-circle mr-2"></i>
-                    在DApp应用中连接钱包后，点击钱包地址下拉菜单可进入对应的后台管理
+        <!-- Module Information -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="project-info rounded-xl p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-sapphire-400">官网首页</h3>
+                    <div class="feature-badge">完成</div>
                 </div>
-            </div>
-            
-            <div class="management-section active" id="management-grid">
-                <!-- User Dashboard -->
-                <div class="module-frame">
-                    <div class="browser-header">
-                        <div class="browser-controls">
-                            <div class="browser-dot bg-red-500"></div>
-                            <div class="browser-dot bg-yellow-500"></div>
-                            <div class="browser-dot bg-green-500"></div>
-                        </div>
-                        <div class="browser-url">用户个人后台</div>
-                        <div class="text-xs text-green-400">
-                            <i class="fas fa-user mr-1"></i>普通用户
-                        </div>
-                    </div>
-                    <div class="module-content">
-                        <iframe src="./user-dashboard.html" title="User Dashboard"></iframe>
-                    </div>
-                </div>
-
-                <!-- Merchant Dashboard -->
-                <div class="module-frame">
-                    <div class="browser-header">
-                        <div class="browser-controls">
-                            <div class="browser-dot bg-red-500"></div>
-                            <div class="browser-dot bg-yellow-500"></div>
-                            <div class="browser-dot bg-green-500"></div>
-                        </div>
-                        <div class="browser-url">商家管理后台</div>
-                        <div class="text-xs text-blue-400">
-                            <i class="fas fa-store mr-1"></i>认证商家
-                        </div>
-                    </div>
-                    <div class="module-content">
-                        <iframe src="./merchant-dashboard.html" title="Merchant Dashboard"></iframe>
-                    </div>
-                </div>
-
-                <!-- Admin Dashboard -->
-                <div class="module-frame">
-                    <div class="browser-header">
-                        <div class="browser-controls">
-                            <div class="browser-dot bg-red-500"></div>
-                            <div class="browser-dot bg-yellow-500"></div>
-                            <div class="browser-dot bg-green-500"></div>
-                        </div>
-                        <div class="browser-url">平台管理后台</div>
-                        <div class="text-xs text-purple-400">
-                            <i class="fas fa-shield-alt mr-1"></i>管理员
-                        </div>
-                    </div>
-                    <div class="module-content">
-                        <iframe src="./admin-dashboard.html" title="Admin Dashboard"></iframe>
-                    </div>
+                <p class="text-gray-300 text-sm mb-4">展示平台核心价值，引导用户了解Web3虚拟商品交易生态</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">品牌展示</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">功能介绍</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">数据统计</span>
                 </div>
             </div>
 
-            <!-- Special Management Pages -->
-            <div class="mt-8">
-                <h3 class="text-lg font-bold mb-4 text-center">专用管理页面</h3>
-                <div class="grid grid-cols-1 gap-4">
-                    <!-- Product Publish -->
-                    <div class="module-frame" style="height: 500px;">
-                        <div class="browser-header">
-                            <div class="browser-controls">
-                                <div class="browser-dot bg-red-500"></div>
-                                <div class="browser-dot bg-yellow-500"></div>
-                                <div class="browser-dot bg-green-500"></div>
-                            </div>
-                            <div class="browser-url">商品发布管理</div>
-                            <div class="text-xs text-orange-400">
-                                <i class="fas fa-plus-circle mr-1"></i>商品发布
-                            </div>
-                        </div>
-                        <div class="module-content">
-                            <iframe src="./product-publish.html" title="Product Publish"></iframe>
-                        </div>
-                    </div>
+            <div class="project-info rounded-xl p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-yellow-400">DApp平台</h3>
+                    <div class="feature-badge">开发中</div>
+                </div>
+                <p class="text-gray-300 text-sm mb-4">核心交易平台，包含商品交易、代币兑换、流动性质押</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">商品交易</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">代币兑换</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">质押收益</span>
+                </div>
+            </div>
+
+            <div class="project-info rounded-xl p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-purple-400">后台管理</h3>
+                    <div class="feature-badge">开发中</div>
+                </div>
+                <p class="text-gray-300 text-sm mb-4">多角色管理后台，支持商家、用户、平台管理员</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">用户管理</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">商品审核</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">数据分析</span>
                 </div>
             </div>
         </div>
 
-        <!-- Statistics -->
-        <div class="mt-16 bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
-            <h3 class="text-xl font-bold mb-6 text-center">项目统计信息</h3>
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+        <!-- Content Frame -->
+        <div class="demo-frame">
+            <!-- Homepage Tab -->
+            <div id="content-homepage" class="tab-content active">
+                <iframe src="./homepage.html" title="Sapphire Mall 官网首页"></iframe>
+            </div>
+
+            <!-- DApp Tab -->
+            <div id="content-dapp" class="tab-content">
+                <iframe src="./dapp.html" title="Sapphire Mall DApp平台"></iframe>
+            </div>
+
+            <!-- Admin Tab -->
+            <div id="content-admin" class="tab-content">
+                <iframe src="./admin.html" title="Sapphire Mall 后台管理"></iframe>
+            </div>
+        </div>
+
+        <!-- Technical Information -->
+        <div class="mt-8 project-info rounded-xl p-6 border border-gray-700">
+            <h3 class="text-xl font-bold mb-4 text-center">技术架构信息</h3>
+            <div class="grid md:grid-cols-4 gap-6">
                 <div class="text-center">
-                    <div class="text-2xl font-bold text-blue-400 mb-1">1</div>
-                    <div class="text-sm text-gray-400">官网首页</div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-code text-white"></i>
+                    </div>
+                    <h4 class="font-semibold text-blue-400 mb-2">前端技术</h4>
+                    <p class="text-sm text-gray-400">HTML5 + Tailwind CSS + JavaScript</p>
                 </div>
                 <div class="text-center">
-                    <div class="text-2xl font-bold text-sapphire-400 mb-1">12</div>
-                    <div class="text-sm text-gray-400">DApp页面</div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-cube text-white"></i>
+                    </div>
+                    <h4 class="font-semibold text-purple-400 mb-2">区块链</h4>
+                    <p class="text-sm text-gray-400">Ethereum + ERC20 + Smart Contract</p>
                 </div>
                 <div class="text-center">
-                    <div class="text-2xl font-bold text-purple-400 mb-1">4</div>
-                    <div class="text-sm text-gray-400">后台管理</div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-wallet text-white"></i>
+                    </div>
+                    <h4 class="font-semibold text-green-400 mb-2">钱包集成</h4>
+                    <p class="text-sm text-gray-400">MetaMask + WalletConnect</p>
                 </div>
                 <div class="text-center">
-                    <div class="text-2xl font-bold text-green-400 mb-1">3</div>
-                    <div class="text-sm text-gray-400">核心模块</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-yellow-400 mb-1">20</div>
-                    <div class="text-sm text-gray-400">总页面数</div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-globe text-white"></i>
+                    </div>
+                    <h4 class="font-semibold text-orange-400 mb-2">多语言</h4>
+                    <p class="text-sm text-gray-400">中文 + English</p>
                 </div>
             </div>
         </div>
@@ -465,102 +297,30 @@
 
     <!-- Scripts -->
     <script>
-        let currentModule = 'homepage';
-        let walletConnected = true;
-        
-        function showModule(moduleName) {
-            // Hide all modules
-            const modules = document.querySelectorAll('.module-section');
-            modules.forEach(module => module.classList.remove('active'));
-            
-            // Remove active class from all tabs
-            const tabs = document.querySelectorAll('.nav-tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            
-            // Show selected module
-            document.getElementById(`module-${moduleName}`).classList.add('active');
-            document.getElementById(`tab-${moduleName}`).classList.add('active');
-            
-            currentModule = moduleName;
-            
-            // Close wallet menu if open
-            document.getElementById('wallet-menu').classList.remove('show');
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+                button.classList.add('text-gray-300', 'hover:text-white', 'hover:bg-gray-700');
+            });
+
+            // Show selected tab content
+            document.getElementById(`content-${tabName}`).classList.add('active');
+
+            // Add active class to selected button
+            const activeButton = document.getElementById(`tab-${tabName}`);
+            activeButton.classList.add('active');
+            activeButton.classList.remove('text-gray-300', 'hover:text-white', 'hover:bg-gray-700');
         }
-        
-        function showDAppPage(pageUrl, pageTitle) {
-            // Update iframe source
-            document.getElementById('dapp-iframe').src = './' + pageUrl;
-            
-            // Update URL in browser bar
-            let url = 'https://app.sapphiremall.com';
-            if (pageUrl !== 'dapp.html') {
-                url += '/' + pageUrl.replace('.html', '');
-            }
-            document.getElementById('dapp-url').textContent = url;
-            
-            // Update active nav item
-            const navItems = document.querySelectorAll('.dapp-nav-item');
-            navItems.forEach(item => item.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Close wallet menu if open
-            document.getElementById('wallet-menu').classList.remove('show');
-        }
-        
-        function toggleWalletMenu() {
-            const menu = document.getElementById('wallet-menu');
-            menu.classList.toggle('show');
-        }
-        
-        function showManagementFromWallet(type) {
-            // Switch to management module
-            showModule('management');
-            
-            // Highlight specific dashboard based on type
-            setTimeout(() => {
-                const dashboards = document.querySelectorAll('#management-grid .module-frame');
-                dashboards.forEach(dashboard => {
-                    dashboard.style.transform = 'scale(1)';
-                    dashboard.style.opacity = '1';
-                });
-                
-                let targetIndex = 0;
-                if (type === 'merchant') targetIndex = 1;
-                else if (type === 'admin') targetIndex = 2;
-                
-                if (dashboards[targetIndex]) {
-                    dashboards[targetIndex].style.transform = 'scale(1.02)';
-                    dashboards[targetIndex].style.boxShadow = '0 20px 40px rgba(59, 130, 246, 0.3)';
-                    dashboards[targetIndex].style.borderColor = '#3b82f6';
-                    
-                    // Reset highlight after 3 seconds
-                    setTimeout(() => {
-                        dashboards[targetIndex].style.transform = 'scale(1)';
-                        dashboards[targetIndex].style.boxShadow = '';
-                        dashboards[targetIndex].style.borderColor = '';
-                    }, 3000);
-                }
-            }, 300);
-            
-            // Close wallet menu
-            document.getElementById('wallet-menu').classList.remove('show');
-        }
-        
-        // Close wallet menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const dropdown = document.querySelector('.wallet-dropdown');
-            if (!dropdown.contains(event.target)) {
-                document.getElementById('wallet-menu').classList.remove('show');
-            }
-        });
-        
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Set initial active nav item for DApp
-            const firstNavItem = document.querySelector('.dapp-nav-item');
-            if (firstNavItem) {
-                firstNavItem.classList.add('active');
-            }
+            console.log('Sapphire Mall 项目原型演示已加载');
         });
     </script>
 </body>

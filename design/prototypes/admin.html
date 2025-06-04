@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sapphire Mall - 后台管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .glass-bg {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-item {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-item.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+        .nav-item:hover:not(.active) {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+        }
+        .stats-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        .stats-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
+        }
+        .admin-content {
+            display: none;
+        }
+        .admin-content.active {
+            display: block;
+        }
+        .data-table {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .table-row:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-active {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .status-pending {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        .status-suspended {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .chart-container {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 flex-shrink-0">
+            <div class="p-6">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 mb-8">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gem text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
+                        <p class="text-xs text-gray-400">管理后台</p>
+                    </div>
+                </div>
+
+                <!-- Role Selector -->
+                <div class="mb-6">
+                    <label class="block text-gray-400 text-sm mb-2">管理角色</label>
+                    <select id="roleSelector" onchange="switchRole(this.value)" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-sapphire-500 focus:outline-none">
+                        <option value="platform">平台管理员</option>
+                        <option value="merchant">商家后台</option>
+                        <option value="user">用户中心</option>
+                    </select>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="space-y-2">
+                    <!-- Platform Admin Navigation -->
+                    <div id="platform-nav">
+                        <div class="text-gray-400 text-xs uppercase font-semibold mb-3">平台管理</div>
+                        <a href="#dashboard" onclick="showContent('dashboard')" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg">
+                            <i class="fas fa-tachometer-alt w-5"></i>
+                            <span>数据概览</span>
+                        </a>
+                        <a href="#users" onclick="showContent('users')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-users w-5"></i>
+                            <span>用户管理</span>
+                        </a>
+                        <a href="#products" onclick="showContent('products')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-box w-5"></i>
+                            <span>商品审核</span>
+                        </a>
+                        <a href="#transactions" onclick="showContent('transactions')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-credit-card w-5"></i>
+                            <span>交易管理</span>
+                        </a>
+                        <a href="#finance" onclick="showContent('finance')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-chart-line w-5"></i>
+                            <span>财务分析</span>
+                        </a>
+                        <a href="#governance" onclick="showContent('governance')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-vote-yea w-5"></i>
+                            <span>DAO治理</span>
+                        </a>
+                        <a href="#settings" onclick="showContent('settings')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-cog w-5"></i>
+                            <span>系统设置</span>
+                        </a>
+                    </div>
+                </nav>
+
+                <!-- Admin Info -->
+                <div class="mt-8 pt-6 border-t border-gray-700">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-shield text-white text-xs"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm font-semibold">Admin User</div>
+                            <div class="text-xs text-gray-400">超级管理员</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-auto">
+            <!-- Header -->
+            <header class="glass-bg border-b border-gray-700 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold">平台管理后台</h2>
+                        <p class="text-gray-400 text-sm">实时监控平台运营数据和管理各项业务</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Notifications -->
+                        <button class="relative p-2 text-gray-400 hover:text-white transition-colors">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                        </button>
+                        
+                        <!-- Language -->
+                        <button class="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors">
+                            <i class="fas fa-globe"></i>
+                            <span class="text-sm">中文</span>
+                        </button>
+
+                        <!-- Profile -->
+                        <button class="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors">
+                            <div class="w-8 h-8 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full"></div>
+                            <span class="text-sm">0x1234...5678</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-6">
+                <!-- Dashboard Content -->
+                <div id="dashboard-content" class="admin-content active">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="stats-card rounded-xl p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-users text-white"></i>
+                                </div>
+                                <span class="text-green-400 text-sm font-semibold">+12.5%</span>
+                            </div>
+                            <div class="text-2xl font-bold text-white mb-1">8,234</div>
+                            <div class="text-gray-400 text-sm">总用户数</div>
+                        </div>
+
+                        <div class="stats-card rounded-xl p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-store text-white"></i>
+                                </div>
+                                <span class="text-sapphire-400 text-sm font-semibold">+8.3%</span>
+                            </div>
+                            <div class="text-2xl font-bold text-white mb-1">1,456</div>
+                            <div class="text-gray-400 text-sm">认证商家</div>
+                        </div>
+
+                        <div class="stats-card rounded-xl p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-shopping-bag text-white"></i>
+                                </div>
+                                <span class="text-purple-400 text-sm font-semibold">+25.1%</span>
+                            </div>
+                            <div class="text-2xl font-bold text-white mb-1">12,567</div>
+                            <div class="text-gray-400 text-sm">在售商品</div>
+                        </div>
+
+                        <div class="stats-card rounded-xl p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-coins text-white"></i>
+                                </div>
+                                <span class="text-orange-400 text-sm font-semibold">+18.7%</span>
+                            </div>
+                            <div class="text-2xl font-bold text-white mb-1">$2.4M</div>
+                            <div class="text-gray-400 text-sm">总交易额</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="grid lg:grid-cols-2 gap-8 mb-8">
+                        <!-- Transaction Chart -->
+                        <div class="glass-bg rounded-xl p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-bold">交易趋势</h3>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 text-sm bg-sapphire-600 text-white rounded-md">7天</button>
+                                    <button class="px-3 py-1 text-sm text-gray-400 hover:text-white">30天</button>
+                                    <button class="px-3 py-1 text-sm text-gray-400 hover:text-white">90天</button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <div class="text-center text-gray-400">
+                                    <i class="fas fa-chart-area text-4xl mb-4"></i>
+                                    <p>交易量趋势图表</p>
+                                    <p class="text-sm">过去7天交易数据可视化</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Growth Chart -->
+                        <div class="glass-bg rounded-xl p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-bold">用户增长</h3>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 text-sm bg-sapphire-600 text-white rounded-md">月度</button>
+                                    <button class="px-3 py-1 text-sm text-gray-400 hover:text-white">季度</button>
+                                    <button class="px-3 py-1 text-sm text-gray-400 hover:text-white">年度</button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <div class="text-center text-gray-400">
+                                    <i class="fas fa-chart-line text-4xl mb-4"></i>
+                                    <p>用户增长趋势</p>
+                                    <p class="text-sm">新用户注册和活跃度统计</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <div class="glass-bg rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6">最近活动</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between py-3 border-b border-gray-700">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-check text-white text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-white">商品审核通过</div>
+                                        <div class="text-gray-400 text-sm">Web3开发课程 - 由商家 Alice 提交</div>
+                                    </div>
+                                </div>
+                                <span class="text-gray-400 text-sm">2分钟前</span>
+                            </div>
+
+                            <div class="flex items-center justify-between py-3 border-b border-gray-700">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-8 h-8 bg-sapphire-600 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user-plus text-white text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-white">新用户注册</div>
+                                        <div class="text-gray-400 text-sm">0x789a...bcde 完成KYC认证</div>
+                                    </div>
+                                </div>
+                                <span class="text-gray-400 text-sm">5分钟前</span>
+                            </div>
+
+                            <div class="flex items-center justify-between py-3 border-b border-gray-700">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-exclamation-triangle text-white text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-white">商品举报</div>
+                                        <div class="text-gray-400 text-sm">NFT设计工具被举报内容违规</div>
+                                    </div>
+                                </div>
+                                <span class="text-gray-400 text-sm">15分钟前</span>
+                            </div>
+
+                            <div class="flex items-center justify-between py-3">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-coins text-white text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-white">大额交易</div>
+                                        <div class="text-gray-400 text-sm">用户购买价值 $1,250 的商品</div>
+                                    </div>
+                                </div>
+                                <span class="text-gray-400 text-sm">30分钟前</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Management Content -->
+                <div id="users-content" class="admin-content">
+                    <div class="glass-bg rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold">用户管理</h3>
+                            <div class="flex space-x-4">
+                                <div class="relative">
+                                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    <input type="text" placeholder="搜索用户..." class="pl-10 pr-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-sapphire-500 focus:outline-none">
+                                </div>
+                                <select class="px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-sapphire-500 focus:outline-none">
+                                    <option>全部状态</option>
+                                    <option>活跃</option>
+                                    <option>待审核</option>
+                                    <option>已暂停</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Users Table -->
+                        <div class="data-table rounded-lg overflow-hidden">
+                            <table class="w-full">
+                                <thead class="bg-gray-800">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">用户</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">角色</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">注册时间</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">状态</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700">
+                                    <tr class="table-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
+                                                    <span class="text-white text-sm">A</span>
+                                                </div>
+                                                <div>
+                                                    <div class="text-sm font-medium text-white">Alice Chen</div>
+                                                    <div class="text-sm text-gray-400">0x1234...5678</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">认证商家</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">2024-03-15</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge status-active">活跃</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <button class="text-sapphire-400 hover:text-sapphire-300 mr-3">查看</button>
+                                            <button class="text-yellow-400 hover:text-yellow-300 mr-3">编辑</button>
+                                            <button class="text-red-400 hover:text-red-300">暂停</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="table-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mr-3">
+                                                    <span class="text-white text-sm">B</span>
+                                                </div>
+                                                <div>
+                                                    <div class="text-sm font-medium text-white">Bob Wilson</div>
+                                                    <div class="text-sm text-gray-400">0x9876...4321</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">普通用户</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">2024-04-02</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge status-pending">待审核</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <button class="text-sapphire-400 hover:text-sapphire-300 mr-3">查看</button>
+                                            <button class="text-green-400 hover:text-green-300 mr-3">通过</button>
+                                            <button class="text-red-400 hover:text-red-300">拒绝</button>
+                                        </td>
+                                    </tr>
+                                    <tr class="table-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mr-3">
+                                                    <span class="text-white text-sm">C</span>
+                                                </div>
+                                                <div>
+                                                    <div class="text-sm font-medium text-white">Carol Smith</div>
+                                                    <div class="text-sm text-gray-400">0xabcd...efgh</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">认证商家</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">2024-02-28</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="status-badge status-suspended">已暂停</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <button class="text-sapphire-400 hover:text-sapphire-300 mr-3">查看</button>
+                                            <button class="text-green-400 hover:text-green-300 mr-3">恢复</button>
+                                            <button class="text-red-400 hover:text-red-300">删除</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="flex items-center justify-between mt-6">
+                            <div class="text-sm text-gray-400">
+                                显示 1-10 条，共 234 条记录
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600">上一页</button>
+                                <button class="px-3 py-1 bg-sapphire-600 text-white rounded-md">1</button>
+                                <button class="px-3 py-1 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600">2</button>
+                                <button class="px-3 py-1 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600">3</button>
+                                <button class="px-3 py-1 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600">下一页</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Management Content -->
+                <div id="products-content" class="admin-content">
+                    <div class="glass-bg rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold">商品审核</h3>
+                            <div class="flex space-x-4">
+                                <select class="px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-sapphire-500 focus:outline-none">
+                                    <option>待审核</option>
+                                    <option>已通过</option>
+                                    <option>已拒绝</option>
+                                    <option>全部</option>
+                                </select>
+                                <select class="px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-sapphire-500 focus:outline-none">
+                                    <option>全部分类</option>
+                                    <option>数字艺术</option>
+                                    <option>游戏道具</option>
+                                    <option>软件工具</option>
+                                    <option>在线课程</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Pending Products Grid -->
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Product Card 1 -->
+                            <div class="glass-bg rounded-xl overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&h=200&fit=crop" alt="Web3开发课程" class="w-full h-48 object-cover">
+                                <div class="p-4">
+                                    <div class="flex items-start justify-between mb-2">
+                                        <h4 class="font-semibold text-white">Web3智能合约开发课程</h4>
+                                        <span class="status-badge status-pending text-xs">待审核</span>
+                                    </div>
+                                    <p class="text-gray-400 text-sm mb-3">由 Alice Chen 提交</p>
+                                    <div class="text-sapphire-400 font-bold mb-3">250 SAP</div>
+                                    <div class="flex space-x-2">
+                                        <button class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold transition-all text-sm">
+                                            通过
+                                        </button>
+                                        <button class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition-all text-sm">
+                                            拒绝
+                                        </button>
+                                        <button class="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product Card 2 -->
+                            <div class="glass-bg rounded-xl overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=300&h=200&fit=crop" alt="NFT设计工具" class="w-full h-48 object-cover">
+                                <div class="p-4">
+                                    <div class="flex items-start justify-between mb-2">
+                                        <h4 class="font-semibold text-white">AI驱动的NFT设计工具</h4>
+                                        <span class="status-badge status-pending text-xs">待审核</span>
+                                    </div>
+                                    <p class="text-gray-400 text-sm mb-3">由 Bob Wilson 提交</p>
+                                    <div class="text-sapphire-400 font-bold mb-3">89 SAP</div>
+                                    <div class="flex space-x-2">
+                                        <button class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold transition-all text-sm">
+                                            通过
+                                        </button>
+                                        <button class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition-all text-sm">
+                                            拒绝
+                                        </button>
+                                        <button class="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product Card 3 -->
+                            <div class="glass-bg rounded-xl overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1614332287897-cdc485fa562d?w=300&h=200&fit=crop" alt="DeFi分析工具" class="w-full h-48 object-cover">
+                                <div class="p-4">
+                                    <div class="flex items-start justify-between mb-2">
+                                        <h4 class="font-semibold text-white">DeFi投资分析仪表板</h4>
+                                        <span class="status-badge status-active text-xs">已通过</span>
+                                    </div>
+                                    <p class="text-gray-400 text-sm mb-3">由 Carol Smith 提交</p>
+                                    <div class="text-sapphire-400 font-bold mb-3">156 SAP</div>
+                                    <div class="flex space-x-2">
+                                        <button class="flex-1 bg-gray-700 text-white py-2 rounded-lg font-semibold cursor-not-allowed text-sm" disabled>
+                                            已通过
+                                        </button>
+                                        <button class="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other content sections would be implemented similarly -->
+                <div id="transactions-content" class="admin-content">
+                    <div class="glass-bg rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6">交易管理</h3>
+                        <div class="text-center text-gray-400 py-12">
+                            <i class="fas fa-credit-card text-4xl mb-4"></i>
+                            <p>交易管理功能开发中...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="finance-content" class="admin-content">
+                    <div class="glass-bg rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6">财务分析</h3>
+                        <div class="text-center text-gray-400 py-12">
+                            <i class="fas fa-chart-line text-4xl mb-4"></i>
+                            <p>财务分析功能开发中...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="governance-content" class="admin-content">
+                    <div class="glass-bg rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6">DAO治理</h3>
+                        <div class="text-center text-gray-400 py-12">
+                            <i class="fas fa-vote-yea text-4xl mb-4"></i>
+                            <p>DAO治理功能开发中...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="settings-content" class="admin-content">
+                    <div class="glass-bg rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6">系统设置</h3>
+                        <div class="text-center text-gray-400 py-12">
+                            <i class="fas fa-cog text-4xl mb-4"></i>
+                            <p>系统设置功能开发中...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function showContent(contentName) {
+            // Hide all content
+            const contents = document.querySelectorAll('.admin-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Remove active from all nav items
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                item.classList.add('text-gray-300');
+            });
+
+            // Show selected content
+            document.getElementById(`${contentName}-content`).classList.add('active');
+
+            // Add active to clicked nav item
+            event.target.closest('.nav-item').classList.add('active');
+            event.target.closest('.nav-item').classList.remove('text-gray-300');
+        }
+
+        function switchRole(role) {
+            // This would switch between different role dashboards
+            console.log('Switching to role:', role);
+            // For demo purposes, we'll just update the header
+            const header = document.querySelector('header h2');
+            switch(role) {
+                case 'platform':
+                    header.textContent = '平台管理后台';
+                    break;
+                case 'merchant':
+                    header.textContent = '商家管理后台';
+                    break;
+                case 'user':
+                    header.textContent = '用户中心';
+                    break;
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Sapphire Mall 后台管理已加载');
+        });
+    </script>
+</body>
+</html> 

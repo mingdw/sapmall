@@ -3,188 +3,594 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DApp 首页 - Sapphire Mall</title>
+    <title>Sapphire Mall - DApp平台</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            background: #0f172a;
-            color: #fff;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
-        .header {
-            background: #1e293b;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .glass-bg {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .header .logo {
-            display: flex;
-            align-items: center;
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .header .logo i {
-            font-size: 1.5rem;
-            margin-right: 0.5rem;
-        }
-        .header .nav {
-            display: flex;
-            gap: 1rem;
-        }
-        .header .nav a {
-            color: #9ca3af;
-            transition: color 0.3s;
-        }
-        .header .nav a:hover {
-            color: #60a5fa;
-        }
-        .header .wallet {
-            background: #3b82f6;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .header .wallet i {
-            font-size: 1rem;
-        }
-        .content {
-            padding: 2rem;
-        }
-        .filter-bar {
-            background: #1e293b;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 2rem;
-        }
-        .filter-bar .categories {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        .filter-bar .categories button {
-            background: #374151;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            color: #9ca3af;
-            transition: background 0.3s;
-        }
-        .filter-bar .categories button:hover {
-            background: #3b82f6;
-            color: #fff;
-        }
-        .filter-bar .search {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .filter-bar .search input {
-            background: #374151;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            color: #9ca3af;
-        }
-        .filter-bar .search button {
-            background: #3b82f6;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            color: #fff;
-        }
-        .product-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.25);
         }
         .product-card {
-            background: #1e293b;
-            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
             overflow: hidden;
-            transition: transform 0.3s;
         }
         .product-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.2);
         }
-        .product-card img {
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
-            height: 150px;
-            object-fit: cover;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: all 0.6s ease;
         }
-        .product-card .info {
-            padding: 1rem;
+        .product-card:hover::before {
+            left: 100%;
         }
-        .product-card .info h3 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
+        .nav-link {
+            transition: all 0.3s ease;
+            position: relative;
         }
-        .product-card .info p {
-            color: #9ca3af;
-            font-size: 0.875rem;
+        .nav-link.active {
+            color: #3b82f6;
+        }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 1px;
+        }
+        .wallet-button {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            transition: all 0.3s ease;
+        }
+        .wallet-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        .stats-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .feature-tab {
+            display: none;
+        }
+        .feature-tab.active {
+            display: block;
+        }
+        .tab-nav-button {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .tab-nav-button.active {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
         }
     </style>
 </head>
-<body>
-    <header class="header">
-        <div class="logo">
-            <i class="fas fa-gem"></i>
-            <span>Sapphire Mall</span>
-        </div>
-        <nav class="nav">
-            <a href="#">代币商城</a>
-            <a href="#">质押池</a>
-            <a href="#">兑换</a>
-            <a href="#">DAO治理</a>
-            <a href="#">帮助中心</a>
-            <a href="#">中文</a>
-        </nav>
-        <div class="wallet">
-            <i class="fas fa-wallet"></i>
-            <span>连接钱包</span>
+<body class="min-h-screen text-white">
+    <!-- Header -->
+    <header class="glass-bg sticky top-0 z-50 border-b border-gray-700">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gem text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
+                        <p class="text-xs text-gray-400">Web3虚拟商品交易平台</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#marketplace" class="nav-link active text-gray-300 hover:text-white">商品市场</a>
+                    <a href="#exchange" class="nav-link text-gray-300 hover:text-white">代币兑换</a>
+                    <a href="#staking" class="nav-link text-gray-300 hover:text-white">流动性质押</a>
+                    <a href="#governance" class="nav-link text-gray-300 hover:text-white">DAO治理</a>
+                    <a href="#help" class="nav-link text-gray-300 hover:text-white">帮助</a>
+                </nav>
+
+                <!-- Wallet & Language -->
+                <div class="flex items-center space-x-4">
+                    <!-- Language Switcher -->
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors">
+                            <i class="fas fa-globe"></i>
+                            <span class="text-sm">中文</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- Wallet Connect -->
+                    <button class="wallet-button px-4 py-2 rounded-lg text-white font-semibold flex items-center space-x-2">
+                        <i class="fas fa-wallet"></i>
+                        <span>连接钱包</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </header>
-    <main class="content">
-        <div class="filter-bar">
-            <div class="categories">
-                <button>全部分类 (12,345)</button>
-                <button>游戏道具 (8,567)</button>
-                <button>数字艺术 (3,421)</button>
-                <button>虚拟世界 (2,156)</button>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Platform Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+            <div class="stats-card rounded-xl p-6 hover-lift">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-coins text-white"></i>
+                    </div>
+                    <span class="text-green-400 text-sm font-semibold">+12.5%</span>
+                </div>
+                <div class="text-2xl font-bold text-white mb-1">$2.4M</div>
+                <div class="text-gray-400 text-sm">总交易量</div>
             </div>
-            <div class="search">
-                <input type="text" placeholder="请输入商品名称">
-                <button><i class="fas fa-search"></i></button>
+
+            <div class="stats-card rounded-xl p-6 hover-lift">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gem text-white"></i>
+                    </div>
+                    <span class="text-sapphire-400 text-sm font-semibold">SAP</span>
+                </div>
+                <div class="text-2xl font-bold text-white mb-1">$1.24</div>
+                <div class="text-gray-400 text-sm">SAP代币价格</div>
+            </div>
+
+            <div class="stats-card rounded-xl p-6 hover-lift">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-percentage text-white"></i>
+                    </div>
+                    <span class="text-purple-400 text-sm font-semibold">APY</span>
+                </div>
+                <div class="text-2xl font-bold text-white mb-1">15.6%</div>
+                <div class="text-gray-400 text-sm">质押年化收益</div>
+            </div>
+
+            <div class="stats-card rounded-xl p-6 hover-lift">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-shopping-bag text-white"></i>
+                    </div>
+                    <span class="text-orange-400 text-sm font-semibold">热卖</span>
+                </div>
+                <div class="text-2xl font-bold text-white mb-1">1,234</div>
+                <div class="text-gray-400 text-sm">在售商品</div>
             </div>
         </div>
-        <div class="product-section">
-            <div class="product-card">
-                <img src="https://source.unsplash.com/random/200x150?game" alt="游戏道具">
-                <div class="info">
-                    <h3>王者荣耀限定皮肤</h3>
-                    <p>传奇</p>
+
+        <!-- Feature Tabs -->
+        <div class="glass-bg rounded-xl p-6 mb-8">
+            <!-- Tab Navigation -->
+            <div class="flex space-x-2 mb-6 bg-gray-800/50 rounded-lg p-2">
+                <button onclick="switchFeatureTab('marketplace')" class="tab-nav-button active flex-1 px-4 py-3 rounded-md font-semibold transition-all">
+                    <i class="fas fa-store mr-2"></i>商品市场
+                </button>
+                <button onclick="switchFeatureTab('exchange')" class="tab-nav-button flex-1 px-4 py-3 rounded-md font-semibold transition-all text-gray-300">
+                    <i class="fas fa-exchange-alt mr-2"></i>代币兑换
+                </button>
+                <button onclick="switchFeatureTab('staking')" class="tab-nav-button flex-1 px-4 py-3 rounded-md font-semibold transition-all text-gray-300">
+                    <i class="fas fa-coins mr-2"></i>流动性质押
+                </button>
+            </div>
+
+            <!-- Marketplace Tab -->
+            <div id="marketplace-tab" class="feature-tab active">
+                <!-- Search and Filter -->
+                <div class="flex flex-col md:flex-row gap-4 mb-6">
+                    <div class="flex-1 relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="搜索商品..." class="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-sapphire-500 focus:outline-none">
+                    </div>
+                    <div class="flex gap-2">
+                        <select class="px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-sapphire-500 focus:outline-none">
+                            <option>全部分类</option>
+                            <option>数字艺术</option>
+                            <option>游戏道具</option>
+                            <option>软件工具</option>
+                            <option>在线课程</option>
+                        </select>
+                        <select class="px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-sapphire-500 focus:outline-none">
+                            <option>价格排序</option>
+                            <option>价格由低到高</option>
+                            <option>价格由高到低</option>
+                            <option>最新发布</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Product Card 1 -->
+                    <div class="product-card glass-bg rounded-xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&h=200&fit=crop" alt="Web3开发课程" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-semibold text-white mb-2">Web3智能合约开发完整课程</h3>
+                            <p class="text-gray-400 text-sm mb-3">从零开始学习Solidity智能合约开发</p>
+                            <div class="flex items-center justify-between">
+                                <div class="text-sapphire-400 font-bold">250 SAP</div>
+                                <div class="text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i> 4.8 (127)
+                                </div>
+                            </div>
+                            <button class="w-full mt-3 bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-2 rounded-lg font-semibold transition-all">
+                                立即购买
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 2 -->
+                    <div class="product-card glass-bg rounded-xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=300&h=200&fit=crop" alt="NFT设计工具" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-semibold text-white mb-2">AI驱动的NFT设计工具</h3>
+                            <p class="text-gray-400 text-sm mb-3">一键生成独特的NFT艺术作品</p>
+                            <div class="flex items-center justify-between">
+                                <div class="text-sapphire-400 font-bold">89 SAP</div>
+                                <div class="text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i> 4.6 (89)
+                                </div>
+                            </div>
+                            <button class="w-full mt-3 bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-2 rounded-lg font-semibold transition-all">
+                                立即购买
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 3 -->
+                    <div class="product-card glass-bg rounded-xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1614332287897-cdc485fa562d?w=300&h=200&fit=crop" alt="DeFi分析仪表板" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-semibold text-white mb-2">DeFi投资分析仪表板</h3>
+                            <p class="text-gray-400 text-sm mb-3">实时追踪DeFi投资组合表现</p>
+                            <div class="flex items-center justify-between">
+                                <div class="text-sapphire-400 font-bold">156 SAP</div>
+                                <div class="text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i> 4.9 (234)
+                                </div>
+                            </div>
+                            <button class="w-full mt-3 bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-2 rounded-lg font-semibold transition-all">
+                                立即购买
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 4 -->
+                    <div class="product-card glass-bg rounded-xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=300&h=200&fit=crop" alt="区块链游戏道具" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-semibold text-white mb-2">稀有游戏装备包</h3>
+                            <p class="text-gray-400 text-sm mb-3">包含多种稀有游戏道具和装备</p>
+                            <div class="flex items-center justify-between">
+                                <div class="text-sapphire-400 font-bold">78 SAP</div>
+                                <div class="text-yellow-400 text-sm">
+                                    <i class="fas fa-star"></i> 4.7 (156)
+                                </div>
+                            </div>
+                            <button class="w-full mt-3 bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-2 rounded-lg font-semibold transition-all">
+                                立即购买
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="product-card">
-                <img src="https://source.unsplash.com/random/200x150?keyboard" alt="CS:GO刀具皮肤">
-                <div class="info">
-                    <h3>CS:GO刀具皮肤</h3>
-                    <p>热门</p>
+
+            <!-- Exchange Tab -->
+            <div id="exchange-tab" class="feature-tab">
+                <div class="max-w-md mx-auto">
+                    <div class="glass-bg rounded-xl p-6">
+                        <h3 class="text-xl font-bold text-center mb-6">代币兑换</h3>
+                        
+                        <!-- From Token -->
+                        <div class="mb-4">
+                            <label class="block text-gray-400 text-sm mb-2">兑换</label>
+                            <div class="bg-gray-800 rounded-lg p-4 border border-gray-600">
+                                <div class="flex justify-between items-center">
+                                    <input type="number" placeholder="0.0" class="bg-transparent text-2xl font-bold text-white outline-none flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" class="w-6 h-6">
+                                        <span class="font-semibold">ETH</span>
+                                        <i class="fas fa-chevron-down text-gray-400"></i>
+                                    </div>
+                                </div>
+                                <div class="text-gray-400 text-sm mt-2">余额: 1.234 ETH</div>
+                            </div>
+                        </div>
+
+                        <!-- Swap Icon -->
+                        <div class="flex justify-center mb-4">
+                            <button class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full flex items-center justify-center transition-all">
+                                <i class="fas fa-exchange-alt text-gray-300"></i>
+                            </button>
+                        </div>
+
+                        <!-- To Token -->
+                        <div class="mb-6">
+                            <label class="block text-gray-400 text-sm mb-2">获得</label>
+                            <div class="bg-gray-800 rounded-lg p-4 border border-gray-600">
+                                <div class="flex justify-between items-center">
+                                    <input type="number" placeholder="0.0" class="bg-transparent text-2xl font-bold text-white outline-none flex-1" readonly>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-6 h-6 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-gem text-white text-xs"></i>
+                                        </div>
+                                        <span class="font-semibold">SAP</span>
+                                        <i class="fas fa-chevron-down text-gray-400"></i>
+                                    </div>
+                                </div>
+                                <div class="text-gray-400 text-sm mt-2">余额: 0 SAP</div>
+                            </div>
+                        </div>
+
+                        <!-- Exchange Rate -->
+                        <div class="bg-gray-800/50 rounded-lg p-3 mb-6">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-400">汇率</span>
+                                <span class="text-white">1 ETH = 2,456 SAP</span>
+                            </div>
+                            <div class="flex justify-between text-sm mt-1">
+                                <span class="text-gray-400">手续费</span>
+                                <span class="text-white">0.3%</span>
+                            </div>
+                        </div>
+
+                        <!-- Swap Button -->
+                        <button class="w-full bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-3 rounded-lg font-semibold transition-all">
+                            连接钱包进行兑换
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="product-card">
-                <img src="https://source.unsplash.com/random/200x150?esports" alt="英雄联盟角色">
-                <div class="info">
-                    <h3>英雄联盟角色</h3>
-                    <p>稀有</p>
+
+            <!-- Staking Tab -->
+            <div id="staking-tab" class="feature-tab">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Staking Pool -->
+                    <div class="glass-bg rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6 flex items-center">
+                            <i class="fas fa-coins text-sapphire-400 mr-3"></i>
+                            流动性质押
+                        </h3>
+                        
+                        <!-- Pool Stats -->
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-800/50 rounded-lg p-4">
+                                <div class="text-2xl font-bold text-green-400">15.6%</div>
+                                <div class="text-gray-400 text-sm">年化收益率</div>
+                            </div>
+                            <div class="bg-gray-800/50 rounded-lg p-4">
+                                <div class="text-2xl font-bold text-sapphire-400">$1.2M</div>
+                                <div class="text-gray-400 text-sm">总锁定价值</div>
+                            </div>
+                        </div>
+
+                        <!-- Staking Form -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-gray-400 text-sm mb-2">质押数量</label>
+                                <div class="bg-gray-800 rounded-lg p-4 border border-gray-600">
+                                    <div class="flex justify-between items-center">
+                                        <input type="number" placeholder="0.0" class="bg-transparent text-xl font-bold text-white outline-none flex-1">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-6 h-6 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-gem text-white text-xs"></i>
+                                            </div>
+                                            <span class="font-semibold">SAP</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-gray-400 text-sm mt-2">可用余额: 1,234 SAP</div>
+                                </div>
+                            </div>
+
+                            <button class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-3 rounded-lg font-semibold transition-all">
+                                开始质押
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Rewards -->
+                    <div class="glass-bg rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6 flex items-center">
+                            <i class="fas fa-gift text-purple-400 mr-3"></i>
+                            我的收益
+                        </h3>
+
+                        <!-- Current Staking -->
+                        <div class="bg-gray-800/50 rounded-lg p-4 mb-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-gray-400">已质押</span>
+                                <span class="text-white font-semibold">500 SAP</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-400">累计收益</span>
+                                <span class="text-green-400 font-semibold">+12.34 SAP</span>
+                            </div>
+                        </div>
+
+                        <!-- Rewards History -->
+                        <div class="space-y-3 mb-6">
+                            <div class="flex justify-between items-center py-2 border-b border-gray-700">
+                                <div>
+                                    <div class="text-white text-sm">每日收益</div>
+                                    <div class="text-gray-400 text-xs">2024-06-04</div>
+                                </div>
+                                <div class="text-green-400 font-semibold">+0.68 SAP</div>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-gray-700">
+                                <div>
+                                    <div class="text-white text-sm">每日收益</div>
+                                    <div class="text-gray-400 text-xs">2024-06-03</div>
+                                </div>
+                                <div class="text-green-400 font-semibold">+0.71 SAP</div>
+                            </div>
+                        </div>
+
+                        <button class="w-full bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-3 rounded-lg font-semibold transition-all">
+                            提取收益
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="product-card">
-                <img src="https://source.unsplash.com/random/200x150?console" alt="魔兽世界坐骑">
-                <div class="info">
-                    <h3>魔兽世界坐骑</h3>
-                    <p>史诗</p>
+        </div>
+
+        <!-- DAO Governance Section -->
+        <div class="glass-bg rounded-xl p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold flex items-center">
+                    <i class="fas fa-vote-yea text-yellow-400 mr-3"></i>
+                    DAO治理
+                </h3>
+                <button class="bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white px-4 py-2 rounded-lg font-semibold transition-all">
+                    提交提案
+                </button>
+            </div>
+
+            <!-- Active Proposals -->
+            <div class="space-y-4">
+                <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-600">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">提案 #003: 调整平台手续费率</h4>
+                            <p class="text-gray-400 text-sm">建议将交易手续费从 0.3% 调整至 0.25%</p>
+                        </div>
+                        <span class="bg-green-600 text-white px-2 py-1 rounded text-xs">进行中</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4 mb-4">
+                        <div class="text-center">
+                            <div class="text-green-400 font-bold">67%</div>
+                            <div class="text-gray-400 text-xs">赞成票</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-red-400 font-bold">33%</div>
+                            <div class="text-gray-400 text-xs">反对票</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-sapphire-400 font-bold">2天</div>
+                            <div class="text-gray-400 text-xs">剩余时间</div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold transition-all">
+                            赞成
+                        </button>
+                        <button class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition-all">
+                            反对
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-600">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">提案 #002: 新增支持的代币类型</h4>
+                            <p class="text-gray-400 text-sm">建议添加 MATIC 和 BNB 作为支付代币</p>
+                        </div>
+                        <span class="bg-yellow-600 text-white px-2 py-1 rounded text-xs">即将结束</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4 mb-4">
+                        <div class="text-center">
+                            <div class="text-green-400 font-bold">89%</div>
+                            <div class="text-gray-400 text-xs">赞成票</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-red-400 font-bold">11%</div>
+                            <div class="text-gray-400 text-xs">反对票</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-sapphire-400 font-bold">6小时</div>
+                            <div class="text-gray-400 text-xs">剩余时间</div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold transition-all">
+                            赞成
+                        </button>
+                        <button class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition-all">
+                            反对
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- Scripts -->
+    <script>
+        function switchFeatureTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.feature-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-nav-button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+                button.classList.add('text-gray-300');
+            });
+
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            // Add active class to selected button
+            event.target.classList.add('active');
+            event.target.classList.remove('text-gray-300');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Sapphire Mall DApp平台已加载');
+        });
+    </script>
 </body>
 </html> 
