@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .gradient-border {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            padding: 2px;
+            border-radius: 16px;
+        }
+        .gradient-border-content {
+            background: #1f2937;
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+        .asset-card {
+            transition: all 0.3s ease;
+        }
+        .asset-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+        }
+        .tab-active {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            color: white;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <!-- Header -->
+    <nav class="bg-gray-900/50 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gem text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
+                        <p class="text-xs text-gray-400">个人中心</p>
+                    </div>
+                </div>
+
+                <!-- User Status -->
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-green-400">已认证</span>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-lg px-4 py-2">
+                        <div class="text-sm text-gray-400">0x742d...e6b7</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <div class="grid lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <!-- User Info Card -->
+                <div class="gradient-border mb-6">
+                    <div class="gradient-border-content text-center">
+                        <div class="w-20 h-20 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt="Avatar" class="w-16 h-16 rounded-full">
+                        </div>
+                        <h2 class="text-xl font-bold mb-2">Alex Chen</h2>
+                        <div class="flex items-center justify-center space-x-2 mb-4">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-sm text-green-400">认证商家</span>
+                            <i class="fas fa-check-circle text-green-400 text-sm"></i>
+                        </div>
+                        <div class="text-sm text-gray-400">
+                            <p>注册时间: 2024年8月15日</p>
+                            <p>信用等级: AAA+</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Menu -->
+                <div class="gradient-border">
+                    <div class="gradient-border-content">
+                        <nav class="space-y-2">
+                            <button onclick="showTab('overview')" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors tab-active" id="tab-overview">
+                                <i class="fas fa-chart-pie mr-3"></i>资产概览
+                            </button>
+                            <button onclick="showTab('transactions')" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-gray-700" id="tab-transactions">
+                                <i class="fas fa-history mr-3"></i>交易历史
+                            </button>
+                            <button onclick="showTab('staking')" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-gray-700" id="tab-staking">
+                                <i class="fas fa-coins mr-3"></i>质押收益
+                            </button>
+                            <button onclick="showTab('orders')" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-gray-700" id="tab-orders">
+                                <i class="fas fa-shopping-cart mr-3"></i>我的订单
+                            </button>
+                            <button onclick="showTab('products')" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-gray-700" id="tab-products">
+                                <i class="fas fa-box mr-3"></i>我的商品
+                            </button>
+                            <button onclick="showTab('settings')" class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors hover:bg-gray-700" id="tab-settings">
+                                <i class="fas fa-cog mr-3"></i>账户设置
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="lg:col-span-3">
+                <!-- Overview Tab -->
+                <div id="content-overview" class="tab-content">
+                    <!-- Portfolio Summary -->
+                    <div class="grid md:grid-cols-3 gap-6 mb-8">
+                        <div class="asset-card gradient-border">
+                            <div class="gradient-border-content">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-wallet text-white text-xl"></i>
+                                    </div>
+                                    <span class="text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">+24.5%</span>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-1">$12,450.67</h3>
+                                <p class="text-gray-400 text-sm">总资产价值</p>
+                            </div>
+                        </div>
+
+                        <div class="asset-card gradient-border">
+                            <div class="gradient-border-content">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-coins text-white text-xl"></i>
+                                    </div>
+                                    <span class="text-xs text-blue-400 bg-blue-400/10 px-2 py-1 rounded-full">质押中</span>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-1">$8,950.23</h3>
+                                <p class="text-gray-400 text-sm">质押总价值</p>
+                            </div>
+                        </div>
+
+                        <div class="asset-card gradient-border">
+                            <div class="gradient-border-content">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-gift text-white text-xl"></i>
+                                    </div>
+                                    <span class="text-xs text-purple-400 bg-purple-400/10 px-2 py-1 rounded-full">今日</span>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-1">$45.67</h3>
+                                <p class="text-gray-400 text-sm">今日收益</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Asset Holdings -->
+                    <div class="gradient-border mb-8">
+                        <div class="gradient-border-content">
+                            <h2 class="text-2xl font-bold mb-6">资产持仓</h2>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-colors">
+                                    <div class="flex items-center space-x-4">
+                                        <img src="https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=40&h=40&fit=crop&crop=center" alt="SAP" class="w-10 h-10 rounded-full">
+                                        <div>
+                                            <h3 class="font-semibold">Sapphire (SAP)</h3>
+                                            <p class="text-sm text-gray-400">平台代币</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg font-bold">25,450.67 SAP</div>
+                                        <div class="text-sm text-gray-400">≈ $10,384.07</div>
+                                        <div class="text-sm text-green-400">+12.45%</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-colors">
+                                    <div class="flex items-center space-x-4">
+                                        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" class="w-10 h-10">
+                                        <div>
+                                            <h3 class="font-semibold">Ethereum (ETH)</h3>
+                                            <p class="text-sm text-gray-400">以太坊</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg font-bold">0.8456 ETH</div>
+                                        <div class="text-sm text-gray-400">≈ $2,072.34</div>
+                                        <div class="text-sm text-red-400">-3.21%</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-colors">
+                                    <div class="flex items-center space-x-4">
+                                        <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC" class="w-10 h-10">
+                                        <div>
+                                            <h3 class="font-semibold">USD Coin (USDC)</h3>
+                                            <p class="text-sm text-gray-400">稳定币</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-lg font-bold">1,250.00 USDC</div>
+                                        <div class="text-sm text-gray-400">≈ $1,250.00</div>
+                                        <div class="text-sm text-gray-400">0.00%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="gradient-border">
+                        <div class="gradient-border-content">
+                            <h2 class="text-2xl font-bold mb-6">最近活动</h2>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4 p-4 bg-gray-800/30 rounded-lg">
+                                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-coins text-white"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium">领取质押收益</p>
+                                        <p class="text-sm text-gray-400">ETH/SAP池 · 获得 45.67 SAP</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm text-green-400">+$18.63</p>
+                                        <p class="text-xs text-gray-400">2小时前</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center space-x-4 p-4 bg-gray-800/30 rounded-lg">
+                                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-shopping-cart text-white"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium">购买虚拟商品</p>
+                                        <p class="text-sm text-gray-400">游戏皮肤 - 《王者荣耀》限定皮肤</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm text-red-400">-125.50 SAP</p>
+                                        <p class="text-xs text-gray-400">5小时前</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center space-x-4 p-4 bg-gray-800/30 rounded-lg">
+                                    <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-exchange-alt text-white"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium">代币兑换</p>
+                                        <p class="text-sm text-gray-400">0.5 ETH → 1,225.34 SAP</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm text-blue-400">兑换完成</p>
+                                        <p class="text-xs text-gray-400">昨天</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions Tab -->
+                <div id="content-transactions" class="tab-content hidden">
+                    <div class="gradient-border">
+                        <div class="gradient-border-content">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-2xl font-bold">交易历史</h2>
+                                <div class="flex space-x-2">
+                                    <select class="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white">
+                                        <option>全部类型</option>
+                                        <option>购买</option>
+                                        <option>出售</option>
+                                        <option>兑换</option>
+                                        <option>质押</option>
+                                    </select>
+                                    <button class="bg-sapphire-600 hover:bg-sapphire-700 text-white px-4 py-2 rounded-lg text-sm">
+                                        <i class="fas fa-download mr-2"></i>导出
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="border-b border-gray-700">
+                                            <th class="text-left py-3 px-4 font-semibold text-gray-400">时间</th>
+                                            <th class="text-left py-3 px-4 font-semibold text-gray-400">类型</th>
+                                            <th class="text-left py-3 px-4 font-semibold text-gray-400">商品/代币</th>
+                                            <th class="text-right py-3 px-4 font-semibold text-gray-400">数量</th>
+                                            <th class="text-right py-3 px-4 font-semibold text-gray-400">价格</th>
+                                            <th class="text-center py-3 px-4 font-semibold text-gray-400">状态</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-700">
+                                        <tr class="hover:bg-gray-800/30">
+                                            <td class="py-4 px-4 text-sm">2025-01-19 14:30</td>
+                                            <td class="py-4 px-4">
+                                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">购买</span>
+                                            </td>
+                                            <td class="py-4 px-4">《王者荣耀》限定皮肤</td>
+                                            <td class="py-4 px-4 text-right">1</td>
+                                            <td class="py-4 px-4 text-right">125.50 SAP</td>
+                                            <td class="py-4 px-4 text-center">
+                                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">完成</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-800/30">
+                                            <td class="py-4 px-4 text-sm">2025-01-19 10:15</td>
+                                            <td class="py-4 px-4">
+                                                <span class="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs">兑换</span>
+                                            </td>
+                                            <td class="py-4 px-4">ETH → SAP</td>
+                                            <td class="py-4 px-4 text-right">0.5 ETH</td>
+                                            <td class="py-4 px-4 text-right">1,225.34 SAP</td>
+                                            <td class="py-4 px-4 text-center">
+                                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">完成</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-800/30">
+                                            <td class="py-4 px-4 text-sm">2025-01-18 16:45</td>
+                                            <td class="py-4 px-4">
+                                                <span class="bg-purple-500/20 text-purple-400 px-2 py-1 rounded text-xs">质押</span>
+                                            </td>
+                                            <td class="py-4 px-4">ETH/SAP LP代币</td>
+                                            <td class="py-4 px-4 text-right">150.67 LP</td>
+                                            <td class="py-4 px-4 text-right">-</td>
+                                            <td class="py-4 px-4 text-center">
+                                                <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs">活跃</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Staking Tab -->
+                <div id="content-staking" class="tab-content hidden">
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="gradient-border">
+                            <div class="gradient-border-content">
+                                <h3 class="text-lg font-bold mb-4">质押统计</h3>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">总质押价值</span>
+                                        <span class="font-semibold">$8,950.23</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">累计收益</span>
+                                        <span class="font-semibold text-green-400">$1,234.56</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">平均APY</span>
+                                        <span class="font-semibold">12.85%</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">质押天数</span>
+                                        <span class="font-semibold">156天</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="gradient-border">
+                            <div class="gradient-border-content">
+                                <h3 class="text-lg font-bold mb-4">今日收益</h3>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-green-400 mb-2">$45.67</div>
+                                    <div class="text-sm text-gray-400 mb-4">相当于 112.34 SAP</div>
+                                    <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors">
+                                        <i class="fas fa-coins mr-2"></i>领取收益
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Staking Positions -->
+                    <div class="gradient-border">
+                        <div class="gradient-border-content">
+                            <h2 class="text-2xl font-bold mb-6">质押仓位</h2>
+                            <div class="space-y-4">
+                                <div class="bg-gray-800/50 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="flex items-center -space-x-1">
+                                                <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" class="w-8 h-8 relative z-10">
+                                                <img src="https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=32&h=32&fit=crop&crop=center" alt="SAP" class="w-8 h-8 rounded-full">
+                                            </div>
+                                            <div>
+                                                <h3 class="font-bold">ETH/SAP</h3>
+                                                <p class="text-sm text-gray-400">已质押 156天</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-green-400 font-bold">15.67% APY</div>
+                                            <div class="text-sm text-gray-400">$5,234.56</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-4 text-sm">
+                                        <div>
+                                            <div class="text-gray-400">已质押</div>
+                                            <div class="font-semibold">547.89 LP</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-gray-400">待领取</div>
+                                            <div class="font-semibold text-green-400">125.34 SAP</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-gray-400">累计收益</div>
+                                            <div class="font-semibold">856.78 SAP</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="content-orders" class="tab-content hidden">
+                    <div class="gradient-border">
+                        <div class="gradient-border-content">
+                            <h2 class="text-2xl font-bold mb-6">我的订单</h2>
+                            <div class="space-y-4">
+                                <div class="bg-gray-800/50 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center space-x-4">
+                                            <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=60&h=60&fit=crop&crop=center" alt="Product" class="w-12 h-12 rounded-lg object-cover">
+                                            <div>
+                                                <h3 class="font-bold">《王者荣耀》限定皮肤</h3>
+                                                <p class="text-sm text-gray-400">订单号: #SP240119001</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="font-bold">125.50 SAP</div>
+                                            <div class="text-sm text-green-400">已完成</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between text-sm text-gray-400">
+                                        <span>购买时间: 2025-01-19 14:30</span>
+                                        <span>卖家: GameSkins_Pro</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Tab -->
+                <div id="content-products" class="tab-content hidden">
+                    <div class="gradient-border">
+                        <div class="gradient-border-content">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-2xl font-bold">我的商品</h2>
+                                <button class="bg-gradient-to-r from-sapphire-500 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-sapphire-600 hover:to-purple-700 transition-all">
+                                    <i class="fas fa-plus mr-2"></i>发布商品
+                                </button>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-gray-800/50 rounded-lg p-4">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center space-x-3">
+                                            <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=60&h=60&fit=crop&crop=center" alt="Product" class="w-12 h-12 rounded-lg object-cover">
+                                            <div>
+                                                <h3 class="font-bold">数字艺术收藏</h3>
+                                                <p class="text-sm text-gray-400">限量版数字画作</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="font-bold">299.99 SAP</div>
+                                            <div class="text-sm text-green-400">在售</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between text-sm text-gray-400">
+                                        <span>发布时间: 2025-01-15</span>
+                                        <span>浏览: 234次</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="content-settings" class="tab-content hidden">
+                    <div class="space-y-8">
+                        <!-- Personal Info -->
+                        <div class="gradient-border">
+                            <div class="gradient-border-content">
+                                <h2 class="text-2xl font-bold mb-6">个人信息</h2>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">用户名</label>
+                                        <input type="text" value="Alex Chen" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-sapphire-500 focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">邮箱</label>
+                                        <input type="email" value="alex.chen@example.com" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-sapphire-500 focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">电话</label>
+                                        <input type="tel" value="+86 138****1234" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-sapphire-500 focus:outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">语言</label>
+                                        <select class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-sapphire-500 focus:outline-none">
+                                            <option>中文简体</option>
+                                            <option>English</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button class="mt-6 bg-sapphire-600 hover:bg-sapphire-700 text-white px-6 py-2 rounded-lg transition-colors">
+                                    保存更改
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Security Settings -->
+                        <div class="gradient-border">
+                            <div class="gradient-border-content">
+                                <h2 class="text-2xl font-bold mb-6">安全设置</h2>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+                                        <div>
+                                            <h3 class="font-semibold">两步验证</h3>
+                                            <p class="text-sm text-gray-400">为账户添加额外安全层</p>
+                                        </div>
+                                        <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+                                            已启用
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+                                        <div>
+                                            <h3 class="font-semibold">登录通知</h3>
+                                            <p class="text-sm text-gray-400">新设备登录时接收邮件通知</p>
+                                        </div>
+                                        <button class="bg-sapphire-600 hover:bg-sapphire-700 text-white px-4 py-2 rounded-lg transition-colors">
+                                            启用
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('tab-active');
+                item.classList.add('hover:bg-gray-700');
+            });
+            
+            // Show selected tab content
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            
+            // Add active class to selected nav item
+            const activeTab = document.getElementById(`tab-${tabName}`);
+            activeTab.classList.add('tab-active');
+            activeTab.classList.remove('hover:bg-gray-700');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-600');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-600');
+            } else {
+                toast.classList.add('bg-sapphire-600');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showTab('overview'); // Show overview tab by default
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代币商城 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        /* 深色主题的商品卡片悬停效果 */
+        .product-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(55, 65, 81, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            background: rgba(75, 85, 99, 0.9);
+        }
+        /* 价格高亮动画 */
+        .price-highlight {
+            position: relative;
+        }
+        .price-highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+        .product-card:hover .price-highlight::after {
+            width: 100%;
+        }
+        /* 深色主题按钮样式 */
+        .modern-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border: none;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.4);
+        }
+        .modern-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            box-shadow: 0 8px 15px -3px rgba(59, 130, 246, 0.5);
+        }
+        /* 筛选区域样式 */
+        .filter-section {
+            background: rgba(31, 41, 55, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.5);
+        }
+        .filter-section:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+        /* 商品分类筛选区域 */
+        .category-filter-section {
+            padding-bottom: 1.5rem;
+        }
+        
+        /* 主分类标签样式 */
+        .category-main-tab {
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            line-height: 1.25;
+            transition: all 0.2s ease;
+            background-color: rgba(55, 65, 81, 0.6);
+            color: #d1d5db;
+            border: 1px solid rgba(75, 85, 99, 0.8);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .category-main-tab:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+        }
+        .category-main-tab.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* 搜索框样式 */
+        .search-container {
+            min-width: 240px;
+            max-width: 280px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 0.5rem 2.5rem 0.5rem 0.875rem;
+            background: rgba(55, 65, 81, 0.8);
+            border: 1px solid rgba(75, 85, 99, 0.6);
+            border-radius: 0.5rem;
+            color: #f9fafb;
+            font-size: 0.8125rem;
+            outline: none;
+            transition: all 0.2s ease;
+            height: 2.25rem; /* 与其他按钮高度保持一致 */
+        }
+        .search-input:focus {
+            border-color: rgba(59, 130, 246, 0.8);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+        .search-input::placeholder {
+            color: #9ca3af;
+            font-size: 0.8125rem;
+        }
+        .search-button {
+            position: absolute;
+            right: 0.375rem;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0.375rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border: none;
+            border-radius: 0.25rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 1.75rem;
+            height: 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .search-button:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            transform: translateY(-50%) scale(1.05);
+        }
+        .search-button i {
+            font-size: 0.75rem;
+        }
+        
+        /* 分割线 */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(75, 85, 99, 0.6) 50%, transparent 100%);
+            margin: 1.5rem 0;
+        }
+        /* 统一的筛选项样式 */
+        .filter-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .filter-row-header {
+            display: flex;
+            align-items: center;
+            min-height: 3rem;
+            overflow: visible;
+        }
+        .filter-label {
+            width: 80px;
+            font-size: 0.875rem; /* 14px */
+            font-weight: 500;
+            color: #9ca3af; /* text-gray-400 */
+            flex-shrink: 0;
+            line-height: 1.5;
+        }
+        .filter-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: visible;
+        }
+        .filter-items-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            overflow: visible;
+            position: relative;
+        }
+        .filter-items-visible {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap; /* 改为允许换行 */
+            overflow: visible; /* 改为可见 */
+            flex: 1;
+        }
+        .filter-items-hidden {
+            display: none;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding-top: 0.5rem;
+            width: 100%;
+            margin-left: 80px; /* 与筛选按钮对齐，等于.filter-label的宽度 */
+        }
+        .filter-items-hidden.show {
+            display: flex;
+        }
+        
+        /* 分类选择按钮样式 - 单选，更突出 */
+        .category-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            line-height: 1.25;
+            height: 2.25rem;
+            transition: all 0.2s ease;
+            background-color: rgba(75, 85, 99, 0.5);
+            color: #d1d5db;
+            border: 1px solid rgba(75, 85, 99, 1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .category-tab:hover {
+            background-color: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.4);
+            color: #93c5fd;
+            transform: translateY(-1px);
+        }
+        .category-tab.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            transform: translateY(-1px);
+        }
+        
+        /* 价格筛选按钮样式 - 多选，标签风格 */
+        .price-tag {
+            padding: 0.375rem 0.875rem;
+            border-radius: 1.5rem; /* 更圆润的边角 */
+            font-size: 0.8125rem;
+            font-weight: 500;
+            line-height: 1.25;
+            height: 2rem; /* 稍微矮一点 */
+            transition: all 0.2s ease;
+            background-color: rgba(99, 102, 241, 0.1);
+            color: #a5b4fc;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .price-tag:hover {
+            background-color: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+            color: #c7d2fe;
+            transform: scale(1.05);
+        }
+        .price-tag.active {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border-color: #6366f1;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+        
+        /* 状态筛选按钮样式 - 多选，徽章风格 */
+        .status-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.75rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            line-height: 1.25;
+            height: 2rem;
+            transition: all 0.2s ease;
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .status-badge:hover {
+            background-color: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #a7f3d0;
+            transform: scale(1.05);
+        }
+        .status-badge.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-color: #10b981;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+        
+        /* 通用筛选按钮 - 保留作为后备 */
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            line-height: 1.25;
+            height: 2.25rem;
+            transition: all 0.2s ease;
+            background-color: rgba(75, 85, 99, 0.5);
+            color: #d1d5db;
+            border: 1px solid rgba(75, 85, 99, 1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .filter-btn:hover {
+            background-color: rgba(99, 102, 241, 0.8);
+            color: white;
+            transform: translateY(-1px);
+        }
+        .filter-btn.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+        }
+        /* 更多按钮样式 */
+        .toggle-more-btn {
+            padding: 0.375rem 0.625rem;
+            height: 2rem;
+            font-size: 0.8125rem;
+            font-weight: 400;
+            color: #9ca3af;
+            background: transparent;
+            border: 1px solid rgba(156, 163, 175, 0.3);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: none;
+            align-items: center;
+            gap: 0.25rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: 0.5rem;
+        }
+        .toggle-more-btn:hover {
+            color: #60a5fa;
+            border-color: rgba(96, 165, 250, 0.5);
+            background: rgba(96, 165, 250, 0.05);
+        }
+        .toggle-more-btn.show {
+            display: flex;
+        }
+        /* 清除按钮样式 */
+        .clear-btn {
+            padding: 0.5rem 1rem;
+            height: 2.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #9ca3af;
+            background: rgba(75, 85, 99, 0.3);
+            border: 1px solid rgba(75, 85, 99, 0.5);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: 1rem;
+        }
+        .clear-btn:hover {
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        /* 分类卡片样式 */
+        .category-card {
+            background: rgba(31, 41, 55, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(75, 85, 99, 0.4);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        .category-card:hover {
+            border-color: rgba(99, 102, 241, 0.6);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 分类标题区域 */
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .category-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+        
+        .category-text {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .category-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #f9fafb;
+            margin: 0;
+        }
+        
+        .category-count {
+            padding: 0.25rem 0.75rem;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 1rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #93c5fd;
+        }
+        
+        .category-view-more {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .category-view-more:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -4px rgba(59, 130, 246, 0.4);
+        }
+        
+        /* 商品网格容器 */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            min-height: 300px; /* 确保最小高度 */
+        }
+        
+        /* 小型商品卡片样式 */
+        .mini-product-card {
+            background: rgba(55, 65, 81, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            border-radius: 1rem;
+            padding: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            height: 280px; /* 统一高度 */
+            display: flex;
+            flex-direction: column;
+        }
+        .mini-product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        .mini-product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+            border-color: rgba(99, 102, 241, 0.6);
+        }
+        .mini-product-card:hover::before {
+            opacity: 1;
+        }
+        
+        /* 商品图片容器 */
+        .product-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 160px;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            background: rgba(75, 85, 99, 0.3);
+        }
+        
+        /* 商品图片 */
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.3s ease;
+        }
+        .mini-product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        
+        /* 商品标签 */
+        .product-badge {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            padding: 0.25rem 0.625rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 商品信息区域 */
+        .product-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        /* 商品标题 */
+        .product-title {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #f9fafb;
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* 商品价格和评分区域 */
+        .product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+        
+        /* 商品价格 */
+        .product-price {
+            font-size: 1rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* 商品评分 */
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8125rem;
+            color: #9ca3af;
+        }
+        .product-rating .star {
+            color: #fbbf24;
+        }
+        /* 下拉菜单样式 */
+        .category-dropdown {
+            position: relative;
+        }
+        
+        /* 添加hover效果 */
+        .category-dropdown:hover .dropdown-menu {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+        }
+        
+        /* hover时箭头旋转效果 */
+        .category-dropdown:hover .category-tab i[id$="-arrow"] {
+            transform: rotate(180deg);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 200px;
+            background: rgba(31, 41, 55, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(75, 85, 99, 0.8);
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            margin-top: 0.5rem;
+        }
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            color: #d1d5db;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        .dropdown-item:hover {
+            background: rgba(99, 102, 241, 0.2);
+            color: white;
+        }
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="w-full px-4 py-2">
+        
+        <!-- 高级筛选区域 -->
+        <div class="filter-section rounded-2xl p-6 mb-6">
+            <!-- 筛选选项区域 -->
+            <div class="space-y-4">
+                <!-- 商品分类筛选 -->
+                <div class="filter-row">
+                    <div class="filter-row-header">
+                        <span class="filter-label" data-en="Category">商品分类</span>
+                        <div class="filter-content">
+                            <div class="filter-items-container" id="categoryContainer">
+                                <div class="filter-items-visible" id="categoryVisible">
+                                    <div class="category-dropdown">
+                                        <button class="category-tab active" data-category="all" onclick="selectCategory('all')">
+                                            <span data-en="All Categories">全部分类</span>
+                                            <span class="text-xs opacity-75">(12,345)</span>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="category-dropdown">
+                                        <button class="category-tab" data-category="gaming">
+                                            <span data-en="Gaming">游戏道具</span>
+                                            <span class="text-xs opacity-75">(8,567)</span>
+                                            <i class="fas fa-chevron-down text-xs transition-transform" id="gaming-arrow"></i>
+                                        </button>
+                                        <div class="dropdown-menu" id="gaming-dropdown">
+                                            <div class="dropdown-item" onclick="selectSubcategory('gaming', 'skins')">
+                                                <span data-en="Character Skins">角色皮肤</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('gaming', 'weapons')">
+                                                <span data-en="Weapon Skins">武器皮肤</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('gaming', 'pets')">
+                                                <span data-en="Virtual Pets">虚拟宠物</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('gaming', 'mounts')">
+                                                <span data-en="Mounts">坐骑</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('gaming', 'currency')">
+                                                <span data-en="Game Currency">游戏币</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="category-dropdown">
+                                        <button class="category-tab" data-category="art">
+                                            <span data-en="Digital Art">数字艺术</span>
+                                            <span class="text-xs opacity-75">(3,421)</span>
+                                            <i class="fas fa-chevron-down text-xs transition-transform" id="art-arrow"></i>
+                                        </button>
+                                        <div class="dropdown-menu" id="art-dropdown">
+                                            <div class="dropdown-item" onclick="selectSubcategory('art', 'paintings')">
+                                                <span data-en="Digital Paintings">数字绘画</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('art', 'photography')">
+                                                <span data-en="Photography">摄影作品</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('art', '3d-art')">
+                                                <span data-en="3D Art">3D艺术</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('art', 'generative')">
+                                                <span data-en="Generative Art">生成艺术</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('art', 'pixel-art')">
+                                                <span data-en="Pixel Art">像素艺术</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="category-dropdown">
+                                        <button class="category-tab" data-category="metaverse">
+                                            <span data-en="Metaverse">虚拟世界</span>
+                                            <span class="text-xs opacity-75">(2,156)</span>
+                                            <i class="fas fa-chevron-down text-xs transition-transform" id="metaverse-arrow"></i>
+                                        </button>
+                                        <div class="dropdown-menu" id="metaverse-dropdown">
+                                            <div class="dropdown-item" onclick="selectSubcategory('metaverse', 'land')">
+                                                <span data-en="Virtual Land">虚拟土地</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('metaverse', 'buildings')">
+                                                <span data-en="Buildings">建筑物</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('metaverse', 'avatars')">
+                                                <span data-en="Avatars">虚拟形象</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('metaverse', 'wearables')">
+                                                <span data-en="Wearables">可穿戴物品</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('metaverse', 'experiences')">
+                                                <span data-en="Experiences">体验场景</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="category-dropdown">
+                                        <button class="category-tab" data-category="content">
+                                            <span data-en="Digital Content">数字内容</span>
+                                            <span class="text-xs opacity-75">(5,432)</span>
+                                            <i class="fas fa-chevron-down text-xs transition-transform" id="content-arrow"></i>
+                                        </button>
+                                        <div class="dropdown-menu" id="content-dropdown">
+                                            <div class="dropdown-item" onclick="selectSubcategory('content', 'music')">
+                                                <span data-en="Music">音乐</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('content', 'videos')">
+                                                <span data-en="Videos">视频</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('content', 'ebooks')">
+                                                <span data-en="E-books">电子书</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('content', 'courses')">
+                                                <span data-en="Courses">课程</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('content', 'software')">
+                                                <span data-en="Software">软件</span>
+                                            </div>
+                                        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                            <button class="toggle-more-btn" id="categoryToggleBtn" onclick="toggleMoreCategories()">
+                                <span id="categoryToggleText">更多</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform" id="categoryToggleArrow"></i>
+                            </button>
+                            
+                            <!-- 搜索框 - 添加在折叠按钮后 -->
+                            <div class="search-container ml-4">
+                                <div class="relative">
+                                    <input 
+                                        type="text" 
+                                        placeholder="请输入商品名称" 
+                                        class="search-input"
+                                        id="productSearchInput"
+                                    >
+                                    <button class="search-button" onclick="performSearch()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 分类折叠内容 - 显示在下一行 -->
+                    <div class="filter-items-hidden" id="categoryHidden">
+                                    <div class="category-dropdown">
+                                        <button class="category-tab" data-category="collectibles" onclick="toggleDropdown('collectibles')">
+                                            <span data-en="Collectibles">收藏品</span>
+                                            <span class="text-xs opacity-75">(1,987)</span>
+                                            <i class="fas fa-chevron-down text-xs transition-transform" id="collectibles-arrow"></i>
+                                        </button>
+                                        <div class="dropdown-menu" id="collectibles-dropdown">
+                                            <div class="dropdown-item" onclick="selectSubcategory('collectibles', 'trading-cards')">
+                                                <span data-en="Trading Cards">交易卡牌</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('collectibles', 'limited-editions')">
+                                                <span data-en="Limited Editions">限量版</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('collectibles', 'rare-items')">
+                                                <span data-en="Rare Items">稀有物品</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('collectibles', 'vintage')">
+                                                <span data-en="Vintage">复古</span>
+                                            </div>
+                                            <div class="dropdown-item" onclick="selectSubcategory('collectibles', 'autographs')">
+                                                <span data-en="Autographs">签名</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        <div class="category-dropdown">
+                            <button class="category-tab" data-category="services" onclick="selectCategory('services')">
+                                <span data-en="Services">服务</span>
+                                <span class="text-xs opacity-75">(856)</span>
+                            </button>
+                        </div>
+                        
+                        <div class="category-dropdown">
+                            <button class="category-tab" data-category="tools" onclick="selectCategory('tools')">
+                                <span data-en="Tools">工具</span>
+                                <span class="text-xs opacity-75">(423)</span>
+                            </button>
+                        </div>
+                        
+                        <div class="category-dropdown">
+                            <button class="category-tab" data-category="education" onclick="selectCategory('education')">
+                                <span data-en="Education">教育</span>
+                                <span class="text-xs opacity-75">(299)</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分割线 -->
+                <div class="divider"></div>
+
+                <!-- 价格范围筛选 -->
+                <div class="filter-row">
+                    <div class="filter-row-header">
+                        <span class="filter-label" data-en="Price">价格</span>
+                        <div class="filter-content">
+                            <div class="filter-items-container" id="priceContainer">
+                                <div class="filter-items-visible" id="priceVisible">
+                                    <button class="price-tag" data-filter-type="price" data-value="0-100">0-100 SAP</button>
+                                    <button class="price-tag" data-filter-type="price" data-value="100-500">100-500</button>
+                                    <button class="price-tag" data-filter-type="price" data-value="500-1000">500-1000</button>
+                                    <button class="price-tag" data-filter-type="price" data-value="1000+">1000+</button>
+                                </div>
+                            </div>
+                            
+                            <button class="toggle-more-btn" id="priceToggleBtn" onclick="toggleMorePrices()">
+                                <span id="priceToggleText">更多</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform" id="priceToggleArrow"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 价格折叠内容 - 显示在下一行 -->
+                    <div class="filter-items-hidden" id="priceHidden">
+                        <button class="price-tag" data-filter-type="price" data-value="2000+">2000+</button>
+                        <button class="price-tag" data-filter-type="price" data-value="5000+">5000+</button>
+                        <button class="price-tag" data-filter-type="price" data-value="10000+">10000+</button>
+                        <button class="price-tag" data-filter-type="price" data-value="custom">自定义价格</button>
+                    </div>
+                </div>
+
+                <!-- 用户评分和状态筛选 -->
+                <div class="filter-row">
+                    <div class="filter-row-header">
+                        <span class="filter-label" data-en="Filters">筛选</span>
+                        <div class="filter-content">
+                            <div class="filter-items-container" id="filterContainer">
+                                <div class="filter-items-visible" id="filterVisible">
+                                    <button class="status-badge" data-filter-type="rating" data-value="4+">4星+ ⭐</button>
+                                    <button class="status-badge" data-filter-type="status" data-value="new">🆕 新品</button>
+                                    <button class="status-badge" data-filter-type="status" data-value="hot">🔥 热门</button>
+                                    <button class="status-badge" data-filter-type="status" data-value="limited">👑 限量</button>
+                                </div>
+                            </div>
+                            
+                            <button class="toggle-more-btn" id="filterToggleBtn" onclick="toggleMoreFilters()">
+                                <span id="filterToggleText">更多</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform" id="filterToggleArrow"></i>
+                            </button>
+                            
+                            <button class="clear-btn" onclick="clearAllFilters()">
+                                <i class="fas fa-undo"></i>
+                                <span data-en="Clear">清除</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 筛选折叠内容 - 显示在下一行 -->
+                    <div class="filter-items-hidden" id="filterHidden">
+                        <button class="status-badge" data-filter-type="status" data-value="discount">💰 折扣</button>
+                        <button class="status-badge" data-filter-type="rating" data-value="5">5星 ⭐</button>
+                        <button class="status-badge" data-filter-type="status" data-value="verified">✅ 认证</button>
+                        <button class="status-badge" data-filter-type="status" data-value="trending">📈 趋势</button>
+                        <button class="status-badge" data-filter-type="status" data-value="premium">💎 高级</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分类商品展示区域 -->
+        <div id="categoryProductsContainer">
+            <!-- 全部分类视图 - 默认显示 -->
+            <div id="allCategoriesView" class="space-y-8">
+                
+                <!-- 游戏道具分类卡片 -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-info">
+                            <span class="category-icon">🎮</span>
+                            <div class="category-text">
+                                <h3 class="category-title"><span data-en="Gaming Items">游戏道具</span></h3>
+                                <span class="category-count"><span data-en="8,567 items">8,567</span></span>
+                            </div>
+                        </div>
+                        <button class="category-view-more" onclick="selectMainCategory('gaming')">
+                            <span data-en="View More">查看更多</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- 商品网格 -->
+                    <div class="products-grid">
+                        <!-- 游戏商品1 -->
+                        <div class="mini-product-card" onclick="openProductDetail('王者荣耀限定皮肤', 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=300&h=200&fit=crop&crop=center', '125.50', '传说', '专属限定版皮肤', '4.9', '127', 'gaming-skins')">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=300&h=200&fit=crop&crop=center" alt="Gaming Skin" class="product-image">
+                                <span class="product-badge bg-purple-500">传说</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">王者荣耀限定皮肤</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥125.50</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.9</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 游戏商品2 -->
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=300&h=200&fit=crop&crop=center" alt="Game Weapon" class="product-image">
+                                <span class="product-badge bg-red-500">🔥 热门</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">CS:GO刀具皮肤</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥299.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.8</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 游戏商品3 -->
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=300&h=200&fit=crop&crop=center" alt="Gaming Character" class="product-image">
+                                <span class="product-badge bg-green-500">稀有</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">英雄联盟角色</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥89.99</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.7</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 游戏商品4 -->
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=300&h=200&fit=crop&crop=center" alt="Game Asset" class="product-image">
+                                <span class="product-badge bg-blue-500">史诗</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">魔兽世界坐骑</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥456.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.9</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 游戏商品5 -->
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1486401899868-0e435ed85128?w=300&h=200&fit=crop&crop=center" alt="Game Item" class="product-image">
+                                <span class="product-badge bg-orange-500">限量</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">绝地求生套装</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥178.50</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.6</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=300&h=200&fit=crop&crop=center" alt="Pet" class="product-image">
+                                <span class="product-badge bg-pink-500">可爱</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">虚拟宠物</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥67.99</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.8</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop&crop=center" alt="Gaming Currency" class="product-image">
+                                <span class="product-badge bg-yellow-500">热销</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">游戏金币包</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥25.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.5</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1614294148960-9aa740632a87?w=300&h=200&fit=crop&crop=center" alt="Gaming Equipment" class="product-image">
+                                <span class="product-badge bg-indigo-500">装备</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">装备强化石</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥35.99</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.4</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数字艺术分类卡片 -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-info">
+                            <span class="category-icon">🎨</span>
+                            <div class="category-text">
+                                <h3 class="category-title"><span data-en="Digital Art">数字艺术</span></h3>
+                                <span class="category-count"><span data-en="3,421 items">3,421</span></span>
+                            </div>
+                        </div>
+                        <button class="category-view-more" onclick="selectMainCategory('art')">
+                            <span data-en="View More">查看更多</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- 数字艺术商品网格 -->
+                    <div class="products-grid">
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=200&fit=crop&crop=center" alt="Digital Art" class="product-image">
+                                <span class="product-badge bg-purple-500">NFT</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">抽象几何艺术</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥299.99</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.7</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=300&h=200&fit=crop&crop=center" alt="3D Art" class="product-image">
+                                <span class="product-badge bg-green-500">3D</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">3D数字雕塑</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥455.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.8</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&h=200&fit=crop&crop=center" alt="Pixel Art" class="product-image">
+                                <span class="product-badge bg-blue-500">像素</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">复古像素画</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥89.50</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.6</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1549909158-6d277ce8cf8d?w=300&h=200&fit=crop&crop=center" alt="Digital Painting" class="product-image">
+                                <span class="product-badge bg-red-500">热门</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">数字水彩画</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥199.99</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.9</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=300&h=200&fit=crop&crop=center" alt="Abstract Art" class="product-image">
+                                <span class="product-badge bg-orange-500">限量</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">抽象表达艺术</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥399.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.5</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop&crop=center" alt="Vector Art" class="product-image">
+                                <span class="product-badge bg-pink-500">矢量</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">矢量插画</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥129.99</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.7</span>
+                                    </div>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+
+                <!-- 虚拟世界分类卡片 -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-info">
+                            <span class="category-icon">🌐</span>
+                            <div class="category-text">
+                                <h3 class="category-title"><span data-en="Metaverse">虚拟世界</span></h3>
+                                <span class="category-count"><span data-en="2,156 items">2,156</span></span>
+                            </div>
+                                </div>
+                        <button class="category-view-more" onclick="selectMainCategory('metaverse')">
+                            <span data-en="View More">查看更多</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- 虚拟世界商品网格 -->
+                    <div class="products-grid">
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=200&fit=crop&crop=center" alt="Virtual Land" class="product-image">
+                                <span class="product-badge bg-emerald-500">土地</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">中心城区虚拟土地</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥15,999.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.8</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop&crop=center" alt="Virtual Building" class="product-image">
+                                <span class="product-badge bg-cyan-500">建筑</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">未来主义商场</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥8,888.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.6</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=300&h=200&fit=crop&crop=center" alt="Avatar" class="product-image">
+                                <span class="product-badge bg-violet-500">形象</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">赛博朋克虚拟形象</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥1,299.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.9</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1634712282287-14ed57b9cc89?w=300&h=200&fit=crop&crop=center" alt="Wearables" class="product-image">
+                                <span class="product-badge bg-rose-500">服饰</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">限量版数字时装</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥599.99</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.7</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1614294148960-9aa740632a87?w=300&h=200&fit=crop&crop=center" alt="Experience" class="product-image">
+                                <span class="product-badge bg-amber-500">体验</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">虚拟音乐会门票</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥299.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.8</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数字内容分类卡片 -->
+                <div class="category-card">
+                    <div class="category-header">
+                        <div class="category-info">
+                            <span class="category-icon">📱</span>
+                            <div class="category-text">
+                                <h3 class="category-title"><span data-en="Digital Content">数字内容</span></h3>
+                                <span class="category-count"><span data-en="5,432 items">5,432</span></span>
+                            </div>
+                        </div>
+                        <button class="category-view-more" onclick="selectMainCategory('content')">
+                            <span data-en="View More">查看更多</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- 数字内容商品网格 -->
+                    <div class="products-grid">
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=200&fit=crop&crop=center" alt="Music" class="product-image">
+                                <span class="product-badge bg-pink-500">音乐</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">独家电子音乐专辑</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥99.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.9</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=300&h=200&fit=crop&crop=center" alt="Video" class="product-image">
+                                <span class="product-badge bg-red-500">视频</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">区块链技术教程</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥299.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.8</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=center" alt="E-book" class="product-image">
+                                <span class="product-badge bg-indigo-500">电子书</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">Web3投资指南</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥89.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.7</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mini-product-card">
+                            <div class="product-image-wrapper">
+                                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=300&h=200&fit=crop&crop=center" alt="Course" class="product-image">
+                                <span class="product-badge bg-green-500">课程</span>
+                            </div>
+                            <div class="product-info">
+                                <h4 class="product-title">NFT创作完整课程</h4>
+                                <div class="product-footer">
+                                    <span class="product-price">¥599.00</span>
+                                    <div class="product-rating">
+                                        <i class="fas fa-star star"></i>
+                                        <span>4.9</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 其他分类卡片可以类似添加... -->
+                
+            </div>
+
+            <!-- 单个分类详细视图 - 默认隐藏 -->
+            <div id="singleCategoryView" class="hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center">
+                        <button onclick="selectMainCategory('all')" class="mr-4 p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                            <i class="fas fa-arrow-left text-gray-400"></i>
+                        </button>
+                        <div>
+                            <h2 class="text-xl font-semibold text-white" id="categoryTitle">游戏道具</h2>
+                            <p class="text-sm text-gray-400" id="categoryCount">共8,567件商品</p>
+                        </div>
+                    </div>
+                    <select id="sortOptions" class="border border-gray-600 bg-gray-700/50 rounded-lg px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-500">
+                        <option value="newest">最新上架</option>
+                        <option value="price-low">价格从低到高</option>
+                        <option value="price-high">价格从高到低</option>
+                        <option value="rating">评分最高</option>
+                        <option value="popular">评价最多</option>
+                    </select>
+                </div>
+
+                <!-- 单个分类的商品网格 -->
+                <div id="singleCategoryProducts" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    <!-- 这里将动态加载选中分类的商品 -->
+                </div>
+
+                <!-- 分页 -->
+                <div class="flex justify-center mt-12 mb-8">
+                    <nav class="flex items-center space-x-2 filter-section rounded-xl p-2">
+                        <button class="px-4 py-2 bg-gray-600/50 hover:bg-gray-500/50 text-gray-300 hover:text-white rounded-lg transition-colors">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">1</button>
+                        <button class="px-4 py-2 bg-gray-600/50 hover:bg-gray-500/50 text-gray-300 hover:text-white rounded-lg transition-colors">2</button>
+                        <button class="px-4 py-2 bg-gray-600/50 hover:bg-gray-500/50 text-gray-300 hover:text-white rounded-lg transition-colors">3</button>
+                        <span class="px-4 py-2 text-gray-500">...</span>
+                        <button class="px-4 py-2 bg-gray-600/50 hover:bg-gray-500/50 text-gray-300 hover:text-white rounded-lg transition-colors">10</button>
+                        <button class="px-4 py-2 bg-gray-600/50 hover:bg-gray-500/50 text-gray-300 hover:text-white rounded-lg transition-colors">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCategory = 'all';
+        let currentSubcategory = null;
+
+        // 搜索功能
+        function performSearch() {
+            const searchInput = document.getElementById('productSearchInput');
+            const searchTerm = searchInput.value.trim();
+            
+            if (searchTerm) {
+                console.log('搜索商品:', searchTerm);
+                // 这里可以添加实际的搜索逻辑
+                showToast(`正在搜索 "${searchTerm}"...`, 'info');
+                
+                // 模拟搜索结果
+                setTimeout(() => {
+                    showToast(`找到 ${Math.floor(Math.random() * 100) + 10} 个相关商品`, 'success');
+                }, 1000);
+            } else {
+                showToast('请输入搜索关键词', 'warning');
+            }
+        }
+
+        // 分类选择功能 - 恢复原有逻辑
+        function selectCategory(category) {
+            currentCategory = category;
+            currentSubcategory = null;
+            
+            // 更新分类标签的激活状态
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.category === category) {
+                    tab.classList.add('active');
+                }
+            });
+
+            // 显示对应的视图
+            if (category === 'all') {
+                document.getElementById('allCategoriesView').classList.remove('hidden');
+                document.getElementById('singleCategoryView').classList.add('hidden');
+            } else {
+                document.getElementById('allCategoriesView').classList.add('hidden');
+                document.getElementById('singleCategoryView').classList.remove('hidden');
+                loadCategoryProducts(category);
+            }
+            
+            console.log('选择分类:', category);
+            showToast(`已切换到 ${getCategoryName(category)}`, 'info');
+        }
+
+        // 主分类选择功能 - 兼容新的主分类按钮
+        function selectMainCategory(category) {
+            // 调用原有的selectCategory函数保持一致性
+            selectCategory(category);
+        }
+
+        // 获取分类名称
+        function getCategoryName(category) {
+            const categoryNames = {
+                'all': '全部分类',
+                'gaming': '游戏道具',
+                'art': '数字艺术',
+                'metaverse': '虚拟世界',
+                'content': '数字内容',
+                'collectibles': '收藏品',
+                'services': '服务',
+                'tools': '工具',
+                'education': '教育'
+            };
+            return categoryNames[category] || category;
+        }
+
+        // 显示提示消息
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
+            
+            switch(type) {
+                case 'success':
+                    toast.classList.add('bg-green-600');
+                    break;
+                case 'warning':
+                    toast.classList.add('bg-yellow-600');
+                    break;
+                case 'error':
+                    toast.classList.add('bg-red-600');
+                    break;
+                default:
+                    toast.classList.add('bg-blue-600');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // 下拉菜单切换
+        function toggleDropdown(category) {
+            const dropdown = document.getElementById(`${category}-dropdown`);
+            const arrow = document.getElementById(`${category}-arrow`);
+            
+            // 关闭其他所有下拉菜单
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                if (menu.id !== `${category}-dropdown`) {
+                    menu.classList.remove('show');
+                }
+            });
+            
+            // 重置其他箭头
+            document.querySelectorAll('[id$="-arrow"]').forEach(arr => {
+                if (arr.id !== `${category}-arrow`) {
+                    arr.style.transform = 'rotate(0deg)';
+                }
+            });
+            
+            // 切换当前下拉菜单
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                dropdown.classList.add('show');
+                arrow.style.transform = 'rotate(180deg)';
+                // 也选择这个分类
+                selectCategory(category);
+            }
+        }
+
+        // 选择子分类
+        function selectSubcategory(category, subcategory) {
+            selectCategory(category);
+            currentSubcategory = subcategory;
+            
+            // 关闭下拉菜单
+            const dropdown = document.getElementById(`${category}-dropdown`);
+            const arrow = document.getElementById(`${category}-arrow`);
+            dropdown.classList.remove('show');
+            arrow.style.transform = 'rotate(0deg)';
+            
+            // 这里可以添加子分类筛选逻辑
+            console.log(`Selected subcategory: ${category} > ${subcategory}`);
+        }
+
+        // 折叠展开分类
+        function toggleMoreCategories() {
+            const hiddenItems = document.getElementById('categoryHidden');
+            const toggleText = document.getElementById('categoryToggleText');
+            const toggleArrow = document.getElementById('categoryToggleArrow');
+            
+            if (hiddenItems.classList.contains('show')) {
+                hiddenItems.classList.remove('show');
+                toggleText.textContent = '更多';
+                toggleArrow.style.transform = 'rotate(0deg)';
+            } else {
+                hiddenItems.classList.add('show');
+                toggleText.textContent = '收起';
+                toggleArrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // 折叠展开价格筛选
+        function toggleMorePrices() {
+            const hiddenItems = document.getElementById('priceHidden');
+            const toggleText = document.getElementById('priceToggleText');
+            const toggleArrow = document.getElementById('priceToggleArrow');
+            
+            if (hiddenItems.classList.contains('show')) {
+                hiddenItems.classList.remove('show');
+                toggleText.textContent = '更多';
+                toggleArrow.style.transform = 'rotate(0deg)';
+            } else {
+                hiddenItems.classList.add('show');
+                toggleText.textContent = '收起';
+                toggleArrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // 折叠展开筛选选项
+        function toggleMoreFilters() {
+            const hiddenItems = document.getElementById('filterHidden');
+            const toggleText = document.getElementById('filterToggleText');
+            const toggleArrow = document.getElementById('filterToggleArrow');
+            
+            if (hiddenItems.classList.contains('show')) {
+                hiddenItems.classList.remove('show');
+                toggleText.textContent = '更多';
+                toggleArrow.style.transform = 'rotate(0deg)';
+            } else {
+                hiddenItems.classList.add('show');
+                toggleText.textContent = '收起';
+                toggleArrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // 检测是否需要显示"更多"按钮 - 修复支持换行的检测
+        function checkOverflow() {
+            const filterConfigs = [
+                {
+                    containerId: 'categoryContainer',
+                    visibleId: 'categoryVisible', 
+                    hiddenId: 'categoryHidden',
+                    toggleBtnId: 'categoryToggleBtn'
+                },
+                {
+                    containerId: 'priceContainer',
+                    visibleId: 'priceVisible',
+                    hiddenId: 'priceHidden',
+                    toggleBtnId: 'priceToggleBtn'
+                },
+                {
+                    containerId: 'filterContainer', 
+                    visibleId: 'filterVisible',
+                    hiddenId: 'filterHidden',
+                    toggleBtnId: 'filterToggleBtn'
+                }
+            ];
+
+            filterConfigs.forEach(config => {
+                const container = document.getElementById(config.containerId);
+                const visible = document.getElementById(config.visibleId);
+                const hidden = document.getElementById(config.hiddenId);
+                const toggleBtn = document.getElementById(config.toggleBtnId);
+                
+                if (container && visible && hidden && toggleBtn) {
+                    // 检查隐藏区域是否有内容 AND 可见区域是否真的超过一行
+                    const hiddenItems = hidden.children;
+                    const visibleItems = visible.children;
+                    
+                    let shouldShow = false;
+                    
+                    // 只有分类区域才检查隐藏内容（因为我们手动设置了隐藏内容）
+                    if (config.toggleBtnId === 'categoryToggleBtn') {
+                        shouldShow = hiddenItems.length > 0;
+                    } else {
+                        // 对于价格和筛选，检查可见内容是否真的超过一行
+                        if (visibleItems.length > 0) {
+                            const firstItemTop = visibleItems[0].offsetTop;
+                            for (let i = 1; i < visibleItems.length; i++) {
+                                if (visibleItems[i].offsetTop > firstItemTop + 5) { // 5px容差
+                                    shouldShow = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // 如果需要显示"更多"按钮
+                    if (shouldShow) {
+                        toggleBtn.classList.add('show');
+                        toggleBtn.style.display = 'flex';
+                        console.log(`显示更多按钮: ${config.toggleBtnId}`);
+                    } else {
+                        toggleBtn.classList.remove('show');
+                        toggleBtn.style.display = 'none';
+                        console.log(`隐藏更多按钮: ${config.toggleBtnId}`);
+                    }
+                }
+            });
+        }
+
+        // 优化的溢出检测
+        function initializeOverflowDetection() {
+            console.log('开始初始化溢出检测...');
+            
+            // 初始检测
+            setTimeout(() => {
+                console.log('执行初始溢出检测');
+                checkOverflow();
+            }, 200);
+            
+            // 窗口大小变化时重新检测
+            window.addEventListener('resize', function() {
+                clearTimeout(window.overflowCheckTimeout);
+                window.overflowCheckTimeout = setTimeout(() => {
+                    console.log('窗口大小变化，重新检测溢出');
+                    checkOverflow();
+                }, 150);
+            });
+            
+            // 监听字体加载完成
+            if (document.fonts) {
+                document.fonts.ready.then(function() {
+                    console.log('字体加载完成，重新检测溢出');
+                    setTimeout(checkOverflow, 100);
+                });
+            }
+        }
+
+        // 加载单个分类的商品
+        function loadCategoryProducts(category) {
+            const categoryInfo = {
+                'gaming': { title: '游戏道具', count: '8,567' },
+                'art': { title: '数字艺术', count: '3,421' },
+                'metaverse': { title: '虚拟世界', count: '2,156' },
+                'content': { title: '数字内容', count: '5,432' },
+                'collectibles': { title: '收藏品', count: '1,987' }
+            };
+
+            const info = categoryInfo[category];
+            if (info) {
+                document.getElementById('categoryTitle').textContent = info.title;
+                document.getElementById('categoryCount').textContent = `共${info.count}件商品`;
+            }
+
+            // 这里可以根据分类加载对应的商品数据
+            // 暂时显示模拟数据
+            loadSampleProducts(category);
+        }
+
+        // 加载示例商品数据
+        function loadSampleProducts(category) {
+            const container = document.getElementById('singleCategoryProducts');
+            
+            // 这里可以根据不同分类加载不同的商品
+            // 暂时使用模拟数据
+            container.innerHTML = `
+                <!-- 这里将显示${category}分类的商品列表 -->
+                <div class="product-card rounded-2xl shadow-lg overflow-hidden border border-gray-600">
+                    <div class="relative bg-gray-800">
+                        <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=300&fit=crop" alt="Product" class="w-full h-48 object-cover">
+                        <div class="absolute top-3 left-3">
+                            <span class="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-medium">传说</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-white font-semibold text-base mb-2">示例商品 - ${category}</h3>
+                        <p class="text-gray-400 text-sm mb-3">这是${category}分类下的示例商品描述</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-blue-400 font-bold text-lg">¥299.99</span>
+                            <button class="modern-btn text-white px-4 py-2 rounded-lg text-sm font-medium">立即购买</button>
+                        </div>
+                    </div>
+                </div>
+            `.repeat(10); // 重复10次作为示例
+        }
+
+        // 清除所有筛选
+        function clearAllFilters() {
+            // 清除所有筛选按钮的激活状态
+            document.querySelectorAll('.price-tag, .status-badge').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            const searchInput = document.getElementById('productSearchInput');
+            if (searchInput) searchInput.value = '';
+            
+            // 关闭所有下拉菜单
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+            
+            // 重置所有箭头
+            document.querySelectorAll('[id$="-arrow"]').forEach(arrow => {
+                arrow.style.transform = 'rotate(0deg)';
+            });
+            
+            // 关闭所有折叠项
+            document.querySelectorAll('.filter-items-hidden').forEach(hidden => {
+                hidden.classList.remove('show');
+            });
+            
+            // 重置所有"更多"按钮文本和箭头
+            const categoryToggleText = document.getElementById('categoryToggleText');
+            const categoryToggleArrow = document.getElementById('categoryToggleArrow');
+            const priceToggleText = document.getElementById('priceToggleText');
+            const priceToggleArrow = document.getElementById('priceToggleArrow');
+            const filterToggleText = document.getElementById('filterToggleText');
+            const filterToggleArrow = document.getElementById('filterToggleArrow');
+            
+            if (categoryToggleText) categoryToggleText.textContent = '更多';
+            if (categoryToggleArrow) categoryToggleArrow.style.transform = 'rotate(0deg)';
+            if (priceToggleText) priceToggleText.textContent = '更多';
+            if (priceToggleArrow) priceToggleArrow.style.transform = 'rotate(0deg)';
+            if (filterToggleText) filterToggleText.textContent = '更多';
+            if (filterToggleArrow) filterToggleArrow.style.transform = 'rotate(0deg)';
+            
+            // 回到全部分类视图
+            selectCategory('all');
+            
+            showToast('已清除所有筛选条件', 'info');
+        }
+
+        // 手动测试更多按钮功能
+        function testMoreButtons() {
+            console.log('手动测试更多按钮功能...');
+            
+            // 强制显示所有更多按钮用于测试
+            const toggleButtons = ['categoryToggleBtn', 'priceToggleBtn', 'filterToggleBtn'];
+            toggleButtons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.style.display = 'flex';
+                    btn.classList.add('show');
+                    console.log(`强制显示按钮: ${btnId}`);
+                } else {
+                    console.error(`按钮不存在: ${btnId}`);
+                }
+            });
+        }
+
+        // 商品点击事件
+        function openProductDetail(title, imageUrl, price, rarity, description, rating, reviewCount, category) {
+            if (window.parent && window.parent.openProductDetail) {
+                window.parent.openProductDetail(title, imageUrl, price, rarity, description, rating, reviewCount, category);
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM内容加载完成');
+            
+            // 检查必要的DOM元素是否存在
+            const requiredElements = [
+                'categoryContainer', 'categoryVisible', 'categoryHidden', 'categoryToggleBtn',
+                'priceContainer', 'priceVisible', 'priceHidden', 'priceToggleBtn',
+                'filterContainer', 'filterVisible', 'filterHidden', 'filterToggleBtn'
+            ];
+            
+            const missingElements = [];
+            requiredElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (!element) {
+                    missingElements.push(id);
+                }
+            });
+            
+            if (missingElements.length > 0) {
+                console.error('缺少必要的DOM元素:', missingElements);
+            } else {
+                console.log('所有必要的DOM元素都存在');
+            }
+            
+            // 初始化溢出检测
+            initializeOverflowDetection();
+            
+            // 为分类按钮添加事件监听 - 单选
+            const categoryButtons = document.querySelectorAll('.category-tab');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    if (category) {
+                        selectCategory(category);
+                    }
+                });
+            });
+            
+            // 为价格和状态筛选按钮添加事件监听 - 多选
+            const multiSelectButtons = document.querySelectorAll('.price-tag, .status-badge');
+            multiSelectButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    toggleMultiSelectFilter(this);
+                });
+            });
+
+            // 保留旧的筛选按钮事件监听 - 单选（作为后备）
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const filterType = this.dataset.filterType;
+                    document.querySelectorAll(`.filter-btn[data-filter-type="${filterType}"]`).forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // 搜索功能
+            const originalSearchInput = document.getElementById('marketplaceSearch');
+            if (originalSearchInput) {
+                originalSearchInput.addEventListener('input', function() {
+                    // 这里可以添加搜索逻辑
+                    console.log('Searching for:', this.value);
+                });
+            }
+
+            // 多语言支持
+            if (window.parent && window.parent.postMessage) {
+                window.addEventListener('message', function(event) {
+                    if (event.data.type === 'languageChange') {
+                        const newLang = event.data.language;
+                        switchLanguage(newLang);
+                    }
+                });
+            }
+
+            // 点击外部关闭下拉菜单
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('.category-dropdown')) {
+                    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                    document.querySelectorAll('[id$="-arrow"]').forEach(arrow => {
+                        arrow.style.transform = 'rotate(0deg)';
+                    });
+                }
+            });
+            
+            // 添加hover调试
+            document.querySelectorAll('.category-dropdown').forEach(dropdown => {
+                dropdown.addEventListener('mouseenter', function() {
+                    const menu = this.querySelector('.dropdown-menu');
+                    if (menu) {
+                        console.log('鼠标进入分类:', this.querySelector('.category-tab').textContent.trim());
+                    }
+                });
+            });
+
+            // 为搜索框添加回车键支持
+            const productSearchInputElement = document.getElementById('productSearchInput');
+            if (productSearchInputElement) {
+                productSearchInputElement.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+            }
+        });
+
+        // 多选筛选功能 - 新增
+        function toggleMultiSelectFilter(button) {
+            const filterType = button.dataset.filterType;
+            const value = button.dataset.value;
+            
+            // 切换按钮的激活状态
+            button.classList.toggle('active');
+            
+            // 获取当前选中的筛选项
+            const activeFilters = getActiveFilters(filterType);
+            
+            console.log(`${filterType} 当前选择:`, activeFilters);
+            
+            // 这里可以添加筛选逻辑
+            applyFilters();
+        }
+        
+        // 获取指定类型的活跃筛选项
+        function getActiveFilters(filterType) {
+            const activeButtons = document.querySelectorAll(`[data-filter-type="${filterType}"].active`);
+            return Array.from(activeButtons).map(btn => btn.dataset.value);
+        }
+        
+        // 应用筛选
+        function applyFilters() {
+            const priceFilters = getActiveFilters('price');
+            const ratingFilters = getActiveFilters('rating'); 
+            const statusFilters = getActiveFilters('status');
+            
+            console.log('应用筛选:', {
+                category: currentCategory,
+                subcategory: currentSubcategory,
+                prices: priceFilters,
+                ratings: ratingFilters,
+                statuses: statusFilters
+            });
+            
+            // 这里可以实现实际的筛选逻辑
+            showToast('筛选条件已更新', 'info');
+        }
+    </script>
+</body>
+</html> 

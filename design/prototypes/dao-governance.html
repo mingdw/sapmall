@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAO治理 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .gradient-border {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            padding: 2px;
+            border-radius: 16px;
+        }
+        .gradient-border-content {
+            background: #1f2937;
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+        .proposal-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(55, 65, 81, 0.8);
+        }
+        .proposal-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        .voting-progress {
+            background: linear-gradient(90deg, #10b981, #34d399);
+            transition: width 0.5s ease;
+        }
+        .voting-progress-against {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+            transition: width 0.5s ease;
+        }
+        .status-badge {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .vote-animation {
+            animation: voteSubmit 1s ease-out;
+        }
+        @keyframes voteSubmit {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <!-- Header -->
+    <nav class="bg-gray-900/50 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gem text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
+                        <p class="text-xs text-gray-400">DAO治理</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#" class="text-sapphire-400 border-b-2 border-sapphire-400 pb-1">提案投票</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">投票历史</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">提案创建</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">治理论坛</a>
+                </div>
+
+                <!-- User Info -->
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gray-800/50 rounded-lg px-4 py-2">
+                        <div class="text-xs text-gray-400">投票权重</div>
+                        <div class="text-sm font-semibold text-green-400">2,456 SAP</div>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-lg px-4 py-2">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                            <span class="text-sm text-gray-300">0x742d...e6b7</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Dashboard Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Active Proposals -->
+            <div class="gradient-border">
+                <div class="gradient-border-content">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold">8</h3>
+                            <p class="text-gray-400 text-sm">活跃提案</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-file-alt text-blue-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Votes -->
+            <div class="gradient-border">
+                <div class="gradient-border-content">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold">15</h3>
+                            <p class="text-gray-400 text-sm">我的投票</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-vote-yea text-green-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Voting Power -->
+            <div class="gradient-border">
+                <div class="gradient-border-content">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold">0.12%</h3>
+                            <p class="text-gray-400 text-sm">投票权重</p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-balance-scale text-purple-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Participation Rate -->
+            <div class="gradient-border">
+                <div class="gradient-border-content">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-bold">89%</h3>
+                            <p class="text-gray-400 text-sm">参与率</p>
+                        </div>
+                        <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-orange-400 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Main Proposals List -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Proposal Filters -->
+                <div class="flex flex-wrap gap-4 mb-6">
+                    <button onclick="filterProposals('all')" class="px-4 py-2 bg-sapphire-600 text-white rounded-lg font-medium">
+                        全部提案
+                    </button>
+                    <button onclick="filterProposals('active')" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-clock mr-2"></i>进行中
+                    </button>
+                    <button onclick="filterProposals('passed')" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-check mr-2"></i>已通过
+                    </button>
+                    <button onclick="filterProposals('rejected')" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-times mr-2"></i>已拒绝
+                    </button>
+                    <button onclick="showCreateProposal()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors ml-auto">
+                        <i class="fas fa-plus mr-2"></i>创建提案
+                    </button>
+                </div>
+
+                <!-- Active Proposal -->
+                <div class="proposal-card gradient-border">
+                    <div class="gradient-border-content">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-xl font-bold">SAP-001: 增加流动性挖矿奖励</h3>
+                                    <span class="status-badge bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                                        进行中
+                                    </span>
+                                </div>
+                                <p class="text-gray-400 text-sm mb-2">
+                                    提案者: <span class="text-sapphire-400">0x8B5f...A9e2</span> • 
+                                    创建时间: 2024-03-15 14:30 • 
+                                    结束时间: <span class="text-yellow-400">2024-03-22 14:30</span>
+                                </p>
+                            </div>
+                            <div class="text-right text-sm text-gray-400">
+                                <div>ID: #001</div>
+                                <div>剩余时间: 3天 8小时</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="text-gray-300 mb-3">
+                                建议将ETH/SAP和USDC/SAP流动性池的挖矿奖励从每日0.5%增加至0.8%，以吸引更多流动性提供者，提升平台交易深度。
+                            </p>
+                            
+                            <!-- Voting Progress -->
+                            <div class="bg-gray-800 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-sm text-gray-400">投票进度</span>
+                                    <span class="text-sm text-gray-400">最低投票数: 100,000 SAP</span>
+                                </div>
+                                
+                                <div class="space-y-3">
+                                    <!-- For Votes -->
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-green-400 text-sm font-medium">赞成 (67.2%)</span>
+                                            <span class="text-green-400 text-sm font-bold">168,450 SAP</span>
+                                        </div>
+                                        <div class="w-full bg-gray-700 rounded-full h-3">
+                                            <div class="voting-progress h-3 rounded-full" style="width: 67.2%"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Against Votes -->
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-red-400 text-sm font-medium">反对 (32.8%)</span>
+                                            <span class="text-red-400 text-sm font-bold">82,150 SAP</span>
+                                        </div>
+                                        <div class="w-full bg-gray-700 rounded-full h-3">
+                                            <div class="voting-progress-against h-3 rounded-full" style="width: 32.8%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 text-center">
+                                    <span class="text-xs text-gray-400">总投票数: 250,600 SAP (已达到最低投票数)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Voting Actions -->
+                        <div class="flex space-x-4">
+                            <button onclick="vote(1, 'for')" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-thumbs-up mr-2"></i>
+                                投赞成票
+                            </button>
+                            <button onclick="vote(1, 'against')" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-thumbs-down mr-2"></i>
+                                投反对票
+                            </button>
+                            <button onclick="showProposalDetails(1)" class="px-6 py-3 border border-gray-600 hover:border-sapphire-500 text-gray-300 hover:text-white rounded-lg font-medium transition-colors">
+                                详情
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proposal 2 -->
+                <div class="proposal-card gradient-border">
+                    <div class="gradient-border-content">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-xl font-bold">SAP-002: 平台手续费分配调整</h3>
+                                    <span class="bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-medium">
+                                        即将开始
+                                    </span>
+                                </div>
+                                <p class="text-gray-400 text-sm mb-2">
+                                    提案者: <span class="text-sapphire-400">0x1A3f...B7c8</span> • 
+                                    创建时间: 2024-03-16 09:15 • 
+                                    开始时间: <span class="text-yellow-400">2024-03-20 09:15</span>
+                                </p>
+                            </div>
+                            <div class="text-right text-sm text-gray-400">
+                                <div>ID: #002</div>
+                                <div>1天后开始</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="text-gray-300 mb-3">
+                                建议调整平台手续费分配比例：质押用户75%（原70%），平台运营25%（原30%），以更好地激励社区参与。
+                            </p>
+                        </div>
+
+                        <div class="flex space-x-4">
+                            <button disabled class="flex-1 bg-gray-700 text-gray-400 py-3 px-4 rounded-lg font-medium cursor-not-allowed">
+                                <i class="fas fa-clock mr-2"></i>
+                                等待投票开始
+                            </button>
+                            <button onclick="showProposalDetails(2)" class="px-6 py-3 border border-gray-600 hover:border-sapphire-500 text-gray-300 hover:text-white rounded-lg font-medium transition-colors">
+                                详情
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Proposal -->
+                <div class="proposal-card gradient-border opacity-75">
+                    <div class="gradient-border-content">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-xl font-bold">SAP-000: 平台治理框架建立</h3>
+                                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                                        已通过
+                                    </span>
+                                </div>
+                                <p class="text-gray-400 text-sm mb-2">
+                                    提案者: <span class="text-sapphire-400">SapphireTeam</span> • 
+                                    执行时间: 2024-03-10 16:00
+                                </p>
+                            </div>
+                            <div class="text-right text-sm text-gray-400">
+                                <div>ID: #000</div>
+                                <div>已执行</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <p class="text-gray-300 mb-3">
+                                建立Sapphire Mall DAO治理框架，设定投票规则、提案门槛和执行流程。
+                            </p>
+                            
+                            <div class="bg-gray-800 rounded-lg p-3">
+                                <div class="text-sm text-gray-400 mb-2">最终投票结果:</div>
+                                <div class="flex items-center space-x-6">
+                                    <span class="text-green-400">赞成: 89.5% (445,678 SAP)</span>
+                                    <span class="text-red-400">反对: 10.5% (52,341 SAP)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex space-x-4">
+                            <div class="flex-1 bg-green-600/20 text-green-400 py-3 px-4 rounded-lg font-medium text-center">
+                                <i class="fas fa-check mr-2"></i>
+                                已执行
+                            </div>
+                            <button onclick="showProposalDetails(0)" class="px-6 py-3 border border-gray-600 hover:border-sapphire-500 text-gray-300 hover:text-white rounded-lg font-medium transition-colors">
+                                详情
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Voting Power -->
+                <div class="gradient-border">
+                    <div class="gradient-border-content">
+                        <h3 class="text-lg font-bold mb-4">我的投票权</h3>
+                        <div class="space-y-4">
+                            <div class="bg-gray-800/50 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-gray-400">SAP代币余额</span>
+                                    <span class="font-semibold">2,456 SAP</span>
+                                </div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-gray-400">委托投票</span>
+                                    <span class="font-semibold">0 SAP</span>
+                                </div>
+                                <div class="flex items-center justify-between border-t border-gray-700 pt-2">
+                                    <span class="text-gray-400">总投票权重</span>
+                                    <span class="font-bold text-green-400">2,456 SAP</span>
+                                </div>
+                            </div>
+                            
+                            <button onclick="showDelegateModal()" class="w-full bg-sapphire-600 hover:bg-sapphire-700 text-white py-2 px-4 rounded-lg transition-colors">
+                                <i class="fas fa-hand-point-right mr-2"></i>
+                                委托投票权
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Governance Stats -->
+                <div class="gradient-border">
+                    <div class="gradient-border-content">
+                        <h3 class="text-lg font-bold mb-4">治理统计</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-400">总提案数</span>
+                                <span class="font-semibold">23</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-400">通过率</span>
+                                <span class="font-semibold text-green-400">78%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-400">活跃投票者</span>
+                                <span class="font-semibold">1,247</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-400">平均参与率</span>
+                                <span class="font-semibold">65%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="gradient-border">
+                    <div class="gradient-border-content">
+                        <h3 class="text-lg font-bold mb-4">最近活动</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-start space-x-3 p-3 bg-gray-800/30 rounded-lg">
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mt-0.5">
+                                    <i class="fas fa-vote-yea text-white text-xs"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium">对SAP-001投了赞成票</p>
+                                    <p class="text-xs text-gray-400">2小时前 • 使用2,456 SAP</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-3 p-3 bg-gray-800/30 rounded-lg">
+                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mt-0.5">
+                                    <i class="fas fa-plus text-white text-xs"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium">创建了新提案SAP-003</p>
+                                    <p class="text-xs text-gray-400">1天前</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-3 p-3 bg-gray-800/30 rounded-lg">
+                                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mt-0.5">
+                                    <i class="fas fa-thumbs-down text-white text-xs"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium">对SAP-999投了反对票</p>
+                                    <p class="text-xs text-gray-400">3天前 • 使用2,456 SAP</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="gradient-border">
+                    <div class="gradient-border-content">
+                        <h3 class="text-lg font-bold mb-4">快速操作</h3>
+                        <div class="space-y-3">
+                            <button onclick="showCreateProposal()" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors">
+                                <i class="fas fa-plus mr-2"></i>
+                                创建新提案
+                            </button>
+                            <button onclick="showVotingHistory()" class="w-full bg-sapphire-600 hover:bg-sapphire-700 text-white py-2 px-4 rounded-lg transition-colors">
+                                <i class="fas fa-history mr-2"></i>
+                                查看投票历史
+                            </button>
+                            <button onclick="showForumLink()" class="w-full border border-gray-600 hover:border-sapphire-500 text-gray-300 hover:text-white py-2 px-4 rounded-lg transition-colors">
+                                <i class="fas fa-comments mr-2"></i>
+                                治理论坛
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Vote Modal -->
+    <div id="voteModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="gradient-border max-w-lg w-full">
+                <div class="gradient-border-content">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold">确认投票</h3>
+                        <button onclick="closeVoteModal()" class="text-gray-400 hover:text-white">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="voteModalContent">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProposal = null;
+        let voteType = null;
+
+        function vote(proposalId, type) {
+            currentProposal = proposalId;
+            voteType = type;
+            showVoteModal(proposalId, type);
+        }
+
+        function showVoteModal(proposalId, type) {
+            const modal = document.getElementById('voteModal');
+            const content = document.getElementById('voteModalContent');
+            
+            const voteTypeText = type === 'for' ? '赞成' : '反对';
+            const voteColor = type === 'for' ? 'text-green-400' : 'text-red-400';
+            const buttonColor = type === 'for' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700';
+            
+            content.innerHTML = `
+                <div class="space-y-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 ${type === 'for' ? 'bg-green-500/20' : 'bg-red-500/20'} rounded-full flex items-center justify-center">
+                            <i class="fas ${type === 'for' ? 'fa-thumbs-up' : 'fa-thumbs-down'} ${voteColor} text-2xl"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold mb-2">投票确认</h4>
+                        <p class="text-gray-400">您即将对提案 SAP-${String(proposalId).padStart(3, '0')} 投<span class="${voteColor} font-semibold">${voteTypeText}</span>票</p>
+                    </div>
+                    
+                    <div class="bg-gray-800/50 rounded-lg p-4">
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">您的投票权重</span>
+                                <span class="font-semibold">2,456 SAP</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">投票类型</span>
+                                <span class="${voteColor} font-semibold">${voteTypeText}</span>
+                            </div>
+                            <div class="flex justify-between border-t border-gray-700 pt-3">
+                                <span class="text-gray-400">Gas费用估算</span>
+                                <span class="font-semibold">~$2.50</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-exclamation-triangle text-yellow-400 mt-0.5"></i>
+                            <div class="text-sm text-yellow-400">
+                                <p class="font-semibold mb-1">重要提醒</p>
+                                <p>投票一旦提交将无法撤销，请仔细确认您的选择。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <button onclick="closeVoteModal()" class="flex-1 border border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white py-3 px-4 rounded-lg transition-colors">
+                            取消
+                        </button>
+                        <button onclick="submitVote()" class="flex-1 ${buttonColor} text-white py-3 px-4 rounded-lg transition-colors">
+                            确认投票
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeVoteModal() {
+            document.getElementById('voteModal').classList.add('hidden');
+        }
+
+        function submitVote() {
+            const button = event.target;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>提交中...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                closeVoteModal();
+                showToast(`投票成功！您对提案 SAP-${String(currentProposal).padStart(3, '0')} 投了${voteType === 'for' ? '赞成' : '反对'}票`, 'success');
+                
+                // Add vote animation
+                const proposalCard = document.querySelector('.proposal-card');
+                proposalCard.classList.add('vote-animation');
+                setTimeout(() => {
+                    proposalCard.classList.remove('vote-animation');
+                }, 1000);
+                
+                // Update voting progress (simplified for demo)
+                updateVotingProgress();
+            }, 2000);
+        }
+
+        function updateVotingProgress() {
+            // Simulate vote count update
+            const forBar = document.querySelector('.voting-progress');
+            const againstBar = document.querySelector('.voting-progress-against');
+            
+            if (voteType === 'for') {
+                forBar.style.width = '69.1%';
+            } else {
+                againstBar.style.width = '34.7%';
+            }
+        }
+
+        function filterProposals(filter) {
+            // Update active filter button
+            document.querySelectorAll('button[onclick*="filterProposals"]').forEach(btn => {
+                btn.className = 'px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg font-medium transition-colors';
+            });
+            event.target.className = 'px-4 py-2 bg-sapphire-600 text-white rounded-lg font-medium';
+            
+            showToast(`筛选: ${getFilterName(filter)}`);
+        }
+
+        function getFilterName(filter) {
+            const names = {
+                'all': '全部提案',
+                'active': '进行中',
+                'passed': '已通过',
+                'rejected': '已拒绝'
+            };
+            return names[filter] || filter;
+        }
+
+        function showProposalDetails(id) {
+            showToast(`查看提案 SAP-${String(id).padStart(3, '0')} 详情...`);
+        }
+
+        function showCreateProposal() {
+            showToast('跳转到创建提案页面...');
+        }
+
+        function showDelegateModal() {
+            showToast('打开委托投票权界面...');
+        }
+
+        function showVotingHistory() {
+            showToast('查看投票历史...');
+        }
+
+        function showForumLink() {
+            showToast('跳转到治理论坛...');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-600');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-600');
+            } else {
+                toast.classList.add('bg-sapphire-600');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Close modal when clicking outside
+            document.getElementById('voteModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeVoteModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

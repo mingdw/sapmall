@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语言设置 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .language-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .language-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+        }
+        .language-card.active {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .flag-icon {
+            width: 32px;
+            height: 24px;
+            border-radius: 4px;
+            background-size: cover;
+            background-position: center;
+        }
+        .flag-cn {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAzMiAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjI0IiBmaWxsPSIjREUyOTEwIi8+CjxwYXRoIGQ9Ik00IDRMOCA2TDYgOEw0IDZWNFoiIGZpbGw9IiNGRkRFMDAiLz4KPHA+');
+        }
+        .flag-us {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAzMiAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjI0IiBmaWxsPSIjQjIyMjM0Ii8+CjxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIyIiB5PSIyIiBmaWxsPSJ3aGl0ZSIvPgo8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMiIgeT0iNiIgZmlsbD0id2hpdGUiLz4KPHA+');
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <!-- Header -->
+    <header class="bg-gray-900/80 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gem text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold gradient-text">Sapphire Mall</h1>
+                        <p class="text-xs text-gray-400">语言设置</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="./dapp.html" class="text-gray-300 hover:text-sapphire-400 transition-colors">
+                        <i class="fas fa-home mr-2"></i>首页
+                    </a>
+                    <a href="./user-profile.html" class="text-gray-300 hover:text-sapphire-400 transition-colors">
+                        <i class="fas fa-user mr-2"></i>个人中心
+                    </a>
+                    <span class="text-sapphire-400 border-b-2 border-sapphire-400 pb-1">
+                        <i class="fas fa-language mr-2"></i>语言设置
+                    </span>
+                </nav>
+
+                <!-- Language Switcher -->
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 bg-gray-800 rounded-lg p-2">
+                        <button id="lang-cn" class="flex items-center space-x-2 px-3 py-1 rounded bg-sapphire-600 text-white text-sm">
+                            <div class="flag-icon flag-cn"></div>
+                            <span>中文</span>
+                        </button>
+                        <button id="lang-en" class="flex items-center space-x-2 px-3 py-1 rounded text-gray-300 hover:text-white text-sm">
+                            <div class="flag-icon flag-us"></div>
+                            <span>English</span>
+                        </button>
+                    </div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-wallet text-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold mb-2" id="page-title">语言与地区设置</h1>
+            <p class="text-gray-400" id="page-subtitle">选择您偏好的语言和地区设置，以获得最佳的使用体验</p>
+        </div>
+
+        <!-- Language Selection -->
+        <div class="glass-card rounded-xl p-6 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold" id="lang-section-title">界面语言</h2>
+                <div class="flex items-center space-x-2 text-sm text-gray-400">
+                    <i class="fas fa-info-circle"></i>
+                    <span id="lang-info">选择后将立即生效</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Chinese Language Card -->
+                <div class="language-card glass-card rounded-xl p-6 border-2 border-gray-700 active" onclick="selectLanguage('zh-CN')">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-12 flag-cn rounded-lg"></div>
+                        <div>
+                            <h3 class="text-lg font-bold">中文（简体）</h3>
+                            <p class="text-sm text-gray-400">Chinese (Simplified)</p>
+                        </div>
+                        <div class="ml-auto">
+                            <i class="fas fa-check-circle text-sapphire-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">地区：</span>
+                            <span>中国大陆</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">货币格式：</span>
+                            <span>¥1,234.56</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">日期格式：</span>
+                            <span>2024年1月15日</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">数字格式：</span>
+                            <span>1,234,567.89</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- English Language Card -->
+                <div class="language-card glass-card rounded-xl p-6 border-2 border-gray-700" onclick="selectLanguage('en-US')">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-12 flag-us rounded-lg"></div>
+                        <div>
+                            <h3 class="text-lg font-bold">English</h3>
+                            <p class="text-sm text-gray-400">English (United States)</p>
+                        </div>
+                        <div class="ml-auto">
+                            <i class="fas fa-circle text-gray-600 text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Region:</span>
+                            <span>United States</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Currency Format:</span>
+                            <span>$1,234.56</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Date Format:</span>
+                            <span>January 15, 2024</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Number Format:</span>
+                            <span>1,234,567.89</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Regional Settings -->
+        <div class="glass-card rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold mb-6" id="region-title">地区设置</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Time Zone -->
+                <div>
+                    <label class="block text-sm font-medium mb-2" id="timezone-label">时区</label>
+                    <select class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-sapphire-400 focus:outline-none">
+                        <option value="Asia/Shanghai">UTC+8 北京时间</option>
+                        <option value="America/New_York">UTC-5 纽约时间</option>
+                        <option value="Europe/London">UTC+0 伦敦时间</option>
+                        <option value="Asia/Tokyo">UTC+9 东京时间</option>
+                    </select>
+                </div>
+
+                <!-- Currency Display -->
+                <div>
+                    <label class="block text-sm font-medium mb-2" id="currency-label">货币显示</label>
+                    <select class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-sapphire-400 focus:outline-none">
+                        <option value="CNY">人民币 (¥)</option>
+                        <option value="USD">美元 ($)</option>
+                        <option value="EUR">欧元 (€)</option>
+                        <option value="JPY">日元 (¥)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Preferences -->
+        <div class="glass-card rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold mb-6" id="content-title">内容偏好</h2>
+            
+            <div class="space-y-6">
+                <!-- Auto Translation -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-medium" id="auto-translate-title">自动翻译</h3>
+                        <p class="text-sm text-gray-400" id="auto-translate-desc">自动翻译其他语言的商品描述和用户评论</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sapphire-600"></div>
+                    </label>
+                </div>
+
+                <!-- Preferred Content Language -->
+                <div>
+                    <label class="block text-sm font-medium mb-2" id="content-lang-label">优先内容语言</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-sapphire-600 bg-gray-800 border-gray-600 rounded focus:ring-sapphire-500" checked>
+                            <span>中文内容</span>
+                        </label>
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-sapphire-600 bg-gray-800 border-gray-600 rounded focus:ring-sapphire-500" checked>
+                            <span>English Content</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Translation Quality -->
+                <div>
+                    <label class="block text-sm font-medium mb-2" id="translation-quality-label">翻译质量</label>
+                    <select class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-sapphire-400 focus:outline-none">
+                        <option value="high">高质量（较慢）</option>
+                        <option value="medium" selected>标准质量（推荐）</option>
+                        <option value="fast">快速翻译（较快）</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="glass-card rounded-xl p-6 mb-8">
+            <h2 class="text-xl font-bold mb-6" id="preview-title">界面预览</h2>
+            
+            <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-medium" id="preview-product-title">商品示例</h3>
+                    <span class="text-sm text-gray-400" id="preview-category">Web3开发课程</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-medium mb-2" id="preview-name">区块链全栈开发实战</h4>
+                        <p class="text-sm text-gray-400 mb-3" id="preview-desc">从零开始学习区块链开发，包含智能合约、DApp前端、Web3集成等完整技术栈。</p>
+                        <div class="flex items-center space-x-4 text-sm">
+                            <span class="text-sapphire-400 font-medium" id="preview-price">299 SAP</span>
+                            <span class="text-gray-400" id="preview-rating">★★★★★ 4.8分</span>
+                            <span class="text-gray-400" id="preview-students">1,234人已购买</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400" id="preview-instructor">讲师：</span>
+                            <span>张伟 - 区块链专家</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400" id="preview-duration">时长：</span>
+                            <span>24小时</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400" id="preview-updated">更新：</span>
+                            <span>2024年1月15日</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400" id="preview-language">语言：</span>
+                            <span>中文（简体）</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-between">
+            <button class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                <span id="back-btn">返回设置</span>
+            </button>
+            
+            <div class="flex space-x-4">
+                <button class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg transition-colors">
+                    <i class="fas fa-undo mr-2"></i>
+                    <span id="reset-btn">重置默认</span>
+                </button>
+                <button class="bg-gradient-to-r from-sapphire-600 to-purple-600 hover:from-sapphire-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg transition-all">
+                    <i class="fas fa-save mr-2"></i>
+                    <span id="save-btn">保存设置</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Toast -->
+    <div id="success-toast" class="fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300">
+        <div class="flex items-center space-x-2">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message">设置已保存</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Language data
+        const translations = {
+            'zh-CN': {
+                'page-title': '语言与地区设置',
+                'page-subtitle': '选择您偏好的语言和地区设置，以获得最佳的使用体验',
+                'lang-section-title': '界面语言',
+                'lang-info': '选择后将立即生效',
+                'region-title': '地区设置',
+                'timezone-label': '时区',
+                'currency-label': '货币显示',
+                'content-title': '内容偏好',
+                'auto-translate-title': '自动翻译',
+                'auto-translate-desc': '自动翻译其他语言的商品描述和用户评论',
+                'content-lang-label': '优先内容语言',
+                'translation-quality-label': '翻译质量',
+                'preview-title': '界面预览',
+                'preview-product-title': '商品示例',
+                'preview-category': 'Web3开发课程',
+                'preview-name': '区块链全栈开发实战',
+                'preview-desc': '从零开始学习区块链开发，包含智能合约、DApp前端、Web3集成等完整技术栈。',
+                'preview-price': '299 SAP',
+                'preview-rating': '★★★★★ 4.8分',
+                'preview-students': '1,234人已购买',
+                'preview-instructor': '讲师：',
+                'preview-duration': '时长：',
+                'preview-updated': '更新：',
+                'preview-language': '语言：',
+                'back-btn': '返回设置',
+                'reset-btn': '重置默认',
+                'save-btn': '保存设置',
+                'toast-message': '设置已保存'
+            },
+            'en-US': {
+                'page-title': 'Language & Region Settings',
+                'page-subtitle': 'Choose your preferred language and regional settings for the best experience',
+                'lang-section-title': 'Interface Language',
+                'lang-info': 'Changes take effect immediately',
+                'region-title': 'Regional Settings',
+                'timezone-label': 'Time Zone',
+                'currency-label': 'Currency Display',
+                'content-title': 'Content Preferences',
+                'auto-translate-title': 'Auto Translation',
+                'auto-translate-desc': 'Automatically translate product descriptions and user reviews in other languages',
+                'content-lang-label': 'Preferred Content Language',
+                'translation-quality-label': 'Translation Quality',
+                'preview-title': 'Interface Preview',
+                'preview-product-title': 'Product Example',
+                'preview-category': 'Web3 Development Course',
+                'preview-name': 'Blockchain Full-Stack Development',
+                'preview-desc': 'Learn blockchain development from scratch, including smart contracts, DApp frontend, Web3 integration and complete tech stack.',
+                'preview-price': '299 SAP',
+                'preview-rating': '★★★★★ 4.8 Rating',
+                'preview-students': '1,234 Students',
+                'preview-instructor': 'Instructor:',
+                'preview-duration': 'Duration:',
+                'preview-updated': 'Updated:',
+                'preview-language': 'Language:',
+                'back-btn': 'Back to Settings',
+                'reset-btn': 'Reset Default',
+                'save-btn': 'Save Settings',
+                'toast-message': 'Settings Saved'
+            }
+        };
+
+        let currentLanguage = 'zh-CN';
+
+        // Language selection function
+        function selectLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update UI
+            updateLanguageCards(lang);
+            updateTexts(lang);
+            updateHeaderLanguage(lang);
+            
+            // Show success toast
+            showToast();
+        }
+
+        function updateLanguageCards(lang) {
+            const cards = document.querySelectorAll('.language-card');
+            cards.forEach(card => {
+                card.classList.remove('active');
+                const icon = card.querySelector('.fas');
+                icon.className = 'fas fa-circle text-gray-600 text-xl';
+            });
+            
+            const activeCard = lang === 'zh-CN' ? cards[0] : cards[1];
+            activeCard.classList.add('active');
+            const activeIcon = activeCard.querySelector('.fas');
+            activeIcon.className = 'fas fa-check-circle text-sapphire-400 text-xl';
+        }
+
+        function updateTexts(lang) {
+            const texts = translations[lang];
+            Object.keys(texts).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.textContent = texts[key];
+                }
+            });
+        }
+
+        function updateHeaderLanguage(lang) {
+            const cnBtn = document.getElementById('lang-cn');
+            const enBtn = document.getElementById('lang-en');
+            
+            if (lang === 'zh-CN') {
+                cnBtn.className = 'flex items-center space-x-2 px-3 py-1 rounded bg-sapphire-600 text-white text-sm';
+                enBtn.className = 'flex items-center space-x-2 px-3 py-1 rounded text-gray-300 hover:text-white text-sm';
+            } else {
+                enBtn.className = 'flex items-center space-x-2 px-3 py-1 rounded bg-sapphire-600 text-white text-sm';
+                cnBtn.className = 'flex items-center space-x-2 px-3 py-1 rounded text-gray-300 hover:text-white text-sm';
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('success-toast');
+            toast.classList.remove('translate-x-full');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+            }, 3000);
+        }
+
+        // Header language switcher
+        document.getElementById('lang-cn').addEventListener('click', () => selectLanguage('zh-CN'));
+        document.getElementById('lang-en').addEventListener('click', () => selectLanguage('en-US'));
+
+        // Save button
+        document.getElementById('save-btn').addEventListener('click', () => {
+            showToast();
+        });
+
+        // Reset button
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            selectLanguage('zh-CN');
+        });
+    </script>
+</body>
+</html> 

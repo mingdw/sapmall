@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .glass-bg { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+        .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <!-- Header -->
+    <header class="glass-bg border-b border-gray-700 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gem text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">个人中心</h1>
+                        <p class="text-xs text-gray-400">Sapphire Mall</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-400 hover:text-white">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full"></div>
+                        <span class="text-sm">0x1234...5678</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-6 py-8">
+        <div class="grid lg:grid-cols-5 gap-8">
+            <!-- 侧边导航 -->
+            <div class="lg:col-span-1">
+                <nav class="glass-bg rounded-xl p-6 border border-gray-700 sticky top-24">
+                    <div class="space-y-2">
+                        <a href="#dashboard" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg bg-sapphire-600 text-white">
+                            <i class="fas fa-tachometer-alt w-5"></i>
+                            <span>仪表板</span>
+                        </a>
+                        <a href="#assets" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-wallet w-5"></i>
+                            <span>资产管理</span>
+                        </a>
+                        <a href="#transactions" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-exchange-alt w-5"></i>
+                            <span>交易管理</span>
+                        </a>
+                        <a href="#governance" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-vote-yea w-5"></i>
+                            <span>DAO治理</span>
+                        </a>
+                        <a href="#settings" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-cog w-5"></i>
+                            <span>账户设置</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="lg:col-span-4">
+                <!-- 资产概览卡片 -->
+                <div class="grid md:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-bg rounded-xl p-6 border border-gray-700 hover-lift">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-coins text-white"></i>
+                            </div>
+                            <span class="text-green-400 text-sm">+5.2%</span>
+                        </div>
+                        <h3 class="text-2xl font-bold">$12,456</h3>
+                        <p class="text-gray-400 text-sm">总资产价值</p>
+                    </div>
+
+                    <div class="glass-bg rounded-xl p-6 border border-gray-700 hover-lift">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-gem text-white"></i>
+                            </div>
+                            <span class="text-sapphire-400 text-sm">SAP</span>
+                        </div>
+                        <h3 class="text-2xl font-bold">8,234</h3>
+                        <p class="text-gray-400 text-sm">SAP代币余额</p>
+                    </div>
+
+                    <div class="glass-bg rounded-xl p-6 border border-gray-700 hover-lift">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-lock text-white"></i>
+                            </div>
+                            <span class="text-purple-400 text-sm">质押中</span>
+                        </div>
+                        <h3 class="text-2xl font-bold">$4,567</h3>
+                        <p class="text-gray-400 text-sm">质押中资产</p>
+                    </div>
+
+                    <div class="glass-bg rounded-xl p-6 border border-gray-700 hover-lift">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-hand-holding-usd text-white"></i>
+                            </div>
+                            <span class="text-orange-400 text-sm">可提取</span>
+                        </div>
+                        <h3 class="text-2xl font-bold">$234</h3>
+                        <p class="text-gray-400 text-sm">可提取收益</p>
+                    </div>
+                </div>
+
+                <!-- 收益统计图表和最近活动 -->
+                <div class="grid lg:grid-cols-3 gap-8 mb-8">
+                    <!-- 收益统计图表 -->
+                    <div class="lg:col-span-2 glass-bg rounded-xl p-6 border border-gray-700">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold">收益统计</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-sm bg-sapphire-600 text-white rounded-md">7天</button>
+                                <button class="px-3 py-1 text-sm text-gray-400 hover:text-white">30天</button>
+                                <button class="px-3 py-1 text-sm text-gray-400 hover:text-white">90天</button>
+                            </div>
+                        </div>
+                        <div class="h-64 bg-gray-800/30 rounded-lg flex items-center justify-center">
+                            <div class="text-center text-gray-400">
+                                <i class="fas fa-chart-line text-4xl mb-4"></i>
+                                <p>收益趋势图表</p>
+                                <p class="text-sm">质押收益、年化收益率变化</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 最近活动 -->
+                    <div class="glass-bg rounded-xl p-6 border border-gray-700">
+                        <h3 class="text-xl font-bold mb-6">最近活动</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-plus text-xs text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm">质押收益</p>
+                                    <p class="text-xs text-gray-400">+12.34 SAP</p>
+                                </div>
+                                <span class="text-xs text-gray-400">2小时前</span>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-sapphire-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-exchange-alt text-xs text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm">代币兑换</p>
+                                    <p class="text-xs text-gray-400">100 USDT → 89 SAP</p>
+                                </div>
+                                <span class="text-xs text-gray-400">6小时前</span>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-shopping-cart text-xs text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm">购买商品</p>
+                                    <p class="text-xs text-gray-400">Web3开发课程</p>
+                                </div>
+                                <span class="text-xs text-gray-400">1天前</span>
+                            </div>
+
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-vote-yea text-xs text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm">参与投票</p>
+                                    <p class="text-xs text-gray-400">平台手续费调整</p>
+                                </div>
+                                <span class="text-xs text-gray-400">2天前</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快捷操作 -->
+                <div class="glass-bg rounded-xl p-6 border border-gray-700">
+                    <h3 class="text-xl font-bold mb-6">快捷操作</h3>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <button class="flex flex-col items-center space-y-3 p-6 bg-gray-800/30 rounded-lg hover:bg-gray-700/30 transition-colors">
+                            <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-exchange-alt text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium">代币兑换</span>
+                        </button>
+
+                        <button class="flex flex-col items-center space-y-3 p-6 bg-gray-800/30 rounded-lg hover:bg-gray-700/30 transition-colors">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-plus text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium">添加流动性</span>
+                        </button>
+
+                        <button class="flex flex-col items-center space-y-3 p-6 bg-gray-800/30 rounded-lg hover:bg-gray-700/30 transition-colors">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-hand-holding-usd text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium">提取收益</span>
+                        </button>
+
+                        <button class="flex flex-col items-center space-y-3 p-6 bg-gray-800/30 rounded-lg hover:bg-gray-700/30 transition-colors">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-file-alt text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium">查看新提案</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 简单的导航交互
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active', 'bg-sapphire-600', 'text-white');
+                    nav.classList.add('text-gray-300');
+                });
+                this.classList.add('active', 'bg-sapphire-600', 'text-white');
+                this.classList.remove('text-gray-300');
+            });
+        });
+    </script>
+</body>
+</html> 

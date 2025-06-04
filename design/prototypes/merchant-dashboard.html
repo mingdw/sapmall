@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家中心 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .glass-bg { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+        .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <!-- Header -->
+    <header class="glass-bg border-b border-gray-700 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-store text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">商家中心</h1>
+                        <p class="text-xs text-gray-400">认证商家 <i class="fas fa-badge-check text-green-400"></i></p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-400 hover:text-white relative">
+                        <i class="fas fa-bell"></i>
+                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full"></div>
+                        <span class="text-sm">创意工作室</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-6 py-8">
+        <div class="grid lg:grid-cols-5 gap-8">
+            <!-- 侧边导航 -->
+            <div class="lg:col-span-1">
+                <nav class="glass-bg rounded-xl p-6 border border-gray-700 sticky top-24">
+                    <div class="space-y-2">
+                        <a href="#business-dashboard" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg bg-sapphire-600 text-white">
+                            <i class="fas fa-chart-line w-5"></i>
+                            <span>业务仪表板</span>
+                        </a>
+                        <a href="#products" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-box w-5"></i>
+                            <span>商品管理</span>
+                        </a>
+                        <a href="#orders" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-clipboard-list w-5"></i>
+                            <span>订单管理</span>
+                        </a>
+                        <a href="#finance" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-money-bill-wave w-5"></i>
+                            <span>财务管理</span>
+                        </a>
+                        <a href="#analytics" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-analytics w-5"></i>
+                            <span>数据分析</span>
+                        </a>
+                        <a href="#settings" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+                            <i class="fas fa-cog w-5"></i>
+                            <span>设置中心</span>
+                        </a>
+                        <div class="border-t border-gray-600 mt-4 pt-4">
+                            <p class="text-xs text-gray-400 mb-2">普通用户功能</p>
+                            <a href="user-dashboard.html" class="nav-item flex items-center space-x-3 px-4 py-2 rounded-lg text-gray-400 hover:bg-gray-700 text-sm">
+                                <i class="fas fa-user w-5"></i>
+                                <span>个人中心</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="lg:col-span-4">
+                <!-- 销售概览卡片 -->
+                <div class="grid md:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-bg rounded-xl p-6 border border-gray-700 hover-lift">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-dollar-sign text-white"></i>
+                            </div>
+                            <span class="text-green-400 text-sm">+12.5%</span>
+                        </div>
+                        <h3 class="text-2xl font-bold">$2,456</h3>
+                        <p class="text-gray-400 text-sm">今日销售额</p>
+                    </div>
+
+                    <div class="glass-bg rounded-xl p-6 border border-gray-700 hover-lift">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-chart-bar text-white"></i>
+                            </div>
+                            <span class="text-sapphire-400 text-sm">本月</span>
+                        </div>
+                        <h3 class="text-2xl font-bold">$18,234</h3>
+                        <p class="text-gray-400 text-sm">本月销售额</p>
+                    </div>
+
+                    <div class="glass-bg rounded-xl p-6 border border-gray-700 hover-lift">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-trophy text-white"></i>
+                            </div>
+                            <span class="text-purple-400 text-sm">累计</span>
+                        </div>
+                        <h3 class="text-2xl font-bold">$125,678</h3>
+                        <p class="text-gray-400 text-sm">总销售额</p>
+                    </div>
+
+                    <div class="glass-bg rounded-xl p-6 border border-gray-700 hover-lift">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-shopping-cart text-white"></i>
+                            </div>
+                            <span class="text-orange-400 text-sm">今日</span>
+                        </div>
+                        <h3 class="text-2xl font-bold">24</h3>
+                        <p class="text-gray-400 text-sm">订单数量</p>
+                    </div>
+                </div>
+
+                <!-- 收入统计图表和商品动态 -->
+                <div class="grid lg:grid-cols-3 gap-8 mb-8">
+                    <!-- 收入统计图表 -->
+                    <div class="lg:col-span-2 glass-bg rounded-xl p-6 border border-gray-700">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold">收入统计</h3>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 text-sm bg-sapphire-600 text-white rounded-md">日</button>
+                                <button class="px-3 py-1 text-sm text-gray-400 hover:text-white">周</button>
+                                <button class="px-3 py-1 text-sm text-gray-400 hover:text-white">月</button>
+                            </div>
+                        </div>
+                        <div class="h-64 bg-gray-800/30 rounded-lg flex items-center justify-center">
+                            <div class="text-center text-gray-400">
+                                <i class="fas fa-chart-area text-4xl mb-4"></i>
+                                <p>销售趋势图表</p>
+                                <p class="text-sm">收入来源分布、商品销售排行、利润率分析</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 商品动态 -->
+                    <div class="glass-bg rounded-xl p-6 border border-gray-700">
+                        <h3 class="text-xl font-bold mb-6">商品动态</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-medium">新增商品</p>
+                                    <p class="text-xl font-bold text-green-400">12</p>
+                                </div>
+                                <i class="fas fa-plus text-green-400"></i>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-medium">待审核商品</p>
+                                    <p class="text-xl font-bold text-yellow-400">3</p>
+                                </div>
+                                <i class="fas fa-clock text-yellow-400"></i>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-medium">热销商品</p>
+                                    <p class="text-xl font-bold text-orange-400">8</p>
+                                </div>
+                                <i class="fas fa-fire text-orange-400"></i>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg">
+                                <div>
+                                    <p class="text-sm font-medium">库存预警</p>
+                                    <p class="text-xl font-bold text-red-400">2</p>
+                                </div>
+                                <i class="fas fa-exclamation-triangle text-red-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快捷操作 -->
+                <div class="glass-bg rounded-xl p-6 border border-gray-700">
+                    <h3 class="text-xl font-bold mb-6">快捷操作</h3>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <button class="flex flex-col items-center space-y-3 p-6 bg-gray-800/30 rounded-lg hover:bg-gray-700/30 transition-colors">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-plus text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium">新增商品</span>
+                        </button>
+
+                        <button class="flex flex-col items-center space-y-3 p-6 bg-gray-800/30 rounded-lg hover:bg-gray-700/30 transition-colors">
+                            <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-clipboard-list text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium">查看订单</span>
+                        </button>
+
+                        <button class="flex flex-col items-center space-y-3 p-6 bg-gray-800/30 rounded-lg hover:bg-gray-700/30 transition-colors">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-undo text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium">处理退款</span>
+                        </button>
+
+                        <button class="flex flex-col items-center space-y-3 p-6 bg-gray-800/30 rounded-lg hover:bg-gray-700/30 transition-colors">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-comments text-white"></i>
+                            </div>
+                            <span class="text-sm font-medium">回复评价</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 最新订单 -->
+                <div class="glass-bg rounded-xl p-6 border border-gray-700 mt-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold">最新订单</h3>
+                        <a href="#" class="text-sapphire-400 hover:text-sapphire-300 text-sm">查看全部</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-700">
+                                    <th class="text-left py-3 text-gray-400 font-medium">订单号</th>
+                                    <th class="text-left py-3 text-gray-400 font-medium">商品</th>
+                                    <th class="text-left py-3 text-gray-400 font-medium">买家</th>
+                                    <th class="text-left py-3 text-gray-400 font-medium">金额</th>
+                                    <th class="text-left py-3 text-gray-400 font-medium">状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-4 text-sm">#SP001234</td>
+                                    <td class="py-4 text-sm">Web3开发课程</td>
+                                    <td class="py-4 text-sm">0x1234...5678</td>
+                                    <td class="py-4 text-sm">299 SAP</td>
+                                    <td class="py-4">
+                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">已完成</span>
+                                    </td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-4 text-sm">#SP001235</td>
+                                    <td class="py-4 text-sm">区块链艺术品</td>
+                                    <td class="py-4 text-sm">0x5678...9012</td>
+                                    <td class="py-4 text-sm">150 SAP</td>
+                                    <td class="py-4">
+                                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">处理中</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 导航交互
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active', 'bg-sapphire-600', 'text-white');
+                    nav.classList.add('text-gray-300');
+                });
+                this.classList.add('active', 'bg-sapphire-600', 'text-white');
+                this.classList.remove('text-gray-300');
+            });
+        });
+    </script>
+</body>
+</html> 

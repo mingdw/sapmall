@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DApp 首页 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: #0f172a;
+            color: #fff;
+        }
+        .header {
+            background: #1e293b;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .logo {
+            display: flex;
+            align-items: center;
+        }
+        .header .logo i {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        .header .nav {
+            display: flex;
+            gap: 1rem;
+        }
+        .header .nav a {
+            color: #9ca3af;
+            transition: color 0.3s;
+        }
+        .header .nav a:hover {
+            color: #60a5fa;
+        }
+        .header .wallet {
+            background: #3b82f6;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .header .wallet i {
+            font-size: 1rem;
+        }
+        .content {
+            padding: 2rem;
+        }
+        .filter-bar {
+            background: #1e293b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        .filter-bar .categories {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .filter-bar .categories button {
+            background: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            color: #9ca3af;
+            transition: background 0.3s;
+        }
+        .filter-bar .categories button:hover {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .filter-bar .search {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .filter-bar .search input {
+            background: #374151;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            color: #9ca3af;
+        }
+        .filter-bar .search button {
+            background: #3b82f6;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            color: #fff;
+        }
+        .product-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .product-card {
+            background: #1e293b;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        .product-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .product-card .info {
+            padding: 1rem;
+        }
+        .product-card .info h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .product-card .info p {
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-gem"></i>
+            <span>Sapphire Mall</span>
+        </div>
+        <nav class="nav">
+            <a href="#">代币商城</a>
+            <a href="#">质押池</a>
+            <a href="#">兑换</a>
+            <a href="#">DAO治理</a>
+            <a href="#">帮助中心</a>
+            <a href="#">中文</a>
+        </nav>
+        <div class="wallet">
+            <i class="fas fa-wallet"></i>
+            <span>连接钱包</span>
+        </div>
+    </header>
+    <main class="content">
+        <div class="filter-bar">
+            <div class="categories">
+                <button>全部分类 (12,345)</button>
+                <button>游戏道具 (8,567)</button>
+                <button>数字艺术 (3,421)</button>
+                <button>虚拟世界 (2,156)</button>
+            </div>
+            <div class="search">
+                <input type="text" placeholder="请输入商品名称">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        <div class="product-section">
+            <div class="product-card">
+                <img src="https://source.unsplash.com/random/200x150?game" alt="游戏道具">
+                <div class="info">
+                    <h3>王者荣耀限定皮肤</h3>
+                    <p>传奇</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <img src="https://source.unsplash.com/random/200x150?keyboard" alt="CS:GO刀具皮肤">
+                <div class="info">
+                    <h3>CS:GO刀具皮肤</h3>
+                    <p>热门</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <img src="https://source.unsplash.com/random/200x150?esports" alt="英雄联盟角色">
+                <div class="info">
+                    <h3>英雄联盟角色</h3>
+                    <p>稀有</p>
+                </div>
+            </div>
+            <div class="product-card">
+                <img src="https://source.unsplash.com/random/200x150?console" alt="魔兽世界坐骑">
+                <div class="info">
+                    <h3>魔兽世界坐骑</h3>
+                    <p>史诗</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html> 

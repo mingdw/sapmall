@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代币兑换 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .gradient-border {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            padding: 2px;
+            border-radius: 16px;
+        }
+        .gradient-border-content {
+            background: #1f2937;
+            border-radius: 14px;
+            padding: 1.5rem;
+        }
+        .swap-container {
+            position: relative;
+        }
+        .swap-arrow {
+            transition: all 0.3s ease;
+        }
+        .swap-arrow:hover {
+            transform: rotate(180deg);
+            color: #3b82f6;
+        }
+        .price-chart {
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: 12px;
+        }
+        .animate-pulse-slow {
+            animation: pulse 3s ease-in-out infinite;
+        }
+        .token-icon {
+            transition: all 0.3s ease;
+        }
+        .token-icon:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <!-- Header -->
+    <nav class="bg-gray-900/50 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gem text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
+                        <p class="text-xs text-gray-400">代币兑换</p>
+                    </div>
+                </div>
+
+                <!-- Wallet Info -->
+                <div class="flex items-center space-x-4">
+                    <div class="bg-gray-800/50 rounded-lg px-4 py-2">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse-slow"></div>
+                            <span class="text-sm text-gray-300">0x742d...e6b7</span>
+                        </div>
+                    </div>
+                    <button class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
+            <!-- Swap Interface -->
+            <div class="lg:col-span-2">
+                <div class="gradient-border">
+                    <div class="gradient-border-content">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold">代币兑换</h2>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="refreshPrices()" class="text-gray-400 hover:text-sapphire-400 transition-colors">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button onclick="showSettings()" class="text-gray-400 hover:text-sapphire-400 transition-colors">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Swap Container -->
+                        <div class="swap-container space-y-2">
+                            <!-- From Token -->
+                            <div class="bg-gray-800/50 rounded-xl p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <label class="text-sm text-gray-400">从</label>
+                                    <span class="text-sm text-gray-400">余额: <span id="fromBalance">2,450.67</span></span>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <button onclick="selectToken('from')" class="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors">
+                                        <img id="fromTokenIcon" src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" class="w-6 h-6 token-icon">
+                                        <span id="fromTokenSymbol" class="font-semibold">ETH</span>
+                                        <i class="fas fa-chevron-down text-xs"></i>
+                                    </button>
+                                    <input type="number" id="fromAmount" placeholder="0.0" 
+                                           class="flex-1 bg-transparent text-2xl font-bold text-right focus:outline-none" 
+                                           oninput="calculateToAmount()">
+                                </div>
+                                <div class="flex justify-between items-center mt-2">
+                                    <span class="text-xs text-gray-500">≈ $<span id="fromUsdValue">0.00</span></span>
+                                    <div class="flex space-x-2">
+                                        <button onclick="setPercentage(25)" class="text-xs text-gray-400 hover:text-sapphire-400 px-2 py-1 rounded bg-gray-800">25%</button>
+                                        <button onclick="setPercentage(50)" class="text-xs text-gray-400 hover:text-sapphire-400 px-2 py-1 rounded bg-gray-800">50%</button>
+                                        <button onclick="setPercentage(75)" class="text-xs text-gray-400 hover:text-sapphire-400 px-2 py-1 rounded bg-gray-800">75%</button>
+                                        <button onclick="setPercentage(100)" class="text-xs text-gray-400 hover:text-sapphire-400 px-2 py-1 rounded bg-gray-800">最大</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Swap Arrow -->
+                            <div class="flex justify-center">
+                                <button onclick="swapTokens()" class="swap-arrow bg-gray-800 hover:bg-gray-700 p-3 rounded-full border-4 border-gray-900 transition-all">
+                                    <i class="fas fa-arrow-down text-gray-400"></i>
+                                </button>
+                            </div>
+
+                            <!-- To Token -->
+                            <div class="bg-gray-800/50 rounded-xl p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <label class="text-sm text-gray-400">到</label>
+                                    <span class="text-sm text-gray-400">余额: <span id="toBalance">0.00</span></span>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <button onclick="selectToken('to')" class="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors">
+                                        <img id="toTokenIcon" src="https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=32&h=32&fit=crop&crop=center" alt="SAP" class="w-6 h-6 token-icon rounded-full">
+                                        <span id="toTokenSymbol" class="font-semibold">SAP</span>
+                                        <i class="fas fa-chevron-down text-xs"></i>
+                                    </button>
+                                    <input type="number" id="toAmount" placeholder="0.0" 
+                                           class="flex-1 bg-transparent text-2xl font-bold text-right focus:outline-none" readonly>
+                                </div>
+                                <div class="text-right mt-2">
+                                    <span class="text-xs text-gray-500">≈ $<span id="toUsdValue">0.00</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exchange Details -->
+                        <div class="mt-6 bg-gray-800/30 rounded-xl p-4">
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">汇率</span>
+                                    <span class="text-white">1 ETH = <span id="exchangeRate">2,450.67</span> SAP</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">价格影响</span>
+                                    <span class="text-green-400" id="priceImpact">< 0.01%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">流动性提供费</span>
+                                    <span class="text-white" id="liquidityFee">0.3%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">最小接收</span>
+                                    <span class="text-white"><span id="minimumReceived">0.00</span> SAP</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">网络费用</span>
+                                    <span class="text-white">~$<span id="networkFee">12.50</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Swap Button -->
+                        <button id="swapButton" onclick="executeSwap()" 
+                                class="w-full mt-6 bg-gradient-to-r from-sapphire-500 to-purple-600 text-white py-4 px-6 rounded-xl text-lg font-semibold hover:from-sapphire-600 hover:to-purple-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                            输入金额
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="mt-8 gradient-border">
+                    <div class="gradient-border-content">
+                        <h3 class="text-lg font-bold mb-4">最近交易</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between py-3 border-b border-gray-700">
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex items-center -space-x-1">
+                                        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" class="w-6 h-6 relative z-10">
+                                        <img src="https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=24&h=24&fit=crop&crop=center" alt="SAP" class="w-6 h-6 rounded-full">
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium">ETH → SAP</p>
+                                        <p class="text-xs text-gray-400">2分钟前</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm">1.5 ETH</p>
+                                    <p class="text-xs text-green-400">+3,675.5 SAP</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between py-3 border-b border-gray-700">
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex items-center -space-x-1">
+                                        <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC" class="w-6 h-6 relative z-10">
+                                        <img src="https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=24&h=24&fit=crop&crop=center" alt="SAP" class="w-6 h-6 rounded-full">
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium">USDC → SAP</p>
+                                        <p class="text-xs text-gray-400">1小时前</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm">500 USDC</p>
+                                    <p class="text-xs text-green-400">+1,225.8 SAP</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between py-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex items-center -space-x-1">
+                                        <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT" class="w-6 h-6 relative z-10">
+                                        <img src="https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=24&h=24&fit=crop&crop=center" alt="SAP" class="w-6 h-6 rounded-full">
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium">USDT → SAP</p>
+                                        <p class="text-xs text-gray-400">3小时前</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-sm">1,000 USDT</p>
+                                    <p class="text-xs text-green-400">+2,451.3 SAP</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-8">
+                <!-- SAP Token Info -->
+                <div class="gradient-border">
+                    <div class="gradient-border-content">
+                        <div class="text-center mb-4">
+                            <img src="https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=64&h=64&fit=crop&crop=center" alt="SAP" class="w-16 h-16 rounded-full mx-auto mb-3">
+                            <h3 class="text-xl font-bold">Sapphire (SAP)</h3>
+                            <p class="text-gray-400">平台原生代币</p>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">当前价格</span>
+                                <span class="text-white font-semibold">$0.408</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">24h 变化</span>
+                                <span class="text-green-400">+12.45%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">流通供应量</span>
+                                <span class="text-white">12.5M SAP</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">市值</span>
+                                <span class="text-white">$5.1M</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Chart -->
+                <div class="gradient-border">
+                    <div class="gradient-border-content">
+                        <h3 class="text-lg font-bold mb-4">SAP 价格走势</h3>
+                        <div class="price-chart h-48 flex items-end justify-center p-4">
+                            <!-- Simulated Chart -->
+                            <div class="flex items-end space-x-1 h-full">
+                                <div class="w-2 bg-gradient-to-t from-sapphire-500 to-purple-500 h-1/4"></div>
+                                <div class="w-2 bg-gradient-to-t from-sapphire-500 to-purple-500 h-1/3"></div>
+                                <div class="w-2 bg-gradient-to-t from-sapphire-500 to-purple-500 h-1/2"></div>
+                                <div class="w-2 bg-gradient-to-t from-sapphire-500 to-purple-500 h-2/3"></div>
+                                <div class="w-2 bg-gradient-to-t from-sapphire-500 to-purple-500 h-3/4"></div>
+                                <div class="w-2 bg-gradient-to-t from-sapphire-500 to-purple-500 h-full"></div>
+                                <div class="w-2 bg-gradient-to-t from-sapphire-500 to-purple-500 h-5/6"></div>
+                                <div class="w-2 bg-gradient-to-t from-sapphire-500 to-purple-500 h-4/5"></div>
+                                <div class="w-2 bg-gradient-to-t from-sapphire-500 to-purple-500 h-3/4"></div>
+                                <div class="w-2 bg-gradient-to-t from-sapphire-500 to-purple-500 h-5/6"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-400 mt-2">
+                            <span>24h</span>
+                            <span>7d</span>
+                            <span>30d</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liquidity Pools -->
+                <div class="gradient-border">
+                    <div class="gradient-border-content">
+                        <h3 class="text-lg font-bold mb-4">流动性池</h3>
+                        <div class="space-y-3">
+                            <div class="bg-gray-800/50 rounded-lg p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex items-center -space-x-1">
+                                            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" class="w-5 h-5 relative z-10">
+                                            <img src="https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=20&h=20&fit=crop&crop=center" alt="SAP" class="w-5 h-5 rounded-full">
+                                        </div>
+                                        <span class="text-sm font-medium">ETH/SAP</span>
+                                    </div>
+                                    <span class="text-xs text-green-400">15.67% APY</span>
+                                </div>
+                                <div class="text-xs text-gray-400">TVL: $2.4M</div>
+                            </div>
+                            <div class="bg-gray-800/50 rounded-lg p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex items-center -space-x-1">
+                                            <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC" class="w-5 h-5 relative z-10">
+                                            <img src="https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=20&h=20&fit=crop&crop=center" alt="SAP" class="w-5 h-5 rounded-full">
+                                        </div>
+                                        <span class="text-sm font-medium">USDC/SAP</span>
+                                    </div>
+                                    <span class="text-xs text-green-400">12.34% APY</span>
+                                </div>
+                                <div class="text-xs text-gray-400">TVL: $1.8M</div>
+                            </div>
+                            <div class="bg-gray-800/50 rounded-lg p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="flex items-center -space-x-1">
+                                            <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT" class="w-5 h-5 relative z-10">
+                                            <img src="https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=20&h=20&fit=crop&crop=center" alt="SAP" class="w-5 h-5 rounded-full">
+                                        </div>
+                                        <span class="text-sm font-medium">USDT/SAP</span>
+                                    </div>
+                                    <span class="text-xs text-green-400">11.89% APY</span>
+                                </div>
+                                <div class="text-xs text-gray-400">TVL: $1.6M</div>
+                            </div>
+                        </div>
+                        <button class="w-full mt-4 bg-sapphire-600 hover:bg-sapphire-700 text-white py-2 px-4 rounded-lg transition-colors text-sm">
+                            <i class="fas fa-plus mr-2"></i>
+                            添加流动性
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Token Selection Modal -->
+    <div id="tokenModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="gradient-border max-w-md w-full max-h-96">
+                <div class="gradient-border-content">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold">选择代币</h3>
+                        <button onclick="closeTokenModal()" class="text-gray-400 hover:text-white">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-2 max-h-64 overflow-y-auto">
+                        <!-- Token options will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let fromToken = { symbol: 'ETH', icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png', price: 2450.67, balance: 2.5 };
+        let toToken = { symbol: 'SAP', icon: 'https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=32&h=32&fit=crop&crop=center', price: 0.408, balance: 0 };
+        
+        const tokens = [
+            { symbol: 'ETH', name: 'Ethereum', icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png', price: 2450.67, balance: 2.5 },
+            { symbol: 'USDC', name: 'USD Coin', icon: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png', price: 1.00, balance: 5000 },
+            { symbol: 'USDT', name: 'Tether', icon: 'https://cryptologos.cc/logos/tether-usdt-logo.png', price: 1.00, balance: 3000 },
+            { symbol: 'WBTC', name: 'Wrapped Bitcoin', icon: 'https://cryptologos.cc/logos/wrapped-bitcoin-wbtc-logo.png', price: 45000, balance: 0.1 },
+            { symbol: 'SAP', name: 'Sapphire', icon: 'https://images.unsplash.com/photo-1621504450181-5d356f61d307?w=32&h=32&fit=crop&crop=center', price: 0.408, balance: 0 }
+        ];
+
+        let currentTokenSelection = 'from';
+
+        function calculateToAmount() {
+            const fromAmount = parseFloat(document.getElementById('fromAmount').value) || 0;
+            const rate = fromToken.price / toToken.price;
+            const toAmount = fromAmount * rate;
+            
+            document.getElementById('toAmount').value = toAmount.toFixed(6);
+            document.getElementById('fromUsdValue').textContent = (fromAmount * fromToken.price).toFixed(2);
+            document.getElementById('toUsdValue').textContent = (toAmount * toToken.price).toFixed(2);
+            document.getElementById('minimumReceived').textContent = (toAmount * 0.995).toFixed(6);
+            
+            updateSwapButton(fromAmount);
+        }
+
+        function updateSwapButton(amount) {
+            const button = document.getElementById('swapButton');
+            if (amount > 0) {
+                if (amount > fromToken.balance) {
+                    button.textContent = '余额不足';
+                    button.disabled = true;
+                } else {
+                    button.textContent = `兑换 ${fromToken.symbol} 为 ${toToken.symbol}`;
+                    button.disabled = false;
+                }
+            } else {
+                button.textContent = '输入金额';
+                button.disabled = true;
+            }
+        }
+
+        function setPercentage(percentage) {
+            const amount = (fromToken.balance * percentage / 100).toFixed(6);
+            document.getElementById('fromAmount').value = amount;
+            calculateToAmount();
+        }
+
+        function swapTokens() {
+            const temp = fromToken;
+            fromToken = toToken;
+            toToken = temp;
+            
+            updateTokenUI();
+            
+            // Clear amounts
+            document.getElementById('fromAmount').value = '';
+            document.getElementById('toAmount').value = '';
+            document.getElementById('fromUsdValue').textContent = '0.00';
+            document.getElementById('toUsdValue').textContent = '0.00';
+            updateSwapButton(0);
+        }
+
+        function updateTokenUI() {
+            document.getElementById('fromTokenIcon').src = fromToken.icon;
+            document.getElementById('fromTokenSymbol').textContent = fromToken.symbol;
+            document.getElementById('fromBalance').textContent = fromToken.balance.toLocaleString();
+            
+            document.getElementById('toTokenIcon').src = toToken.icon;
+            document.getElementById('toTokenSymbol').textContent = toToken.symbol;
+            document.getElementById('toBalance').textContent = toToken.balance.toLocaleString();
+            
+            document.getElementById('exchangeRate').textContent = (fromToken.price / toToken.price).toFixed(2);
+        }
+
+        function selectToken(type) {
+            currentTokenSelection = type;
+            showTokenModal();
+        }
+
+        function showTokenModal() {
+            const modal = document.getElementById('tokenModal');
+            const tokenList = modal.querySelector('.space-y-2');
+            
+            tokenList.innerHTML = tokens.map(token => `
+                <div onclick="chooseToken('${token.symbol}')" 
+                     class="flex items-center justify-between p-3 hover:bg-gray-700 rounded-lg cursor-pointer transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <img src="${token.icon}" alt="${token.symbol}" class="w-8 h-8 ${token.symbol === 'SAP' ? 'rounded-full' : ''}">
+                        <div>
+                            <div class="font-semibold">${token.symbol}</div>
+                            <div class="text-sm text-gray-400">${token.name}</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-semibold">${token.balance.toLocaleString()}</div>
+                        <div class="text-sm text-gray-400">$${token.price.toLocaleString()}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeTokenModal() {
+            document.getElementById('tokenModal').classList.add('hidden');
+        }
+
+        function chooseToken(symbol) {
+            const token = tokens.find(t => t.symbol === symbol);
+            
+            if (currentTokenSelection === 'from') {
+                fromToken = token;
+            } else {
+                toToken = token;
+            }
+            
+            updateTokenUI();
+            closeTokenModal();
+            
+            // Recalculate if there's an amount
+            const fromAmount = parseFloat(document.getElementById('fromAmount').value);
+            if (fromAmount > 0) {
+                calculateToAmount();
+            }
+        }
+
+        function refreshPrices() {
+            // Simulate price refresh
+            const button = event.target.closest('button');
+            button.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i>';
+            
+            setTimeout(() => {
+                button.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                showToast('价格已更新');
+            }, 1000);
+        }
+
+        function showSettings() {
+            showToast('设置功能开发中...');
+        }
+
+        function executeSwap() {
+            if (document.getElementById('swapButton').disabled) return;
+            
+            const fromAmount = parseFloat(document.getElementById('fromAmount').value);
+            const toAmount = parseFloat(document.getElementById('toAmount').value);
+            
+            // Simulate swap transaction
+            document.getElementById('swapButton').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>交易处理中...';
+            document.getElementById('swapButton').disabled = true;
+            
+            setTimeout(() => {
+                // Update balances
+                fromToken.balance -= fromAmount;
+                toToken.balance += toAmount;
+                
+                updateTokenUI();
+                
+                // Clear form
+                document.getElementById('fromAmount').value = '';
+                document.getElementById('toAmount').value = '';
+                document.getElementById('fromUsdValue').textContent = '0.00';
+                document.getElementById('toUsdValue').textContent = '0.00';
+                
+                // Reset button
+                document.getElementById('swapButton').textContent = '输入金额';
+                document.getElementById('swapButton').disabled = true;
+                
+                showToast('兑换成功！', 'success');
+            }, 3000);
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-600');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-600');
+            } else {
+                toast.classList.add('bg-sapphire-600');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTokenUI();
+            
+            // Close modal when clicking outside
+            document.getElementById('tokenModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeTokenModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
