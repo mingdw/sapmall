@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流动性质押 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+        }
+        .glass-bg {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+        .pool-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .pool-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+        }
+        .stake-button {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            transition: all 0.3s ease;
+        }
+        .stake-button:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+        .unstake-button {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            transition: all 0.3s ease;
+        }
+        .unstake-button:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+        .apy-highlight {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        .countdown {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="mx-auto px-6 py-4" style="width: 90%;">
+        <!-- 总览统计 -->
+        <div class="mb-6">
+            <div class="glass-bg rounded-xl p-6">
+                <h2 class="text-2xl font-bold mb-6 text-center" data-zh="流动性质押" data-en="Liquidity Staking">流动性质押</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="glass-bg rounded-lg p-4">
+                            <div class="text-3xl font-bold text-sapphire-400 mb-2">$2.4M</div>
+                            <div class="text-gray-400 text-sm" data-zh="总锁仓价值" data-en="Total Value Locked">总锁仓价值</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="glass-bg rounded-lg p-4">
+                            <div class="text-3xl font-bold text-green-400 mb-2">18.5%</div>
+                            <div class="text-gray-400 text-sm" data-zh="平均年化收益" data-en="Average APY">平均年化收益</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="glass-bg rounded-lg p-4">
+                            <div class="text-3xl font-bold text-purple-400 mb-2">1,234</div>
+                            <div class="text-gray-400 text-sm" data-zh="质押用户数" data-en="Stakers">质押用户数</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="glass-bg rounded-lg p-4">
+                            <div class="text-3xl font-bold text-yellow-400 mb-2">156K</div>
+                            <div class="text-gray-400 text-sm" data-zh="待领取奖励" data-en="Pending Rewards">待领取奖励 SAP</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的质押概览 -->
+        <div class="mb-6">
+            <div class="glass-bg rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold" data-zh="我的质押" data-en="My Stakes">我的质押</h3>
+                    <button class="bg-sapphire-600 hover:bg-sapphire-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">
+                        <i class="fas fa-coins mr-2"></i>
+                        <span data-zh="领取全部奖励" data-en="Claim All Rewards">领取全部奖励</span>
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="glass-bg rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-sapphire-400 mb-1">12,500 SAP</div>
+                        <div class="text-gray-400 text-sm" data-zh="已质押总量" data-en="Total Staked">已质押总量</div>
+                    </div>
+                    <div class="glass-bg rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-green-400 mb-1">2,340 SAP</div>
+                        <div class="text-gray-400 text-sm" data-zh="待领取奖励" data-en="Pending Rewards">待领取奖励</div>
+                    </div>
+                    <div class="glass-bg rounded-lg p-4 text-center">
+                        <div class="text-2xl font-bold text-purple-400 mb-1">$45,600</div>
+                        <div class="text-gray-400 text-sm" data-zh="总价值" data-en="Total Value">总价值</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 质押池列表 -->
+        <div class="space-y-4">
+            <!-- 单币质押池 -->
+            <div class="pool-card rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-sapphire-500 to-sapphire-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">SAP</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold" data-zh="SAP 单币质押" data-en="SAP Single Staking">SAP 单币质押</h3>
+                            <p class="text-gray-400 text-sm" data-zh="质押SAP获得额外收益和治理权" data-en="Stake SAP for rewards and governance">质押SAP获得额外收益和治理权</p>
+                        </div>
+                    </div>
+                    <div class="apy-highlight px-4 py-2 rounded-lg">
+                        <div class="text-sm opacity-90" data-zh="年化收益" data-en="APY">年化收益</div>
+                        <div class="text-2xl font-bold">24.5%</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="总质押量" data-en="Total Staked">总质押量</div>
+                        <div class="font-bold">890K SAP</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="我的质押" data-en="My Stake">我的质押</div>
+                        <div class="font-bold">5,000 SAP</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="待领取" data-en="Pending">待领取</div>
+                        <div class="font-bold text-green-400">125.3 SAP</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="锁定期" data-en="Lock Period">锁定期</div>
+                        <div class="font-bold">30 天</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <div class="countdown text-green-400">
+                        <span data-zh="解锁倒计时: " data-en="Unlock in: ">解锁倒计时: </span>
+                        <span id="countdown-1">15天 08:24:36</span>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button class="stake-button text-white px-6 py-2 rounded-lg font-medium">
+                            <i class="fas fa-plus mr-2"></i>
+                            <span data-zh="追加质押" data-en="Stake More">追加质押</span>
+                        </button>
+                        <button class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                            <i class="fas fa-gift mr-2"></i>
+                            <span data-zh="领取奖励" data-en="Claim">领取奖励</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 流动性挖矿池 -->
+            <div class="pool-card rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex -space-x-2">
+                            <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-sapphire-600 rounded-full flex items-center justify-center border-2 border-gray-800">
+                                <span class="text-white font-bold text-sm">SAP</span>
+                            </div>
+                            <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center border-2 border-gray-800">
+                                <span class="text-white font-bold text-sm">ETH</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold" data-zh="SAP-ETH 流动性挖矿" data-en="SAP-ETH Liquidity Mining">SAP-ETH 流动性挖矿</h3>
+                            <p class="text-gray-400 text-sm" data-zh="提供流动性获得交易手续费分成" data-en="Provide liquidity to earn trading fees">提供流动性获得交易手续费分成</p>
+                        </div>
+                    </div>
+                    <div class="apy-highlight px-4 py-2 rounded-lg">
+                        <div class="text-sm opacity-90" data-zh="年化收益" data-en="APY">年化收益</div>
+                        <div class="text-2xl font-bold">45.8%</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="总流动性" data-en="Total Liquidity">总流动性</div>
+                        <div class="font-bold">$1.2M</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="我的LP代币" data-en="My LP Tokens">我的LP代币</div>
+                        <div class="font-bold">250 LP</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="24h交易费" data-en="24h Fees">24h交易费</div>
+                        <div class="font-bold text-green-400">$2,456</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="我的份额" data-en="My Share">我的份额</div>
+                        <div class="font-bold">0.52%</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-gray-400">
+                        <span data-zh="池子组成: " data-en="Pool Composition: ">池子组成: </span>
+                        <span class="text-white">50% SAP + 50% ETH</span>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button class="stake-button text-white px-6 py-2 rounded-lg font-medium">
+                            <i class="fas fa-plus mr-2"></i>
+                            <span data-zh="添加流动性" data-en="Add Liquidity">添加流动性</span>
+                        </button>
+                        <button class="unstake-button text-white px-6 py-2 rounded-lg font-medium">
+                            <i class="fas fa-minus mr-2"></i>
+                            <span data-zh="移除流动性" data-en="Remove">移除流动性</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NFT质押池 -->
+            <div class="pool-card rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-images text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold" data-zh="NFT 质押挖矿" data-en="NFT Staking Mining">NFT 质押挖矿</h3>
+                            <p class="text-gray-400 text-sm" data-zh="质押特定NFT获得稀有奖励" data-en="Stake specific NFTs for rare rewards">质押特定NFT获得稀有奖励</p>
+                        </div>
+                    </div>
+                    <div class="apy-highlight px-4 py-2 rounded-lg">
+                        <div class="text-sm opacity-90" data-zh="奖励倍数" data-en="Multiplier">奖励倍数</div>
+                        <div class="text-2xl font-bold">3.5x</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="已质押NFT" data-en="Staked NFTs">已质押NFT</div>
+                        <div class="font-bold">1,234 个</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="我的NFT" data-en="My NFTs">我的NFT</div>
+                        <div class="font-bold">3 个</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="特殊奖励" data-en="Special Rewards">特殊奖励</div>
+                        <div class="font-bold text-purple-400">稀有道具</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-400 text-sm mb-1" data-zh="等级要求" data-en="Level Req">等级要求</div>
+                        <div class="font-bold">传奇+</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=40&h=40&fit=crop" alt="NFT" class="w-10 h-10 rounded-lg">
+                        <img src="https://images.unsplash.com/photo-1614332287897-cdc485fa562d?w=40&h=40&fit=crop" alt="NFT" class="w-10 h-10 rounded-lg">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=40&h=40&fit=crop" alt="NFT" class="w-10 h-10 rounded-lg">
+                        <div class="text-gray-400 text-sm" data-zh="我质押的NFT" data-en="My Staked NFTs">我质押的NFT</div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button class="stake-button text-white px-6 py-2 rounded-lg font-medium">
+                            <i class="fas fa-plus mr-2"></i>
+                            <span data-zh="质押NFT" data-en="Stake NFT">质押NFT</span>
+                        </button>
+                        <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                            <i class="fas fa-eye mr-2"></i>
+                            <span data-zh="查看收藏" data-en="View Collection">查看收藏</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新池预告 -->
+            <div class="pool-card rounded-xl p-6 opacity-75">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center">
+                            <i class="fas fa-clock text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold" data-zh="USDC-SAP 池即将上线" data-en="USDC-SAP Pool Coming Soon">USDC-SAP 池即将上线</h3>
+                            <p class="text-gray-400 text-sm" data-zh="稳定币对，低风险高收益" data-en="Stablecoin pair, low risk high yield">稳定币对，低风险高收益</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-600 px-4 py-2 rounded-lg">
+                        <div class="text-sm opacity-90" data-zh="预计年化" data-en="Est. APY">预计年化</div>
+                        <div class="text-2xl font-bold">??.?%</div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="countdown text-yellow-400 text-lg mb-4">
+                        <span data-zh="启动倒计时: " data-en="Launch in: ">启动倒计时: </span>
+                        <span id="countdown-new">3天 12:45:22</span>
+                    </div>
+                    <button class="bg-gray-600 text-gray-400 px-6 py-2 rounded-lg font-medium cursor-not-allowed">
+                        <i class="fas fa-bell mr-2"></i>
+                        <span data-zh="设置提醒" data-en="Set Reminder">设置提醒</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        let currentLang = 'zh';
+        
+        // 倒计时功能
+        function updateCountdown() {
+            // 模拟倒计时更新
+            const countdowns = document.querySelectorAll('[id^="countdown"]');
+            countdowns.forEach(countdown => {
+                // 这里应该是真实的倒计时逻辑
+                console.log('Updating countdown:', countdown.id);
+            });
+        }
+        
+        // 质押功能
+        function handleStaking(poolType, action) {
+            console.log(`${action} action for ${poolType} pool`);
+            showToast(`${action === 'stake' ? '质押' : '取消质押'}操作确认中...`, 'info');
+            
+            // 模拟交易确认
+            setTimeout(() => {
+                showToast(`${action === 'stake' ? '质押' : '取消质押'}成功！`, 'success');
+            }, 2000);
+        }
+        
+        // 添加按钮事件监听
+        document.addEventListener('DOMContentLoaded', function() {
+            // 质押按钮
+            document.querySelectorAll('.stake-button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const poolType = this.closest('.pool-card').querySelector('h3').textContent;
+                    handleStaking(poolType, 'stake');
+                });
+            });
+            
+            // 取消质押按钮
+            document.querySelectorAll('.unstake-button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const poolType = this.closest('.pool-card').querySelector('h3').textContent;
+                    handleStaking(poolType, 'unstake');
+                });
+            });
+            
+            // 启动倒计时
+            setInterval(updateCountdown, 1000);
+        });
+        
+        // Toast 提示功能
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-600');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-600');
+            } else {
+                toast.classList.add('bg-sapphire-600');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+        
+        // 语言切换功能
+        function updateLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-zh], [data-en]').forEach(element => {
+                const text = element.getAttribute(`data-${lang}`);
+                if (text) {
+                    element.textContent = text;
+                }
+            });
+        }
+        
+        // 监听来自父窗口的语言变更消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'LANGUAGE_CHANGE') {
+                updateLanguage(event.data.language);
+            }
+        });
+        
+        console.log('Staking page loaded');
+    </script>
+</body>
+</html> 

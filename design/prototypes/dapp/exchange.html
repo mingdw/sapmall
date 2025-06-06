@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>去中心化交易所 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+        }
+        .glass-bg {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+        .trading-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+        }
+        .buy-button {
+            background: linear-gradient(135deg, #10b981, #059669);
+            transition: all 0.3s ease;
+        }
+        .buy-button:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        .sell-button {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            transition: all 0.3s ease;
+        }
+        .sell-button:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+        .price-up {
+            color: #10b981;
+        }
+        .price-down {
+            color: #ef4444;
+        }
+        .chart-container {
+            height: 400px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .orderbook-row {
+            transition: all 0.2s ease;
+        }
+        .orderbook-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .trade-history-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .pair-selector {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tab-active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+        .progress-bar {
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        .progress-buy {
+            background: linear-gradient(90deg, transparent, #10b981);
+        }
+        .progress-sell {
+            background: linear-gradient(90deg, transparent, #ef4444);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="mx-auto px-6 py-4" style="width: 90%;">
+        <!-- 交易对选择器 -->
+        <div class="mb-6">
+            <div class="glass-bg rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="pair-selector rounded-lg px-4 py-2 cursor-pointer">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex -space-x-1">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-sapphire-500 to-sapphire-600 rounded-full flex items-center justify-center text-xs font-bold">S</div>
+                                    <div class="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center text-xs font-bold">E</div>
+                                </div>
+                                <span class="font-bold text-lg">SAP/ETH</span>
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold price-up">$3.45</div>
+                            <div class="text-sm text-gray-400" data-zh="最新价格" data-en="Last Price">最新价格</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-bold price-up">+12.5%</div>
+                            <div class="text-sm text-gray-400" data-zh="24h涨跌" data-en="24h Change">24h涨跌</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-bold">$1.2M</div>
+                            <div class="text-sm text-gray-400" data-zh="24h成交量" data-en="24h Volume">24h成交量</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <button class="bg-sapphire-600 hover:bg-sapphire-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">
+                            <i class="fas fa-star mr-2"></i>
+                            <span data-zh="收藏" data-en="Favorite">收藏</span>
+                        </button>
+                        <button class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">
+                            <i class="fas fa-share mr-2"></i>
+                            <span data-zh="分享" data-en="Share">分享</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要交易界面 -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- K线图区域 -->
+            <div class="lg:col-span-2">
+                <div class="glass-bg rounded-xl p-6 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold" data-zh="价格走势图" data-en="Price Chart">价格走势图</h3>
+                        <div class="flex space-x-2">
+                            <button class="tab-active px-3 py-1 rounded text-sm">1H</button>
+                            <button class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-sm transition-colors">4H</button>
+                            <button class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-sm transition-colors">1D</button>
+                            <button class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-sm transition-colors">1W</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <!-- 模拟K线图 -->
+                        <div class="text-center text-gray-400">
+                            <i class="fas fa-chart-line text-6xl mb-4"></i>
+                            <div class="text-lg" data-zh="K线图加载中..." data-en="Chart loading...">K线图加载中...</div>
+                            <div class="text-sm mt-2" data-zh="支持多种技术指标分析" data-en="Supports multiple technical indicators">支持多种技术指标分析</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最近交易 -->
+                <div class="glass-bg rounded-xl p-6">
+                    <h3 class="text-lg font-bold mb-4" data-zh="最近交易" data-en="Recent Trades">最近交易</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm text-gray-400 pb-2">
+                            <span data-zh="价格" data-en="Price">价格</span>
+                            <span data-zh="数量" data-en="Amount">数量</span>
+                            <span data-zh="时间" data-en="Time">时间</span>
+                        </div>
+                        
+                        <div class="trade-history-item py-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="price-up font-medium">$3.45</span>
+                                <span>125.6 SAP</span>
+                                <span class="text-gray-400">14:23:45</span>
+                            </div>
+                        </div>
+                        
+                        <div class="trade-history-item py-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="price-down font-medium">$3.42</span>
+                                <span>89.3 SAP</span>
+                                <span class="text-gray-400">14:23:12</span>
+                            </div>
+                        </div>
+                        
+                        <div class="trade-history-item py-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="price-up font-medium">$3.47</span>
+                                <span>234.8 SAP</span>
+                                <span class="text-gray-400">14:22:58</span>
+                            </div>
+                        </div>
+                        
+                        <div class="trade-history-item py-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="price-up font-medium">$3.46</span>
+                                <span>67.2 SAP</span>
+                                <span class="text-gray-400">14:22:33</span>
+                            </div>
+                        </div>
+                        
+                        <div class="trade-history-item py-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="price-down font-medium">$3.41</span>
+                                <span>156.4 SAP</span>
+                                <span class="text-gray-400">14:22:11</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 订单簿 -->
+            <div>
+                <div class="glass-bg rounded-xl p-6">
+                    <h3 class="text-lg font-bold mb-4" data-zh="订单簿" data-en="Order Book">订单簿</h3>
+                    
+                    <!-- 卖单 -->
+                    <div class="mb-4">
+                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                            <span data-zh="价格" data-en="Price">价格</span>
+                            <span data-zh="数量" data-en="Amount">数量</span>
+                            <span data-zh="累计" data-en="Total">累计</span>
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <div class="orderbook-row py-1 px-2 rounded relative">
+                                <div class="progress-bar absolute inset-0">
+                                    <div class="progress-fill progress-sell" style="width: 60%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs relative z-10">
+                                    <span class="price-down font-medium">$3.52</span>
+                                    <span>245.6</span>
+                                    <span class="text-gray-400">1.2K</span>
+                                </div>
+                            </div>
+                            
+                            <div class="orderbook-row py-1 px-2 rounded relative">
+                                <div class="progress-bar absolute inset-0">
+                                    <div class="progress-fill progress-sell" style="width: 45%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs relative z-10">
+                                    <span class="price-down font-medium">$3.51</span>
+                                    <span>189.3</span>
+                                    <span class="text-gray-400">956</span>
+                                </div>
+                            </div>
+                            
+                            <div class="orderbook-row py-1 px-2 rounded relative">
+                                <div class="progress-bar absolute inset-0">
+                                    <div class="progress-fill progress-sell" style="width: 30%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs relative z-10">
+                                    <span class="price-down font-medium">$3.50</span>
+                                    <span>123.7</span>
+                                    <span class="text-gray-400">767</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 当前价格 -->
+                    <div class="text-center py-3 bg-gray-800 rounded-lg mb-4">
+                        <div class="text-lg font-bold price-up">$3.45</div>
+                        <div class="text-xs text-gray-400" data-zh="最新成交价" data-en="Last Traded Price">最新成交价</div>
+                    </div>
+
+                    <!-- 买单 -->
+                    <div>
+                        <div class="space-y-1">
+                            <div class="orderbook-row py-1 px-2 rounded relative">
+                                <div class="progress-bar absolute inset-0">
+                                    <div class="progress-fill progress-buy" style="width: 75%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs relative z-10">
+                                    <span class="price-up font-medium">$3.44</span>
+                                    <span>298.4</span>
+                                    <span class="text-gray-400">1.5K</span>
+                                </div>
+                            </div>
+                            
+                            <div class="orderbook-row py-1 px-2 rounded relative">
+                                <div class="progress-bar absolute inset-0">
+                                    <div class="progress-fill progress-buy" style="width: 55%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs relative z-10">
+                                    <span class="price-up font-medium">$3.43</span>
+                                    <span>167.8</span>
+                                    <span class="text-gray-400">1.2K</span>
+                                </div>
+                            </div>
+                            
+                            <div class="orderbook-row py-1 px-2 rounded relative">
+                                <div class="progress-bar absolute inset-0">
+                                    <div class="progress-fill progress-buy" style="width: 40%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs relative z-10">
+                                    <span class="price-up font-medium">$3.42</span>
+                                    <span>134.5</span>
+                                    <span class="text-gray-400">1.0K</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 交易面板 -->
+            <div>
+                <div class="glass-bg rounded-xl p-6">
+                    <!-- 交易类型切换 -->
+                    <div class="flex mb-6">
+                        <button class="tab-active flex-1 py-2 rounded-l-lg text-center font-medium" data-zh="现货交易" data-en="Spot">现货交易</button>
+                        <button class="bg-gray-700 hover:bg-gray-600 flex-1 py-2 rounded-r-lg text-center font-medium transition-colors" data-zh="合约交易" data-en="Futures">合约交易</button>
+                    </div>
+
+                    <!-- 买入/卖出切换 -->
+                    <div class="flex mb-6">
+                        <button id="buyTab" class="buy-button flex-1 py-3 rounded-l-lg text-center font-bold text-white" data-zh="买入" data-en="Buy">买入</button>
+                        <button id="sellTab" class="bg-gray-700 hover:bg-gray-600 flex-1 py-3 rounded-r-lg text-center font-bold transition-colors" data-zh="卖出" data-en="Sell">卖出</button>
+                    </div>
+
+                    <!-- 交易表单 -->
+                    <div id="tradingForm">
+                        <!-- 价格输入 -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2" data-zh="价格 (ETH)" data-en="Price (ETH)">价格 (ETH)</label>
+                            <div class="trading-panel rounded-lg p-3 flex items-center">
+                                <input type="number" placeholder="3.45" class="bg-transparent flex-1 outline-none" value="3.45">
+                                <button class="text-sapphire-400 text-sm ml-2" data-zh="市价" data-en="Market">市价</button>
+                            </div>
+                        </div>
+
+                        <!-- 数量输入 -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2" data-zh="数量 (SAP)" data-en="Amount (SAP)">数量 (SAP)</label>
+                            <div class="trading-panel rounded-lg p-3 flex items-center">
+                                <input type="number" placeholder="100" class="bg-transparent flex-1 outline-none">
+                                <button class="text-sapphire-400 text-sm ml-2" data-zh="全部" data-en="Max">全部</button>
+                            </div>
+                        </div>
+
+                        <!-- 百分比按钮 -->
+                        <div class="grid grid-cols-4 gap-2 mb-4">
+                            <button class="bg-gray-700 hover:bg-gray-600 py-2 rounded text-sm transition-colors">25%</button>
+                            <button class="bg-gray-700 hover:bg-gray-600 py-2 rounded text-sm transition-colors">50%</button>
+                            <button class="bg-gray-700 hover:bg-gray-600 py-2 rounded text-sm transition-colors">75%</button>
+                            <button class="bg-gray-700 hover:bg-gray-600 py-2 rounded text-sm transition-colors">100%</button>
+                        </div>
+
+                        <!-- 总价显示 -->
+                        <div class="mb-6">
+                            <div class="flex justify-between text-sm mb-2">
+                                <span data-zh="总价" data-en="Total">总价</span>
+                                <span class="font-bold">345.0 ETH</span>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-400">
+                                <span data-zh="手续费" data-en="Fee">手续费 (0.1%)</span>
+                                <span>0.345 ETH</span>
+                            </div>
+                        </div>
+
+                        <!-- 余额显示 -->
+                        <div class="mb-6 p-3 bg-gray-800 rounded-lg">
+                            <div class="flex justify-between text-sm mb-2">
+                                <span data-zh="可用余额" data-en="Available">可用余额</span>
+                                <span class="font-bold">1,234.56 SAP</span>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-400">
+                                <span>ETH</span>
+                                <span>45.67 ETH</span>
+                            </div>
+                        </div>
+
+                        <!-- 交易按钮 -->
+                        <button id="tradeButton" class="buy-button w-full py-3 rounded-lg font-bold text-white text-lg" data-zh="买入 SAP" data-en="Buy SAP">买入 SAP</button>
+                    </div>
+                </div>
+
+                <!-- 我的订单 -->
+                <div class="glass-bg rounded-xl p-6 mt-6">
+                    <h3 class="text-lg font-bold mb-4" data-zh="我的订单" data-en="My Orders">我的订单</h3>
+                    
+                    <div class="flex space-x-2 mb-4">
+                        <button class="tab-active px-3 py-1 rounded text-sm" data-zh="当前订单" data-en="Open">当前订单</button>
+                        <button class="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-sm transition-colors" data-zh="历史订单" data-en="History">历史订单</button>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="p-3 bg-gray-800 rounded-lg">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-medium price-up" data-zh="买入订单" data-en="Buy Order">买入订单</span>
+                                <button class="text-red-400 hover:text-red-300 text-xs">
+                                    <i class="fas fa-times mr-1"></i>
+                                    <span data-zh="取消" data-en="Cancel">取消</span>
+                                </button>
+                            </div>
+                            <div class="text-xs text-gray-400">
+                                <div data-zh="价格: $3.40 | 数量: 500 SAP" data-en="Price: $3.40 | Amount: 500 SAP">价格: $3.40 | 数量: 500 SAP</div>
+                                <div data-zh="已成交: 150 SAP (30%)" data-en="Filled: 150 SAP (30%)">已成交: 150 SAP (30%)</div>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-gray-800 rounded-lg">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm font-medium price-down" data-zh="卖出订单" data-en="Sell Order">卖出订单</span>
+                                <button class="text-red-400 hover:text-red-300 text-xs">
+                                    <i class="fas fa-times mr-1"></i>
+                                    <span data-zh="取消" data-en="Cancel">取消</span>
+                                </button>
+                            </div>
+                            <div class="text-xs text-gray-400">
+                                <div data-zh="价格: $3.50 | 数量: 200 SAP" data-en="Price: $3.50 | Amount: 200 SAP">价格: $3.50 | 数量: 200 SAP</div>
+                                <div data-zh="已成交: 0 SAP (0%)" data-en="Filled: 0 SAP (0%)">已成交: 0 SAP (0%)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        let currentLang = 'zh';
+        let isLimitOrder = true;
+        let currentSide = 'buy';
+
+        // 买入/卖出切换
+        function switchTradeSide(side) {
+            currentSide = side;
+            const buyTab = document.getElementById('buyTab');
+            const sellTab = document.getElementById('sellTab');
+            const tradeButton = document.getElementById('tradeButton');
+
+            if (side === 'buy') {
+                buyTab.className = 'buy-button flex-1 py-3 rounded-l-lg text-center font-bold text-white';
+                sellTab.className = 'bg-gray-700 hover:bg-gray-600 flex-1 py-3 rounded-r-lg text-center font-bold transition-colors';
+                tradeButton.className = 'buy-button w-full py-3 rounded-lg font-bold text-white text-lg';
+                tradeButton.setAttribute('data-zh', '买入 SAP');
+                tradeButton.setAttribute('data-en', 'Buy SAP');
+                tradeButton.textContent = currentLang === 'zh' ? '买入 SAP' : 'Buy SAP';
+            } else {
+                buyTab.className = 'bg-gray-700 hover:bg-gray-600 flex-1 py-3 rounded-l-lg text-center font-bold transition-colors';
+                sellTab.className = 'sell-button flex-1 py-3 rounded-r-lg text-center font-bold text-white';
+                tradeButton.className = 'sell-button w-full py-3 rounded-lg font-bold text-white text-lg';
+                tradeButton.setAttribute('data-zh', '卖出 SAP');
+                tradeButton.setAttribute('data-en', 'Sell SAP');
+                tradeButton.textContent = currentLang === 'zh' ? '卖出 SAP' : 'Sell SAP';
+            }
+        }
+
+        // 执行交易
+        function executeTrade() {
+            const action = currentSide === 'buy' ? '买入' : '卖出';
+            const actionEn = currentSide === 'buy' ? 'Buy' : 'Sell';
+            
+            showToast(currentLang === 'zh' ? `${action}订单提交中...` : `${actionEn} order submitting...`, 'info');
+            
+            // 模拟交易确认
+            setTimeout(() => {
+                showToast(currentLang === 'zh' ? `${action}订单已提交` : `${actionEn} order submitted`, 'success');
+                // 这里可以添加订单到我的订单列表
+            }, 2000);
+        }
+
+        // 设置订单簿点击价格
+        function setPrice(price) {
+            const priceInput = document.querySelector('input[placeholder="3.45"]');
+            if (priceInput) {
+                priceInput.value = price;
+            }
+        }
+
+        // 初始化事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            // 买入/卖出切换
+            document.getElementById('buyTab').addEventListener('click', () => switchTradeSide('buy'));
+            document.getElementById('sellTab').addEventListener('click', () => switchTradeSide('sell'));
+            
+            // 交易按钮
+            document.getElementById('tradeButton').addEventListener('click', executeTrade);
+            
+            // 订单簿价格点击
+            document.querySelectorAll('.orderbook-row').forEach(row => {
+                row.addEventListener('click', function() {
+                    const priceElement = this.querySelector('.price-up, .price-down');
+                    if (priceElement) {
+                        const price = priceElement.textContent.replace('$', '');
+                        setPrice(price);
+                    }
+                });
+            });
+
+            // 百分比按钮
+            document.querySelectorAll('.grid button').forEach((btn, index) => {
+                btn.addEventListener('click', function() {
+                    const percentages = [25, 50, 75, 100];
+                    const percentage = percentages[index];
+                    const amountInput = document.querySelector('input[placeholder="100"]');
+                    if (amountInput) {
+                        // 模拟根据百分比设置数量
+                        const maxAmount = currentSide === 'buy' ? 1000 : 1234;
+                        amountInput.value = Math.floor(maxAmount * percentage / 100);
+                    }
+                });
+            });
+
+            // 市价按钮
+            document.querySelector('[data-zh="市价"]').addEventListener('click', function() {
+                isLimitOrder = !isLimitOrder;
+                const priceInput = document.querySelector('input[placeholder="3.45"]');
+                if (priceInput) {
+                    priceInput.disabled = !isLimitOrder;
+                    if (!isLimitOrder) {
+                        priceInput.placeholder = currentLang === 'zh' ? '市价' : 'Market';
+                        priceInput.value = '';
+                    } else {
+                        priceInput.placeholder = '3.45';
+                        priceInput.value = '3.45';
+                    }
+                }
+                this.textContent = isLimitOrder ? (currentLang === 'zh' ? '市价' : 'Market') : (currentLang === 'zh' ? '限价' : 'Limit');
+            });
+        });
+
+        // Toast 提示功能
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-600');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-600');
+            } else {
+                toast.classList.add('bg-sapphire-600');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // 语言切换功能
+        function updateLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-zh], [data-en]').forEach(element => {
+                const text = element.getAttribute(`data-${lang}`);
+                if (text) {
+                    element.textContent = text;
+                }
+            });
+        }
+
+        // 监听来自父窗口的语言变更消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'LANGUAGE_CHANGE') {
+                updateLanguage(event.data.language);
+            }
+        });
+
+        // 模拟实时价格更新
+        function updatePrices() {
+            // 模拟价格波动
+            const priceElements = document.querySelectorAll('.orderbook-row .price-up, .orderbook-row .price-down');
+            priceElements.forEach(element => {
+                const currentPrice = parseFloat(element.textContent.replace('$', ''));
+                const change = (Math.random() - 0.5) * 0.02; // ±1% 波动
+                const newPrice = (currentPrice + change).toFixed(2);
+                element.textContent = `$${newPrice}`;
+                
+                // 更新颜色
+                if (change > 0) {
+                    element.className = 'price-up font-medium';
+                } else {
+                    element.className = 'price-down font-medium';
+                }
+            });
+        }
+
+        // 启动价格更新
+        setInterval(updatePrices, 3000);
+
+        console.log('Exchange page loaded');
+    </script>
+</body>
+</html> 

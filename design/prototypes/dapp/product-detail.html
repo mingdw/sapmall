@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品详情 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/dapp-common.css">
+    <style>
+        .product-detail-container {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(107, 114, 128, 0.3);
+            border-radius: 1rem;
+            min-height: 80vh;
+        }
+        
+        .product-image-large {
+            border-radius: 1rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .buy-now-btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 6px 20px rgba(79, 70, 229, 0.4),
+                0 4px 10px rgba(124, 58, 237, 0.3);
+        }
+        
+        .buy-now-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 
+                0 10px 30px rgba(79, 70, 229, 0.5),
+                0 6px 16px rgba(124, 58, 237, 0.4);
+        }
+        
+        .back-btn {
+            background: rgba(107, 114, 128, 0.2);
+            border: 1px solid rgba(107, 114, 128, 0.3);
+            color: #d1d5db;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(107, 114, 128, 0.3);
+            border-color: rgba(156, 163, 175, 0.5);
+            color: white;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen text-white">
+    <div class="container mx-auto px-6 py-8">
+        <!-- 返回按钮 -->
+        <div class="mb-6">
+            <button onclick="window.history.back()" class="back-btn">
+                <i class="fas fa-arrow-left mr-2"></i>
+                <span data-zh="返回商城" data-en="Back to Store">返回商城</span>
+            </button>
+        </div>
+        
+        <!-- 商品详情容器 -->
+        <div class="product-detail-container p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- 商品图片 -->
+                <div class="space-y-4">
+                    <img id="productImage" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop" alt="商品图片" class="product-image-large w-full h-96 object-cover">
+                    
+                    <!-- 缩略图 -->
+                    <div class="grid grid-cols-4 gap-2">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=150&h=150&fit=crop" alt="缩略图1" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=150&h=150&fit=crop" alt="缩略图2" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
+                        <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=150&h=150&fit=crop" alt="缩略图3" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
+                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=150&h=150&fit=crop" alt="缩略图4" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
+                    </div>
+                </div>
+                
+                <!-- 商品信息 -->
+                <div class="space-y-6">
+                    <!-- 商品标题和标签 -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span id="productBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white">热门</span>
+                        </div>
+                        <h1 id="productTitle" class="text-3xl font-bold text-white mb-4">区块链开发基础课程</h1>
+                        <p id="productDescription" class="text-gray-300 text-lg leading-relaxed">
+                            从零开始学习区块链核心概念，掌握智能合约开发技能，适合初学者入门。本课程包含完整的理论讲解和实战项目，帮助你快速掌握区块链开发技术。
+                        </p>
+                    </div>
+                    
+                    <!-- 价格和评分 -->
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-4xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent" id="productPrice">299</span>
+                            <span class="text-gray-400 text-lg ml-2">SAP</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span id="productRating" class="text-gray-300 font-medium">4.9</span>
+                            <span class="text-gray-500">(128 评价)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 商品详细信息 -->
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-800 p-3 rounded-lg">
+                                <span class="text-gray-400 text-sm">销量</span>
+                                <p class="text-white font-semibold">1,256</p>
+                            </div>
+                            <div class="bg-gray-800 p-3 rounded-lg">
+                                <span class="text-gray-400 text-sm">库存</span>
+                                <p class="text-white font-semibold">充足</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-800 p-4 rounded-lg">
+                            <h3 class="text-white font-semibold mb-2">课程特色</h3>
+                            <ul class="text-gray-300 space-y-1">
+                                <li><i class="fas fa-check text-green-400 mr-2"></i>理论与实践相结合</li>
+                                <li><i class="fas fa-check text-green-400 mr-2"></i>提供完整项目源码</li>
+                                <li><i class="fas fa-check text-green-400 mr-2"></i>专业讲师在线答疑</li>
+                                <li><i class="fas fa-check text-green-400 mr-2"></i>终身免费更新</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 购买按钮 -->
+                    <div class="space-y-3">
+                        <button class="buy-now-btn w-full">
+                            <i class="fas fa-shopping-cart mr-2"></i>
+                            <span data-zh="立即购买" data-en="Buy Now">立即购买</span>
+                        </button>
+                        <button class="w-full bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-600 transition-colors">
+                            <i class="fas fa-heart mr-2"></i>
+                            <span data-zh="加入收藏" data-en="Add to Favorites">加入收藏</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 商品详细描述 -->
+            <div class="mt-12 space-y-8">
+                <div class="border-t border-gray-700 pt-8">
+                    <h2 class="text-2xl font-bold text-white mb-6">商品详情</h2>
+                    <div class="prose prose-gray max-w-none">
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            这是一门专为区块链初学者设计的综合性课程。通过系统性的学习，你将掌握区块链的核心概念、技术原理和实际应用。
+                        </p>
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            课程内容包括但不限于：区块链基础概念、加密算法、智能合约开发、DeFi应用构建、NFT项目实战等。
+                        </p>
+                        <p class="text-gray-300 leading-relaxed">
+                            无论你是完全的初学者，还是有一定编程基础的开发者，这门课程都能帮助你快速进入区块链开发领域。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取URL参数
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                product: params.get('product'),
+                name: params.get('name'),
+                price: params.get('price')
+            };
+        }
+
+        // 初始化页面
+        function initPage() {
+            const params = getUrlParams();
+            
+            if (params.name) {
+                document.getElementById('productTitle').textContent = params.name;
+                document.title = `${params.name} - Sapphire Mall`;
+            }
+            
+            if (params.price) {
+                document.getElementById('productPrice').textContent = params.price;
+            }
+            
+            // 根据商品名称生成合适的图片
+            const imageMapping = {
+                '区块链': 'photo-1516321318423-f06f85e504b3',
+                '智能合约': 'photo-1551288049-bebda4e38f71',
+                'NFT': 'photo-1518709268805-4e9042af2176',
+                'DeFi': 'photo-1559526324-4b87b5e36e44',
+                'Web3': 'photo-1460925895917-afdab827c52f'
+            };
+            
+            let imageId = 'photo-1516321318423-f06f85e504b3'; // 默认图片
+            if (params.name) {
+                for (const [keyword, id] of Object.entries(imageMapping)) {
+                    if (params.name.includes(keyword)) {
+                        imageId = id;
+                        break;
+                    }
+                }
+            }
+            
+            document.getElementById('productImage').src = `https://images.unsplash.com/${imageId}?w=600&h=400&fit=crop`;
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html> 

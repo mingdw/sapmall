@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>帮助中心 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+        }
+        .glass-bg {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+        .help-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .help-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+        }
+        .category-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .category-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-1px);
+        }
+        .faq-item {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .faq-item.expanded {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .faq-content.expanded {
+            max-height: 200px;
+        }
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .contact-button {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            transition: all 0.3s ease;
+        }
+        .contact-button:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+        .guide-step {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #3b82f6;
+        }
+        .status-online {
+            background: #10b981;
+        }
+        .status-away {
+            background: #f59e0b;
+        }
+        .status-offline {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="mx-auto px-6 py-4" style="width: 90%;">
+        <!-- 帮助中心头部 -->
+        <div class="mb-8">
+            <div class="glass-bg rounded-xl p-8 text-center">
+                <h1 class="text-3xl font-bold mb-4" data-zh="帮助中心" data-en="Help Center">帮助中心</h1>
+                <p class="text-gray-400 mb-6" data-zh="欢迎来到 Sapphire Mall 帮助中心，这里为您提供全面的使用指南和技术支持" data-en="Welcome to Sapphire Mall Help Center, providing comprehensive guides and technical support">欢迎来到 Sapphire Mall 帮助中心，这里为您提供全面的使用指南和技术支持</p>
+                
+                <!-- 搜索框 -->
+                <div class="max-w-2xl mx-auto">
+                    <div class="search-box rounded-lg p-4 flex items-center">
+                        <i class="fas fa-search text-gray-400 mr-3"></i>
+                        <input type="text" placeholder="搜索帮助内容..." class="bg-transparent flex-1 outline-none text-white placeholder-gray-400" data-placeholder-zh="搜索帮助内容..." data-placeholder-en="Search help content...">
+                        <button class="contact-button text-white px-4 py-2 rounded-lg font-medium ml-3">
+                            <span data-zh="搜索" data-en="Search">搜索</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- 主要内容区域 -->
+            <div class="lg:col-span-3 space-y-6">
+                <!-- 快速分类 -->
+                <div class="glass-bg rounded-xl p-6">
+                    <h2 class="text-xl font-bold mb-6" data-zh="快速导航" data-en="Quick Navigation">快速导航</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="category-card rounded-lg p-6 text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-sapphire-500 to-sapphire-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-wallet text-white text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold mb-2" data-zh="钱包连接" data-en="Wallet Connection">钱包连接</h3>
+                            <p class="text-sm text-gray-400" data-zh="如何连接和管理您的数字钱包" data-en="How to connect and manage your digital wallet">如何连接和管理您的数字钱包</p>
+                        </div>
+
+                        <div class="category-card rounded-lg p-6 text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-exchange-alt text-white text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold mb-2" data-zh="交易操作" data-en="Trading Operations">交易操作</h3>
+                            <p class="text-sm text-gray-400" data-zh="学习如何进行安全的交易操作" data-en="Learn how to perform secure trading operations">学习如何进行安全的交易操作</p>
+                        </div>
+
+                        <div class="category-card rounded-lg p-6 text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-coins text-white text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold mb-2" data-zh="质押挖矿" data-en="Staking & Mining">质押挖矿</h3>
+                            <p class="text-sm text-gray-400" data-zh="了解质押和挖矿的操作流程" data-en="Learn about staking and mining processes">了解质押和挖矿的操作流程</p>
+                        </div>
+
+                        <div class="category-card rounded-lg p-6 text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-vote-yea text-white text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold mb-2" data-zh="DAO 治理" data-en="DAO Governance">DAO 治理</h3>
+                            <p class="text-sm text-gray-400" data-zh="参与社区治理和投票指南" data-en="Guide to community governance and voting">参与社区治理和投票指南</p>
+                        </div>
+
+                        <div class="category-card rounded-lg p-6 text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-shield-alt text-white text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold mb-2" data-zh="安全指南" data-en="Security Guide">安全指南</h3>
+                            <p class="text-sm text-gray-400" data-zh="保护您的数字资产安全" data-en="Protect your digital assets">保护您的数字资产安全</p>
+                        </div>
+
+                        <div class="category-card rounded-lg p-6 text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-bug text-white text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold mb-2" data-zh="问题排查" data-en="Troubleshooting">问题排查</h3>
+                            <p class="text-sm text-gray-400" data-zh="常见问题的解决方案" data-en="Solutions to common problems">常见问题的解决方案</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 常见问题 -->
+                <div class="glass-bg rounded-xl p-6">
+                    <h2 class="text-xl font-bold mb-6" data-zh="常见问题" data-en="Frequently Asked Questions">常见问题</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="faq-item rounded-lg p-4">
+                            <div class="flex items-center justify-between cursor-pointer" onclick="toggleFaq(this)">
+                                <h3 class="font-bold" data-zh="如何连接 MetaMask 钱包？" data-en="How to connect MetaMask wallet?">如何连接 MetaMask 钱包？</h3>
+                                <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                            </div>
+                            <div class="faq-content mt-4">
+                                <p class="text-gray-400 text-sm" data-zh="1. 确保已安装 MetaMask 浏览器插件<br>2. 点击页面右上角的"连接钱包"按钮<br>3. 选择 MetaMask 选项<br>4. 在弹出的窗口中确认连接<br>5. 连接成功后，您的钱包地址将显示在页面上" data-en="1. Ensure MetaMask browser extension is installed<br>2. Click 'Connect Wallet' button in top right<br>3. Select MetaMask option<br>4. Confirm connection in popup window<br>5. Once connected, your wallet address will display">1. 确保已安装 MetaMask 浏览器插件<br>2. 点击页面右上角的"连接钱包"按钮<br>3. 选择 MetaMask 选项<br>4. 在弹出的窗口中确认连接<br>5. 连接成功后，您的钱包地址将显示在页面上</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item rounded-lg p-4">
+                            <div class="flex items-center justify-between cursor-pointer" onclick="toggleFaq(this)">
+                                <h3 class="font-bold" data-zh="交易失败时如何处理？" data-en="What to do when transaction fails?">交易失败时如何处理？</h3>
+                                <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                            </div>
+                            <div class="faq-content mt-4">
+                                <p class="text-gray-400 text-sm" data-zh="交易失败的常见原因和解决方案：<br>• Gas 费不足：增加 Gas 费用<br>• 网络拥堵：等待网络恢复或提高 Gas 价格<br>• 余额不足：确保账户有足够资金<br>• 滑点设置过低：适当增加滑点容忍度<br>• 合约错误：联系技术支持" data-en="Common causes and solutions for failed transactions:<br>• Insufficient gas: Increase gas fee<br>• Network congestion: Wait or increase gas price<br>• Insufficient balance: Ensure enough funds<br>• Low slippage: Increase slippage tolerance<br>• Contract error: Contact technical support">交易失败的常见原因和解决方案：<br>• Gas 费不足：增加 Gas 费用<br>• 网络拥堵：等待网络恢复或提高 Gas 价格<br>• 余额不足：确保账户有足够资金<br>• 滑点设置过低：适当增加滑点容忍度<br>• 合约错误：联系技术支持</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item rounded-lg p-4">
+                            <div class="flex items-center justify-between cursor-pointer" onclick="toggleFaq(this)">
+                                <h3 class="font-bold" data-zh="如何参与质押获得收益？" data-en="How to participate in staking for rewards?">如何参与质押获得收益？</h3>
+                                <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                            </div>
+                            <div class="faq-content mt-4">
+                                <p class="text-gray-400 text-sm" data-zh="质押操作步骤：<br>1. 访问"质押"页面<br>2. 选择合适的质押池<br>3. 输入要质押的代币数量<br>4. 确认交易并支付 Gas 费<br>5. 等待交易确认<br>6. 开始获得质押奖励<br>注意：质押可能有锁定期，请仔细阅读条款" data-en="Staking procedure:<br>1. Visit 'Staking' page<br>2. Choose suitable staking pool<br>3. Enter amount to stake<br>4. Confirm transaction and pay gas<br>5. Wait for confirmation<br>6. Start earning rewards<br>Note: Staking may have lock periods">质押操作步骤：<br>1. 访问"质押"页面<br>2. 选择合适的质押池<br>3. 输入要质押的代币数量<br>4. 确认交易并支付 Gas 费<br>5. 等待交易确认<br>6. 开始获得质押奖励<br>注意：质押可能有锁定期，请仔细阅读条款</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item rounded-lg p-4">
+                            <div class="flex items-center justify-between cursor-pointer" onclick="toggleFaq(this)">
+                                <h3 class="font-bold" data-zh="如何参与 DAO 治理投票？" data-en="How to participate in DAO governance voting?">如何参与 DAO 治理投票？</h3>
+                                <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                            </div>
+                            <div class="faq-content mt-4">
+                                <p class="text-gray-400 text-sm" data-zh="参与治理投票的要求：<br>• 持有 SAP 治理代币<br>• 代币已质押或委托<br>• 在投票期间内进行投票<br>投票步骤：<br>1. 访问"DAO 治理"页面<br>2. 查看活跃提案<br>3. 阅读提案详情<br>4. 选择"赞成"、"反对"或"弃权"<br>5. 确认投票交易" data-en="Requirements for governance voting:<br>• Hold SAP governance tokens<br>• Tokens staked or delegated<br>• Vote within voting period<br>Voting steps:<br>1. Visit 'DAO Governance' page<br>2. View active proposals<br>3. Read proposal details<br>4. Choose 'For', 'Against', or 'Abstain'<br>5. Confirm voting transaction">参与治理投票的要求：<br>• 持有 SAP 治理代币<br>• 代币已质押或委托<br>• 在投票期间内进行投票<br>投票步骤：<br>1. 访问"DAO 治理"页面<br>2. 查看活跃提案<br>3. 阅读提案详情<br>4. 选择"赞成"、"反对"或"弃权"<br>5. 确认投票交易</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item rounded-lg p-4">
+                            <div class="flex items-center justify-between cursor-pointer" onclick="toggleFaq(this)">
+                                <h3 class="font-bold" data-zh="如何保护钱包安全？" data-en="How to keep wallet secure?">如何保护钱包安全？</h3>
+                                <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                            </div>
+                            <div class="faq-content mt-4">
+                                <p class="text-gray-400 text-sm" data-zh="钱包安全要点：<br>• 永远不要分享您的私钥或助记词<br>• 使用硬件钱包存储大额资产<br>• 定期更新钱包软件<br>• 只访问官方网站<br>• 仔细核实交易信息<br>• 使用多重签名钱包<br>• 保持软件和浏览器更新<br>• 警惕钓鱼网站和诈骗" data-en="Wallet security essentials:<br>• Never share private keys or seed phrases<br>• Use hardware wallets for large amounts<br>• Keep wallet software updated<br>• Only visit official websites<br>• Verify transaction details carefully<br>• Use multi-signature wallets<br>• Keep software and browsers updated<br>• Beware of phishing and scams">钱包安全要点：<br>• 永远不要分享您的私钥或助记词<br>• 使用硬件钱包存储大额资产<br>• 定期更新钱包软件<br>• 只访问官方网站<br>• 仔细核实交易信息<br>• 使用多重签名钱包<br>• 保持软件和浏览器更新<br>• 警惕钓鱼网站和诈骗</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作指南 -->
+                <div class="glass-bg rounded-xl p-6">
+                    <h2 class="text-xl font-bold mb-6" data-zh="新手指南" data-en="Beginner's Guide">新手指南</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="guide-step rounded-lg p-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-8 h-8 bg-sapphire-600 text-white rounded-full flex items-center justify-center font-bold text-sm">1</div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold mb-2" data-zh="设置数字钱包" data-en="Set Up Digital Wallet">设置数字钱包</h3>
+                                    <p class="text-gray-400 text-sm" data-zh="下载并安装 MetaMask 或其他支持的钱包，创建新钱包并安全保存助记词。" data-en="Download and install MetaMask or other supported wallets, create new wallet and securely save seed phrase.">下载并安装 MetaMask 或其他支持的钱包，创建新钱包并安全保存助记词。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="guide-step rounded-lg p-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-8 h-8 bg-sapphire-600 text-white rounded-full flex items-center justify-center font-bold text-sm">2</div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold mb-2" data-zh="连接到平台" data-en="Connect to Platform">连接到平台</h3>
+                                    <p class="text-gray-400 text-sm" data-zh="访问 Sapphire Mall，点击"连接钱包"按钮，选择您的钱包类型并完成连接。" data-en="Visit Sapphire Mall, click 'Connect Wallet' button, select your wallet type and complete connection.">访问 Sapphire Mall，点击"连接钱包"按钮，选择您的钱包类型并完成连接。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="guide-step rounded-lg p-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-8 h-8 bg-sapphire-600 text-white rounded-full flex items-center justify-center font-bold text-sm">3</div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold mb-2" data-zh="获取代币" data-en="Get Tokens">获取代币</h3>
+                                    <p class="text-gray-400 text-sm" data-zh="通过交易所购买 ETH 和 SAP 代币，或使用平台内的兑换功能。" data-en="Purchase ETH and SAP tokens through exchanges, or use the platform's exchange feature.">通过交易所购买 ETH 和 SAP 代币，或使用平台内的兑换功能。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="guide-step rounded-lg p-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-8 h-8 bg-sapphire-600 text-white rounded-full flex items-center justify-center font-bold text-sm">4</div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold mb-2" data-zh="开始交易" data-en="Start Trading">开始交易</h3>
+                                    <p class="text-gray-400 text-sm" data-zh="探索市场，进行您的第一笔交易。建议从小额开始，熟悉平台操作。" data-en="Explore the marketplace and make your first trade. Recommend starting with small amounts to familiarize with platform.">探索市场，进行您的第一笔交易。建议从小额开始，熟悉平台操作。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="guide-step rounded-lg p-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-8 h-8 bg-sapphire-600 text-white rounded-full flex items-center justify-center font-bold text-sm">5</div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold mb-2" data-zh="参与生态" data-en="Join Ecosystem">参与生态</h3>
+                                    <p class="text-gray-400 text-sm" data-zh="尝试质押、流动性挖矿和 DAO 治理，最大化您的收益和参与度。" data-en="Try staking, liquidity mining and DAO governance to maximize your returns and participation.">尝试质押、流动性挖矿和 DAO 治理，最大化您的收益和参与度。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 侧边栏 -->
+            <div class="space-y-6">
+                <!-- 在线客服 -->
+                <div class="glass-bg rounded-xl p-6">
+                    <h3 class="text-lg font-bold mb-4" data-zh="联系支持" data-en="Contact Support">联系支持</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 bg-gray-800 rounded-lg">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-3 h-3 rounded-full status-online"></div>
+                                <span class="font-medium" data-zh="在线客服" data-en="Live Chat">在线客服</span>
+                            </div>
+                            <p class="text-sm text-gray-400 mb-3" data-zh="平均响应时间：2-5 分钟" data-en="Average response: 2-5 minutes">平均响应时间：2-5 分钟</p>
+                            <button class="contact-button w-full py-2 rounded-lg font-medium text-white text-sm">
+                                <i class="fas fa-comments mr-2"></i>
+                                <span data-zh="开始对话" data-en="Start Chat">开始对话</span>
+                            </button>
+                        </div>
+
+                        <div class="p-4 bg-gray-800 rounded-lg">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-3 h-3 rounded-full status-online"></div>
+                                <span class="font-medium" data-zh="技术支持" data-en="Technical Support">技术支持</span>
+                            </div>
+                            <p class="text-sm text-gray-400 mb-3" data-zh="平均响应时间：1-4 小时" data-en="Average response: 1-4 hours">平均响应时间：1-4 小时</p>
+                            <button class="bg-purple-600 hover:bg-purple-700 w-full py-2 rounded-lg font-medium text-white text-sm transition-colors">
+                                <i class="fas fa-envelope mr-2"></i>
+                                <span data-zh="发送邮件" data-en="Send Email">发送邮件</span>
+                            </button>
+                        </div>
+
+                        <div class="p-4 bg-gray-800 rounded-lg">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-3 h-3 rounded-full status-away"></div>
+                                <span class="font-medium" data-zh="社区支持" data-en="Community Support">社区支持</span>
+                            </div>
+                            <p class="text-sm text-gray-400 mb-3" data-zh="Discord/Telegram 社群" data-en="Discord/Telegram community">Discord/Telegram 社群</p>
+                            <div class="flex space-x-2">
+                                <button class="bg-indigo-600 hover:bg-indigo-700 flex-1 py-2 rounded-lg font-medium text-white text-sm transition-colors">
+                                    <i class="fab fa-discord mr-1"></i>
+                                    Discord
+                                </button>
+                                <button class="bg-blue-600 hover:bg-blue-700 flex-1 py-2 rounded-lg font-medium text-white text-sm transition-colors">
+                                    <i class="fab fa-telegram mr-1"></i>
+                                    Telegram
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 热门文章 -->
+                <div class="glass-bg rounded-xl p-6">
+                    <h3 class="text-lg font-bold mb-4" data-zh="热门文章" data-en="Popular Articles">热门文章</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="p-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors">
+                            <div class="text-sm font-medium mb-1" data-zh="DeFi 新手完全指南" data-en="Complete DeFi Guide for Beginners">DeFi 新手完全指南</div>
+                            <div class="text-xs text-gray-400">
+                                <i class="fas fa-eye mr-1"></i>
+                                <span>12,456 </span>
+                                <span data-zh="次浏览" data-en="views">次浏览</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors">
+                            <div class="text-sm font-medium mb-1" data-zh="如何安全存储数字资产" data-en="How to Safely Store Digital Assets">如何安全存储数字资产</div>
+                            <div class="text-xs text-gray-400">
+                                <i class="fas fa-eye mr-1"></i>
+                                <span>8,923 </span>
+                                <span data-zh="次浏览" data-en="views">次浏览</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors">
+                            <div class="text-sm font-medium mb-1" data-zh="流动性挖矿详解" data-en="Liquidity Mining Explained">流动性挖矿详解</div>
+                            <div class="text-xs text-gray-400">
+                                <i class="fas fa-eye mr-1"></i>
+                                <span>7,234 </span>
+                                <span data-zh="次浏览" data-en="views">次浏览</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors">
+                            <div class="text-sm font-medium mb-1" data-zh="Gas 费优化技巧" data-en="Gas Fee Optimization Tips">Gas 费优化技巧</div>
+                            <div class="text-xs text-gray-400">
+                                <i class="fas fa-eye mr-1"></i>
+                                <span>6,789 </span>
+                                <span data-zh="次浏览" data-en="views">次浏览</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors">
+                            <div class="text-sm font-medium mb-1" data-zh="智能合约安全指南" data-en="Smart Contract Security Guide">智能合约安全指南</div>
+                            <div class="text-xs text-gray-400">
+                                <i class="fas fa-eye mr-1"></i>
+                                <span>5,567 </span>
+                                <span data-zh="次浏览" data-en="views">次浏览</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full mt-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium text-sm transition-colors">
+                        <span data-zh="查看更多文章" data-en="View More Articles">查看更多文章</span>
+                    </button>
+                </div>
+
+                <!-- 系统状态 -->
+                <div class="glass-bg rounded-xl p-6">
+                    <h3 class="text-lg font-bold mb-4" data-zh="系统状态" data-en="System Status">系统状态</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm" data-zh="主网连接" data-en="Mainnet">主网连接</span>
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 rounded-full status-online mr-2"></div>
+                                <span class="text-sm text-green-400" data-zh="正常" data-en="Online">正常</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm" data-zh="交易功能" data-en="Trading">交易功能</span>
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 rounded-full status-online mr-2"></div>
+                                <span class="text-sm text-green-400" data-zh="正常" data-en="Online">正常</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm" data-zh="质押功能" data-en="Staking">质押功能</span>
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 rounded-full status-online mr-2"></div>
+                                <span class="text-sm text-green-400" data-zh="正常" data-en="Online">正常</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm" data-zh="API 服务" data-en="API Service">API 服务</span>
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 rounded-full status-away mr-2"></div>
+                                <span class="text-sm text-yellow-400" data-zh="维护中" data-en="Maintenance">维护中</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-xs text-gray-400">
+                        <span data-zh="最后更新：2 分钟前" data-en="Last updated: 2 minutes ago">最后更新：2 分钟前</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        let currentLang = 'zh';
+
+        // FAQ 展开/收起功能
+        function toggleFaq(element) {
+            const faqItem = element.closest('.faq-item');
+            const content = faqItem.querySelector('.faq-content');
+            const icon = element.querySelector('i');
+            
+            // 切换展开状态
+            faqItem.classList.toggle('expanded');
+            content.classList.toggle('expanded');
+            icon.classList.toggle('fa-chevron-down');
+            icon.classList.toggle('fa-chevron-up');
+        }
+
+        // 分类卡片点击事件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 分类卡片点击
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const categoryTitle = this.querySelector('h3').textContent;
+                    showToast(currentLang === 'zh' ? `正在加载"${categoryTitle}"相关内容...` : `Loading "${categoryTitle}" content...`, 'info');
+                });
+            });
+
+            // 搜索功能
+            const searchButton = document.querySelector('.search-box button');
+            const searchInput = document.querySelector('.search-box input');
+            
+            searchButton.addEventListener('click', function() {
+                const query = searchInput.value.trim();
+                if (query) {
+                    showToast(currentLang === 'zh' ? `正在搜索"${query}"...` : `Searching for "${query}"...`, 'info');
+                } else {
+                    showToast(currentLang === 'zh' ? '请输入搜索内容' : 'Please enter search term', 'error');
+                }
+            });
+
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchButton.click();
+                }
+            });
+
+            // 联系支持按钮
+            document.querySelectorAll('.contact-button, .bg-purple-600, .bg-indigo-600, .bg-blue-600').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const action = this.textContent.trim();
+                    showToast(currentLang === 'zh' ? `正在${action}...` : `${action}...`, 'info');
+                });
+            });
+
+            // 热门文章点击
+            document.querySelectorAll('.space-y-3 .p-3').forEach(article => {
+                article.addEventListener('click', function() {
+                    const title = this.querySelector('.font-medium').textContent;
+                    showToast(currentLang === 'zh' ? `正在打开文章：${title}` : `Opening article: ${title}`, 'info');
+                });
+            });
+        });
+
+        // Toast 提示功能
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-600');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-600');
+            } else {
+                toast.classList.add('bg-sapphire-600');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // 语言切换功能
+        function updateLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-zh], [data-en]').forEach(element => {
+                const text = element.getAttribute(`data-${lang}`);
+                if (text) {
+                    element.innerHTML = text; // 使用 innerHTML 支持 <br> 标签
+                }
+            });
+            
+            // 更新搜索框占位符
+            const searchInput = document.querySelector('.search-box input');
+            if (searchInput) {
+                const placeholder = searchInput.getAttribute(`data-placeholder-${lang}`);
+                if (placeholder) {
+                    searchInput.placeholder = placeholder;
+                }
+            }
+        }
+
+        // 监听来自父窗口的语言变更消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'LANGUAGE_CHANGE') {
+                updateLanguage(event.data.language);
+            }
+        });
+
+        console.log('Help page loaded');
+    </script>
+</body>
+</html> 

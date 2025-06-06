@@ -1,0 +1,314 @@
+/* DApp 通用样式文件 */
+
+/* 页面基础样式 */
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+}
+
+/* 玻璃效果 */
+.glass-bg {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+/* 筛选卡片 */
+.filter-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1 !important;
+}
+
+.filter-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* 商品目录筛选按钮 */
+.category-item {
+    transition: all 0.3s ease;
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(107, 114, 128, 0.15);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+}
+
+.category-item:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.category-item.active {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.category-item.active:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-1px);
+}
+
+.category-item.active .category-icon {
+    color: white !important;
+}
+
+.category-item.active .category-count {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+/* 图标样式 */
+.category-icon {
+    transition: all 0.3s ease;
+}
+
+.category-item:hover .category-icon {
+    transform: scale(1.1);
+}
+
+/* 商品数量标签 */
+.category-count {
+    background: rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.75rem;
+    min-width: 28px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.category-item:hover .category-count {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+}
+
+/* 下拉菜单 */
+.dropdown-menu {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.3s ease;
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(107, 114, 128, 0.3);
+    z-index: 99999 !important;
+    position: absolute !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.category-item:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* 通过JavaScript控制的显示状态 */
+.dropdown-menu.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    z-index: 99999 !important;
+}
+
+/* 下拉菜单项样式 */
+.dropdown-menu a {
+    transition: all 0.2s ease;
+    border-radius: 0.375rem;
+    margin: 0 0.25rem;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(59, 130, 246, 0.15) !important;
+    color: #60a5fa !important;
+    transform: translateX(4px);
+}
+
+/* 筛选标签 */
+.filter-tag {
+    background: rgba(255, 255, 255, 0.05);
+    color: #e2e8f0;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.filter-tag:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
+}
+
+.filter-tag.selected {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+/* 商品卡片 */
+.product-card {
+    transition: all 0.3s ease;
+    background: rgba(31, 41, 55, 0.3);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(107, 114, 128, 0.2);
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(59, 130, 246, 0.15);
+    border-color: #60a5fa;
+}
+
+/* 分类区域卡片 */
+.section-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+/* 展开/收起按钮 */
+.more-btn {
+    background: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+    transition: all 0.3s ease;
+}
+
+.more-btn:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
+}
+
+/* 折叠动画 */
+.collapse-transition {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.collapse-transition.show {
+    max-height: 200px;
+}
+
+/* 清除按钮 */
+.clear-btn {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    transition: all 0.3s ease;
+}
+
+.clear-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.clear-single-btn {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    transition: all 0.3s ease;
+}
+
+.clear-single-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+/* 分类商品卡片 */
+.category-section-card {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    cursor: pointer;
+    background: rgba(31, 41, 55, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(107, 114, 128, 0.2);
+}
+
+.category-section-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+    border-color: #3b82f6;
+}
+
+.category-section-card:hover .category-icon {
+    transform: scale(1.15) rotate(-5deg);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+/* 查看更多按钮 */
+.view-more-btn {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #60a5fa;
+    transition: all 0.3s ease;
+}
+
+.view-more-btn:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .category-item {
+        font-size: 0.875rem;
+    }
+    
+    .filter-tag {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .product-card {
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .category-section-card {
+        padding: 1rem;
+    }
+    
+    .category-section-card:hover {
+        transform: translateY(-4px) scale(1.01);
+    }
+}
+
+/* 筛选容器的层级调整 */
+#filterContainer {
+    position: relative;
+    z-index: 1 !important;
+}
+
+/* 统一筛选条件的垂直间距 */
+#filterContainer .space-y-3 > div {
+    margin-bottom: 0.75rem; /* 12px - 统一间距 */
+}
+
+#filterContainer .space-y-3 > div:last-child {
+    margin-bottom: 0; /* 最后一项不要下边距 */
+}
+
+/* 确保展开区域内的筛选条件也使用相同间距 */
+#moreFilters > div {
+    margin-bottom: 0.75rem !important; /* 12px - 与基础筛选条件保持一致 */
+}
+
+#moreFilters > div:last-child {
+    margin-bottom: 0 !important; /* 最后一项不要下边距 */
+}
+
+/* 覆盖Tailwind的space-y-3类，确保一致性 */
+#filterContainer .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.75rem; /* 12px */
+}
+
+/* 商品目录容器层级 */
+#categoryContainer {
+    position: relative;
+    z-index: 10;
+} 

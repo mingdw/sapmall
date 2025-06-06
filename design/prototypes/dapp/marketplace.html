@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代币商城 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/dapp-common.css">
+    <link rel="stylesheet" href="css/marketplace.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen text-white">
+    <!-- 主容器 -->
+    <div class="mx-auto px-6 py-4" style="width: 90%;">
+        <!-- 商品筛选区域 -->
+        <div class="mb-6">
+            <!-- 统一筛选区域 -->
+            <div class="filter-card rounded-xl p-4">
+                <!-- 商品目录筛选 -->
+                <div id="categoryContainer" class="mb-2">
+                    <div class="flex flex-wrap items-start justify-between">
+                        <div class="flex flex-wrap gap-2 items-start flex-1 min-w-0">
+                            <span class="text-xs font-medium text-gray-400 flex-shrink-0 w-[68px] h-[36px] flex items-center" data-zh="商品目录" data-en="Categories">商品目录</span>
+                            
+                            <!-- 筛选按钮区域 -->
+                            <div class="flex flex-wrap gap-2 items-center flex-1">
+                                <!-- 全部商品 -->
+                                <div class="category-item active px-3 py-2 rounded-lg font-medium cursor-pointer">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-th-large category-icon" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="全部商品" data-en="All Products">全部商品</span>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="198" data-en="198">198</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- 在线课程 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-graduation-cap category-icon text-blue-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="在线课程" data-en="Online Courses">在线课程</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="15" data-en="15">15</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="区块链开发" data-en="Blockchain Dev">区块链开发</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="智能合约" data-en="Smart Contract">智能合约</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="DeFi协议" data-en="DeFi Protocol">DeFi协议</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="NFT创作" data-en="NFT Creation">NFT创作</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 数字艺术 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-palette category-icon text-pink-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="数字艺术" data-en="Digital Art">数字艺术</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="22" data-en="22">22</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="AI生成艺术" data-en="AI Generated Art">AI生成艺术</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="3D模型" data-en="3D Models">3D模型</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="动画视频" data-en="Animated Videos">动画视频</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="插画设计" data-en="Illustrations">插画设计</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 开发工具 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-code category-icon text-green-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="开发工具" data-en="Dev Tools">开发工具</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="18" data-en="18">18</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="代码模板" data-en="Code Templates">代码模板</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="开发框架" data-en="Frameworks">开发框架</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="测试工具" data-en="Testing Tools">测试工具</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="部署脚本" data-en="Deploy Scripts">部署脚本</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 游戏道具 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-gamepad category-icon text-orange-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="游戏道具" data-en="Game Items">游戏道具</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="35" data-en="35">35</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="武器装备" data-en="Weapons & Gear">武器装备</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="角色皮肤" data-en="Character Skins">角色皮肤</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="虚拟土地" data-en="Virtual Land">虚拟土地</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="收藏品" data-en="Collectibles">收藏品</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 数据分析 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-chart-line category-icon text-purple-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="数据分析" data-en="Data Analytics">数据分析</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="12" data-en="12">12</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="交易分析" data-en="Trading Analysis">交易分析</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="链上数据" data-en="On-chain Data">链上数据</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="价格预测" data-en="Price Prediction">价格预测</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 虚拟现实 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-vr-cardboard category-icon text-cyan-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="虚拟现实" data-en="Virtual Reality">虚拟现实</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="28" data-en="28">28</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="VR应用" data-en="VR Apps">VR应用</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="VR游戏" data-en="VR Games">VR游戏</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="3D场景" data-en="3D Scenes">3D场景</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="VR展示" data-en="VR Exhibition">VR展示</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 元宇宙 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-globe category-icon text-teal-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="元宇宙" data-en="Metaverse">元宇宙</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="45" data-en="45">45</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="虚拟世界" data-en="Virtual Worlds">虚拟世界</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="数字身份" data-en="Digital Identity">数字身份</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="虚拟资产" data-en="Virtual Assets">虚拟资产</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="社交空间" data-en="Social Spaces">社交空间</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Web3社交 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-users category-icon text-amber-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="Web3社交" data-en="Web3 Social">Web3社交</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="31" data-en="31">31</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="社交应用" data-en="Social Apps">社交应用</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="DAO治理" data-en="DAO Governance">DAO治理</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="社区代币" data-en="Community Tokens">社区代币</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="去中心化身份" data-en="DID">去中心化身份</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- DeFi协议 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-coins category-icon text-yellow-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="DeFi协议" data-en="DeFi Protocol">DeFi协议</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="67" data-en="67">67</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="流动性挖矿" data-en="Liquidity Mining">流动性挖矿</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="借贷协议" data-en="Lending Protocol">借贷协议</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="DEX交易" data-en="DEX Trading">DEX交易</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="收益聚合器" data-en="Yield Aggregator">收益聚合器</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- NFT市场 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-image category-icon text-rose-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="NFT市场" data-en="NFT Market">NFT市场</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="89" data-en="89">89</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="艺术收藏" data-en="Art Collection">艺术收藏</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="音乐NFT" data-en="Music NFT">音乐NFT</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="域名NFT" data-en="Domain NFT">域名NFT</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="PFP头像" data-en="PFP Avatar">PFP头像</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 加密钱包 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-wallet category-icon text-emerald-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="加密钱包" data-en="Crypto Wallet">加密钱包</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="24" data-en="24">24</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="硬件钱包" data-en="Hardware Wallet">硬件钱包</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="软件钱包" data-en="Software Wallet">软件钱包</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="多签钱包" data-en="Multi-sig Wallet">多签钱包</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="钱包插件" data-en="Wallet Extensions">钱包插件</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 区块链基础设施 -->
+                                <div class="category-item px-3 py-2 rounded-lg font-medium cursor-pointer relative">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center space-x-2">
+                                            <i class="fas fa-server category-icon text-slate-400" style="font-size: 0.875rem;"></i>
+                                            <span class="text-sm font-medium" data-zh="区块链基础设施" data-en="Infrastructure">区块链基础设施</span>
+                                            <i class="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
+                                        </div>
+                                        <span class="category-count rounded-full">
+                                            <span data-zh="19" data-en="19">19</span>
+                                        </span>
+                                    </div>
+                                    <div class="dropdown-menu absolute top-full left-0 mt-2 rounded-lg shadow-lg min-w-[160px] z-50">
+                                        <div class="py-2">
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="节点服务" data-en="Node Services">节点服务</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="API服务" data-en="API Services">API服务</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="存储网络" data-en="Storage Network">存储网络</a>
+                                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white" data-zh="跨链桥" data-en="Cross-chain Bridge">跨链桥</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 搜索框 -->
+                        <div class="flex-shrink-0 ml-6 flex items-center">
+                            <div class="flex gap-2 items-center">
+                                <div class="relative">
+                                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                                    <input type="text" placeholder="搜索商品..." class="search-input w-72 pl-9 pr-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-sapphire-500 focus:outline-none focus:bg-gray-700 transition-all text-sm" data-placeholder-zh="搜索商品..." data-placeholder-en="Search products...">
+                                </div>
+                                <button id="searchBtn" class="bg-sapphire-600 hover:bg-sapphire-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors whitespace-nowrap">
+                                    <span data-zh="筛选商品" data-en="Filter Products">筛选商品</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分隔线 -->
+                <div class="border-t border-gray-600 my-4"></div>
+
+                <!-- 其他筛选条件 -->
+                <div id="filterContainer">
+                    <div class="space-y-3 relative">
+                        <!-- 价格范围 -->
+                        <div class="flex flex-wrap gap-2 items-center justify-between">
+                            <div class="flex flex-wrap gap-2 items-center">
+                                <span class="text-xs font-medium text-gray-400 min-w-[50px]" data-zh="价格" data-en="Price">价格</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="0-50 SAP" data-en="0-50 SAP">0-50 SAP</button>
+                                    <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="50-200 SAP" data-en="50-200 SAP">50-200 SAP</button>
+                                    <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="200-500 SAP" data-en="200-500 SAP">200-500 SAP</button>
+                                    <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="500+ SAP" data-en="500+ SAP">500+ SAP</button>
+                                    <button id="clearPriceBtn" class="clear-single-btn px-2.5 py-1 rounded-md text-xs" style="display: none;">
+                                        <i class="fas fa-times mr-1"></i>
+                                        <span data-zh="清除" data-en="Clear">清除</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 评分 -->
+                        <div class="flex flex-wrap gap-2 items-center justify-between">
+                            <div class="flex flex-wrap gap-2 items-center">
+                                <span class="text-xs font-medium text-gray-400 min-w-[50px]" data-zh="评分" data-en="Rating">评分</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="filter-tag px-2.5 py-1 rounded-md text-xs">
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>4.5+
+                                    </button>
+                                    <button class="filter-tag px-2.5 py-1 rounded-md text-xs">
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>4.0+
+                                    </button>
+                                    <button class="filter-tag px-2.5 py-1 rounded-md text-xs">
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>3.5+
+                                    </button>
+                                    <button id="clearRatingBtn" class="clear-single-btn px-2.5 py-1 rounded-md text-xs" style="display: none;">
+                                        <i class="fas fa-times mr-1"></i>
+                                        <span data-zh="清除" data-en="Clear">清除</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 销量 -->
+                        <div class="flex flex-wrap gap-2 items-center justify-between">
+                            <div class="flex flex-wrap gap-2 items-center">
+                                <span class="text-xs font-medium text-gray-400 min-w-[50px]" data-zh="销量" data-en="Sales">销量</span>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="100+ 销量" data-en="100+ Sales">100+ 销量</button>
+                                    <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="500+ 销量" data-en="500+ Sales">500+ 销量</button>
+                                    <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="1000+ 销量" data-en="1000+ Sales">1000+ 销量</button>
+                                    <button id="clearSalesBtn" class="clear-single-btn px-2.5 py-1 rounded-md text-xs" style="display: none;">
+                                        <i class="fas fa-times mr-1"></i>
+                                        <span data-zh="清除" data-en="Clear">清除</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- 操作按钮 - 当收起时显示在销量行 -->
+                            <div id="mainActionButtons" class="flex gap-2">
+                                <button id="clearAllFiltersBtn" class="clear-btn px-3 py-1.5 rounded-lg font-medium text-xs">
+                                    <i class="fas fa-trash mr-1"></i>
+                                    <span data-zh="清空筛选" data-en="Clear All">清空筛选</span>
+                                </button>
+                                <button id="moreFiltersBtn" class="more-btn px-3 py-1.5 rounded-lg font-medium text-xs">
+                                    <span data-zh="展开筛选" data-en="Show More">展开筛选</span>
+                                    <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 展开的筛选条件 -->
+                        <div id="moreFilters" style="display: none;">
+                            <!-- 发布时间 -->
+                            <div class="flex flex-wrap gap-2 items-center justify-between">
+                                <div class="flex flex-wrap gap-2 items-center">
+                                    <span class="text-xs font-medium text-gray-400 min-w-[50px]" data-zh="时间" data-en="Time">时间</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="最近一周" data-en="Last Week">最近一周</button>
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="最近一月" data-en="Last Month">最近一月</button>
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="最近三月" data-en="Last 3 Months">最近三月</button>
+                                        <button id="clearTimeBtn" class="clear-single-btn px-2.5 py-1 rounded-md text-xs" style="display: none;">
+                                            <i class="fas fa-times mr-1"></i>
+                                            <span data-zh="清除" data-en="Clear">清除</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 商品类型 -->
+                            <div class="flex flex-wrap gap-2 items-center justify-between">
+                                <div class="flex flex-wrap gap-2 items-center">
+                                    <span class="text-xs font-medium text-gray-400 min-w-[50px]" data-zh="类型" data-en="Type">类型</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="数字商品" data-en="Digital Goods">数字商品</button>
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="服务类" data-en="Services">服务类</button>
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="订阅制" data-en="Subscription">订阅制</button>
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="一次性购买" data-en="One-time Purchase">一次性购买</button>
+                                        <button id="clearTypeBtn" class="clear-single-btn px-2.5 py-1 rounded-md text-xs" style="display: none;">
+                                            <i class="fas fa-times mr-1"></i>
+                                            <span data-zh="清除" data-en="Clear">清除</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 商家信誉 -->
+                            <div class="flex flex-wrap gap-2 items-center justify-between">
+                                <div class="flex flex-wrap gap-2 items-center">
+                                    <span class="text-xs font-medium text-gray-400 min-w-[50px]" data-zh="商家" data-en="Seller">商家</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="官方认证" data-en="Official Verified">官方认证</button>
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="高信誉商家" data-en="Top Rated">高信誉商家</button>
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="新商家" data-en="New Seller">新商家</button>
+                                        <button id="clearSellerBtn" class="clear-single-btn px-2.5 py-1 rounded-md text-xs" style="display: none;">
+                                            <i class="fas fa-times mr-1"></i>
+                                            <span data-zh="清除" data-en="Clear">清除</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 特色标签 - 最后一行 -->
+                            <div class="flex flex-wrap gap-2 items-center justify-between">
+                                <div class="flex flex-wrap gap-2 items-center">
+                                    <span class="text-xs font-medium text-gray-400 min-w-[50px]" data-zh="特色" data-en="Features">特色</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="限时折扣" data-en="Limited Offer">限时折扣</button>
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="免费试用" data-en="Free Trial">免费试用</button>
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="开源项目" data-en="Open Source">开源项目</button>
+                                        <button class="filter-tag px-2.5 py-1 rounded-md text-xs" data-zh="独家发布" data-en="Exclusive">独家发布</button>
+                                        <button id="clearFeatureBtn" class="clear-single-btn px-2.5 py-1 rounded-md text-xs" style="display: none;">
+                                            <i class="fas fa-times mr-1"></i>
+                                            <span data-zh="清除" data-en="Clear">清除</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- 操作按钮 - 当展开时显示在特色行 -->
+                                <div id="expandedActionButtons" class="flex gap-2" style="display: none;">
+                                    <button id="clearAllFiltersBtn2" class="clear-btn px-3 py-1.5 rounded-lg font-medium text-xs">
+                                        <i class="fas fa-trash mr-1"></i>
+                                        <span data-zh="清空筛选" data-en="Clear All">清空筛选</span>
+                                    </button>
+                                    <button id="moreFiltersBtn2" class="more-btn px-3 py-1.5 rounded-lg font-medium text-xs">
+                                        <span data-zh="收起筛选" data-en="Show Less">收起筛选</span>
+                                        <i class="fas fa-chevron-up ml-1 text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品列表展示区域 -->
+        <div class="space-y-6">
+            <!-- 1. 在线课程类别 -->
+            <div class="category-main-card">
+                <div class="category-main-header">
+                    <div class="category-main-title">
+                        <div class="category-main-icon bg-gradient-to-br from-blue-500 to-indigo-600">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="category-main-info">
+                            <h3 data-zh="在线课程" data-en="Online Courses">在线课程</h3>
+                            <span class="category-item-count" data-zh="15个商品" data-en="15 items">15个商品</span>
+                        </div>
+                    </div>
+                    <button class="category-more-btn">
+                        <span data-zh="更多" data-en="More">更多</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <!-- 商品网格 - 2行5列 -->
+                <div class="grid grid-cols-5 gap-4">
+                    <!-- 第一行 -->
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=300&h=200&fit=crop" alt="区块链开发课程" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge hot">热门</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">区块链开发基础课程</h4>
+                            <p class="product-description">从零开始学习区块链核心概念，掌握智能合约开发技能，适合初学者入门。</p>
+                            <div class="product-meta">
+                                <span class="product-price">299</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&h=200&fit=crop" alt="智能合约开发" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge new">新品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">智能合约开发实战</h4>
+                            <p class="product-description">深入学习Solidity编程，实战开发DeFi项目，包含完整项目源码。</p>
+                            <div class="product-meta">
+                                <span class="product-price">399</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=300&h=200&fit=crop" alt="DeFi协议分析" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge featured">精品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">DeFi协议深度分析</h4>
+                            <p class="product-description">解析主流DeFi协议运作机制，掌握流动性挖矿和收益策略。</p>
+                            <div class="product-meta">
+                                <span class="product-price">199</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.7</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=200&fit=crop" alt="NFT创作技巧" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge art">艺术</div>
+                                <div class="product-badge featured">精品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">NFT创作与营销策略</h4>
+                            <p class="product-description">学习NFT设计理念，掌握铸造流程和营销推广技巧。</p>
+                            <div class="product-meta">
+                                <span class="product-price">159</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.6</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop" alt="Web3开发实战" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge tool">实战</div>
+                                <div class="product-badge hot">热门</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">Web3全栈开发实战</h4>
+                            <p class="product-description">构建完整Web3应用，包含前端交互和智能合约集成。</p>
+                            <div class="product-meta">
+                                <span class="product-price">499</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <!-- 第二行 -->
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=300&h=200&fit=crop" alt="加密货币投资" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge legendary">投资</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">加密货币投资策略</h4>
+                            <p class="product-description">系统学习数字资产投资方法，掌握风险控制和资产配置。</p>
+                            <div class="product-meta">
+                                <span class="product-price">259</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=300&h=200&fit=crop" alt="区块链安全" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge tool">安全</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">区块链安全防护</h4>
+                            <p class="product-description">学习智能合约安全审计，掌握常见漏洞防护方法。</p>
+                            <div class="product-meta">
+                                <span class="product-price">299</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.7</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&h=200&fit=crop" alt="以太坊开发" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge epic">以太坊</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">以太坊DApp开发</h4>
+                            <p class="product-description">专注以太坊生态开发，涵盖Layer2解决方案和优化技巧。</p>
+                            <div class="product-meta">
+                                <span class="product-price">399</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=300&h=200&fit=crop" alt="Solana开发" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge featured">Solana</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">Solana生态开发</h4>
+                            <p class="product-description">掌握Solana高性能区块链开发，学习Rust编程和SPL代币。</p>
+                            <div class="product-meta">
+                                <span class="product-price">299</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.6</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=200&fit=crop" alt="区块链游戏开发" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge mythical">游戏</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">区块链游戏开发</h4>
+                            <p class="product-description">学习GameFi开发流程，构建Play-to-Earn游戏经济模型。</p>
+                            <div class="product-meta">
+                                <span class="product-price">599</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 数字艺术类别 -->
+            <div class="category-main-card">
+                <div class="category-main-header">
+                    <div class="category-main-title">
+                        <div class="category-main-icon bg-gradient-to-br from-pink-500 to-purple-600">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <div class="category-main-info">
+                            <h3 data-zh="数字艺术" data-en="Digital Art">数字艺术</h3>
+                            <span class="category-item-count" data-zh="22个商品" data-en="22 items">22个商品</span>
+                        </div>
+                    </div>
+                    <button class="category-more-btn">
+                        <span data-zh="更多" data-en="More">更多</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <!-- 商品网格 - 2行5列 -->
+                <div class="grid grid-cols-5 gap-4">
+                    <!-- 第一行 -->
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=200&fit=crop" alt="像素艺术NFT" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge art">艺术</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">像素艺术NFT集合</h4>
+                            <p class="product-description">原创像素风格数字艺术作品，独特的8-bit美学设计，限量发行。</p>
+                            <div class="product-meta">
+                                <span class="product-price">1299</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop" alt="抽象数字艺术" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge featured">精品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">抽象数字艺术</h4>
+                            <p class="product-description">现代抽象风格数字创作，运用AI辅助生成的独特视觉效果。</p>
+                            <div class="product-meta">
+                                <span class="product-price">899</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.7</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=300&h=200&fit=crop" alt="3D艺术作品" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge epic">史诗</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">3D数字雕塑</h4>
+                            <p class="product-description">高精度3D建模艺术作品，展现数字雕塑的美学价值和技术创新。</p>
+                            <div class="product-meta">
+                                <span class="product-price">2199</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1516245834210-c4c142787335?w=300&h=200&fit=crop" alt="生成艺术" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge hot">热门</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">算法生成艺术</h4>
+                            <p class="product-description">基于数学算法生成的独特图案，每个作品都是程序化的艺术创作。</p>
+                            <div class="product-meta">
+                                <span class="product-price">699</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.6</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=300&h=200&fit=crop" alt="数字插画" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge new">新品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">数字插画作品</h4>
+                            <p class="product-description">手绘风格数字插画，融合传统艺术技法与现代数字媒体。</p>
+                            <div class="product-meta">
+                                <span class="product-price">459</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.5</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <!-- 第二行 -->
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1553356084-58ef4a67b2a7?w=300&h=200&fit=crop" alt="动态艺术" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge mythical">传奇</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">动态视觉艺术</h4>
+                            <p class="product-description">动画效果数字艺术作品，结合音频与视觉的多媒体创作。</p>
+                            <div class="product-meta">
+                                <span class="product-price">3299</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=300&h=200&fit=crop" alt="摄影艺术" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge art">摄影</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">数字摄影艺术</h4>
+                            <p class="product-description">后期处理的摄影作品，展现数字技术对传统摄影的创新运用。</p>
+                            <div class="product-meta">
+                                <span class="product-price">799</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.7</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=300&h=200&fit=crop" alt="虚拟现实艺术" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge legendary">VR</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">VR沉浸式艺术</h4>
+                            <p class="product-description">虚拟现实环境中的艺术体验，提供沉浸式的视觉艺术感受。</p>
+                            <div class="product-meta">
+                                <span class="product-price">1899</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop" alt="AI艺术" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge tool">AI</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">AI协作艺术</h4>
+                            <p class="product-description">人工智能辅助创作的艺术作品，探索人机协作的创作可能。</p>
+                            <div class="product-meta">
+                                <span class="product-price">999</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.6</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=300&h=200&fit=crop" alt="概念艺术" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge featured">概念</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">概念设计艺术</h4>
+                            <p class="product-description">游戏和影视概念设计作品，展现想象力与设计技能的完美结合。</p>
+                            <div class="product-meta">
+                                <span class="product-price">1199</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.7</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 开发工具类别 -->
+            <div class="category-main-card">
+                <div class="category-main-header">
+                    <div class="category-main-title">
+                        <div class="category-main-icon bg-gradient-to-br from-green-500 to-emerald-600">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="category-main-info">
+                            <h3 data-zh="开发工具" data-en="Dev Tools">开发工具</h3>
+                            <span class="category-item-count" data-zh="8个商品" data-en="8 items">8个商品</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 商品网格 - 只有8个商品，不足10个 -->
+                <div class="grid grid-cols-5 gap-4">
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=300&h=200&fit=crop" alt="智能合约模板" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge tool">工具</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">智能合约模板</h4>
+                            <p class="product-description">预构建的智能合约模板库，包含常用DeFi和NFT合约模板，加速开发流程。</p>
+                            <div class="product-meta">
+                                <span class="product-price">99</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1618477371303-b2a56f422d9e?w=300&h=200&fit=crop" alt="DApp开发框架" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge new">新品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">DApp开发框架</h4>
+                            <p class="product-description">完整的DApp开发框架，支持多链部署，内置用户界面组件和钱包集成。</p>
+                            <div class="product-meta">
+                                <span class="product-price">199</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=300&h=200&fit=crop" alt="自动化测试套件" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge featured">精品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">自动化测试套件</h4>
+                            <p class="product-description">智能合约自动化测试工具，支持单元测试、集成测试和安全测试。</p>
+                            <div class="product-meta">
+                                <span class="product-price">149</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.7</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=300&h=200&fit=crop" alt="一键部署脚本" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge hot">热门</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">一键部署脚本</h4>
+                            <p class="product-description">自动化部署脚本工具，支持多网络部署和配置管理，简化部署流程。</p>
+                            <div class="product-meta">
+                                <span class="product-price">79</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.6</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=300&h=200&fit=crop" alt="安全审计工具" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge legendary">传奇</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">安全审计工具</h4>
+                            <p class="product-description">专业的智能合约安全审计工具，自动检测常见漏洞和安全风险。</p>
+                            <div class="product-meta">
+                                <span class="product-price">299</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <!-- 第二行只有3个商品 -->
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=300&h=200&fit=crop" alt="代码生成器" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge tool">生成器</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">代码生成器</h4>
+                            <p class="product-description">智能代码生成工具，基于模板快速生成合约代码和前端接口。</p>
+                            <div class="product-meta">
+                                <span class="product-price">129</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=200&fit=crop" alt="性能监控工具" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge epic">史诗</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">性能监控工具</h4>
+                            <p class="product-description">实时监控DApp性能和区块链交互，提供详细的性能分析报告。</p>
+                            <div class="product-meta">
+                                <span class="product-price">188</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.7</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=300&h=200&fit=crop" alt="API文档生成器" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge featured">精品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">API文档生成器</h4>
+                            <p class="product-description">自动生成API文档工具，支持智能合约ABI和Web3接口文档生成。</p>
+                            <div class="product-meta">
+                                <span class="product-price">89</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.6</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 游戏道具类别 -->
+            <div class="category-main-card">
+                <div class="category-main-header">
+                    <div class="category-main-title">
+                        <div class="category-main-icon bg-gradient-to-br from-orange-500 to-red-600">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="category-main-info">
+                            <h3 data-zh="游戏道具" data-en="Game Items">游戏道具</h3>
+                            <span class="category-item-count" data-zh="35个商品" data-en="35 items">35个商品</span>
+                        </div>
+                    </div>
+                    <button class="category-more-btn">
+                        <span data-zh="更多" data-en="More">更多</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <!-- 商品网格 - 2行5列 -->
+                <div class="grid grid-cols-5 gap-4">
+                    <!-- 第一行 -->
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=300&h=200&fit=crop" alt="传奇武器" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge legendary">传奇</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">龙鳞神剑</h4>
+                            <p class="product-description">传说级武器，拥有极高的攻击力和火焰附魔效果，适合战士职业使用。</p>
+                            <div class="product-meta">
+                                <span class="product-price">1299</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=200&fit=crop" alt="角色皮肤" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge epic">史诗</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">赛博朋克战士</h4>
+                            <p class="product-description">未来风格的角色皮肤，拥有炫酷的视觉效果和独特的科技感设计。</p>
+                            <div class="product-meta">
+                                <span class="product-price">599</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=200&fit=crop" alt="虚拟土地" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge mythical">神话</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">黄金矿区</h4>
+                            <p class="product-description">珍贵的虚拟土地资源，拥有丰富的矿产和建设潜力，投资价值极高。</p>
+                            <div class="product-meta">
+                                <span class="product-price">2999</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=300&h=200&fit=crop" alt="收藏品卡牌" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge featured">精品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">限量版卡牌包</h4>
+                            <p class="product-description">稀有的收藏品卡牌组合包，包含多张限量版卡牌和特殊效果。</p>
+                            <div class="product-meta">
+                                <span class="product-price">199</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.7</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=200&fit=crop" alt="魔法道具" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge hot">热门</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">时空魔法杖</h4>
+                            <p class="product-description">神秘的魔法武器，拥有操控时空的强大能力，适合法师职业使用。</p>
+                            <div class="product-meta">
+                                <span class="product-price">888</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <!-- 第二行 -->
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=300&h=200&fit=crop" alt="宠物伙伴" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge new">新品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">火焰小龙</h4>
+                            <p class="product-description">可爱的宠物伙伴，拥有火焰属性技能，能在战斗中提供支援。</p>
+                            <div class="product-meta">
+                                <span class="product-price">399</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.6</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=300&h=200&fit=crop" alt="防具套装" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge epic">史诗</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">星辰护甲套装</h4>
+                            <p class="product-description">高级防御装备套装，提供全方位保护和属性加成效果。</p>
+                            <div class="product-meta">
+                                <span class="product-price">799</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=300&h=200&fit=crop" alt="载具坐骑" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge legendary">传奇</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">机械独角兽</h4>
+                            <p class="product-description">稀有的载具坐骑，拥有超快的移动速度和独特的机械美学设计。</p>
+                            <div class="product-meta">
+                                <span class="product-price">1599</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1614728894747-a83421b2b9c9?w=300&h=200&fit=crop" alt="建筑蓝图" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge featured">精品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">城堡建筑蓝图</h4>
+                            <p class="product-description">详细的建筑设计图纸，可用于在虚拟世界中建造宏伟的城堡。</p>
+                            <div class="product-meta">
+                                <span class="product-price">299</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.7</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1543286386-713bdd548da4?w=300&h=200&fit=crop" alt="技能书籍" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge mythical">神话</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">禁咒技能书</h4>
+                            <p class="product-description">极其罕见的技能学习书籍，可以解锁强大的禁咒级别技能。</p>
+                            <div class="product-meta">
+                                <span class="product-price">2199</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 数据分析类别 -->
+            <div class="category-main-card">
+                <div class="category-main-header">
+                    <div class="category-main-title">
+                        <div class="category-main-icon bg-gradient-to-br from-purple-500 to-indigo-600">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="category-main-info">
+                            <h3 data-zh="数据分析" data-en="Data Analytics">数据分析</h3>
+                            <span class="category-item-count" data-zh="7个商品" data-en="7 items">7个商品</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 商品网格 - 只有7个商品，不足10个 -->
+                <div class="grid grid-cols-5 gap-4">
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&h=200&fit=crop" alt="交易分析工具" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge tool">分析</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">DeFi交易分析器</h4>
+                            <p class="product-description">专业的DeFi交易数据分析工具，提供实时市场洞察和交易策略建议。</p>
+                            <div class="product-meta">
+                                <span class="product-price">399</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&h=200&fit=crop" alt="链上数据" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge featured">精品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">链上数据监控</h4>
+                            <p class="product-description">全面的区块链数据监控平台，追踪地址活动和资金流向分析。</p>
+                            <div class="product-meta">
+                                <span class="product-price">299</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=300&h=200&fit=crop" alt="价格预测" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge hot">热门</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">AI价格预测模型</h4>
+                            <p class="product-description">基于机器学习的价格预测系统，提供准确的市场趋势预测。</p>
+                            <div class="product-meta">
+                                <span class="product-price">799</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.7</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=300&h=200&fit=crop" alt="风险评估" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge new">新品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">智能风险评估</h4>
+                            <p class="product-description">智能风险评估系统，自动分析投资风险和提供风险控制建议。</p>
+                            <div class="product-meta">
+                                <span class="product-price">499</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.6</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=300&h=200&fit=crop" alt="市场情报" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge legendary">传奇</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">全市场情报系统</h4>
+                            <p class="product-description">综合市场情报收集平台，提供全方位市场动态和深度分析报告。</p>
+                            <div class="product-meta">
+                                <span class="product-price">1299</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.9</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <!-- 第二行只有2个商品 -->
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=300&h=200&fit=crop" alt="投资组合" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge epic">史诗</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">智能投资组合</h4>
+                            <p class="product-description">智能化投资组合管理工具，自动优化资产配置和风险平衡策略。</p>
+                            <div class="product-meta">
+                                <span class="product-price">699</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.8</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=300&h=200&fit=crop" alt="数据可视化" class="product-image">
+                            <div class="product-badges">
+                                <div class="product-badge featured">精品</div>
+                            </div>
+                        </div>
+                        <div class="product-content">
+                            <h4 class="product-title">数据可视化面板</h4>
+                            <p class="product-description">专业的数据可视化工具，将复杂数据转化为直观的图表和报表。</p>
+                            <div class="product-meta">
+                                <span class="product-price">199</span>
+                                <div class="product-rating">
+                                    <i class="fas fa-star star"></i>
+                                    <span class="rating-text">4.7</span>
+                                </div>
+                            </div>
+                            <button class="buy-btn">立即购买</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 加载更多类别链接 -->
+            <div class="flex justify-center">
+                <a href="#" class="load-more-categories-link" id="loadMoreCategories">
+                    <span data-zh="加载更多类别" data-en="Load More Categories">加载更多类别</span>
+                    <i class="fas fa-chevron-down"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引用外部JavaScript文件 -->
+    <script src="js/dapp-common.js"></script>
+    <script src="js/marketplace.js"></script>
+</body>
+</html> 

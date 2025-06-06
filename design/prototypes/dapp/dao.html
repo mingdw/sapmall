@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAO 治理 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sapphire': {
+                            50: '#eff6ff',
+                            100: '#dbeafe', 
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+        }
+        .glass-bg {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+        .proposal-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .proposal-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+        }
+        .vote-for {
+            background: linear-gradient(135deg, #10b981, #059669);
+            transition: all 0.3s ease;
+        }
+        .vote-for:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        .vote-against {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            transition: all 0.3s ease;
+        }
+        .vote-against:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+        .vote-abstain {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            transition: all 0.3s ease;
+        }
+        .vote-abstain:hover {
+            background: linear-gradient(135deg, #4b5563, #374151);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.4);
+        }
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        .progress-for {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+        .progress-against {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+        .progress-abstain {
+            background: linear-gradient(90deg, #6b7280, #9ca3af);
+        }
+        .status-active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-pending {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-ended {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .delegate-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .delegate-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-1px);
+        }
+        .countdown {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="mx-auto px-6 py-4" style="width: 90%;">
+        <!-- DAO 治理概览 -->
+        <div class="mb-6">
+            <div class="glass-bg rounded-xl p-6">
+                <h2 class="text-2xl font-bold mb-6 text-center" data-zh="Sapphire DAO 治理中心" data-en="Sapphire DAO Governance">Sapphire DAO 治理中心</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="glass-bg rounded-lg p-4">
+                            <div class="text-3xl font-bold text-sapphire-400 mb-2">2.4M</div>
+                            <div class="text-gray-400 text-sm" data-zh="总治理代币" data-en="Total Governance Tokens">总治理代币</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="glass-bg rounded-lg p-4">
+                            <div class="text-3xl font-bold text-green-400 mb-2">15</div>
+                            <div class="text-gray-400 text-sm" data-zh="活跃提案" data-en="Active Proposals">活跃提案</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="glass-bg rounded-lg p-4">
+                            <div class="text-3xl font-bold text-purple-400 mb-2">68%</div>
+                            <div class="text-gray-400 text-sm" data-zh="参与率" data-en="Participation Rate">参与率</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="glass-bg rounded-lg p-4">
+                            <div class="text-3xl font-bold text-yellow-400 mb-2">1,856</div>
+                            <div class="text-gray-400 text-sm" data-zh="DAO 成员" data-en="DAO Members">DAO 成员</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的治理权力 -->
+        <div class="mb-6">
+            <div class="glass-bg rounded-xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold" data-zh="我的治理权力" data-en="My Governance Power">我的治理权力</h3>
+                    <button class="bg-sapphire-600 hover:bg-sapphire-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">
+                        <i class="fas fa-plus mr-2"></i>
+                        <span data-zh="创建提案" data-en="Create Proposal">创建提案</span>
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass-bg rounded-lg p-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-sapphire-400 mb-1">15,000 SAP</div>
+                            <div class="text-gray-400 text-sm" data-zh="持有治理代币" data-en="Governance Tokens">持有治理代币</div>
+                        </div>
+                    </div>
+                    <div class="glass-bg rounded-lg p-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-400 mb-1">25,000 vSAP</div>
+                            <div class="text-gray-400 text-sm" data-zh="总投票权重" data-en="Total Voting Power">总投票权重</div>
+                        </div>
+                    </div>
+                    <div class="glass-bg rounded-lg p-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-400 mb-1">1.2%</div>
+                            <div class="text-gray-400 text-sm" data-zh="在DAO中占比" data-en="DAO Share">在DAO中占比</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 委托状态 -->
+                <div class="mt-6 p-4 bg-gray-800 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold mb-1" data-zh="投票权委托" data-en="Vote Delegation">投票权委托</h4>
+                            <p class="text-sm text-gray-400" data-zh="已委托 10,000 vSAP 给活跃代表" data-en="Delegated 10,000 vSAP to active delegate">已委托 10,000 vSAP 给活跃代表</p>
+                        </div>
+                        <button class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">
+                            <i class="fas fa-users mr-2"></i>
+                            <span data-zh="管理委托" data-en="Manage Delegation">管理委托</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- 活跃提案列表 -->
+            <div class="lg:col-span-2">
+                <div class="glass-bg rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold" data-zh="活跃提案" data-en="Active Proposals">活跃提案</h3>
+                        <div class="flex space-x-2">
+                            <button class="bg-sapphire-600 text-white px-3 py-1 rounded text-sm">
+                                <span data-zh="全部" data-en="All">全部</span>
+                            </button>
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition-colors">
+                                <span data-zh="进行中" data-en="Active">进行中</span>
+                            </button>
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition-colors">
+                                <span data-zh="已结束" data-en="Ended">已结束</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- 提案 1 -->
+                        <div class="proposal-card rounded-xl p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <span class="status-active" data-zh="投票中" data-en="Active">投票中</span>
+                                        <span class="text-sm text-gray-400">#SAP-15</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold mb-2" data-zh="降低交易手续费至 0.05%" data-en="Reduce Trading Fee to 0.05%">降低交易手续费至 0.05%</h4>
+                                    <p class="text-gray-400 text-sm mb-4" data-zh="提议将平台交易手续费从当前的 0.1% 降低至 0.05%，以提高交易量和用户体验。" data-en="Propose to reduce platform trading fee from 0.1% to 0.05% to increase trading volume and user experience.">提议将平台交易手续费从当前的 0.1% 降低至 0.05%，以提高交易量和用户体验。</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="countdown text-yellow-400 text-sm">
+                                        <span data-zh="剩余时间: " data-en="Time left: ">剩余时间: </span>
+                                        <span>2天 15:42:33</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 投票进度 -->
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm text-gray-400 mb-2">
+                                    <span data-zh="投票进度" data-en="Voting Progress">投票进度</span>
+                                    <span>1.2M / 2.4M vSAP (50%)</span>
+                                </div>
+                                <div class="progress-bar mb-3">
+                                    <div class="progress-fill progress-for" style="width: 72%"></div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 text-sm">
+                                    <div class="text-center">
+                                        <div class="text-green-400 font-bold">864K vSAP</div>
+                                        <div class="text-gray-400" data-zh="赞成 (72%)" data-en="For (72%)">赞成 (72%)</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-red-400 font-bold">240K vSAP</div>
+                                        <div class="text-gray-400" data-zh="反对 (20%)" data-en="Against (20%)">反对 (20%)</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-gray-400 font-bold">96K vSAP</div>
+                                        <div class="text-gray-400" data-zh="弃权 (8%)" data-en="Abstain (8%)">弃权 (8%)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 投票按钮 -->
+                            <div class="flex space-x-3">
+                                <button class="vote-for flex-1 py-2 rounded-lg font-medium text-white text-sm">
+                                    <i class="fas fa-thumbs-up mr-2"></i>
+                                    <span data-zh="赞成" data-en="For">赞成</span>
+                                </button>
+                                <button class="vote-against flex-1 py-2 rounded-lg font-medium text-white text-sm">
+                                    <i class="fas fa-thumbs-down mr-2"></i>
+                                    <span data-zh="反对" data-en="Against">反对</span>
+                                </button>
+                                <button class="vote-abstain flex-1 py-2 rounded-lg font-medium text-white text-sm">
+                                    <i class="fas fa-minus mr-2"></i>
+                                    <span data-zh="弃权" data-en="Abstain">弃权</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 提案 2 -->
+                        <div class="proposal-card rounded-xl p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <span class="status-pending" data-zh="等待中" data-en="Pending">等待中</span>
+                                        <span class="text-sm text-gray-400">#SAP-16</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold mb-2" data-zh="新增 NFT 市场模块" data-en="Add NFT Marketplace Module">新增 NFT 市场模块</h4>
+                                    <p class="text-gray-400 text-sm mb-4" data-zh="提议在平台上新增专门的 NFT 交易市场，支持创作者发布和交易数字艺术作品。" data-en="Propose to add a dedicated NFT marketplace for creators to publish and trade digital artworks.">提议在平台上新增专门的 NFT 交易市场，支持创作者发布和交易数字艺术作品。</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="countdown text-blue-400 text-sm">
+                                        <span data-zh="开始投票: " data-en="Voting starts: ">开始投票: </span>
+                                        <span>1天 08:15:22</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 最低票数要求 -->
+                            <div class="mb-4 p-3 bg-gray-800 rounded-lg">
+                                <div class="flex justify-between text-sm">
+                                    <span data-zh="最低票数要求" data-en="Minimum Votes Required">最低票数要求</span>
+                                    <span class="font-bold">500K vSAP</span>
+                                </div>
+                                <div class="flex justify-between text-sm text-gray-400">
+                                    <span data-zh="当前提案支持" data-en="Current Support">当前提案支持</span>
+                                    <span>750K vSAP</span>
+                                </div>
+                            </div>
+
+                            <!-- 等待状态按钮 -->
+                            <button class="w-full py-2 bg-gray-700 text-gray-400 rounded-lg font-medium text-sm cursor-not-allowed">
+                                <i class="fas fa-clock mr-2"></i>
+                                <span data-zh="等待投票开始" data-en="Waiting for Voting">等待投票开始</span>
+                            </button>
+                        </div>
+
+                        <!-- 提案 3 -->
+                        <div class="proposal-card rounded-xl p-6">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <span class="status-ended" data-zh="已通过" data-en="Passed">已通过</span>
+                                        <span class="text-sm text-gray-400">#SAP-14</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold mb-2" data-zh="增加质押奖励池" data-en="Increase Staking Reward Pool">增加质押奖励池</h4>
+                                    <p class="text-gray-400 text-sm mb-4" data-zh="提议增加 500 万 SAP 到质押奖励池，以提高年化收益率。已于 3 天前执行。" data-en="Proposed to add 5M SAP to staking reward pool to increase APY. Executed 3 days ago.">提议增加 500 万 SAP 到质押奖励池，以提高年化收益率。已于 3 天前执行。</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-green-400 text-sm font-medium">
+                                        <i class="fas fa-check mr-1"></i>
+                                        <span data-zh="已执行" data-en="Executed">已执行</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 最终投票结果 -->
+                            <div class="mb-4">
+                                <div class="flex justify-between text-sm text-gray-400 mb-2">
+                                    <span data-zh="最终结果" data-en="Final Result">最终结果</span>
+                                    <span>1.8M / 2.4M vSAP (75%)</span>
+                                </div>
+                                <div class="progress-bar mb-3">
+                                    <div class="progress-fill progress-for" style="width: 85%"></div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 text-sm">
+                                    <div class="text-center">
+                                        <div class="text-green-400 font-bold">1.53M vSAP</div>
+                                        <div class="text-gray-400" data-zh="赞成 (85%)" data-en="For (85%)">赞成 (85%)</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-red-400 font-bold">180K vSAP</div>
+                                        <div class="text-gray-400" data-zh="反对 (10%)" data-en="Against (10%)">反对 (10%)</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-gray-400 font-bold">90K vSAP</div>
+                                        <div class="text-gray-400" data-zh="弃权 (5%)" data-en="Abstain (5%)">弃权 (5%)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 查看详情按钮 -->
+                            <button class="w-full py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium text-sm transition-colors">
+                                <i class="fas fa-eye mr-2"></i>
+                                <span data-zh="查看详情" data-en="View Details">查看详情</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 侧边栏 -->
+            <div class="space-y-6">
+                <!-- 委托代表 -->
+                <div class="glass-bg rounded-xl p-6">
+                    <h3 class="text-lg font-bold mb-4" data-zh="推荐代表" data-en="Recommended Delegates">推荐代表</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="delegate-card rounded-lg p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Delegate" class="w-10 h-10 rounded-full">
+                                <div class="flex-1">
+                                    <div class="font-bold text-sm">Alex Chen</div>
+                                    <div class="text-xs text-gray-400" data-zh="核心开发者" data-en="Core Developer">核心开发者</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 text-xs mb-3">
+                                <div>
+                                    <div class="text-gray-400" data-zh="委托权重" data-en="Delegated Power">委托权重</div>
+                                    <div class="font-bold">850K vSAP</div>
+                                </div>
+                                <div>
+                                    <div class="text-gray-400" data-zh="参与率" data-en="Participation">参与率</div>
+                                    <div class="font-bold text-green-400">95%</div>
+                                </div>
+                            </div>
+                            <button class="w-full py-2 bg-sapphire-600 hover:bg-sapphire-700 text-white rounded text-xs transition-colors">
+                                <span data-zh="委托投票权" data-en="Delegate Votes">委托投票权</span>
+                            </button>
+                        </div>
+
+                        <div class="delegate-card rounded-lg p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <img src="https://images.unsplash.com/photo-1494790108755-2616b6962fc6?w=40&h=40&fit=crop&crop=face" alt="Delegate" class="w-10 h-10 rounded-full">
+                                <div class="flex-1">
+                                    <div class="font-bold text-sm">Sarah Kim</div>
+                                    <div class="text-xs text-gray-400" data-zh="社区领袖" data-en="Community Leader">社区领袖</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 text-xs mb-3">
+                                <div>
+                                    <div class="text-gray-400" data-zh="委托权重" data-en="Delegated Power">委托权重</div>
+                                    <div class="font-bold">620K vSAP</div>
+                                </div>
+                                <div>
+                                    <div class="text-gray-400" data-zh="参与率" data-en="Participation">参与率</div>
+                                    <div class="font-bold text-green-400">88%</div>
+                                </div>
+                            </div>
+                            <button class="w-full py-2 bg-sapphire-600 hover:bg-sapphire-700 text-white rounded text-xs transition-colors">
+                                <span data-zh="委托投票权" data-en="Delegate Votes">委托投票权</span>
+                            </button>
+                        </div>
+
+                        <div class="delegate-card rounded-lg p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" alt="Delegate" class="w-10 h-10 rounded-full">
+                                <div class="flex-1">
+                                    <div class="font-bold text-sm">Mike Johnson</div>
+                                    <div class="text-xs text-gray-400" data-zh="投资专家" data-en="Investment Expert">投资专家</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 text-xs mb-3">
+                                <div>
+                                    <div class="text-gray-400" data-zh="委托权重" data-en="Delegated Power">委托权重</div>
+                                    <div class="font-bold">430K vSAP</div>
+                                </div>
+                                <div>
+                                    <div class="text-gray-400" data-zh="参与率" data-en="Participation">参与率</div>
+                                    <div class="font-bold text-yellow-400">76%</div>
+                                </div>
+                            </div>
+                            <button class="w-full py-2 bg-sapphire-600 hover:bg-sapphire-700 text-white rounded text-xs transition-colors">
+                                <span data-zh="委托投票权" data-en="Delegate Votes">委托投票权</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="w-full mt-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium text-sm transition-colors">
+                        <span data-zh="查看所有代表" data-en="View All Delegates">查看所有代表</span>
+                    </button>
+                </div>
+
+                <!-- 社区讨论 -->
+                <div class="glass-bg rounded-xl p-6">
+                    <h3 class="text-lg font-bold mb-4" data-zh="社区讨论" data-en="Community Forum">社区讨论</h3>
+                    
+                    <div class="space-y-3">
+                        <div class="p-3 bg-gray-800 rounded-lg">
+                            <div class="text-sm font-medium mb-1" data-zh="关于手续费调整的讨论" data-en="Discussion on Fee Adjustment">关于手续费调整的讨论</div>
+                            <div class="text-xs text-gray-400 mb-2">24 条回复 • 2 小时前</div>
+                            <div class="text-xs text-gray-300" data-zh="大部分社区成员支持降低手续费..." data-en="Most community members support fee reduction...">大部分社区成员支持降低手续费...</div>
+                        </div>
+
+                        <div class="p-3 bg-gray-800 rounded-lg">
+                            <div class="text-sm font-medium mb-1" data-zh="NFT 市场功能需求分析" data-en="NFT Market Feature Analysis">NFT 市场功能需求分析</div>
+                            <div class="text-xs text-gray-400 mb-2">18 条回复 • 5 小时前</div>
+                            <div class="text-xs text-gray-300" data-zh="创作者们期待更多的版税设置选项..." data-en="Creators expect more royalty options...">创作者们期待更多的版税设置选项...</div>
+                        </div>
+
+                        <div class="p-3 bg-gray-800 rounded-lg">
+                            <div class="text-sm font-medium mb-1" data-zh="治理代币分配机制优化" data-en="Governance Token Distribution">治理代币分配机制优化</div>
+                            <div class="text-xs text-gray-400 mb-2">31 条回复 • 1 天前</div>
+                            <div class="text-xs text-gray-300" data-zh="建议增加对长期持有者的激励..." data-en="Suggest increasing incentives for long-term holders...">建议增加对长期持有者的激励...</div>
+                        </div>
+                    </div>
+
+                    <button class="w-full mt-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-sm transition-colors">
+                        <i class="fas fa-comments mr-2"></i>
+                        <span data-zh="访问论坛" data-en="Visit Forum">访问论坛</span>
+                    </button>
+                </div>
+
+                <!-- 治理统计 -->
+                <div class="glass-bg rounded-xl p-6">
+                    <h3 class="text-lg font-bold mb-4" data-zh="治理统计" data-en="Governance Stats">治理统计</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-400" data-zh="总提案数" data-en="Total Proposals">总提案数</span>
+                            <span class="font-bold">42</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-400" data-zh="通过提案" data-en="Passed Proposals">通过提案</span>
+                            <span class="font-bold text-green-400">31</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-400" data-zh="否决提案" data-en="Rejected Proposals">否决提案</span>
+                            <span class="font-bold text-red-400">8</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-400" data-zh="平均参与率" data-en="Avg Participation">平均参与率</span>
+                            <span class="font-bold text-blue-400">68%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        let currentLang = 'zh';
+
+        // 投票功能
+        function vote(proposalId, voteType) {
+            const voteTypeZh = {
+                'for': '赞成',
+                'against': '反对',
+                'abstain': '弃权'
+            };
+            const voteTypeEn = {
+                'for': 'For',
+                'against': 'Against',
+                'abstain': 'Abstain'
+            };
+            
+            const voteText = currentLang === 'zh' ? voteTypeZh[voteType] : voteTypeEn[voteType];
+            showToast(currentLang === 'zh' ? `正在提交${voteText}投票...` : `Submitting ${voteText} vote...`, 'info');
+            
+            // 模拟投票确认
+            setTimeout(() => {
+                showToast(currentLang === 'zh' ? `${voteText}投票已提交` : `${voteText} vote submitted`, 'success');
+                // 这里可以更新投票进度
+            }, 2000);
+        }
+
+        // 委托功能
+        function delegate(delegateName) {
+            showToast(currentLang === 'zh' ? `正在委托投票权给 ${delegateName}...` : `Delegating votes to ${delegateName}...`, 'info');
+            
+            setTimeout(() => {
+                showToast(currentLang === 'zh' ? `委托成功` : `Delegation successful`, 'success');
+            }, 2000);
+        }
+
+        // 初始化事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            // 投票按钮
+            document.querySelectorAll('.vote-for').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const proposalCard = this.closest('.proposal-card');
+                    const proposalId = proposalCard.querySelector('.text-gray-400').textContent;
+                    vote(proposalId, 'for');
+                });
+            });
+
+            document.querySelectorAll('.vote-against').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const proposalCard = this.closest('.proposal-card');
+                    const proposalId = proposalCard.querySelector('.text-gray-400').textContent;
+                    vote(proposalId, 'against');
+                });
+            });
+
+            document.querySelectorAll('.vote-abstain').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const proposalCard = this.closest('.proposal-card');
+                    const proposalId = proposalCard.querySelector('.text-gray-400').textContent;
+                    vote(proposalId, 'abstain');
+                });
+            });
+
+            // 委托按钮
+            document.querySelectorAll('.delegate-card button').forEach(btn => {
+                if (btn.textContent.includes('委托') || btn.textContent.includes('Delegate')) {
+                    btn.addEventListener('click', function() {
+                        const delegateCard = this.closest('.delegate-card');
+                        const delegateName = delegateCard.querySelector('.font-bold').textContent;
+                        delegate(delegateName);
+                    });
+                }
+            });
+
+            // 创建提案按钮
+            document.querySelector('[data-zh="创建提案"]').addEventListener('click', function() {
+                showToast(currentLang === 'zh' ? '跳转至提案创建页面...' : 'Redirecting to proposal creation...', 'info');
+            });
+        });
+
+        // Toast 提示功能
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-600');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-600');
+            } else {
+                toast.classList.add('bg-sapphire-600');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // 语言切换功能
+        function updateLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-zh], [data-en]').forEach(element => {
+                const text = element.getAttribute(`data-${lang}`);
+                if (text) {
+                    element.textContent = text;
+                }
+            });
+        }
+
+        // 监听来自父窗口的语言变更消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'LANGUAGE_CHANGE') {
+                updateLanguage(event.data.language);
+            }
+        });
+
+        // 模拟倒计时更新
+        function updateCountdowns() {
+            document.querySelectorAll('.countdown span:last-child').forEach(element => {
+                // 这里应该是真实的倒计时逻辑
+                console.log('Updating countdown:', element.textContent);
+            });
+        }
+
+        setInterval(updateCountdowns, 1000);
+
+        console.log('DAO page loaded');
+    </script>
+</body>
+</html> 
