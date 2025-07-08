@@ -227,13 +227,6 @@ We have configured specialized AI Agents for project development, including:
 4. **迭代优化**: 根据实际使用效果不断优化提示词内容
 5. **版本控制**: 对提示词进行版本管理，记录改进历史
 
-#### English Guide
-1. **Clear Role Definition**: Define clear roles and responsibilities for each Agent
-2. **Structured Prompts**: Use clear formatting and hierarchical structure to organize prompts
-3. **Context Management**: Provide sufficient background information and project context
-4. **Iterative Optimization**: Continuously optimize prompt content based on actual usage results
-5. **Version Control**: Version control prompts and record improvement history
-
 ### 🔧 代码生成最佳实践
 
 #### 中文指南
@@ -243,12 +236,6 @@ We have configured specialized AI Agents for project development, including:
 4. **性能优化**: 对生成的代码进行性能分析和优化
 5. **文档完善**: 为生成的代码编写清晰的文档和注释
 
-#### English Guide
-1. **Code Review**: All AI-generated code must undergo manual review
-2. **Test Coverage**: Write complete test cases for generated code
-3. **Security Checks**: Pay special attention to security-related code and conduct specialized audits
-4. **Performance Optimization**: Conduct performance analysis and optimization of generated code
-5. **Documentation**: Write clear documentation and comments for generated code
 
 ### 🧪 AI 辅助测试策略
 
@@ -259,12 +246,6 @@ We have configured specialized AI Agents for project development, including:
 4. **安全测试**: AI 辅助进行安全漏洞扫描和渗透测试
 5. **回归测试**: 自动化回归测试，确保新功能不影响现有功能
 
-#### English Guide
-1. **Automated Test Generation**: Use AI to generate unit tests, integration tests, and end-to-end tests
-2. **Boundary Condition Testing**: AI helps identify and test boundary conditions and edge cases
-3. **Performance Testing**: Use AI to generate performance test scripts and load testing
-4. **Security Testing**: AI-assisted security vulnerability scanning and penetration testing
-5. **Regression Testing**: Automated regression testing to ensure new features don't affect existing functionality
 
 ## 📊 项目指标
 
@@ -323,21 +304,86 @@ We have configured specialized AI Agents for project development, including:
 项目主要页面截图如下，便于在 GitHub 上快速预览核心界面：
 
 <p align="center">
-  <img src="pic/homepage.png" alt="首页截图" width="800" />
-  <br />
-  <em>平台首页</em>
+  <img src="pic/官网首页_zh_01.png" alt="官网首页_zh_01" width="800" />
+  <br /><em>官网首页_zh_01</em>
 </p>
-
 <p align="center">
-  <img src="pic/dapp.png" alt="DApp主界面截图" width="800" />
-  <br />
-  <em>DApp 主界面</em>
+  <img src="pic/官网首页_zh_02.png" alt="官网首页_zh_02" width="800" />
+  <br /><em>官网首页_zh_02</em>
 </p>
-
 <p align="center">
-  <img src="pic/admin.png" alt="管理后台截图" width="800" />
-  <br />
-  <em>管理后台</em>
+  <img src="pic/官网首页_zh_03.png" alt="官网首页_zh_03" width="800" />
+  <br /><em>官网首页_zh_03</em>
 </p>
-
-<!-- 如有更多截图，可继续添加 --> 
+<p align="center">
+  <img src="pic/官网首页_en_01.png" alt="官网首页_en_01" width="800" />
+  <br /><em>官网首页_en_01</em>
+</p>
+<p align="center">
+  <img src="pic/官网首页_en_02.png" alt="官网首页_en_02" width="800" />
+  <br /><em>官网首页_en_02</em>
+</p>
+<p align="center">
+  <img src="pic/官网首页_en_03.png" alt="官网首页_en_03" width="800" />
+  <br /><em>官网首页_en_03</em>
+</p>
+<p align="center">
+  <img src="pic/dapp_zh_商城首页_01.png" alt="dapp_zh_商城首页_01" width="800" />
+  <br /><em>dapp_zh_商城首页_01</em>
+</p>
+<p align="center">
+  <img src="pic/dapp_商品明细.png" alt="dapp_商品明细" width="800" />
+  <br /><em>dapp_商品明细</em>
+</p>
+<p align="center">
+  <img src="pic/dapp_zh_兑换.png" alt="dapp_zh_兑换" width="800" />
+  <br /><em>dapp_zh_兑换</em>
+</p>
+<p align="center">
+  <img src="pic/dapp_zh_质押.png" alt="dapp_zh_质押" width="800" />
+  <br /><em>dapp_zh_质押</em>
+</p>
+<p align="center">
+  <img src="pic/dapp_en_质押.png" alt="dapp_en_质押" width="800" />
+  <br /><em>dapp_en_质押</em>
+</p>
+<p align="center">
+  <img src="pic/dao首页.png" alt="dao首页" width="800" />
+  <br /><em>dao首页</em>
+</p>
+<p align="center">
+  <img src="pic/dao投票.png" alt="dao投票" width="800" />
+  <br /><em>dao投票</em>
+</p>
+<p align="center">
+  <img src="pic/帮助中心.png" alt="帮助中心" width="800" />
+  <br /><em>帮助中心</em>
+</p>
+<p align="center">
+  <img src="pic/admin_01_普通用户的后台管理_01.png" alt="admin_01_普通用户的后台管理_01" width="800" />
+  <br /><em>admin_01_普通用户的后台管理_01</em>
+</p>
+<p align="center">
+  <img src="pic/admin_01_普通用户的后台管理_02.png" alt="admin_01_普通用户的后台管理_02" width="800" />
+  <br /><em>admin_01_普通用户的后台管理_02</em>
+</p>
+<p align="center">
+  <img src="pic/admin_普通用户.png" alt="admin_普通用户" width="800" />
+  <br /><em>admin_普通用户</em>
+</p>
+<p align="center">
+  <img src="pic/admin_02_商家用户后台管理_01.png" alt="admin_02_商家用户后台管理_01" width="800" />
+  <br /><em>admin_02_商家用户后台管理_01</em>
+</p>
+<p align="center">
+  <img src="pic/admin_02_商家用户后台管理_02.png" alt="admin_02_商家用户后台管理_02" width="800" />
+  <br /><em>admin_02_商家用户后台管理_02</em>
+</p>
+<p align="center">
+  <img src="pic/admin_02_商家用户后台管理_02admin_02_商家用户后台管理_03.png" alt="admin_02_商家用户后台管理_02admin_02_商家用户后台管理_03" width="800" />
+  <br /><em>admin_02_商家用户后台管理_02admin_02_商家用户后台管理_03</em>
+</p>
+<p align="center">
+  <img src="pic/admin_02_商家用户后台管理_02admin_03_系统管理员用户后台管理_03.png" alt="admin_02_商家用户后台管理_02admin_03_系统管理员用户后台管理_03" width="800" />
+  <br /><em>admin_02_商家用户后台管理_02admin_03_系统管理员用户后台管理_03</em>
+</p> 

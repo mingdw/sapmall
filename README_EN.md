@@ -185,39 +185,6 @@ We have configured specialized AI Agents for project development, including:
    - Implements blockchain data indexing and processing
    - Builds highly available and scalable services
 
-#### 中文指南
-我们为项目开发配置了专门的 AI Agent，包括：
-
-1. **产品经理 Agent** (`promit/PM_Web3_Agent_Prompt.md`)
-   - 专注于 Web3 产品需求分析和产品规划
-   - 制定产品路线图和功能优先级
-   - 编写详细的产品需求文档（PRD）
-   - 设计用户故事和用户旅程
-
-2. **UI/UX 设计师 Agent** (`promit/UIUX_Designer_Web3_Agent_Prompt.md`)
-   - 专注于 Web3 界面设计和用户体验
-   - 支持多平台原型制作（桌面端、移动端、小程序）
-   - 使用 HTML + Tailwind CSS + FontAwesome 技术栈
-   - 生成像素级完美的高保真原型
-
-3. **智能合约工程师 Agent** (`promit/Smart_Contract_Engineer_Agent_Prompt.md`)
-   - 专注于智能合约开发和安全审计
-   - 支持多链开发（Ethereum、Layer2、BSC、Solana等）
-   - 遵循最新安全标准和最佳实践
-   - 使用 Solidity/Vyper/Rust 等技术栈
-
-4. **前端开发工程师 Agent** (`promit/Web_Client_Web3_Agent_Prompt.md`)
-   - 专注于 Web3 前端应用开发
-   - 使用 React + TypeScript + Web3 技术栈
-   - 实现钱包连接和区块链交互
-   - 构建响应式和用户友好的界面
-
-5. **后端开发工程师 Agent** (`promit/Backend_Engineer_Agent_Prompt.md`)
-   - 专注于后端服务和 API 开发
-   - 使用 Go + 微服务架构
-   - 实现区块链数据索引和处理
-   - 构建高可用和可扩展的服务
-
 ### 📝 Prompt Engineering Best Practices
 
 #### English Guide
@@ -227,12 +194,6 @@ We have configured specialized AI Agents for project development, including:
 4. **Iterative Optimization**: Continuously optimize prompt content based on actual usage results
 5. **Version Control**: Version control prompts and record improvement history
 
-#### 中文指南
-1. **明确角色定位**: 为每个 Agent 定义清晰的角色和职责范围
-2. **结构化提示**: 使用清晰的格式和层次结构组织提示词
-3. **上下文管理**: 提供足够的背景信息和项目上下文
-4. **迭代优化**: 根据实际使用效果不断优化提示词内容
-5. **版本控制**: 对提示词进行版本管理，记录改进历史
 
 ### 🔧 Code Generation Best Practices
 
@@ -243,13 +204,6 @@ We have configured specialized AI Agents for project development, including:
 4. **Performance Optimization**: Conduct performance analysis and optimization of generated code
 5. **Documentation**: Write clear documentation and comments for generated code
 
-#### 中文指南
-1. **代码审查**: 所有 AI 生成的代码必须经过人工审查
-2. **测试覆盖**: 为生成的代码编写完整的测试用例
-3. **安全检查**: 特别关注安全相关的代码，进行专项审计
-4. **性能优化**: 对生成的代码进行性能分析和优化
-5. **文档完善**: 为生成的代码编写清晰的文档和注释
-
 ### 🧪 AI-Assisted Testing Strategy
 
 #### English Guide
@@ -258,13 +212,6 @@ We have configured specialized AI Agents for project development, including:
 3. **Performance Testing**: Use AI to generate performance test scripts and load testing
 4. **Security Testing**: AI-assisted security vulnerability scanning and penetration testing
 5. **Regression Testing**: Automated regression testing to ensure new features don't affect existing functionality
-
-#### 中文指南
-1. **自动化测试生成**: 使用 AI 生成单元测试、集成测试和端到端测试
-2. **边界条件测试**: AI 帮助识别和测试边界条件和异常情况
-3. **性能测试**: 使用 AI 生成性能测试脚本和负载测试
-4. **安全测试**: AI 辅助进行安全漏洞扫描和渗透测试
-5. **回归测试**: 自动化回归测试，确保新功能不影响现有功能
 
 ## 📊 Project Metrics
 
@@ -316,4 +263,93 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Sapphire Mall** - Building the Future of Web3 Virtual Goods Trading Platform 🚀
 
-</div> 
+</div>
+
+## 🖼️ Project Screenshots
+
+The following are main page screenshots of the project for quick preview on GitHub:
+
+<p align="center">
+  <img src="pic/官网首页_zh_01.png" alt="Homepage (Chinese) 01" width="800" />
+  <br /><em>Homepage (Chinese) 01</em>
+</p>
+<p align="center">
+  <img src="pic/官网首页_zh_02.png" alt="Homepage (Chinese) 02" width="800" />
+  <br /><em>Homepage (Chinese) 02</em>
+</p>
+<p align="center">
+  <img src="pic/官网首页_zh_03.png" alt="Homepage (Chinese) 03" width="800" />
+  <br /><em>Homepage (Chinese) 03</em>
+</p>
+<p align="center">
+  <img src="pic/官网首页_en_01.png" alt="Homepage (English) 01" width="800" />
+  <br /><em>Homepage (English) 01</em>
+</p>
+<p align="center">
+  <img src="pic/官网首页_en_02.png" alt="Homepage (English) 02" width="800" />
+  <br /><em>Homepage (English) 02</em>
+</p>
+<p align="center">
+  <img src="pic/官网首页_en_03.png" alt="Homepage (English) 03" width="800" />
+  <br /><em>Homepage (English) 03</em>
+</p>
+<p align="center">
+  <img src="pic/dapp_zh_商城首页_01.png" alt="DApp Mall Homepage (Chinese)" width="800" />
+  <br /><em>DApp Mall Homepage (Chinese)</em>
+</p>
+<p align="center">
+  <img src="pic/dapp_商品明细.png" alt="DApp Product Detail" width="800" />
+  <br /><em>DApp Product Detail</em>
+</p>
+<p align="center">
+  <img src="pic/dapp_zh_兑换.png" alt="DApp Exchange (Chinese)" width="800" />
+  <br /><em>DApp Exchange (Chinese)</em>
+</p>
+<p align="center">
+  <img src="pic/dapp_zh_质押.png" alt="DApp Staking (Chinese)" width="800" />
+  <br /><em>DApp Staking (Chinese)</em>
+</p>
+<p align="center">
+  <img src="pic/dapp_en_质押.png" alt="DApp Staking (English)" width="800" />
+  <br /><em>DApp Staking (English)</em>
+</p>
+<p align="center">
+  <img src="pic/dao首页.png" alt="DAO Homepage" width="800" />
+  <br /><em>DAO Homepage</em>
+</p>
+<p align="center">
+  <img src="pic/dao投票.png" alt="DAO Voting" width="800" />
+  <br /><em>DAO Voting</em>
+</p>
+<p align="center">
+  <img src="pic/帮助中心.png" alt="Help Center" width="800" />
+  <br /><em>Help Center</em>
+</p>
+<p align="center">
+  <img src="pic/admin_01_普通用户的后台管理_01.png" alt="Admin - Regular User Management 01" width="800" />
+  <br /><em>Admin - Regular User Management 01</em>
+</p>
+<p align="center">
+  <img src="pic/admin_01_普通用户的后台管理_02.png" alt="Admin - Regular User Management 02" width="800" />
+  <br /><em>Admin - Regular User Management 02</em>
+</p>
+<p align="center">
+  <img src="pic/admin_普通用户.png" alt="Admin - Regular User" width="800" />
+  <br /><em>Admin - Regular User</em>
+</p>
+<p align="center">
+  <img src="pic/admin_02_商家用户后台管理_01.png" alt="Admin - Merchant User Management 01" width="800" />
+  <br /><em>Admin - Merchant User Management 01</em>
+</p>
+<p align="center">
+  <img src="pic/admin_02_商家用户后台管理_02.png" alt="Admin - Merchant User Management 02" width="800" />
+  <br /><em>Admin - Merchant User Management 02</em>
+</p>
+<p align="center">
+  <img src="pic/admin_02_商家用户后台管理_02admin_02_商家用户后台管理_03.png" alt="Admin - Merchant User Management 02-03" width="800" />
+  <br /><em>Admin - Merchant User Management 02-03</em>
+</p>
+<p align="center">
+  <img src="pic/admin_02_商家用户后台管理_02admin_03_系统管理员用户后台管理_03.png" alt="Admin - Merchant & System Admin Management 03" width="800" />
+  <br /><em>Admin - Merchant & System Admin Management 03</em>
+</p> 
