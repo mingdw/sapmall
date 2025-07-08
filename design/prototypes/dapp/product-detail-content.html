@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品详情内容</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+        }
+        
+        .detail-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 0.75rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .detail-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+            border-radius: 0.75rem 0.75rem 0 0;
+        }
+        
+        .detail-section:hover {
+            background: rgba(30, 41, 59, 0.6);
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .detail-section h3 {
+            color: #ffffff;
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+        
+        .detail-section h3 i {
+            color: #60a5fa;
+            font-size: 1.125rem;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-item {
+            background: rgba(51, 65, 85, 0.4);
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #10b981, #06b6d4);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .feature-item:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-item:hover {
+            background: rgba(51, 65, 85, 0.6);
+            border-color: rgba(16, 185, 129, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.2);
+        }
+        
+        .feature-item h4 {
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .feature-item h4 i {
+            color: #10b981;
+            font-size: 1rem;
+            width: 1.75rem;
+            height: 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 0.375rem;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .feature-item p {
+            color: #cbd5e1;
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+        
+        .curriculum-item {
+            background: rgba(51, 65, 85, 0.3);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .curriculum-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #8b5cf6, #ec4899);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .curriculum-item:hover::before {
+            opacity: 1;
+        }
+        
+        .curriculum-item:hover {
+            background: rgba(51, 65, 85, 0.5);
+            border-color: rgba(139, 92, 246, 0.4);
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+        }
+        
+        .curriculum-item h4 {
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .curriculum-item h4 .chapter-icon {
+            color: #a78bfa;
+            margin-right: 0.75rem;
+            font-size: 1rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 0.25rem;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .curriculum-item p {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            padding-left: 2.25rem;
+        }
+        
+        .duration-badge {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-weight: 500;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .instructor-card {
+            background: rgba(51, 65, 85, 0.4);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .instructor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+        }
+        
+        .instructor-card:hover {
+            background: rgba(51, 65, 85, 0.6);
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
+        }
+        
+        .instructor-avatar {
+            width: 4.5rem;
+            height: 4.5rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.75rem;
+            font-weight: bold;
+            border: 3px solid rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .instructor-info h4 {
+            color: #ffffff;
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .instructor-info p {
+            color: #a5b4fc;
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .instructor-stats {
+            display: flex;
+            gap: 1.25rem;
+            font-size: 0.75rem;
+            color: #cbd5e1;
+            flex-wrap: wrap;
+        }
+        
+        .instructor-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .tech-tag {
+            background: rgba(139, 92, 246, 0.2);
+            color: #c4b5fd;
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .tech-tag:hover {
+            background: rgba(139, 92, 246, 0.3);
+            color: #ddd6fe;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+        
+        .tech-tag i {
+            font-size: 0.875rem;
+        }
+        
+        .achievement-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(51, 65, 85, 0.3);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 0.75rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-item:hover {
+            background: rgba(51, 65, 85, 0.5);
+            border-color: rgba(34, 197, 94, 0.4);
+            transform: translateX(5px);
+        }
+        
+        .achievement-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #22c55e;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+        }
+        
+        .overview-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            background: rgba(51, 65, 85, 0.4);
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            background: rgba(51, 65, 85, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stat-number {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+        
+        .highlight-banner {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .highlight-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        }
+        
+        .banner-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .banner-icon {
+            width: 3rem;
+            height: 3rem;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #60a5fa;
+            font-size: 1.5rem;
+        }
+        
+        .banner-text h4 {
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .banner-text p {
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div class="w-full p-4">
+        <!-- 课程概述 -->
+        <div class="detail-section">
+            <h3><i class="fas fa-rocket"></i>课程概述</h3>
+            
+            <!-- 亮点横幅 -->
+            <div class="highlight-banner">
+                <div class="banner-content">
+                    <div class="banner-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="banner-text">
+                        <h4>🔥 限时优惠中！原价399 SAP，现价仅需299 SAP</h4>
+                        <p>零基础入门区块链开发，3500+学员的共同选择</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 课程统计 -->
+            <div class="overview-stats">
+                <div class="stat-card">
+                    <div class="stat-number">20</div>
+                    <div class="stat-label">课程时长(小时)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">章节数量</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">实战项目</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3,562</div>
+                    <div class="stat-label">学习人数</div>
+                </div>
+            </div>
+            
+            <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                本课程是专为区块链初学者设计的全面入门教程，从基础概念到实际应用，帮助您快速掌握Web3开发技能。
+                课程采用理论与实践相结合的方式，通过5个完整项目让您深入理解区块链技术的核心原理。
+            </p>
+            
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h4><i class="fas fa-graduation-cap"></i>零基础友好</h4>
+                    <p>无需任何区块链背景，从最基础的概念开始讲解，循序渐进</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-code"></i>实战导向</h4>
+                    <p>5个完整项目，从智能合约到DApp开发，理论结合实践</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-users"></i>社区支持</h4>
+                    <p>专属学习群，导师答疑，与3500+学员共同学习成长</p>
+                </div>
+                <div class="feature-item">
+                    <h4><i class="fas fa-certificate"></i>权威认证</h4>
+                    <p>完成课程获得官方认证证书，为求职加分</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 课程大纲 -->
+        <div class="detail-section">
+            <h3><i class="fas fa-list-alt"></i>课程大纲</h3>
+            
+            <div class="curriculum-item">
+                <h4>
+                    <span style="display: flex; align-items: center;">
+                        <i class="fas fa-play-circle chapter-icon"></i>
+                        第1章：区块链基础概念
+                    </span>
+                    <span class="duration-badge">
+                        <i class="fas fa-clock"></i>
+                        2小时
+                    </span>
+                </h4>
+                <p>区块链原理、比特币与以太坊、去中心化概念、密码学基础</p>
+            </div>
+            
+            <div class="curriculum-item">
+                <h4>
+                    <span style="display: flex; align-items: center;">
+                        <i class="fas fa-tools chapter-icon"></i>
+                        第2章：以太坊开发环境搭建
+                    </span>
+                    <span class="duration-badge">
+                        <i class="fas fa-clock"></i>
+                        1.5小时
+                    </span>
+                </h4>
+                <p>Node.js安装、Truffle框架、Ganache本地区块链、MetaMask钱包配置</p>
+            </div>
+            
+            <div class="curriculum-item">
+                <h4>
+                    <span style="display: flex; align-items: center;">
+                        <i class="fas fa-file-code chapter-icon"></i>
+                        第3章：Solidity智能合约入门
+                    </span>
+                    <span class="duration-badge">
+                        <i class="fas fa-clock"></i>
+                        3小时
+                    </span>
+                </h4>
+                <p>Solidity语法基础、数据类型、函数、修饰符、事件与日志</p>
+            </div>
+            
+            <div class="curriculum-item">
+                <h4>
+                    <span style="display: flex; align-items: center;">
+                        <i class="fas fa-layer-group chapter-icon"></i>
+                        第4章：智能合约进阶开发
+                    </span>
+                    <span class="duration-badge">
+                        <i class="fas fa-clock"></i>
+                        4小时
+                    </span>
+                </h4>
+                <p>继承与接口、库的使用、安全最佳实践、Gas优化技巧</p>
+            </div>
+            
+            <div class="curriculum-item">
+                <h4>
+                    <span style="display: flex; align-items: center;">
+                        <i class="fas fa-globe chapter-icon"></i>
+                        第5章：Web3.js与前端集成
+                    </span>
+                    <span class="duration-badge">
+                        <i class="fas fa-clock"></i>
+                        3小时
+                    </span>
+                </h4>
+                <p>Web3.js库使用、与智能合约交互、前端DApp开发</p>
+            </div>
+            
+            <div class="curriculum-item">
+                <h4>
+                    <span style="display: flex; align-items: center;">
+                        <i class="fas fa-project-diagram chapter-icon"></i>
+                        第6章：实战项目开发
+                    </span>
+                    <span class="duration-badge">
+                        <i class="fas fa-clock"></i>
+                        6.5小时
+                    </span>
+                </h4>
+                <p>代币发行、NFT市场、去中心化投票系统、DeFi借贷协议、DAO治理</p>
+            </div>
+        </div>
+
+        <!-- 讲师介绍 -->
+        <div class="detail-section">
+            <h3><i class="fas fa-user-tie"></i>讲师介绍</h3>
+            
+            <div class="instructor-card">
+                <div class="instructor-avatar">李</div>
+                <div class="instructor-info">
+                    <h4>李明华</h4>
+                    <p>区块链技术专家 | 前阿里巴巴高级工程师</p>
+                    <div class="instructor-stats">
+                        <span><i class="fas fa-star text-yellow-400"></i> 4.9分</span>
+                        <span><i class="fas fa-users"></i> 15,000+学员</span>
+                        <span><i class="fas fa-play-circle"></i> 8门课程</span>
+                        <span><i class="fas fa-clock"></i> 5年教学经验</span>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-gray-300 text-sm leading-relaxed mt-4">
+                李明华老师拥有8年区块链开发经验，曾在阿里巴巴负责区块链基础设施建设，
+                参与多个大型区块链项目的架构设计。擅长将复杂的技术概念用简单易懂的方式讲解，
+                已帮助超过15,000名学员成功入门区块链开发。
+            </p>
+        </div>
+
+        <!-- 技术栈 -->
+        <div class="detail-section">
+            <h3><i class="fas fa-tools"></i>涉及技术栈</h3>
+            <p class="text-gray-300 text-sm mb-4">本课程将涵盖以下主流技术和工具：</p>
+            
+            <div class="tech-stack">
+                <span class="tech-tag"><i class="fab fa-ethereum"></i>Solidity</span>
+                <span class="tech-tag"><i class="fab fa-js-square"></i>JavaScript</span>
+                <span class="tech-tag"><i class="fas fa-globe"></i>Web3.js</span>
+                <span class="tech-tag"><i class="fas fa-hammer"></i>Truffle</span>
+                <span class="tech-tag"><i class="fas fa-server"></i>Ganache</span>
+                <span class="tech-tag"><i class="fas fa-wallet"></i>MetaMask</span>
+                <span class="tech-tag"><i class="fab fa-react"></i>React</span>
+                <span class="tech-tag"><i class="fab fa-node-js"></i>Node.js</span>
+                <span class="tech-tag"><i class="fas fa-database"></i>IPFS</span>
+                <span class="tech-tag"><i class="fas fa-shield-alt"></i>OpenZeppelin</span>
+            </div>
+        </div>
+
+        <!-- 学习收获 -->
+        <div class="detail-section">
+            <h3><i class="fas fa-trophy"></i>学习收获</h3>
+            <div class="space-y-3">
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold text-sm mb-1">掌握区块链核心概念</h4>
+                        <p class="text-gray-400 text-xs">深入理解区块链、智能合约、去中心化等核心概念</p>
+                    </div>
+                </div>
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold text-sm mb-1">熟练使用Solidity开发</h4>
+                        <p class="text-gray-400 text-xs">能够独立编写和部署智能合约，掌握安全最佳实践</p>
+                    </div>
+                </div>
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold text-sm mb-1">构建完整DApp应用</h4>
+                        <p class="text-gray-400 text-xs">掌握前后端集成，能够开发完整的去中心化应用</p>
+                    </div>
+                </div>
+                <div class="achievement-item">
+                    <div class="achievement-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold text-sm mb-1">获得实战项目经验</h4>
+                        <p class="text-gray-400 text-xs">完成5个实战项目，积累丰富的开发经验</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

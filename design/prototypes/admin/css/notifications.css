@@ -1,0 +1,1374 @@
+/* 通知设置页面样式 - 深色主题 */
+
+/* 整体容器样式 */
+.notification-settings-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 0;
+    color: #e2e8f0;
+}
+
+/* 通知渠道设置样式 */
+.channels-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 16px;
+}
+
+.channel-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.channel-item i {
+    color: #3b82f6;
+    font-size: 16px;
+}
+
+.channel-item strong {
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+/* 渠道概览部分 */
+.channels-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* 提醒容器样式 */
+.alert-container {
+    margin-bottom: 20px;
+}
+
+.alert {
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.alert-info {
+    background-color: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.alert-icon {
+    color: #3b82f6;
+    font-size: 18px;
+    padding-top: 2px;
+}
+
+.alert-content {
+    flex: 1;
+}
+
+/* 通知分类标签样式 */
+.tabs-container {
+    margin-top: 20px;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #334155;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tab {
+    padding: 12px 16px;
+    cursor: pointer;
+    color: #94a3b8;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.tab:hover {
+    color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.tab.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.tab i {
+    font-size: 16px;
+}
+
+/* 部分标题样式 */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin: 0 0 16px 0;
+}
+
+.section-title i {
+    color: #3b82f6;
+}
+
+/* 部分头部样式 */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* 通知列表样式 */
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.notification-item {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.notification-item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    border-color: #475569;
+}
+
+.notification-content {
+    padding: 16px;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.notification-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.notification-desc {
+    margin: 0 0 16px 0;
+    color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* 重要性标签样式 */
+.importance-badge {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-right: auto;
+    margin-left: 8px;
+    font-weight: 500;
+}
+
+.importance-badge.high {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.importance-badge.medium {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.importance-badge.low {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* 开关样式 */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #475569;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #e2e8f0;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: #3b82f6;
+}
+
+input:focus + .toggle-slider {
+    box-shadow: 0 0 1px #3b82f6;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(22px);
+}
+
+/* 卡片间距 */
+.admin-content-card {
+    margin-bottom: 24px;
+}
+
+/* 禁用的通知渠道 */
+.channel-option.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.channel-option.disabled i {
+    color: #64748b;
+}
+
+/* 通知渠道不可用提示 */
+.channel-unavailable {
+    display: inline-block;
+    font-size: 12px;
+    color: #64748b;
+    margin-left: 8px;
+    font-style: italic;
+}
+
+/* 通知渠道选项样式 */
+.notification-channels {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.channel-options {
+    display: flex;
+    gap: 12px;
+}
+
+.channel-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #334155;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.channel-option:hover {
+    background: #475569;
+    border-color: #64748b;
+}
+
+.channel-option input[type="checkbox"] {
+    display: none;
+}
+
+.channel-option input[type="checkbox"]:checked + i {
+    color: #3b82f6;
+}
+
+.channel-option i {
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+/* 频率选择样式 */
+.frequency-select {
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+.form-select {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.form-select:hover {
+    border-color: #3b82f6;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.form-select option {
+    background-color: #1e293b;
+    color: #e2e8f0;
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: #94a3b8;
+    border-color: #475569;
+}
+
+.btn-outline:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn i {
+    font-size: 14px;
+}
+
+/* 预览按钮样式 */
+.preview-btn {
+    color: #94a3b8;
+    background-color: transparent;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.preview-btn:hover {
+    color: #3b82f6;
+    border-color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.preview-btn i {
+    font-size: 14px;
+}
+
+/* 操作按钮样式 */
+.action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+/* 卡片部分样式 */
+.card-section {
+    padding: 24px;
+    border-bottom: 1px solid #334155;
+}
+
+.card-section:last-child {
+    border-bottom: none;
+}
+
+/* 通知渠道设置模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #0f172a;
+    margin: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    animation: modalFadeIn 0.3s;
+    overflow: hidden;
+    border: 1px solid #334155;
+}
+
+@keyframes modalFadeIn {
+    from {opacity: 0; transform: translateY(20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.modal-header {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #334155;
+    background-color: #1e293b;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+.close-modal {
+    font-size: 24px;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close-modal:hover {
+    color: #e2e8f0;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-footer {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #334155;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #e2e8f0;
+    background-color: #1e293b;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.form-input::placeholder {
+    color: #64748b;
+}
+
+.form-help {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.channel-form-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.channel-form-label h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #e2e8f0;
+}
+
+/* 通知预览模态框样式 */
+.preview-modal-content {
+    max-width: 800px;
+    background-color: #0f172a;
+}
+
+.preview-container {
+    padding: 10px 0;
+}
+
+.preview-tabs {
+    display: flex;
+    border-bottom: 1px solid #334155;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.preview-tab {
+    padding: 12px 20px;
+    cursor: pointer;
+    color: #94a3b8;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.preview-tab:hover {
+    color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.preview-tab.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.preview-tab i {
+    font-size: 16px;
+}
+
+.preview-panel {
+    display: none;
+}
+
+.preview-panel.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 邮件预览样式 */
+.email-preview {
+    border: 1px solid #334155;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    background-color: #1e293b;
+}
+
+.email-header {
+    background-color: #0f172a;
+    padding: 12px;
+    border-bottom: 1px solid #334155;
+}
+
+.email-controls {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.email-control-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.email-address-bar {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.email-content {
+    background-color: #1e293b;
+}
+
+.email-subject {
+    padding: 16px;
+    border-bottom: 1px solid #334155;
+    background-color: #0f172a;
+}
+
+.email-subject-label {
+    color: #94a3b8;
+    font-weight: 500;
+    margin-right: 6px;
+}
+
+.email-subject-text {
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+.email-body {
+    padding: 20px 16px;
+    color: #cbd5e1;
+}
+
+.email-greeting {
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.email-paragraph {
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.email-action {
+    text-align: center;
+    margin: 24px 0;
+}
+
+.email-signature {
+    margin-top: 24px;
+    color: #94a3b8;
+    border-top: 1px solid #334155;
+    padding-top: 16px;
+    line-height: 1.6;
+}
+
+/* 手机通知预览样式 */
+.mobile-preview {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.mobile-device {
+    width: 280px;
+    background-color: #0f172a;
+    border-radius: 36px;
+    padding: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.mobile-notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 24px;
+    background-color: #0f172a;
+    border-radius: 0 0 16px 16px;
+    z-index: 2;
+}
+
+.mobile-screen {
+    background-color: #1e293b;
+    border-radius: 24px;
+    overflow: hidden;
+    height: 500px;
+    position: relative;
+}
+
+.mobile-status-bar {
+    background-color: #0f172a;
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    border-bottom: 1px solid #334155;
+}
+
+.mobile-time {
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.mobile-status-icons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #e2e8f0;
+}
+
+.mobile-notification {
+    margin: 16px;
+    background-color: #0f172a;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid #334155;
+}
+
+.mobile-notification-header {
+    display: flex;
+    padding: 12px;
+    border-bottom: 1px solid #334155;
+    background-color: #1e293b;
+}
+
+.app-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    margin-right: 12px;
+    box-shadow: 0 2px 5px rgba(37, 99, 235, 0.3);
+}
+
+.app-info {
+    flex: 1;
+}
+
+.app-name {
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 4px;
+}
+
+.notification-time {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.mobile-notification-content {
+    padding: 16px;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #e2e8f0;
+}
+
+.notification-body {
+    color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.mobile-home-button {
+    width: 40px;
+    height: 4px;
+    background-color: #64748b;
+    border-radius: 2px;
+    margin: 8px auto 0;
+}
+
+/* 浏览器通知预览样式 */
+.browser-preview {
+    padding: 20px 0;
+}
+
+.browser-notification {
+    display: flex;
+    background-color: #0f172a;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid #334155;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.browser-notification-icon {
+    width: 60px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+
+.browser-notification-content {
+    flex: 1;
+    padding: 16px;
+}
+
+.browser-notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.browser-notification-title {
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.browser-notification-close {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #334155;
+    color: #94a3b8;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.browser-notification-close:hover {
+    background-color: #475569;
+    color: #e2e8f0;
+}
+
+.browser-notification-message {
+    margin-bottom: 10px;
+}
+
+.browser-notification-subject {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #e2e8f0;
+}
+
+.browser-notification-text {
+    color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.browser-notification-time {
+    font-size: 12px;
+    color: #64748b;
+    text-align: right;
+}
+
+/* Toast 通知样式 */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+}
+
+.toast {
+    display: flex;
+    background-color: #0f172a;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 1px solid #334155;
+    animation: toastFadeIn 0.3s ease;
+    overflow: hidden;
+}
+
+@keyframes toastFadeIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.toast-hide {
+    animation: toastFadeOut 0.3s ease forwards;
+}
+
+@keyframes toastFadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(20px); }
+}
+
+.toast-icon {
+    margin-right: 12px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #e2e8f0;
+}
+
+.toast-message {
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    margin-left: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.toast-close:hover {
+    color: #e2e8f0;
+}
+
+.toast-info .toast-icon {
+    color: #3b82f6;
+}
+
+.toast-success .toast-icon {
+    color: #10b981;
+}
+
+.toast-error .toast-icon {
+    color: #ef4444;
+}
+
+.toast-warning .toast-icon {
+    color: #f59e0b;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .notification-header {
+        flex-wrap: wrap;
+    }
+    
+    .importance-badge {
+        margin: 8px 0;
+    }
+    
+    .notification-channels {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .frequency-select {
+        margin-left: 0;
+        margin-top: 12px;
+        width: 100%;
+    }
+    
+    .preview-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .preview-modal-content {
+        width: 95%;
+    }
+    
+    .mobile-device {
+        width: 240px;
+    }
+    
+    .mobile-screen {
+        height: 420px;
+    }
+    
+    .channels-list {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .section-actions {
+        margin-top: 12px;
+    }
+}
+
+/* 动画效果 */
+@keyframes highlightEffect {
+    0% { background-color: rgba(59, 130, 246, 0.2); }
+    100% { background-color: transparent; }
+}
+
+@keyframes pulseEffect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.highlight-effect {
+    animation: highlightEffect 1s ease;
+}
+
+.pulse-effect {
+    animation: pulseEffect 0.5s ease;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+/* 信息卡样式 */
+.info-card {
+    background-color: #1e293b;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    margin-bottom: 24px;
+    transition: all 0.3s ease;
+}
+
+.info-card:last-child {
+    margin-bottom: 0;
+}
+
+.info-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+/* 禁用的通知项样式 */
+.notification-item.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px dashed #475569;
+}
+
+.notification-item.disabled::after {
+    content: '无可用通知渠道';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(15, 23, 42, 0.7);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+/* 活动记录样式 */
+.activity-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.filter-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: rgba(51, 65, 85, 0.3);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    color: #94a3b8;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background: rgba(51, 65, 85, 0.5);
+    color: #e2e8f0;
+}
+
+.filter-btn.active {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #3b82f6;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    background: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    border-radius: 10px;
+    padding: 15px;
+    transition: all 0.2s ease;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.activity-item:hover {
+    background: rgba(30, 41, 59, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(51, 65, 85, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.activity-icon i {
+    font-size: 16px;
+    color: #94a3b8;
+}
+
+.security-icon {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.security-icon i {
+    color: #3b82f6;
+}
+
+.system-icon {
+    background: rgba(124, 58, 237, 0.1);
+}
+
+.system-icon i {
+    color: #7c3aed;
+}
+
+.activity-details {
+    flex: 1;
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.activity-header h4 {
+    margin: 0;
+    font-size: 15px;
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+/* 安全设置样式 */
+.security-section {
+    margin-bottom: 0;
+    background: transparent;
+    border-radius: 0;
+    padding: 20px;
+}
+
+.security-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+}
+
+.security-item:last-child {
+    border-bottom: none;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-info h4 {
+    color: #e2e8f0;
+    font-size: 15px;
+    margin: 0 0 5px 0;
+    font-weight: 500;
+}
+
+.item-info p {
+    color: #94a3b8;
+    font-size: 13px;
+    margin: 0;
+}
+
+.item-action {
+    min-width: 60px;
+    text-align: right;
+}
+
+.action-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 内联输入框样式 */
+.channel-input-group {
+    margin-top: 8px;
+}
+
+.inline-input {
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 5px;
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    color: #e2e8f0;
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.inline-input:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.inline-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(30, 41, 59, 0.2);
+}
+
+/* 调整通知渠道设置区域的样式 */
+.security-section .action-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* 分隔线样式 */
+.section-divider {
+    padding: 15px 0;
+    margin: 10px 0 25px;
+    position: relative;
+}
+
+.divider-line {
+    height: 1px;
+    background: linear-gradient(to right, rgba(51, 65, 85, 0.1), rgba(51, 65, 85, 0.8), rgba(51, 65, 85, 0.1));
+    position: relative;
+}
+
+.divider-line::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 3px;
+    background-color: #3b82f6;
+    border-radius: 3px;
+} 

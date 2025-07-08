@@ -1,0 +1,1108 @@
+/* 商家版提案管理专用样式 */
+
+/* CSS变量定义 - 深色主题 */
+:root {
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --card-bg: rgba(15, 23, 42, 0.6);
+    --hover-bg: rgba(30, 41, 59, 0.6);
+    --border-color: rgba(51, 65, 85, 0.4);
+    --accent-blue: #3b82f6;
+    --accent-green: #10b981;
+    --accent-orange: #f59e0b;
+    --accent-purple: #8b5cf6;
+    --accent-red: #ef4444;
+    --accent-teal: #14b8a6;
+    --accent-gold: #fbbf24;
+}
+
+/* 商家专属功能区 */
+.merchant-actions-section {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.merchant-actions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.section-title i {
+    color: var(--accent-purple);
+}
+
+.merchant-privilege-badge {
+    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+    color: #ffffff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.merchant-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.action-card {
+    background: var(--hover-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+    transition: all 0.6s ease;
+}
+
+.action-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.4);
+}
+
+.action-card:hover::before {
+    left: 100%;
+}
+
+.action-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+.action-card.create-proposal .action-icon {
+    background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
+}
+
+.action-card.merchant-alliance .action-icon {
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #d97706 100%);
+}
+
+.action-card.merchant-data .action-icon {
+    background: linear-gradient(135deg, var(--accent-teal) 0%, #0891b2 100%);
+}
+
+.action-content {
+    flex: 1;
+}
+
+.action-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.action-description {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.action-arrow {
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+}
+
+.action-card:hover .action-arrow {
+    color: var(--accent-purple);
+    transform: translateX(4px);
+}
+
+/* 增强筛选工具栏 */
+.filter-toolbar {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.filter-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-tabs {
+    display: flex;
+    background: var(--hover-bg);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.filter-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    background: transparent;
+    white-space: nowrap;
+}
+
+.filter-tab.active {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, #1d4ed8 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.filter-tab:hover:not(.active) {
+    background: rgba(51, 65, 85, 0.4);
+    color: var(--text-primary);
+}
+
+.search-filter {
+    display: flex;
+    align-items: center;
+    background: var(--hover-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.search-filter:focus-within {
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-filter input {
+    background: transparent;
+    border: none;
+    padding: 10px 16px;
+    color: var(--text-primary);
+    font-size: 14px;
+    width: 200px;
+    outline: none;
+}
+
+.search-filter input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-filter button {
+    background: rgba(59, 130, 246, 0.2);
+    border: none;
+    padding: 10px 16px;
+    color: var(--accent-blue);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-filter button:hover {
+    background: rgba(59, 130, 246, 0.3);
+}
+
+.filter-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.view-toggle {
+    display: flex;
+    background: var(--hover-bg);
+    border-radius: 8px;
+    padding: 2px;
+    gap: 2px;
+}
+
+.view-btn {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.view-btn.active {
+    background: var(--accent-blue);
+    color: #ffffff;
+}
+
+.view-btn:hover:not(.active) {
+    background: rgba(51, 65, 85, 0.4);
+    color: var(--text-primary);
+}
+
+.sort-dropdown {
+    position: relative;
+}
+
+.sort-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--hover-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px 16px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.sort-btn:hover {
+    background: rgba(51, 65, 85, 0.4);
+    border-color: rgba(71, 85, 105, 0.6);
+}
+
+/* 双重身份统计 */
+.dual-identity-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.stats-section {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.stats-header {
+    background: var(--hover-bg);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stats-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.user-stats .stats-title i {
+    color: var(--accent-blue);
+}
+
+.merchant-stats .stats-title i {
+    color: var(--accent-green);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border-color);
+}
+
+.stat-card {
+    background: var(--card-bg);
+    padding: 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    background: var(--hover-bg);
+}
+
+.stat-card.highlight {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.stat-card.highlight:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.stat-card.highlight .stat-value {
+    color: var(--accent-green);
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* 提案徽章样式 */
+.proposal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.proposal-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.proposal-type-badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.proposal-type-badge.merchant {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--accent-green);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.proposal-type-badge.my {
+    background: rgba(139, 92, 246, 0.2);
+    color: var(--accent-purple);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.proposal-type-badge.general {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--accent-blue);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.proposal-type-badge.defi {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--accent-orange);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.proposal-priority-badge {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--accent-red);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.proposal-creator-badge {
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #d97706 100%);
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.voted-badge {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--accent-green);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 提案项目样式增强 */
+.proposal-item.merchant-proposal {
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+}
+
+.proposal-item.my-proposal {
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+}
+
+.proposal-item.voted-proposal {
+    border-left: 4px solid var(--accent-teal);
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.03) 0%, rgba(20, 184, 166, 0.01) 100%);
+}
+
+/* 投票按钮变体 */
+.vote-btn.vote-btn-edit {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, #1d4ed8 100%);
+    color: #ffffff;
+}
+
+.vote-btn.vote-btn-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.vote-btn.vote-btn-submit {
+    background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
+    color: #ffffff;
+}
+
+.vote-btn.vote-btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.vote-btn.vote-btn-delete {
+    background: linear-gradient(135deg, var(--accent-red) 0%, #dc2626 100%);
+    color: #ffffff;
+}
+
+.vote-btn.vote-btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+}
+
+.vote-btn.vote-btn-voted {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--accent-green);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* 标准投票按钮基础样式 - 与其他页面保持一致 */
+.vote-btn {
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.2px;
+    text-transform: none;
+    min-width: 100px;
+    max-width: 120px;
+    justify-content: center;
+    width: auto;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.vote-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transition: left 0.6s ease;
+}
+
+.vote-btn:hover::before {
+    left: 100%;
+}
+
+.vote-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.vote-btn:active {
+    transform: translateY(0);
+    transition: all 0.1s ease;
+}
+
+.vote-btn i {
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+.vote-btn-yes {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: 1px solid transparent;
+    min-width: 100px;
+    max-width: 120px;
+}
+
+.vote-btn-yes:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.vote-btn-no {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: 1px solid transparent;
+    min-width: 100px;
+    max-width: 120px;
+}
+
+.vote-btn-no:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.vote-btn-abstain {
+    background: rgba(15, 23, 42, 0.3);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    backdrop-filter: blur(10px);
+    min-width: 100px;
+    max-width: 120px;
+}
+
+.vote-btn-abstain:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: #3b82f6;
+    color: #60a5fa;
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+
+.vote-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    min-width: 100px;
+    max-width: 120px;
+    font-size: 12px;
+    padding: 8px 14px;
+    min-height: 34px;
+}
+
+/* 创建提案模态框样式 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 16px;
+    padding: 0;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideInUp 0.3s ease;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #10b981, #047857);
+    color: #ffffff;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    max-height: calc(90vh - 80px);
+}
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 8px;
+}
+
+.form-label i {
+    color: #10b981;
+    font-size: 12px;
+}
+
+.form-input {
+    width: 100%;
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #e2e8f0;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    resize: vertical;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    background: rgba(30, 41, 59, 0.8);
+}
+
+.form-input::placeholder {
+    color: #64748b;
+}
+
+.form-hint {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.form-actions .admin-btn {
+    min-width: 100px;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 商家提案管理页面专用样式 */
+
+/* 商家参与徽章 */
+.merchant-participation-badge {
+    background: linear-gradient(135deg, #10b981, #047857);
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.merchant-participation-badge i {
+    font-size: 14px;
+}
+
+/* 提案统计头部样式 */
+.proposals-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+/* 商家专属统计卡片 */
+.proposals-stat-card.merchant-exclusive {
+    position: relative;
+    border: 1px solid #10b981;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+}
+
+.proposals-stat-card.merchant-exclusive::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #10b981, #047857);
+    border-radius: 8px 8px 0 0;
+}
+
+.proposals-stat-card.merchant-exclusive .stat-value {
+    color: #10b981;
+}
+
+.proposals-stat-card.merchant-exclusive:hover {
+    border-color: #047857;
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.2);
+}
+
+/* 商家专属标签 */
+.merchant-exclusive-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(135deg, #10b981, #047857);
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* 商家提案特殊样式 */
+.proposal-item.merchant-proposal:hover {
+    border-color: rgba(16, 185, 129, 0.5);
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15);
+}
+
+.proposal-type.merchant-type {
+    background: linear-gradient(135deg, #10b981, #047857);
+    color: #ffffff;
+}
+
+.proposal-type.business-type {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: #ffffff;
+}
+
+/* 我的提案特殊样式 */
+.proposal-item.my-proposal:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+}
+
+/* 提案计数徽章 */
+.proposals-count-badge {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 12px;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* 筛选按钮商家特色 */
+.filter-btn[data-filter="merchant-related"] {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #10b981;
+}
+
+.filter-btn[data-filter="merchant-related"]:hover,
+.filter-btn[data-filter="merchant-related"].active {
+    background: linear-gradient(135deg, #10b981, #047857);
+    border-color: #10b981;
+    color: #ffffff;
+}
+
+.filter-btn[data-filter="my-proposals"] {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.05));
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+}
+
+.filter-btn[data-filter="my-proposals"]:hover,
+.filter-btn[data-filter="my-proposals"].active {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border-color: #3b82f6;
+    color: #ffffff;
+}
+
+/* 状态徽章 */
+.status-badge.status-draft {
+    background: linear-gradient(135deg, #64748b, #475569);
+    color: #ffffff;
+}
+
+/* 投票按钮特殊样式 */
+.vote-btn-edit {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-color: #f59e0b;
+    color: #ffffff;
+}
+
+.vote-btn-edit:hover {
+    background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+.vote-btn-submit {
+    background: linear-gradient(135deg, #10b981, #047857);
+    border-color: #10b981;
+    color: #ffffff;
+}
+
+.vote-btn-submit:hover {
+    background: linear-gradient(135deg, #047857, #065f46);
+}
+
+/* 已完成的投票进度条样式 */
+.progress-fill.completed {
+    background: linear-gradient(135deg, #10b981, #047857);
+}
+
+.pass-threshold.completed {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.completion-date {
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .proposals-header-row {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    
+    .merchant-participation-badge {
+        align-self: flex-start;
+    }
+}
+
+/* 分页按钮优化 */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+    padding: 16px 0;
+    border-top: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pagination-btn {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 8px;
+    color: #e2e8f0;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(51, 65, 85, 0.2);
+    color: #64748b;
+}
+
+.pagination-numbers {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pagination-number {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 8px;
+    padding: 8px 14px;
+    color: #e2e8f0;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 40px;
+    text-align: center;
+    justify-content: center;
+}
+
+.pagination-number:hover {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+.pagination-number.active {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border-color: #3b82f6;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.pagination-ellipsis {
+    color: #64748b;
+    padding: 8px 4px;
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .pagination-container {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    .pagination-controls {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .pagination-numbers {
+        order: -1;
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+}
+
+/* 创建提案按钮样式 */
+.admin-btn-success {
+    background: linear-gradient(135deg, #10b981, #047857);
+    border-color: #10b981;
+    color: #ffffff;
+}
+
+.admin-btn-success:hover {
+    background: linear-gradient(135deg, #047857, #065f46);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+} 

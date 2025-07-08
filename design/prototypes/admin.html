@@ -116,6 +116,41 @@
             align-items: center;
             justify-content: center;
         }
+        .role-nav {
+            transition: all 0.3s ease;
+        }
+        .role-selector-container {
+            position: relative;
+        }
+        .role-selector-container::after {
+            content: '';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid #9ca3af;
+            pointer-events: none;
+        }
+        #roleSelector {
+            appearance: none;
+            background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e") no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+            padding-right: 32px;
+        }
+        .content-transition {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        .content-transition.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="min-h-screen text-white">
@@ -137,17 +172,22 @@
                 <!-- Role Selector -->
                 <div class="mb-6">
                     <label class="block text-gray-400 text-sm mb-2">管理角色</label>
-                    <select id="roleSelector" onchange="switchRole(this.value)" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-sapphire-500 focus:outline-none">
-                        <option value="platform">平台管理员</option>
-                        <option value="merchant">商家后台</option>
-                        <option value="user">用户中心</option>
-                    </select>
+                    <div class="relative">
+                        <select id="roleSelector" onchange="switchRole(this.value)" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-sapphire-500 focus:outline-none">
+                            <option value="platform">平台管理员</option>
+                            <option value="merchant">商家后台</option>
+                            <option value="user">用户中心</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Navigation -->
                 <nav class="space-y-2">
                     <!-- Platform Admin Navigation -->
-                    <div id="platform-nav">
+                    <div id="platform-nav" class="role-nav">
                         <div class="text-gray-400 text-xs uppercase font-semibold mb-3">平台管理</div>
                         <a href="#dashboard" onclick="showContent('dashboard')" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg">
                             <i class="fas fa-tachometer-alt w-5"></i>
@@ -178,17 +218,83 @@
                             <span>系统设置</span>
                         </a>
                     </div>
+
+                    <!-- Merchant Admin Navigation -->
+                    <div id="merchant-nav" class="role-nav" style="display: none;">
+                        <div class="text-gray-400 text-xs uppercase font-semibold mb-3">商家管理</div>
+                        <a href="#merchant-dashboard" onclick="showContent('merchant-dashboard')" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg">
+                            <i class="fas fa-store w-5"></i>
+                            <span>店铺概览</span>
+                        </a>
+                        <a href="#merchant-products" onclick="showContent('merchant-products')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-box-open w-5"></i>
+                            <span>商品管理</span>
+                        </a>
+                        <a href="#merchant-orders" onclick="showContent('merchant-orders')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-clipboard-list w-5"></i>
+                            <span>订单管理</span>
+                        </a>
+                        <a href="#merchant-analytics" onclick="showContent('merchant-analytics')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-chart-bar w-5"></i>
+                            <span>销售分析</span>
+                        </a>
+                        <a href="#merchant-reviews" onclick="showContent('merchant-reviews')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-star w-5"></i>
+                            <span>评价管理</span>
+                        </a>
+                        <a href="#merchant-finance" onclick="showContent('merchant-finance')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-wallet w-5"></i>
+                            <span>收益管理</span>
+                        </a>
+                        <a href="#merchant-profile" onclick="showContent('merchant-profile')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-user-tie w-5"></i>
+                            <span>店铺设置</span>
+                        </a>
+                    </div>
+
+                    <!-- User Center Navigation -->
+                    <div id="user-nav" class="role-nav" style="display: none;">
+                        <div class="text-gray-400 text-xs uppercase font-semibold mb-3">个人中心</div>
+                        <a href="#user-dashboard" onclick="showContent('user-dashboard')" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg">
+                            <i class="fas fa-user w-5"></i>
+                            <span>我的资料</span>
+                        </a>
+                        <a href="#user-orders" onclick="showContent('user-orders')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-shopping-bag w-5"></i>
+                            <span>我的订单</span>
+                        </a>
+                        <a href="#user-assets" onclick="showContent('user-assets')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-coins w-5"></i>
+                            <span>我的资产</span>
+                        </a>
+                        <a href="#user-staking" onclick="showContent('user-staking')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-seedling w-5"></i>
+                            <span>质押收益</span>
+                        </a>
+                        <a href="#user-wishlist" onclick="showContent('user-wishlist')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-heart w-5"></i>
+                            <span>收藏夹</span>
+                        </a>
+                        <a href="#user-referral" onclick="showContent('user-referral')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-share-alt w-5"></i>
+                            <span>推荐奖励</span>
+                        </a>
+                        <a href="#user-security" onclick="showContent('user-security')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300">
+                            <i class="fas fa-shield-alt w-5"></i>
+                            <span>安全设置</span>
+                        </a>
+                    </div>
                 </nav>
 
                 <!-- Admin Info -->
                 <div class="mt-8 pt-6 border-t border-gray-700">
                     <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <div id="user-avatar" class="w-8 h-8 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full flex items-center justify-center">
                             <i class="fas fa-user-shield text-white text-xs"></i>
                         </div>
                         <div>
-                            <div class="text-sm font-semibold">Admin User</div>
-                            <div class="text-xs text-gray-400">超级管理员</div>
+                            <div id="user-name" class="text-sm font-semibold">Admin User</div>
+                            <div id="user-role" class="text-xs text-gray-400">超级管理员</div>
                         </div>
                     </div>
                 </div>
@@ -595,12 +701,13 @@
 
                 <!-- Other content sections would be implemented similarly -->
                 <div id="transactions-content" class="admin-content">
-                    <div class="glass-bg rounded-xl p-6">
-                        <h3 class="text-xl font-bold mb-6">交易管理</h3>
-                        <div class="text-center text-gray-400 py-12">
-                            <i class="fas fa-credit-card text-4xl mb-4"></i>
-                            <p>交易管理功能开发中...</p>
-                        </div>
+                    <div class="glass-bg rounded-xl p-1">
+                        <iframe 
+                            src="./admin/transactions.html" 
+                            title="交易记录管理"
+                            class="w-full rounded-lg"
+                            style="height: 800px; min-height: 800px; border: none; background: transparent;">
+                        </iframe>
                     </div>
                 </div>
 
@@ -660,26 +767,331 @@
         }
 
         function switchRole(role) {
-            // This would switch between different role dashboards
-            console.log('Switching to role:', role);
-            // For demo purposes, we'll just update the header
+            // 隐藏所有导航菜单
+            const navs = document.querySelectorAll('.role-nav');
+            navs.forEach(nav => nav.style.display = 'none');
+            
+            // 隐藏所有内容
+            const contents = document.querySelectorAll('.admin-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // 根据角色显示对应的导航和内容
             const header = document.querySelector('header h2');
-            switch(role) {
-                case 'platform':
-                    header.textContent = '平台管理后台';
-                    break;
-                case 'merchant':
-                    header.textContent = '商家管理后台';
-                    break;
-                case 'user':
-                    header.textContent = '用户中心';
-                    break;
+            const headerDesc = document.querySelector('header p');
+            const userAvatar = document.getElementById('user-avatar');
+            const userName = document.getElementById('user-name');
+            const userRole = document.getElementById('user-role');
+            
+            // 添加淡出效果
+            const mainContent = document.querySelector('.p-6');
+            mainContent.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                switch(role) {
+                    case 'platform':
+                        // 显示平台管理员导航
+                        document.getElementById('platform-nav').style.display = 'block';
+                        // 重置导航状态
+                        resetNavigation('platform-nav');
+                        // 显示默认内容
+                        showPlatformDashboard();
+                        // 更新页面标题
+                        header.textContent = '平台管理后台';
+                        headerDesc.textContent = '实时监控平台运营数据和管理各项业务';
+                        // 更新用户信息
+                        userAvatar.innerHTML = '<i class="fas fa-user-shield text-white text-xs"></i>';
+                        userName.textContent = 'Platform Admin';
+                        userRole.textContent = '超级管理员';
+                        break;
+                        
+                    case 'merchant':
+                        // 显示商家后台导航
+                        document.getElementById('merchant-nav').style.display = 'block';
+                        // 重置导航状态
+                        resetNavigation('merchant-nav');
+                        // 显示默认内容
+                        showMerchantDashboard();
+                        // 更新页面标题
+                        header.textContent = '商家管理后台';
+                        headerDesc.textContent = '管理您的店铺、商品和订单，查看销售数据';
+                        // 更新用户信息
+                        userAvatar.innerHTML = '<i class="fas fa-store text-white text-xs"></i>';
+                        userName.textContent = 'Alice Store';
+                        userRole.textContent = '认证商家';
+                        break;
+                        
+                    case 'user':
+                        // 显示用户中心导航
+                        document.getElementById('user-nav').style.display = 'block';
+                        // 重置导航状态
+                        resetNavigation('user-nav');
+                        // 显示默认内容
+                        showUserDashboard();
+                        // 更新页面标题
+                        header.textContent = '用户个人中心';
+                        headerDesc.textContent = '管理您的个人资料、订单和数字资产';
+                        // 更新用户信息
+                        userAvatar.innerHTML = '<i class="fas fa-user text-white text-xs"></i>';
+                        userName.textContent = '0x1234...5678';
+                        userRole.textContent = 'VIP用户';
+                        break;
+                }
+                
+                // 恢复透明度
+                mainContent.style.opacity = '1';
+            }, 150);
+        }
+
+        function resetNavigation(navId) {
+            // 重置指定导航的状态
+            const navItems = document.querySelectorAll(`#${navId} .nav-item`);
+            navItems.forEach((item, index) => {
+                item.classList.remove('active');
+                item.classList.add('text-gray-300');
+                if (index === 0) {
+                    // 第一个菜单项设为活跃状态
+                    item.classList.add('active');
+                    item.classList.remove('text-gray-300');
+                }
+            });
+        }
+
+        function showPlatformDashboard() {
+            // 显示原有的平台管理员仪表板
+            const existingDashboard = document.getElementById('dashboard-content');
+            if (existingDashboard) {
+                existingDashboard.classList.add('active');
             }
+        }
+
+        function showMerchantDashboard() {
+            // 创建商家仪表板内容
+            const content = `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stats-card rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-shopping-bag text-white"></i>
+                            </div>
+                            <span class="text-green-400 text-sm font-semibold">+15.2%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-white mb-1">156</div>
+                        <div class="text-gray-400 text-sm">总订单数</div>
+                    </div>
+
+                    <div class="stats-card rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-box text-white"></i>
+                            </div>
+                            <span class="text-sapphire-400 text-sm font-semibold">+3</span>
+                        </div>
+                        <div class="text-2xl font-bold text-white mb-1">23</div>
+                        <div class="text-gray-400 text-sm">在售商品</div>
+                    </div>
+
+                    <div class="stats-card rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-coins text-white"></i>
+                            </div>
+                            <span class="text-purple-400 text-sm font-semibold">+28.5%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-white mb-1">12,450</div>
+                        <div class="text-gray-400 text-sm">SAP收益</div>
+                    </div>
+
+                    <div class="stats-card rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-star text-white"></i>
+                            </div>
+                            <span class="text-orange-400 text-sm font-semibold">+0.2</span>
+                        </div>
+                        <div class="text-2xl font-bold text-white mb-1">4.8</div>
+                        <div class="text-gray-400 text-sm">平均评分</div>
+                    </div>
+                </div>
+
+                <div class="glass-bg rounded-xl p-6">
+                    <h3 class="text-xl font-bold mb-6">热销商品</h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="glass-bg rounded-xl overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&h=200&fit=crop" alt="Web3课程" class="w-full h-32 object-cover">
+                            <div class="p-4">
+                                <h4 class="font-semibold text-white mb-2">Web3开发课程</h4>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sapphire-400 font-bold">250 SAP</span>
+                                    <span class="text-green-400 text-sm">已售 45</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-bg rounded-xl overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=300&h=200&fit=crop" alt="NFT工具" class="w-full h-32 object-cover">
+                            <div class="p-4">
+                                <h4 class="font-semibold text-white mb-2">NFT设计工具</h4>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sapphire-400 font-bold">89 SAP</span>
+                                    <span class="text-green-400 text-sm">已售 32</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="glass-bg rounded-xl overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1614332287897-cdc485fa562d?w=300&h=200&fit=crop" alt="DeFi工具" class="w-full h-32 object-cover">
+                            <div class="p-4">
+                                <h4 class="font-semibold text-white mb-2">DeFi分析工具</h4>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sapphire-400 font-bold">156 SAP</span>
+                                    <span class="text-green-400 text-sm">已售 28</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 清空现有内容并添加新内容
+            const mainContent = document.querySelector('.p-6');
+            const existingContent = mainContent.querySelectorAll('.admin-content');
+            existingContent.forEach(content => content.remove());
+            
+            const merchantContent = document.createElement('div');
+            merchantContent.id = 'merchant-dashboard-content';
+            merchantContent.className = 'admin-content active';
+            merchantContent.innerHTML = content;
+            mainContent.appendChild(merchantContent);
+        }
+
+        function showUserDashboard() {
+            // 创建用户中心内容
+            const content = `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="stats-card rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-coins text-white"></i>
+                            </div>
+                            <span class="text-green-400 text-sm font-semibold">+5.8%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-white mb-1">1,256</div>
+                        <div class="text-gray-400 text-sm">SAP余额</div>
+                    </div>
+
+                    <div class="stats-card rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-shopping-bag text-white"></i>
+                            </div>
+                            <span class="text-sapphire-400 text-sm font-semibold">+2</span>
+                        </div>
+                        <div class="text-2xl font-bold text-white mb-1">18</div>
+                        <div class="text-gray-400 text-sm">已购商品</div>
+                    </div>
+
+                    <div class="stats-card rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-seedling text-white"></i>
+                            </div>
+                            <span class="text-purple-400 text-sm font-semibold">+12.3%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-white mb-1">89</div>
+                        <div class="text-gray-400 text-sm">质押收益</div>
+                    </div>
+
+                    <div class="stats-card rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-share-alt text-white"></i>
+                            </div>
+                            <span class="text-orange-400 text-sm font-semibold">+3</span>
+                        </div>
+                        <div class="text-2xl font-bold text-white mb-1">5</div>
+                        <div class="text-gray-400 text-sm">推荐用户</div>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="glass-bg rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6">最近购买</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-4 p-4 bg-gray-800/50 rounded-lg">
+                                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=80&h=80&fit=crop" alt="课程" class="w-12 h-12 rounded-lg object-cover">
+                                <div class="flex-1">
+                                    <div class="text-white font-semibold">Web3开发课程</div>
+                                    <div class="text-gray-400 text-sm">2024-01-15</div>
+                                </div>
+                                <div class="text-sapphire-400 font-bold">250 SAP</div>
+                            </div>
+                            <div class="flex items-center space-x-4 p-4 bg-gray-800/50 rounded-lg">
+                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=80&h=80&fit=crop" alt="工具" class="w-12 h-12 rounded-lg object-cover">
+                                <div class="flex-1">
+                                    <div class="text-white font-semibold">NFT设计工具</div>
+                                    <div class="text-gray-400 text-sm">2024-01-12</div>
+                                </div>
+                                <div class="text-sapphire-400 font-bold">89 SAP</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-bg rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-6">质押收益</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+                                <div>
+                                    <div class="text-white font-semibold">SAP流动性挖矿</div>
+                                    <div class="text-gray-400 text-sm">年化收益率 15.6%</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-green-400 font-bold">+12.5 SAP</div>
+                                    <div class="text-gray-400 text-sm">今日收益</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+                                <div>
+                                    <div class="text-white font-semibold">DAO治理质押</div>
+                                    <div class="text-gray-400 text-sm">年化收益率 8.2%</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-green-400 font-bold">+6.8 SAP</div>
+                                    <div class="text-gray-400 text-sm">今日收益</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 清空现有内容并添加新内容
+            const mainContent = document.querySelector('.p-6');
+            const existingContent = mainContent.querySelectorAll('.admin-content');
+            existingContent.forEach(content => content.remove());
+            
+            const userContent = document.createElement('div');
+            userContent.id = 'user-dashboard-content';
+            userContent.className = 'admin-content active';
+            userContent.innerHTML = content;
+            mainContent.appendChild(userContent);
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Sapphire Mall 后台管理已加载');
+            
+            // 检查URL参数，如果有角色参数则自动切换
+            const urlParams = new URLSearchParams(window.location.search);
+            const roleParam = urlParams.get('role');
+            if (roleParam) {
+                // 延迟执行角色切换，确保页面完全加载
+                setTimeout(() => {
+                    switchRole(roleParam);
+                    // 同时更新选择器的值
+                    const roleSelector = document.getElementById('roleSelector');
+                    if (roleSelector) {
+                        roleSelector.value = roleParam;
+                    }
+                }, 100);
+            }
         });
     </script>
 </body>

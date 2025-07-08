@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理 - Sapphire Mall</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/user-management.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 统计概览区 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-chart-pie"></i>
+                            用户数据概览
+                        </h3>
+                        <div class="dashboard-actions">
+                            <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="refreshUserStats()">
+                                <i class="fas fa-refresh"></i>
+                                刷新数据
+                            </button>
+                            <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="exportUserReport()">
+                                <i class="fas fa-download"></i>
+                                导出报告
+                            </button>
+                        </div>
+                    </div>
+                    <div class="dashboard-stats-grid">
+                        <!-- 总用户数 -->
+                        <div class="dashboard-stat-card stat-primary">
+                            <div class="stat-content-wrapper">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>1,245</h3>
+                                    <p>总用户数</p>
+                                </div>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+12.5%</span>
+                            </div>
+                        </div>
+                        <!-- 认证商户 -->
+                        <div class="dashboard-stat-card stat-success">
+                            <div class="stat-content-wrapper">
+                                <div class="stat-icon">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>89</h3>
+                                    <p>认证商户</p>
+                                </div>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+8.3%</span>
+                            </div>
+                        </div>
+                        <!-- 待审核 -->
+                        <div class="dashboard-stat-card stat-orange">
+                            <div class="stat-content-wrapper">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>12</h3>
+                                    <p>待审核</p>
+                                </div>
+                            </div>
+                            <div class="stat-trend negative">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>-5.2%</span>
+                            </div>
+                        </div>
+                        <!-- KYC通过率 -->
+                        <div class="dashboard-stat-card stat-purple">
+                            <div class="stat-content-wrapper">
+                                <div class="stat-icon">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>95.8%</h3>
+                                    <p>KYC通过率</p>
+                                </div>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+2.1%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速操作区 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-bolt"></i>
+                            快速操作
+                        </h3>
+                    </div>
+                    
+                    <div class="quick-actions-grid">
+                        <div class="quick-action-card active" data-function="user-list" onclick="switchToFunction('user-list')">
+                            <div class="action-icon">
+                                <i class="fas fa-users-cog"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>用户管理</h5>
+                                <p>查看和管理所有用户账户</p>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-action-card" data-function="kyc-review" onclick="switchToFunction('kyc-review')">
+                            <div class="action-icon">
+                                <i class="fas fa-id-card"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>KYC审核</h5>
+                                <p>处理用户身份认证申请</p>
+                                <span class="action-badge">12</span>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-action-card" data-function="permissions" onclick="switchToFunction('permissions')">
+                            <div class="action-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>权限分配</h5>
+                                <p>管理用户角色和权限</p>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-action-card" data-function="user-analytics" onclick="switchToFunction('user-analytics')">
+                            <div class="action-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>数据分析</h5>
+                                <p>用户行为和数据统计</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能区容器 -->
+        <div class="function-cards-container">
+            <!-- 用户管理功能 -->
+            <div id="user-list-function" class="admin-info-card function-content active">
+                <div class="admin-card-content">
+                    <div class="admin-section">
+                        <div class="function-header">
+                            <h3 class="function-title">
+                                <i class="fas fa-users"></i>
+                                用户管理
+                            </h3>
+                        </div>
+                        
+                        <!-- 批量操作工具栏 -->
+                        <div class="batch-actions-toolbar" id="batchActions" style="display: none;">
+                            <div class="batch-info">
+                                已选择 <strong id="selectedCount">0</strong> 个用户
+                            </div>
+                            <div class="batch-buttons">
+                                <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="batchEnableUsers()">
+                                    <i class="fas fa-check"></i>
+                                    批量启用
+                                </button>
+                                <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="batchDisableUsers()">
+                                    <i class="fas fa-ban"></i>
+                                    批量禁用
+                                </button>
+                                <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="clearUserSelection()">
+                                    <i class="fas fa-times"></i>
+                                    取消选择
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 筛选和搜索区域 -->
+                        <div class="user-filters-container">
+                            <div class="filter-group">
+                                <button class="filter-btn active" data-role="all">全部用户</button>
+                                <button class="filter-btn" data-role="user">普通用户</button>
+                                <button class="filter-btn" data-role="merchant">商家用户</button>
+                                <button class="filter-btn" data-role="admin">管理员</button>
+                            </div>
+                            <div class="user-search-actions">
+                                <div class="search-input-container">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" placeholder="搜索钱包地址、用户ID或昵称..." class="search-input" id="userSearch">
+                                </div>
+                                <select class="filter-select" id="statusFilter">
+                                    <option value="">用户状态</option>
+                                    <option value="active">正常</option>
+                                    <option value="disabled">已禁用</option>
+                                    <option value="pending">待审核</option>
+                                </select>
+                                <select class="filter-select" id="kycFilter">
+                                    <option value="">KYC认证</option>
+                                    <option value="unverified">未认证</option>
+                                    <option value="pending">审核中</option>
+                                    <option value="approved">已通过</option>
+                                    <option value="rejected">已拒绝</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 用户列表 -->
+                        <div class="users-list-container">
+                            <!-- 表头 -->
+                            <div class="users-table-header">
+                                <div class="header-item header-checkbox">
+                                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                                </div>
+                                <div class="header-item header-user">用户信息</div>
+                                <div class="header-item header-role">角色</div>
+                                <div class="header-item header-status">状态</div>
+                                <div class="header-item header-kyc">KYC状态</div>
+                                <div class="header-item header-assets">资产信息</div>
+                                <div class="header-item header-register">注册时间</div>
+                                <div class="header-item header-active">最后活跃</div>
+                                <div class="header-item header-actions">操作</div>
+                            </div>
+                            
+                            <!-- 用户列表 -->
+                            <div class="user-list" id="userList">
+                                <!-- 用户项将通过JavaScript动态生成 -->
+                            </div>
+
+                            <!-- 空状态 -->
+                            <div class="empty-state" id="emptyState" style="display: none;">
+                                <i class="fas fa-users"></i>
+                                <p>暂无用户数据</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 分页 -->
+                        <div class="user-pagination" id="userPagination">
+                            <div class="pagination-info">
+                                显示 <span id="startIndex">1</span> 到 <span id="endIndex">20</span> 条，共 <span id="totalItems">1,245</span> 条记录
+                            </div>
+                            <div class="pagination-controls">
+                                <button class="pagination-btn" onclick="goToPage(1)" id="firstPage">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </button>
+                                <button class="pagination-btn" onclick="goToPage('prev')" id="prevPage">
+                                    <i class="fas fa-angle-left"></i>
+                                </button>
+                                <div class="pagination-pages" id="pageNumbers">
+                                    <button class="pagination-btn pagination-page active">1</button>
+                                    <button class="pagination-btn pagination-page">2</button>
+                                    <button class="pagination-btn pagination-page">3</button>
+                                    <span class="pagination-ellipsis">...</span>
+                                    <button class="pagination-btn pagination-page">63</button>
+                                </div>
+                                <button class="pagination-btn" onclick="goToPage('next')" id="nextPage">
+                                    <i class="fas fa-angle-right"></i>
+                                </button>
+                                <button class="pagination-btn" onclick="goToPage('last')" id="lastPage">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </button>
+                            </div>
+                            <div class="page-size-selector">
+                                <select id="pageSize" onchange="changePageSize()">
+                                    <option value="10">10条/页</option>
+                                    <option value="20" selected>20条/页</option>
+                                    <option value="50">50条/页</option>
+                                    <option value="100">100条/页</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KYC审核功能 -->
+            <div id="kyc-review-function" class="admin-info-card function-content">
+                <div class="admin-card-content">
+                    <div class="admin-section">
+                        <div class="governance-header-row">
+                            <div class="kyc-title-section flex items-center gap-2">
+                                <h3 class="admin-section-title flex items-center gap-2">
+                                    <i class="fas fa-id-card"></i>
+                                    KYC审核
+                                    <span class="badge badge-success ml-3"><i class="fas fa-chart-line"></i>通过率 95.2%</span>
+                                </h3>
+                            </div>
+                            <div class="dashboard-actions">
+                                <button class="admin-btn admin-btn-outline admin-btn-sm kyc-tab-btn" data-tab="pending" onclick="switchKYCTab('pending')">
+                                    <i class="fas fa-clock"></i> 待审核 <span class="tab-badge">3</span>
+                                </button>
+                                <button class="admin-btn admin-btn-outline admin-btn-sm kyc-tab-btn" data-tab="reviewed" onclick="switchKYCTab('reviewed')">
+                                    <i class="fas fa-check-circle"></i> 已审核 <span class="tab-badge">2</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="kyc-list-container">
+                            <!-- 表头 -->
+                            <div class="kyc-table-header">
+                                <div class="header-item header-user">申请人信息</div>
+                                <div class="header-item header-cert">证件信息</div>
+                                <div class="header-item header-time">申请时间</div>
+                                <div class="header-item header-risk">风险等级</div>
+                                <div class="header-item header-status">状态</div>
+                                <div class="header-item header-actions">操作</div>
+                            </div>
+                            <!-- 待审核列表 -->
+                            <div class="kyc-content" id="pendingKYCList"></div>
+                            <!-- 已审核列表 -->
+                            <div class="kyc-content" id="reviewedKYCList" style="display: none;"></div>
+                            <!-- 空状态 -->
+                            <div class="kyc-empty-state" id="kycEmptyState" style="display: none;">
+                                <i class="fas fa-id-card"></i>
+                                <p>暂无KYC申请数据</p>
+                            </div>
+                        </div>
+                        <div class="kyc-pagination" id="kycPagination">
+                            <div class="pagination-info">
+                                显示 <span id="kycStartIndex">1</span> 到 <span id="kycEndIndex">10</span> 条，共 <span id="kycTotalItems">12</span> 条记录
+                            </div>
+                            <div class="pagination-controls">
+                                <button class="pagination-btn" onclick="goToKYCPage(1)" id="kycFirstPage">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </button>
+                                <button class="pagination-btn" onclick="goToKYCPage('prev')" id="kycPrevPage">
+                                    <i class="fas fa-angle-left"></i>
+                                </button>
+                                <div class="pagination-pages" id="kycPageNumbers">
+                                    <button class="pagination-btn pagination-page active">1</button>
+                                    <button class="pagination-btn pagination-page">2</button>
+                                </div>
+                                <button class="pagination-btn" onclick="goToKYCPage('next')" id="kycNextPage">
+                                    <i class="fas fa-angle-right"></i>
+                                </button>
+                                <button class="pagination-btn" onclick="goToKYCPage('last')" id="kycLastPage">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </button>
+                            </div>
+                            <div class="page-size-selector">
+                                <select id="kycPageSize" onchange="changeKYCPageSize()">
+                                    <option value="10" selected>10条/页</option>
+                                    <option value="20">20条/页</option>
+                                    <option value="50">50条/页</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 权限分配功能 -->
+            <div id="permissions-function" class="admin-info-card function-content">
+                <div class="admin-card-content">
+                    <div class="admin-section">
+                        <div class="function-header flex justify-between items-center">
+                            <h3 class="function-title"><i class="fas fa-shield-alt"></i> 权限分配</h3>
+                            <button class="btn btn-primary" onclick="addNewRole()">
+                                <i class="fas fa-plus"></i>
+                                新增角色
+                            </button>
+                        </div>
+                        <div class="admin-table-container">
+                            <table class="admin-table role-table">
+                                <colgroup>
+                                    <col style="width: 18%">
+                                    <col style="width: 16%">
+                                    <col style="width: 12%">
+                                    <col style="width: 32%">
+                                    <col style="width: 22%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>角色名称</th>
+                                        <th>编码</th>
+                                        <th>状态</th>
+                                        <th>描述</th>
+                                        <th class="text-center">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="roleTableBody">
+                                    <!-- 角色数据JS渲染 -->
+                                </tbody>
+                            </table>
+                            <div class="pagination-container" id="rolePagination"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 权限分配模态框 -->
+            <div class="modal" id="permissionModal">
+                <div class="modal-content permission-modal">
+                    <div class="modal-header">
+                        <h3>分配权限</h3>
+                        <button class="modal-close" onclick="closePermissionModal()"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="permissionTree" class="permission-tree-area"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closePermissionModal()">取消</button>
+                        <button class="btn btn-primary" onclick="saveRolePermissions()">保存</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 角色新增/编辑/查看明细弹窗 -->
+            <div class="modal-overlay" id="roleAddEditModal">
+                <div class="modal-container large role-add-modal">
+                    <div class="modal-header">
+                        <h3 id="roleAddEditTitle">
+                            <i class="fas fa-user-tag"></i>
+                            添加角色
+                        </h3>
+                        <button class="modal-close" onclick="closeRoleAddEditModal()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="roleForm">
+                            <!-- 角色信息区 -->
+                            <div class="form-section role-detail-section">
+                                <h4 class="form-section-title">
+                                    <i class="fas fa-info-circle"></i>
+                                    角色信息
+                                </h4>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="roleName">角色名称 <span class="required">*</span></label>
+                                        <input type="text" id="roleName" name="roleName" class="form-input" required placeholder="请输入角色名称">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="roleCode">角色编码 <span class="required">*</span></label>
+                                        <input type="text" id="roleCode" name="roleCode" class="form-input" required placeholder="请输入角色编码">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="roleStatus">角色状态</label>
+                                        <select id="roleStatus" name="status" class="form-select">
+                                            <option value="active">启用</option>
+                                            <option value="inactive">禁用</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="roleSort">排序</label>
+                                        <input type="number" id="roleSort" name="sort" class="form-input" value="0" min="0">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="roleDescription">角色描述</label>
+                                    <textarea id="roleDescription" name="description" class="form-textarea" rows="3" placeholder="请输入角色描述"></textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- 菜单分配区 -->
+                            <div class="form-section menu-assign-section">
+                                <h4 class="form-section-title">
+                                    <i class="fas fa-sitemap"></i>
+                                    菜单权限分配
+                                </h4>
+                                <p class="section-description">选择该角色可以访问的菜单和功能模块，并设置相应的数据权限</p>
+                                
+                                <div class="menu-permission-area">
+                                    <div class="menu-tree-container" id="menuTreeContainer">
+                                        <!-- 菜单树将通过JavaScript动态渲染 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" onclick="closeRoleAddEditModal()">取消</button>
+                        <button type="button" class="btn btn-secondary" onclick="saveRoleDraft()">保存草稿</button>
+                        <button type="button" class="btn btn-primary" onclick="saveRole()">
+                            <span id="saveRoleButtonText">保存角色</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 数据分析功能 -->
+            <div id="user-analytics-function" class="admin-info-card function-content">
+                <div class="admin-card-content">
+                    <div class="admin-section">
+                        <div class="function-header">
+                            <h3 class="function-title">
+                                <i class="fas fa-chart-bar"></i>
+                                数据分析
+                            </h3>
+                        </div>
+                        <div class="analytics-container">
+                            <div class="analytics-grid">
+                                <div class="analytics-card">
+                                    <h4>用户增长趋势</h4>
+                                    <div class="chart-placeholder">
+                                        <i class="fas fa-chart-line"></i>
+                                        <p>用户增长图表</p>
+                                    </div>
+                                </div>
+                                <div class="analytics-card">
+                                    <h4>用户活跃度分析</h4>
+                                    <div class="chart-placeholder">
+                                        <i class="fas fa-chart-pie"></i>
+                                        <p>活跃度分布图表</p>
+                                    </div>
+                                </div>
+                                <div class="analytics-card">
+                                    <h4>KYC审核统计</h4>
+                                    <div class="chart-placeholder">
+                                        <i class="fas fa-chart-bar"></i>
+                                        <p>审核统计图表</p>
+                                    </div>
+                                </div>
+                                <div class="analytics-card">
+                                    <h4>用户价值分布</h4>
+                                    <div class="chart-placeholder">
+                                        <i class="fas fa-chart-area"></i>
+                                        <p>价值分布图表</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户详情弹窗 -->
+    <div id="userDetailModal" class="modal web3-modal">
+        <div class="modal-content user-detail-modal">
+            <div class="modal-header">
+                <div class="modal-title-wrapper">
+                    <div class="modal-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>用户详情</h3>
+                </div>
+                <button class="modal-close" onclick="closeUserDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 用户详情内容将通过JavaScript动态生成 -->
+            </div>
+            <div class="modal-footer">
+                <button class="admin-btn admin-btn-outline" onclick="closeUserDetailModal()">
+                    <i class="fas fa-arrow-left"></i>
+                    返回
+                </button>
+                <div class="modal-footer-actions">
+                    <button class="admin-btn admin-btn-success admin-btn-sm" onclick="exportUserData()">
+                        <i class="fas fa-download"></i>
+                        导出数据
+                    </button>
+                    <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="editUserProfile()">
+                        <i class="fas fa-edit"></i>
+                        编辑
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KYC详情弹窗 -->
+    <div id="kycDetailModal" class="modal web3-modal">
+        <div class="modal-content kyc-detail-modal">
+            <div class="modal-header">
+                <div class="modal-title-wrapper">
+                    <div class="modal-icon kyc-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <h3>KYC认证详情</h3>
+                </div>
+                <button class="modal-close" onclick="closeKYCDetailModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- KYC详情内容将通过JavaScript动态生成 -->
+            </div>
+            <div class="modal-footer">
+                <button class="admin-btn admin-btn-outline" onclick="closeKYCDetailModal()">
+                    <i class="fas fa-arrow-left"></i>
+                    返回
+                </button>
+                <div class="modal-footer-actions">
+                    <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="rejectKYC()">
+                        <i class="fas fa-times-circle"></i>
+                        拒绝
+                    </button>
+                    <button class="admin-btn admin-btn-success admin-btn-sm" onclick="approveKYC()">
+                        <i class="fas fa-check-circle"></i>
+                        通过
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 权限编辑弹窗 -->
+    <div id="permissionEditModal" class="modal web3-modal">
+        <div class="modal-content permission-edit-modal">
+            <div class="modal-header">
+                <div class="modal-title-wrapper">
+                    <div class="modal-icon permission-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>编辑角色权限</h3>
+                </div>
+                <button class="modal-close" onclick="closePermissionEditModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 权限编辑内容将通过JavaScript动态生成 -->
+            </div>
+            <div class="modal-footer">
+                <button class="admin-btn admin-btn-outline" onclick="closePermissionEditModal()">
+                    <i class="fas fa-times"></i>
+                    取消
+                </button>
+                <div class="modal-footer-actions">
+                    <button class="admin-btn admin-btn-primary" onclick="savePermissions()">
+                        <i class="fas fa-save"></i>
+                        保存权限
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/user-management.js"></script>
+    <script src="js/iframe-height-reporter.js"></script>
+</body>
+</html> 

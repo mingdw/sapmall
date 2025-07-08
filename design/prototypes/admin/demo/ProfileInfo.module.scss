@@ -1,0 +1,170 @@
+.profileContainer {
+  
+}
+
+.infoCard {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.userHeader {
+  display: flex;
+  align-items: flex-start;
+  padding: 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.avatarContainer {
+  margin-right: 24px;
+  position: relative;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid #f5f5f5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.uploadButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #fff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  border: 1px solid #e8e8e8;
+}
+
+.userInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.userRole {
+  display: inline-block;
+  padding: 2px 10px;
+  color: #1890ff;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.adminRole {
+  color: #ff4d4f;
+}
+
+.userBrief {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.walletAddress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.addressValue {
+  font-family: monospace;
+  color: #333;
+}
+
+.copyIcon {
+  cursor: pointer;
+  color: #1890ff;
+}
+
+.balanceInfo {
+  display: flex;
+  gap: 16px;
+  margin-left: auto;
+  height: 100px;
+  align-items: center;
+}
+
+.balanceItem {
+  text-align: center;
+  padding: 12px 24px;
+  background-color: #fafafa;
+  border-radius: 6px;
+  min-width: 120px;
+}
+
+.balanceValue {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1890ff;
+  margin-bottom: 4px;
+}
+
+.balanceLabel {
+  font-size: 12px;
+  color: #999;
+}
+
+.infoContent {
+  padding: 24px;
+}
+
+.infoSection {
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.infoItem {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.infoLabel {
+  width: 100px;
+  color: #666;
+  font-size: 14px;
+}
+
+.infoValue {
+  flex: 1;
+  color: #333;
+  font-size: 14px;
+}
+
+.editButton {
+  margin-top: 16px;
+}
+
+.emptyData {
+  color: #999;
+  font-style: italic;
+}

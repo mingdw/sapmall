@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的收货地址 - Sapphire Mall</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/addresses.css">
+</head>
+<body class="page-container">
+    <div class="admin-content-container">
+        <!-- 地址卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title flex items-center">
+                        <i class="fas fa-map-marker-alt"></i>
+                        我的收货地址
+                        <button class="admin-btn admin-btn-primary header-add-btn margin-right-2" onclick="showAddAddressModal()">
+                            <i class="fas fa-plus"></i>
+                            添加新地址
+                        </button>
+                    </h3>
+                    
+                    <div class="addresses-list-container">
+                        <div class="addresses-table-header">
+                            <div class="header-item">收货人</div>
+                            <div class="header-item">联系电话</div>
+                            <div class="header-item">地址</div>
+                            <div class="header-item header-actions">
+                                操作
+                              
+                            </div>
+                        </div>
+                        <div class="addresses-list" id="addressesList">
+                            <!-- 地址项将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    <div class="empty-state" id="emptyState" style="display: none;">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>还没有收货地址</h3>
+                        <p>添加收货地址，让购物更便捷</p>
+                        <button class="admin-btn admin-btn-primary" onclick="showAddAddressModal()">
+                            <i class="fas fa-plus"></i>
+                            添加第一个地址
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加/编辑地址模态框 -->
+    <div class="modal" id="addressModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">
+                    <i class="fas fa-plus"></i>
+                    添加收货地址
+                </h3>
+                <span class="close-modal" onclick="closeAddressModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form class="address-form" id="addressForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="receiverName">收货人姓名 <span class="required">*</span></label>
+                            <input type="text" id="receiverName" name="receiverName" placeholder="请输入收货人姓名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="receiverPhone">联系电话 <span class="required">*</span></label>
+                            <input type="tel" id="receiverPhone" name="receiverPhone" placeholder="请输入手机号码" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="province">省/直辖市 <span class="required">*</span></label>
+                            <select id="province" name="province" required onchange="updateCities()">
+                                <option value="">请选择省份</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">市/区 <span class="required">*</span></label>
+                            <select id="city" name="city" required onchange="updateDistricts()">
+                                <option value="">请选择城市</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="district">区/县</label>
+                            <select id="district" name="district">
+                                <option value="">请选择区县</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="detailAddress">详细地址 <span class="required">*</span></label>
+                        <textarea id="detailAddress" name="detailAddress" placeholder="请填写详细地址，如道路、门牌号、小区、楼栋号、房间号等" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="postalCode">邮政编码</label>
+                            <input type="text" id="postalCode" name="postalCode" placeholder="请输入邮政编码">
+                        </div>
+                        <div class="form-group">
+                            <label for="addressLabel">地址标签</label>
+                            <select id="addressLabel" name="addressLabel">
+                                <option value="home">家</option>
+                                <option value="company">公司</option>
+                                <option value="school">学校</option>
+                                <option value="other">其他</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="isDefault" name="isDefault">
+                            <span class="checkmark"></span>
+                            设为默认地址
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="closeAddressModal()">取消</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            保存地址
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除确认模态框 -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-trash"></i>
+                    删除地址
+                </h3>
+                <span class="close-modal" onclick="closeDeleteModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirm">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h4>确定要删除这个地址吗？</h4>
+                    <p>删除后无法恢复，请确认操作。</p>
+                    <div class="delete-actions">
+                        <button class="btn btn-outline" onclick="closeDeleteModal()">取消</button>
+                        <button class="btn btn-danger" onclick="confirmDeleteAddress()">
+                            <i class="fas fa-trash"></i>
+                            确定删除
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/page-common.js"></script>
+    <script src="js/addresses.js"></script>
+</body>
+</html> 

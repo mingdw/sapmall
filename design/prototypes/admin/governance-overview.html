@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>治理概览 - SAP Mall DAO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/governance-overview.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 治理权重展示卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-balance-scale"></i>
+                            我的治理权重
+                        </h3>
+                        <div class="power-level-badge">
+                            <i class="fas fa-crown"></i>
+                            <span>活跃参与者</span>
+                        </div>
+                    </div>
+                    
+                    <div class="orders-stats-grid">
+                        <div class="orders-stat-card governance-stat-card">
+                            <div class="stat-icon governance-stat-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">1,234.56</div>
+                                <div class="stat-label">SAP 质押量</div>
+                                <div class="stat-change positive">+12.3%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="orders-stat-card governance-stat-card">
+                            <div class="stat-icon governance-stat-icon-blue">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">2.45%</div>
+                                <div class="stat-label">投票权重</div>
+                                <div class="stat-change positive">+0.1%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="orders-stat-card governance-stat-card">
+                            <div class="stat-icon governance-stat-icon-green">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">89.7%</div>
+                                <div class="stat-label">参与率</div>
+                                <div class="stat-change positive">+5.2%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="orders-stat-card governance-stat-card">
+                            <div class="stat-icon governance-stat-icon-purple">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">156</div>
+                                <div class="stat-label">治理积分</div>
+                                <div class="stat-change positive">+8</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 治理统计卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-chart-bar"></i>
+                        治理统计概览
+                    </h3>
+                    
+                    <div class="orders-stats-grid">
+                        <div class="orders-stat-card">
+                            <div class="stat-icon stat-icon-blue">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">23</div>
+                                <div class="stat-label">总提案数</div>
+                                <div class="stat-change positive">+3 本月</div>
+                            </div>
+                        </div>
+
+                        <div class="orders-stat-card">
+                            <div class="stat-icon stat-icon-success">
+                                <i class="fas fa-vote-yea"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">8</div>
+                                <div class="stat-label">进行中</div>
+                                <div class="stat-change positive">+2 本周</div>
+                            </div>
+                        </div>
+
+                        <div class="orders-stat-card">
+                            <div class="stat-icon stat-icon-purple">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">1,247</div>
+                                <div class="stat-label">活跃投票者</div>
+                                <div class="stat-change positive">+89 本周</div>
+                            </div>
+                        </div>
+
+                        <div class="orders-stat-card">
+                            <div class="stat-icon stat-icon-warning">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">2.3M</div>
+                                <div class="stat-label">总质押量</div>
+                                <div class="stat-change positive">+156K 本月</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 活跃提案卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="admin-section-header">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-fire"></i>
+                        活跃提案
+                    </h3>
+                        <button class="admin-btn admin-btn-outline admin-btn-sm view-all-btn" onclick="navigateToProposals()">
+                            <i class="fas fa-arrow-right"></i>
+                            查看全部
+                        </button>
+                    </div>
+                    
+                    <div class="proposals-list" id="proposalsList">
+                        <!-- 提案项目 -->
+                        <div class="proposal-item" data-status="voting">
+                            <div class="proposal-header">
+                                <div class="proposal-id">提案 #SIP-015</div>
+                                <div class="status-badge status-active">投票中</div>
+                            </div>
+                            <div class="proposal-title">调整平台交易手续费率0.25%</div>
+                            <div class="proposal-description">
+                                提议将当前0.3%的交易手续费率调整至0.25%，以提高平台竞争力并吸引更多用户。
+                            </div>
+                            <div class="proposal-meta">
+                                <div class="proposal-info">
+                                    <span><i class="fas fa-calendar"></i> 截止: 2024-01-15</span>
+                                    <span><i class="fas fa-users"></i> 1,234 人参与</span>
+                                    <span><i class="fas fa-thumbs-up"></i> 72.3% 支持</span>
+                                </div>
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="vote-btn vote-btn-yes">
+                                    <i class="fas fa-thumbs-up"></i>
+                                    支持
+                                </button>
+                                <button class="vote-btn vote-btn-no">
+                                    <i class="fas fa-thumbs-down"></i>
+                                    反对
+                                </button>
+                                <button class="vote-btn vote-btn-abstain">
+                                    <i class="fas fa-minus"></i>
+                                    弃权
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="proposal-item" data-status="voting">
+                            <div class="proposal-header">
+                                <div class="proposal-id">提案 #SIP-016</div>
+                                <div class="status-badge status-active">投票中</div>
+                            </div>
+                            <div class="proposal-title">引入流动性挖矿激励机制</div>
+                            <div class="proposal-description">
+                                提议在SAP/ETH和SAP/USDT流动性池中引入额外的挖矿激励机制。
+                            </div>
+                            <div class="proposal-meta">
+                                <div class="proposal-info">
+                                    <span><i class="fas fa-calendar"></i> 截止: 2024-01-18</span>
+                                    <span><i class="fas fa-users"></i> 892 人参与</span>
+                                    <span><i class="fas fa-thumbs-up"></i> 89.2% 支持</span>
+                                </div>
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="vote-btn vote-btn-voted" disabled>
+                                    <i class="fas fa-check"></i>
+                                    已投票(支持)
+                                </button>
+                                <button class="vote-btn vote-btn-no">
+                                    <i class="fas fa-thumbs-down"></i>
+                                    反对
+                                </button>
+                                <button class="vote-btn vote-btn-abstain">
+                                    <i class="fas fa-minus"></i>
+                                    弃权
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="proposal-item" data-status="ended">
+                            <div class="proposal-header">
+                                <div class="proposal-id">提案 #SIP-014</div>
+                                <div class="status-badge status-passed">已通过</div>
+                            </div>
+                            <div class="proposal-title">新增虚拟商品分类：AI工具与服务</div>
+                            <div class="proposal-description">
+                                随着AI技术的快速发展，建议在平台新增AI工具与服务商品分类。
+                            </div>
+                            <div class="proposal-meta">
+                                <div class="proposal-info">
+                                    <span><i class="fas fa-check"></i> 2024-01-10 执行</span>
+                                    <span><i class="fas fa-users"></i> 2,156 人参与</span>
+                                    <span><i class="fas fa-thumbs-up"></i> 89.7% 支持</span>
+                                </div>
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="vote-btn vote-btn-voted" disabled>
+                                    <i class="fas fa-check"></i>
+                                    已投票(支持)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速操作卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-rocket"></i>
+                        快速操作
+                    </h3>
+                    
+                    <div class="actions-grid">
+                        <a href="#" class="action-item" onclick="navigateToVoting()">
+                            <div class="action-icon blue">
+                                <i class="fas fa-vote-yea"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">投票中心</div>
+                                <div class="action-description">查看并参与所有进行中的提案投票</div>
+                            </div>
+                        </a>
+
+                        <a href="#" class="action-item" onclick="navigateToCreateProposal()">
+                            <div class="action-icon green">
+                                <i class="fas fa-plus-circle"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">创建提案</div>
+                                <div class="action-description">发起新的治理提案，推动社区发展</div>
+                            </div>
+                        </a>
+
+                        <a href="#" class="action-item" onclick="navigateToCommunity()">
+                            <div class="action-icon purple">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">社区参与</div>
+                                <div class="action-description">参与社区讨论和活动，提升治理影响力</div>
+                            </div>
+                        </a>
+
+                        <a href="#" class="action-item" onclick="navigateToLearning()">
+                            <div class="action-icon orange">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">治理学习</div>
+                                <div class="action-description">了解DAO治理机制和最佳实践</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/proposals-common.js"></script>
+    <script src="js/governance-overview.js"></script>
+</body>
+</html> 

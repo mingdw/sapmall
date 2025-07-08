@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提案管理 - 系统管理员</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/page-common.css">
+    <link rel="stylesheet" href="css/content-card.css">
+    <style>
+        .proposals-container {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 管理员专属功能区 */
+        .admin-controls {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-controls::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.1), transparent);
+            transition: all 0.8s ease;
+        }
+
+        .admin-controls:hover::before {
+            left: 100%;
+        }
+
+        .admin-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .admin-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .admin-title i {
+            color: #ef4444;
+            font-size: 20px;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .admin-action-card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(51, 65, 85, 0.3);
+            border-radius: 12px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .admin-action-card:hover {
+            background: rgba(30, 41, 59, 0.6);
+            border-color: rgba(239, 68, 68, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .admin-action-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .admin-action-icon.review {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .admin-action-icon.manage {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .admin-action-icon.config {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .admin-action-icon.monitor {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .admin-action-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 6px;
+        }
+
+        .admin-action-description {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+
+        /* 待审核提案区域 */
+        .pending-proposals {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .pending-header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+            border-bottom: 1px solid rgba(251, 191, 36, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .pending-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .pending-title i {
+            color: #fbbf24;
+        }
+
+        .urgent-badge {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pending-item {
+            border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+            padding: 20px 24px;
+            transition: all 0.3s ease;
+        }
+
+        .pending-item:last-child {
+            border-bottom: none;
+        }
+
+        .pending-item:hover {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        .pending-content {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        .pending-main {
+            flex: 1;
+        }
+
+        .pending-id {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .pending-title-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 8px;
+        }
+
+        .pending-description {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .pending-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 12px;
+            color: #64748b;
+            flex-wrap: wrap;
+        }
+
+        .pending-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .approve-btn {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .approve-btn:hover {
+            background: rgba(16, 185, 129, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .reject-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .reject-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .modify-btn {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .modify-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* 筛选工具栏 */
+        .filter-toolbar {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(51, 65, 85, 0.4);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .filter-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tabs {
+            display: flex;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 12px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background: transparent;
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .filter-tab:hover:not(.active) {
+            background: rgba(51, 65, 85, 0.4);
+            color: #e2e8f0;
+        }
+
+        /* 统计卡片 */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .admin-stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(51, 65, 85, 0.4);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .admin-stat-card:hover {
+            border-color: rgba(71, 85, 105, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .admin-stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ef4444;
+            margin-bottom: 4px;
+        }
+
+        .admin-stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* 系统提案列表 */
+        .system-proposals {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(51, 65, 85, 0.4);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .system-proposals-header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .system-proposals-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .system-proposals-title i {
+            color: #ef4444;
+        }
+
+        .system-proposal-item {
+            border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+            padding: 20px 24px;
+            transition: all 0.3s ease;
+        }
+
+        .system-proposal-item:last-child {
+            border-bottom: none;
+        }
+
+        .system-proposal-item:hover {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        .system-proposal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .priority-badge {
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .priority-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .priority-medium {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .priority-low {
+            background: rgba(100, 116, 139, 0.2);
+            color: #64748b;
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .force-execute-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .force-execute-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .pause-btn {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .pause-btn:hover {
+            background: rgba(251, 191, 36, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .admin-actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .pending-content {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .system-proposal-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="proposals-container">
+        <!-- 管理员控制面板 -->
+        <div class="admin-controls">
+            <div class="admin-header">
+                <div class="admin-title">
+                    <i class="fas fa-shield-alt"></i>
+                    系统管理员控制台
+                </div>
+                <div class="admin-badge">超级管理员</div>
+            </div>
+            <div class="admin-actions-grid">
+                <div class="admin-action-card" onclick="reviewProposals()">
+                    <div class="admin-action-icon review">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <div class="admin-action-title">提案审核</div>
+                    <div class="admin-action-description">审核待处理的提案申请</div>
+                </div>
+
+                <div class="admin-action-card" onclick="manageGovernance()">
+                    <div class="admin-action-icon manage">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="admin-action-title">治理管理</div>
+                    <div class="admin-action-description">管理治理参数和规则</div>
+                </div>
+
+                <div class="admin-action-card" onclick="configureSystem()">
+                    <div class="admin-action-icon config">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <div class="admin-action-title">系统配置</div>
+                    <div class="admin-action-description">配置治理系统参数</div>
+                </div>
+
+                <div class="admin-action-card" onclick="monitorActivity()">
+                    <div class="admin-action-icon monitor">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="admin-action-title">活动监控</div>
+                    <div class="admin-action-description">监控治理活动和异常</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 待审核提案 -->
+        <div class="pending-proposals">
+            <div class="pending-header">
+                <div class="pending-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    待审核提案
+                </div>
+                <div class="urgent-badge">需要立即处理</div>
+            </div>
+            <div class="proposals-body">
+                <div class="pending-item">
+                    <div class="pending-content">
+                        <div class="pending-main">
+                            <div class="pending-id">提案 #SIP-019 (待审核)</div>
+                            <div class="pending-title-text">紧急安全补丁部署提案</div>
+                            <div class="pending-description">
+                                发现智能合约存在潜在安全漏洞，需要紧急部署安全补丁。此提案涉及合约升级，需要管理员审核批准后立即执行。
+                            </div>
+                            <div class="pending-meta">
+                                <span><i class="fas fa-user"></i> 提交者: 安全团队</span>
+                                <span><i class="fas fa-calendar"></i> 提交时间: 2024-01-13 09:30</span>
+                                <span><i class="fas fa-clock"></i> 紧急程度: 高</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pending-actions">
+                        <button class="approve-btn" onclick="approveProposal('SIP-019')">
+                            <i class="fas fa-check"></i>
+                            批准
+                        </button>
+                        <button class="reject-btn" onclick="rejectProposal('SIP-019')">
+                            <i class="fas fa-times"></i>
+                            拒绝
+                        </button>
+                        <button class="modify-btn" onclick="modifyProposal('SIP-019')">
+                            <i class="fas fa-edit"></i>
+                            修改
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pending-item">
+                    <div class="pending-content">
+                        <div class="pending-main">
+                            <div class="pending-id">提案 #SIP-020 (待审核)</div>
+                            <div class="pending-title-text">新增代币经济模型调整</div>
+                            <div class="pending-description">
+                                提议调整SAP代币的通胀率和分发机制，优化代币经济模型以提高长期可持续性。此提案需要仔细评估经济影响。
+                            </div>
+                            <div class="pending-meta">
+                                <span><i class="fas fa-user"></i> 提交者: 经济学家团队</span>
+                                <span><i class="fas fa-calendar"></i> 提交时间: 2024-01-12 16:45</span>
+                                <span><i class="fas fa-clock"></i> 紧急程度: 中</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pending-actions">
+                        <button class="approve-btn" onclick="approveProposal('SIP-020')">
+                            <i class="fas fa-check"></i>
+                            批准
+                        </button>
+                        <button class="reject-btn" onclick="rejectProposal('SIP-020')">
+                            <i class="fas fa-times"></i>
+                            拒绝
+                        </button>
+                        <button class="modify-btn" onclick="modifyProposal('SIP-020')">
+                            <i class="fas fa-edit"></i>
+                            修改
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 筛选工具栏 -->
+        <div class="filter-toolbar">
+            <div class="filter-left">
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">全部提案</button>
+                    <button class="filter-tab" data-filter="pending">待审核</button>
+                    <button class="filter-tab" data-filter="active">进行中</button>
+                    <button class="filter-tab" data-filter="system">系统提案</button>
+                    <button class="filter-tab" data-filter="emergency">紧急处理</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 管理员统计 -->
+        <div class="admin-stats">
+            <div class="admin-stat-card">
+                <div class="admin-stat-value">35</div>
+                <div class="admin-stat-label">总提案数</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-value">2</div>
+                <div class="admin-stat-label">待审核</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-value">12</div>
+                <div class="admin-stat-label">进行中</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-value">18</div>
+                <div class="admin-stat-label">已完成</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-value">3</div>
+                <div class="admin-stat-label">已拒绝</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-value">1</div>
+                <div class="admin-stat-label">紧急处理</div>
+            </div>
+        </div>
+
+        <!-- 系统治理提案 -->
+        <div class="system-proposals" id="systemProposals">
+            <div class="system-proposals-header">
+                <div class="system-proposals-title">
+                    <i class="fas fa-tools"></i>
+                    系统治理提案
+                </div>
+                <div class="proposals-count">共 8 个系统提案</div>
+            </div>
+            <div class="proposals-body">
+                <div class="system-proposal-item">
+                    <div class="system-proposal-header">
+                        <div class="pending-main">
+                            <div class="pending-id">系统提案 #SYS-001</div>
+                            <div class="pending-title-text">治理投票权重算法升级</div>
+                            <div class="pending-description">
+                                升级投票权重计算算法，引入时间加权平均和声誉系数，提高治理决策的公平性和有效性。
+                            </div>
+                            <div class="pending-meta">
+                                <span><i class="fas fa-calendar"></i> 创建时间: 2024-01-10</span>
+                                <span><i class="fas fa-user-shield"></i> 创建者: 系统</span>
+                                <span><i class="fas fa-clock"></i> 状态: 等待执行</span>
+                            </div>
+                        </div>
+                        <div class="priority-badge priority-high">高优先级</div>
+                    </div>
+                    <div class="admin-actions">
+                        <button class="force-execute-btn" onclick="forceExecute('SYS-001')">
+                            <i class="fas fa-bolt"></i>
+                            强制执行
+                        </button>
+                        <button class="pause-btn" onclick="pauseProposal('SYS-001')">
+                            <i class="fas fa-pause"></i>
+                            暂停
+                        </button>
+                        <button class="modify-btn" onclick="modifySystemProposal('SYS-001')">
+                            <i class="fas fa-edit"></i>
+                            编辑
+                        </button>
+                    </div>
+                </div>
+
+                <div class="system-proposal-item">
+                    <div class="system-proposal-header">
+                        <div class="pending-main">
+                            <div class="pending-id">系统提案 #SYS-002</div>
+                            <div class="pending-title-text">多签钱包权限配置更新</div>
+                            <div class="pending-description">
+                                更新DAO金库多签钱包的签名权限配置，调整签名阈值和授权地址列表，增强资金安全性。
+                            </div>
+                            <div class="pending-meta">
+                                <span><i class="fas fa-calendar"></i> 创建时间: 2024-01-08</span>
+                                <span><i class="fas fa-user-shield"></i> 创建者: 系统</span>
+                                <span><i class="fas fa-clock"></i> 状态: 准备中</span>
+                            </div>
+                        </div>
+                        <div class="priority-badge priority-medium">中优先级</div>
+                    </div>
+                    <div class="admin-actions">
+                        <button class="force-execute-btn" onclick="forceExecute('SYS-002')">
+                            <i class="fas fa-bolt"></i>
+                            强制执行
+                        </button>
+                        <button class="pause-btn" onclick="pauseProposal('SYS-002')">
+                            <i class="fas fa-pause"></i>
+                            暂停
+                        </button>
+                        <button class="modify-btn" onclick="modifySystemProposal('SYS-002')">
+                            <i class="fas fa-edit"></i>
+                            编辑
+                        </button>
+                    </div>
+                </div>
+
+                <div class="system-proposal-item">
+                    <div class="system-proposal-header">
+                        <div class="pending-main">
+                            <div class="pending-id">系统提案 #SYS-003</div>
+                            <div class="pending-title-text">治理参数自动调整机制</div>
+                            <div class="pending-description">
+                                实施自动化治理参数调整机制，根据网络活跃度和参与度自动调整投票周期、最低参与阈值等参数。
+                            </div>
+                            <div class="pending-meta">
+                                <span><i class="fas fa-calendar"></i> 创建时间: 2024-01-05</span>
+                                <span><i class="fas fa-user-shield"></i> 创建者: 系统</span>
+                                <span><i class="fas fa-clock"></i> 状态: 测试中</span>
+                            </div>
+                        </div>
+                        <div class="priority-badge priority-low">低优先级</div>
+                    </div>
+                    <div class="admin-actions">
+                        <button class="force-execute-btn" onclick="forceExecute('SYS-003')">
+                            <i class="fas fa-bolt"></i>
+                            强制执行
+                        </button>
+                        <button class="pause-btn" onclick="pauseProposal('SYS-003')">
+                            <i class="fas fa-pause"></i>
+                            暂停
+                        </button>
+                        <button class="modify-btn" onclick="modifySystemProposal('SYS-003')">
+                            <i class="fas fa-edit"></i>
+                            编辑
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/proposals-common.js"></script>
+    <script src="js/admin-proposals.js"></script>
+</body>
+</html> 

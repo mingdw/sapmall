@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人信息</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/profile-modal.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 用户基本信息卡片 -->
+        <div class="admin-info-card">
+            <!-- 用户头像和基本信息 -->
+            <div class="admin-user-header">
+                <div class="admin-avatar-container">
+                    <div class="admin-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="admin-upload-button">
+                        <i class="fas fa-pen"></i>
+                    </div>
+                </div>
+                <div class="admin-user-info">
+                    <div class="admin-user-name">
+                        用户名
+                        <div class="admin-wallet-address">
+                            <span class="admin-address-value">0x1234...5678</span>
+                            <i class="fas fa-copy admin-copy-icon" id="copyAddressBtn"></i>
+                        </div>
+                    </div>
+                    <div class="admin-user-status-row">
+                        <span class="admin-user-role">普通用户</span>
+                        <div class="admin-kyc-status-container">
+                            <span class="kyc-status not-verified" id="kycStatus">
+                                <i class="fas fa-id-card"></i>
+                                未认证
+                            </span>
+                            <button class="admin-btn admin-btn-sm admin-btn-primary kyc-btn" id="startKycBtn">
+                                <i class="fas fa-shield-alt"></i>
+                                开启认证
+                            </button>
+                        </div>
+                    </div>
+                    <p class="admin-user-brief">账户状态正常</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 个人信息详情卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <!-- 基本信息分区 -->
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-user-circle"></i>
+                        基本信息
+                    </h3>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>用户ID</h4>
+                            <p>系统分配的唯一标识符</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <span class="admin-item-value">UID_123456789</span>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>昵称</h4>
+                            <p>用户自定义显示名称</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <span class="admin-item-value">用户名</span>
+                                <button class="admin-btn admin-btn-sm admin-btn-outline">
+                                    <i class="fas fa-edit"></i>
+                                    编辑
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>性别</h4>
+                            <p>用户性别信息</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <span class="admin-item-value">未设置</span>
+                                <button class="admin-btn admin-btn-sm admin-btn-outline">
+                                    <i class="fas fa-plus"></i>
+                                    设置
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>生日</h4>
+                            <p>用户出生日期</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <span class="admin-item-value">未设置</span>
+                                <button class="admin-btn admin-btn-sm admin-btn-outline">
+                                    <i class="fas fa-plus"></i>
+                                    设置
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>注册时间</h4>
+                            <p>账户创建时间</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <span class="admin-item-value">2024-01-15 10:30:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 联系方式分区 -->
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-address-book"></i>
+                        联系方式
+                    </h3>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>电子邮箱</h4>
+                            <p>用于接收重要通知和验证</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <span class="admin-item-value">user@example.com</span>
+                                <button class="admin-btn admin-btn-sm admin-btn-outline">
+                                    <i class="fas fa-edit"></i>
+                                    修改
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>手机号码</h4>
+                            <p>用于安全验证和重要通知</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <span class="admin-item-value">+86 138****8888</span>
+                                <button class="admin-btn admin-btn-sm admin-btn-outline">
+                                    <i class="fas fa-edit"></i>
+                                    修改
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 账户设置分区 -->
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-cog"></i>
+                        账户设置
+                    </h3>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>个人资料公开</h4>
+                            <p>允许其他用户查看您的基本信息</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <label class="admin-toggle-switch">
+                                <input type="checkbox" checked id="profilePublic">
+                                <span class="admin-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>接收营销邮件</h4>
+                            <p>接收平台活动和优惠信息</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <label class="admin-toggle-switch">
+                                <input type="checkbox" id="marketingEmails">
+                                <span class="admin-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>交易通知</h4>
+                            <p>交易完成时发送通知</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <label class="admin-toggle-switch">
+                                <input type="checkbox" checked id="transactionNotifications">
+                                <span class="admin-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 认证状态分区 -->
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-shield-check"></i>
+                        认证状态
+                    </h3>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>身份认证 (KYC)</h4>
+                            <p>完成身份认证以提升账户安全性</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <span class="kyc-status not-verified">
+                                    <i class="fas fa-times-circle"></i>
+                                    未认证
+                                </span>
+                                <button class="admin-btn admin-btn-sm admin-btn-primary" id="startKycBtn2">
+                                    <i class="fas fa-shield-alt"></i>
+                                    开始认证
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>邮箱验证</h4>
+                            <p>验证邮箱地址以确保账户安全</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <span class="kyc-status verified">
+                                <i class="fas fa-check-circle"></i>
+                                已验证
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <h4>手机验证</h4>
+                            <p>验证手机号码以增强安全性</p>
+                        </div>
+                        <div class="admin-item-action">
+                            <span class="kyc-status verified">
+                                <i class="fas fa-check-circle"></i>
+                                已验证
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KYC认证模态框 - 更大尺寸和横排步骤条 -->
+    <div class="modal-overlay" id="kycModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-shield-alt text-blue-400"></i>
+                    <span>KYC身份认证</span>
+                </div>
+                <button class="modal-close" id="closeKycModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- KYC流程步骤 - 横排布局 -->
+                <div class="kyc-steps" id="kycSteps">
+                    <div class="step-container">
+                        <div class="step active" data-step="1">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>填写基本信息</h4>
+                                <p>提供真实姓名和身份证号</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step" data-step="2">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>上传身份证照片</h4>
+                                <p>上传身份证正反面照片</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step" data-step="3">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>人脸验证</h4>
+                                <p>完成在线人脸验证</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step" data-step="4">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>等待审核</h4>
+                                <p>1-3个工作日内完成审核</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- KYC表单 - 第一步 -->
+                    <div class="kyc-form" id="kycForm1">
+                        <div class="form-group">
+                            <label class="form-label">真实姓名</label>
+                            <input type="text" class="form-input" placeholder="请输入您的真实姓名" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">身份证号</label>
+                            <input type="text" class="form-input" placeholder="请输入18位身份证号码" required>
+                        </div>
+                    </div>
+                    
+                    <!-- KYC表单 - 第二步 (初始隐藏) -->
+                    <div class="kyc-form" id="kycForm2" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">身份证正面照片</label>
+                            <div class="upload-area">
+                                <i class="fas fa-id-card"></i>
+                                <p>点击上传或拖拽文件到此处</p>
+                                <input type="file" class="file-input" accept="image/*" required style="position: absolute; opacity: 0; width: 0.1px; height: 0.1px; overflow: hidden;">
+                                <div class="preview-container" style="display: none; margin-top: 10px; text-align: center;">
+                                    <img class="preview-image" style="max-width: 100%; max-height: 200px; border-radius: 4px;">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">身份证背面照片</label>
+                            <div class="upload-area">
+                                <i class="fas fa-id-card"></i>
+                                <p>点击上传或拖拽文件到此处</p>
+                                <input type="file" class="file-input" accept="image/*" required style="position: absolute; opacity: 0; width: 0.1px; height: 0.1px; overflow: hidden;">
+                                <div class="preview-container" style="display: none; margin-top: 10px; text-align: center;">
+                                    <img class="preview-image" style="max-width: 100%; max-height: 200px; border-radius: 4px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- KYC表单 - 第三步 (初始隐藏) -->
+                    <div class="kyc-form" id="kycForm3" style="display: none;">
+                        <div class="face-verify-container">
+                            <div class="face-verify-preview">
+                                <i class="fas fa-user-circle"></i>
+                                <p>请确保光线充足，面部清晰可见</p>
+                            </div>
+                            
+                            <button class="btn btn-primary btn-lg" id="startFaceVerify">
+                                <i class="fas fa-camera"></i>
+                                开始人脸验证
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- KYC表单 - 第四步 (初始隐藏) -->
+                    <div class="kyc-form" id="kycForm4" style="display: none;">
+                        <div class="kyc-review-status">
+                            <div class="status-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h3>您的KYC认证申请已提交</h3>
+                            <p>我们将在1-3个工作日内完成审核，请耐心等待</p>
+                            <div class="status-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 100%"></div>
+                                </div>
+                                <p>预计完成时间: 2-3个工作日</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="prevStepBtn" style="display: none;">
+                    <i class="fas fa-arrow-left"></i>
+                    上一步
+                </button>
+                <button class="btn btn-primary" id="nextStepBtn">
+                    下一步
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="btn btn-primary" id="completeKycBtn" style="display: none;">
+                    完成
+                    <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/profile.js"></script>
+    <script src="js/iframe-height-reporter.js"></script>
+</body>
+</html> 

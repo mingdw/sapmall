@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提案管理 - SAP Mall DAO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/user-proposals.css">
+    <link rel="stylesheet" href="css/merchant-proposals.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 提案统计卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="proposals-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-chart-pie"></i>
+                            提案统计概览
+                        </h3>
+                        <div class="merchant-participation-badge">
+                            <i class="fas fa-store"></i>
+                            <span>认证商家</span>
+                    </div>
+                    </div>
+                    
+                    <div class="orders-stats-grid">
+                        <div class="orders-stat-card proposals-stat-card">
+                            <div class="stat-icon stat-icon-blue">
+                                <i class="fas fa-file-alt"></i>
+                    </div>
+                            <div class="stat-content">
+                                <div class="stat-value">31</div>
+                                <div class="stat-label">总提案数</div>
+                                <div class="stat-change positive">+5 本月</div>
+            </div>
+        </div>
+
+                        <div class="orders-stat-card proposals-stat-card merchant-exclusive">
+                            <div class="stat-icon stat-icon-success">
+                                <i class="fas fa-store"></i>
+                </div>
+                            <div class="stat-content">
+                                <div class="stat-value">7</div>
+                                <div class="stat-label">我的提案</div>
+                                <div class="stat-change positive">+2 本月</div>
+                </div>
+                            <div class="merchant-exclusive-badge">商家专属</div>
+            </div>
+            
+                        <div class="orders-stat-card proposals-stat-card">
+                            <div class="stat-icon stat-icon-warning">
+                                <i class="fas fa-vote-yea"></i>
+                </div>
+                            <div class="stat-content">
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">投票中</div>
+                                <div class="stat-change positive">+3 本周</div>
+            </div>
+        </div>
+
+                        <div class="orders-stat-card proposals-stat-card">
+                            <div class="stat-icon stat-icon-purple">
+                                <i class="fas fa-percentage"></i>
+                    </div>
+                            <div class="stat-content">
+                                <div class="stat-value">89.3%</div>
+                                <div class="stat-label">我的参与率</div>
+                                <div class="stat-change positive">+4.1%</div>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 提案列表卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="proposals-list-header">
+                        <h3 class="admin-section-title">
+                    <i class="fas fa-clipboard-list"></i>
+                    提案列表
+                            <span class="proposals-count-badge">31</span>
+                        </h3>
+                        <div class="orders-header-actions">
+                            <button class="admin-btn admin-btn-success admin-btn-sm" onclick="createNewProposal()">
+                                <i class="fas fa-plus"></i>
+                                创建提案
+                            </button>
+                            <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="exportProposals()">
+                                <i class="fas fa-download"></i>
+                                导出
+                            </button>
+                            <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="refreshProposals()">
+                                <i class="fas fa-refresh"></i>
+                                刷新
+                            </button>
+                </div>
+            </div>
+                    
+                    <!-- 筛选和搜索区域 -->
+                    <div class="order-filters-container">
+                        <div class="filters-left">
+                            <div class="filter-group">
+                                <button class="filter-btn active" data-filter="all">
+                                    <i class="fas fa-list"></i>
+                                    全部提案
+                                </button>
+                                <button class="filter-btn" data-filter="voting">
+                                    <i class="fas fa-vote-yea"></i>
+                                    投票中
+                                </button>
+                                <button class="filter-btn" data-filter="active">
+                                    <i class="fas fa-fire"></i>
+                                    活跃提案
+                                </button>
+                                <button class="filter-btn" data-filter="merchant-related">
+                                <i class="fas fa-store"></i>
+                                    商家相关
+                                </button>
+                                <button class="filter-btn" data-filter="my-proposals">
+                                    <i class="fas fa-user"></i>
+                                    我的提案
+                                </button>
+                            </div>
+                        </div>
+                        <div class="filters-right">
+                            <div class="quick-filters">
+                                <select class="filter-select" id="typeFilter" onchange="applyTypeFilter()">
+                                    <option value="all">所有类型</option>
+                                    <option value="governance">治理提案</option>
+                                    <option value="treasury">资金提案</option>
+                                    <option value="technical">技术提案</option>
+                                    <option value="merchant">商家提案</option>
+                                    <option value="business">商业类别</option>
+                                </select>
+                                <select class="filter-select" id="sortFilter" onchange="applySortFilter()">
+                                    <option value="time">按时间排序</option>
+                                    <option value="participation">按参与度</option>
+                                    <option value="support">按支持率</option>
+                                    <option value="activity">按活跃度</option>
+                                </select>
+                            </div>
+                            <div class="search-input-container enhanced">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="搜索提案标题或编号..." class="search-input enhanced-search" id="searchInput">
+                                <button class="search-clear-btn" id="clearSearch" onclick="clearSearch()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="proposals-list" id="proposalsList">
+                        <!-- 商家相关提案 -->
+                        <div class="proposal-item merchant-proposal" data-status="voting" data-type="merchant">
+                            <div class="proposal-header">
+                                <div class="proposal-id-container">
+                                    <div class="proposal-id">SIP-017</div>
+                                    <div class="proposal-type merchant-type">商家提案</div>
+                                </div>
+                                <div class="status-badge status-active">
+                                    <i class="fas fa-circle"></i>
+                                    投票中
+                                </div>
+                            </div>
+                            <div class="proposal-title">降低商家入驻保证金至5,000 SAP</div>
+                            <div class="proposal-description">
+                                为了吸引更多优质商家入驻平台，建议将当前10,000 SAP的入驻保证金降低至5,000 SAP，同时保持其他入驻条件不变。
+                            </div>
+                            <div class="proposal-meta">
+                                <div class="proposal-info">
+                                    <span><i class="fas fa-calendar"></i> 截止: 2024-01-20 18:00</span>
+                                    <span><i class="fas fa-store"></i> 商家参与: 234人</span>
+                                    <span><i class="fas fa-coins"></i> 权重: 28,567 SAP</span>
+                                </div>
+                            </div>
+                            <div class="voting-progress">
+                                <div class="voting-options">
+                                    <span class="voting-option yes">支持 89.5%</span>
+                                    <span class="voting-option no">反对 10.5%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill support-progress" style="width: 89.5%;">
+                                        <div class="progress-glow"></div>
+                                    </div>
+                                </div>
+                                <div class="voting-stats">
+                                    <span class="pass-threshold">需要 >50% 通过</span>
+                                    <span class="time-remaining">剩余 7天 10小时</span>
+                        </div>
+                    </div>
+                    <div class="proposal-actions">
+                        <button class="vote-btn vote-btn-yes" onclick="vote(this, 'yes', 'SIP-017')">
+                            <i class="fas fa-thumbs-up"></i>
+                            支持
+                        </button>
+                        <button class="vote-btn vote-btn-no" onclick="vote(this, 'no', 'SIP-017')">
+                            <i class="fas fa-thumbs-down"></i>
+                            反对
+                        </button>
+                        <button class="vote-btn vote-btn-abstain" onclick="vote(this, 'abstain', 'SIP-017')">
+                            <i class="fas fa-minus"></i>
+                            弃权
+                        </button>
+                                <button class="admin-btn admin-btn-outline admin-btn-sm view-details-btn">
+                            <i class="fas fa-eye"></i>
+                            详情
+                                </button>
+                    </div>
+                </div>
+
+                        <!-- 我的提案 -->
+                        <div class="proposal-item my-proposal" data-status="draft" data-type="business">
+                    <div class="proposal-header">
+                                <div class="proposal-id-container">
+                                    <div class="proposal-id">SIP-019</div>
+                                    <div class="proposal-type business-type">商业类别</div>
+                                </div>
+                                <div class="status-badge status-draft">
+                                    <i class="fas fa-edit"></i>
+                                    草稿
+                            </div>
+                            </div>
+                            <div class="proposal-title">增设"数码配件"商品分类</div>
+                            <div class="proposal-description">
+                                随着数码产品的多样化，建议在现有分类基础上增设专门的"数码配件"分类，便于用户查找相关商品。
+                            </div>
+                            <div class="proposal-meta">
+                                <div class="proposal-info">
+                                    <span><i class="fas fa-clock"></i> 创建于: 2024-01-12</span>
+                                    <span><i class="fas fa-edit"></i> 状态: 待完善</span>
+                        </div>
+                    </div>
+                    <div class="proposal-actions">
+                                <button class="vote-btn vote-btn-edit">
+                            <i class="fas fa-edit"></i>
+                            继续编辑
+                        </button>
+                                <button class="vote-btn vote-btn-submit">
+                            <i class="fas fa-paper-plane"></i>
+                            提交审核
+                        </button>
+                                <button class="admin-btn admin-btn-outline admin-btn-sm view-details-btn">
+                                    <i class="fas fa-eye"></i>
+                                    详情
+                        </button>
+                    </div>
+                </div>
+
+                        <!-- 全平台提案 -->
+                        <div class="proposal-item" data-status="voting" data-type="governance">
+                    <div class="proposal-header">
+                                <div class="proposal-id-container">
+                                    <div class="proposal-id">SIP-015</div>
+                                    <div class="proposal-type">治理提案</div>
+                                </div>
+                                <div class="status-badge status-active">
+                                    <i class="fas fa-circle"></i>
+                                    投票中
+                                </div>
+                            </div>
+                            <div class="proposal-title">调整平台交易手续费率至0.25%</div>
+                            <div class="proposal-description">
+                                提议将当前0.3%的交易手续费率调整至0.25%，以提高平台竞争力并吸引更多用户。此调整预计将减少平台收入约16.7%，但有望带来40%以上的交易量增长。
+                            </div>
+                            <div class="proposal-meta">
+                                <div class="proposal-info">
+                                    <span><i class="fas fa-calendar"></i> 截止: 2024-01-15 18:00</span>
+                                    <span><i class="fas fa-users"></i> 参与: 1,234人</span>
+                                    <span><i class="fas fa-coins"></i> 权重: 45,678 SAP</span>
+                                </div>
+                            </div>
+                            <div class="voting-progress">
+                                <div class="voting-options">
+                                    <span class="voting-option yes">支持 72.3%</span>
+                                    <span class="voting-option no">反对 27.7%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill support-progress" style="width: 72.3%;">
+                                        <div class="progress-glow"></div>
+                                    </div>
+                                </div>
+                                <div class="voting-stats">
+                                    <span class="pass-threshold">需要 >50% 通过</span>
+                                    <span class="time-remaining">剩余 2天 5小时</span>
+                        </div>
+                    </div>
+                    <div class="proposal-actions">
+                        <button class="vote-btn vote-btn-yes" onclick="vote(this, 'yes', 'SIP-015')">
+                            <i class="fas fa-thumbs-up"></i>
+                            支持
+                        </button>
+                        <button class="vote-btn vote-btn-no" onclick="vote(this, 'no', 'SIP-015')">
+                            <i class="fas fa-thumbs-down"></i>
+                            反对
+                        </button>
+                        <button class="vote-btn vote-btn-abstain" onclick="vote(this, 'abstain', 'SIP-015')">
+                            <i class="fas fa-minus"></i>
+                            弃权
+                        </button>
+                                <button class="admin-btn admin-btn-outline admin-btn-sm view-details-btn">
+                            <i class="fas fa-eye"></i>
+                            详情
+                                </button>
+                    </div>
+                </div>
+
+                        <div class="proposal-item" data-status="voting" data-type="treasury">
+                    <div class="proposal-header">
+                                <div class="proposal-id-container">
+                                    <div class="proposal-id">SIP-016</div>
+                                    <div class="proposal-type">资金提案</div>
+                                </div>
+                                <div class="status-badge status-active">
+                                    <i class="fas fa-circle"></i>
+                                    投票中
+                            </div>
+                            </div>
+                            <div class="proposal-title">引入流动性挖矿激励机制</div>
+                            <div class="proposal-description">
+                                提议在SAP/ETH和SAP/USDT流动性池中引入额外的挖矿激励机制，为流动性提供者提供额外的SAP代币奖励。此机制将在现有收益基础上增加20%的年化收益率。
+                            </div>
+                            <div class="proposal-meta">
+                                <div class="proposal-info">
+                                    <span><i class="fas fa-calendar"></i> 截止: 2024-01-18 18:00</span>
+                                    <span><i class="fas fa-users"></i> 参与: 892人</span>
+                                    <span><i class="fas fa-coins"></i> 权重: 32,145 SAP</span>
+                                </div>
+                            </div>
+                            <div class="voting-progress">
+                                <div class="voting-options">
+                                    <span class="voting-option yes">支持 89.2%</span>
+                                    <span class="voting-option no">反对 10.8%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill support-progress" style="width: 89.2%;">
+                                        <div class="progress-glow"></div>
+                                    </div>
+                                </div>
+                                <div class="voting-stats">
+                                    <span class="pass-threshold">需要 >50% 通过</span>
+                                    <span class="time-remaining">剩余 5天 12小时</span>
+                                </div>
+                            </div>
+                            <div class="proposal-actions">
+                                <button class="vote-btn vote-btn-voted" disabled>
+                                    <i class="fas fa-check"></i>
+                                    已投票 (支持)
+                                </button>
+                                <button class="admin-btn admin-btn-outline admin-btn-sm view-details-btn">
+                                    <i class="fas fa-eye"></i>
+                                    详情
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="proposal-item" data-status="ended" data-type="technical">
+                            <div class="proposal-header">
+                                <div class="proposal-id-container">
+                                    <div class="proposal-id">SIP-014</div>
+                                    <div class="proposal-type">技术提案</div>
+                                </div>
+                                <div class="status-badge status-passed">
+                                    <i class="fas fa-check"></i>
+                                    已通过
+                                </div>
+                            </div>
+                            <div class="proposal-title">新增虚拟商品分类：AI工具与服务</div>
+                            <div class="proposal-description">
+                                随着AI技术的快速发展，建议在平台新增"AI工具与服务"商品分类，包括AI写作助手、图像生成工具、语音合成服务等，以满足用户对AI相关虚拟商品的需求。
+                            </div>
+                            <div class="proposal-meta">
+                                <div class="proposal-info">
+                                    <span><i class="fas fa-check"></i> 执行时间: 2024-01-10</span>
+                                    <span><i class="fas fa-users"></i> 参与: 2,156人</span>
+                                    <span><i class="fas fa-thumbs-up"></i> 支持率: 89.7%</span>
+                                </div>
+                            </div>
+                            <div class="voting-progress">
+                                <div class="voting-options">
+                                    <span class="voting-option yes">支持 89.7%</span>
+                                    <span class="voting-option no">反对 10.3%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill support-progress completed" style="width: 89.7%;">
+                                        <div class="progress-glow"></div>
+                                    </div>
+                                </div>
+                                <div class="voting-stats">
+                                    <span class="pass-threshold completed">已通过并执行</span>
+                                    <span class="completion-date">2024-01-05 结束</span>
+                        </div>
+                    </div>
+                    <div class="proposal-actions">
+                        <button class="vote-btn vote-btn-voted" disabled>
+                            <i class="fas fa-check"></i>
+                            已投票 (支持)
+                        </button>
+                                <button class="admin-btn admin-btn-outline admin-btn-sm view-details-btn">
+                            <i class="fas fa-eye"></i>
+                            详情
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 分页功能 -->
+                    <div class="pagination-container">
+                        <div class="pagination-info">
+                            <span class="pagination-text">显示第 1-10 项，共 31 项</span>
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" id="prevPageBtn" onclick="previousPage()" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                                上一页
+                            </button>
+                            <div class="pagination-numbers">
+                                <button class="pagination-number active" onclick="goToPage(1)">1</button>
+                                <button class="pagination-number" onclick="goToPage(2)">2</button>
+                                <button class="pagination-number" onclick="goToPage(3)">3</button>
+                                <span class="pagination-ellipsis">...</span>
+                                <button class="pagination-number" onclick="goToPage(4)">4</button>
+                            </div>
+                            <button class="pagination-btn" id="nextPageBtn" onclick="nextPage()">
+                                下一页
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创建提案模态框 -->
+    <div class="modal-overlay" id="createProposalModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-plus-circle"></i>
+                    创建新提案
+                </h3>
+                <button class="modal-close" onclick="closeCreateProposalModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createProposalForm">
+                <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-tag"></i>
+                            提案类型
+                        </label>
+                        <select class="form-input" id="proposalType" required>
+                            <option value="">请选择提案类型</option>
+                            <option value="merchant">商家提案</option>
+                            <option value="business">商业类别</option>
+                            <option value="governance">治理提案</option>
+                            <option value="technical">技术提案</option>
+                            <option value="treasury">资金提案</option>
+                    </select>
+                </div>
+                    
+                <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-heading"></i>
+                            提案标题
+                        </label>
+                        <input type="text" class="form-input" id="proposalTitle" placeholder="请输入提案标题（3-100字符）" required maxlength="100">
+                        <div class="form-hint">标题应简洁明了，准确概括提案内容</div>
+    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-align-left"></i>
+                            提案描述
+                        </label>
+                        <textarea class="form-input" id="proposalDescription" rows="6" placeholder="详细描述您的提案内容、目标、预期效果和实施方案..." required maxlength="2000"></textarea>
+                        <div class="form-hint">请详细说明提案的背景、目标、实施方案和预期效果</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-flag"></i>
+                            优先级
+                        </label>
+                        <select class="form-input" id="proposalPriority">
+                            <option value="normal">普通</option>
+                            <option value="high">高优先级</option>
+                            <option value="urgent">紧急</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-calendar"></i>
+                            预计投票期限
+                        </label>
+                        <select class="form-input" id="votingPeriod">
+                            <option value="7">7天</option>
+                            <option value="14" selected>14天</option>
+                            <option value="21">21天</option>
+                            <option value="30">30天</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="admin-btn admin-btn-outline" onclick="closeCreateProposalModal()">
+                            <i class="fas fa-times"></i>
+                            取消
+                        </button>
+                        <button type="button" class="admin-btn admin-btn-outline" onclick="saveProposalDraft()">
+                            <i class="fas fa-save"></i>
+                            保存草稿
+                        </button>
+                        <button type="submit" class="admin-btn admin-btn-success">
+                            <i class="fas fa-paper-plane"></i>
+                            提交审核
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/proposals-common.js"></script>
+    <script src="js/merchant-proposals.js"></script>
+</body>
+</html> 

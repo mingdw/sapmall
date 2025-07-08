@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品管理 - Sapphire Mall</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/product-management.css">
+    <link rel="stylesheet" href="css/product-modal.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 商品统计概览 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-chart-bar"></i>
+                        商品统计概览
+                    </span>
+                    <div class="time-selector">
+                        <button class="time-btn active" data-period="day">每日</button>
+                        <button class="time-btn" data-period="week">每周</button>
+                        <button class="time-btn" data-period="month">每月</button>
+                    </div>
+                </div>
+                <div class="section-divider"></div>
+                <div class="stats-grid">
+                    <div class="stat-card stat-total">
+                        <div class="stat-card-main">
+                            <div class="stat-icon-bg" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="totalProducts">0</div>
+                                <div class="stat-label">商品总数</div>
+                            </div>
+                            <div class="stat-trend-box">
+                                <span class="stat-trend positive"><i class="fas fa-arrow-up"></i> <span id="totalProductsTrend">+5.2%</span></span>
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div class="stat-card stat-orders">
+                        <div class="stat-card-main">
+                            <div class="stat-icon-bg" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="totalOrders">0</div>
+                                <div class="stat-label">订单总数</div>
+                            </div>
+                            <div class="stat-trend-box">
+                                <span class="stat-trend negative"><i class="fas fa-arrow-down"></i> <span id="totalOrdersTrend">-2.1%</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-revenue">
+                        <div class="stat-card-main">
+                            <div class="stat-icon-bg" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="totalRevenue">0 SAP</div>
+                                <div class="stat-label">总销售额 (SAP)</div>
+                            </div>
+                            <div class="stat-trend-box">
+                                <span class="stat-trend positive"><i class="fas fa-arrow-up"></i> <span id="totalRevenueTrend">+8.7%</span></span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="stat-card stat-users">
+                        <div class="stat-card-main">
+                            <div class="stat-icon-bg" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="stat-info ml-10">
+                                <div class="stat-value" id="newUsers">0</div>
+                                <div class="stat-label mt-2">新增用户</div>
+                            </div>
+                            <div class="stat-trend-box mb-2">
+                                <span class="stat-trend neutral"><i class="fas fa-arrow-right"></i> <span id="newUsersTrend">0.0%</span></span>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速操作区 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section-title">
+                    <i class="fas fa-bolt"></i>
+                    快速操作
+                </div>
+                <div class="section-divider"></div>
+                <div class="actions-grid">
+                    <div class="action-card" onclick="ProductManagementPage.showAddModal()">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">添加商品</div>
+                            <div class="action-description">创建新商品，配置详细信息</div>
+                        </div>
+                    </div>
+
+                    <div class="action-card" onclick="QuickActions.showStockWarning()">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">库存预警</div>
+                            <div class="action-description">查看并处理低库存商品</div>
+                        </div>
+                    </div>
+
+                    <div class="action-card" onclick="QuickActions.showTodoList()">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">待办事项</div>
+                            <div class="action-description">处理待审核商品、同步失败等</div>
+                        </div>
+                    </div>
+
+                    <div class="action-card" onclick="QuickActions.showPromotionCreator()">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #ec4899, #db2777);">
+                            <i class="fas fa-percent"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">创建优惠活动</div>
+                            <div class="action-description">设置折扣、优惠券或限时优惠</div>
+                        </div>
+                    </div>
+
+                    <div class="action-card" onclick="ProductManagementPage.manageCategories()">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">分类与标签</div>
+                            <div class="action-description">管理商品分类体系与搜索标签</div>
+                        </div>
+                    </div>
+
+                    <div class="action-card" onclick="QuickActions.showCommentManagement()">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #14b8a6, #0d9488);">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="action-content">
+                            <div class="action-title">客户评论管理</div>
+                            <div class="action-description">审核和回复用户的商品评论</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品管理区域 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-boxes"></i>
+                        商品管理
+                    </span>
+                    <div class="view-options">
+                        <button class="view-btn active" data-view="table" title="表格视图">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button class="view-btn" data-view="grid" title="网格视图">
+                            <i class="fas fa-th"></i>
+                        </button>
+                    </div>
+                    
+                </div>
+                <div class="section-divider"></div>
+
+                <!-- 工具栏 -->
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <button class="btn btn-warning" onclick="ProductManagementPage.batchOperation('deactivate')" id="batchDeactivateBtn" disabled>
+                            <i class="fas fa-arrow-down"></i>
+                            批量下架
+                        </button>
+                        <button class="btn btn-danger" onclick="ProductManagementPage.batchOperation('delete')" id="batchDeleteBtn" disabled>
+                            <i class="fas fa-trash"></i>
+                            批量删除
+                        </button>
+                        <button class="btn btn-outline" onclick="ProductManagementPage.exportData()">
+                            <i class="fas fa-download"></i>
+                            导出数据
+                        </button>
+                    </div>
+                    <div class="toolbar-right">
+                        <div class="search-box">
+                            <input type="text" placeholder="搜索商品名称、描述..." class="search-input" id="searchInput">
+                            <button class="search-btn" onclick="ProductManagementPage.search()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="quick-filters">
+                            <div class="filter-group">
+                                <select class="filter-select" id="statusFilter" onchange="ProductManagementPage.applyFilters()">
+                                    <option value="">商品状态</option>
+                                    <option value="active">上架中</option>
+                                    <option value="inactive">已下架</option>
+                                    <option value="draft">草稿</option>
+                                    <option value="pending">待审核</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="chainStatusFilter" onchange="ProductManagementPage.applyFilters()">
+                                    <option value="">链上状态</option>
+                                    <option value="已上链">已上链</option>
+                                    <option value="同步中">同步中</option>
+                                    <option value="同步失败">同步失败</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <select class="filter-select" id="timeFilter" onchange="ProductManagementPage.applyFilters()">
+                                    <option value="">时间范围</option>
+                                    <option value="today">今天</option>
+                                    <option value="yesterday">昨天</option>
+                                    <option value="week">最近一周</option>
+                                    <option value="month">最近一月</option>
+                                    <option value="quarter">最近三月</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-outline btn-sm" onclick="ProductManagementPage.clearFilters()">
+                                <i class="fas fa-times"></i>
+                                清除筛选
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 选中提示栏 -->
+                <div class="selection-bar" id="selectionBar" style="display: none;">
+                    <div class="selection-info">
+                        <span>已选择 <strong id="selectedCount">0</strong> 个商品</span>
+                    </div>
+                    <div class="selection-actions">
+                        <button class="btn btn-sm btn-outline" onclick="ProductManagementPage.selectAll()">
+                            全选
+                        </button>
+                        <button class="btn btn-sm btn-outline" onclick="ProductManagementPage.clearSelection()">
+                            取消选择
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 商品列表表格视图 -->
+                <div class="table-view" id="tableView">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="checkbox-col">
+                                        <input type="checkbox" id="selectAll" onchange="ProductManagementPage.toggleSelectAll()">
+                                    </th>
+                                    <th class="sortable" data-sort="image">商品图片</th>
+                                    <th class="sortable" data-sort="name">商品名称 <i class="fas fa-sort"></i></th>
+                                    <th class="sortable" data-sort="category">分类</th>
+                                    <th class="sortable" data-sort="price">价格 (ETH) <i class="fas fa-sort"></i></th>
+                                    <th class="sortable" data-sort="stock">库存 <i class="fas fa-sort"></i></th>
+                                    <th class="sortable" data-sort="sales">销量</th>
+                                    <th class="sortable" data-sort="status">状态</th>
+                                    <th class="sortable" data-sort="chainStatus">链上状态</th>
+                                    <th class="sortable" data-sort="contractAddress">合约地址</th>
+                                    <th class="sortable" data-sort="tokenId">TokenID</th>
+                                    <th class="sortable" data-sort="created">创建时间 <i class="fas fa-sort"></i></th>
+                                    <th class="actions-col">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 商品数据将通过JavaScript动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 商品网格视图 -->
+                <div class="grid-view" id="gridView" style="display: none;">
+                    <div class="products-grid">
+                        <!-- 商品卡片将通过JavaScript动态加载 -->
+                    </div>
+                </div>
+
+                <!-- 分页控件 -->
+                <div class="pagination">
+                    <div class="pagination-info">
+                        显示 <span id="startIndex">1</span> 到 <span id="endIndex">10</span> 条，共 <span id="totalItems">0</span> 条记录
+                    </div>
+                    <div class="pagination-controls">
+                        <div class="pagination-numbers">
+                            <button class="pagination-btn" onclick="ProductManagementPage.goToPage(1)" id="firstPage">
+                                <i class="fas fa-angle-double-left"></i>
+                            </button>
+                            <button class="pagination-btn" onclick="ProductManagementPage.goToPage('prev')" id="prevPage">
+                                <i class="fas fa-angle-left"></i>
+                            </button>
+                            <div class="page-numbers" id="pageNumbers">
+                                <!-- 页码将通过JavaScript动态生成 -->
+                            </div>
+                            <button class="pagination-btn" onclick="ProductManagementPage.goToPage('next')" id="nextPage">
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            <button class="pagination-btn" onclick="ProductManagementPage.goToPage('last')" id="lastPage">
+                                <i class="fas fa-angle-double-right"></i>
+                            </button>
+                        </div>
+                        <div class="page-size-selector">
+                            <select id="pageSize" onchange="ProductManagementPage.changePageSize()">
+                                <option value="10">10条/页</option>
+                                <option value="20">20条/页</option>
+                                <option value="50">50条/页</option>
+                                <option value="100">100条/页</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加/编辑商品模态框 -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-container large">
+            <div class="modal-header">
+                <h3 id="modalTitle">添加商品</h3>
+                <button class="modal-close" onclick="ProductManagementPage.hideModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <div class="form-tabs">
+                        <div class="tab-nav">
+                            <button type="button" class="tab-btn active" data-tab="basic">
+                                <i class="fas fa-info-circle"></i>
+                                基本信息
+                            </button>
+                            <button type="button" class="tab-btn" data-tab="sales-attrs">
+                                <i class="fas fa-list-alt"></i>
+                                销售属性
+                            </button>
+                            <button type="button" class="tab-btn" data-tab="spec-attrs">
+                                <i class="fas fa-tags"></i>
+                                规格属性
+                            </button>
+                            <button type="button" class="tab-btn" data-tab="sku-management">
+                                <i class="fas fa-table"></i>
+                                SKU管理
+                            </button>
+                            <button type="button" class="tab-btn" data-tab="product-details">
+                                <i class="fas fa-edit"></i>
+                                商品详情
+                            </button>
+                            <button type="button" class="tab-btn" data-tab="seo-settings">
+                                <i class="fas fa-search"></i>
+                                SEO设置
+                            </button>
+                        </div>
+
+                        <!-- Tab1: 基本信息 -->
+                        <div class="tab-content active" id="basicTab">
+                            <!-- SPU基础信息 -->
+                            <div class="form-section">
+                                <h4 class="form-section-title">
+                                    <i class="fas fa-cube"></i>
+                                    SPU基础信息
+                                </h4>
+                                <div class="form-grid">
+                                    <div class="form-group form-group-full">
+                                        <label for="spuName">商品名称 <span class="required">*</span></label>
+                                        <input type="text" id="spuName" name="spuName" class="form-input" required placeholder="请输入商品SPU名称">
+                                        <small class="field-tip">建议包含品牌、产品类型、核心卖点等关键词</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="spuSubtitle">商品副标题</label>
+                                        <input type="text" id="spuSubtitle" name="spuSubtitle" class="form-input" placeholder="商品卖点描述">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="productCategory">商品类目 <span class="required">*</span></label>
+                                        <select id="productCategory" name="category" class="form-select" required>
+                                            <option value="">请选择类目</option>
+                                            <option value="nft">NFT数字艺术</option>
+                                            <option value="gaming">游戏道具</option>
+                                            <option value="metaverse">元宇宙资产</option>
+                                            <option value="software">软件工具</option>
+                                            <option value="education">在线教育</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="productBrand">商品品牌</label>
+                                        <input type="text" id="productBrand" name="brand" class="form-input" placeholder="请输入品牌名称">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="publishTime">上架时间</label>
+                                        <input type="datetime-local" id="publishTime" name="publishTime" class="form-input">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="productStatus">商品状态</label>
+                                        <select id="productStatus" name="status" class="form-select">
+                                            <option value="draft">草稿</option>
+                                            <option value="pending">待审核</option>
+                                            <option value="active">上架中</option>
+                                            <option value="inactive">已下架</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="spuDescription">商品简介</label>
+                                    <textarea id="spuDescription" name="spuDescription" class="form-textarea" rows="4" placeholder="请输入商品的简短介绍，建议不超过200字"></textarea>
+                                    <div class="char-count">0/200</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="productTags">商品标签</label>
+                                    <div class="tag-input-container">
+                                        <input type="text" id="productTags" class="form-input" placeholder="输入标签后按回车添加">
+                                        <div class="tags-list" id="tagsList"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- SPU图片管理 -->
+                            <div class="form-section">
+                                <h4 class="form-section-title">
+                                    <i class="fas fa-images"></i>
+                                    SPU通用图片
+                                </h4>
+                                <p class="section-description">适用于所有规格的通用图片，如包装、证书、场景图等</p>
+                                
+                                <div class="spu-image-upload">
+                                    <div class="main-image-area">
+                                        <label>SPU主图</label>
+                                        <div class="main-image-preview" id="spuMainImagePreview">
+                                            <div class="image-placeholder">
+                                                <i class="fas fa-camera"></i>
+                                                <p>上传主图</p>
+                                                <small>建议800x800px</small>
+                                            </div>
+                                        </div>
+                                        <div class="image-actions">
+                                            <button type="button" class="btn btn-outline btn-sm" onclick="ProductManagementPage.selectSpuMainImage()">
+                                                <i class="fas fa-upload"></i>
+                                                选择图片
+                                            </button>
+                                            <input type="file" id="spuMainImageUpload" accept="image/*" style="display: none;">
+                                        </div>
+                                    </div>
+
+                                    <div class="additional-images-area">
+                                        <label>SPU附加图片 <span class="optional">(包装、证书等)</span></label>
+                                        <div class="image-grid" id="spuImagesGrid">
+                                            <div class="upload-slot" onclick="ProductManagementPage.addSpuImage()">
+                                                <i class="fas fa-plus"></i>
+                                                <span>添加图片</span>
+                                            </div>
+                                        </div>
+                                        <input type="file" id="spuImagesUpload" multiple accept="image/*" style="display: none;">
+                                        <p class="upload-tip">支持JPG、PNG格式，单张≤5MB，最多8张</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab2: 销售属性 -->
+                        <div class="tab-content" id="salesAttrsTab">
+                            <div class="form-section">
+                                <h4 class="form-section-title">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    销售属性管理
+                                </h4>
+                                <p class="section-description">设置商品的行业标准参数，用于详情页参数表展示和前台筛选对比</p>
+                                
+                                <div class="attrs-toolbar">
+                                    <button type="button" class="btn btn-outline" onclick="ProductManagementPage.loadAttrTemplate()">
+                                        <i class="fas fa-file-import"></i>
+                                        导入属性模板
+                                    </button>
+                                    <button type="button" class="btn btn-primary" onclick="ProductManagementPage.addSalesAttr()">
+                                        <i class="fas fa-plus"></i>
+                                        添加属性
+                                    </button>
+                                </div>
+
+                                <div class="sales-attrs-list" id="salesAttrsList">
+                                    <div class="attr-item">
+                                        <div class="attr-row">
+                                            <div class="attr-name-group">
+                                                <input type="text" placeholder="属性名称" class="form-input attr-name" value="CPU型号">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" checked>
+                                                    <span class="checkmark"></span>
+                                                    前台展示
+                                                </label>
+                                            </div>
+                                            <div class="attr-value-group">
+                                                <input type="text" placeholder="属性值" class="form-input attr-value" value="骁龙8 Gen2">
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="ProductManagementPage.removeSalesAttr(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="attr-item">
+                                        <div class="attr-row">
+                                            <div class="attr-name-group">
+                                                <input type="text" placeholder="属性名称" class="form-input attr-name" value="屏幕尺寸">
+                                                <label class="checkbox-label">
+                                                    <input type="checkbox" checked>
+                                                    <span class="checkmark"></span>
+                                                    前台展示
+                                                </label>
+                                            </div>
+                                            <div class="attr-value-group">
+                                                <input type="text" placeholder="属性值" class="form-input attr-value" value="6.7英寸">
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="ProductManagementPage.removeSalesAttr(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="attrs-preview">
+                                    <h5>前台参数表预览</h5>
+                                    <div class="param-table" id="paramTablePreview">
+                                        <div class="param-row">
+                                            <div class="param-name">CPU型号</div>
+                                            <div class="param-value">骁龙8 Gen2</div>
+                                        </div>
+                                        <div class="param-row">
+                                            <div class="param-name">屏幕尺寸</div>
+                                            <div class="param-value">6.7英寸</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab3: 规格属性 -->
+                        <div class="tab-content" id="specAttrsTab">
+                            <div class="form-section">
+                                <h4 class="form-section-title">
+                                    <i class="fas fa-th-list"></i>
+                                    规格属性设置
+                                </h4>
+                                <p class="section-description">定义商品的可售规格（如颜色、版本、容量），系统将自动生成对应SKU</p>
+                                
+                                <div class="spec-attrs-manager">
+                                    <div class="spec-attr-item">
+                                        <div class="spec-attr-header">
+                                            <label>规格名称</label>
+                                            <input type="text" class="form-input spec-name" value="颜色" placeholder="如：颜色、尺寸、版本">
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="ProductManagementPage.removeSpecAttr(this)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="spec-values-container">
+                                            <div class="spec-value-item">
+                                                <input type="text" class="form-input spec-value" value="星空黑" placeholder="规格值">
+                                                <div class="spec-image-upload">
+                                                    <button type="button" class="btn btn-outline btn-sm">上传图片</button>
+                                                    <input type="file" accept="image/*" style="display: none;">
+                                                </div>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="ProductManagementPage.removeSpecValue(this)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                            <div class="spec-value-item">
+                                                <input type="text" class="form-input spec-value" value="珍珠白" placeholder="规格值">
+                                                <div class="spec-image-upload">
+                                                    <button type="button" class="btn btn-outline btn-sm">上传图片</button>
+                                                    <input type="file" accept="image/*" style="display: none;">
+                                                </div>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="ProductManagementPage.removeSpecValue(this)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline btn-sm" onclick="ProductManagementPage.addSpecValue(this)">
+                                            <i class="fas fa-plus"></i>
+                                            添加规格值
+                                        </button>
+                                    </div>
+
+                                    <div class="spec-attr-item">
+                                        <div class="spec-attr-header">
+                                            <label>规格名称</label>
+                                            <input type="text" class="form-input spec-name" value="版本" placeholder="如：颜色、尺寸、版本">
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="ProductManagementPage.removeSpecAttr(this)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                        <div class="spec-values-container">
+                                            <div class="spec-value-item">
+                                                <input type="text" class="form-input spec-value" value="标准版" placeholder="规格值">
+                                                <div class="spec-image-upload">
+                                                    <button type="button" class="btn btn-outline btn-sm">上传图片</button>
+                                                    <input type="file" accept="image/*" style="display: none;">
+                                                </div>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="ProductManagementPage.removeSpecValue(this)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                            <div class="spec-value-item">
+                                                <input type="text" class="form-input spec-value" value="旗舰版" placeholder="规格值">
+                                                <div class="spec-image-upload">
+                                                    <button type="button" class="btn btn-outline btn-sm">上传图片</button>
+                                                    <input type="file" accept="image/*" style="display: none;">
+                                                </div>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="ProductManagementPage.removeSpecValue(this)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-outline btn-sm" onclick="ProductManagementPage.addSpecValue(this)">
+                                            <i class="fas fa-plus"></i>
+                                            添加规格值
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="spec-actions">
+                                    <button type="button" class="btn btn-outline" onclick="ProductManagementPage.addSpecAttr()">
+                                        <i class="fas fa-plus"></i>
+                                        添加规格属性
+                                    </button>
+                                    <button type="button" class="btn btn-primary" onclick="ProductManagementPage.generateSKUs()">
+                                        <i class="fas fa-cogs"></i>
+                                        生成SKU
+                                    </button>
+                                </div>
+
+                                <div class="sku-preview" id="skuPreview">
+                                    <h5>
+                                        将生成SKU预览 
+                                        <span class="sku-count">(4个SKU)</span>
+                                    </h5>
+                                    <div class="sku-preview-list">
+                                        <div class="sku-preview-item">星空黑 + 标准版</div>
+                                        <div class="sku-preview-item">星空黑 + 旗舰版</div>
+                                        <div class="sku-preview-item">珍珠白 + 标准版</div>
+                                        <div class="sku-preview-item">珍珠白 + 旗舰版</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab4: SKU管理 -->
+                        <div class="tab-content" id="skuManagementTab">
+                            <div class="form-section">
+                                <h4 class="form-section-title">
+                                    <i class="fas fa-table"></i>
+                                    SKU详细管理
+                                </h4>
+                                <p class="section-description">对每个SKU进行价格、库存、图片等详细信息的设置</p>
+                                
+                                <div class="sku-toolbar">
+                                    <button type="button" class="btn btn-outline" onclick="ProductManagementPage.batchEditSKU()">
+                                        <i class="fas fa-edit"></i>
+                                        批量编辑
+                                    </button>
+                                    <button type="button" class="btn btn-outline" onclick="ProductManagementPage.importSKU()">
+                                        <i class="fas fa-file-import"></i>
+                                        导入SKU
+                                    </button>
+                                    <button type="button" class="btn btn-outline" onclick="ProductManagementPage.exportSKU()">
+                                        <i class="fas fa-file-export"></i>
+                                        导出SKU
+                                    </button>
+                                </div>
+
+                                <div class="sku-table-container">
+                                    <table class="sku-table">
+                                        <thead>
+                                            <tr>
+                                                <th><input type="checkbox" id="selectAllSKU"></th>
+                                                <th>SKU图片</th>
+                                                <th>规格组合</th>
+                                                <th>SKU编码</th>
+                                                <th>销售价格(ETH)</th>
+                                                <th>原价(ETH)</th>
+                                                <th>库存</th>
+                                                <th>重量(g)</th>
+                                                <th>状态</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="checkbox" class="sku-checkbox"></td>
+                                                <td>
+                                                    <div class="sku-image-cell">
+                                                        <div class="sku-image-preview">
+                                                            <i class="fas fa-camera"></i>
+                                                        </div>
+                                                        <button type="button" class="btn btn-link btn-sm">上传</button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="spec-combination">
+                                                        <span class="spec-tag">星空黑</span>
+                                                        <span class="spec-tag">标准版</span>
+                                                    </div>
+                                                </td>
+                                                <td><input type="text" class="form-input-sm" value="SKU001" placeholder="自动生成"></td>
+                                                <td><input type="number" class="form-input-sm" step="0.001" placeholder="0.000"></td>
+                                                <td><input type="number" class="form-input-sm" step="0.001" placeholder="0.000"></td>
+                                                <td><input type="number" class="form-input-sm" placeholder="库存数量"></td>
+                                                <td><input type="number" class="form-input-sm" step="0.1" placeholder="重量"></td>
+                                                <td>
+                                                    <select class="form-select-sm">
+                                                        <option value="active">上架</option>
+                                                        <option value="inactive">下架</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-link btn-sm" onclick="ProductManagementPage.editSKUDetail(this)">
+                                                        详情
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" class="sku-checkbox"></td>
+                                                <td>
+                                                    <div class="sku-image-cell">
+                                                        <div class="sku-image-preview">
+                                                            <i class="fas fa-camera"></i>
+                                                        </div>
+                                                        <button type="button" class="btn btn-link btn-sm">上传</button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="spec-combination">
+                                                        <span class="spec-tag">星空黑</span>
+                                                        <span class="spec-tag">旗舰版</span>
+                                                    </div>
+                                                </td>
+                                                <td><input type="text" class="form-input-sm" value="SKU002" placeholder="自动生成"></td>
+                                                <td><input type="number" class="form-input-sm" step="0.001" placeholder="0.000"></td>
+                                                <td><input type="number" class="form-input-sm" step="0.001" placeholder="0.000"></td>
+                                                <td><input type="number" class="form-input-sm" placeholder="库存数量"></td>
+                                                <td><input type="number" class="form-input-sm" step="0.1" placeholder="重量"></td>
+                                                <td>
+                                                    <select class="form-select-sm">
+                                                        <option value="active">上架</option>
+                                                        <option value="inactive">下架</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-link btn-sm" onclick="ProductManagementPage.editSKUDetail(this)">
+                                                        详情
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="sku-batch-actions" id="skuBatchActions" style="display: none;">
+                                    <div class="batch-actions-bar">
+                                        <span>已选择 <strong id="selectedSKUCount">0</strong> 个SKU</span>
+                                        <div class="batch-buttons">
+                                            <button type="button" class="btn btn-outline btn-sm">批量设价格</button>
+                                            <button type="button" class="btn btn-outline btn-sm">批量设库存</button>
+                                            <button type="button" class="btn btn-danger btn-sm">批量下架</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab5: 商品详情 -->
+                        <div class="tab-content" id="productDetailsTab">
+                            <div class="form-section">
+                                <h4 class="form-section-title">
+                                    <i class="fas fa-file-alt"></i>
+                                    商品详情描述
+                                </h4>
+                                <p class="section-description">编辑商品的详细说明，支持富文本、图片、视频等多媒体内容</p>
+                                
+                                <div class="detail-editor">
+                                    <div class="editor-toolbar">
+                                        <div class="toolbar-group">
+                                            <button type="button" class="editor-btn" data-command="bold" title="粗体">
+                                                <i class="fas fa-bold"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="italic" title="斜体">
+                                                <i class="fas fa-italic"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="underline" title="下划线">
+                                                <i class="fas fa-underline"></i>
+                                            </button>
+                                        </div>
+                                        <div class="toolbar-separator"></div>
+                                        <div class="toolbar-group">
+                                            <button type="button" class="editor-btn" data-command="insertOrderedList" title="有序列表">
+                                                <i class="fas fa-list-ol"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="insertUnorderedList" title="无序列表">
+                                                <i class="fas fa-list-ul"></i>
+                                            </button>
+                                        </div>
+                                        <div class="toolbar-separator"></div>
+                                        <div class="toolbar-group">
+                                            <button type="button" class="editor-btn" onclick="ProductManagementPage.insertImage()" title="插入图片">
+                                                <i class="fas fa-image"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" onclick="ProductManagementPage.insertVideo()" title="插入视频">
+                                                <i class="fas fa-video"></i>
+                                            </button>
+                                            <button type="button" class="editor-btn" data-command="createLink" title="插入链接">
+                                                <i class="fas fa-link"></i>
+                                            </button>
+                                        </div>
+                                        <div class="toolbar-separator"></div>
+                                        <div class="toolbar-group">
+                                            <button type="button" class="editor-btn" onclick="ProductManagementPage.insertParamTable()" title="插入参数表">
+                                                <i class="fas fa-table"></i>
+                                                参数表
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="editor-content" id="productDetailEditor" contenteditable="true" data-placeholder="请输入商品的详细描述...">
+                                        <h3>产品特色</h3>
+                                        <p>这里是商品的详细描述内容...</p>
+                                        
+                                        <h3>技术参数</h3>
+                                        <table class="param-table-detail">
+                                            <tr>
+                                                <td>CPU型号</td>
+                                                <td>骁龙8 Gen2</td>
+                                            </tr>
+                                            <tr>
+                                                <td>屏幕尺寸</td>
+                                                <td>6.7英寸</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="detail-templates">
+                                    <h5>常用模板</h5>
+                                    <div class="template-buttons">
+                                        <button type="button" class="btn btn-outline btn-sm" onclick="ProductManagementPage.insertTemplate('features')">
+                                            产品特色
+                                        </button>
+                                        <button type="button" class="btn btn-outline btn-sm" onclick="ProductManagementPage.insertTemplate('specs')">
+                                            技术规格
+                                        </button>
+                                        <button type="button" class="btn btn-outline btn-sm" onclick="ProductManagementPage.insertTemplate('service')">
+                                            售后服务
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab6: SEO与其它设置 -->
+                        <div class="tab-content" id="seoSettingsTab">
+                            <div class="form-section">
+                                <h4 class="form-section-title">
+                                    <i class="fas fa-search-plus"></i>
+                                    SEO优化设置
+                                </h4>
+                                <div class="form-grid">
+                                    <div class="form-group form-group-full">
+                                        <label for="seoTitle">SEO标题</label>
+                                        <input type="text" id="seoTitle" name="seoTitle" class="form-input" maxlength="60" placeholder="搜索引擎显示的标题">
+                                        <div class="char-count">0/60</div>
+                                    </div>
+                                    <div class="form-group form-group-full">
+                                        <label for="seoDescription">SEO描述</label>
+                                        <textarea id="seoDescription" name="seoDescription" class="form-textarea" rows="3" maxlength="160" placeholder="搜索引擎显示的描述"></textarea>
+                                        <div class="char-count">0/160</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="seoKeywords">SEO关键词</label>
+                                        <input type="text" id="seoKeywords" name="seoKeywords" class="form-input" placeholder="用逗号分隔多个关键词">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="urlSlug">URL别名</label>
+                                        <input type="text" id="urlSlug" name="urlSlug" class="form-input" placeholder="自定义商品URL">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h4 class="form-section-title">
+                                    <i class="fas fa-cog"></i>
+                                    其它设置
+                                </h4>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="shippingTemplate">运费模板</label>
+                                        <select id="shippingTemplate" name="shippingTemplate" class="form-select">
+                                            <option value="">选择运费模板</option>
+                                            <option value="free">包邮</option>
+                                            <option value="standard">标准运费</option>
+                                            <option value="custom">自定义</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="returnPolicy">退货政策</label>
+                                        <select id="returnPolicy" name="returnPolicy" class="form-select">
+                                            <option value="7days">7天无理由退货</option>
+                                            <option value="15days">15天退货</option>
+                                            <option value="30days">30天退货</option>
+                                            <option value="no-return">不支持退货</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="warranty">质保期</label>
+                                        <select id="warranty" name="warranty" class="form-select">
+                                            <option value="">无质保</option>
+                                            <option value="1year">1年质保</option>
+                                            <option value="2years">2年质保</option>
+                                            <option value="3years">3年质保</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="minOrderQty">最小起订量</label>
+                                        <input type="number" id="minOrderQty" name="minOrderQty" class="form-input" min="1" value="1">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="allowComment" name="allowComment" checked>
+                                        <span class="checkmark"></span>
+                                        允许用户评论
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="newProduct" name="newProduct">
+                                        <span class="checkmark"></span>
+                                        标记为新品
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="hotProduct" name="hotProduct">
+                                        <span class="checkmark"></span>
+                                        标记为热销
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="ProductManagementPage.hideModal()">取消</button>
+                <button type="button" class="btn btn-secondary" onclick="ProductManagementPage.saveDraft()">保存草稿</button>
+                <button type="button" class="btn btn-primary" onclick="ProductManagementPage.saveProduct()">
+                    <span id="saveButtonText">保存商品</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 快速预览模态框 -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal-container medium">
+            <div class="modal-header">
+                <h3>商品预览</h3>
+                <button class="modal-close" onclick="ProductManagementPage.hidePreviewModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="product-preview" id="productPreviewContent">
+                    <!-- 商品预览内容将通过JavaScript动态加载 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/product-management.js"></script>
+    <script src="js/product-modal.js"></script>
+    <script src="js/product-init.js"></script>
+    <script src="js/quick-actions.js"></script>
+</body>
+</html> 

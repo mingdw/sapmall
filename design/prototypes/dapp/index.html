@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sapphire Mall - DApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                        accent: '#F59E0B',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            min-width: 200px;
+            z-index: 50;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #9ca3af;
+            transition: all 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(55, 65, 81, 0.5);
+            color: #f3f4f6;
+        }
+        
+        .dropdown-item i {
+            width: 1.5rem;
+            margin-right: 0.75rem;
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background: #374151;
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-gray-800 border-b border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- 左侧 Logo 和导航 -->
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-gem text-white text-lg"></i>
+                        </div>
+                        <span class="ml-2 text-xl font-bold text-white">Sapphire Mall</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="marketplace.html" class="border-primary text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            代币商城
+                        </a>
+                        <a href="staking.html" class="border-transparent text-gray-300 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            质押挖矿
+                        </a>
+                        <a href="exchange.html" class="border-transparent text-gray-300 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            DEX交易
+                        </a>
+                        <a href="dao.html" class="border-transparent text-gray-300 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            DAO治理
+                        </a>
+                        <a href="help.html" class="border-transparent text-gray-300 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            帮助中心
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 右侧用户信息 -->
+                <div class="flex items-center">
+                    <!-- 余额显示 -->
+                    <div class="mr-4 text-sm text-gray-300">
+                        <span>余额：</span>
+                        <span class="font-medium text-white">2.5 ETH</span>
+                    </div>
+                    
+                    <!-- 用户菜单 -->
+                    <div class="relative ml-3">
+                        <button id="userMenuBtn" class="flex items-center space-x-3 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors">
+                            <span class="text-sm text-gray-300">0x1234...5678</span>
+                            <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
+                        </button>
+                        
+                        <!-- 下拉菜单 -->
+                        <div id="userMenu" class="dropdown-menu">
+                            <a href="#" class="dropdown-item" id="profileLink">
+                                <i class="fas fa-user"></i>
+                                <span>个人资料</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>我的购物车</span>
+                                <span class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">3</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-heart"></i>
+                                <span>我的收藏</span>
+                                <span class="ml-auto bg-pink-500 text-white text-xs px-2 py-1 rounded-full">8</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-file-alt"></i>
+                                <span>我的订单</span>
+                            </a>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-history"></i>
+                                <span>交易历史</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                <span>设置</span>
+                            </a>
+                            <a href="#" class="dropdown-item text-red-400 hover:text-red-300">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>断开连接</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <main id="mainContent" class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- 默认显示代币商城内容 -->
+        <iframe src="marketplace.html" class="w-full min-h-screen border-0" id="contentFrame"></iframe>
+    </main>
+
+    <script>
+        // 处理用户菜单显示/隐藏
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userMenu = document.getElementById('userMenu');
+        
+        userMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userMenu.classList.toggle('show');
+        });
+        
+        // 点击其他地方关闭菜单
+        document.addEventListener('click', () => {
+            userMenu.classList.remove('show');
+        });
+        
+        // 阻止菜单内部点击事件冒泡
+        userMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // 处理个人资料点击事件
+        document.getElementById('profileLink').addEventListener('click', async (e) => {
+            e.preventDefault();
+            console.log('点击个人资料按钮');
+            
+            const mainContent = document.getElementById('mainContent');
+            
+            // 显示加载状态
+            mainContent.innerHTML = `
+                <div class="flex items-center justify-center min-h-screen">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                    <p class="ml-4 text-white">正在加载管理后台...</p>
+                </div>
+            `;
+            
+            try {
+                // 加载管理后台 - 修复路径
+                console.log('开始加载管理后台');
+                mainContent.innerHTML = `
+                    <iframe 
+                        src="../admin/index.html" 
+                        class="w-full min-h-screen border-0" 
+                        id="adminFrame"
+                        onload="console.log('iframe加载完成')"
+                        onerror="console.error('iframe加载失败')"
+                    ></iframe>
+                `;
+
+                // 等待iframe加载完成后传递角色信息
+                setTimeout(() => {
+                    const adminFrame = document.getElementById('adminFrame');
+                    if (adminFrame && adminFrame.contentWindow) {
+                        try {
+                            adminFrame.contentWindow.postMessage({type: 'setRole', role: 'user'}, '*');
+                            console.log('角色信息已发送');
+                        } catch (error) {
+                            console.error('发送角色信息失败:', error);
+                        }
+                    }
+                }, 1000);
+
+            } catch (error) {
+                console.error('加载管理后台失败:', error);
+                mainContent.innerHTML = `
+                    <div class="flex flex-col items-center justify-center min-h-screen text-gray-300">
+                        <i class="fas fa-exclamation-triangle text-4xl mb-4 text-red-500"></i>
+                        <p class="text-xl mb-4">加载失败: ${error.message}</p>
+                        <button onclick="location.reload()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            重试
+                        </button>
+                    </div>
+                `;
+            }
+            
+            // 关闭下拉菜单
+            userMenu.classList.remove('show');
+            console.log('下拉菜单已关闭');
+        });
+
+        // 处理导航链接点击
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (!link.id.includes('profile')) {  // 不处理个人资料链接
+                    e.preventDefault();
+                    
+                    // 更新内容框架的源
+                    document.getElementById('contentFrame').src = link.href;
+                    
+                    // 更新导航项的激活状态
+                    document.querySelectorAll('nav a').forEach(a => {
+                        a.classList.remove('border-primary', 'text-white');
+                        a.classList.add('border-transparent', 'text-gray-300');
+                    });
+                    link.classList.remove('border-transparent', 'text-gray-300');
+                    link.classList.add('border-primary', 'text-white');
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

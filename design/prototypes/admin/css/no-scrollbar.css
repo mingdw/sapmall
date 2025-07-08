@@ -1,0 +1,352 @@
+/* 
+ * 全局滚动条移除样式 - 修复版
+ * 此文件专门用于彻底移除所有可能的滚动条显示，但不干扰页面高度自适应
+ */
+
+/* ==================== 通用滚动条移除 ==================== */
+
+/* 移除Firefox滚动条 */
+* {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+/* 移除WebKit滚动条 (Chrome, Safari, Edge) */
+*::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+}
+
+*::-webkit-scrollbar-track {
+    display: none !important;
+    background: transparent !important;
+}
+
+*::-webkit-scrollbar-thumb {
+    display: none !important;
+    background: transparent !important;
+}
+
+*::-webkit-scrollbar-corner {
+    display: none !important;
+    background: transparent !important;
+}
+
+*::-webkit-scrollbar-button {
+    display: none !important;
+    background: transparent !important;
+}
+
+/* ==================== 特定元素滚动条移除 ==================== */
+
+/* HTML和Body - 移除强制overflow设置，改为高度自适应 */
+html,
+body {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    /* 移除 overflow: visible !important; 让高度自适应系统工作 */
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    max-height: none !important;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* 所有div元素 - 只隐藏滚动条，不强制overflow */
+div {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+div::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* 表格相关元素 - 保持overflow:visible但允许高度自适应 */
+table,
+tbody,
+thead,
+tr,
+td,
+th {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    height: auto !important;
+    max-height: none !important;
+}
+
+table::-webkit-scrollbar,
+tbody::-webkit-scrollbar,
+thead::-webkit-scrollbar,
+tr::-webkit-scrollbar,
+td::-webkit-scrollbar,
+th::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* 语义化HTML5元素 - 只隐藏滚动条，保持布局灵活性 */
+section,
+article,
+main,
+header,
+footer,
+nav,
+aside {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    height: auto !important;
+    max-height: none !important;
+}
+
+section::-webkit-scrollbar,
+article::-webkit-scrollbar,
+main::-webkit-scrollbar,
+header::-webkit-scrollbar,
+footer::-webkit-scrollbar,
+nav::-webkit-scrollbar,
+aside::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* ==================== 特殊表单元素处理 ==================== */
+
+/* 文本域和选择框保持功能性，但隐藏滚动条 */
+textarea {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+textarea::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+select {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+select::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* 输入框 */
+input {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+input::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* ==================== 特定类名滚动条移除 - 修复版 ==================== */
+
+/* 页面容器 - 重要修复：移除强制overflow设置 */
+.page-container,
+.products-container,
+.stats-overview,
+.products-section {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    /* 移除 overflow: visible !important; 改为高度自适应设置 */
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    position: relative !important;
+    display: block !important;
+}
+
+/* 表格视图 - 特殊处理以支持内容完整显示 */
+.table-view,
+.table-container {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    height: auto !important;
+    max-height: none !important;
+    width: 100% !important;
+}
+
+/* 数据表格 - 确保表格能完全展示 */
+.data-table {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    table-layout: auto !important;
+}
+
+/* 分页组件 */
+.pagination {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    height: auto !important;
+}
+
+/* 统计网格 */
+.stats-grid {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    height: auto !important;
+    max-height: none !important;
+}
+
+/* 工具栏 */
+.toolbar {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    height: auto !important;
+}
+
+/* WebKit滚动条隐藏 */
+.page-container::-webkit-scrollbar,
+.products-container::-webkit-scrollbar,
+.stats-overview::-webkit-scrollbar,
+.products-section::-webkit-scrollbar,
+.table-view::-webkit-scrollbar,
+.table-container::-webkit-scrollbar,
+.data-table::-webkit-scrollbar,
+.pagination::-webkit-scrollbar,
+.stats-grid::-webkit-scrollbar,
+.toolbar::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* ==================== 智能覆盖样式 - 修复版 ==================== */
+
+/* 移除原有的强制overflow覆盖，这些干扰了iframe高度自适应 */
+/* [style*="overflow"] {
+    overflow: visible !important;
+} 已移除，因为这会干扰iframe自适应 */
+
+/* 保留高度相关的覆盖，确保元素能扩展 */
+[style*="max-height"] {
+    max-height: none !important;
+}
+
+/* 智能height处理 - 只对明确限制高度的元素生效 */
+[style*="height: 100px"],
+[style*="height: 200px"],
+[style*="height: 300px"],
+[style*="height: 400px"],
+[style*="height: 500px"] {
+    height: auto !important;
+}
+
+/* ==================== 模态框特殊处理 ==================== */
+
+/* 模态框需要特殊处理，确保能正确显示 */
+.modal-overlay {
+    overflow-y: auto !important; /* 模态框需要滚动 */
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+.modal-overlay::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.modal-container {
+    overflow: visible !important; /* 模态框内容需要完全可见 */
+    max-height: none !important;
+    height: auto !important;
+}
+
+/* ==================== 兼容性样式 ==================== */
+
+/* IE兼容性 */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    * {
+        -ms-overflow-style: none !important;
+    }
+}
+
+/* 旧版WebKit兼容性 */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    *::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+}
+
+/* ==================== 强制内容可见样式 ==================== */
+
+/* 确保所有重要内容都能被看到 */
+.products-container,
+.stats-overview,
+.products-section,
+.table-view,
+.stats-grid,
+.toolbar,
+.pagination,
+.data-table tbody,
+.data-table thead {
+    /* 使用min-height代替height，确保内容能完全展示 */
+    min-height: 0 !important;
+    /* 移除可能的高度限制 */
+    max-height: none !important;
+    /* 确保元素不会被隐藏 */
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* 表格特殊处理 */
+.data-table {
+    display: table !important;
+}
+
+.data-table tbody {
+    display: table-row-group !important;
+}
+
+.data-table thead {
+    display: table-header-group !important;
+}
+
+.data-table tr {
+    display: table-row !important;
+}
+
+.data-table td,
+.data-table th {
+    display: table-cell !important;
+}
+
+/* ==================== 调试样式 (可选) ==================== */
+
+/* 
+ * 如果需要调试滚动条问题，可以取消注释以下样式
+ * 这会给所有元素添加红色边框，方便识别哪些元素可能有滚动条
+ */
+/*
+* {
+    border: 1px solid red !important;
+    box-sizing: border-box !important;
+}
+*/ 

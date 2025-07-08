@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流动性质押管理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/staking.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 质押概览卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-chart-line"></i>
+                        流动性质押概览
+                    </h3>
+                    
+                    <div class="staking-overview-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-piggy-bank"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">1,250 SAP</div>
+                                <div class="stat-label">总质押金额</div>
+                                <div class="stat-change positive">+2.5%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-success">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">45.8 SAP</div>
+                                <div class="stat-label">累计收益</div>
+                                <div class="stat-change positive">+8.2%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-warning">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">12.5%</div>
+                                <div class="stat-label">平均年化收益率</div>
+                                <div class="stat-change neutral">APY</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-purple">
+                                <i class="fas fa-hand-holding-usd"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">15.2 SAP</div>
+                                <div class="stat-label">待领取收益</div>
+                                <div class="stat-change positive">可领取</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 流动性池列表卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-layer-group"></i>
+                        可用流动性池
+                    </h3>
+                    
+                    <div class="pools-container">
+                        <!-- SAP/ETH 流动性池 -->
+                        <div class="pool-card">
+                            <div class="pool-header">
+                                <div class="pool-info">
+                                    <div class="pool-icons">
+                                        <div class="token-icon sap-icon">S</div>
+                                        <div class="token-icon eth-icon">Ξ</div>
+                                    </div>
+                                    <div class="pool-details">
+                                        <div class="pool-name">SAP/ETH</div>
+                                        <div class="pool-description">SAP-ETH 流动性池</div>
+                                    </div>
+                                </div>
+                                <div class="pool-apy">
+                                    <div class="apy-value">12.8%</div>
+                                    <div class="apy-label">APY</div>
+                                </div>
+                            </div>
+                            
+                            <div class="pool-body">
+                                <div class="pool-stats">
+                                    <div class="pool-stat">
+                                        <div class="stat-label">总锁定价值</div>
+                                        <div class="stat-value">2.8M SAP</div>
+                                    </div>
+                                    <div class="pool-stat">
+                                        <div class="stat-label">我的质押</div>
+                                        <div class="stat-value">800 SAP</div>
+                                    </div>
+                                    <div class="pool-stat">
+                                        <div class="stat-label">我的收益</div>
+                                        <div class="stat-value text-green">12.5 SAP</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="pool-progress">
+                                    <div class="progress-info">
+                                        <span>我的池份额</span>
+                                        <span>0.03%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 0.03%;"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="pool-actions">
+                                    <button class="admin-btn admin-btn-primary">
+                                        <i class="fas fa-plus"></i>
+                                        添加流动性
+                                    </button>
+                                    <button class="admin-btn admin-btn-danger">
+                                        <i class="fas fa-minus"></i>
+                                        移除流动性
+                                    </button>
+                                    <button class="admin-btn admin-btn-warning">
+                                        <i class="fas fa-hand-holding-usd"></i>
+                                        领取收益
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- SAP/USDT 流动性池 -->
+                        <div class="pool-card">
+                            <div class="pool-header">
+                                <div class="pool-info">
+                                    <div class="pool-icons">
+                                        <div class="token-icon sap-icon">S</div>
+                                        <div class="token-icon usdt-icon">₮</div>
+                                    </div>
+                                    <div class="pool-details">
+                                        <div class="pool-name">SAP/USDT</div>
+                                        <div class="pool-description">SAP-USDT 流动性池</div>
+                                    </div>
+                                </div>
+                                <div class="pool-apy">
+                                    <div class="apy-value">15.2%</div>
+                                    <div class="apy-label">APY</div>
+                                </div>
+                            </div>
+                            
+                            <div class="pool-body">
+                                <div class="pool-stats">
+                                    <div class="pool-stat">
+                                        <div class="stat-label">总锁定价值</div>
+                                        <div class="stat-value">1.5M SAP</div>
+                                    </div>
+                                    <div class="pool-stat">
+                                        <div class="stat-label">我的质押</div>
+                                        <div class="stat-value">450 SAP</div>
+                                    </div>
+                                    <div class="pool-stat">
+                                        <div class="stat-label">我的收益</div>
+                                        <div class="stat-value text-green">8.3 SAP</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="pool-progress">
+                                    <div class="progress-info">
+                                        <span>我的池份额</span>
+                                        <span>0.03%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 0.03%;"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="pool-actions">
+                                    <button class="admin-btn admin-btn-primary">
+                                        <i class="fas fa-plus"></i>
+                                        添加流动性
+                                    </button>
+                                    <button class="admin-btn admin-btn-danger" disabled>
+                                        <i class="fas fa-minus"></i>
+                                        移除流动性
+                                    </button>
+                                    <button class="admin-btn admin-btn-warning" disabled>
+                                        <i class="fas fa-hand-holding-usd"></i>
+                                        领取收益
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- SAP/USDC 流动性池 -->
+                        <div class="pool-card">
+                            <div class="pool-header">
+                                <div class="pool-info">
+                                    <div class="pool-icons">
+                                        <div class="token-icon sap-icon">S</div>
+                                        <div class="token-icon usdc-icon">$</div>
+                                    </div>
+                                    <div class="pool-details">
+                                        <div class="pool-name">SAP/USDC</div>
+                                        <div class="pool-description">SAP-USDC 流动性池</div>
+                                    </div>
+                                </div>
+                                <div class="pool-apy">
+                                    <div class="apy-value">11.5%</div>
+                                    <div class="apy-label">APY</div>
+                                </div>
+                            </div>
+                            
+                            <div class="pool-body">
+                                <div class="pool-stats">
+                                    <div class="pool-stat">
+                                        <div class="stat-label">总锁定价值</div>
+                                        <div class="stat-value">680K SAP</div>
+                                    </div>
+                                    <div class="pool-stat">
+                                        <div class="stat-label">我的质押</div>
+                                        <div class="stat-value">- SAP</div>
+                                    </div>
+                                    <div class="pool-stat">
+                                        <div class="stat-label">我的收益</div>
+                                        <div class="stat-value">- SAP</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="pool-progress">
+                                    <div class="progress-info">
+                                        <span>我的池份额</span>
+                                        <span>0%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="pool-actions">
+                                    <button class="admin-btn admin-btn-primary">
+                                        <i class="fas fa-plus"></i>
+                                        添加流动性
+                                    </button>
+                                    <button class="admin-btn admin-btn-outline" disabled>
+                                        <i class="fas fa-minus"></i>
+                                        移除流动性
+                                    </button>
+                                    <button class="admin-btn admin-btn-primary" disabled>
+                                        <i class="fas fa-hand-holding-usd"></i>
+                                        领取收益
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 收益分配详情卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-chart-pie"></i>
+                        收益分配详情
+                    </h3>
+                    
+                    <div class="rewards-breakdown">
+                        <div class="breakdown-header">
+                            <div class="total-rewards">
+                                <div class="rewards-amount">15.2 SAP</div>
+                                <div class="rewards-label">待领取总收益</div>
+                            </div>
+                            <button class="admin-btn admin-btn-primary claim-all-btn">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                全部领取
+                            </button>
+                        </div>
+                        
+                        <div class="breakdown-list">
+                            <div class="breakdown-item">
+                                <div class="breakdown-info">
+                                    <div class="breakdown-icon">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </div>
+                                    <div class="breakdown-details">
+                                        <div class="breakdown-title">交易手续费分成</div>
+                                        <div class="breakdown-description">来自 SAP/ETH 池的手续费收益</div>
+                                    </div>
+                                </div>
+                                <div class="breakdown-amount">8.5 SAP</div>
+                            </div>
+                            
+                            <div class="breakdown-item">
+                                <div class="breakdown-info">
+                                    <div class="breakdown-icon breakdown-icon-purple">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="breakdown-details">
+                                        <div class="breakdown-title">流动性挖矿奖励</div>
+                                        <div class="breakdown-description">来自 SAP/USDT 池的流动性奖励</div>
+                                    </div>
+                                </div>
+                                <div class="breakdown-amount">6.7 SAP</div>
+                            </div>
+                        </div>
+                        
+                        <div class="fee-distribution">
+                            <div class="distribution-title">手续费分配机制</div>
+                            <div class="distribution-chart">
+                                <div class="chart-item">
+                                    <div class="chart-bar" style="width: 70%;">
+                                        <span class="chart-label">70% 流动性提供者</span>
+                                    </div>
+                                </div>
+                                <div class="chart-item">
+                                    <div class="chart-bar secondary" style="width: 20%;">
+                                        <span class="chart-label">20% DAO金库</span>
+                                    </div>
+                                </div>
+                                <div class="chart-item">
+                                    <div class="chart-bar tertiary" style="width: 10%;">
+                                        <span class="chart-label">10% 团队开发</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 流动性操作历史卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-history"></i>
+                        操作历史
+                    </h3>
+                    
+                    <div class="history-filters">
+                        <div class="filter-group">
+                            <button class="filter-btn active" data-filter="all">全部</button>
+                            <button class="filter-btn" data-filter="add">添加流动性</button>
+                            <button class="filter-btn" data-filter="remove">移除流动性</button>
+                            <button class="filter-btn" data-filter="claim">领取收益</button>
+                        </div>
+                        <div class="history-actions">
+                            <button class="admin-btn admin-btn-outline admin-btn-sm">
+                                <i class="fas fa-download"></i>
+                                导出记录
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="history-list">
+                        <div class="history-item" data-type="add">
+                            <div class="history-main-info">
+                                <div class="history-icon add-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div class="history-details">
+                                    <div class="history-title">添加流动性</div>
+                                    <div class="history-info">
+                                        <span class="history-pool">SAP/ETH 流动性池</span>
+                                        <span class="history-time">2024-01-20 14:30</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="history-amount-section">
+                                <div class="history-amount">+800 SAP</div>
+                            </div>
+                            <div class="history-status-section">
+                                <span class="history-badge history-badge-success">
+                                    <i class="fas fa-check"></i>
+                                    已确认
+                                </span>
+                                <button class="history-detail-btn" title="查看详情">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="history-item" data-type="claim">
+                            <div class="history-main-info">
+                                <div class="history-icon claim-icon">
+                                    <i class="fas fa-hand-holding-usd"></i>
+                                </div>
+                                <div class="history-details">
+                                    <div class="history-title">领取收益</div>
+                                    <div class="history-info">
+                                        <span class="history-pool">SAP/ETH 流动性池收益</span>
+                                        <span class="history-time">2024-01-19 09:15</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="history-amount-section">
+                                <div class="history-amount text-green">+12.5 SAP</div>
+                            </div>
+                            <div class="history-status-section">
+                                <span class="history-badge history-badge-success">
+                                    <i class="fas fa-check"></i>
+                                    已确认
+                                </span>
+                                <button class="history-detail-btn" title="查看详情">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="history-item" data-type="add">
+                            <div class="history-main-info">
+                                <div class="history-icon add-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div class="history-details">
+                                    <div class="history-title">添加流动性</div>
+                                    <div class="history-info">
+                                        <span class="history-pool">SAP/USDT 流动性池</span>
+                                        <span class="history-time">2024-01-15 11:20</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="history-amount-section">
+                                <div class="history-amount">+450 SAP</div>
+                            </div>
+                            <div class="history-status-section">
+                                <span class="history-badge history-badge-success">
+                                    <i class="fas fa-check"></i>
+                                    已确认
+                                </span>
+                                <button class="history-detail-btn" title="查看详情">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="history-item" data-type="remove">
+                            <div class="history-main-info">
+                                <div class="history-icon remove-icon">
+                                    <i class="fas fa-minus"></i>
+                                </div>
+                                <div class="history-details">
+                                    <div class="history-title">移除流动性</div>
+                                    <div class="history-info">
+                                        <span class="history-pool">SAP/ETH 流动性池</span>
+                                        <span class="history-time">2024-01-10 16:45</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="history-amount-section">
+                                <div class="history-amount">-200 SAP</div>
+                            </div>
+                            <div class="history-status-section">
+                                <span class="history-badge history-badge-success">
+                                    <i class="fas fa-check"></i>
+                                    已确认
+                                </span>
+                                <button class="history-detail-btn" title="查看详情">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="history-pagination">
+                        <button class="pagination-btn" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="pagination-pages">
+                            <button class="pagination-page active">1</button>
+                            <button class="pagination-page">2</button>
+                        </div>
+                        <button class="pagination-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/iframe-height-reporter.js"></script>
+    <script src="js/staking.js"></script>
+</body>
+</html> 

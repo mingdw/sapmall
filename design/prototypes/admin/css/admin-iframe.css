@@ -1,0 +1,20 @@
+/* 
+ * 管理后台iframe样式
+ * 配合JavaScript高度管理使用
+ */
+
+/* 移除所有可能干扰JavaScript高度管理的CSS规则 */
+/* 让JavaScript完全控制iframe高度 */
+.admin-main-card-iframe {
+    /* 移除所有高度相关的CSS，让JavaScript完全控制 */
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+    overflow: visible !important;
+    display: block !important;
+    border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+    
+    /* 允许用户手动调整高度（可选） */
+    resize: vertical !important;
+} 

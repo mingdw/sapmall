@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>治理学习 - 普通用户</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/learning.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 学习概览 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section learning-overview-section">
+                    <div class="overview-header">
+                        <div class="overview-title">
+                            <i class="fas fa-graduation-cap"></i>
+                            我的治理学习
+                        </div>
+                        <div class="learning-level">
+                            <span class="level-badge">初级学员</span>
+                            <div class="level-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 35%;"></div>
+                                </div>
+                                <span class="progress-text">35% 进阶中级</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overview-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">已完成课程</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon green">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">48</div>
+                                <div class="stat-label">学习时长(小时)</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon purple">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">获得证书</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon orange">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">85</div>
+                                <div class="stat-label">平均分数</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 学习路径 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="admin-section-title">
+                        <i class="fas fa-route"></i>
+                        推荐学习路径
+                        <div class="view-all-link" style="margin-left: auto;">
+                            <a href="#" onclick="viewAllPaths()">
+                                查看全部
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="paths-grid">
+                        <div class="path-card recommended" data-path="dao-basics">
+                            <div class="path-badge">推荐</div>
+                            <div class="path-icon">
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                            <div class="path-content">
+                                <div class="path-title">DAO治理基础入门</div>
+                                <div class="path-description">
+                                    从零开始学习DAO治理的基本概念、投票机制、提案流程等核心知识。适合初学者系统性学习DAO治理体系。
+                                </div>
+                                <div class="path-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-book"></i>
+                                        <span>8课程</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>12小时</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.8分</span>
+                                    </div>
+                                </div>
+                                <div class="path-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 62.5%;"></div>
+                                    </div>
+                                    <span class="progress-text">5/8 课程完成</span>
+                                </div>
+                                <div class="path-actions multi-actions">
+                                    <button class="continue-btn" onclick="continuePath('dao-basics')">
+                                        <i class="fas fa-play"></i>
+                                        继续学习
+                                    </button>
+                                    <button class="path-detail-btn" onclick="showPathDetail('dao-basics')">
+                                        <i class="fas fa-info-circle"></i>
+                                        查看详情
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="path-card" data-path="tokenomics">
+                            <div class="path-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="path-content">
+                                <div class="path-title">代币经济学进阶</div>
+                                <div class="path-description">
+                                    深入理解代币经济模型、质押机制、流动性挖矿等高级概念。需要具备基础的区块链知识。
+                                </div>
+                                <div class="path-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-book"></i>
+                                        <span>12课程</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>20小时</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.6分</span>
+                                    </div>
+                                </div>
+                                <div class="path-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 0%;"></div>
+                                    </div>
+                                    <span class="progress-text">未开始</span>
+                                </div>
+                                <div class="path-actions multi-actions">
+                                    <button class="start-btn" onclick="startPath('tokenomics')">
+                                        <i class="fas fa-rocket"></i>
+                                        开始学习
+                                    </button>
+                                    <button class="path-detail-btn" onclick="showPathDetail('tokenomics')">
+                                        <i class="fas fa-info-circle"></i>
+                                        查看详情
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="path-card" data-path="smart-contract-security">
+                            <div class="path-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="path-content">
+                                <div class="path-title">智能合约安全</div>
+                                <div class="path-description">
+                                    学习智能合约安全审计、常见漏洞识别、安全最佳实践。需要达到中级等级才能解锁。
+                                </div>
+                                <div class="path-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-book"></i>
+                                        <span>15课程</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>25小时</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.9分</span>
+                                    </div>
+                                </div>
+                                <div class="path-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 0%;"></div>
+                                    </div>
+                                    <span class="progress-text">需要中级等级解锁</span>
+                                </div>
+                                <div class="path-actions multi-actions">
+                                    <button class="locked-btn" disabled onclick="showUnlockRequirement('smart-contract-security')">
+                                        <i class="fas fa-lock"></i>
+                                        暂未解锁
+                                    </button>
+                                    <button class="path-detail-btn" onclick="showPathDetail('smart-contract-security')">
+                                        <i class="fas fa-info-circle"></i>
+                                        查看详情
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 热门课程 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="admin-section-title">
+                        <i class="fas fa-fire"></i>
+                        热门课程
+                        <div class="courses-filter" style="margin-left: auto;">
+                            <select id="courseFilter" onchange="filterCourses()">
+                                <option value="all">全部课程</option>
+                                <option value="beginner">初级</option>
+                                <option value="intermediate">中级</option>
+                                <option value="advanced">高级</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="courses-grid">
+                        <div class="course-card beginner" data-level="beginner" data-course="dao-intro">
+                            <div class="course-image">
+                                <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=200&h=120&fit=crop" alt="课程封面">
+                                <!-- 图片来源: Unsplash - 会议讨论场景 -->
+                                <div class="course-duration">
+                                    <i class="fas fa-clock"></i>
+                                    <span>1.5小时</span>
+                                </div>
+                            </div>
+                            <div class="course-content">
+                                <div class="course-level beginner">初级</div>
+                                <div class="course-title">什么是DAO治理？</div>
+                                <div class="course-description">
+                                    了解去中心化自治组织(DAO)的基本概念、运作原理和治理机制。
+                                </div>
+                                <div class="course-instructor">
+                                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=24&h=24&fit=crop&crop=face" alt="讲师头像">
+                                    <span>区块链专家 张老师</span>
+                                </div>
+                                <div class="course-meta">
+                                    <div class="rating">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.8</span>
+                                        <span class="reviews">(156评价)</span>
+                                    </div>
+                                    <div class="students">
+                                        <i class="fas fa-users"></i>
+                                        <span>1,234人学习</span>
+                                    </div>
+                                </div>
+                                <div class="course-actions">
+                                    <button class="start-course-btn" onclick="startCourse('dao-intro')">
+                                        <i class="fas fa-play"></i>
+                                        开始学习
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="course-card intermediate" data-level="intermediate" data-course="proposal-voting">
+                            <div class="course-image">
+                                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=200&h=120&fit=crop" alt="课程封面">
+                                <!-- 图片来源: Unsplash - 会议投票场景 -->
+                                <div class="course-duration">
+                                    <i class="fas fa-clock"></i>
+                                    <span>2.5小时</span>
+                                </div>
+                            </div>
+                            <div class="course-content">
+                                <div class="course-level intermediate">中级</div>
+                                <div class="course-title">提案创建与投票机制</div>
+                                <div class="course-description">
+                                    深入学习如何创建有效的治理提案，理解不同投票机制的优缺点。
+                                </div>
+                                <div class="course-instructor">
+                                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=24&h=24&fit=crop&crop=face" alt="讲师头像">
+                                    <span>治理专家 李老师</span>
+                                </div>
+                                <div class="course-meta">
+                                    <div class="rating">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.9</span>
+                                        <span class="reviews">(89评价)</span>
+                                    </div>
+                                    <div class="students">
+                                        <i class="fas fa-users"></i>
+                                        <span>856人学习</span>
+                                    </div>
+                                </div>
+                                <div class="course-actions">
+                                    <button class="start-course-btn" onclick="startCourse('proposal-voting')">
+                                        <i class="fas fa-play"></i>
+                                        开始学习
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="course-card beginner" data-level="beginner" data-course="wallet-security">
+                            <div class="course-image">
+                                <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=200&h=120&fit=crop" alt="课程封面">
+                                <!-- 图片来源: Unsplash - 区块链技术场景 -->
+                                <div class="course-duration">
+                                    <i class="fas fa-clock"></i>
+                                    <span>1小时</span>
+                                </div>
+                            </div>
+                            <div class="course-content">
+                                <div class="course-level beginner">初级</div>
+                                <div class="course-title">钱包安全与最佳实践</div>
+                                <div class="course-description">
+                                    学习如何安全地使用加密钱包，保护您的数字资产和治理权益。
+                                </div>
+                                <div class="course-instructor">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=24&h=24&fit=crop&crop=face" alt="讲师头像">
+                                    <span>安全专家 王老师</span>
+                                </div>
+                                <div class="course-meta">
+                                    <div class="rating">
+                                        <i class="fas fa-star"></i>
+                                        <span>4.7</span>
+                                        <span class="reviews">(203评价)</span>
+                                    </div>
+                                    <div class="students">
+                                        <i class="fas fa-users"></i>
+                                        <span>2,156人学习</span>
+                                    </div>
+                                </div>
+                                <div class="course-actions">
+                                    <button class="start-course-btn" onclick="startCourse('wallet-security')">
+                                        <i class="fas fa-play"></i>
+                                        开始学习
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 学习记录 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="admin-section-title">
+                        <i class="fas fa-history"></i>
+                        最近学习
+                        <div class="view-all-link" style="margin-left: auto;">
+                            <a href="#" onclick="viewAllHistory()">
+                                查看全部
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="history-list">
+                        <div class="history-item">
+                            <div class="history-course">
+                                <div class="course-thumbnail">
+                                    <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=60&h=40&fit=crop" alt="课程缩略图">
+                                </div>
+                                <div class="course-info">
+                                    <div class="course-name">DAO治理基础 - 第5章：投票权重计算</div>
+                                    <div class="course-path">DAO治理基础入门</div>
+                                </div>
+                            </div>
+                            <div class="history-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%;"></div>
+                                </div>
+                                <span class="progress-text">75%</span>
+                            </div>
+                            <div class="history-time">2小时前</div>
+                            <div class="history-actions">
+                                <button class="continue-btn" onclick="continueLesson('dao-basics-5')">
+                                    <i class="fas fa-play"></i>
+                                    继续
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="history-item completed">
+                            <div class="history-course">
+                                <div class="course-thumbnail">
+                                    <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=60&h=40&fit=crop" alt="课程缩略图">
+                                    <!-- 图片来源: Unsplash - 会议讨论场景 -->
+                                </div>
+                                <div class="course-info">
+                                    <div class="course-name">DAO治理基础 - 第4章：提案生命周期</div>
+                                    <div class="course-path">DAO治理基础入门</div>
+                                </div>
+                            </div>
+                            <div class="history-progress">
+                                <div class="completion-badge">
+                                    <i class="fas fa-check"></i>
+                                    已完成
+                                </div>
+                            </div>
+                            <div class="history-time">昨天</div>
+                            <div class="history-actions">
+                                <button class="review-btn" onclick="reviewLesson('dao-basics-4')">
+                                    <i class="fas fa-redo"></i>
+                                    复习
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="history-item">
+                            <div class="history-course">
+                                <div class="course-thumbnail">
+                                    <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=60&h=40&fit=crop" alt="课程缩略图">
+                                    <!-- 图片来源: Unsplash - 安全主题 -->
+                                </div>
+                                <div class="course-info">
+                                    <div class="course-name">钱包安全与最佳实践 - 第3章：私钥管理</div>
+                                    <div class="course-path">安全基础课程</div>
+                                </div>
+                            </div>
+                            <div class="history-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 45%;"></div>
+                                </div>
+                                <span class="progress-text">45%</span>
+                            </div>
+                            <div class="history-time">3天前</div>
+                            <div class="history-actions">
+                                <button class="start-course-btn" onclick="continueLesson('wallet-security-3')">
+                                    <i class="fas fa-play"></i>
+                                    继续学习
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 知识测试 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="admin-section-title">
+                        <i class="fas fa-brain"></i>
+                        知识测试
+                    </div>
+                    <div class="quiz-grid">
+                        <div class="quiz-card available" data-quiz="dao-basics-quiz">
+                            <div class="quiz-icon">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <div class="quiz-content">
+                                <div class="quiz-name">DAO基础知识测试</div>
+                                <div class="quiz-description">
+                                    测试您对DAO治理基本概念的理解程度
+                                </div>
+                                <div class="quiz-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>15分钟</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-list"></i>
+                                        <span>20题</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-star"></i>
+                                        <span>最高分: 85</span>
+                                    </div>
+                                </div>
+                                <div class="quiz-actions">
+                                    <button class="start-quiz-btn" onclick="startQuiz('dao-basics-quiz')">
+                                        <i class="fas fa-play"></i>
+                                        开始测试
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-card locked" data-quiz="tokenomics-quiz">
+                            <div class="quiz-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="quiz-content">
+                                <div class="quiz-name">代币经济学测试</div>
+                                <div class="quiz-description">
+                                    评估您对代币经济模型的掌握情况
+                                </div>
+                                <div class="quiz-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-clock"></i>
+                                        <span>25分钟</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-list"></i>
+                                        <span>30题</span>
+                                    </div>
+                                    <div class="unlock-requirement">
+                                        需要完成代币经济学课程
+                                    </div>
+                                </div>
+                                <div class="quiz-actions">
+                                    <button class="locked-quiz-btn" disabled>
+                                        <i class="fas fa-lock"></i>
+                                        暂未解锁
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 学习成就 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="admin-section-title">
+                        <i class="fas fa-medal"></i>
+                        学习成就
+                    </div>
+                    <div class="achievements-grid">
+                        <div class="achievement-item earned">
+                            <div class="achievement-icon">
+                                <i class="fas fa-book-reader"></i>
+                            </div>
+                            <div class="achievement-content">
+                                <div class="achievement-title">学习新手</div>
+                                <div class="achievement-description">完成第一个课程</div>
+                                <div class="achievement-date">2024-01-10 获得</div>
+                            </div>
+                            <div class="achievement-badge earned">
+                                <i class="fas fa-check"></i>
+                            </div>
+                        </div>
+
+                        <div class="achievement-item progress">
+                            <div class="achievement-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="achievement-content">
+                                <div class="achievement-title">学习达人</div>
+                                <div class="achievement-description">累计学习时长达到100小时</div>
+                                <div class="achievement-progress">48/100 小时</div>
+                            </div>
+                            <div class="achievement-badge progress">
+                                <div class="progress-ring">
+                                    <div class="progress-fill" style="--progress: 48%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="achievement-item locked">
+                            <div class="achievement-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="achievement-content">
+                                <div class="achievement-title">知识专家</div>
+                                <div class="achievement-description">所有测试平均分达到90分</div>
+                                <div class="achievement-requirement">当前平均分: 85分</div>
+                            </div>
+                            <div class="achievement-badge locked">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/learning.js"></script>
+    <script>
+        // 基础错误处理
+        window.addEventListener('error', function(e) {
+            console.error('页面错误:', e.message, 'at', e.filename + ':' + e.lineno);
+        });
+        
+        // 检查关键函数是否存在
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎓 治理学习页面加载中...');
+            
+            // 延迟检查，确保learning.js有时间加载
+            setTimeout(function() {
+                const requiredFunctions = [
+                    'startCourse', 'continuePath', 'startPath', 'startQuiz', 
+                    'filterCourses', 'viewAllPaths', 'showPathDetail'
+                ];
+                
+                const missingFunctions = [];
+                requiredFunctions.forEach(funcName => {
+                    if (typeof window[funcName] !== 'function') {
+                        missingFunctions.push(funcName);
+                    }
+                });
+                
+                if (missingFunctions.length > 0) {
+                    console.warn('缺失的函数:', missingFunctions);
+                    
+                    // 创建临时函数避免点击错误
+                    missingFunctions.forEach(funcName => {
+                        window[funcName] = function() {
+                            console.log(`调用了 ${funcName}，但函数未正确加载`);
+                            alert(`功能暂时不可用，请刷新页面重试。`);
+                        };
+                    });
+                } else {
+                    console.log('✅ 所有必需的函数都已加载');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 

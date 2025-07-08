@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社区参与 - 普通用户</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/community.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 社区参与概览 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+            <div class="overview-header">
+                        <h3 class="admin-section-title">
+                    <i class="fas fa-users"></i>
+                    我的社区参与
+                        </h3>
+                <div class="user-level">
+                    <span class="level-badge">活跃用户</span>
+                </div>
+            </div>
+            <div class="overview-stats">
+                <div class="stat-item">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">参与讨论</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon green">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">89</div>
+                        <div class="stat-label">获得点赞</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">1,234</div>
+                        <div class="stat-label">贡献积分</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">23</div>
+                        <div class="stat-label">参与活动</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速操作区域 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                    <i class="fas fa-bolt"></i>
+                    快速参与
+                    </h3>
+            <div class="actions-grid">
+                <div class="action-card" onclick="createPost()">
+                    <div class="action-icon blue">
+                        <i class="fas fa-pen"></i>
+                    </div>
+                    <div class="action-title">发起讨论</div>
+                    <div class="action-description">分享观点，参与社区讨论</div>
+                </div>
+                <div class="action-card" onclick="joinEvent()">
+                    <div class="action-icon green">
+                        <i class="fas fa-calendar-plus"></i>
+                    </div>
+                    <div class="action-title">参加活动</div>
+                    <div class="action-description">参与社区举办的各类活动</div>
+                </div>
+                <div class="action-card" onclick="helpNewbie()">
+                    <div class="action-icon purple">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="action-title">帮助新手</div>
+                    <div class="action-description">回答问题，帮助新用户</div>
+                </div>
+                <div class="action-card" onclick="reportIssue()">
+                    <div class="action-icon orange">
+                        <i class="fas fa-bug"></i>
+                    </div>
+                    <div class="action-title">反馈问题</div>
+                    <div class="action-description">报告Bug或提出改进建议</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 热门讨论 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+            <div class="discussions-header">
+                        <h3 class="admin-section-title">
+                    <i class="fas fa-fire"></i>
+                    热门讨论
+                        </h3>
+                <div class="view-all-link">
+                    <a href="#" onclick="viewAllDiscussions()">
+                        查看全部
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="discussions-list">
+                <div class="discussion-item">
+                    <div class="discussion-avatar">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" alt="用户头像">
+                    </div>
+                    <div class="discussion-content">
+                        <div class="discussion-header">
+                            <div class="discussion-author">区块链爱好者</div>
+                            <div class="discussion-time">2小时前</div>
+                        </div>
+                        <div class="discussion-title">关于SAP代币质押机制的一些想法</div>
+                        <div class="discussion-preview">
+                            我觉得当前的质押机制还有改进空间，特别是在收益分配方面。长期质押用户应该获得更多的奖励...
+                        </div>
+                        <div class="discussion-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-comments"></i>
+                                <span>24</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span>18</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-eye"></i>
+                                <span>156</span>
+                            </div>
+                            <div class="discussion-tags">
+                                <span class="tag">质押</span>
+                                <span class="tag">代币经济</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="discussion-item">
+                    <div class="discussion-avatar">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" alt="用户头像">
+                    </div>
+                    <div class="discussion-content">
+                        <div class="discussion-header">
+                            <div class="discussion-author">DeFi研究员</div>
+                            <div class="discussion-time">4小时前</div>
+                        </div>
+                        <div class="discussion-title">新功能建议：NFT商品展示优化</div>
+                        <div class="discussion-preview">
+                            建议在商品详情页增加3D预览功能，让用户更好地查看NFT商品的细节，提升购买体验...
+                        </div>
+                        <div class="discussion-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-comments"></i>
+                                <span>12</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span>32</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-eye"></i>
+                                <span>89</span>
+                            </div>
+                            <div class="discussion-tags">
+                                <span class="tag">NFT</span>
+                                <span class="tag">用户体验</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="discussion-item">
+                    <div class="discussion-avatar">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="用户头像">
+                    </div>
+                    <div class="discussion-content">
+                        <div class="discussion-header">
+                            <div class="discussion-author">技术极客</div>
+                            <div class="discussion-time">6小时前</div>
+                        </div>
+                        <div class="discussion-title">智能合约安全审计报告分享</div>
+                        <div class="discussion-preview">
+                            刚完成了对平台最新智能合约的安全审计，发现了几个值得注意的地方，分享给大家参考...
+                        </div>
+                        <div class="discussion-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-comments"></i>
+                                <span>8</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span>45</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-eye"></i>
+                                <span>234</span>
+                            </div>
+                            <div class="discussion-tags">
+                                <span class="tag">安全</span>
+                                <span class="tag">智能合约</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 社区活动 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+            <div class="events-header">
+                        <h3 class="admin-section-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    社区活动
+                        </h3>
+                <div class="events-filter">
+                    <select id="eventFilter" onchange="filterEvents()">
+                        <option value="all">全部活动</option>
+                        <option value="ongoing">进行中</option>
+                        <option value="upcoming">即将开始</option>
+                        <option value="ended">已结束</option>
+                    </select>
+                </div>
+            </div>
+            <div class="events-list">
+                <div class="event-item ongoing" data-status="ongoing">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=120&h=80&fit=crop" alt="活动图片">
+                        <!-- 图片来源: Unsplash - 会议讨论场景 -->
+                    </div>
+                    <div class="event-content">
+                        <div class="event-header">
+                            <div class="event-title">SAP生态建设讨论会</div>
+                            <div class="event-status ongoing">进行中</div>
+                        </div>
+                        <div class="event-description">
+                            探讨SAP生态系统的未来发展方向，包括DeFi集成、NFT市场扩展等话题。欢迎所有社区成员参与讨论。
+                        </div>
+                        <div class="event-meta">
+                            <div class="meta-row">
+                                <span><i class="fas fa-clock"></i> 2024-01-15 14:00 - 16:00</span>
+                                <span><i class="fas fa-users"></i> 已参与: 89人</span>
+                            </div>
+                            <div class="meta-row">
+                                <span><i class="fas fa-map-marker-alt"></i> 线上会议</span>
+                                <span><i class="fas fa-gift"></i> 奖励: 50 SAP</span>
+                            </div>
+                        </div>
+                        <div class="event-actions">
+                            <button class="join-btn" onclick="joinEvent('SAP-DISCUSS-001')">
+                                <i class="fas fa-sign-in-alt"></i>
+                                立即参与
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-item upcoming" data-status="upcoming">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1551818255-e6e10975cd17?w=120&h=80&fit=crop" alt="活动图片">
+                        <!-- 图片来源: Unsplash - 编程竞赛场景 -->
+                    </div>
+                    <div class="event-content">
+                        <div class="event-header">
+                            <div class="event-title">智能合约开发大赛</div>
+                            <div class="event-status upcoming">即将开始</div>
+                        </div>
+                        <div class="event-description">
+                            面向所有开发者的智能合约开发竞赛，优胜者将获得丰厚奖励和平台合作机会。
+                        </div>
+                        <div class="event-meta">
+                            <div class="meta-row">
+                                <span><i class="fas fa-clock"></i> 2024-01-20 09:00 开始</span>
+                                <span><i class="fas fa-users"></i> 报名: 156人</span>
+                            </div>
+                            <div class="meta-row">
+                                <span><i class="fas fa-trophy"></i> 奖金池: 10,000 SAP</span>
+                                <span><i class="fas fa-calendar"></i> 持续7天</span>
+                            </div>
+                        </div>
+                        <div class="event-actions">
+                            <button class="register-btn" onclick="registerEvent('DEV-CONTEST-001')">
+                                <i class="fas fa-user-plus"></i>
+                                立即报名
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-item ended" data-status="ended">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=120&h=80&fit=crop" alt="活动图片">
+                        <!-- 图片来源: Unsplash - 培训教学场景 -->
+                    </div>
+                    <div class="event-content">
+                        <div class="event-header">
+                            <div class="event-title">区块链基础知识培训</div>
+                            <div class="event-status ended">已结束</div>
+                        </div>
+                        <div class="event-description">
+                            面向新用户的区块链基础知识培训，涵盖钱包使用、交易安全等核心概念。
+                        </div>
+                        <div class="event-meta">
+                            <div class="meta-row">
+                                <span><i class="fas fa-check"></i> 2024-01-10 完成</span>
+                                <span><i class="fas fa-users"></i> 参与: 234人</span>
+                            </div>
+                            <div class="meta-row">
+                                <span><i class="fas fa-star"></i> 满意度: 4.8/5</span>
+                                <span><i class="fas fa-certificate"></i> 获得证书: 198人</span>
+                            </div>
+                        </div>
+                        <div class="event-actions">
+                            <button class="view-btn" onclick="viewEventDetails('TRAINING-001')">
+                                <i class="fas fa-eye"></i>
+                                查看详情
+                            </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的贡献 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+            <div class="contributions-header">
+                        <h3 class="admin-section-title">
+                    <i class="fas fa-chart-line"></i>
+                    我的贡献记录
+                        </h3>
+                <div class="time-filter">
+                    <button class="time-btn active" data-period="week">本周</button>
+                    <button class="time-btn" data-period="month">本月</button>
+                    <button class="time-btn" data-period="year">本年</button>
+                </div>
+            </div>
+            <div class="contributions-content">
+                <div class="contribution-chart">
+                            <div class="activity-heatmap">
+                                <div class="heatmap-title">过去12周活跃度</div>
+                                <div class="heatmap-grid" id="activityHeatmap">
+                                    <!-- 第1周 -->
+                                    <div class="heatmap-cell level-2" title="周一: 3次贡献"></div>
+                                    <div class="heatmap-cell level-1" title="周二: 1次贡献"></div>
+                                    <div class="heatmap-cell level-0" title="周三: 0次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周四: 5次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周五: 2次贡献"></div>
+                                    <div class="heatmap-cell level-1" title="周六: 1次贡献"></div>
+                                    <div class="heatmap-cell level-0" title="周日: 0次贡献"></div>
+                                    
+                                    <!-- 第2周 -->
+                                    <div class="heatmap-cell level-4" title="周一: 7次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周二: 4次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周三: 3次贡献"></div>
+                                    <div class="heatmap-cell level-5" title="周四: 9次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周五: 5次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周六: 2次贡献"></div>
+                                    <div class="heatmap-cell level-1" title="周日: 1次贡献"></div>
+                                    
+                                    <!-- 第3周 -->
+                                    <div class="heatmap-cell level-3" title="周一: 4次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周二: 3次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周三: 6次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周四: 5次贡献"></div>
+                                    <div class="heatmap-cell level-1" title="周五: 1次贡献"></div>
+                                    <div class="heatmap-cell level-0" title="周六: 0次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周日: 2次贡献"></div>
+                                    
+                                    <!-- 第4周 -->
+                                    <div class="heatmap-cell level-5" title="周一: 8次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周二: 6次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周三: 4次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周四: 3次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周五: 7次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周六: 5次贡献"></div>
+                                    <div class="heatmap-cell level-1" title="周日: 1次贡献"></div>
+                                    
+                                    <!-- 第5周 -->
+                                    <div class="heatmap-cell level-2" title="周一: 2次贡献"></div>
+                                    <div class="heatmap-cell level-1" title="周二: 1次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周三: 4次贡献"></div>
+                                    <div class="heatmap-cell level-5" title="周四: 10次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周五: 6次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周六: 3次贡献"></div>
+                                    <div class="heatmap-cell level-0" title="周日: 0次贡献"></div>
+                                    
+                                    <!-- 第6周 -->
+                                    <div class="heatmap-cell level-3" title="周一: 5次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周二: 7次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周三: 2次贡献"></div>
+                                    <div class="heatmap-cell level-1" title="周四: 1次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周五: 4次贡献"></div>
+                                    <div class="heatmap-cell level-5" title="周六: 9次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周日: 6次贡献"></div>
+                                    
+                                    <!-- 第7周 -->
+                                    <div class="heatmap-cell level-1" title="周一: 1次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周二: 3次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周三: 7次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周四: 5次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周五: 2次贡献"></div>
+                                    <div class="heatmap-cell level-0" title="周六: 0次贡献"></div>
+                                    <div class="heatmap-cell level-1" title="周日: 1次贡献"></div>
+                                    
+                                    <!-- 第8周 -->
+                                    <div class="heatmap-cell level-4" title="周一: 6次贡献"></div>
+                                    <div class="heatmap-cell level-5" title="周二: 8次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周三: 4次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周四: 3次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周五: 6次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周六: 5次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周日: 2次贡献"></div>
+                                    
+                                    <!-- 第9周 -->
+                                    <div class="heatmap-cell level-2" title="周一: 3次贡献"></div>
+                                    <div class="heatmap-cell level-1" title="周二: 1次贡献"></div>
+                                    <div class="heatmap-cell level-0" title="周三: 0次贡献"></div>
+                                    <div class="heatmap-cell level-5" title="周四: 11次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周五: 7次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周六: 4次贡献"></div>
+                                    <div class="heatmap-cell level-1" title="周日: 1次贡献"></div>
+                                    
+                                    <!-- 第10周 -->
+                                    <div class="heatmap-cell level-3" title="周一: 5次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周二: 6次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周三: 2次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周四: 4次贡献"></div>
+                                    <div class="heatmap-cell level-5" title="周五: 9次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周六: 3次贡献"></div>
+                                    <div class="heatmap-cell level-0" title="周日: 0次贡献"></div>
+                                    
+                                    <!-- 第11周 -->
+                                    <div class="heatmap-cell level-4" title="周一: 7次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周二: 5次贡献"></div>
+                                    <div class="heatmap-cell level-1" title="周三: 1次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="周四: 2次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周五: 6次贡献"></div>
+                                    <div class="heatmap-cell level-5" title="周六: 8次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周日: 4次贡献"></div>
+                                    
+                                    <!-- 第12周（本周） -->
+                                    <div class="heatmap-cell level-5" title="周一: 12次贡献"></div>
+                                    <div class="heatmap-cell level-4" title="周二: 8次贡献"></div>
+                                    <div class="heatmap-cell level-3" title="周三: 5次贡献"></div>
+                                    <div class="heatmap-cell level-2" title="今天: 2次贡献"></div>
+                                    <div class="heatmap-cell level-0" title="明天"></div>
+                                    <div class="heatmap-cell level-0" title="周六"></div>
+                                    <div class="heatmap-cell level-0" title="周日"></div>
+                                </div>
+                                
+                                <div class="heatmap-legend">
+                                    <span class="legend-text">少</span>
+                                    <div class="legend-scale">
+                                        <div class="legend-cell level-0"></div>
+                                        <div class="legend-cell level-1"></div>
+                                        <div class="legend-cell level-2"></div>
+                                        <div class="legend-cell level-3"></div>
+                                        <div class="legend-cell level-4"></div>
+                                        <div class="legend-cell level-5"></div>
+                                    </div>
+                                    <span class="legend-text">多</span>
+                                </div>
+                                
+                                <div class="heatmap-stats">
+                                    <div class="stat-item-small">
+                                        <span class="value">156</span>
+                                        <span class="label">总贡献</span>
+                                    </div>
+                                    <div class="stat-item-small">
+                                        <span class="value">18</span>
+                                        <span class="label">最佳连续</span>
+                                    </div>
+                                    <div class="stat-item-small">
+                                        <span class="value">4.2</span>
+                                        <span class="label">日均贡献</span>
+                                    </div>
+                                </div>
+                    </div>
+                </div>
+                <div class="contribution-list">
+                    <div class="contribution-item">
+                        <div class="contribution-icon green">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div class="contribution-content">
+                            <div class="contribution-title">参与讨论：SAP代币质押机制</div>
+                            <div class="contribution-time">2小时前</div>
+                        </div>
+                        <div class="contribution-reward">+5 积分</div>
+                    </div>
+                    <div class="contribution-item">
+                        <div class="contribution-icon blue">
+                            <i class="fas fa-thumbs-up"></i>
+                        </div>
+                        <div class="contribution-content">
+                            <div class="contribution-title">获得点赞：关于NFT市场的建议</div>
+                            <div class="contribution-time">4小时前</div>
+                        </div>
+                        <div class="contribution-reward">+2 积分</div>
+                    </div>
+                    <div class="contribution-item">
+                        <div class="contribution-icon purple">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <div class="contribution-content">
+                            <div class="contribution-title">帮助新用户：钱包连接问题解答</div>
+                            <div class="contribution-time">昨天</div>
+                        </div>
+                        <div class="contribution-reward">+10 积分</div>
+                    </div>
+                    <div class="contribution-item">
+                        <div class="contribution-icon orange">
+                            <i class="fas fa-bug"></i>
+                        </div>
+                        <div class="contribution-content">
+                            <div class="contribution-title">反馈问题：交易页面显示异常</div>
+                            <div class="contribution-time">2天前</div>
+                        </div>
+                        <div class="contribution-reward">+15 积分</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 成就系统 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                    <i class="fas fa-trophy"></i>
+                    我的成就
+                    </h3>
+            <div class="achievements-grid">
+                <div class="achievement-item earned">
+                    <div class="achievement-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="achievement-title">话题达人</div>
+                        <div class="achievement-description">参与讨论超过100次</div>
+                        <div class="achievement-progress">100/100</div>
+                    </div>
+                    <div class="achievement-badge earned">
+                        <i class="fas fa-check"></i>
+                    </div>
+                </div>
+
+                <div class="achievement-item progress">
+                    <div class="achievement-icon">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="achievement-title">点赞收割机</div>
+                        <div class="achievement-description">获得点赞数达到500次</div>
+                        <div class="achievement-progress">89/500</div>
+                    </div>
+                    <div class="achievement-badge progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 17.8%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="achievement-item locked">
+                    <div class="achievement-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="achievement-content">
+                        <div class="achievement-title">社区领袖</div>
+                        <div class="achievement-description">获得10000贡献积分</div>
+                        <div class="achievement-progress">1234/10000</div>
+                    </div>
+                    <div class="achievement-badge locked">
+                        <i class="fas fa-lock"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/community.js"></script>
+</body>
+</html> 

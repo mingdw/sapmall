@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sapphire Mall - Favicon 预览</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .preview-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+        }
+        .favicon-sizes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .favicon-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .favicon-item img {
+            display: block;
+            margin: 0 auto 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .code-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .step {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        .download-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔷 Sapphire Mall - Favicon 设计</h1>
+        <p>为 Sapphire Mall Web3 商城设计的专属图标</p>
+
+        <div class="preview-section">
+            <h2>📱 图标预览</h2>
+            <div class="favicon-sizes">
+                <div class="favicon-item">
+                    <img src="favicon.svg" width="64" height="64" alt="64x64">
+                    <div>64×64 (原始)</div>
+                </div>
+                <div class="favicon-item">
+                    <img src="favicon.svg" width="32" height="32" alt="32x32">
+                    <div>32×32 (标准)</div>
+                </div>
+                <div class="favicon-item">
+                    <img src="favicon.svg" width="16" height="16" alt="16x16">
+                    <div>16×16 (小尺寸)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>🎨 设计说明</h2>
+            <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                <p><strong>设计理念：</strong></p>
+                <ul>
+                    <li>🔷 <strong>蓝宝石主题</strong>：使用蓝色渐变体现品牌特色</li>
+                    <li>💎 <strong>宝石形状</strong>：立体宝石造型象征价值与品质</li>
+                    <li>S <strong>品牌标识</strong>：融入字母"S"强化品牌识别</li>
+                    <li>✨ <strong>现代感</strong>：适配Web3科技风格</li>
+                    <li>🌟 <strong>装饰元素</strong>：星点装饰增加视觉层次</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>🔧 生成 favicon.ico 的方法</h2>
+            
+            <div class="step">
+                <h3>方法一：使用在线转换工具（推荐）</h3>
+                <p>使用以下在线工具将 SVG 转换为 favicon.ico：</p>
+                <a href="https://realfavicongenerator.net/" target="_blank" class="download-btn">Real Favicon Generator</a>
+                <a href="https://www.favicon.cc/" target="_blank" class="download-btn">Favicon.cc</a>
+                <a href="https://convertio.co/svg-ico/" target="_blank" class="download-btn">Convertio</a>
+            </div>
+
+            <div class="step">
+                <h3>方法二：使用命令行工具</h3>
+                <p>如果你安装了 ImageMagick：</p>
+                <div class="code-section">
+# 将 SVG 转换为多尺寸 ICO
+magick favicon.svg -background transparent -define icon:auto-resize=256,128,64,48,32,16 favicon.ico
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>方法三：在线 SVG 转 ICO</h3>
+                <p>使用专门的 SVG 到 ICO 转换服务：</p>
+                <div class="code-section">
+1. 上传 favicon.svg 到转换网站
+2. 选择输出尺寸：16x16, 32x32, 48x48
+3. 下载生成的 favicon.ico 文件
+4. 将文件放置到网站根目录
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>📝 HTML 集成代码</h2>
+            <p>将以下代码添加到 HTML 的 &lt;head&gt; 部分：</p>
+            <div class="code-section">
+&lt;!-- 基本 favicon --&gt;
+&lt;link rel="icon" type="image/x-icon" href="/favicon.ico"&gt;
+&lt;link rel="icon" type="image/svg+xml" href="/favicon.svg"&gt;
+
+&lt;!-- Apple Touch Icon --&gt;
+&lt;link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"&gt;
+
+&lt;!-- 各种尺寸的 PNG --&gt;
+&lt;link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"&gt;
+&lt;link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"&gt;
+
+&lt;!-- Web App Manifest --&gt;
+&lt;link rel="manifest" href="/site.webmanifest"&gt;
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2>📁 推荐的 Favicon 文件结构</h2>
+            <div class="code-section">
+/
+├── favicon.ico          # 16x16, 32x32, 48x48 (多尺寸ICO)
+├── favicon.svg          # 矢量图标 (现代浏览器)
+├── favicon-16x16.png    # 16x16 PNG
+├── favicon-32x32.png    # 32x32 PNG  
+├── apple-touch-icon.png # 180x180 (iOS)
+└── site.webmanifest     # Web App 清单
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; opacity: 0.7;">
+            <p>🔷 Sapphire Mall © 2024 - Web3 虚拟商品交易平台</p>
+        </div>
+    </div>
+
+    <script>
+        // 添加一些交互效果
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px) scale(1.05)';
+            });
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // 复制代码功能
+        document.querySelectorAll('.code-section').forEach(section => {
+            section.addEventListener('click', function() {
+                const text = this.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    // 显示复制成功提示
+                    const original = this.style.background;
+                    this.style.background = 'rgba(34, 197, 94, 0.2)';
+                    setTimeout(() => {
+                        this.style.background = original;
+                    }, 500);
+                });
+            });
+            section.style.cursor = 'pointer';
+            section.title = '点击复制代码';
+        });
+    </script>
+</body>
+</html> 

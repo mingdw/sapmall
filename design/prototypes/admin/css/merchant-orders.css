@@ -1,0 +1,827 @@
+/* 
+ * 商家订单管理页面样式
+ * 基于管理员订单页面设计，保持统一的视觉风格
+ */
+
+/* ==================== 头部操作区样式 ==================== */
+.orders-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.time-selector {
+    display: flex;
+    gap: 4px;
+}
+
+/* ==================== 订单统计卡片网格 ==================== */
+.orders-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+/* 订单统计卡片 */
+.orders-stat-card {
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.orders-stat-card:hover {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+.orders-stat-card .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.orders-stat-card .stat-icon.stat-icon-success {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.orders-stat-card .stat-icon.stat-icon-warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.orders-stat-card .stat-icon.stat-icon-purple {
+    background: rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
+}
+
+.orders-stat-card .stat-content {
+    flex: 1;
+}
+
+.orders-stat-card .stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 4px;
+}
+
+.orders-stat-card .stat-label {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.orders-stat-card .stat-change {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.orders-stat-card .stat-change.positive {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.orders-stat-card .stat-change.negative {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.orders-stat-card .stat-change.neutral {
+    background: rgba(148, 163, 184, 0.2);
+    color: #94a3b8;
+}
+
+/* ==================== 快速操作区样式 ==================== */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    border-radius: 12px;
+    color: inherit;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.quick-action-btn:hover {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.action-icon-warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.action-icon-success {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.action-icon-purple {
+    background: rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
+}
+
+.action-icon-blue {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.action-content {
+    flex: 1;
+}
+
+.action-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 4px;
+}
+
+.action-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: #3b82f6;
+}
+
+/* ==================== 批量操作工具栏 ==================== */
+.batch-actions-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.batch-info {
+    color: #3b82f6;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.batch-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+/* ==================== 订单筛选器样式 ==================== */
+.order-filters-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    padding-bottom: 16px;
+}
+
+.order-search-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.search-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input-container i {
+    position: absolute;
+    left: 12px;
+    color: #64748b;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.search-input {
+    background: rgba(51, 65, 85, 0.4);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    color: #e2e8f0;
+    padding: 8px 12px 8px 36px;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 200px;
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: rgba(51, 65, 85, 0.6);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-input::placeholder {
+    color: #64748b;
+}
+
+.filter-select {
+    background: rgba(51, 65, 85, 0.4);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    color: #e2e8f0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: rgba(51, 65, 85, 0.6);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.filter-select option {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+/* ==================== 订单列表容器 ==================== */
+.orders-list-container {
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+/* 订单表头 */
+.orders-table-header {
+    display: grid;
+    grid-template-columns: 40px 2fr 1.5fr 80px 120px 100px 100px 130px 120px;
+    gap: 12px;
+    padding: 16px 20px;
+    background: rgba(30, 41, 59, 0.8);
+    border-bottom: 2px solid rgba(51, 65, 85, 0.4);
+    font-size: 13px;
+    font-weight: 600;
+    color: #cbd5e1;
+}
+
+.orders-table-header .header-item {
+    display: flex;
+    align-items: center;
+}
+
+.header-checkbox {
+    justify-content: center;
+}
+
+.header-actions {
+    justify-content: center;
+}
+
+/* ==================== 订单列表项样式 ==================== */
+.order-item {
+    display: grid;
+    grid-template-columns: 40px 2fr 1.5fr 80px 120px 100px 100px 130px 120px;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.order-item:hover {
+    background: rgba(30, 41, 59, 0.4);
+}
+
+.order-item.selected {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.order-checkbox {
+    display: flex;
+    justify-content: center;
+}
+
+.order-product {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.order-product-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+    background: rgba(51, 65, 85, 0.3);
+}
+
+.order-product-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.order-product-name {
+    font-weight: 500;
+    color: #f1f5f9;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.order-product-type {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.order-customer {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.order-customer-name {
+    font-weight: 500;
+    color: #f1f5f9;
+    font-size: 14px;
+}
+
+.order-customer-address {
+    font-size: 12px;
+    color: #94a3b8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.order-quantity,
+.order-amount,
+.order-payment,
+.order-time {
+    font-size: 14px;
+    color: #e2e8f0;
+}
+
+.order-amount {
+    font-weight: 600;
+}
+
+.order-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+}
+
+.order-action-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 12px;
+}
+
+.order-action-btn.view {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.order-action-btn.view:hover {
+    background: rgba(59, 130, 246, 0.3);
+}
+
+.order-action-btn.ship {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.order-action-btn.ship:hover {
+    background: rgba(16, 185, 129, 0.3);
+}
+
+.order-action-btn.edit {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.order-action-btn.edit:hover {
+    background: rgba(245, 158, 11, 0.3);
+}
+
+/* ==================== 状态徽章样式 ==================== */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.status-badge.status-pending {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-badge.status-confirmed {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-badge.status-paid {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.status-shipped {
+    background: rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.status-badge.status-delivered {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-badge.status-completed {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-badge.status-cancelled {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ==================== 分页样式 ==================== */
+.order-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.pagination-info {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination-pages {
+    display: flex;
+    gap: 4px;
+}
+
+.pagination-btn,
+.pagination-page {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    background: rgba(30, 41, 59, 0.4);
+    color: #94a3b8;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.pagination-btn:hover:not(:disabled),
+.pagination-page:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-page.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.page-size-selector select {
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: #f1f5f9;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* ==================== 空状态 ==================== */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: #64748b;
+    margin-bottom: 16px;
+}
+
+.empty-state p {
+    color: #94a3b8;
+    font-size: 16px;
+}
+
+/* ==================== 模态框尺寸 ==================== */
+.modal-content.medium {
+    width: 90%;
+    max-width: 600px;
+}
+
+.modal-content.large {
+    width: 90%;
+    max-width: 900px;
+}
+
+.modal-content.extra-large {
+    width: 95%;
+    max-width: 1200px;
+}
+
+/* ==================== 订单详情样式 ==================== */
+.order-detail-content {
+    padding: 20px;
+}
+
+.order-detail-section {
+    margin-bottom: 24px;
+}
+
+.order-detail-section h4 {
+    color: #f1f5f9;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-item label {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.detail-item span {
+    color: #e2e8f0;
+    font-size: 14px;
+}
+
+.product-detail {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 8px;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.product-detail-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: rgba(51, 65, 85, 0.3);
+}
+
+.product-detail-info {
+    flex: 1;
+}
+
+.product-detail-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 4px;
+}
+
+.product-detail-type {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+.product-detail-price {
+    font-size: 14px;
+    font-weight: 600;
+    color: #3b82f6;
+}
+
+.amount-summary {
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 8px;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    padding: 16px;
+}
+
+.amount-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    color: #e2e8f0;
+    font-size: 14px;
+}
+
+.amount-line.final {
+    border-top: 1px solid rgba(51, 65, 85, 0.3);
+    margin-top: 8px;
+    padding-top: 16px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #f1f5f9;
+}
+
+.order-actions-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding-top: 20px;
+    border-top: 1px solid rgba(51, 65, 85, 0.3);
+    margin-top: 20px;
+}
+
+/* ==================== 响应式设计 ==================== */
+@media (max-width: 1200px) {
+    .quick-actions-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    
+    .orders-table-header,
+    .order-item {
+        grid-template-columns: 40px 2fr 1fr 70px 100px 80px 80px 100px 100px;
+        gap: 8px;
+        padding: 12px 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .orders-header-actions,
+    .batch-actions-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .batch-buttons {
+        justify-content: center;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .orders-table-header {
+        display: none;
+    }
+    
+    .order-item {
+        display: block;
+        padding: 16px;
+        border: 1px solid rgba(51, 65, 85, 0.3);
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .order-pagination {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-detail {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .order-actions-footer {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .quick-action-btn {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    
+    .batch-actions-toolbar {
+        gap: 8px;
+    }
+    
+    .batch-buttons {
+        flex-direction: column;
+    }
+    
+    .order-detail-content {
+        padding: 16px;
+    }
+} 

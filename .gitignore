@@ -1,0 +1,54 @@
+node_modules/
+vendor/
+
+# 环境配置文件
+.env
+.env.local
+.env.production
+.env.development
+
+# 日志文件
+*.log
+logs/
+# 临时文件
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDE配置文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 构建输出
+dist/
+build/
+out/
+
+# 缓存文件
+.cache/
+.parcel-cache/
+
+# 数据库文件
+*.db
+*.sqlite
+
+# 密钥文件
+*.pem
+*.key
+*.crt
+
+# 备份文件
+*.bak
+*.backup
+
+# 系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>店铺概览 - 商家中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/page-common.css">
+    <link rel="stylesheet" href="css/merchant-store-overview.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 店铺状态横幅 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="store-status-banner">
+                        <div class="store-status-info">
+                            <div class="store-avatar">
+                                <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=80&h=80&fit=crop&crop=center" alt="店铺头像">
+                                <div class="status-indicator online"></div>
+                            </div>
+                            <div class="store-details">
+                                <div class="store-name">TechHub 数码商城</div>
+                                <div class="store-level">
+                                    <i class="fas fa-crown"></i>
+                                    钻石级商家 (Level 5)
+                                </div>
+                                <div class="store-tags">
+                                    <span class="tag verified">
+                                        <i class="fas fa-certificate"></i>
+                                        官方认证
+                                    </span>
+                                    <span class="tag premium">
+                                        <i class="fas fa-star"></i>
+                                        高级会员
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="store-quick-stats">
+                            <div class="quick-stat">
+                                <div class="stat-value">4.9</div>
+                                <div class="stat-label">店铺评分</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="stat-value">15.2K</div>
+                                <div class="stat-label">总销量</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="stat-value">99.1%</div>
+                                <div class="stat-label">好评率</div>
+                            </div>
+                            <div class="quick-stat">
+                                <div class="stat-value">2.3K</div>
+                                <div class="stat-label">月销售额</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 核心数据概览 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-chart-line"></i>
+                            核心数据概览
+                        </h3>
+                        <div class="time-selector">
+                            <button class="time-btn active" data-period="today">今日</button>
+                            <button class="time-btn" data-period="week">本周</button>
+                            <button class="time-btn" data-period="month">本月</button>
+                            <button class="time-btn" data-period="year">本年</button>
+                        </div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="metrics-grid">
+                        <div class="metric-card revenue">
+                            <div class="metric-header">
+                                <div class="metric-icon">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="metric-trend up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    +12.5%
+                                </div>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value">¥128,456</div>
+                                <div class="metric-label">总收入</div>
+                                <div class="metric-sub">
+                                    <span>平台佣金: ¥3,456</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card orders">
+                            <div class="metric-header">
+                                <div class="metric-icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="metric-trend up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    +8.3%
+                                </div>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value">1,234</div>
+                                <div class="metric-label">订单数量</div>
+                                <div class="metric-sub">
+                                    <span>待处理: 23</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card visitors">
+                            <div class="metric-header">
+                                <div class="metric-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="metric-trend up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    +15.7%
+                                </div>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value">8,967</div>
+                                <div class="metric-label">访客数量</div>
+                                <div class="metric-sub">
+                                    <span>转化率: 13.8%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card products">
+                            <div class="metric-header">
+                                <div class="metric-icon">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div class="metric-trend neutral">
+                                    <i class="fas fa-minus"></i>
+                                    0%
+                                </div>
+                            </div>
+                            <div class="metric-content">
+                                <div class="metric-value">456</div>
+                                <div class="metric-label">商品数量</div>
+                                <div class="metric-sub">
+                                    <span>库存不足: 12</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速操作区 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-bolt"></i>
+                            快速操作
+                        </h3>
+                        <div></div>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="actions-grid">
+                        <a href="#" class="action-card" onclick="addProduct()">
+                            <div class="action-icon add-product">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">添加商品</div>
+                                <div class="action-description">上架新商品到店铺</div>
+                            </div>
+                        </a>
+
+                        <a href="#" class="action-card" onclick="manageOrders()">
+                            <div class="action-icon manage-orders">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">订单管理</div>
+                                <div class="action-description">处理待发货订单</div>
+                            </div>
+                            <div class="action-badge">23</div>
+                        </a>
+
+                        <a href="#" class="action-card" onclick="viewAnalytics()">
+                            <div class="action-icon analytics">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">数据分析</div>
+                                <div class="action-description">查看详细经营数据</div>
+                            </div>
+                        </a>
+
+                        <a href="#" class="action-card" onclick="customerService()">
+                            <div class="action-icon customer-service">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">客户服务</div>
+                                <div class="action-description">处理客户咨询</div>
+                            </div>
+                            <div class="action-badge">5</div>
+                        </a>
+
+                        <a href="#" class="action-card" onclick="storeSettings()">
+                            <div class="action-icon settings">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">店铺设置</div>
+                                <div class="action-description">管理店铺基本信息</div>
+                            </div>
+                        </a>
+
+                        <a href="#" class="action-card" onclick="promotions()">
+                            <div class="action-icon promotions">
+                                <i class="fas fa-bullhorn"></i>
+                            </div>
+                            <div class="action-content">
+                                <div class="action-title">营销推广</div>
+                                <div class="action-description">创建优惠活动</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最近活动 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-clock"></i>
+                            最近活动
+                        </h3>
+                        <a href="#" class="view-all-link">查看全部</a>
+                    </div>
+                    <div class="section-divider"></div>
+                    <div class="activities-list">
+                        <div class="activity-item">
+                            <div class="activity-icon order">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">新订单 #ORD-2024-001234</div>
+                                <div class="activity-description">用户购买了 iPhone 15 Pro Max，金额 ¥9,999</div>
+                                <div class="activity-time">2分钟前</div>
+                            </div>
+                            <div class="activity-status pending">待处理</div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon review">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">收到新评价</div>
+                                <div class="activity-description">用户对 MacBook Pro 给出 5 星好评</div>
+                                <div class="activity-time">15分钟前</div>
+                            </div>
+                            <div class="activity-status completed">已完成</div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon stock">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">库存预警</div>
+                                <div class="activity-description">AirPods Pro 库存不足，仅剩 3 件</div>
+                                <div class="activity-time">2小时前</div>
+                            </div>
+                            <div class="activity-status warning">需处理</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数据分析弹窗 -->
+    <div class="modal-overlay" id="analyticsModal" style="display:none;">
+      <div class="modal-content analytics-modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title"><i class="fas fa-chart-line"></i> 数据分析</h3>
+          <button class="modal-close-btn" onclick="closeModal('analyticsModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="analytics-summary-grid">
+            <div class="analytics-summary-item">
+              <div class="summary-label">总收入</div>
+              <div class="summary-value">¥12,456</div>
+              <div class="summary-trend up"><i class="fas fa-arrow-up"></i> +12.5%</div>
+            </div>
+            <div class="analytics-summary-item">
+              <div class="summary-label">订单数</div>
+              <div class="summary-value">123</div>
+              <div class="summary-trend up"><i class="fas fa-arrow-up"></i> +8.3%</div>
+            </div>
+            <div class="analytics-summary-item">
+              <div class="summary-label">访客数</div>
+              <div class="summary-value">896</div>
+              <div class="summary-trend up"><i class="fas fa-arrow-up"></i> +15.7%</div>
+            </div>
+            <div class="analytics-summary-item">
+              <div class="summary-label">转化率</div>
+              <div class="summary-value">13.8%</div>
+              <div class="summary-trend up"><i class="fas fa-arrow-up"></i> +2.1%</div>
+            </div>
+          </div>
+          <div class="analytics-chart-section">
+            <canvas id="analyticsChart" height="180"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 客户服务弹窗 -->
+    <div class="modal-overlay" id="customerServiceModal" style="display:none;">
+      <div class="modal-content customer-service-modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title"><i class="fas fa-headset"></i> 客户服务</h3>
+          <button class="modal-close-btn" onclick="closeModal('customerServiceModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="customer-service-container">
+            <!-- 客户列表 -->
+            <div class="customer-list-section">
+              <div class="section-header">
+                <h4><i class="fas fa-users"></i> 客户消息</h4>
+                <div class="unread-count">5</div>
+              </div>
+              <div class="customer-list">
+                <div class="customer-item active" onclick="selectCustomer(this, 'customer1')">
+                  <div class="customer-avatar">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="客户头像">
+                    <div class="online-status online"></div>
+                  </div>
+                  <div class="customer-info">
+                    <div class="customer-name">张三 <span class="unread-badge">2</span></div>
+                    <div class="customer-message">请问我的订单什么时候发货？</div>
+                    <div class="customer-time">2分钟前</div>
+                  </div>
+                </div>
+                
+                <div class="customer-item" onclick="selectCustomer(this, 'customer2')">
+                  <div class="customer-avatar">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" alt="客户头像">
+                    <div class="online-status online"></div>
+                  </div>
+                  <div class="customer-info">
+                    <div class="customer-name">李四 <span class="unread-badge">1</span></div>
+                    <div class="customer-message">商品质量很好，谢谢！</div>
+                    <div class="customer-time">15分钟前</div>
+                  </div>
+                </div>
+                
+                <div class="customer-item" onclick="selectCustomer(this, 'customer3')">
+                  <div class="customer-avatar">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" alt="客户头像">
+                    <div class="online-status offline"></div>
+                  </div>
+                  <div class="customer-info">
+                    <div class="customer-name">王五</div>
+                    <div class="customer-message">可以退换货吗？</div>
+                    <div class="customer-time">1小时前</div>
+                  </div>
+                </div>
+                
+                <div class="customer-item" onclick="selectCustomer(this, 'customer4')">
+                  <div class="customer-avatar">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face" alt="客户头像">
+                    <div class="online-status online"></div>
+                  </div>
+                  <div class="customer-info">
+                    <div class="customer-name">赵六 <span class="unread-badge">2</span></div>
+                    <div class="customer-message">有优惠券可以使用吗？</div>
+                    <div class="customer-time">2小时前</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 聊天窗口 -->
+            <div class="chat-section">
+              <div class="chat-header">
+                <div class="current-customer">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&crop=face" alt="当前客户">
+                  <div class="customer-details">
+                    <div class="customer-name">张三</div>
+                    <div class="customer-status">在线</div>
+                  </div>
+                </div>
+                <div class="chat-actions">
+                  <button class="action-btn" title="查看订单"><i class="fas fa-shopping-cart"></i></button>
+                  <button class="action-btn" title="查看历史"><i class="fas fa-history"></i></button>
+                  <button class="action-btn" title="更多操作"><i class="fas fa-ellipsis-v"></i></button>
+                </div>
+              </div>
+              
+              <div class="chat-messages" id="chatMessages">
+                <div class="message customer-message">
+                  <div class="message-content">
+                    <div class="message-text">您好，请问我的订单什么时候发货？</div>
+                    <div class="message-time">14:32</div>
+                  </div>
+                </div>
+                
+                <div class="message agent-message">
+                  <div class="message-content">
+                    <div class="message-text">您好！您的订单 #ORD-2024-001234 已经打包完成，预计今天下午发货，明天就能收到。感谢您的耐心等待！</div>
+                    <div class="message-time">14:35</div>
+                  </div>
+                </div>
+                
+                <div class="message customer-message">
+                  <div class="message-content">
+                    <div class="message-text">太好了！谢谢您的回复</div>
+                    <div class="message-time">14:36</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="chat-input-section">
+                <div class="input-actions">
+                  <button class="input-action-btn" title="表情"><i class="far fa-smile"></i></button>
+                  <button class="input-action-btn" title="图片"><i class="fas fa-image"></i></button>
+                  <button class="input-action-btn" title="文件"><i class="fas fa-paperclip"></i></button>
+                </div>
+                <div class="message-input-container">
+                  <textarea id="messageInput" placeholder="输入消息..." rows="1"></textarea>
+                  <button class="send-btn" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/merchant-store-overview.js"></script>
+</body>
+</html> 

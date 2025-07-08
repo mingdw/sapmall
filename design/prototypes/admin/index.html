@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sapphire Mall - 管理后台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/height-fix-override.css">
+    <link rel="stylesheet" href="css/admin-iframe.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar" id="sidebar">
+            <!-- 动态菜单将通过JavaScript渲染 -->
+        </aside>
+        
+        <main class="content-area">
+            <div class="admin-main-card">
+                <header class="admin-main-card-header">
+                    <div class="admin-main-card-title">
+                        <i class="fas fa-user" id="pageIcon"></i>
+                        <span id="pageTitle">个人信息</span>
+                    </div>
+                    <div class="admin-main-card-actions">
+                        <button class="admin-main-card-help-btn" onclick="showHelp()">
+                            <i class="fas fa-question-circle"></i>
+                            常见问题
+                        </button>
+                    </div>
+                </header>
+                
+                <div class="admin-main-card-body">
+                    <iframe 
+                        class="admin-main-card-iframe" 
+                        id="contentIframe" 
+                        src="profile.html"
+                        frameborder="0"
+                        scrolling="no"
+                        loading="lazy"
+                        title="管理后台内容页面">
+                    </iframe>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript文件 -->
+    <script src="js/admin.js"></script>
+    <script src="js/iframe-auto-height.js"></script>
+    <script src="js/admin-debug-tools.js"></script>
+</body>
+</html> 

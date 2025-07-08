@@ -241,6 +241,7 @@
     flex-direction: column;
     transform: translateY(0) scale(1);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    user-select: none; /* 防止文本选择 */
 }
 
 /* 简化的商品卡片悬浮效果 */
@@ -254,6 +255,15 @@
         rgba(67, 56, 202, 0.25), 
         rgba(17, 24, 39, 0.95), 
         rgba(139, 92, 246, 0.15));
+}
+
+/* 商品卡片点击状态 */
+.product-card:active {
+    transform: translateY(-2px) scale(0.98);
+    transition: all 0.1s ease;
+    box-shadow: 
+        0 8px 20px rgba(59, 130, 246, 0.4),
+        0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .product-card:hover::before {
@@ -270,6 +280,36 @@
     border-radius: inherit;
     z-index: 1;
     pointer-events: none;
+}
+
+/* 添加点击波纹效果 */
+.product-card::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.product-card:active::after {
+    width: 300px;
+    height: 300px;
+    opacity: 1;
+    transition: width 0.1s ease, height 0.1s ease, opacity 0.1s ease;
+}
+
+.product-card:hover{
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+    border-color: #3b82f6;
 }
 
 .product-card .product-image-container {

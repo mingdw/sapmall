@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交易数据 - Sapphire Mall 商家中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/merchant-trade-data.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 头部卡片+筛选合并区 -->
+        <div class="trade-header-block">
+            <div class="trade-stats-grid" id="tradeStatsGrid"></div>
+            <div class="trade-filters-bar" id="tradeFiltersBar"></div>
+        </div>
+        <!-- 图表区 -->
+        <div class="trade-chart-card">
+            <div class="chart-toolbar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <div class="trade-chart-tabs">
+                    <button class="trade-chart-tab active" data-type="amount">交易额</button>
+                    <button class="trade-chart-tab" data-type="count">订单数</button>
+                </div>
+                <select class="chart-range-select" id="chartRangeSelect">
+                    <option value="7">最近7天</option>
+                    <option value="30" selected>最近30天</option>
+                    <option value="90">最近90天</option>
+                    <option value="180">最近半年</option>
+                </select>
+            </div>
+            <canvas id="tradeChart" height="80"></canvas>
+        </div>
+        <!-- 明细表格区 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title trade-table-title-flex">
+                        <span><i class="fas fa-table"></i> 交易明细</span>
+                        <span class="trade-table-title-actions">
+                            <button class="admin-btn admin-btn-outline admin-btn-xs" id="refreshBtn" title="刷新"><i class="fas fa-rotate-right"></i> 刷新</button>
+                            <button class="admin-btn admin-btn-outline admin-btn-xs" id="exportBtn"><i class="fas fa-file-export"></i> 导出数据</button>
+                        </span>
+                    </h3>
+                    <div class="order-filters-container mt-5">
+                        <div class="filter-group">
+                            <button class="filter-btn active" data-range="0">全部</button>
+                            <button class="filter-btn" data-range="1">最近一日</button>
+                            <button class="filter-btn" data-range="7">最近7天</button>
+                            <button class="filter-btn" data-range="30">最近一月</button>
+                        </div>
+                        <div class="order-search-actions">
+                            <div class="search-input-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" class="search-input" id="searchInput" placeholder="搜索订单号/买家/商品...">
+                            </div>
+                            <select class="filter-select" id="typeFilter">
+                                <option value="">全部类型</option>
+                                <option value="普通订单">普通订单</option>
+                                <option value="NFT交易">NFT交易</option>
+                                <option value="虚拟商品">虚拟商品</option>
+                            </select>
+                            <select class="filter-select" id="statusFilter">
+                                <option value="">全部状态</option>
+                                <option value="pending">待确认</option>
+                                <option value="success">已上链</option>
+                                <option value="failed">失败</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="trade-table-container" id="tradeTableContainer"></div>
+                    <div class="pagination-container" id="pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/merchant-trade-data.js"></script>
+</body>
+</html> 

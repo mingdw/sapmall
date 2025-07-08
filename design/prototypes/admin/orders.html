@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的订单 - Sapphire Mall</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/orders.css">
+</head>
+<body>
+    <!-- 加载状态指示器 -->
+    <div id="loadingIndicator" style="display: flex; align-items: center; justify-content: center; padding: 40px; color: #94a3b8;">
+        <i class="fas fa-spinner fa-spin" style="margin-right: 12px; font-size: 20px;"></i>
+        <span>正在加载订单数据...</span>
+    </div>
+    
+    <div class="admin-content-container" id="mainContent" style="display: none;">
+        <!-- 订单统计概览卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-chart-bar"></i>
+                        订单统计概览
+                    </h3>
+                    
+                    <div class="orders-header-actions">
+                        <button class="admin-btn admin-btn-outline admin-btn-sm">
+                            <i class="fas fa-download"></i>
+                            导出订单
+                        </button>
+                        <button class="admin-btn admin-btn-primary admin-btn-sm">
+                            <i class="fas fa-refresh"></i>
+                            刷新
+                        </button>
+                    </div>
+                    
+                    <div class="orders-stats-grid">
+                        <div class="orders-stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">128</div>
+                                <div class="stat-label">总订单数</div>
+                                <div class="stat-change positive">+5 本月</div>
+                            </div>
+                        </div>
+                        
+                        <div class="orders-stat-card">
+                            <div class="stat-icon stat-icon-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">115</div>
+                                <div class="stat-label">已完成</div>
+                                <div class="stat-change positive">89.8% 完成率</div>
+                            </div>
+                        </div>
+                        
+                        <div class="orders-stat-card">
+                            <div class="stat-icon stat-icon-warning">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">8</div>
+                                <div class="stat-label">进行中</div>
+                                <div class="stat-change neutral">待处理</div>
+                            </div>
+                        </div>
+                        
+                        <div class="orders-stat-card">
+                            <div class="stat-icon stat-icon-purple">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">45.8 SAP</div>
+                                <div class="stat-label">总消费</div>
+                                <div class="stat-change positive">+8.2 SAP 本月</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 订单列表卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-list-alt"></i>
+                        我的订单
+                    </h3>
+                    
+                    <!-- 筛选和搜索区域 -->
+                    <div class="order-filters-container">
+                        <div class="filter-group">
+                            <button class="filter-btn active" data-status="all">全部订单</button>
+                            <button class="filter-btn" data-status="pending">待付款</button>
+                            <button class="filter-btn" data-status="paid">已付款</button>
+                            <button class="filter-btn" data-status="delivered">已交付</button>
+                            <button class="filter-btn" data-status="cancelled">已取消</button>
+                        </div>
+                        <div class="order-search-actions">
+                            <div class="search-input-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="搜索订单号或商品..." class="search-input" id="searchInput">
+                            </div>
+                            <select class="filter-select" id="timeFilter">
+                                <option value="all">全部时间</option>
+                                <option value="30">最近30天</option>
+                                <option value="90">最近3个月</option>
+                                <option value="180">最近6个月</option>
+                                <option value="365">最近1年</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 订单列表 -->
+                    <div class="orders-list-container">
+                        <!-- 表头 -->
+                        <div class="orders-table-header">
+                            <div class="header-item header-product">商品信息</div>
+                            <div class="header-item header-quantity">数量</div>
+                            <div class="header-item header-amount">金额</div>
+                            <div class="header-item header-payment">支付方式</div>
+                            <div class="header-item header-status">状态</div>
+                            <div class="header-item header-time">下单时间</div>
+                            <div class="header-item header-actions">操作</div>
+                        </div>
+                        
+                        <!-- 订单列表 -->
+                        <div class="order-list">
+                            <!-- 订单项将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <!-- 分页 -->
+                    <div class="order-pagination">
+                        <button class="pagination-btn" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="pagination-pages">
+                            <button class="pagination-page active">1</button>
+                            <button class="pagination-page">2</button>
+                            <button class="pagination-page">3</button>
+                            <button class="pagination-page">4</button>
+                            <button class="pagination-page">5</button>
+                        </div>
+                        <button class="pagination-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 订单详情模态框 -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-receipt"></i> 订单详情</h3>
+                <span class="close-modal" onclick="closeOrderModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="orderModalBody">
+                <!-- 订单详情内容将动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 支付模态框 -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-credit-card"></i> 订单支付</h3>
+                <span class="close-modal" onclick="closePaymentModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="paymentModalBody">
+                <!-- 支付内容将动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/iframe-height-reporter.js"></script>
+    <script src="js/orders.js"></script>
+</body>
+</html>

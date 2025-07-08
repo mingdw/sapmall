@@ -1,0 +1,968 @@
+/* 收货地址管理页面样式 - 深色主题 */
+
+/* 整体容器样式 */
+.addresses-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #e2e8f0;
+}
+
+/* 地址列表区域 */
+.addresses-section {
+    margin-bottom: 20px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.section-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* 地址列表容器样式 */
+.addresses-list-container {
+    background: transparent;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.addresses-list {
+    background: transparent;
+}
+
+/* 地址列表样式 */
+.addresses-list {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.address-item {
+    position: relative;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.address-item:hover {
+    /* background: rgba(30, 41, 59, 0.6); */
+    /* transform: translateY(-1px); */
+}
+
+.address-item.default {
+    /* border-color: rgba(16, 185, 129, 0.4); */
+    /* background: rgba(16, 185, 129, 0.05); */
+}
+
+.address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 16px;
+}
+
+.address-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.receiver-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin: 0;
+}
+
+.receiver-phone {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-left: 8px;
+}
+
+.address-badges {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.address-badge {
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.badge-default {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-label {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.address-content {
+    margin-bottom: 12px;
+}
+
+.address-full {
+    color: #cbd5e1;
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.address-details {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: #64748b;
+    flex-wrap: wrap;
+}
+
+.address-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    flex-direction: row !important;
+}
+
+/* 添加地址按钮区域 */
+.add-address-section {
+    margin-top: 16px;
+}
+
+.btn-add-address {
+    width: 100%;
+    background: rgba(30, 41, 59, 0.3);
+    border: 2px dashed rgba(71, 85, 105, 0.4);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #94a3b8;
+}
+
+.btn-add-address:hover {
+    background: rgba(30, 41, 59, 0.5);
+    border-color: #3b82f6;
+    color: #3b82f6;
+    transform: translateY(-1px);
+}
+
+.add-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    font-size: 16px;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.btn-add-address:hover .add-icon {
+    background: rgba(59, 130, 246, 0.2);
+}
+
+.add-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+}
+
+.add-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #cbd5e1;
+}
+
+.add-desc {
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background: transparent;
+    color: #94a3b8;
+    border: 1px solid rgba(71, 85, 105, 0.4);
+}
+
+.btn-outline:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 11px;
+}
+
+/* 空状态样式 - 与订单页面保持一致 */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+    background: rgba(15, 23, 42, 0.2);
+    border-radius: 12px;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.empty-state i {
+    font-size: 64px;
+    color: #475569;
+    margin-bottom: 20px;
+    opacity: 0.6;
+}
+
+.empty-state h3 {
+    font-size: 20px;
+    color: #e2e8f0;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+}
+
+.empty-state p {
+    font-size: 14px;
+    color: #94a3b8;
+    margin: 0 0 24px 0;
+    opacity: 0.8;
+}
+
+/* 模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    animation: modalFadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: #1e293b;
+    margin: 3% auto;
+    padding: 0;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    animation: modalSlideIn 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-small {
+    max-width: 400px;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+}
+
+.modal-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.close-modal {
+    color: #94a3b8;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+.close-modal:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+/* 表单样式 */
+.address-form {
+    color: #e2e8f0;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-row:last-child {
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #cbd5e1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.required {
+    color: #ef4444;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    color: #e2e8f0;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #64748b;
+}
+
+.form-group select option {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* 复选框样式 */
+.checkbox-group {
+    margin: 20px 0;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #cbd5e1;
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(71, 85, 105, 0.4);
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.checkbox-label:hover .checkmark {
+    border-color: #3b82f6;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(71, 85, 105, 0.2);
+}
+
+/* 删除确认模态框样式 */
+.delete-confirm {
+    text-align: center;
+    color: #e2e8f0;
+}
+
+.warning-icon {
+    margin-bottom: 16px;
+}
+
+.warning-icon i {
+    font-size: 48px;
+    color: #f59e0b;
+}
+
+.delete-confirm h4 {
+    font-size: 18px;
+    color: #e2e8f0;
+    margin: 0 0 8px 0;
+}
+
+.delete-confirm p {
+    color: #94a3b8;
+    font-size: 14px;
+    margin: 0 0 24px 0;
+}
+
+.delete-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+/* 地址表格样式 - 参考订单页面 */
+.addresses-table-header {
+    display: grid;
+    grid-template-columns: 180px 130px 1fr 380px;
+    gap: 16px;
+    padding: 12px 20px;
+    background: rgba(30, 41, 59, 0.4);
+    border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    font-weight: 600;
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 0;
+    align-items: center;
+}
+
+.addresses-table-header .header-item {
+    padding: 0;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+}
+
+.addresses-table-header .header-actions {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-add-btn {
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    min-height: 32px !important;
+    white-space: nowrap !important;
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    color: white !important;
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.25) !important;
+    margin-left: auto !important;
+}
+
+.header-add-btn:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35) !important;
+}
+
+.header-add-btn:active {
+    transform: translateY(0) !important;
+    background: linear-gradient(135deg, #1d4ed8, #1e40af) !important;
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4) !important;
+    transition: all 0.1s ease !important;
+}
+
+.address-row {
+    display: grid;
+    grid-template-columns: 180px 130px 1fr 380px;
+    gap: 16px;
+    padding: 20px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+    transition: all 0.3s ease;
+    background: rgba(15, 23, 42, 0.2);
+    align-items: center;
+}
+
+.address-row:hover {
+    background: rgba(30, 41, 59, 0.3);
+    transform: translateY(-1px);
+}
+
+.address-row:last-child {
+    border-bottom: none;
+}
+
+.address-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.address-col.address-actions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.address-actions {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    flex-direction: row !important;
+}
+
+/* 按钮样式美化 */
+.address-actions .admin-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.address-actions .admin-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.address-actions .admin-btn:active {
+    transform: translateY(0);
+    transition: all 0.1s ease;
+}
+
+.address-actions .admin-btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: 1px solid transparent;
+}
+
+.address-actions .admin-btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.address-actions .admin-btn-primary:active {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+}
+
+.address-actions .admin-btn-outline {
+    background: rgba(15, 23, 42, 0.3);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    backdrop-filter: blur(10px);
+}
+
+.address-actions .admin-btn-outline:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: #3b82f6;
+    color: #60a5fa;
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+
+.address-actions .admin-btn-outline:active {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: #2563eb;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.address-actions .admin-btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: 1px solid transparent;
+}
+
+.address-actions .admin-btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.address-actions .admin-btn-danger:active {
+    background: linear-gradient(135deg, #b91c1c, #991b1b);
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+}
+
+.address-actions .admin-btn i {
+    font-size: 11px;
+}
+
+.address-receiver .receiver-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.receiver-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #f1f5f9;
+    white-space: nowrap;
+}
+
+.default-badge {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.address-label-badge {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.phone-number {
+    font-size: 14px;
+    color: #e2e8f0;
+    font-weight: 500;
+}
+
+.address-location {
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.address-full {
+    color: #e2e8f0;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.address-meta {
+    font-size: 11px;
+    color: #94a3b8;
+    opacity: 0.8;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .addresses-table-header,
+    .address-row {
+        grid-template-columns: 160px 120px 1fr 340px;
+        gap: 12px;
+        padding: 16px;
+    }
+    
+    .header-add-btn {
+        font-size: 11px !important;
+        padding: 5px 10px !important;
+        min-height: 30px !important;
+    }
+    
+    .address-actions {
+        gap: 5px;
+    }
+    
+    .address-actions .admin-btn {
+        font-size: 11px;
+        padding: 5px 10px;
+        min-height: 30px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .addresses-table-header,
+    .address-row {
+        grid-template-columns: 140px 100px 1fr 300px;
+        gap: 10px;
+        padding: 14px;
+    }
+    
+    .header-add-btn {
+        font-size: 10px !important;
+        padding: 4px 8px !important;
+        min-height: 28px !important;
+        gap: 3px !important;
+    }
+    
+    .address-actions {
+        flex-direction: row;
+        gap: 4px;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+    
+    .address-actions .admin-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+        min-height: 28px;
+        gap: 3px;
+    }
+    
+    .address-actions .admin-btn i {
+        font-size: 9px;
+    }
+    
+    .receiver-name {
+        font-size: 14px;
+    }
+    
+    .address-full {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 768px) {
+    .addresses-table-header {
+        display: none;
+    }
+    
+    .address-row {
+        display: block;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        background: rgba(15, 23, 42, 0.6);
+    }
+    
+    .address-col {
+        margin-bottom: 12px;
+        align-items: flex-start;
+    }
+    
+    .address-col:last-child {
+        margin-bottom: 0;
+    }
+    
+    .address-receiver::before {
+        content: "收货人：";
+        font-size: 12px;
+        color: #64748b;
+        display: block;
+        margin-bottom: 4px;
+    }
+    
+    .address-phone::before {
+        content: "联系电话：";
+        font-size: 12px;
+        color: #64748b;
+        display: block;
+        margin-bottom: 4px;
+    }
+    
+    .address-location::before {
+        content: "地址：";
+        font-size: 12px;
+        color: #64748b;
+        display: block;
+        margin-bottom: 4px;
+    }
+    
+    .address-actions {
+        justify-content: flex-start;
+        margin-top: 8px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .address-actions .admin-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+        min-height: 32px;
+        border-radius: 8px;
+    }
+    
+    /* 移动端添加按钮 */
+    .mobile-add-btn {
+        display: block;
+        width: 100%;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 12px;
+        border-radius: 12px;
+        border: none;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    }
+    
+    .mobile-add-btn:hover {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+    }
+} 

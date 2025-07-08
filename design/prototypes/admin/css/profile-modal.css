@@ -1,0 +1,284 @@
+/* 
+ * Profile页面模态框样式
+ * KYC认证模态框和相关组件
+ */
+
+/* 模态框样式 - 更大尺寸 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    background: rgba(15, 23, 42, 0.95);
+    border-radius: 16px;
+    width: 95%;
+    max-width: 800px; /* 更宽的模态框 */
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(51, 65, 85, 0.5);
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active .modal-container {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px; /* 增加内边距 */
+    border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+.modal-title {
+    font-size: 20px; /* 更大的标题 */
+    font-weight: 600;
+    color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 22px; /* 更大的关闭按钮 */
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: rgba(51, 65, 85, 0.5);
+    color: #e2e8f0;
+}
+
+.modal-body {
+    padding: 30px; /* 增加内边距 */
+}
+
+.modal-footer {
+    padding: 20px 24px; /* 增加内边距 */
+    border-top: 1px solid rgba(51, 65, 85, 0.5);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* 横排步骤条样式 */
+.step-container {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 40px;
+    padding: 0;
+}
+
+/* 连接线 - 横向 */
+.step-container::before {
+    content: '';
+    position: absolute;
+    top: 20px; /* 调整到步骤圆圈中间 */
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(51, 65, 85, 0.5);
+    z-index: 1;
+}
+
+/* 单个步骤 */
+.step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+/* 步骤数字 */
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(51, 65, 85, 0.8);
+    border: 2px solid rgba(71, 85, 105, 0.6);
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+}
+
+/* 步骤内容 */
+.step-content {
+    text-align: center;
+    padding: 0 10px;
+    max-width: 150px; /* 限制宽度，避免文字太长 */
+}
+
+.step-content h4 {
+    font-size: 14px;
+    color: #94a3b8;
+    margin: 0 0 5px 0;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.step-content p {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+/* 激活的步骤 */
+.step.active .step-number {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-color: rgba(99, 102, 241, 0.6);
+    color: white;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
+.step.active .step-content h4 {
+    color: #f1f5f9;
+}
+
+.step.active .step-content p {
+    color: #94a3b8;
+}
+
+/* 完成的步骤 */
+.step.completed .step-number {
+    background: #10b981;
+    border-color: rgba(16, 185, 129, 0.6);
+    color: white;
+}
+
+.step.completed .step-content h4 {
+    color: #10b981;
+}
+
+/* 表单区域样式优化 */
+.kyc-form {
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 20px;
+}
+
+/* 上传区域样式 */
+.upload-area {
+    border: 2px dashed rgba(71, 85, 105, 0.6);
+    border-radius: 8px;
+    padding: 25px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    background: rgba(30, 41, 59, 0.3);
+}
+
+.upload-area:hover {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.upload-area i {
+    font-size: 36px;
+    color: #64748b;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.upload-area p {
+    color: #94a3b8;
+    margin: 0;
+}
+
+.preview-container {
+    background: rgba(15, 23, 42, 0.3);
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* KYC状态标签样式 */
+.kyc-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.kyc-status i {
+    margin-right: 5px;
+}
+
+.kyc-status.not-verified {
+    background-color: rgba(71, 85, 105, 0.2);
+    color: #94a3b8;
+    border: 1px solid rgba(71, 85, 105, 0.3);
+}
+
+.kyc-status.in-progress {
+    background-color: rgba(234, 179, 8, 0.15);
+    color: #eab308;
+    border: 1px solid rgba(234, 179, 8, 0.3);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
+}
+
+.kyc-status.verified {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+    .step-content {
+        display: none; /* 在小屏幕上隐藏步骤文字，只显示数字 */
+    }
+    
+    .modal-container {
+        width: 95%;
+        max-width: 95%;
+    }
+} 

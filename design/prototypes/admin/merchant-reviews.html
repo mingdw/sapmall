@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>评价管理 - Sapphire Mall 商家中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/merchant-reviews.css">
+</head>
+<body>
+    <!-- 加载状态指示器 -->
+    <div id="loadingIndicator" style="display: flex; align-items: center; justify-content: center; padding: 40px; color: #94a3b8;">
+        <i class="fas fa-spinner fa-spin" style="margin-right: 12px; font-size: 20px;"></i>
+        <span>正在加载评价数据...</span>
+    </div>
+
+    <div class="admin-content-container" id="mainContent" style="display: none;">
+        <!-- 评价数据概览 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-star-half-alt"></i>
+                        评价数据概览
+                    </h3>
+                    <div class="reviews-stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-purple"><i class="fas fa-star"></i></div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="avgRating">0.0</div>
+                                <div class="stat-label">综合评分</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-blue"><i class="fas fa-comments"></i></div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="totalReviews">0</div>
+                                <div class="stat-label">总评价数</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-success"><i class="fas fa-comment-dots"></i></div>
+                            <div class.blade.php="stat-content">
+                                <div class="stat-value" id="reviewsWithContent">0%</div>
+                                <div class="stat-label">内容评价率</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-warning"><i class="fas fa-reply-all"></i></div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="responseRate">0%</div>
+                                <div class="stat-label">商家回复率</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 评价列表管理 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-list-ul"></i>
+                        评价列表
+                    </h3>
+                    
+                    <!-- 新筛选区结构 -->
+                    <div class="reviews-filters-bar">
+                        <div class="reviews-filters-bar-left">
+                            <div class="search-input-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="搜索商品、用户或评价内容..." class="search-input" id="searchInput">
+                            </div>
+                        </div>
+                        <div class="reviews-filters-bar-right">
+                            <select class="filter-select" id="ratingFilter">
+                                <option value="">所有星级</option>
+                                <option value="5">五星好评</option>
+                                <option value="4">四星</option>
+                                <option value="3">三星</option>
+                                <option value="2">二星</option>
+                                <option value="1">一星差评</option>
+                            </select>
+                            <select class="filter-select" id="contentFilter">
+                                <option value="">所有类型</option>
+                                <option value="with_content">有内容</option>
+                                <option value="with_image">有图</option>
+                                <option value="default">默认好评</option>
+                            </select>
+                            <select class="filter-select" id="replyFilter">
+                                <option value="">回复状态</option>
+                                <option value="replied">已回复</option>
+                                <option value="not_replied">未回复</option>
+                            </select>
+                            <button class="admin-btn admin-btn-outline admin-btn-sm" id="clearFiltersBtn">
+                                <i class="fas fa-times"></i>
+                                清除筛选
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 评价列表 -->
+                    <div class="reviews-list-container" id="reviewsList">
+                        <!-- 评价项将通过JavaScript动态生成 -->
+                    </div>
+                    
+                    <!-- 空状态 -->
+                    <div class="empty-state" id="emptyState" style="display: none;">
+                        <i class="fas fa-comment-slash"></i>
+                        <p>暂无符合条件的评价</p>
+                    </div>
+
+                    <!-- 分页 -->
+                    <div class="pagination-container" id="pagination">
+                        <!-- 分页控件将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/iframe-height-reporter.js"></script>
+    <script src="js/merchant-reviews.js"></script>
+</body>
+</html> 

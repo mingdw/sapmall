@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>店铺概览 - Sapphire Mall</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/page-common.css">
+    <link rel="stylesheet" href="css/content-card.css">
+</head>
+<body class="page-container">
+    <div class="dashboard-container">
+        <!-- 店铺概览标题 -->
+        <div class="page-header">
+            <div class="page-title">
+                <i class="fas fa-chart-pie"></i>
+                <h2>店铺概览</h2>
+            </div>
+            <div class="page-actions">
+                <button class="btn btn-outline btn-sm">
+                    <i class="fas fa-download"></i>
+                    导出报表
+                </button>
+                <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-refresh"></i>
+                    刷新数据
+                </button>
+            </div>
+        </div>
+
+        <!-- 核心数据卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-blue">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>156</h3>
+                    <p>总订单数</p>
+                    <div class="stat-change positive">+12 本月</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-green">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>24.8 SAP</h3>
+                    <p>总收入</p>
+                    <div class="stat-change positive">+8.5% 本月</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-purple">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>23</h3>
+                    <p>在售商品</p>
+                    <div class="stat-change neutral">+2 本月</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-orange">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>4.8</h3>
+                    <p>平均评分</p>
+                    <div class="stat-change positive">+0.2 本月</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最近订单和热销商品 -->
+        <div class="content-grid">
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-clock"></i>
+                        最近订单
+                    </h3>
+                    <a href="merchant-orders.html" class="view-all">查看全部</a>
+                </div>
+                <div class="card-body">
+                    <div class="order-list">
+                        <div class="order-item">
+                            <div class="order-info">
+                                <span class="order-id">#20241128001</span>
+                                <span class="product-name">AI写作助手软件</span>
+                            </div>
+                            <div class="order-meta">
+                                <span class="order-amount">5.2 SAP</span>
+                                <span class="order-status status-paid">已付款</span>
+                            </div>
+                        </div>
+                        <div class="order-item">
+                            <div class="order-info">
+                                <span class="order-id">#20241127003</span>
+                                <span class="product-name">设计模板包</span>
+                            </div>
+                            <div class="order-meta">
+                                <span class="order-amount">3.5 SAP</span>
+                                <span class="order-status status-completed">已完成</span>
+                            </div>
+                        </div>
+                        <div class="order-item">
+                            <div class="order-info">
+                                <span class="order-id">#20241126002</span>
+                                <span class="product-name">在线课程</span>
+                            </div>
+                            <div class="order-meta">
+                                <span class="order-amount">2.8 SAP</span>
+                                <span class="order-status status-delivered">已发货</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fas fa-fire"></i>
+                        热销商品
+                    </h3>
+                    <a href="product-management.html" class="view-all">管理商品</a>
+                </div>
+                <div class="card-body">
+                    <div class="product-list">
+                        <div class="product-item">
+                            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=60&h=60&fit=crop" alt="AI写作助手软件" class="product-image">
+                            <div class="product-info">
+                                <h4>AI写作助手软件</h4>
+                                <p class="product-sales">销量: 45</p>
+                            </div>
+                            <div class="product-price">5.2 SAP</div>
+                        </div>
+                        <div class="product-item">
+                            <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=60&h=60&fit=crop" alt="设计模板包" class="product-image">
+                            <div class="product-info">
+                                <h4>设计模板包</h4>
+                                <p class="product-sales">销量: 32</p>
+                            </div>
+                            <div class="product-price">3.5 SAP</div>
+                        </div>
+                        <div class="product-item">
+                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=60&h=60&fit=crop" alt="在线课程" class="product-image">
+                            <div class="product-info">
+                                <h4>在线课程</h4>
+                                <p class="product-sales">销量: 28</p>
+                            </div>
+                            <div class="product-price">2.8 SAP</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 店铺表现分析 -->
+        <div class="content-card">
+            <div class="card-header">
+                <h3>
+                    <i class="fas fa-chart-line"></i>
+                    店铺表现分析
+                </h3>
+                <div class="card-actions">
+                    <select class="form-select">
+                        <option>最近7天</option>
+                        <option>最近30天</option>
+                        <option>最近90天</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="analytics-grid">
+                    <div class="analytics-item">
+                        <div class="analytics-label">访问量</div>
+                        <div class="analytics-value">1,234</div>
+                        <div class="analytics-trend positive">+15.2%</div>
+                    </div>
+                    <div class="analytics-item">
+                        <div class="analytics-label">转化率</div>
+                        <div class="analytics-value">12.6%</div>
+                        <div class="analytics-trend positive">+2.1%</div>
+                    </div>
+                    <div class="analytics-item">
+                        <div class="analytics-label">复购率</div>
+                        <div class="analytics-value">8.4%</div>
+                        <div class="analytics-trend neutral">-0.3%</div>
+                    </div>
+                    <div class="analytics-item">
+                        <div class="analytics-label">客单价</div>
+                        <div class="analytics-value">4.2 SAP</div>
+                        <div class="analytics-trend positive">+5.8%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/page-common.js"></script>
+</body>
+</html> 

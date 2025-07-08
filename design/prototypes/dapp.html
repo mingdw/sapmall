@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sapphire Mall - DApp平台</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad1' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%233b82f6;stop-opacity:1' /><stop offset='100%' style='stop-color:%238b5cf6;stop-opacity:1' /></linearGradient></defs><polygon points='50,10 80,35 80,65 50,90 20,65 20,35' fill='url(%23grad1)'/><polygon points='50,25 65,37.5 65,62.5 50,75 35,62.5 35,37.5' fill='white' opacity='0.8'/></svg>" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -31,566 +32,1231 @@
     <style>
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
         }
         .glass-bg {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .hover-lift {
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .nav-item {
+            transition: all 0.3s ease;
+            position: relative;
         }
-        .hover-lift:hover {
+        .nav-item:hover {
+            color: #60a5fa;
+        }
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        .nav-item:hover::after {
+            width: 100%;
+        }
+        .nav-item.active {
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .nav-item.active::after {
+            width: 80%;
+        }
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #60a5fa;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .nav-link.active {
+            color: #3b82f6;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .language-dropdown {
+            position: relative;
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            min-width: 120px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .dropdown {
+            opacity: 0;
+            visibility: hidden;
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.25);
+            transition: all 0.3s ease;
         }
-        .product-card {
+        .dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .wallet-button {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.2);
+        .wallet-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
         }
-        .product-card::before {
+        .wallet-button::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
-            transition: all 0.6s ease;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s ease;
         }
-        .product-card:hover::before {
+        .wallet-button:hover::before {
             left: 100%;
         }
-        .nav-link {
+        .launch-btn {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            overflow: hidden;
         }
-        .nav-link.active {
-            color: #3b82f6;
-        }
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            border-radius: 1px;
-        }
-        .wallet-button {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            transition: all 0.3s ease;
-        }
-        .wallet-button:hover {
+        .launch-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
         }
-        .stats-card {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
-            border: 1px solid rgba(59, 130, 246, 0.2);
+        .launch-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s ease;
         }
-        .feature-tab {
+        .launch-btn:hover::before {
+            left: 100%;
+        }
+        .network-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+        }
+        .network-ethereum {
+            background: linear-gradient(135deg, #627eea, #4c6ef5);
+        }
+        .network-polygon {
+            background: linear-gradient(135deg, #8247e5, #7c3aed);
+        }
+        .network-bsc {
+            background: linear-gradient(135deg, #f3ba2f, #fbbf24);
+        }
+        .main-content {
+            width: 100%;
+            margin: 0 auto;
+            min-height: 100vh;
+            padding: 0;
+        }
+        .content-frame {
+            min-height: calc(100vh - 140px);
+            border-radius: 0;
+            border: none;
+            background: transparent;
+            overflow: hidden;
+            margin: 0;
+        }
+        .content-frame iframe {
+            width: 100%;
+            height: 100%;
+            min-height: calc(100vh - 140px);
+            border: none;
+            display: block;
+            border-radius: 0;
+        }
+        .page-content {
             display: none;
         }
-        .feature-tab.active {
+        .page-content.active {
             display: block;
         }
-        .tab-nav-button {
-            transition: all 0.3s ease;
-            position: relative;
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
         }
-        .tab-nav-button.active {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            color: white;
+        .mobile-menu.show {
+            transform: translateX(0);
+        }
+        
+        /* 响应式iframe高度调整 */
+        @media (max-width: 1024px) {
+            .content-frame {
+                height: 65vh;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content-frame {
+                height: 60vh;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .content-frame {
+                height: 55vh;
+            }
+        }
+        
+        /* 模态框样式 */
+        .fixed.show {
+            opacity: 1;
+        }
+        
+        .fixed.show .bg-gray-800 {
+            transform: scale(1);
+        }
+        
+        /* 角色选择模态框样式 */
+        #roleSelectionModal.show {
+            opacity: 1;
+        }
+        
+        #roleSelectionModal.show .bg-gray-800 {
+            transform: scale(1);
+        }
+        
+        .role-option:hover {
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* 购物车和收藏夹计数器样式 */
+        .bg-red-500, .bg-pink-500 {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+        
+        /* 模态框内容样式 */
+        .modal-body .space-y-4 > div {
+            transition: all 0.3s ease;
+        }
+        
+        .modal-body .space-y-4 > div:hover {
+            transform: translateX(4px);
+            background: rgba(55, 65, 81, 0.8);
+        }
+        
+        /* 按钮悬停效果 */
+        .modal-body button {
+            transition: all 0.3s ease;
+        }
+        
+        .modal-body button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* 滚动条样式 */
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .modal-body::-webkit-scrollbar-track {
+            background: rgba(55, 65, 81, 0.3);
+            border-radius: 3px;
+        }
+        
+        .modal-body::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.6);
+            border-radius: 3px;
+        }
+        
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.8);
         }
     </style>
 </head>
 <body class="min-h-screen text-white">
-    <!-- Header -->
-    <header class="glass-bg sticky top-0 z-50 border-b border-gray-700">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <!-- Logo -->
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-gem text-white"></i>
+    <div class="main-content">
+        <!-- Header -->
+        <header class="bg-gray-900/80 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-50">
+            <div class="mx-auto px-6 py-4" style="width: 90%;">
+                <div class="flex items-center justify-between">
+                    <!-- Logo -->
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-gem text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
+                            <p class="text-xs text-gray-400">Web3虚拟商品交易平台</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 class="text-xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
-                        <p class="text-xs text-gray-400">Web3虚拟商品交易平台</p>
+
+                    <!-- Navigation Links -->
+                    <div class="hidden md:flex items-center space-x-8">
+                        <a href="#" onclick="switchPage('marketplace')" class="nav-link text-sapphire-400" data-zh="代币商城" data-en="Marketplace">代币商城</a>
+                        <a href="#" onclick="switchPage('staking')" class="nav-link text-gray-300 hover:text-sapphire-400" data-zh="质押" data-en="Staking">质押</a>
+                        <a href="#" onclick="switchPage('exchange')" class="nav-link text-gray-300 hover:text-sapphire-400" data-zh="兑换" data-en="Exchange">兑换</a>
+                        <a href="#" onclick="switchPage('dao')" class="nav-link text-gray-300 hover:text-sapphire-400" data-zh="DAO" data-en="DAO">DAO</a>
+                        <a href="#" onclick="switchPage('help')" class="nav-link text-gray-300 hover:text-sapphire-400" data-zh="帮助中心" data-en="Help Center">帮助中心</a>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden text-gray-300 hover:text-white">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+
+                    <!-- Right Side Controls -->
+                    <div class="hidden md:flex items-center space-x-4">
+                        <!-- Language Switcher -->
+                        <div class="language-dropdown relative">
+                            <button onclick="toggleLanguageDropdown()" class="flex items-center space-x-2 text-gray-300 hover:text-sapphire-400 transition-colors">
+                                <i class="fas fa-globe"></i>
+                                <span id="currentLanguage">中文</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div id="languageDropdown" class="dropdown-menu absolute right-0 top-full mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl min-w-[120px] z-50 opacity-0 visibility-hidden transform translate-y-[-10px] transition-all duration-300">
+                                <div class="py-2">
+                                    <button onclick="switchLanguage('zh')" class="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
+                                        <span>中文</span>
+                                        <i id="zh-check" class="fas fa-check text-sapphire-400" style="opacity: 1;"></i>
+                                    </button>
+                                    <button onclick="switchLanguage('en')" class="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
+                                        <span>English</span>
+                                        <i id="en-check" class="fas fa-check text-sapphire-400" style="opacity: 0;"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Wallet Connection -->
+                        <div id="walletDisconnected">
+                            <button onclick="connectWallet()" class="wallet-button">
+                                <i class="fas fa-wallet mr-2"></i>
+                                <span data-zh="连接钱包" data-en="Connect Wallet">连接钱包</span>
+                            </button>
+                        </div>
+
+                        <!-- Connected Wallet -->
+                        <div id="walletConnected" class="hidden flex items-center space-x-3">
+                            <!-- Network Selector -->
+                            <div class="relative">
+                                <button onclick="toggleNetworkDropdown()" class="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors">
+                                    <div class="network-icon network-ethereum">Ξ</div>
+                                    <span class="text-sm">Ethereum</span>
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </button>
+                                <div id="networkDropdown" class="dropdown absolute right-0 top-full mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl min-w-[150px] z-50">
+                                    <div class="py-2">
+                                        <button onclick="switchNetwork('Ethereum', 'network-ethereum', 'Ξ')" class="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
+                                            <div class="network-icon network-ethereum">Ξ</div>
+                                            <span>Ethereum</span>
+                                        </button>
+                                        <button onclick="switchNetwork('Polygon', 'network-polygon', '⬢')" class="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
+                                            <div class="network-icon network-polygon">⬢</div>
+                                            <span>Polygon</span>
+                                        </button>
+                                        <button onclick="switchNetwork('BSC', 'network-bsc', 'B')" class="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-300 hover:text-white">
+                                            <div class="network-icon network-bsc">B</div>
+                                            <span>BSC</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Wallet Info -->
+                            <div class="relative">
+                                <button onclick="toggleWalletDropdown()" class="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors">
+                                    <div class="w-6 h-6 bg-gradient-to-br from-green-400 to-blue-500 rounded-full"></div>
+                                    <span class="text-sm">0x1234...5678</span>
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </button>
+                                <div id="walletDropdown" class="dropdown absolute right-0 top-full mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl min-w-[200px] z-50">
+                                    <div class="py-2">
+                                        <div class="px-4 py-2 text-sm text-gray-400 border-b border-gray-600">
+                                            余额: 2.5 ETH
+                                        </div>
+                                        <button onclick="viewProfile()" class="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
+                                            <i class="fas fa-user"></i>
+                                            <span data-zh="个人资料" data-en="Profile">个人资料</span>
+                                        </button>
+                                        <button onclick="viewCart()" class="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
+                                            <div class="flex items-center space-x-2">
+                                                <i class="fas fa-shopping-cart"></i>
+                                                <span data-zh="我的购物车" data-en="My Cart">我的购物车</span>
+                                            </div>
+                                            <span id="cartItemCount" class="bg-red-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">3</span>
+                                        </button>
+                                        <button onclick="viewFavorites()" class="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
+                                            <div class="flex items-center space-x-2">
+                                                <i class="fas fa-heart"></i>
+                                                <span data-zh="我的收藏" data-en="My Favorites">我的收藏</span>
+                                            </div>
+                                            <span id="favoriteItemCount" class="bg-pink-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">8</span>
+                                        </button>
+                                        <div class="border-t border-gray-600 my-1"></div>
+                                        <button onclick="viewOrders()" class="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
+                                            <i class="fas fa-box"></i>
+                                            <span data-zh="我的订单" data-en="My Orders">我的订单</span>
+                                        </button>
+                                        <button onclick="viewTransactions()" class="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
+                                            <i class="fas fa-history"></i>
+                                            <span data-zh="交易历史" data-en="Transaction History">交易历史</span>
+                                        </button>
+                                        <div class="border-t border-gray-600 my-1"></div>
+                                        <button onclick="viewSettings()" class="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">
+                                            <i class="fas fa-cog"></i>
+                                            <span data-zh="设置" data-en="Settings">设置</span>
+                                        </button>
+                                        <button onclick="disconnectWallet()" class="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                            <span data-zh="断开连接" data-en="Disconnect">断开连接</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Navigation -->
-                <nav class="hidden md:flex items-center space-x-8">
-                    <a href="#marketplace" class="nav-link active text-gray-300 hover:text-white">商品市场</a>
-                    <a href="#exchange" class="nav-link text-gray-300 hover:text-white">代币兑换</a>
-                    <a href="#staking" class="nav-link text-gray-300 hover:text-white">流动性质押</a>
-                    <a href="#governance" class="nav-link text-gray-300 hover:text-white">DAO治理</a>
-                    <a href="#help" class="nav-link text-gray-300 hover:text-white">帮助</a>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="mobile-menu md:hidden fixed inset-y-0 left-0 w-64 bg-gray-900 border-r border-gray-700 z-50 p-6">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-gem text-white"></i>
+                        </div>
+                        <span class="font-bold text-sapphire-400">Sapphire Mall</span>
+                    </div>
+                    <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <nav class="space-y-4">
+                    <a href="#" onclick="switchPage('marketplace')" class="block px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800" data-zh="代币商城" data-en="Marketplace">代币商城</a>
+                    <a href="#" onclick="switchPage('staking')" class="block px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800" data-zh="质押" data-en="Staking">质押</a>
+                    <a href="#" onclick="switchPage('exchange')" class="block px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800" data-zh="兑换" data-en="Exchange">兑换</a>
+                    <a href="#" onclick="switchPage('dao')" class="block px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800" data-zh="DAO" data-en="DAO">DAO</a>
+                    <a href="#" onclick="switchPage('help')" class="block px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-gray-800" data-zh="帮助中心" data-en="Help Center">帮助中心</a>
                 </nav>
 
-                <!-- Wallet & Language -->
-                <div class="flex items-center space-x-4">
-                    <!-- Language Switcher -->
-                    <div class="relative">
-                        <button class="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors">
-                            <i class="fas fa-globe"></i>
-                            <span class="text-sm">中文</span>
-                            <i class="fas fa-chevron-down text-xs"></i>
-                        </button>
-                    </div>
-
-                    <!-- Wallet Connect -->
-                    <button class="wallet-button px-4 py-2 rounded-lg text-white font-semibold flex items-center space-x-2">
+                <div class="mt-8 pt-8 border-t border-gray-700">
+                    <button onclick="connectWallet()" class="w-full wallet-button flex items-center justify-center space-x-2">
                         <i class="fas fa-wallet"></i>
-                        <span>连接钱包</span>
+                        <span data-zh="连接钱包" data-en="Connect Wallet">连接钱包</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="content-frame">
+            <iframe id="contentFrame" src="dapp/marketplace.html" frameborder="0"></iframe>
+        </main>
+    </div>
+
+    <!-- 角色选择模态框 -->
+    <div id="roleSelectionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 transition-opacity duration-300" style="display: none;">
+        <div class="bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 transform scale-95 transition-transform duration-300">
+            <div class="flex items-center justify-between p-6 border-b border-gray-700">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-user-cog text-sapphire-400"></i>
+                    选择测试角色
+                </h2>
+                <button onclick="closeRoleSelectionModal()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-300 text-sm mb-6">
+                    Sapphire Mall采用三层用户角色权限体系，请选择您要测试的用户角色：<br>
+                    <span class="text-blue-300">• 普通用户</span>：钱包连接即可使用，拥有4个后台管理模块<br>
+                    <span class="text-green-300">• 认证商家</span>：需完成KYC认证，继承普通用户功能+商家中心<br>
+                    <span class="text-red-300">• 系统管理员</span>：平台指定管理人员，拥有最高权限的5个管理模块
+                </p>
+                
+                <div class="space-y-3">
+                    <!-- 普通用户 -->
+                    <div class="role-option bg-gray-700 hover:bg-gray-600 p-4 rounded-lg cursor-pointer transition-all duration-200 hover:transform hover:scale-105" onclick="selectRole('user')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-user text-white text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-white font-medium text-lg">普通用户</h3>
+                                <p class="text-gray-400 text-sm mb-1">钱包连接即可使用基础功能</p>
+                                <div class="text-xs text-blue-300">
+                                    <span class="inline-block bg-blue-900 px-2 py-1 rounded mr-1">个人中心</span>
+                                    <span class="inline-block bg-blue-900 px-2 py-1 rounded mr-1">我的资产</span>
+                                    <span class="inline-block bg-blue-900 px-2 py-1 rounded mr-1">交易管理</span>
+                                    <span class="inline-block bg-blue-900 px-2 py-1 rounded">安全设置</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- 认证商家 -->
+                    <div class="role-option bg-gray-700 hover:bg-gray-600 p-4 rounded-lg cursor-pointer transition-all duration-200 hover:transform hover:scale-105" onclick="selectRole('merchant')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-store text-white text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-white font-medium text-lg">认证商家</h3>
+                                <p class="text-gray-400 text-sm mb-1">通过KYC认证，可发布和管理商品</p>
+                                <div class="text-xs text-green-300">
+                                    <span class="inline-block bg-green-900 px-2 py-1 rounded mr-1">普通用户功能</span>
+                                    <span class="inline-block bg-green-900 px-2 py-1 rounded mr-1">商品管理</span>
+                                    <span class="inline-block bg-green-900 px-2 py-1 rounded mr-1">订单管理</span>
+                                    <span class="inline-block bg-green-900 px-2 py-1 rounded mr-1">评价管理</span>
+                                    <span class="inline-block bg-green-900 px-2 py-1 rounded">交易数据</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- 系统管理员 -->
+                    <div class="role-option bg-gray-700 hover:bg-gray-600 p-4 rounded-lg cursor-pointer transition-all duration-200 hover:transform hover:scale-105" onclick="selectRole('admin')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-user-shield text-white text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-white font-medium text-lg">系统管理员</h3>
+                                <p class="text-gray-400 text-sm mb-1">平台指定管理人员，拥有最高权限</p>
+                                <div class="text-xs text-red-300">
+                                    <span class="inline-block bg-red-900 px-2 py-1 rounded mr-1">个人中心</span>
+                                    <span class="inline-block bg-red-900 px-2 py-1 rounded mr-1">用户管理</span>
+                                    <span class="inline-block bg-red-900 px-2 py-1 rounded mr-1">商品审核</span>
+                                    <span class="inline-block bg-red-900 px-2 py-1 rounded mr-1">系统监控</span>
+                                    <span class="inline-block bg-red-900 px-2 py-1 rounded">平台数据</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-600">
+                    <button onclick="closeRoleSelectionModal()" class="w-full bg-gray-600 hover:bg-gray-500 text-white py-2 px-4 rounded-lg transition-colors">
+                        取消
                     </button>
                 </div>
             </div>
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container mx-auto px-6 py-8">
-        <!-- Platform Stats -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-            <div class="stats-card rounded-xl p-6 hover-lift">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-coins text-white"></i>
-                    </div>
-                    <span class="text-green-400 text-sm font-semibold">+12.5%</span>
-                </div>
-                <div class="text-2xl font-bold text-white mb-1">$2.4M</div>
-                <div class="text-gray-400 text-sm">总交易量</div>
-            </div>
-
-            <div class="stats-card rounded-xl p-6 hover-lift">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-gem text-white"></i>
-                    </div>
-                    <span class="text-sapphire-400 text-sm font-semibold">SAP</span>
-                </div>
-                <div class="text-2xl font-bold text-white mb-1">$1.24</div>
-                <div class="text-gray-400 text-sm">SAP代币价格</div>
-            </div>
-
-            <div class="stats-card rounded-xl p-6 hover-lift">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-percentage text-white"></i>
-                    </div>
-                    <span class="text-purple-400 text-sm font-semibold">APY</span>
-                </div>
-                <div class="text-2xl font-bold text-white mb-1">15.6%</div>
-                <div class="text-gray-400 text-sm">质押年化收益</div>
-            </div>
-
-            <div class="stats-card rounded-xl p-6 hover-lift">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-shopping-bag text-white"></i>
-                    </div>
-                    <span class="text-orange-400 text-sm font-semibold">热卖</span>
-                </div>
-                <div class="text-2xl font-bold text-white mb-1">1,234</div>
-                <div class="text-gray-400 text-sm">在售商品</div>
-            </div>
-        </div>
-
-        <!-- Feature Tabs -->
-        <div class="glass-bg rounded-xl p-6 mb-8">
-            <!-- Tab Navigation -->
-            <div class="flex space-x-2 mb-6 bg-gray-800/50 rounded-lg p-2">
-                <button onclick="switchFeatureTab('marketplace')" class="tab-nav-button active flex-1 px-4 py-3 rounded-md font-semibold transition-all">
-                    <i class="fas fa-store mr-2"></i>商品市场
-                </button>
-                <button onclick="switchFeatureTab('exchange')" class="tab-nav-button flex-1 px-4 py-3 rounded-md font-semibold transition-all text-gray-300">
-                    <i class="fas fa-exchange-alt mr-2"></i>代币兑换
-                </button>
-                <button onclick="switchFeatureTab('staking')" class="tab-nav-button flex-1 px-4 py-3 rounded-md font-semibold transition-all text-gray-300">
-                    <i class="fas fa-coins mr-2"></i>流动性质押
-                </button>
-            </div>
-
-            <!-- Marketplace Tab -->
-            <div id="marketplace-tab" class="feature-tab active">
-                <!-- Search and Filter -->
-                <div class="flex flex-col md:flex-row gap-4 mb-6">
-                    <div class="flex-1 relative">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" placeholder="搜索商品..." class="w-full pl-10 pr-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-sapphire-500 focus:outline-none">
-                    </div>
-                    <div class="flex gap-2">
-                        <select class="px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-sapphire-500 focus:outline-none">
-                            <option>全部分类</option>
-                            <option>数字艺术</option>
-                            <option>游戏道具</option>
-                            <option>软件工具</option>
-                            <option>在线课程</option>
-                        </select>
-                        <select class="px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-sapphire-500 focus:outline-none">
-                            <option>价格排序</option>
-                            <option>价格由低到高</option>
-                            <option>价格由高到低</option>
-                            <option>最新发布</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Product Grid -->
-                <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <!-- Product Card 1 -->
-                    <div class="product-card glass-bg rounded-xl overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&h=200&fit=crop" alt="Web3开发课程" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="font-semibold text-white mb-2">Web3智能合约开发完整课程</h3>
-                            <p class="text-gray-400 text-sm mb-3">从零开始学习Solidity智能合约开发</p>
-                            <div class="flex items-center justify-between">
-                                <div class="text-sapphire-400 font-bold">250 SAP</div>
-                                <div class="text-yellow-400 text-sm">
-                                    <i class="fas fa-star"></i> 4.8 (127)
-                                </div>
-                            </div>
-                            <button class="w-full mt-3 bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-2 rounded-lg font-semibold transition-all">
-                                立即购买
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Product Card 2 -->
-                    <div class="product-card glass-bg rounded-xl overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=300&h=200&fit=crop" alt="NFT设计工具" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="font-semibold text-white mb-2">AI驱动的NFT设计工具</h3>
-                            <p class="text-gray-400 text-sm mb-3">一键生成独特的NFT艺术作品</p>
-                            <div class="flex items-center justify-between">
-                                <div class="text-sapphire-400 font-bold">89 SAP</div>
-                                <div class="text-yellow-400 text-sm">
-                                    <i class="fas fa-star"></i> 4.6 (89)
-                                </div>
-                            </div>
-                            <button class="w-full mt-3 bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-2 rounded-lg font-semibold transition-all">
-                                立即购买
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Product Card 3 -->
-                    <div class="product-card glass-bg rounded-xl overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1614332287897-cdc485fa562d?w=300&h=200&fit=crop" alt="DeFi分析仪表板" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="font-semibold text-white mb-2">DeFi投资分析仪表板</h3>
-                            <p class="text-gray-400 text-sm mb-3">实时追踪DeFi投资组合表现</p>
-                            <div class="flex items-center justify-between">
-                                <div class="text-sapphire-400 font-bold">156 SAP</div>
-                                <div class="text-yellow-400 text-sm">
-                                    <i class="fas fa-star"></i> 4.9 (234)
-                                </div>
-                            </div>
-                            <button class="w-full mt-3 bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-2 rounded-lg font-semibold transition-all">
-                                立即购买
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Product Card 4 -->
-                    <div class="product-card glass-bg rounded-xl overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=300&h=200&fit=crop" alt="区块链游戏道具" class="w-full h-48 object-cover">
-                        <div class="p-4">
-                            <h3 class="font-semibold text-white mb-2">稀有游戏装备包</h3>
-                            <p class="text-gray-400 text-sm mb-3">包含多种稀有游戏道具和装备</p>
-                            <div class="flex items-center justify-between">
-                                <div class="text-sapphire-400 font-bold">78 SAP</div>
-                                <div class="text-yellow-400 text-sm">
-                                    <i class="fas fa-star"></i> 4.7 (156)
-                                </div>
-                            </div>
-                            <button class="w-full mt-3 bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-2 rounded-lg font-semibold transition-all">
-                                立即购买
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Exchange Tab -->
-            <div id="exchange-tab" class="feature-tab">
-                <div class="max-w-md mx-auto">
-                    <div class="glass-bg rounded-xl p-6">
-                        <h3 class="text-xl font-bold text-center mb-6">代币兑换</h3>
-                        
-                        <!-- From Token -->
-                        <div class="mb-4">
-                            <label class="block text-gray-400 text-sm mb-2">兑换</label>
-                            <div class="bg-gray-800 rounded-lg p-4 border border-gray-600">
-                                <div class="flex justify-between items-center">
-                                    <input type="number" placeholder="0.0" class="bg-transparent text-2xl font-bold text-white outline-none flex-1">
-                                    <div class="flex items-center space-x-2">
-                                        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" class="w-6 h-6">
-                                        <span class="font-semibold">ETH</span>
-                                        <i class="fas fa-chevron-down text-gray-400"></i>
-                                    </div>
-                                </div>
-                                <div class="text-gray-400 text-sm mt-2">余额: 1.234 ETH</div>
-                            </div>
-                        </div>
-
-                        <!-- Swap Icon -->
-                        <div class="flex justify-center mb-4">
-                            <button class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded-full flex items-center justify-center transition-all">
-                                <i class="fas fa-exchange-alt text-gray-300"></i>
-                            </button>
-                        </div>
-
-                        <!-- To Token -->
-                        <div class="mb-6">
-                            <label class="block text-gray-400 text-sm mb-2">获得</label>
-                            <div class="bg-gray-800 rounded-lg p-4 border border-gray-600">
-                                <div class="flex justify-between items-center">
-                                    <input type="number" placeholder="0.0" class="bg-transparent text-2xl font-bold text-white outline-none flex-1" readonly>
-                                    <div class="flex items-center space-x-2">
-                                        <div class="w-6 h-6 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full flex items-center justify-center">
-                                            <i class="fas fa-gem text-white text-xs"></i>
-                                        </div>
-                                        <span class="font-semibold">SAP</span>
-                                        <i class="fas fa-chevron-down text-gray-400"></i>
-                                    </div>
-                                </div>
-                                <div class="text-gray-400 text-sm mt-2">余额: 0 SAP</div>
-                            </div>
-                        </div>
-
-                        <!-- Exchange Rate -->
-                        <div class="bg-gray-800/50 rounded-lg p-3 mb-6">
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-400">汇率</span>
-                                <span class="text-white">1 ETH = 2,456 SAP</span>
-                            </div>
-                            <div class="flex justify-between text-sm mt-1">
-                                <span class="text-gray-400">手续费</span>
-                                <span class="text-white">0.3%</span>
-                            </div>
-                        </div>
-
-                        <!-- Swap Button -->
-                        <button class="w-full bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-3 rounded-lg font-semibold transition-all">
-                            连接钱包进行兑换
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Staking Tab -->
-            <div id="staking-tab" class="feature-tab">
-                <div class="grid md:grid-cols-2 gap-8">
-                    <!-- Staking Pool -->
-                    <div class="glass-bg rounded-xl p-6">
-                        <h3 class="text-xl font-bold mb-6 flex items-center">
-                            <i class="fas fa-coins text-sapphire-400 mr-3"></i>
-                            流动性质押
-                        </h3>
-                        
-                        <!-- Pool Stats -->
-                        <div class="grid grid-cols-2 gap-4 mb-6">
-                            <div class="bg-gray-800/50 rounded-lg p-4">
-                                <div class="text-2xl font-bold text-green-400">15.6%</div>
-                                <div class="text-gray-400 text-sm">年化收益率</div>
-                            </div>
-                            <div class="bg-gray-800/50 rounded-lg p-4">
-                                <div class="text-2xl font-bold text-sapphire-400">$1.2M</div>
-                                <div class="text-gray-400 text-sm">总锁定价值</div>
-                            </div>
-                        </div>
-
-                        <!-- Staking Form -->
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-gray-400 text-sm mb-2">质押数量</label>
-                                <div class="bg-gray-800 rounded-lg p-4 border border-gray-600">
-                                    <div class="flex justify-between items-center">
-                                        <input type="number" placeholder="0.0" class="bg-transparent text-xl font-bold text-white outline-none flex-1">
-                                        <div class="flex items-center space-x-2">
-                                            <div class="w-6 h-6 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full flex items-center justify-center">
-                                                <i class="fas fa-gem text-white text-xs"></i>
-                                            </div>
-                                            <span class="font-semibold">SAP</span>
-                                        </div>
-                                    </div>
-                                    <div class="text-gray-400 text-sm mt-2">可用余额: 1,234 SAP</div>
-                                </div>
-                            </div>
-
-                            <button class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-3 rounded-lg font-semibold transition-all">
-                                开始质押
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Rewards -->
-                    <div class="glass-bg rounded-xl p-6">
-                        <h3 class="text-xl font-bold mb-6 flex items-center">
-                            <i class="fas fa-gift text-purple-400 mr-3"></i>
-                            我的收益
-                        </h3>
-
-                        <!-- Current Staking -->
-                        <div class="bg-gray-800/50 rounded-lg p-4 mb-6">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-gray-400">已质押</span>
-                                <span class="text-white font-semibold">500 SAP</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-400">累计收益</span>
-                                <span class="text-green-400 font-semibold">+12.34 SAP</span>
-                            </div>
-                        </div>
-
-                        <!-- Rewards History -->
-                        <div class="space-y-3 mb-6">
-                            <div class="flex justify-between items-center py-2 border-b border-gray-700">
-                                <div>
-                                    <div class="text-white text-sm">每日收益</div>
-                                    <div class="text-gray-400 text-xs">2024-06-04</div>
-                                </div>
-                                <div class="text-green-400 font-semibold">+0.68 SAP</div>
-                            </div>
-                            <div class="flex justify-between items-center py-2 border-b border-gray-700">
-                                <div>
-                                    <div class="text-white text-sm">每日收益</div>
-                                    <div class="text-gray-400 text-xs">2024-06-03</div>
-                                </div>
-                                <div class="text-green-400 font-semibold">+0.71 SAP</div>
-                            </div>
-                        </div>
-
-                        <button class="w-full bg-gradient-to-r from-sapphire-500 to-purple-600 hover:from-sapphire-600 hover:to-purple-700 text-white py-3 rounded-lg font-semibold transition-all">
-                            提取收益
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- DAO Governance Section -->
-        <div class="glass-bg rounded-xl p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold flex items-center">
-                    <i class="fas fa-vote-yea text-yellow-400 mr-3"></i>
-                    DAO治理
-                </h3>
-                <button class="bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white px-4 py-2 rounded-lg font-semibold transition-all">
-                    提交提案
-                </button>
-            </div>
-
-            <!-- Active Proposals -->
-            <div class="space-y-4">
-                <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-600">
-                    <div class="flex justify-between items-start mb-3">
-                        <div>
-                            <h4 class="font-semibold text-white mb-1">提案 #003: 调整平台手续费率</h4>
-                            <p class="text-gray-400 text-sm">建议将交易手续费从 0.3% 调整至 0.25%</p>
-                        </div>
-                        <span class="bg-green-600 text-white px-2 py-1 rounded text-xs">进行中</span>
-                    </div>
-                    
-                    <div class="grid grid-cols-3 gap-4 mb-4">
-                        <div class="text-center">
-                            <div class="text-green-400 font-bold">67%</div>
-                            <div class="text-gray-400 text-xs">赞成票</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-red-400 font-bold">33%</div>
-                            <div class="text-gray-400 text-xs">反对票</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-sapphire-400 font-bold">2天</div>
-                            <div class="text-gray-400 text-xs">剩余时间</div>
-                        </div>
-                    </div>
-
-                    <div class="flex space-x-2">
-                        <button class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold transition-all">
-                            赞成
-                        </button>
-                        <button class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition-all">
-                            反对
-                        </button>
-                    </div>
-                </div>
-
-                <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-600">
-                    <div class="flex justify-between items-start mb-3">
-                        <div>
-                            <h4 class="font-semibold text-white mb-1">提案 #002: 新增支持的代币类型</h4>
-                            <p class="text-gray-400 text-sm">建议添加 MATIC 和 BNB 作为支付代币</p>
-                        </div>
-                        <span class="bg-yellow-600 text-white px-2 py-1 rounded text-xs">即将结束</span>
-                    </div>
-                    
-                    <div class="grid grid-cols-3 gap-4 mb-4">
-                        <div class="text-center">
-                            <div class="text-green-400 font-bold">89%</div>
-                            <div class="text-gray-400 text-xs">赞成票</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-red-400 font-bold">11%</div>
-                            <div class="text-gray-400 text-xs">反对票</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-sapphire-400 font-bold">6小时</div>
-                            <div class="text-gray-400 text-xs">剩余时间</div>
-                        </div>
-                    </div>
-
-                    <div class="flex space-x-2">
-                        <button class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold transition-all">
-                            赞成
-                        </button>
-                        <button class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-semibold transition-all">
-                            反对
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+    </div>
 
     <!-- Scripts -->
     <script>
-        function switchFeatureTab(tabName) {
-            // Hide all tabs
-            const tabs = document.querySelectorAll('.feature-tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
+        let currentLanguage = 'zh';
+        let currentPage = 'marketplace';
+        let isWalletConnected = false;
+        
+        // 用户数据管理
+        let userData = {
+            cart: {
+                items: [],
+                count: 0
+            },
+            favorites: {
+                items: [],
+                count: 0
+            },
+            orders: [],
+            balance: '2.5 ETH',
+            address: '0x1234...5678'
+        };
 
-            // Remove active class from all buttons
-            const buttons = document.querySelectorAll('.tab-nav-button');
-            buttons.forEach(button => {
-                button.classList.remove('active');
-                button.classList.add('text-gray-300');
-            });
-
-            // Show selected tab
-            document.getElementById(`${tabName}-tab`).classList.add('active');
-
-            // Add active class to selected button
-            event.target.classList.add('active');
-            event.target.classList.remove('text-gray-300');
+        // 初始化用户数据
+        function initUserData() {
+            // 模拟用户数据
+            userData.cart.items = [
+                { id: 1, name: '稀有NFT艺术品', price: '0.5 ETH', image: 'https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?w=300' },
+                { id: 2, name: '游戏道具包', price: '0.2 ETH', image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=300' },
+                { id: 3, name: '数字收藏卡', price: '0.1 ETH', image: 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=300' }
+            ];
+            userData.cart.count = userData.cart.items.length;
+            
+            userData.favorites.items = [
+                { id: 1, name: '传奇武器皮肤', category: '游戏道具' },
+                { id: 2, name: '限量版头像', category: 'NFT艺术' },
+                { id: 3, name: '虚拟土地', category: '元宇宙' },
+                { id: 4, name: '音乐NFT', category: '数字音乐' },
+                { id: 5, name: '体育卡牌', category: '收藏品' },
+                { id: 6, name: '3D模型', category: '数字资产' },
+                { id: 7, name: '域名NFT', category: '域名' },
+                { id: 8, name: '艺术摄影', category: 'NFT艺术' }
+            ];
+            userData.favorites.count = userData.favorites.items.length;
+            
+            updateUserDataDisplay();
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Sapphire Mall DApp平台已加载');
+        // 更新用户数据显示
+        function updateUserDataDisplay() {
+            const cartCountElement = document.getElementById('cartItemCount');
+            const favoriteCountElement = document.getElementById('favoriteItemCount');
+            
+            if (cartCountElement) {
+                cartCountElement.textContent = userData.cart.count;
+                cartCountElement.style.display = userData.cart.count > 0 ? 'block' : 'none';
+            }
+            
+            if (favoriteCountElement) {
+                favoriteCountElement.textContent = userData.favorites.count;
+                favoriteCountElement.style.display = userData.favorites.count > 0 ? 'block' : 'none';
+            }
+        }
+
+        // 页面切换功能
+        function switchPage(pageName) {
+            // 更新桌面端导航状态 - 重置所有导航链接
+            document.querySelectorAll('.nav-link').forEach(item => {
+                item.classList.remove('active');
+                item.classList.remove('text-sapphire-400');
+                item.classList.add('text-gray-300');
+            });
+            
+            // 更新移动端导航状态 - 重置所有移动端菜单链接
+            document.querySelectorAll('#mobileMenu a[onclick*="switchPage"]').forEach(item => {
+                item.classList.remove('bg-gray-800', 'text-white');
+                    item.classList.add('text-gray-300');
+            });
+            
+            // 激活桌面端当前页面导航
+            const activeItem = document.querySelector(`[onclick*="switchPage('${pageName}')"]`);
+            if (activeItem && activeItem.classList.contains('nav-link')) {
+                activeItem.classList.add('active');
+                activeItem.classList.remove('text-gray-300');
+                activeItem.classList.add('text-sapphire-400');
+            }
+            
+            // 激活移动端当前页面导航
+            const activeMobileItem = document.querySelector(`#mobileMenu a[onclick*="switchPage('${pageName}')"]`);
+            if (activeMobileItem) {
+                activeMobileItem.classList.remove('text-gray-300');
+                activeMobileItem.classList.add('bg-gray-800', 'text-white');
+            }
+            
+            // 更新iframe源
+            const iframe = document.getElementById('contentFrame');
+            iframe.src = `dapp/${pageName}.html`;
+            currentPage = pageName;
+            
+            // 关闭移动端菜单
+            document.getElementById('mobileMenu').classList.remove('show');
+            
+            console.log(`Switched to ${pageName} page`);
+        }
+
+        // 移动端菜单切换
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('show');
+        }
+
+        // 语言切换功能
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            
+            // 更新当前语言显示
+            const currentLangElement = document.getElementById('currentLanguage');
+            currentLangElement.textContent = lang === 'zh' ? '中文' : 'English';
+            
+            // 更新语言选择器状态
+            document.getElementById('zh-check').style.opacity = lang === 'zh' ? '1' : '0';
+            document.getElementById('en-check').style.opacity = lang === 'en' ? '1' : '0';
+            
+            // 更新页面文本
+            updateLanguage(lang);
+            
+            // 通知iframe页面语言变更
+            const iframe = document.getElementById('contentFrame');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                    type: 'LANGUAGE_CHANGE',
+                    language: lang
+                }, '*');
+            }
+            
+            // 关闭下拉菜单
+            document.getElementById('languageDropdown').classList.remove('show');
+        }
+
+        function updateLanguage(lang) {
+            document.querySelectorAll('[data-zh], [data-en]').forEach(element => {
+                const text = element.getAttribute(`data-${lang}`);
+                if (text) {
+                    element.textContent = text;
+                }
+            });
+        }
+
+        // 网络切换功能
+        function toggleNetworkDropdown() {
+            const dropdown = document.getElementById('networkDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function switchNetwork(networkName, iconClass, symbol) {
+            const networkButton = document.querySelector('[onclick="toggleNetworkDropdown()"]');
+            const icon = networkButton.querySelector('.network-icon');
+            const text = networkButton.querySelector('span');
+            
+            icon.className = `network-icon ${iconClass}`;
+            icon.textContent = symbol;
+            text.textContent = networkName;
+            
+            document.getElementById('networkDropdown').classList.remove('show');
+            
+            showToast(`已切换到 ${networkName} 网络`, 'success');
+        }
+
+        // 钱包功能
+        function toggleWalletDropdown() {
+            const dropdown = document.getElementById('walletDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function connectWallet() {
+            // 模拟钱包连接
+            showToast('正在连接钱包...', 'info');
+            
+            setTimeout(() => {
+                document.getElementById('walletDisconnected').classList.add('hidden');
+                document.getElementById('walletConnected').classList.remove('hidden');
+                isWalletConnected = true;
+                
+                // 初始化用户数据
+                initUserData();
+                
+                showToast('钱包连接成功', 'success');
+            }, 2000);
+        }
+
+        function disconnectWallet() {
+            document.getElementById('walletConnected').classList.add('hidden');
+            document.getElementById('walletDisconnected').classList.remove('hidden');
+            isWalletConnected = false;
+            
+            // 清空用户数据
+            userData = {
+                cart: { items: [], count: 0 },
+                favorites: { items: [], count: 0 },
+                orders: [],
+                balance: '0 ETH',
+                address: ''
+            };
+            
+            // 关闭下拉菜单
+            document.getElementById('walletDropdown').classList.remove('show');
+            
+            showToast('钱包已断开连接', 'info');
+        }
+
+        function viewProfile() {
+            if (!isWalletConnected) {
+                showToast('请先连接钱包', 'error');
+                return;
+            }
+            
+            // 显示角色选择模态框
+            showRoleSelectionModal();
+            
+            // 关闭下拉菜单
+            const walletDropdown = document.getElementById('walletDropdown');
+            if (walletDropdown) {
+                walletDropdown.classList.remove('show');
+            }
+        }
+
+        // 显示角色选择模态框
+        function showRoleSelectionModal() {
+            const modal = document.getElementById('roleSelectionModal');
+            if (modal) {
+                modal.style.display = 'block';
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+            }
+        }
+
+        // 关闭角色选择模态框
+        function closeRoleSelectionModal() {
+            const modal = document.getElementById('roleSelectionModal');
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // 选择角色并进入后台
+        function selectRole(role) {
+            const roleNames = {
+                'user': '普通用户',
+                'merchant': '认证商家',
+                'admin': '系统管理员'
+            };
+            
+            showToast(`正在以${roleNames[role]}身份加载管理后台...`, 'info');
+            
+            // 获取内容iframe
+            const contentFrame = document.getElementById('contentFrame');
+            
+            if (!contentFrame) {
+                console.error('找不到内容iframe');
+                showToast('页面加载错误', 'error');
+                return;
+            }
+            
+            try {
+                // 直接修改iframe的src来加载管理后台
+                contentFrame.src = 'admin/index.html';
+                
+                // 监听iframe加载完成
+                contentFrame.onload = function() {
+                    console.log('管理后台iframe加载完成');
+                    
+                    // 等待一小段时间确保iframe完全加载
+                    setTimeout(() => {
+                        try {
+                            // 发送角色信息
+                            contentFrame.contentWindow.postMessage({type: 'setRole', role: role}, '*');
+                            console.log('角色信息已发送:', role);
+                            showToast(`${roleNames[role]}后台加载成功`, 'success');
+                        } catch (error) {
+                            console.error('发送角色信息失败:', error);
+                        }
+                    }, 500);
+                };
+
+            } catch (error) {
+                console.error('加载管理后台失败:', error);
+                showToast('加载失败: ' + error.message, 'error');
+            }
+            
+            // 关闭模态框
+            closeRoleSelectionModal();
+        }
+
+        // 监听来自iframe的消息
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'requestRole') {
+                // 后台管理页面请求角色信息
+                const contentFrame = document.getElementById('contentFrame');
+                if (contentFrame && contentFrame.contentWindow) {
+                    try {
+                        contentFrame.contentWindow.postMessage({type: 'setRole', role: 'user'}, '*');
+                        console.log('响应角色请求，发送用户角色');
+                    } catch (error) {
+                        console.error('响应角色请求失败:', error);
+                    }
+                }
+            }
         });
+
+        function viewCart() {
+            if (!isWalletConnected) {
+                showToast('请先连接钱包', 'error');
+                return;
+            }
+            
+            showToast(`购物车中有 ${userData.cart.count} 件商品`, 'info');
+            document.getElementById('walletDropdown').classList.remove('show');
+            
+            // 显示购物车详情
+            showCartModal();
+        }
+
+        function viewFavorites() {
+            if (!isWalletConnected) {
+                showToast('请先连接钱包', 'error');
+                return;
+            }
+            
+            showToast(`收藏夹中有 ${userData.favorites.count} 件商品`, 'info');
+            document.getElementById('walletDropdown').classList.remove('show');
+            
+            // 显示收藏夹详情
+            showFavoritesModal();
+        }
+
+        function viewOrders() {
+            if (!isWalletConnected) {
+                showToast('请先连接钱包', 'error');
+                return;
+            }
+            showToast('正在加载订单信息...', 'info');
+            document.getElementById('walletDropdown').classList.remove('show');
+            // TODO: 实现订单页面
+        }
+
+        function viewSettings() {
+            if (!isWalletConnected) {
+                showToast('请先连接钱包', 'error');
+                return;
+            }
+            showToast('正在打开设置...', 'info');
+            document.getElementById('walletDropdown').classList.remove('show');
+            // TODO: 实现设置页面
+        }
+
+        function viewTransactions() {
+            showToast('正在加载交易历史...', 'info');
+            document.getElementById('walletDropdown').classList.remove('show');
+        }
+
+        // Toast 提示功能
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-600');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-600');
+            } else {
+                toast.classList.add('bg-sapphire-600');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // 点击外部关闭下拉菜单
+        document.addEventListener('click', function(event) {
+            const languageDropdown = document.getElementById('languageDropdown');
+            const networkDropdown = document.getElementById('networkDropdown');
+            const walletDropdown = document.getElementById('walletDropdown');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const roleModal = document.getElementById('roleSelectionModal');
+            
+            if (!event.target.closest('[onclick*="Language"]')) {
+                languageDropdown.classList.remove('show');
+            }
+            if (!event.target.closest('[onclick*="Network"]')) {
+                networkDropdown.classList.remove('show');
+            }
+            if (!event.target.closest('[onclick*="Wallet"]')) {
+                walletDropdown.classList.remove('show');
+            }
+            if (!event.target.closest('#mobileMenu') && !event.target.closest('[onclick="toggleMobileMenu()"]')) {
+                mobileMenu.classList.remove('show');
+            }
+            // 点击背景关闭角色选择模态框
+            if (event.target === roleModal) {
+                closeRoleSelectionModal();
+            }
+        });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DApp platform loaded');
+            updateLanguage(currentLanguage);
+        });
+
+        // 监听iframe加载完成
+        document.getElementById('contentFrame').addEventListener('load', function() {
+            // 向iframe发送当前语言设置
+            if (this.contentWindow) {
+                this.contentWindow.postMessage({
+                    type: 'LANGUAGE_CHANGE',
+                    language: currentLanguage
+                }, '*');
+            }
+        });
+
+        // 显示购物车模态框
+        function showCartModal() {
+            const modal = createModal('购物车', 'My Cart');
+            const cartContent = createCartContent();
+            modal.querySelector('.modal-body').appendChild(cartContent);
+            document.body.appendChild(modal);
+            
+            // 显示模态框
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        // 显示收藏夹模态框
+        function showFavoritesModal() {
+            const modal = createModal('我的收藏', 'My Favorites');
+            const favoritesContent = createFavoritesContent();
+            modal.querySelector('.modal-body').appendChild(favoritesContent);
+            document.body.appendChild(modal);
+            
+            // 显示模态框
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        // 创建模态框
+        function createModal(titleZh, titleEn) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 transition-opacity duration-300';
+            modal.innerHTML = `
+                <div class="bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden transform scale-95 transition-transform duration-300">
+                    <div class="flex items-center justify-between p-6 border-b border-gray-700">
+                        <h2 class="text-xl font-bold text-white">
+                            <span data-zh="${titleZh}" data-en="${titleEn}">${currentLanguage === 'zh' ? titleZh : titleEn}</span>
+                        </h2>
+                        <button onclick="closeModal(this)" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body p-6 overflow-y-auto max-h-[70vh]">
+                        <!-- 内容将在这里插入 -->
+                    </div>
+                </div>
+            `;
+            
+            // 点击背景关闭模态框
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal(modal.querySelector('button[onclick*="closeModal"]'));
+                }
+            });
+            
+            return modal;
+        }
+
+        // 创建购物车内容
+        function createCartContent() {
+            const container = document.createElement('div');
+            
+            if (userData.cart.items.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-shopping-cart text-6xl text-gray-500 mb-4"></i>
+                        <p class="text-gray-400 text-lg" data-zh="购物车为空" data-en="Cart is empty">购物车为空</p>
+                        <p class="text-gray-500 text-sm mt-2" data-zh="去商城逛逛吧" data-en="Go shopping now">去商城逛逛吧</p>
+                    </div>
+                `;
+            } else {
+                let totalPrice = 0;
+                const itemsHtml = userData.cart.items.map(item => {
+                    const price = parseFloat(item.price.replace(' ETH', ''));
+                    totalPrice += price;
+                    
+                    return `
+                        <div class="flex items-center space-x-4 p-4 bg-gray-700 rounded-lg">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover">
+                            <div class="flex-1">
+                                <h3 class="text-white font-medium">${item.name}</h3>
+                                <p class="text-sapphire-400 font-bold">${item.price}</p>
+                            </div>
+                            <button onclick="removeFromCart(${item.id})" class="text-red-400 hover:text-red-300 transition-colors">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+                
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        ${itemsHtml}
+                        <div class="border-t border-gray-600 pt-4">
+                            <div class="flex justify-between items-center text-lg font-bold text-white">
+                                <span data-zh="总计" data-en="Total">总计</span>
+                                <span class="text-sapphire-400">${totalPrice.toFixed(2)} ETH</span>
+                            </div>
+                            <button onclick="proceedToCheckout()" class="w-full mt-4 bg-gradient-to-r from-sapphire-500 to-purple-600 text-white py-3 rounded-lg font-medium hover:from-sapphire-600 hover:to-purple-700 transition-all">
+                                <span data-zh="去结算" data-en="Checkout">去结算</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return container;
+        }
+
+        // 创建收藏夹内容
+        function createFavoritesContent() {
+            const container = document.createElement('div');
+            
+            if (userData.favorites.items.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-heart text-6xl text-gray-500 mb-4"></i>
+                        <p class="text-gray-400 text-lg" data-zh="收藏夹为空" data-en="No favorites yet">收藏夹为空</p>
+                        <p class="text-gray-500 text-sm mt-2" data-zh="收藏喜欢的商品吧" data-en="Start collecting your favorites">收藏喜欢的商品吧</p>
+                    </div>
+                `;
+            } else {
+                const itemsHtml = userData.favorites.items.map(item => `
+                    <div class="flex items-center justify-between p-4 bg-gray-700 rounded-lg">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-heart text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-white font-medium">${item.name}</h3>
+                                <p class="text-gray-400 text-sm">${item.category}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="addToCartFromFavorites(${item.id})" class="text-sapphire-400 hover:text-sapphire-300 transition-colors" title="添加到购物车">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                            <button onclick="removeFromFavorites(${item.id})" class="text-red-400 hover:text-red-300 transition-colors" title="移除收藏">
+                                <i class="fas fa-heart-broken"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        ${itemsHtml}
+                    </div>
+                `;
+            }
+            
+            return container;
+        }
+
+        // 关闭模态框
+        function closeModal(button) {
+            const modal = button.closest('.fixed');
+            modal.classList.remove('show');
+            modal.querySelector('.bg-gray-800').classList.add('scale-95');
+            setTimeout(() => {
+                if (modal.parentNode) {
+                    modal.parentNode.removeChild(modal);
+                }
+            }, 300);
+        }
+
+        // 购物车操作
+        function removeFromCart(itemId) {
+            userData.cart.items = userData.cart.items.filter(item => item.id !== itemId);
+            userData.cart.count = userData.cart.items.length;
+            updateUserDataDisplay();
+            showToast('商品已从购物车移除', 'success');
+            
+            // 刷新模态框内容
+            const modal = document.querySelector('.fixed .modal-body');
+            if (modal) {
+                modal.innerHTML = '';
+                modal.appendChild(createCartContent());
+            }
+        }
+
+        function proceedToCheckout() {
+            showToast('正在跳转到结算页面...', 'info');
+            closeModal(document.querySelector('.fixed button[onclick*="closeModal"]'));
+        }
+
+        // 收藏夹操作
+        function removeFromFavorites(itemId) {
+            userData.favorites.items = userData.favorites.items.filter(item => item.id !== itemId);
+            userData.favorites.count = userData.favorites.items.length;
+            updateUserDataDisplay();
+            showToast('已取消收藏', 'success');
+            
+            // 刷新模态框内容
+            const modal = document.querySelector('.fixed .modal-body');
+            if (modal) {
+                modal.innerHTML = '';
+                modal.appendChild(createFavoritesContent());
+            }
+        }
+
+        function addToCartFromFavorites(itemId) {
+            const favoriteItem = userData.favorites.items.find(item => item.id === itemId);
+            if (favoriteItem) {
+                // 模拟添加到购物车
+                const cartItem = {
+                    id: Date.now(), // 使用时间戳作为新ID
+                    name: favoriteItem.name,
+                    price: '0.3 ETH', // 模拟价格
+                    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300'
+                };
+                
+                userData.cart.items.push(cartItem);
+                userData.cart.count = userData.cart.items.length;
+                updateUserDataDisplay();
+                showToast('商品已添加到购物车', 'success');
+            }
+        }
     </script>
 </body>
 </html> 

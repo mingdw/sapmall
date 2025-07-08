@@ -1,0 +1,872 @@
+/* 管理后台主样式文件 */
+
+/* 基础样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+    line-height: 1.6;
+    color: #e2e8f0;
+    background: #0f172a; /* 改为固定的深蓝色背景，去掉渐变效果 */
+    min-height: 100vh; /* 保持最小高度以覆盖整个视窗 */
+}
+
+/* 全屏布局 */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: auto !important;
+    min-height: 100vh !important; /* body最小高度保持视窗高度 */
+    max-height: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important; /* 确保可以正常滚动 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 主容器 */
+.admin-container {
+    display: grid;
+    grid-template-columns: 280px 1fr; /* 固定侧边栏宽度，内容区域自适应 */
+    grid-template-rows: 1fr; /* 单行布局 */
+    width: 90%; /* 与DApp首页保持一致 */
+    margin: 0 auto; /* 水平居中 */
+    gap: 20px; /* 增大gap从8px到20px，增加左右间隔 */
+    padding: 20px 24px; /* 恢复简单的左右24px padding */
+    background: transparent; /* 移除渐变背景，使用透明背景 */
+    min-height: calc(100vh - 40px); /* 设置最小高度，减去上下padding */
+    max-height: none !important;
+    overflow: visible !important;
+    contain: none !important;
+    box-sizing: border-box;
+}
+
+/* 超大屏幕优化 */
+@media (min-width: 1921px) {
+    .admin-container {
+        width: 90%; /* 保持与DApp首页一致 */
+        padding: 20px 24px; /* 保持一致的内边距 */
+    }
+}
+
+.content-area {
+    grid-column: 2; /* 占据第二列 */
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    max-width: none;
+    min-width: 0; /* 重要：防止flex项目溢出 */
+    background: transparent;
+    width: 100%;
+    height: fit-content; /* 使用fit-content自适应内容高度 */
+    overflow: visible !important;
+    contain: none !important;
+}
+
+.admin-main-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    margin-bottom: 0;
+    height: fit-content; /* 自适应内容高度 */
+    min-height: 600px; /* 最小高度 */
+    max-height: none;
+    contain: none !important;
+}
+
+.admin-main-card:hover {
+    border-color: rgba(71, 85, 105, 0.6);
+    box-shadow: 0 12px 48px rgba(59, 130, 246, 0.08);
+}
+
+.admin-main-card-header {
+    height: 56px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(30, 41, 59, 0.8); /* 改为纯色背景，去掉渐变 */
+    border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    padding: 0 24px;
+    position: relative;
+    flex-shrink: 0;
+    border-top-left-radius: 16px; /* 保持顶部圆角 */
+    border-top-right-radius: 16px; /* 保持顶部圆角 */
+}
+
+/* 移除标题行底部的渐变线效果 */
+.admin-main-card-header::before {
+    display: none; /* 完全隐藏渐变线 */
+}
+
+.admin-main-card-title {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 18px;
+    color: #f1f5f9;
+    letter-spacing: 0.025em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.admin-main-card-title i {
+    margin-right: 12px;
+    font-size: 20px;
+    color: #93c5fd;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 4px rgba(147, 197, 253, 0.3));
+}
+
+.admin-main-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-main-card-help-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.8;
+}
+
+.admin-main-card-help-btn:hover {
+    background: rgba(51, 65, 85, 0.4);
+    color: #94a3b8;
+    opacity: 1;
+}
+
+.admin-main-card-body {
+    flex: 1;
+    width: 100%;
+    background: rgba(15, 23, 42, 0.2);
+    position: relative;
+    overflow: visible !important;
+    padding: 0 !important;
+    contain: none !important;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    display: block;
+    height: fit-content; /* 自适应内容高度 */
+    min-height: 0;
+}
+
+.admin-main-card-iframe {
+    width: 100% !important;
+    height: auto !important; /* 改为auto，让JavaScript控制高度 */
+    min-height: 500px !important; /* 保持最小高度 */
+    max-height: none !important;
+    border: none !important;
+    background: transparent !important;
+    overflow: visible !important; /* 改为visible，避免内容被截断 */
+    display: block !important;
+    contain: none !important;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.content-frame {
+    display: none;
+}
+
+.sidebar {
+    grid-column: 1; /* 占据第一列 */
+    width: 100%;
+    background: transparent;
+    backdrop-filter: none;
+    border-right: none;
+    box-shadow: none;
+    margin-right: 0;
+    border: none;
+    border-radius: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 8px 8px 0;
+    display: flex;
+    flex-direction: column;
+    height: fit-content; /* 自适应内容高度 */
+    min-height: 600px; /* 与内容区域保持一致的最小高度 */
+}
+
+.menu-group {
+    margin: 0 0 18px 0;
+    border: none;
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(25px);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+.menu-group:first-child {
+    margin-top: 0;
+}
+
+.menu-group:last-child {
+    margin-bottom: 0;
+}
+
+.menu-group:hover {
+    background: rgba(15, 23, 42, 0.9);
+    box-shadow: 0 12px 48px rgba(59, 130, 246, 0.12);
+    transform: translateY(-2px);
+}
+
+.menu-group::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.4), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.menu-group:hover::before {
+    opacity: 1;
+}
+
+.menu-group-title {
+    height: 42px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    color: #f1f5f9;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+    padding: 0 20px;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.15);
+    letter-spacing: 0.5px;
+    position: relative;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.menu-group-title::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.3), transparent);
+}
+
+.menu-group-title i {
+    margin-right: 10px;
+    font-size: 16px;
+    color: #93c5fd;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 4px rgba(147, 197, 253, 0.3));
+}
+
+.menu-group:hover .menu-group-title i {
+    color: #60a5fa;
+    opacity: 1;
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.4));
+}
+
+.menu-group-content {
+    background: rgba(15, 23, 42, 0.3);
+    padding: 4px 0;
+}
+
+.menu-item {
+    padding: 0;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.1);
+    color: #cbd5e1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+    transition: width 0.3s ease;
+}
+
+.menu-item:hover {
+    background: rgba(30, 41, 59, 0.6);
+    color: #f1f5f9;
+    transform: translateX(4px);
+}
+
+.menu-item:hover::before {
+    width: 4px;
+}
+
+.menu-item.active {
+    background: rgba(30, 41, 59, 0.8);
+    color: #f8fafc;
+    transform: translateX(6px);
+    box-shadow: inset 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+.menu-item.active::before {
+    width: 4px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+}
+
+.menu-item-content {
+    margin-left: 40px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    padding: 10px 16px 10px 0;
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
+    font-weight: 500;
+}
+
+.menu-item-content i {
+    margin-right: 10px;
+    font-size: 13px;
+    width: 16px;
+    text-align: center;
+    color: #94a3b8;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.menu-item:hover .menu-item-content {
+    font-weight: 600;
+}
+
+.menu-item:hover .menu-item-content i {
+    color: #60a5fa;
+    transform: scale(1.15);
+    opacity: 1;
+    filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.3));
+}
+
+.menu-item.active .menu-item-content i {
+    color: #3b82f6;
+    opacity: 1;
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.4));
+}
+
+.menu-item.active .menu-item-content {
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 1600px) {
+    .admin-container {
+        width: 90%; /* 保持与DApp首页一致 */
+        padding: 20px 24px; /* 统一使用与DApp首页一致的内边距 */
+        gap: 18px; /* 调整gap，保持与主样式的比例 */
+    }
+    
+    .content-area {
+        flex: 1; /* 让内容区域占满剩余空间 */
+        width: 100%; /* 确保内容区域占满剩余空间 */
+        margin: 0; /* 移除额外边距 */
+        min-width: auto; /* 移除固定最小宽度 */
+    }
+    
+    .menu-group {
+        margin: 0 0 16px 0;
+    }
+}
+
+@media (max-width: 1400px) {
+    .admin-container {
+        width: 90%; /* 保持与DApp首页一致 */
+        padding: 16px 24px; /* 上下16px，左右24px与DApp首页一致 */
+        gap: 16px; /* 调整gap，保持合适间隔 */
+    }
+    
+    .content-area {
+        flex: 1; /* 让内容区域占满剩余空间 */
+        width: 100%; /* 确保内容区域占满剩余空间 */
+        margin: 0; /* 移除额外边距 */
+        min-width: auto; /* 移除固定最小宽度 */
+    }
+    
+    .sidebar {
+        width: 260px;
+        height: calc(100vh - 32px);
+    }
+    
+    .menu-group {
+        margin: 0 0 14px 0;
+    }
+}
+
+@media (max-width: 1200px) {
+    .admin-container {
+        width: 90%; /* 保持与DApp首页一致 */
+        padding: 20px 24px; /* 保持与DApp首页一致的内边距 */
+        gap: 14px; /* 调整gap，适当缩小但保持舒适间隔 */
+    }
+    
+    .content-area {
+        flex: 1; /* 让内容区域占满剩余空间 */
+        width: 100%; /* 确保内容区域占满剩余空间 */
+        margin: 0; /* 移除额外边距 */
+        min-width: auto; /* 移除固定最小宽度 */
+    }
+    
+    .sidebar {
+        width: 240px;
+    }
+    
+    .admin-main-card-header {
+        height: 52px;
+        padding: 0 20px;
+    }
+    
+    .admin-main-card-title {
+        font-size: 16px;
+    }
+    
+    .admin-main-card-title i {
+        font-size: 18px;
+    }
+    
+    .menu-group {
+        margin: 0 0 12px 0;
+    }
+}
+
+@media (max-width: 1024px) {
+    .admin-container {
+        flex-direction: column;
+        width: 95%; /* 移动端稍微增加宽度利用率 */
+        padding: 12px 24px; /* 保持左右24px与DApp首页一致 */
+        gap: 16px; /* 移动端垂直布局，可以稍大一些 */
+        min-height: calc(100vh - 24px); /* 调整移动端最小高度 */
+        height: auto;
+        align-items: flex-start; /* 移动端也使用顶部对齐 */
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        min-height: auto; /* 移动端侧边栏高度自适应 */
+        max-height: none;
+        overflow-y: visible;
+        padding: 4px 8px 4px 0;
+    }
+    
+    .content-area {
+        width: 100%;
+        max-width: 100%;
+        margin: 0; /* 移除额外边距 */
+        min-width: auto;
+        min-height: 400px; /* 移动端设置更小的最小高度 */
+        flex: none; /* 移动端允许高度自适应 */
+    }
+    
+    .admin-main-card {
+        min-height: 400px; /* 移动端设置更小的最小高度 */
+        flex: none;
+    }
+    
+    .admin-main-card-header {
+        height: 48px;
+        padding: 0 16px;
+    }
+    
+    .admin-main-card-title {
+        font-size: 15px;
+    }
+    
+    .admin-main-card-title i {
+        font-size: 16px;
+        margin-right: 8px;
+    }
+    
+    .admin-main-card-help-btn {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+    
+    .menu-group {
+        margin: 0 0 10px 0;
+    }
+    
+    .menu-group:first-child {
+        margin-top: 0;
+    }
+    
+    .menu-group:last-child {
+        margin-bottom: 0;
+    }
+    
+    .menu-group-title {
+        height: 38px;
+        font-size: 14px;
+        padding: 0 16px;
+    }
+    
+    .menu-item-content {
+        margin-left: 36px;
+        font-size: 12px;
+        padding: 8px 12px 8px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-container {
+        width: 98%; /* 更小屏幕使用更高的宽度利用率 */
+        padding: 8px 20px; /* 保持合理的左右内边距 */
+    }
+    
+    .sidebar {
+        max-height: none;
+    }
+    
+    .admin-main-card-header {
+        height: 44px;
+        padding: 0 12px;
+    }
+    
+    .admin-main-card-title {
+        font-size: 14px;
+    }
+    
+    .admin-main-card-title i {
+        font-size: 15px;
+        margin-right: 6px;
+    }
+    
+    .admin-main-card-help-btn {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+    
+    .menu-group {
+        margin: 0 0 8px 0;
+    }
+    
+    .menu-group-title {
+        height: 36px;
+        font-size: 13px;
+        padding: 0 12px;
+    }
+    
+    .menu-group-title i {
+        font-size: 14px;
+        margin-right: 8px;
+    }
+    
+    .menu-item-content {
+        margin-left: 32px;
+        font-size: 11px;
+        padding: 6px 8px 6px 0;
+    }
+    
+    .menu-item-content i {
+        font-size: 11px;
+        width: 14px;
+        margin-right: 8px;
+    }
+}
+
+/* 页面底部空白优化 */
+.admin-loaded {
+    height: auto !important;
+    min-height: auto !important;
+}
+
+.admin-loaded .admin-container {
+    height: auto !important;
+    min-height: auto !important;
+}
+
+.admin-loaded .admin-main-card {
+    height: auto !important;
+    min-height: auto !important;
+}
+
+.admin-loaded .admin-main-card-body {
+    height: auto !important;
+    min-height: auto !important;
+}
+
+/* 滚动条样式优化 */
+::-webkit-scrollbar {
+    width: 6px; /* 减小滚动条宽度 */
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.3);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #334155, #475569);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #475569, #64748b);
+}
+
+.loading-overlay,
+.error-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 10;
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(59, 130, 246, 0.2);
+    border-left-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 16px;
+    color: #e2e8f0;
+    max-width: 400px;
+}
+
+.error-container i {
+    font-size: 48px;
+    color: #ef4444;
+    margin-bottom: 16px;
+}
+
+.error-container h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.error-container p {
+    margin-bottom: 16px;
+    color: #94a3b8;
+}
+
+.retry-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.retry-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 让地址卡片完全继承订单卡片风格 */
+.address-item.admin-info-card {
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    border: none;
+    margin-bottom: 20px;
+    padding: 0;
+}
+
+.address-item .admin-card-content {
+    padding: 24px;
+}
+
+/* 清理地址项的样式冲突 */
+.address-item {
+    background: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.admin-content-container {
+    padding: 0;
+    max-width: none;
+    width: 100%;
+}
+
+.admin-info-card {
+    margin-bottom: 20px;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.admin-card-content {
+    padding: 24px;
+}
+
+.admin-section {
+    margin-bottom: 20px;
+}
+
+.admin-section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.admin-section-title i {
+    margin-right: 10px;
+}
+
+.addresses-list {
+    margin-bottom: 10px;
+}
+
+.add-address-section {
+    margin-bottom: 10px;
+}
+
+.btn-add-address {
+    background: none;
+    border: 1px solid #60a5fa;
+    color: #60a5fa;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-add-address:hover {
+    background: rgba(96, 165, 250, 0.1);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 16px;
+    margin-bottom: 10px;
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: #60a5fa;
+    margin-bottom: 10px;
+}
+
+.empty-state h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.empty-state p {
+    color: #94a3b8;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.add-icon {
+    margin-right: 10px;
+}
+
+.add-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.add-desc {
+    color: #94a3b8;
+} 

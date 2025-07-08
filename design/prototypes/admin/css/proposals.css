@@ -1,0 +1,605 @@
+/* 提案管理通用样式 */
+.proposals-container {
+    margin: 0;
+    padding: 0;
+}
+
+/* 筛选工具栏 */
+.filter-toolbar {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.filter-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.filter-tabs {
+    display: flex;
+    background: rgba(30, 41, 59, 0.6);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.filter-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    background: transparent;
+}
+
+.filter-tab.active {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+}
+
+.filter-tab:hover:not(.active) {
+    background: rgba(51, 65, 85, 0.4);
+    color: #e2e8f0;
+}
+
+.search-filter {
+    display: flex;
+    align-items: center;
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.search-filter input {
+    background: transparent;
+    border: none;
+    padding: 10px 16px;
+    color: #e2e8f0;
+    font-size: 14px;
+    width: 200px;
+    outline: none;
+}
+
+.search-filter input::placeholder {
+    color: #64748b;
+}
+
+.search-filter button {
+    background: rgba(59, 130, 246, 0.2);
+    border: none;
+    padding: 10px 16px;
+    color: #3b82f6;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-filter button:hover {
+    background: rgba(59, 130, 246, 0.3);
+}
+
+/* 提案统计卡片 */
+.proposals-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    border-color: rgba(71, 85, 105, 0.6);
+    transform: translateY(-1px);
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #3b82f6;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* 提案列表 */
+.proposals-list {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.proposals-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+    border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.proposals-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.proposals-title i {
+    color: #3b82f6;
+}
+
+.proposals-count {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.proposals-body {
+    padding: 0;
+}
+
+.proposal-item {
+    border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+    padding: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.proposal-item:last-child {
+    border-bottom: none;
+}
+
+.proposal-item:hover {
+    background: rgba(30, 41, 59, 0.3);
+}
+
+.proposal-main {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.proposal-content {
+    flex: 1;
+}
+
+.proposal-id {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.proposal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.proposal-description {
+    color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.proposal-meta {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.proposal-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.status-voting {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-ended {
+    background: rgba(100, 116, 139, 0.2);
+    color: #64748b;
+    border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.status-passed {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-failed {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.proposal-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: #64748b;
+    flex-wrap: wrap;
+}
+
+.proposal-info span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 投票相关样式 */
+.proposal-voting {
+    min-width: 200px;
+}
+
+.voting-progress {
+    margin-bottom: 12px;
+}
+
+.voting-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.voting-option {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.voting-option.yes {
+    color: #10b981;
+}
+
+.voting-option.no {
+    color: #ef4444;
+}
+
+.progress-bar {
+    height: 6px;
+    background: rgba(51, 65, 85, 0.4);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #3b82f6);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.voting-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #64748b;
+}
+
+.proposal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.vote-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.vote-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.vote-btn-yes {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.vote-btn-yes:hover:not(:disabled) {
+    background: rgba(16, 185, 129, 0.3);
+    transform: translateY(-1px);
+}
+
+.vote-btn-no {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.vote-btn-no:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.3);
+    transform: translateY(-1px);
+}
+
+.vote-btn-abstain {
+    background: rgba(100, 116, 139, 0.2);
+    color: #64748b;
+    border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.vote-btn-abstain:hover:not(:disabled) {
+    background: rgba(100, 116, 139, 0.3);
+    transform: translateY(-1px);
+}
+
+.vote-btn-voted {
+    background: rgba(16, 185, 129, 0.3);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.view-details-btn {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.view-details-btn:hover {
+    background: rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+}
+
+/* 分页 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+.pagination-btn {
+    padding: 8px 12px;
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 8px;
+    color: #e2e8f0;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: rgba(51, 65, 85, 0.6);
+    transform: translateY(-1px);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-btn.active {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* 我的投票历史 */
+.my-votes-section {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.my-votes-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+    border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.my-votes-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.my-votes-title i {
+    color: #8b5cf6;
+}
+
+.vote-history-item {
+    border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+
+.vote-history-item:last-child {
+    border-bottom: none;
+}
+
+.vote-history-item:hover {
+    background: rgba(30, 41, 59, 0.3);
+}
+
+.vote-history-content {
+    flex: 1;
+}
+
+.vote-history-proposal {
+    font-size: 14px;
+    font-weight: 500;
+    color: #e2e8f0;
+    margin-bottom: 4px;
+}
+
+.vote-history-meta {
+    font-size: 12px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.vote-history-choice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.vote-choice-yes {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.vote-choice-no {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.vote-choice-abstain {
+    background: rgba(100, 116, 139, 0.2);
+    color: #64748b;
+    border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .filter-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-left {
+        justify-content: center;
+    }
+
+    .filter-tabs {
+        justify-content: center;
+    }
+
+    .search-filter input {
+        width: 150px;
+    }
+
+    .proposals-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .proposal-main {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .proposal-voting {
+        min-width: auto;
+    }
+
+    .proposal-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .proposal-info {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .vote-history-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .proposals-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-tabs {
+        flex-direction: column;
+    }
+
+    .proposal-actions {
+        flex-direction: column;
+    }
+} 

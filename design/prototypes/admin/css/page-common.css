@@ -1,0 +1,85 @@
+/* 页面通用样式 page-common.css */
+
+/* 通用按钮样式 */
+.btn, .common-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: none;
+  background: #3b82f6;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn:hover, .common-btn:hover {
+  background: #2563eb;
+}
+.btn:disabled, .common-btn:disabled {
+  background: #64748b;
+  cursor: not-allowed;
+}
+
+/* 通用输入框 */
+input[type="text"], input[type="password"], input[type="email"], select, textarea {
+  border: 1px solid #334155;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 15px;
+  background: #1e293b;
+  color: #e2e8f0;
+  transition: border 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+/* 通用表单错误提示 */
+.field-error {
+  color: #ef4444;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* 通用卡片 */
+.common-card {
+  background: rgba(30,41,59,0.7);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(30,41,59,0.08);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* 通用提示（toast） */
+.toast-notification {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  min-width: 260px;
+  max-width: 350px;
+  background: #334155;
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(30,41,59,0.15);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s;
+  padding: 16px 20px;
+  font-size: 15px;
+}
+.toast-notification.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.toast-notification.success { background: #10b981; }
+.toast-notification.error { background: #ef4444; }
+.toast-notification.warning { background: #f59e0b; }
+.toast-notification.info { background: #3b82f6; }
+
+/* 通用隐藏类 */
+.hidden { display: none !important; }

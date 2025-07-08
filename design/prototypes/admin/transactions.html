@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交易记录</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/transactions.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 交易统计概览卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-chart-bar"></i>
+                        交易统计概览
+                    </h3>
+                    
+                    <div class="transactions-header-actions">
+                        <button class="admin-btn admin-btn-outline admin-btn-sm">
+                            <i class="fas fa-download"></i>
+                            导出记录
+                        </button>
+                        <button class="admin-btn admin-btn-primary admin-btn-sm">
+                            <i class="fas fa-refresh"></i>
+                            刷新
+                        </button>
+                    </div>
+                    
+                    <div class="transactions-stats-grid">
+                        <div class="transactions-stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">156</div>
+                                <div class="stat-label">总交易数</div>
+                                <div class="stat-change positive">+12 本月</div>
+                            </div>
+                        </div>
+                        
+                        <div class="transactions-stat-card">
+                            <div class="stat-icon stat-icon-success">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">2,850 SAP</div>
+                                <div class="stat-label">总交易额</div>
+                                <div class="stat-change positive">+185 SAP 本月</div>
+                            </div>
+                        </div>
+                        
+                        <div class="transactions-stat-card">
+                            <div class="stat-icon stat-icon-purple">
+                                <i class="fas fa-hand-holding-usd"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">45.8 SAP</div>
+                                <div class="stat-label">累计收益</div>
+                                <div class="stat-change positive">+8.2 SAP 本月</div>
+                            </div>
+                        </div>
+                        
+                        <div class="transactions-stat-card">
+                            <div class="stat-icon stat-icon-warning">
+                                <i class="fas fa-piggy-bank"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">1,250 SAP</div>
+                                <div class="stat-label">质押总额</div>
+                                <div class="stat-change positive">+100 SAP 本月</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 交易记录列表卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-history"></i>
+                        交易记录
+                    </h3>
+                    
+                    <!-- 筛选和搜索区域 -->
+                    <div class="transaction-filters-container">
+                        <div class="filter-group">
+                            <button class="filter-btn active" data-tab="all">全部</button>
+                            <button class="filter-btn" data-tab="receive">收入</button>
+                            <button class="filter-btn" data-tab="send">支出</button>
+                            <button class="filter-btn" data-tab="swap">兑换</button>
+                            <button class="filter-btn" data-tab="stake">质押</button>
+                            <button class="filter-btn" data-tab="reward">奖励</button>
+                            <button class="filter-btn" data-tab="governance">治理</button>
+                        </div>
+                        <div class="transaction-search-actions">
+                            <div class="search-input-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="搜索交易..." class="search-input">
+                            </div>
+                            <select class="filter-select">
+                                <option value="30">最近30天</option>
+                                <option value="90">最近3个月</option>
+                                <option value="180">最近6个月</option>
+                                <option value="365">最近1年</option>
+                                <option value="all">全部时间</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 交易记录列表 -->
+                    <div class="transaction-list">
+                        <!-- 代币兑换记录 -->
+                        <div class="transaction-item" data-type="swap">
+                            <div class="transaction-main-info">
+                                <div class="transaction-icon swap-icon">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <div class="transaction-title">代币兑换</div>
+                                    <div class="transaction-info">
+                                        <span class="transaction-address">流动性池: <code>SAP/USDT</code></span>
+                                        <span class="transaction-time">2024-01-20 14:30</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="transaction-amount-section">
+                                <div class="transaction-amount neutral">1000 USDT → 1000 SAP</div>
+                            </div>
+                            <div class="transaction-status-section">
+                                <span class="transaction-badge transaction-badge-success">
+                                    <i class="fas fa-check"></i>
+                                    已确认
+                                </span>
+                                <button class="transaction-detail-btn" title="查看详情">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 流动性质押记录 -->
+                        <div class="transaction-item" data-type="stake">
+                            <div class="transaction-main-info">
+                                <div class="transaction-icon stake-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <div class="transaction-title">添加流动性</div>
+                                    <div class="transaction-info">
+                                        <span class="transaction-address">流动性池: <code>SAP/ETH</code></span>
+                                        <span class="transaction-time">2024-01-19 16:15</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="transaction-amount-section">
+                                <div class="transaction-amount neutral">800 SAP + 0.32 ETH</div>
+                            </div>
+                            <div class="transaction-status-section">
+                                <span class="transaction-badge transaction-badge-success">
+                                    <i class="fas fa-check"></i>
+                                    已确认
+                                </span>
+                                <button class="transaction-detail-btn" title="查看详情">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 奖励领取记录 -->
+                        <div class="transaction-item" data-type="reward">
+                            <div class="transaction-main-info">
+                                <div class="transaction-icon reward-icon">
+                                    <i class="fas fa-gift"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <div class="transaction-title">奖励领取</div>
+                                    <div class="transaction-info">
+                                        <span class="transaction-address">来源: <code>流动性奖励</code></span>
+                                        <span class="transaction-time">2024-01-17 09:20</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="transaction-amount-section">
+                                <div class="transaction-amount positive">+12.5 SAP</div>
+                            </div>
+                            <div class="transaction-status-section">
+                                <span class="transaction-badge transaction-badge-success">
+                                    <i class="fas fa-check"></i>
+                                    已到账
+                                </span>
+                                <button class="transaction-detail-btn" title="查看详情">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 发送记录 -->
+                        <div class="transaction-item" data-type="send">
+                            <div class="transaction-main-info">
+                                <div class="transaction-icon send-icon">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <div class="transaction-title">发送</div>
+                                    <div class="transaction-info">
+                                        <span class="transaction-address">至: <code>0x9876...4321</code></span>
+                                        <span class="transaction-time">2024-01-15 11:45</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="transaction-amount-section">
+                                <div class="transaction-amount negative">-50 SAP</div>
+                            </div>
+                            <div class="transaction-status-section">
+                                <span class="transaction-badge transaction-badge-success">
+                                    <i class="fas fa-check"></i>
+                                    已发送
+                                </span>
+                                <button class="transaction-detail-btn" title="查看详情">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 接收记录 -->
+                        <div class="transaction-item" data-type="receive">
+                            <div class="transaction-main-info">
+                                <div class="transaction-icon receive-icon">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <div class="transaction-title">接收</div>
+                                    <div class="transaction-info">
+                                        <span class="transaction-address">来自: <code>0x1234...5678</code></span>
+                                        <span class="transaction-time">2024-01-12 16:20</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="transaction-amount-section">
+                                <div class="transaction-amount positive">+100 SAP</div>
+                            </div>
+                            <div class="transaction-status-section">
+                                <span class="transaction-badge transaction-badge-success">
+                                    <i class="fas fa-check"></i>
+                                    已到账
+                                </span>
+                                <button class="transaction-detail-btn" title="查看详情">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 治理投票记录 -->
+                        <div class="transaction-item" data-type="governance">
+                            <div class="transaction-main-info">
+                                <div class="transaction-icon governance-icon">
+                                    <i class="fas fa-vote-yea"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <div class="transaction-title">治理投票</div>
+                                    <div class="transaction-info">
+                                        <span class="transaction-address">提案: <code>提案#023</code></span>
+                                        <span class="transaction-time">2024-01-10 14:20</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="transaction-amount-section">
+                                <div class="transaction-amount neutral">投票权重: 50 SAP</div>
+                            </div>
+                            <div class="transaction-status-section">
+                                <span class="transaction-badge transaction-badge-info">
+                                    <i class="fas fa-clock"></i>
+                                    投票中
+                                </span>
+                                <button class="transaction-detail-btn" title="查看详情">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 分页 -->
+                    <div class="transaction-pagination">
+                        <button class="pagination-btn" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="pagination-pages">
+                            <button class="pagination-page active">1</button>
+                            <button class="pagination-page">2</button>
+                            <button class="pagination-page">3</button>
+                            <button class="pagination-page">4</button>
+                            <button class="pagination-page">5</button>
+                        </div>
+                        <button class="pagination-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 交易详情模态框 -->
+    <div class="modal" id="transactionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-receipt"></i> 交易详情</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="transaction-detail-item">
+                    <div class="detail-label">交易类型</div>
+                    <div class="detail-value" id="txType">代币兑换</div>
+                </div>
+                <div class="transaction-detail-item">
+                    <div class="detail-label">交易金额</div>
+                    <div class="detail-value" id="txAmount">1000 USDT → 1000 SAP</div>
+                </div>
+                <div class="transaction-detail-item">
+                    <div class="detail-label">交易哈希</div>
+                    <div class="detail-value">
+                        <code id="txHash">0x7f5a2e45c0d3c9f0acef4e70c825f5c5c9e5c26f8f5a2e45c0d3c9f0acef4e70</code>
+                        <button class="admin-btn-icon admin-btn-icon-primary copy-btn">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="transaction-detail-item">
+                    <div class="detail-label">发送方</div>
+                    <div class="detail-value">
+                        <code id="txFrom">0xabc...def</code>
+                        <button class="admin-btn-icon admin-btn-icon-primary copy-btn">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="transaction-detail-item">
+                    <div class="detail-label">接收方</div>
+                    <div class="detail-value">
+                        <code id="txTo">0x8f5a2e45c0d3c9f0acef4e70c825f5c5c9e5c26f</code>
+                        <button class="admin-btn-icon admin-btn-icon-primary copy-btn">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="transaction-detail-item">
+                    <div class="detail-label">区块高度</div>
+                    <div class="detail-value" id="blockNumber">19,234,567</div>
+                </div>
+                <div class="transaction-detail-item">
+                    <div class="detail-label">交易时间</div>
+                    <div class="detail-value" id="txTime">2024-01-20 14:30:25</div>
+                </div>
+                <div class="transaction-detail-item">
+                    <div class="detail-label">手续费</div>
+                    <div class="detail-value" id="txFee">3.0 SAP (0.3%)</div>
+                </div>
+                <div class="transaction-detail-item">
+                    <div class="detail-label">确认数</div>
+                    <div class="detail-value" id="txConfirmations">24 确认</div>
+                </div>
+                <div class="transaction-detail-item">
+                    <div class="detail-label">状态</div>
+                    <div class="detail-value">
+                        <span class="transaction-badge transaction-badge-success" id="txStatus">
+                            <i class="fas fa-check"></i>
+                            已确认
+                        </span>
+                    </div>
+                </div>
+                <div class="transaction-detail-item">
+                    <div class="detail-label">备注</div>
+                    <div class="detail-value" id="txNote">通过 SAP/USDT 流动性池兑换</div>
+                </div>
+                
+                <div class="transaction-actions">
+                    <button class="admin-btn admin-btn-outline">
+                        <i class="fas fa-external-link-alt"></i>
+                        在区块浏览器中查看
+                    </button>
+                    <button class="admin-btn admin-btn-outline">
+                        <i class="fas fa-file-alt"></i>
+                        导出交易收据
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/iframe-height-reporter.js"></script>
+    <script src="js/transactions.js"></script>
+</body>
+</html> 

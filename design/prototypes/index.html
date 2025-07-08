@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sapphire Mall - 项目原型演示</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -60,17 +67,71 @@
             border-bottom: 10px solid #1f2937;
         }
         .demo-frame {
-            height: calc(100vh - 200px);
+            min-height: calc(100vh - 300px);
             border-radius: 12px;
             border: 2px solid #374151;
-            overflow: hidden;
             background: white;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            width: 100%;
+            margin-bottom: 2rem;
         }
         .demo-frame iframe {
             width: 100%;
-            height: 100%;
+            min-height: calc(100vh - 300px);
             border: none;
+            display: block;
+            border-radius: 12px;
+        }
+        .iframe-container {
+            width: 100%;
+            min-height: calc(100vh - 300px);
+            position: relative;
+            border-radius: 12px;
+            background: white;
+        }
+        .iframe-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 3px solid #374151;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 1;
+        }
+        .iframe-container.content-loaded::before {
+            display: none;
+        }
+        iframe {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        iframe.loaded {
+            opacity: 1;
+        }
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        /* Custom scrollbar for iframe containers */
+        .iframe-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .iframe-container::-webkit-scrollbar-track {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+        .iframe-container::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        .iframe-container::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
         }
         .project-info {
             background: rgba(255, 255, 255, 0.05);
@@ -115,12 +176,119 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
+        .content-transition.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* 后台管理角色选择样式 */
+        #admin-role-dropdown {
+            animation: slideDown 0.2s ease-out;
+        }
+        #admin-role-dropdown.hidden {
+            animation: slideUp 0.2s ease-out;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+        .admin-role-item:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+        }
+        /* 确保下拉菜单在最顶层 */
+        #admin-role-dropdown {
+            z-index: 99999 !important;
+            position: fixed !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(20px);
+            background: rgba(31, 41, 55, 0.98) !important;
+        }
+        
+        /* 确保下拉菜单容器也有高层级 */
+        .mt-3.relative {
+            z-index: 99998 !important;
+            position: relative !important;
+        }
+        
+        /* 确保下拉菜单在所有元素之上 */
+        #admin-role-dropdown * {
+            z-index: inherit !important;
+        }
+        
+        /* 修复可能的overflow问题 */
+        body, html {
+            overflow-x: visible !important;
+        }
+        
+        /* 确保主容器不会裁剪下拉菜单 */
+        main {
+            overflow: visible !important;
+        }
+        
+        /* 下拉箭头旋转动画 */
+        #admin-role-btn:hover #dropdown-arrow {
+            transform: rotate(180deg);
+        }
+        
+        /* 角色选择按钮样式 */
+        #admin-role-btn {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        #admin-role-btn:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        /* 角色选项悬停效果 */
+        .admin-role-item:hover {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15)) !important;
+            transform: translateX(4px);
+        }
+        
+        /* 角色图标颜色动画 */
+        .admin-role-item:hover i {
+            transform: scale(1.1);
+            transition: transform 0.2s ease;
+        }
+        
+        /* 当后台管理标签激活时的角色选择按钮样式 */
+        .tab-button.active + div #admin-role-btn {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        /* 角色选择按钮的响应式设计 */
+        @media (max-width: 768px) {
+            #admin-role-btn {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen text-white">
     <!-- Header -->
     <header class="bg-gray-900/80 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4">
+        <div class="w-90 max-w-none mx-auto px-6 py-4" style="width: 90%;">
             <div class="flex items-center justify-between">
                 <!-- Logo -->
                 <div class="flex items-center space-x-3">
@@ -157,7 +325,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-6 py-8">
+    <main class="w-90 max-w-none mx-auto px-6 py-8" style="width: 90%;">
         <!-- Tab Navigation -->
         <div class="flex justify-center mb-8">
             <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-2 border border-gray-700">
@@ -179,9 +347,9 @@
                         id="tab-dapp">
                         <i class="fas fa-shopping-cart"></i>
                         <span>DApp平台</span>
-                        <span class="status-indicator status-developing">
+                        <span class="status-indicator status-completed">
                             <div class="pulse-dot"></div>
-                            开发中
+                            已完成
                         </span>
                     </button>
                     <button 
@@ -190,11 +358,25 @@
                         id="tab-admin">
                         <i class="fas fa-cog"></i>
                         <span>后台管理</span>
-                        <span class="status-indicator status-developing">
+                        <span class="status-indicator status-completed">
                             <div class="pulse-dot"></div>
-                            开发中
+                            已完成
                         </span>
                     </button>
+                    <!-- 角色选择显示在后台管理按钮下方 -->
+                    <div class="mt-3 relative">
+                        <button 
+                            onclick="toggleAdminRoleDropdown(event)" 
+                            class="w-full bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md text-sm flex items-center justify-between transition-colors border border-gray-600"
+                            id="admin-role-btn"
+                            style="border-color: rgba(139, 92, 246, 0.4);">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-user text-purple-400 text-xs"></i>
+                                <span id="selected-role" class="text-purple-300">普通用户</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-xs transition-transform duration-200 text-gray-400" id="dropdown-arrow"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -213,27 +395,30 @@
                     <span class="text-xs bg-gray-700 px-2 py-1 rounded">数据统计</span>
                 </div>
             </div>
-
+            
             <div class="project-info rounded-xl p-6 border border-gray-700">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-bold text-yellow-400">DApp平台</h3>
-                    <div class="feature-badge">开发中</div>
+                    <div class="feature-badge">已完成</div>
                 </div>
-                <p class="text-gray-300 text-sm mb-4">核心交易平台，包含商品交易、代币兑换、流动性质押</p>
+                <p class="text-gray-300 text-sm mb-4">完整的Web3交易生态，包含代币商城、质押挖矿、去中心化交易所、DAO治理和帮助中心</p>
                 <div class="flex flex-wrap gap-2">
-                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">商品交易</span>
-                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">代币兑换</span>
-                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">质押收益</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">代币商城</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">质押挖矿</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">DEX交易</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">DAO治理</span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">帮助中心</span>
                 </div>
             </div>
-
+                
             <div class="project-info rounded-xl p-6 border border-gray-700">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-bold text-purple-400">后台管理</h3>
-                    <div class="feature-badge">开发中</div>
+                    <div class="feature-badge">已完成</div>
                 </div>
-                <p class="text-gray-300 text-sm mb-4">多角色管理后台，支持商家、用户、平台管理员</p>
+                <p class="text-gray-300 text-sm mb-4">多角色管理后台，支持商家、用户、平台管理员，可通过下拉菜单切换角色查看不同界面</p>
                 <div class="flex flex-wrap gap-2">
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">角色切换</span>
                     <span class="text-xs bg-gray-700 px-2 py-1 rounded">用户管理</span>
                     <span class="text-xs bg-gray-700 px-2 py-1 rounded">商品审核</span>
                     <span class="text-xs bg-gray-700 px-2 py-1 rounded">数据分析</span>
@@ -245,58 +430,141 @@
         <div class="demo-frame">
             <!-- Homepage Tab -->
             <div id="content-homepage" class="tab-content active">
-                <iframe src="./homepage.html" title="Sapphire Mall 官网首页"></iframe>
+                <div class="iframe-container">
+                    <iframe src="./homepage.html" title="Sapphire Mall 官网首页"></iframe>
+                </div>
             </div>
-
+            
             <!-- DApp Tab -->
             <div id="content-dapp" class="tab-content">
-                <iframe src="./dapp.html" title="Sapphire Mall DApp平台"></iframe>
+                <div class="iframe-container">
+                    <iframe src="./dapp.html" title="Sapphire Mall DApp平台"></iframe>
+                </div>
             </div>
 
             <!-- Admin Tab -->
             <div id="content-admin" class="tab-content">
-                <iframe src="./admin.html" title="Sapphire Mall 后台管理"></iframe>
-            </div>
-        </div>
-
-        <!-- Technical Information -->
-        <div class="mt-8 project-info rounded-xl p-6 border border-gray-700">
-            <h3 class="text-xl font-bold mb-4 text-center">技术架构信息</h3>
-            <div class="grid md:grid-cols-4 gap-6">
-                <div class="text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-code text-white"></i>
-                    </div>
-                    <h4 class="font-semibold text-blue-400 mb-2">前端技术</h4>
-                    <p class="text-sm text-gray-400">HTML5 + Tailwind CSS + JavaScript</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-cube text-white"></i>
-                    </div>
-                    <h4 class="font-semibold text-purple-400 mb-2">区块链</h4>
-                    <p class="text-sm text-gray-400">Ethereum + ERC20 + Smart Contract</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-wallet text-white"></i>
-                    </div>
-                    <h4 class="font-semibold text-green-400 mb-2">钱包集成</h4>
-                    <p class="text-sm text-gray-400">MetaMask + WalletConnect</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-globe text-white"></i>
-                    </div>
-                    <h4 class="font-semibold text-orange-400 mb-2">多语言</h4>
-                    <p class="text-sm text-gray-400">中文 + English</p>
+                <div class="iframe-container">
+                    <iframe src="./admin.html" title="Sapphire Mall 后台管理"></iframe>
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- Footer Technical Information -->
+    <footer class="bg-gray-900/90 backdrop-blur-sm border-t border-gray-700">
+        <div class="w-90 max-w-none mx-auto px-6 py-8" style="width: 90%;">
+            <!-- Technical Information -->
+            <div class="project-info rounded-xl p-6 border border-gray-700 mb-6">
+                <h3 class="text-xl font-bold mb-6 text-center">技术架构信息</h3>
+                <div class="grid md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-code text-white"></i>
+                        </div>
+                        <h4 class="font-semibold text-blue-400 mb-2">前端技术</h4>
+                        <p class="text-sm text-gray-400">HTML5 + Tailwind CSS + JavaScript</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-cube text-white"></i>
+                        </div>
+                        <h4 class="font-semibold text-purple-400 mb-2">区块链</h4>
+                        <p class="text-sm text-gray-400">Ethereum + ERC20 + Smart Contract</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-wallet text-white"></i>
+                        </div>
+                        <h4 class="font-semibold text-green-400 mb-2">钱包集成</h4>
+                        <p class="text-sm text-gray-400">MetaMask + WalletConnect</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-globe text-white"></i>
+                        </div>
+                        <h4 class="font-semibold text-orange-400 mb-2">多语言</h4>
+                        <p class="text-sm text-gray-400">中文 + English</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Links -->
+            <div class="text-center text-gray-400">
+                <p class="mb-4">© 2024 Sapphire Mall 项目原型演示系统</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="#" class="hover:text-sapphire-400 transition-colors">项目文档</a>
+                    <a href="#" class="hover:text-sapphire-400 transition-colors">设计规范</a>
+                    <a href="#" class="hover:text-sapphire-400 transition-colors">开发指南</a>
+                    <a href="#" class="hover:text-sapphire-400 transition-colors">反馈建议</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <!-- Scripts -->
     <script>
+        // 全局变量
+        let currentUserRole = null; // 当前用户角色
+        let userWalletAddress = null; // 用户钱包地址
+
+        // 连接钱包
+        async function connectWallet() {
+            try {
+                // 这里是连接钱包的逻辑
+                // ... existing code ...
+
+                // 连接成功后，显示个人中心入口
+                document.getElementById('userCenter').classList.remove('hidden');
+            } catch (error) {
+                console.error('连接钱包失败:', error);
+            }
+        }
+
+        // 打开管理后台
+        function openAdminPanel() {
+            const mainContent = document.getElementById('mainContent');
+            // 将管理后台嵌入到主内容区域
+            mainContent.innerHTML = `
+                <div class="w-full h-full">
+                    <iframe 
+                        src="admin/index.html" 
+                        class="w-full h-full border-0" 
+                        id="adminFrame"
+                        onload="handleAdminFrameLoad()"
+                    ></iframe>
+                </div>
+            `;
+
+            // 传递用户角色到 iframe
+            const adminFrame = document.getElementById('adminFrame');
+            adminFrame.onload = () => {
+                adminFrame.contentWindow.userRole = currentUserRole;
+            };
+        }
+
+        // 处理管理后台 iframe 加载完成
+        function handleAdminFrameLoad() {
+            const adminFrame = document.getElementById('adminFrame');
+            if (adminFrame) {
+                // 确保 iframe 内容已完全加载
+                adminFrame.classList.add('loaded');
+            }
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            // 检查是否已连接钱包
+            if (userWalletAddress) {
+                document.getElementById('userCenter').classList.remove('hidden');
+            }
+
+            // 添加个人中心点击事件
+            document.getElementById('userCenter').addEventListener('click', () => {
+                openAdminPanel();
+            });
+        });
+
         function switchTab(tabName) {
             // Hide all tab contents
             const contents = document.querySelectorAll('.tab-content');
@@ -316,12 +584,314 @@
             const activeButton = document.getElementById(`tab-${tabName}`);
             activeButton.classList.add('active');
             activeButton.classList.remove('text-gray-300', 'hover:text-white', 'hover:bg-gray-700');
+            
+            // 如果切换到后台管理标签页，默认设置为普通用户角色
+            if (tabName === 'admin') {
+                setTimeout(() => {
+                    const adminIframe = document.querySelector('#content-admin iframe');
+                    if (adminIframe && adminIframe.contentWindow) {
+                        try {
+                            adminIframe.contentWindow.switchRole('user');
+                        } catch (error) {
+                            // 如果iframe还没加载完成，使用URL参数
+                            adminIframe.src = './admin.html?role=user';
+                        }
+                    }
+                }, 800);
+            }
+            
+            // Ensure iframe is visible and loaded
+            const iframe = document.querySelector(`#content-${tabName} iframe`);
+            if (iframe) {
+                // Simple reload check without complex height calculations
+                setTimeout(() => {
+                    if (!iframe.contentDocument || iframe.contentDocument.readyState !== 'complete') {
+                        iframe.src = iframe.src;
+                    }
+                }, 100);
+            }
         }
-
+        
+        // 设置iframe加载事件
+        function setupIframeEvents() {
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.addEventListener('load', function() {
+                    // 标记iframe已加载
+                    iframe.classList.add('loaded');
+                    const container = iframe.closest('.iframe-container');
+                    if (container) {
+                        container.classList.add('content-loaded');
+                    }
+                    
+                    // 设置iframe高度自适应
+                    iframe.style.height = 'auto';
+                    iframe.style.minHeight = '100%';
+                    
+                    // 如果iframe内容发生变化，重新计算高度
+                    try {
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        const resizeObserver = new ResizeObserver(entries => {
+                            for (let entry of entries) {
+                                iframe.style.height = entry.target.scrollHeight + 'px';
+                                iframe.parentElement.style.height = entry.target.scrollHeight + 'px';
+                            }
+                        });
+                        
+                        if (iframeDoc.body) {
+                            resizeObserver.observe(iframeDoc.body);
+                        }
+                    } catch (e) {
+                        console.log('无法访问iframe内容，可能是跨域限制');
+                    }
+                });
+            });
+        }
+        
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Sapphire Mall 项目原型演示已加载');
+            setupIframeEvents();
+            
+            // Add simple resize handler
+            window.addEventListener('resize', function() {
+                // Just log resize events, no complex calculations
+                console.log('Window resized');
+                // 重新计算下拉菜单位置
+                const dropdown = document.getElementById('admin-role-dropdown');
+                if (dropdown && !dropdown.classList.contains('hidden')) {
+                    const button = document.getElementById('admin-role-btn');
+                    const buttonRect = button.getBoundingClientRect();
+                    dropdown.style.top = (buttonRect.bottom + 8) + 'px';
+                    dropdown.style.left = buttonRect.left + 'px';
+                    dropdown.style.width = buttonRect.width + 'px';
+                }
+            });
+
+            // 监听滚动事件
+            window.addEventListener('scroll', function() {
+                const dropdown = document.getElementById('admin-role-dropdown');
+                if (dropdown && !dropdown.classList.contains('hidden')) {
+                    const button = document.getElementById('admin-role-btn');
+                    const buttonRect = button.getBoundingClientRect();
+                    dropdown.style.top = (buttonRect.bottom + 8) + 'px';
+                    dropdown.style.left = buttonRect.left + 'px';
+                }
+            });
+
+            // 点击其他地方关闭下拉菜单
+            document.addEventListener('click', function(event) {
+                const dropdown = document.getElementById('admin-role-dropdown');
+                const button = document.getElementById('admin-role-btn');
+                const arrow = document.getElementById('dropdown-arrow');
+                
+                if (dropdown && !dropdown.contains(event.target) && !button.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                    if (arrow) {
+                        arrow.style.transform = 'rotate(0deg)';
+                    }
+                }
+            });
         });
+
+        // 切换后台管理角色下拉菜单
+        function toggleAdminRoleDropdown(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            const dropdown = document.getElementById('admin-role-dropdown');
+            const button = document.getElementById('admin-role-btn');
+            const arrow = document.getElementById('dropdown-arrow');
+            
+            if (dropdown.classList.contains('hidden')) {
+                // 计算按钮的位置
+                const buttonRect = button.getBoundingClientRect();
+                
+                // 设置下拉菜单的位置
+                dropdown.style.top = (buttonRect.bottom + 8) + 'px';
+                dropdown.style.left = buttonRect.left + 'px';
+                dropdown.style.width = buttonRect.width + 'px';
+                
+                dropdown.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                dropdown.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // 选择后台管理角色
+        function selectAdminRole(role, roleName) {
+            // 更新按钮显示文本和图标
+            const selectedRoleSpan = document.getElementById('selected-role');
+            const adminRoleBtn = document.getElementById('admin-role-btn');
+            
+            selectedRoleSpan.textContent = roleName;
+            
+            // 根据角色更新按钮图标和颜色
+            const iconContainer = adminRoleBtn.querySelector('i');
+            switch(role) {
+                case 'platform':
+                    iconContainer.className = 'fas fa-user-shield text-blue-400';
+                    adminRoleBtn.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+                    selectedRoleSpan.className = 'text-blue-300';
+                    break;
+                case 'merchant':
+                    iconContainer.className = 'fas fa-store text-green-400';
+                    adminRoleBtn.style.borderColor = 'rgba(34, 197, 94, 0.4)';
+                    selectedRoleSpan.className = 'text-green-300';
+                    break;
+                case 'user':
+                    iconContainer.className = 'fas fa-user text-purple-400';
+                    adminRoleBtn.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+                    selectedRoleSpan.className = 'text-purple-300';
+                    break;
+            }
+            
+            // 隐藏下拉菜单并重置箭头
+            const dropdown = document.getElementById('admin-role-dropdown');
+            const arrow = document.getElementById('dropdown-arrow');
+            dropdown.classList.add('hidden');
+            arrow.style.transform = 'rotate(0deg)';
+            
+            // 切换到后台管理标签页
+            switchTab('admin');
+            
+            // 等待iframe加载完成后切换角色
+            setTimeout(() => {
+                const adminIframe = document.querySelector('#content-admin iframe');
+                if (adminIframe && adminIframe.contentWindow) {
+                    try {
+                        // 调用iframe内的角色切换函数
+                        adminIframe.contentWindow.switchRole(role);
+                    } catch (error) {
+                        console.log('等待iframe完全加载...');
+                        // 如果iframe还没完全加载，继续等待
+                        setTimeout(() => {
+                            try {
+                                adminIframe.contentWindow.switchRole(role);
+                            } catch (e) {
+                                console.log('iframe通信失败，将通过URL参数传递角色信息');
+                                // 作为备选方案，重新加载iframe并传递角色参数
+                                adminIframe.src = `./admin.html?role=${role}`;
+                            }
+                        }, 1000);
+                    }
+                }
+            }, 500);
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化标签页
+            initTabs();
+            
+            // 初始化角色选择
+            initRoleSelection();
+            
+            // 设置iframe加载事件
+            setupIframeEvents();
+            
+            // 监听iframe发送的高度调整消息
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'resize-iframe') {
+                    // 查找对应的iframe
+                    let targetIframe;
+                    try {
+                        // 尝试通过源窗口查找iframe
+                        if (event.source && event.source.frameElement) {
+                            targetIframe = event.source.frameElement;
+                        } else {
+                            // 回退方案：查找所有iframe并匹配源
+                            const iframes = document.querySelectorAll('iframe');
+                            for (let iframe of iframes) {
+                                if (iframe.contentWindow === event.source) {
+                                    targetIframe = iframe;
+                                    break;
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.log('无法直接访问iframe元素，尝试其他方法');
+                        // 如果无法直接访问，尝试查找所有iframe
+                        const iframes = document.querySelectorAll('iframe');
+                        for (let iframe of iframes) {
+                            // 尝试通过URL匹配
+                            if (iframe.src && event.origin && iframe.src.indexOf(event.origin) >= 0) {
+                                targetIframe = iframe;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // 调整找到的iframe高度
+                    if (targetIframe) {
+                        console.log('调整iframe高度:', event.data.height);
+                        // 设置最小高度，确保内容不被截断
+                        const minHeight = Math.max(event.data.height, 600);
+                        targetIframe.style.height = minHeight + 'px';
+                        
+                        // 同时调整父容器高度
+                        const container = targetIframe.closest('.iframe-container');
+                        if (container) {
+                            container.style.height = minHeight + 'px';
+                            container.style.minHeight = minHeight + 'px';
+                        }
+                        
+                        // 如果在tab内，调整tab容器高度
+                        const tabContent = targetIframe.closest('.tab-content');
+                        if (tabContent) {
+                            tabContent.style.height = 'auto';
+                            tabContent.style.minHeight = minHeight + 'px';
+                        }
+                    }
+                }
+            });
+        });
+        
+        // 初始化标签页功能
+        function initTabs() {
+            // ... existing code ...
+        }
     </script>
+
+    <!-- 角色选择下拉菜单 - 放在body顶层确保不被遮盖 -->
+    <div 
+        id="admin-role-dropdown" 
+        class="fixed bg-gray-800/98 backdrop-blur-sm border border-gray-600 rounded-lg shadow-2xl hidden"
+        style="z-index: 99999 !important;">
+        <div class="py-3">
+            <div class="px-4 py-2 text-xs text-gray-400 uppercase font-semibold border-b border-gray-700">
+                选择管理角色
+            </div>
+            <button 
+                onclick="selectAdminRole('platform', '系统管理员')" 
+                class="admin-role-item w-full px-4 py-3 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 flex items-center space-x-3">
+                <i class="fas fa-user-shield w-4 text-blue-400"></i>
+                <div>
+                    <div class="font-medium">系统管理员</div>
+                    <div class="text-xs text-gray-500">平台数据监控与管理</div>
+                </div>
+            </button>
+            <button 
+                onclick="selectAdminRole('merchant', '商家用户')" 
+                class="admin-role-item w-full px-4 py-3 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 flex items-center space-x-3">
+                <i class="fas fa-store w-4 text-green-400"></i>
+                <div>
+                    <div class="font-medium">商家用户</div>
+                    <div class="text-xs text-gray-500">店铺管理与商品运营</div>
+                </div>
+            </button>
+            <button 
+                onclick="selectAdminRole('user', '普通用户')" 
+                class="admin-role-item w-full px-4 py-3 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 flex items-center space-x-3">
+                <i class="fas fa-user w-4 text-purple-400"></i>
+                <div>
+                    <div class="font-medium">普通用户</div>
+                    <div class="text-xs text-gray-500">个人中心与资产管理</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
 </body>
 </html> 

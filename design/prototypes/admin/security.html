@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全设置</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/security.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 安全评分和设置区域 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <!-- 安全评分区域 -->
+                <div class="security-header">
+                    <div class="security-score-container">
+                        <div class="security-score">
+                            <div class="score-circle">
+                                <svg viewBox="0 0 36 36" class="circular-chart">
+                                    <path class="circle-bg" d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                                    <path class="circle" stroke-dasharray="65, 100" d="M18 2.0845
+                                        a 15.9155 15.9155 0 0 1 0 31.831
+                                        a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                                    <text x="18" y="20.35" class="percentage">65%</text>
+                                </svg>
+                            </div>
+                            <div class="score-info">
+                                <h3>安全评分</h3>
+                                <p>您的账户安全级别中等，建议完善更多安全设置</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 安全设置内容 -->
+                <div class="security-content">
+                    <!-- 钱包安全 -->
+                    <div class="admin-section">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-wallet"></i>
+                            钱包安全
+                        </h3>
+                        
+                        <div class="admin-item">
+                            <div class="admin-item-info">
+                                <h4>交易确认</h4>
+                                <p>每笔交易前需要确认交易详情</p>
+                            </div>
+                            <div class="admin-item-action">
+                                <label class="admin-toggle-switch">
+                                    <input type="checkbox" checked id="transactionConfirmation">
+                                    <span class="admin-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-item">
+                            <div class="admin-item-info">
+                                <h4>高额交易提醒</h4>
+                                <p>交易金额超过设定阈值时发出警告</p>
+                            </div>
+                            <div class="admin-item-action">
+                                <label class="admin-toggle-switch">
+                                    <input type="checkbox" checked id="highValueAlert">
+                                    <span class="admin-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-item">
+                            <div class="admin-item-info">
+                                <h4>合约交互警告</h4>
+                                <p>与智能合约交互时显示风险提示</p>
+                            </div>
+                            <div class="admin-item-action">
+                                <label class="admin-toggle-switch">
+                                    <input type="checkbox" checked id="contractInteractionWarning">
+                                    <span class="admin-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 访问控制 -->
+                    <div class="admin-section">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-shield-alt"></i>
+                            访问控制
+                        </h3>
+                        
+                        <div class="admin-item">
+                            <div class="admin-item-info">
+                                <h4>双重认证</h4>
+                                <p>使用Google Authenticator或其他认证应用</p>
+                            </div>
+                            <div class="admin-item-action">
+                                <button class="admin-btn admin-btn-primary" id="setupTwoFactorBtn">
+                                    <i class="fas fa-plus"></i>
+                                    设置
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-item">
+                            <div class="admin-item-info">
+                                <h4>自动锁定</h4>
+                                <p>一段时间不活动后自动锁定钱包</p>
+                            </div>
+                            <div class="admin-item-action">
+                                <label class="admin-toggle-switch">
+                                    <input type="checkbox" checked id="autoLock">
+                                    <span class="admin-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-item">
+                            <div class="admin-item-info">
+                                <h4>地址白名单</h4>
+                                <p>启用后只能向白名单地址转账</p>
+                            </div>
+                            <div class="admin-item-action">
+                                <div class="admin-action-group">
+                                    <label class="admin-toggle-switch">
+                                        <input type="checkbox" id="addressWhitelist">
+                                        <span class="admin-toggle-slider"></span>
+                                    </label>
+                                    <button class="admin-btn admin-btn-outline admin-btn-sm" id="manageWhitelistBtn">
+                                        管理
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 设备管理 -->
+                    <div class="admin-section">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-laptop"></i>
+                            设备管理
+                        </h3>
+                        
+                        <div class="devices-list">
+                            <div class="device-item current">
+                                <div class="device-info">
+                                    <div class="device-icon">
+                                        <i class="fas fa-desktop"></i>
+                                    </div>
+                                    <div class="device-details">
+                                        <h4>Windows Chrome <span class="current-tag">当前设备</span></h4>
+                                        <p>最后活动: 2024-06-01 14:30:22</p>
+                                        <p class="device-ip">IP: 192.168.1.1</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <div class="device-icon">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div class="device-details">
+                                        <h4>iPhone Safari</h4>
+                                        <p>最后活动: 2024-05-28 09:15:43</p>
+                                        <p class="device-ip">IP: 172.16.0.5</p>
+                                    </div>
+                                </div>
+                                <div class="device-action">
+                                    <button class="admin-btn admin-btn-danger admin-btn-sm">
+                                        <i class="fas fa-times"></i>
+                                        断开连接
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <div class="device-icon">
+                                        <i class="fas fa-laptop"></i>
+                                    </div>
+                                    <div class="device-details">
+                                        <h4>macOS Firefox</h4>
+                                        <p>最后活动: 2024-05-25 18:22:10</p>
+                                        <p class="device-ip">IP: 10.0.0.8</p>
+                                    </div>
+                                </div>
+                                <div class="device-action">
+                                    <button class="admin-btn admin-btn-danger admin-btn-sm">
+                                        <i class="fas fa-times"></i>
+                                        断开连接
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 紧急操作 -->
+                    <div class="admin-section">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            紧急操作
+                        </h3>
+                        
+                        <div class="emergency-actions">
+                            <div class="emergency-card">
+                                <h4>紧急冻结账户</h4>
+                                <p>如果您发现可疑活动或认为您的钱包已被盗用，可以紧急冻结账户</p>
+                                <button class="admin-btn admin-btn-danger" id="freezeAccountBtn">
+                                    <i class="fas fa-lock"></i>
+                                    紧急冻结
+                                </button>
+                            </div>
+                            
+                            <div class="emergency-card">
+                                <h4>账户恢复</h4>
+                                <p>设置账户恢复选项，以便在紧急情况下恢复对钱包的访问</p>
+                                <button class="admin-btn admin-btn-primary" id="setupRecoveryBtn">
+                                    <i class="fas fa-life-ring"></i>
+                                    设置恢复选项
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最近活动记录 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-history"></i>
+                        最近活动记录
+                    </h3>
+                    
+                    <div class="admin-item" style="padding: 12px 0; margin-bottom: 16px; border-bottom: none;">
+                        <div class="admin-item-info">
+                            <div class="activity-filters">
+                                <div class="filter-group">
+                                    <button class="filter-btn active" data-filter="all">全部</button>
+                                    <button class="filter-btn" data-filter="login">登录</button>
+                                    <button class="filter-btn" data-filter="transaction">交易</button>
+                                    <button class="filter-btn" data-filter="settings">设置</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="search-filter">
+                                <div class="search-input-container">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" placeholder="搜索活动..." class="search-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-list">
+                        <div class="activity-item login">
+                            <div class="activity-icon">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </div>
+                            <div class="activity-details">
+                                <div class="activity-header">
+                                    <h4>登录成功</h4>
+                                    <span class="activity-time">2024-06-01 14:30:22</span>
+                                </div>
+                                <p>Windows Chrome · IP: 192.168.1.1 · 北京</p>
+                            </div>
+                            <div class="activity-status success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item transaction">
+                            <div class="activity-icon">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div class="activity-details">
+                                <div class="activity-header">
+                                    <h4>购买商品 "数字艺术品#3721"</h4>
+                                    <span class="activity-time">2024-05-31 18:45:10</span>
+                                </div>
+                                <p>交易哈希: 0xabc...123 · 金额: 0.5 ETH</p>
+                            </div>
+                            <div class="activity-status success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item settings">
+                            <div class="activity-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div class="activity-details">
+                                <div class="activity-header">
+                                    <h4>更改安全设置</h4>
+                                    <span class="activity-time">2024-05-30 10:15:33</span>
+                                </div>
+                                <p>启用高额交易提醒 · IP: 192.168.1.1</p>
+                            </div>
+                            <div class="activity-status success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item login warning">
+                            <div class="activity-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="activity-details">
+                                <div class="activity-header">
+                                    <h4>登录尝试失败</h4>
+                                    <span class="activity-time">2024-05-29 22:10:45</span>
+                                </div>
+                                <p>Android Chrome · IP: 103.24.56.78 · 上海</p>
+                            </div>
+                            <div class="activity-status warning">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item transaction">
+                            <div class="activity-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="activity-details">
+                                <div class="activity-header">
+                                    <h4>充值 1.5 ETH</h4>
+                                    <span class="activity-time">2024-05-28 09:45:12</span>
+                                </div>
+                                <p>交易哈希: 0xdef...456 · 来源: 外部钱包</p>
+                            </div>
+                            <div class="activity-status success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item settings">
+                            <div class="activity-icon">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <div class="activity-details">
+                                <div class="activity-header">
+                                    <h4>KYC认证申请提交</h4>
+                                    <span class="activity-time">2024-05-27 16:30:20</span>
+                                </div>
+                                <p>身份认证申请已提交，等待审核 · IP: 192.168.1.1</p>
+                            </div>
+                            <div class="activity-status pending">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-pagination">
+                        <button class="pagination-btn" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="pagination-info">显示 1-6 / 24</span>
+                        <button class="pagination-btn">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 - 双重认证设置 -->
+    <div class="modal" id="twoFactorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>设置双重认证</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="setup-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>下载认证应用</h4>
+                            <p>下载Google Authenticator或其他认证应用</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>扫描二维码</h4>
+                            <p>使用应用扫描二维码</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>验证设置</h4>
+                            <p>输入应用生成的验证码</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-content-area">
+                    <div class="step-content-item active" data-step-content="1">
+                        <p>请在您的手机上下载并安装以下任一认证应用：</p>
+                        <ul>
+                            <li>Google Authenticator (推荐)</li>
+                            <li>Microsoft Authenticator</li>
+                            <li>Authy</li>
+                        </ul>
+                        <button class="admin-btn admin-btn-primary" onclick="nextStep(2)">下一步</button>
+                    </div>
+                    
+                    <div class="step-content-item" data-step-content="2">
+                        <p>使用认证应用扫描下方二维码：</p>
+                        <div class="qr-code-container">
+                            <img src="https://via.placeholder.com/200x200/1e293b/3b82f6?text=QR+Code" alt="二维码">
+                        </div>
+                        <div class="secret-key">
+                            <p>如果无法扫描，请手动输入密钥：</p>
+                            <code>JBSWY3DPEHPK3PXP</code>
+                        </div>
+                        <div class="form-action">
+                            <button class="admin-btn admin-btn-outline" onclick="prevStep(1)">上一步</button>
+                            <button class="admin-btn admin-btn-primary" onclick="nextStep(3)">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <div class="step-content-item" data-step-content="3">
+                        <p>请输入认证应用显示的6位验证码：</p>
+                        <div class="form-group">
+                            <input type="text" class="admin-input" placeholder="验证码" maxlength="6" id="verificationCode">
+                        </div>
+                        <div class="form-action">
+                            <button class="admin-btn admin-btn-outline" onclick="prevStep(2)">上一步</button>
+                            <button class="admin-btn admin-btn-primary" onclick="completeTwoFactor()">完成设置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 - 地址白名单管理 -->
+    <div class="modal" id="whitelistModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>管理地址白名单</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">添加新地址</label>
+                    <div class="form-row">
+                        <input type="text" class="admin-input" placeholder="输入钱包地址" id="newWhitelistAddress">
+                        <button class="admin-btn admin-btn-primary">添加</button>
+                    </div>
+                </div>
+                
+                <div class="whitelist-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>地址</th>
+                                <th>添加时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="address-value">0x1234...5678</span></td>
+                                <td>2024-05-20 10:30</td>
+                                <td><button class="admin-btn admin-btn-danger admin-btn-sm">删除</button></td>
+                            </tr>
+                            <tr>
+                                <td><span class="address-value">0x9876...4321</span></td>
+                                <td>2024-05-18 14:25</td>
+                                <td><button class="admin-btn admin-btn-danger admin-btn-sm">删除</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 - 账户冻结确认 -->
+    <div class="modal" id="freezeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>确认冻结账户</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="warning-message">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="warning-text">
+                        <h4>警告：此操作将冻结您的账户</h4>
+                        <p>冻结后您将无法进行任何交易，需要联系客服才能解冻。请确认您真的需要执行此操作。</p>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">请输入 "FREEZE" 确认冻结：</label>
+                    <input type="text" class="admin-input" placeholder="输入 FREEZE" id="freezeConfirmation">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="admin-btn admin-btn-outline" onclick="closeFreezeModal()">取消</button>
+                <button class="admin-btn admin-btn-danger" onclick="confirmFreeze()">确认冻结</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/security.js"></script>
+    <script src="js/iframe-height-reporter.js"></script>
+</body>
+</html> 

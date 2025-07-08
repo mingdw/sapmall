@@ -1,0 +1,13 @@
+{
+  "name": "sapphire-mall",
+  "version": "1.0.0",
+  "description": "Web3虚拟商品交易平台",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/css/input.css -o ./design/prototypes/css/styles.css --minify",
+    "watch:css": "tailwindcss -i ./src/css/input.css -o ./design/prototypes/css/styles.css --watch",
+    "dev": "npm run watch:css"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+} 

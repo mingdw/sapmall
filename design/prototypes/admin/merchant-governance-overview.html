@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家治理概览 - SAP Mall DAO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/governance-overview.css">
+    <link rel="stylesheet" href="css/user-proposals.css">
+    <link rel="stylesheet" href="css/merchant-governance-overview.css">
+    <style>
+        .admin-section-title {
+            margin-bottom: 24px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 商家身份标识卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="merchant-identity-header">
+            <div class="identity-info">
+                <div class="identity-badge">
+                    <i class="fas fa-store"></i>
+                    认证商家
+                </div>
+                <div class="identity-details">
+                    <div class="merchant-name">TechHub 数码商城</div>
+                    <div class="merchant-level">
+                        <i class="fas fa-crown"></i>
+                        钻石级商家 (Level 5)
+                    </div>
+                </div>
+            </div>
+            <div class="identity-stats">
+                <div class="identity-stat">
+                    <div class="stat-value">4.8</div>
+                    <div class="stat-label">商家评分</div>
+                </div>
+                <div class="identity-stat">
+                    <div class="stat-value">2.3K</div>
+                    <div class="stat-label">累计订单</div>
+                </div>
+                <div class="identity-stat">
+                    <div class="stat-value">98.7%</div>
+                    <div class="stat-label">好评率</div>
+                </div>
+            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的治理权重展示 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-balance-scale"></i>
+                            我的治理权重
+                        </h3>
+                        <div class="power-level-badges">
+                            <div class="power-level-badge user-level">活跃参与者</div>
+                            <div class="power-level-badge merchant-level">优质商家</div>
+                            <div class="power-level-badge total-level">商家治理者</div>
+                    </div>
+                    </div>
+                    
+                    <div class="merchant-governance-stats-grid">
+                        <!-- 第一行：商家专属核心权重指标优先 -->
+                        <!-- 1. 商家质押量 - 最重要的商家专属治理权重 -->
+                        <div class="orders-stat-card governance-stat-card merchant-exclusive">
+                            <div class="stat-icon governance-stat-icon-green">
+                                <i class="fas fa-coins"></i>
+                </div>
+                            <div class="stat-content">
+                                <div class="stat-value">3,567.89</div>
+                                <div class="stat-label">商家质押量</div>
+                                <div class="stat-change positive">+18.7%</div>
+                </div>
+                            <div class="merchant-exclusive-badge">商家专属</div>
+            </div>
+
+                        <!-- 2. 商家影响力等级 - 商家专属权重加成 -->
+                        <div class="orders-stat-card governance-stat-card merchant-exclusive">
+                            <div class="stat-icon stat-icon-purple">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">A+</div>
+                                <div class="stat-label">商家影响力</div>
+                                <div class="stat-change positive">提升1级</div>
+                    </div>
+                            <div class="merchant-exclusive-badge">商家专属</div>
+                    </div>
+                        
+                        <!-- 3. 我的提案数 - 商家专属治理贡献 -->
+                        <div class="orders-stat-card governance-stat-card merchant-exclusive">
+                            <div class="stat-icon stat-icon-success">
+                                <i class="fas fa-file-signature"></i>
+                </div>
+                            <div class="stat-content">
+                                <div class="stat-value">7</div>
+                                <div class="stat-label">我的提案</div>
+                                <div class="stat-change positive">+2 本月</div>
+                </div>
+                            <div class="merchant-exclusive-badge">商家专属</div>
+            </div>
+
+                        <!-- 4. 商家联盟积分 - 商家生态贡献 -->
+                        <div class="orders-stat-card governance-stat-card merchant-exclusive">
+                            <div class="stat-icon stat-icon-gold">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">156</div>
+                                <div class="stat-label">商家联盟积分</div>
+                                <div class="stat-change positive">+12</div>
+                    </div>
+                            <div class="merchant-exclusive-badge">商家专属</div>
+                    </div>
+                        
+                        <!-- 第二行：普通治理权重指标 -->
+                        <!-- 5. 个人质押量 - 基础治理权重 -->
+                        <div class="orders-stat-card governance-stat-card">
+                            <div class="stat-icon governance-stat-icon">
+                                <i class="fas fa-wallet"></i>
+                </div>
+                            <div class="stat-content">
+                                <div class="stat-value">1,234.56</div>
+                                <div class="stat-label">个人质押量</div>
+                                <div class="stat-change positive">+12.3%</div>
+                </div>
+            </div>
+
+                        <!-- 6. 总投票权重 - 综合权重占比 -->
+                        <div class="orders-stat-card governance-stat-card">
+                            <div class="stat-icon governance-stat-icon-blue">
+                                <i class="fas fa-percentage"></i>
+                    </div>
+                            <div class="stat-content">
+                                <div class="stat-value">6.68%</div>
+                                <div class="stat-label">总投票权重</div>
+                                <div class="stat-change positive">+0.4%</div>
+                </div>
+            </div>
+
+                        <!-- 7. 投票参与度 - 治理活跃度 -->
+                        <div class="orders-stat-card governance-stat-card">
+                            <div class="stat-icon governance-stat-icon-green">
+                                <i class="fas fa-vote-yea"></i>
+                    </div>
+                            <div class="stat-content">
+                                <div class="stat-value">98.2%</div>
+                                <div class="stat-label">投票参与度</div>
+                                <div class="stat-change positive">+2.1%</div>
+                </div>
+            </div>
+
+                        <!-- 8. 治理积分 - 综合治理贡献 -->
+                        <div class="orders-stat-card governance-stat-card">
+                            <div class="stat-icon governance-stat-icon-purple">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">289</div>
+                                <div class="stat-label">治理积分</div>
+                                <div class="stat-change positive">+15</div>
+                            </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 活跃提案概览 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="admin-section-header">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-fire"></i>
+                            活跃提案
+                        </h3>
+                        <button class="admin-btn admin-btn-outline admin-btn-sm view-all-btn" onclick="navigateToMerchantProposals()">
+                            <i class="fas fa-arrow-right"></i>
+                            查看全部
+                        </button>
+            </div>
+
+                    <div class="proposals-list" id="proposalsList">
+                        <!-- 商家相关活跃提案 -->
+                        <div class="proposal-item merchant-proposal" data-status="voting">
+                        <div class="proposal-header">
+                            <div class="proposal-id">提案 #SIP-017</div>
+                                <div class="status-badge status-active">投票中</div>
+                        </div>
+                        <div class="proposal-title">降低商家入驻保证金至5,000 SAP</div>
+                        <div class="proposal-description">
+                                为了吸引更多优质商家入驻平台，建议将当前10,000 SAP的入驻保证金降低至5,000 SAP，同时保持其他入驻条件不变。
+                            </div>
+                            <div class="proposal-meta">
+                            <div class="proposal-info">
+                                <span><i class="fas fa-calendar"></i> 截止: 2024-01-20</span>
+                                <span><i class="fas fa-store"></i> 234 商家参与</span>
+                                <span><i class="fas fa-thumbs-up"></i> 89.5% 支持</span>
+                            </div>
+                        </div>
+                        <div class="proposal-actions">
+                            <button class="vote-btn vote-btn-yes">
+                                <i class="fas fa-thumbs-up"></i>
+                                支持
+                            </button>
+                            <button class="vote-btn vote-btn-no">
+                                <i class="fas fa-thumbs-down"></i>
+                                反对
+                            </button>
+                            <button class="vote-btn vote-btn-abstain">
+                                <i class="fas fa-minus"></i>
+                                弃权
+                            </button>
+                        </div>
+                    </div>
+
+                        <div class="proposal-item merchant-proposal" data-status="voting">
+                        <div class="proposal-header">
+                            <div class="proposal-id">提案 #SIP-018</div>
+                                <div class="status-badge status-active">投票中</div>
+                        </div>
+                        <div class="proposal-title">优质商家享受交易手续费减免</div>
+                        <div class="proposal-description">
+                                钻石级商家享受0.1%手续费减免，金牌商家享受0.05%减免，激励商家提升服务质量和用户满意度。
+                            </div>
+                            <div class="proposal-meta">
+                            <div class="proposal-info">
+                                <span><i class="fas fa-calendar"></i> 截止: 2024-01-22</span>
+                                <span><i class="fas fa-store"></i> 189 商家参与</span>
+                                <span><i class="fas fa-thumbs-up"></i> 94.2% 支持</span>
+                            </div>
+                        </div>
+                        <div class="proposal-actions">
+                                <button class="vote-btn vote-btn-voted" disabled>
+                                <i class="fas fa-check"></i>
+                                    已投票(支持)
+                            </button>
+                            <button class="vote-btn vote-btn-no">
+                                <i class="fas fa-thumbs-down"></i>
+                                反对
+                            </button>
+                            <button class="vote-btn vote-btn-abstain">
+                                <i class="fas fa-minus"></i>
+                                弃权
+                            </button>
+                </div>
+            </div>
+
+                        <!-- 全平台活跃提案 -->
+                        <div class="proposal-item" data-status="voting">
+                        <div class="proposal-header">
+                                <div class="proposal-id">提案 #SIP-015</div>
+                                <div class="status-badge status-active">投票中</div>
+                            </div>
+                    <div class="proposal-title">调整平台交易手续费率至0.25%</div>
+                    <div class="proposal-description">
+                        提议将当前0.3%的交易手续费率调整至0.25%，以提高平台竞争力并吸引更多用户。
+                    </div>
+                    <div class="proposal-meta">
+                        <div class="proposal-info">
+                            <span><i class="fas fa-calendar"></i> 截止: 2024-01-15</span>
+                            <span><i class="fas fa-users"></i> 1,234 人参与</span>
+                            <span><i class="fas fa-thumbs-up"></i> 72.3% 支持</span>
+                        </div>
+                    </div>
+                    <div class="proposal-actions">
+                        <button class="vote-btn vote-btn-yes">
+                            <i class="fas fa-thumbs-up"></i>
+                            支持
+                        </button>
+                        <button class="vote-btn vote-btn-no">
+                            <i class="fas fa-thumbs-down"></i>
+                            反对
+                        </button>
+                        <button class="vote-btn vote-btn-abstain">
+                            <i class="fas fa-minus"></i>
+                            弃权
+                        </button>
+                    </div>
+                </div>
+
+                        <div class="proposal-item" data-status="voting">
+                            <div class="proposal-header">
+                    <div class="proposal-id">提案 #SIP-016</div>
+                                <div class="status-badge status-active">投票中</div>
+                            </div>
+                    <div class="proposal-title">引入流动性挖矿激励机制</div>
+                    <div class="proposal-description">
+                        提议在SAP/ETH和SAP/USDT流动性池中引入额外的挖矿激励机制。
+                    </div>
+                    <div class="proposal-meta">
+                        <div class="proposal-info">
+                            <span><i class="fas fa-calendar"></i> 截止: 2024-01-18</span>
+                            <span><i class="fas fa-users"></i> 892 人参与</span>
+                            <span><i class="fas fa-thumbs-up"></i> 89.2% 支持</span>
+                        </div>
+                    </div>
+                    <div class="proposal-actions">
+                                <button class="vote-btn vote-btn-voted" disabled>
+                            <i class="fas fa-check"></i>
+                                    已投票(支持)
+                        </button>
+                        <button class="vote-btn vote-btn-no">
+                            <i class="fas fa-thumbs-down"></i>
+                            反对
+                        </button>
+                        <button class="vote-btn vote-btn-abstain">
+                            <i class="fas fa-minus"></i>
+                            弃权
+                        </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商家增强版快速操作 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                <i class="fas fa-rocket"></i>
+                快速操作
+                    </h3>
+                    
+                    <div class="merchant-actions-grid">
+                        <!-- 商家特权操作 -->
+                        <a href="#" class="merchant-action-item merchant-special" onclick="createProposal(); return false;">
+                    <div class="action-icon green">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                            <div class="action-content">
+                    <div class="action-title">创建提案</div>
+                    <div class="action-description">发起新的治理提案，推动平台发展</div>
+                            </div>
+                    <div class="action-badge">商家特权</div>
+                </a>
+
+                        <a href="#" class="merchant-action-item merchant-special" onclick="showMerchantData(); return false;">
+                    <div class="action-icon teal">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                            <div class="action-content">
+                    <div class="action-title">商家数据</div>
+                    <div class="action-description">查看商家治理影响力和贡献统计</div>
+                            </div>
+                    <div class="action-badge">商家专属</div>
+                </a>
+
+                        <a href="#" class="merchant-action-item merchant-special" onclick="showMerchantAlliance(); return false;">
+                    <div class="action-icon gold">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                            <div class="action-content">
+                    <div class="action-title">商家联盟</div>
+                    <div class="action-description">加入商家联盟，共同参与平台治理</div>
+                            </div>
+                    <div class="action-badge">商家专属</div>
+                </a>
+
+                <!-- 普通操作 -->
+                        <a href="#" class="merchant-action-item" onclick="navigateToVotingCenter(); return false;">
+                    <div class="action-icon blue">
+                        <i class="fas fa-vote-yea"></i>
+                    </div>
+                            <div class="action-content">
+                    <div class="action-title">投票中心</div>
+                    <div class="action-description">查看并参与所有进行中的提案投票</div>
+                            </div>
+                </a>
+
+                        <a href="#" class="merchant-action-item" onclick="navigateToCommunity(); return false;">
+                    <div class="action-icon purple">
+                        <i class="fas fa-users"></i>
+                    </div>
+                            <div class="action-content">
+                    <div class="action-title">社区参与</div>
+                    <div class="action-description">参与社区讨论和活动，提升治理影响力</div>
+                            </div>
+                </a>
+
+                        <a href="#" class="merchant-action-item" onclick="navigateToLearning(); return false;">
+                    <div class="action-icon orange">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                            <div class="action-content">
+                    <div class="action-title">治理学习</div>
+                    <div class="action-description">了解DAO治理机制和最佳实践</div>
+                            </div>
+                </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/governance-overview.js"></script>
+    <script src="js/merchant-governance-overview.js"></script>
+</body>
+</html> 

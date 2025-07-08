@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>平台概览 - Sapphire Mall</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        .stat-icon i {
+            color: #fff !important;
+            font-size: 18px;   /* 原32px，缩小为22px */
+            line-height: 1;
+        }
+        @media (max-width: 768px) {
+            .stat-icon i {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 平台核心数据概览 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-chart-line"></i>
+                            平台核心数据
+                        </h3>
+                        <div class="dashboard-actions">
+                            <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="refreshDashboard()">
+                                <i class="fas fa-refresh"></i>
+                                刷新数据
+                            </button>
+                            <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="exportDashboard()">
+                                <i class="fas fa-download"></i>
+                                导出报告
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-stats-grid">
+                        <!-- 总用户数 -->
+                        <div class="dashboard-stat-card stat-primary">
+                            <div class="stat-content-wrapper">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>12,345</h3>
+                                    <p>总用户数</p>
+                                </div>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+12.5%</span>
+                            </div>
+                        </div>
+
+                        <!-- 总交易额 -->
+                        <div class="dashboard-stat-card stat-success">
+                            <div class="stat-content-wrapper">
+                                <div class="stat-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>1,234,567 SAP</h3>
+                                    <p>总交易额</p>
+                                </div>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+8.3%</span>
+                            </div>
+                        </div>
+
+                        <!-- 商品数量 -->
+                        <div class="dashboard-stat-card stat-purple">
+                            <div class="stat-content-wrapper">
+                                <div class="stat-icon">
+                                    <i class="fas fa-shopping-bag"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>3,456</h3>
+                                    <p>商品数量</p>
+                                </div>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+15.2%</span>
+                            </div>
+                        </div>
+
+                        <!-- 活跃商家 -->
+                        <div class="dashboard-stat-card stat-orange">
+                            <div class="stat-content-wrapper">
+                                <div class="stat-icon">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3>234</h3>
+                                    <p>活跃商家</p>
+                                </div>
+                            </div>
+                            <div class="stat-trend positive">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>+5.7%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 系统状态监控 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-server"></i>
+                            系统状态监控
+                        </h3>
+                        <button class="system-status-refresh-btn" onclick="refreshSystemStatus()">
+                            <i class="fas fa-rotate-right"></i> 刷新
+                        </button>
+                    </div>
+                    
+                    <div class="system-status-grid">
+                        <div class="system-status-card status-healthy">
+                            <div class="status-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="status-content">
+                                <h4>API服务</h4>
+                                <p>运行正常</p>
+                                <span class="status-detail">响应时间: 45ms</span>
+                            </div>
+                        </div>
+                        <div class="system-status-card status-healthy">
+                            <div class="status-icon"><i class="fas fa-database"></i></div>
+                            <div class="status-content">
+                                <h4>数据库</h4>
+                                <p>连接正常</p>
+                                <span class="status-detail">连接数: 45/100</span>
+                            </div>
+                        </div>
+                        <div class="system-status-card status-warning">
+                            <div class="status-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="status-content">
+                                <h4>缓存服务</h4>
+                                <p>性能下降</p>
+                                <span class="status-detail">命中率: 78%</span>
+                            </div>
+                        </div>
+                        <div class="system-status-card status-healthy">
+                            <div class="status-icon"><i class="fas fa-link"></i></div>
+                            <div class="status-content">
+                                <h4>区块链节点</h4>
+                                <p>同步正常</p>
+                                <span class="status-detail">区块高度: 1,234,567</span>
+                            </div>
+                        </div>
+                        <div class="system-status-card status-healthy">
+                            <div class="status-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="status-content">
+                                <h4>邮件服务</h4>
+                                <p>运行正常</p>
+                                <span class="status-detail">成功率: 99.8%</span>
+                            </div>
+                        </div>
+                        <div class="system-status-card status-healthy">
+                            <div class="status-icon"><i class="fas fa-tasks"></i></div>
+                            <div class="status-content">
+                                <h4>定时任务调度</h4>
+                                <p>全部正常</p>
+                                <span class="status-detail">延迟: 0.2s</span>
+                            </div>
+                        </div>
+                        <div class="system-status-card status-healthy">
+                            <div class="status-icon"><i class="fas fa-exchange-alt"></i></div>
+                            <div class="status-content">
+                                <h4>消息队列</h4>
+                                <p>运行正常</p>
+                                <span class="status-detail">积压: 0</span>
+                            </div>
+                        </div>
+                        <div class="system-status-card status-healthy">
+                            <div class="status-icon"><i class="fas fa-cloud"></i></div>
+                            <div class="status-content">
+                                <h4>对象存储</h4>
+                                <p>可用</p>
+                                <span class="status-detail">容量: 80%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 实时交易监控 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-bolt"></i>
+                            实时交易监控
+                        </h3>
+                        <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="viewAllTransactions()">
+                            <i class="fas fa-external-link-alt"></i>
+                            查看全部
+                        </button>
+                    </div>
+                    
+                    <div class="realtime-transactions">
+                        <div class="transaction-item">
+                            <div class="transaction-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="transaction-info">
+                                <div class="transaction-title">数字艺术作品购买</div>
+                                <div class="transaction-details">
+                                    <span class="buyer">0x1234...5678</span>
+                                    <span class="amount">￥1,299.00</span>
+                                </div>
+                            </div>
+                            <div class="transaction-time">2分钟前</div>
+                        </div>
+                        
+                        <div class="transaction-item">
+                            <div class="transaction-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="transaction-info">
+                                <div class="transaction-title">软件授权购买</div>
+                                <div class="transaction-details">
+                                    <span class="buyer">0x9876...4321</span>
+                                    <span class="amount">￥899.00</span>
+                                </div>
+                            </div>
+                            <div class="transaction-time">5分钟前</div>
+                        </div>
+                        
+                        <div class="transaction-item">
+                            <div class="transaction-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="transaction-info">
+                                <div class="transaction-title">在线课程购买</div>
+                                <div class="transaction-details">
+                                    <span class="buyer">0x5678...9012</span>
+                                    <span class="amount">￥199.00</span>
+                                </div>
+                            </div>
+                            <div class="transaction-time">8分钟前</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快捷操作面板 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-tools"></i>
+                            快捷操作
+                        </h3>
+                    </div>
+                    
+                    <div class="quick-actions-grid">
+                        <div class="quick-action-card" onclick="navigateToUserManagement()">
+                            <div class="action-icon">
+                                <i class="fas fa-users-cog"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>用户管理</h5>
+                                <p>管理用户账户和权限</p>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-action-card" onclick="navigateToOrderManagement()">
+                            <div class="action-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>订单管理</h5>
+                                <p>查看和处理订单</p>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-action-card" onclick="navigateToContractManagement()">
+                            <div class="action-icon">
+                                <i class="fas fa-file-contract"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>合约管理</h5>
+                                <p>智能合约监控</p>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-action-card" onclick="navigateToGovernance()">
+                            <div class="action-icon">
+                                <i class="fas fa-vote-yea"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>DAO治理</h5>
+                                <p>治理提案管理</p>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-action-card" onclick="navigateToSystemSettings()">
+                            <div class="action-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>系统设置</h5>
+                                <p>平台配置管理</p>
+                            </div>
+                        </div>
+                        
+                        <div class="quick-action-card" onclick="navigateToAnalytics()">
+                            <div class="action-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>数据分析</h5>
+                                <p>平台数据报表</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 系统告警 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <div class="governance-header-row">
+                        <h3 class="admin-section-title">
+                            <i class="fas fa-bell"></i>
+                            系统告警
+                        </h3>
+                        <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="viewAllAlerts()">
+                            <i class="fas fa-external-link-alt"></i>
+                            查看全部
+                        </button>
+                    </div>
+                    
+                    <div class="alerts-list">
+                        <div class="alert-item alert-warning">
+                            <div class="alert-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <div class="alert-title">缓存服务性能下降</div>
+                                <div class="alert-description">Redis缓存命中率低于80%，建议检查缓存策略</div>
+                                <div class="alert-time">10分钟前</div>
+                            </div>
+                            <div class="alert-actions">
+                                <button class="admin-btn admin-btn-sm admin-btn-outline" onclick="handleAlert('cache')">
+                                    处理
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="alert-item alert-info">
+                            <div class="alert-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <div class="alert-title">新用户注册量激增</div>
+                                <div class="alert-description">过去1小时新增用户156人，较平时增长200%</div>
+                                <div class="alert-time">30分钟前</div>
+                            </div>
+                            <div class="alert-actions">
+                                <button class="admin-btn admin-btn-sm admin-btn-outline" onclick="viewUserAnalytics()">
+                                    查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/dashboard.js"></script>
+    <script src="js/iframe-height-reporter.js"></script>
+</body>
+</html> 

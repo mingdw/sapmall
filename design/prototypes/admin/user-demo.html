@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>普通用户后台演示 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                        accent: '#F59E0B',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .demo-frame {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .demo-frame:hover {
+            border-color: #10b981;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .demo-frame iframe {
+            width: 100%;
+            border: none;
+            display: block;
+        }
+        
+        .module-header {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 页面头部 -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-user text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">普通用户后台演示</h1>
+                        <p class="text-sm text-gray-600">个人中心、资产管理、交易管理、DAO治理</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="window.close()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-times mr-2"></i>
+                        关闭演示
+                    </button>
+                    <button onclick="openFullDemo()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                        <i class="fas fa-expand mr-2"></i>
+                        完整体验
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 角色介绍 -->
+        <div class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-8 text-white mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4">普通用户后台</h2>
+                    <p class="text-green-100 text-lg mb-6">
+                        普通用户可以管理个人信息、查看资产状况、处理订单交易、参与DAO治理等功能
+                    </p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">4</div>
+                            <div class="text-green-100 text-sm">主要模块</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">12</div>
+                            <div class="text-green-100 text-sm">功能页面</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">100%</div>
+                            <div class="text-green-100 text-sm">响应式</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">Web3</div>
+                            <div class="text-green-100 text-sm">原生支持</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden lg:block">
+                    <div class="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-6xl text-white/80"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块1: 个人中心 -->
+        <section class="mb-12">
+            <div class="module-header px-6 py-4 rounded-t-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-user text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="text-xl font-bold">个人中心</h3>
+                        <p class="text-green-100">个人信息管理、账户设置、安全中心、通知设置</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-white p-6 rounded-b-xl border border-gray-200">
+                <!-- 个人信息 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">个人信息</h4>
+                                <p class="text-sm text-gray-600">用户资料、头像、基本信息管理</p>
+                            </div>
+                            <button onclick="openPage('user-profile.html')" class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" 
+                                 alt="用户头像" class="w-16 h-16 rounded-full mr-4">
+                            <div>
+                                <h5 class="font-semibold text-gray-900">John Doe</h5>
+                                <p class="text-sm text-gray-600">john.doe@example.com</p>
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    已认证
+                                </span>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">钱包地址:</span>
+                                <span class="text-sm font-mono text-blue-600">0x1234...abcd</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">注册时间:</span>
+                                <span class="text-gray-900">2024-01-15</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">用户等级:</span>
+                                <span class="text-yellow-600 font-medium">黄金会员</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 安全中心 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">安全中心</h4>
+                                <p class="text-sm text-gray-600">密码管理、双重认证、安全设置</p>
+                            </div>
+                            <button onclick="openPage('user-security.html')" class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-shield-alt text-green-500 mr-3"></i>
+                                    <span class="text-gray-900">登录密码</span>
+                                </div>
+                                <span class="text-green-600 text-sm">已设置</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-mobile-alt text-green-500 mr-3"></i>
+                                    <span class="text-gray-900">手机验证</span>
+                                </div>
+                                <span class="text-green-600 text-sm">已绑定</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-envelope text-yellow-500 mr-3"></i>
+                                    <span class="text-gray-900">邮箱验证</span>
+                                </div>
+                                <span class="text-yellow-600 text-sm">待验证</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-key text-blue-500 mr-3"></i>
+                                    <span class="text-gray-900">双重认证</span>
+                                </div>
+                                <span class="text-blue-600 text-sm">已启用</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块2: 我的资产 -->
+        <section class="mb-12">
+            <div class="module-header px-6 py-4 rounded-t-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-wallet text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="text-xl font-bold">我的资产</h3>
+                        <p class="text-green-100">代币余额、质押管理、交易记录</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white p-6 rounded-b-xl border border-gray-200">
+                <!-- 代币余额 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">代币余额</h4>
+                                <p class="text-sm text-gray-600">SAP代币及其他资产</p>
+                            </div>
+                            <button onclick="openPage('user-balance.html')" class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-center mb-4">
+                            <div class="text-3xl font-bold text-blue-600">1,250.50</div>
+                            <div class="text-gray-600">SAP 代币</div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">ETH:</span>
+                                <span class="font-medium">0.5 ETH</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">USDT:</span>
+                                <span class="font-medium">500.00 USDT</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">总价值:</span>
+                                <span class="font-bold text-green-600">$2,150.75</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 质押管理 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">质押管理</h4>
+                                <p class="text-sm text-gray-600">代币质押、收益查看</p>
+                            </div>
+                            <button onclick="openPage('user-staking.html')" class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-center mb-4">
+                            <div class="text-2xl font-bold text-purple-600">800.00</div>
+                            <div class="text-gray-600">已质押 SAP</div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">年化收益:</span>
+                                <span class="font-medium text-green-600">12.5%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">累计收益:</span>
+                                <span class="font-medium">45.20 SAP</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">解锁时间:</span>
+                                <span class="text-sm">30天后</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 交易记录 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">交易记录</h4>
+                                <p class="text-sm text-gray-600">最近的资产交易</p>
+                            </div>
+                            <button onclick="openPage('user-transactions.html')" class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fas fa-plus text-green-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium">购物奖励</div>
+                                        <div class="text-xs text-gray-500">2小时前</div>
+                                    </div>
+                                </div>
+                                <span class="text-green-600 font-medium">+15.5 SAP</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fas fa-chart-line text-blue-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium">质押收益</div>
+                                        <div class="text-xs text-gray-500">1天前</div>
+                                    </div>
+                                </div>
+                                <span class="text-blue-600 font-medium">+2.1 SAP</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fas fa-minus text-red-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium">商品购买</div>
+                                        <div class="text-xs text-gray-500">2天前</div>
+                                    </div>
+                                </div>
+                                <span class="text-red-600 font-medium">-299 SAP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块3: 交易管理 -->
+        <section class="mb-12">
+            <div class="module-header px-6 py-4 rounded-t-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-shopping-cart text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="text-xl font-bold">交易管理</h3>
+                        <p class="text-green-100">收货地址、我的订单、退款/售后</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white p-6 rounded-b-xl border border-gray-200">
+                <!-- 收货地址 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">收货地址</h4>
+                                <p class="text-sm text-gray-600">管理收货地址信息</p>
+                            </div>
+                            <button onclick="openPage('user-addresses.html')" class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="border border-gray-200 rounded-lg p-4 mb-3">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium text-gray-900">家庭地址</span>
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">默认</span>
+                            </div>
+                            <p class="text-sm text-gray-600">John Doe</p>
+                            <p class="text-sm text-gray-600">北京市朝阳区xxx街道xxx号</p>
+                            <p class="text-sm text-gray-600">电话: 138****8888</p>
+                        </div>
+                        <button class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>
+                            添加新地址
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 我的订单 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">我的订单</h4>
+                                <p class="text-sm text-gray-600">订单状态、物流跟踪</p>
+                            </div>
+                            <button onclick="openPage('user-orders.html')" class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-medium">#ORD-2024-001</span>
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">已完成</span>
+                                </div>
+                                <p class="text-sm text-gray-600">AI设计课程</p>
+                                <p class="text-sm text-gray-900 font-medium">299 SAP</p>
+                            </div>
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-medium">#ORD-2024-002</span>
+                                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">处理中</span>
+                                </div>
+                                <p class="text-sm text-gray-600">区块链开发工具</p>
+                                <p class="text-sm text-gray-900 font-medium">599 SAP</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 退款/售后 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">退款/售后</h4>
+                                <p class="text-sm text-gray-600">申请退款、售后服务</p>
+                            </div>
+                            <button onclick="openPage('user-refunds.html')" class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-center py-8">
+                            <i class="fas fa-check-circle text-green-500 text-4xl mb-4"></i>
+                            <p class="text-gray-600 mb-4">暂无退款申请</p>
+                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                申请退款
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块4: DAO治理 -->
+        <section class="mb-12">
+            <div class="module-header px-6 py-4 rounded-t-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-vote-yea text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="text-xl font-bold">DAO治理</h3>
+                        <p class="text-green-100">提案列表、我的投票、治理代币、社区活动</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-white p-6 rounded-b-xl border border-gray-200">
+                <!-- 提案列表 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">提案列表</h4>
+                                <p class="text-sm text-gray-600">社区提案、投票参与</p>
+                            </div>
+                            <button onclick="openPage('user-proposals.html')" class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h5 class="font-medium text-gray-900">提案 #001</h5>
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">进行中</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">增加新的商品分类支持</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="text-sm text-gray-500">
+                                        <i class="fas fa-users mr-1"></i>
+                                        1,234 票
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        剩余 5 天
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h5 class="font-medium text-gray-900">提案 #002</h5>
+                                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">已通过</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">优化代币奖励机制</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="text-sm text-gray-500">
+                                        <i class="fas fa-users mr-1"></i>
+                                        2,567 票
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        已结束
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 我的投票 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">我的投票</h4>
+                                <p class="text-sm text-gray-600">投票历史、治理参与</p>
+                            </div>
+                            <button onclick="openPage('user-voting.html')" class="text-green-600 hover:text-green-800">
+                                <i class="fas fa-external-link-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="text-center mb-6">
+                            <div class="text-2xl font-bold text-blue-600">85.5%</div>
+                            <div class="text-gray-600">投票参与率</div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-sm font-medium">提案 #001</div>
+                                    <div class="text-xs text-gray-500">2024-01-15</div>
+                                </div>
+                                <span class="text-green-600 text-sm font-medium">赞成</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-sm font-medium">提案 #002</div>
+                                    <div class="text-xs text-gray-500">2024-01-10</div>
+                                </div>
+                                <span class="text-green-600 text-sm font-medium">赞成</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-sm font-medium">提案 #003</div>
+                                    <div class="text-xs text-gray-500">2024-01-05</div>
+                                </div>
+                                <span class="text-red-600 text-sm font-medium">反对</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 快速操作 -->
+        <section class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">
+                <i class="fas fa-bolt text-yellow-500 mr-2"></i>
+                快速操作
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="openFullDemo()" class="flex flex-col items-center p-6 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+                    <i class="fas fa-desktop text-green-600 text-2xl mb-3"></i>
+                    <span class="text-sm font-medium text-gray-700">完整体验</span>
+                </button>
+                
+                <button onclick="openPage('user-profile.html')" class="flex flex-col items-center p-6 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                    <i class="fas fa-user text-blue-600 text-2xl mb-3"></i>
+                    <span class="text-sm font-medium text-gray-700">个人资料</span>
+                </button>
+                
+                <button onclick="openPage('user-balance.html')" class="flex flex-col items-center p-6 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
+                    <i class="fas fa-wallet text-purple-600 text-2xl mb-3"></i>
+                    <span class="text-sm font-medium text-gray-700">资产管理</span>
+                </button>
+                
+                <button onclick="openPage('user-orders.html')" class="flex flex-col items-center p-6 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors">
+                    <i class="fas fa-shopping-cart text-orange-600 text-2xl mb-3"></i>
+                    <span class="text-sm font-medium text-gray-700">我的订单</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <span class="text-lg font-semibold text-gray-900">普通用户后台演示</span>
+                </div>
+                <p class="text-gray-600 mb-4">Sapphire Mall 区块链商城平台</p>
+                <p class="text-sm text-gray-500">© 2024 Sapphire Mall. 基于现代Web技术构建的高保真原型</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 打开完整演示
+        function openFullDemo() {
+            window.open('index.html?role=user', '_blank');
+        }
+        
+        // 打开具体页面
+        function openPage(page) {
+            window.open(page, '_blank');
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('普通用户后台演示页面加载完成');
+            
+            // 添加一些交互效果
+            const cards = document.querySelectorAll('.demo-frame');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

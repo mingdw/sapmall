@@ -1,0 +1,1171 @@
+/* 
+ * 账户余额页面独有样式
+ * 只包含页面特有的组件样式，如余额概览、质押统计、交易记录等
+ */
+
+/* ==================== 余额概览样式 ==================== */
+
+/* 余额概览容器 */
+.balance-overview {
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+/* 主余额显示 */
+.main-balance {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.balance-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 28px;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+}
+
+.balance-details {
+    flex: 1;
+}
+
+.balance-amount {
+    font-size: 28px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 4px;
+}
+
+.balance-label {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.balance-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* 余额统计卡片 */
+.balance-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.balance-stat-card {
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s ease;
+}
+
+.balance-stat-card:hover {
+    background: rgba(30, 41, 59, 0.6);
+    transform: translateY(-2px);
+}
+
+.balance-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.balance-stat-icon-success {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.balance-stat-icon-warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+}
+
+.balance-stat-icon-purple {
+    background: rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
+}
+
+.balance-stat-content {
+    flex: 1;
+}
+
+.balance-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 4px;
+}
+
+.balance-stat-label {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+/* ==================== 质押概览样式 ==================== */
+
+.staking-overview {
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.staking-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.summary-stats {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.summary-stat {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s ease;
+}
+
+.summary-stat:hover {
+    transform: translateY(-2px);
+}
+
+.summary-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.staking-pools-summary {
+    margin-top: 24px;
+}
+
+.pools-summary-title {
+    color: #e2e8f0;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.pools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.pool-summary-item {
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    transition: all 0.2s ease;
+}
+
+.pool-summary-item:hover {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.pool-summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.pool-summary-name {
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+.pool-summary-apy {
+    color: #10b981;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pool-summary-amount {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+/* ==================== 奖励概览样式 ==================== */
+
+.rewards-overview {
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.rewards-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.rewards-main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.rewards-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #059669);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 28px;
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+}
+
+.rewards-details {
+    flex: 1;
+}
+
+.rewards-amount {
+    font-size: 28px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 4px;
+}
+
+.rewards-label {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.rewards-types {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.rewards-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.rewards-breakdown-summary {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.breakdown-item-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    transition: all 0.2s ease;
+    flex: 1;
+    min-width: 200px;
+}
+
+.breakdown-item-summary:hover {
+    background: rgba(15, 23, 42, 0.6);
+    transform: translateY(-2px);
+}
+
+.breakdown-summary-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.breakdown-summary-icon-purple {
+    background: rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
+}
+
+.breakdown-summary-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.breakdown-summary-label {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.breakdown-summary-amount {
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+/* ==================== 快速操作样式 ==================== */
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 12px;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-item:hover {
+    background: rgba(30, 41, 59, 0.6);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+.action-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(59, 130, 246, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    font-size: 20px;
+    transition: all 0.2s ease;
+}
+
+.action-item:hover .action-icon {
+    background: rgba(59, 130, 246, 0.3);
+    transform: scale(1.1);
+}
+
+.action-text {
+    color: #e2e8f0;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* ==================== 交易记录样式 ==================== */
+
+/* 更新过滤器和搜索框布局 */
+.activity-filters {
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    padding-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.transaction-header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* 搜索输入框容器 */
+.search-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input-container i {
+    position: absolute;
+    left: 12px;
+    color: #64748b;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.search-input {
+    background: rgba(51, 65, 85, 0.4);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    color: #e2e8f0;
+    padding: 8px 12px 8px 36px;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 200px;
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: rgba(51, 65, 85, 0.6);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-input::placeholder {
+    color: #64748b;
+}
+
+.section-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.transaction-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+/* 重新设计交易项布局 - 一行展示 */
+.transaction-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 12px;
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    transition: all 0.2s ease;
+    min-height: 70px;
+}
+
+.transaction-item:hover {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+}
+
+/* 主要信息区域 */
+.transaction-main-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0; /* 允许压缩 */
+}
+
+.transaction-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.receive-icon {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.send-icon {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.stake-icon {
+    background: rgba(139, 92, 246, 0.15);
+    color: #8b5cf6;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.swap-icon {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.reward-icon {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.transaction-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.transaction-title {
+    color: #e2e8f0;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.transaction-info {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.transaction-address {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.transaction-address code {
+    color: #3b82f6;
+    font-family: monospace;
+    background: rgba(59, 130, 246, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.transaction-time {
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* 金额区域 */
+.transaction-amount-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 140px;
+    text-align: right;
+}
+
+.transaction-amount {
+    font-size: 16px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.positive {
+    color: #10b981;
+}
+
+.negative {
+    color: #ef4444;
+}
+
+.neutral {
+    color: #94a3b8;
+}
+
+/* 状态区域 */
+.transaction-status-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+/* 美化的查看详情按钮 */
+.transaction-detail-btn {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.transaction-detail-btn:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.transaction-detail-btn:active {
+    transform: translateY(0);
+}
+
+.transaction-detail-btn i {
+    font-size: 14px;
+}
+
+/* 交易状态标签 */
+.transaction-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+
+.transaction-badge i {
+    font-size: 11px;
+}
+
+.transaction-badge-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.transaction-badge-info {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.transaction-badge-warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.2);
+}
+
+/* 美化的分页样式 */
+.transaction-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.pagination-btn {
+    background: rgba(51, 65, 85, 0.4);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    color: #94a3b8;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: rgba(51, 65, 85, 0.6);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-pages {
+    display: flex;
+    gap: 4px;
+}
+
+.pagination-page {
+    background: rgba(51, 65, 85, 0.4);
+    border: 1px solid rgba(71, 85, 105, 0.3);
+    color: #94a3b8;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.pagination-page:hover {
+    background: rgba(51, 65, 85, 0.6);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+}
+
+.pagination-page.active {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.pagination-page.active:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+}
+
+/* ==================== 收款地址样式 ==================== */
+
+.address-container {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.qrcode-container {
+    flex-shrink: 0;
+}
+
+.qrcode-placeholder {
+    width: 120px;
+    height: 120px;
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #64748b;
+    border: 2px dashed rgba(51, 65, 85, 0.3);
+}
+
+.address-details {
+    flex: 1;
+}
+
+.address-label {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.address-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+/* ==================== 模态框样式 ==================== */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.2s ease;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: #1e293b;
+    margin: auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.modal-header h3 {
+    color: #e2e8f0;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 24px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.close-modal:hover {
+    background: rgba(51, 65, 85, 0.3);
+    color: #e2e8f0;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.transaction-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+}
+
+.transaction-detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.detail-value {
+    color: #e2e8f0;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detail-value code {
+    background: rgba(51, 65, 85, 0.3);
+    color: #3b82f6;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.transaction-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+/* ==================== 响应式设计 ==================== */
+
+@media (max-width: 768px) {
+    .balance-overview {
+        padding: 16px;
+    }
+
+    .main-balance {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .balance-actions {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .balance-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .balance-stat-card {
+        padding: 12px;
+    }
+
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* 交易记录响应式调整 */
+    .transaction-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .activity-filters {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .transaction-header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .search-input {
+        width: 160px;
+    }
+
+    .filter-group {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 8px;
+    }
+
+    .filter-group::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .filter-group::-webkit-scrollbar-track {
+        background: rgba(51, 65, 85, 0.3);
+        border-radius: 2px;
+    }
+
+    .filter-group::-webkit-scrollbar-thumb {
+        background: rgba(59, 130, 246, 0.4);
+        border-radius: 2px;
+    }
+
+    /* 移动端交易项目调整 */
+    .transaction-item {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px;
+        gap: 12px;
+        min-height: auto;
+    }
+
+    .transaction-main-info {
+        width: 100%;
+    }
+
+    .transaction-amount-section {
+        width: 100%;
+        justify-content: flex-start;
+        min-width: auto;
+    }
+
+    .transaction-amount {
+        font-size: 18px;
+    }
+
+    .transaction-status-section {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .transaction-badge {
+        flex: 1;
+        justify-content: center;
+        min-width: 100px;
+    }
+
+    .section-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .address-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .qrcode-container {
+        align-self: center;
+    }
+
+    .summary-stats {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .summary-actions {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .pools-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rewards-summary {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .rewards-main {
+        flex-direction: column;
+    }
+
+    .rewards-actions {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .rewards-breakdown-summary {
+        flex-direction: column;
+    }
+
+    .breakdown-item-summary {
+        min-width: auto;
+    }
+
+    .transaction-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .transaction-status {
+        align-items: flex-start;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .transaction-pagination {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .pagination-pages {
+        order: -1;
+        margin-bottom: 8px;
+    }
+}
+
+/* 快速操作按钮样式调整 */
+.balance-actions button,
+.summary-actions button,
+.rewards-actions button {
+    height: 36px;
+    border-radius: 18px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 16px;
+    min-width: 100px;
+}
+
+/* 主要操作按钮样式 */
+.balance-actions .admin-btn-primary,
+.summary-actions .admin-btn-primary,
+.rewards-actions .admin-btn-primary {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    box-shadow: 0 3px 12px rgba(16, 185, 129, 0.2);
+}
+
+.balance-actions .admin-btn-primary:hover,
+.summary-actions .admin-btn-primary:hover,
+.rewards-actions .admin-btn-primary:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* 次要操作按钮样式 */
+.balance-actions .admin-btn-outline,
+.summary-actions .admin-btn-outline,
+.rewards-actions .admin-btn-outline {
+    background: rgba(51, 65, 85, 0.4);
+    border: 1px solid rgba(71, 85, 105, 0.5);
+    color: #94a3b8;
+    box-shadow: 0 3px 12px rgba(51, 65, 85, 0.2);
+}
+
+.balance-actions .admin-btn-outline:hover,
+.summary-actions .admin-btn-outline:hover,
+.rewards-actions .admin-btn-outline:hover {
+    background: rgba(51, 65, 85, 0.6);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(51, 65, 85, 0.3);
+}
+
+/* 特殊功能按钮 - 领取相关 */
+.rewards-actions .admin-btn-primary {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    box-shadow: 0 3px 12px rgba(245, 158, 11, 0.2);
+}
+
+.rewards-actions .admin-btn-primary:hover {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+}
+
+/* 交易记录操作按钮 */
+.transaction-header-actions .admin-btn,
+.transaction-actions .admin-btn {
+    height: 32px;
+    border-radius: 16px;
+    font-size: 11px;
+    padding: 0 12px;
+    min-width: 80px;
+}
+
+/* 分页按钮调整 */
+.transaction-pagination .pagination-btn,
+.transaction-pagination .pagination-page {
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    font-size: 12px;
+}
+
+/* 地址操作按钮 */
+.address-actions .admin-btn {
+    height: 32px;
+    border-radius: 16px;
+    font-size: 11px;
+    padding: 0 12px;
+    min-width: 80px;
+} 

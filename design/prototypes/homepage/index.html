@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sapphire Mall - 去中心化区块链商城</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                        accent: '#F59E0B',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-lg fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-gem text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-900">Sapphire Mall</span>
+                </div>
+                
+                <!-- 导航菜单 -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-gray-700 hover:text-blue-600 transition-colors">产品特性</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-blue-600 transition-colors">工作原理</a>
+                    <a href="#roadmap" class="text-gray-700 hover:text-blue-600 transition-colors">发展路线</a>
+                    <a href="#team" class="text-gray-700 hover:text-blue-600 transition-colors">团队介绍</a>
+                    <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-rocket mr-2"></i>
+                        立即体验
+                    </button>
+                </div>
+                
+                <!-- 移动端菜单按钮 -->
+                <div class="md:hidden">
+                    <button class="text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero区域 -->
+    <section class="hero-gradient pt-20 pb-16 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- 左侧内容 -->
+                <div>
+                    <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                        去中心化
+                        <span class="block text-yellow-300">区块链商城</span>
+                    </h1>
+                    <p class="text-xl mb-8 text-blue-100 leading-relaxed">
+                        基于区块链技术的新一代电商平台，支持智能合约交易、DAO治理、NFT商品等创新功能。
+                        让每一次购物都成为价值投资。
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                            <i class="fas fa-play mr-2"></i>
+                            开始购物
+                        </button>
+                        <button class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                            <i class="fas fa-book mr-2"></i>
+                            了解更多
+                        </button>
+                    </div>
+                    
+                    <!-- 统计数据 -->
+                    <div class="grid grid-cols-3 gap-8 mt-12">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-yellow-300">10K+</div>
+                            <div class="text-blue-100">活跃用户</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-yellow-300">500+</div>
+                            <div class="text-blue-100">商品数量</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-yellow-300">$2M+</div>
+                            <div class="text-blue-100">交易总额</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧图片 -->
+                <div class="relative">
+                    <div class="floating-animation">
+                        <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&h=400&fit=crop&crop=center" 
+                             alt="区块链商城概念图" class="rounded-2xl shadow-2xl">
+                        <!-- 图片来源: https://images.unsplash.com/photo-1639762681485-074b7f938ba0 -->
+                    </div>
+                    
+                    <!-- 浮动卡片 -->
+                    <div class="absolute -top-4 -left-4 bg-white rounded-lg p-4 shadow-lg">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-shield-alt text-green-600"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-gray-900">安全保障</div>
+                                <div class="text-xs text-gray-600">智能合约保护</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute -bottom-4 -right-4 bg-white rounded-lg p-4 shadow-lg">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-coins text-blue-600"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-gray-900">代币奖励</div>
+                                <div class="text-xs text-gray-600">购物即挖矿</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品特性 -->
+    <section id="features" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                    为什么选择 <span class="gradient-text">Sapphire Mall</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    我们结合了传统电商的便利性和区块链技术的创新性，为用户提供前所未有的购物体验
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 特性卡片1 -->
+                <div class="feature-card bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
+                    <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">智能合约保护</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        所有交易通过智能合约执行，确保资金安全，自动化处理，无需第三方担保
+                    </p>
+                </div>
+                
+                <!-- 特性卡片2 -->
+                <div class="feature-card bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
+                    <div class="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-coins text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">代币激励机制</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        购物即挖矿，每次消费都能获得SAP代币奖励，参与平台治理，享受生态收益
+                    </p>
+                </div>
+                
+                <!-- 特性卡片3 -->
+                <div class="feature-card bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
+                    <div class="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-vote-yea text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">DAO社区治理</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        持有代币即可参与平台决策，提案投票，共同建设去中心化商城生态
+                    </p>
+                </div>
+                
+                <!-- 特性卡片4 -->
+                <div class="feature-card bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-palette text-yellow-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">NFT数字商品</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        支持NFT商品交易，数字艺术品、虚拟物品等，开启数字资产新时代
+                    </p>
+                </div>
+                
+                <!-- 特性卡片5 -->
+                <div class="feature-card bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
+                    <div class="w-16 h-16 bg-red-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-globe text-red-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">全球化交易</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        跨境支付无障碍，支持多种加密货币，打破地域限制，连接全球市场
+                    </p>
+                </div>
+                
+                <!-- 特性卡片6 -->
+                <div class="feature-card bg-white rounded-xl p-8 border border-gray-200 shadow-sm">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-line text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">透明化数据</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        所有交易数据上链存储，公开透明，可追溯，建立信任机制
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工作原理 -->
+    <section id="how-it-works" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">工作原理</h2>
+                <p class="text-xl text-gray-600">简单三步，开启您的Web3购物之旅</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 步骤1 -->
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-white">1</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">连接钱包</h3>
+                    <p class="text-gray-600">
+                        使用MetaMask等Web3钱包连接平台，安全便捷地管理您的数字资产
+                    </p>
+                    <div class="mt-6">
+                        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=300&h=200&fit=crop&crop=center" 
+                             alt="连接钱包" class="rounded-lg mx-auto">
+                        <!-- 图片来源: https://images.unsplash.com/photo-1563013544-824ae1b704d3 -->
+                    </div>
+                </div>
+                
+                <!-- 步骤2 -->
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-white">2</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">浏览购买</h3>
+                    <p class="text-gray-600">
+                        浏览丰富的商品，选择心仪产品，使用加密货币或SAP代币支付
+                    </p>
+                    <div class="mt-6">
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&h=200&fit=crop&crop=center" 
+                             alt="浏览购买" class="rounded-lg mx-auto">
+                        <!-- 图片来源: https://images.unsplash.com/photo-1556742049-0cfed4f6a45d -->
+                    </div>
+                </div>
+                
+                <!-- 步骤3 -->
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-white">3</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">获得奖励</h3>
+                    <p class="text-gray-600">
+                        每次购物获得SAP代币奖励，参与DAO治理，享受平台发展红利
+                    </p>
+                    <div class="mt-6">
+                        <img src="https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=300&h=200&fit=crop&crop=center" 
+                             alt="获得奖励" class="rounded-lg mx-auto">
+                        <!-- 图片来源: https://images.unsplash.com/photo-1621761191319-c6fb62004040 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 发展路线 -->
+    <section id="roadmap" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">发展路线图</h2>
+                <p class="text-xl text-gray-600">我们的愿景是构建最完善的Web3商城生态</p>
+            </div>
+            
+            <div class="relative">
+                <!-- 时间线 -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gray-300"></div>
+                
+                <div class="space-y-12">
+                    <!-- 阶段1 -->
+                    <div class="relative flex items-center">
+                        <div class="flex-1 pr-8 text-right">
+                            <div class="bg-blue-50 rounded-lg p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">第一阶段 - 基础建设</h3>
+                                <p class="text-gray-600 mb-4">2024 Q1-Q2</p>
+                                <ul class="text-left space-y-2 text-gray-600">
+                                    <li>• 智能合约开发与部署</li>
+                                    <li>• 基础商城功能实现</li>
+                                    <li>• SAP代币发行</li>
+                                    <li>• 安全审计与测试</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 bg-blue-600 rounded-full border-4 border-white z-10"></div>
+                        <div class="flex-1 pl-8"></div>
+                    </div>
+                    
+                    <!-- 阶段2 -->
+                    <div class="relative flex items-center">
+                        <div class="flex-1 pr-8"></div>
+                        <div class="w-8 h-8 bg-green-600 rounded-full border-4 border-white z-10"></div>
+                        <div class="flex-1 pl-8">
+                            <div class="bg-green-50 rounded-lg p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">第二阶段 - 生态扩展</h3>
+                                <p class="text-gray-600 mb-4">2024 Q3-Q4</p>
+                                <ul class="space-y-2 text-gray-600">
+                                    <li>• NFT商品支持</li>
+                                    <li>• DAO治理机制</li>
+                                    <li>• 多链部署</li>
+                                    <li>• 移动端应用</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 阶段3 -->
+                    <div class="relative flex items-center">
+                        <div class="flex-1 pr-8 text-right">
+                            <div class="bg-purple-50 rounded-lg p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">第三阶段 - 全球化</h3>
+                                <p class="text-gray-600 mb-4">2025 Q1-Q2</p>
+                                <ul class="text-left space-y-2 text-gray-600">
+                                    <li>• 全球市场拓展</li>
+                                    <li>• 多语言支持</li>
+                                    <li>• 合作伙伴生态</li>
+                                    <li>• 高级DeFi功能</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 bg-purple-600 rounded-full border-4 border-white z-10"></div>
+                        <div class="flex-1 pl-8"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 团队介绍 -->
+    <section id="team" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">核心团队</h2>
+                <p class="text-xl text-gray-600">由区块链和电商领域的专家组成</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 团队成员1 -->
+                <div class="bg-white rounded-xl p-8 text-center shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" 
+                         alt="CEO" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover">
+                    <!-- 图片来源: https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d -->
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Alex Chen</h3>
+                    <p class="text-blue-600 mb-4">CEO & 创始人</p>
+                    <p class="text-gray-600 text-sm">
+                        前阿里巴巴高级架构师，10年电商经验，区块链技术专家
+                    </p>
+                </div>
+                
+                <!-- 团队成员2 -->
+                <div class="bg-white rounded-xl p-8 text-center shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face" 
+                         alt="CTO" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover">
+                    <!-- 图片来源: https://images.unsplash.com/photo-1494790108755-2616b612b786 -->
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Sarah Wang</h3>
+                    <p class="text-green-600 mb-4">CTO & 联合创始人</p>
+                    <p class="text-gray-600 text-sm">
+                        前Google资深工程师，智能合约安全专家，DeFi协议开发者
+                    </p>
+                </div>
+                
+                <!-- 团队成员3 -->
+                <div class="bg-white rounded-xl p-8 text-center shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" 
+                         alt="CMO" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover">
+                    <!-- 图片来源: https://images.unsplash.com/photo-1472099645785-5658abf4ff4e -->
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Mike Johnson</h3>
+                    <p class="text-purple-600 mb-4">CMO & 市场总监</p>
+                    <p class="text-gray-600 text-sm">
+                        前币安市场总监，Web3营销专家，社区建设经验丰富
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA区域 -->
+    <section class="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-bold mb-4">准备好开始您的Web3购物之旅了吗？</h2>
+            <p class="text-xl mb-8 text-blue-100">
+                加入Sapphire Mall，体验去中心化商城的无限可能
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                    <i class="fas fa-rocket mr-2"></i>
+                    立即开始购物
+                </button>
+                <button class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                    <i class="fas fa-users mr-2"></i>
+                    加入社区
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- 公司信息 -->
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-gem text-white"></i>
+                        </div>
+                        <span class="text-xl font-bold">Sapphire Mall</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        构建去中心化商城生态，让每一次购物都成为价值投资。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-discord text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-telegram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 产品链接 -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">产品</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">商城平台</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">NFT市场</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">DAO治理</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">代币质押</a></li>
+                    </ul>
+                </div>
+                
+                <!-- 开发者 -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">开发者</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">API文档</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">智能合约</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">SDK下载</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">技术支持</a></li>
+                    </ul>
+                </div>
+                
+                <!-- 公司 -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">公司</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">关于我们</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">职业机会</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">新闻中心</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center">
+                <p class="text-gray-400">
+                    © 2024 Sapphire Mall. 保留所有权利。
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('bg-white/95', 'backdrop-blur-sm');
+            } else {
+                nav.classList.remove('bg-white/95', 'backdrop-blur-sm');
+            }
+        });
+
+        console.log('Sapphire Mall 官网加载完成');
+    </script>
+</body>
+</html> 

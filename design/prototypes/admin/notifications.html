@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知设置</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/notifications.css">
+</head>
+<body>
+    <div class="admin-content-container">
+        <!-- 通知渠道设置卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                    <i class="fas fa-bell"></i>
+                    通知渠道设置
+                </h3>
+                
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                        <h4>邮件通知</h4>
+                            <p>设置接收通知的邮箱地址</p>
+                            <div class="channel-input-group" style="margin-top: 8px;">
+                                <input type="email" class="form-input inline-input" id="emailInput" placeholder="请输入接收通知的邮箱" value="user@example.com" style="width: 100%; max-width: 300px;">
+                            </div>
+                        </div>
+                        <div class="admin-item-action">
+                            <label class="admin-toggle-switch">
+                            <input type="checkbox" checked id="emailEnabled">
+                                <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                        <h4>手机通知</h4>
+                            <p>设置接收通知的手机号码</p>
+                            <div class="channel-input-group" style="margin-top: 8px;">
+                                <input type="text" class="form-input inline-input" id="mobileInput" placeholder="请输入接收通知的手机号码" value="+86 138****5678" style="width: 100%; max-width: 300px;">
+                            </div>
+                        </div>
+                        <div class="admin-item-action">
+                            <label class="admin-toggle-switch">
+                            <input type="checkbox" checked id="mobileEnabled">
+                                <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                        <h4>浏览器通知</h4>
+                            <p>启用后，您将在浏览器中收到实时通知提醒</p>
+                    </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <label class="admin-toggle-switch">
+                                <input type="checkbox" checked id="browserEnabled">
+                                    <span class="admin-toggle-slider"></span>
+                            </label>
+                                <button class="admin-btn admin-btn-sm admin-btn-outline" id="testBrowserNotification">
+                                    <i class="fas fa-vial"></i>
+                                测试
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="admin-item" style="border-bottom: none; padding-bottom: 0;">
+                        <div class="admin-item-info">
+                            <div class="admin-action-group" style="justify-content: flex-start;">
+                                <button class="admin-btn admin-btn-primary" id="saveChannelBtn">
+                        <i class="fas fa-save"></i>
+                        保存通知渠道设置
+                    </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 通知类型设置卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                    <i class="fas fa-list-alt"></i>
+                    通知类型设置
+                </h3>
+                
+                    <!-- 筛选器和操作按钮 -->
+                    <div class="admin-item" style="padding: 12px 0; margin-bottom: 16px;">
+                        <div class="admin-item-info">
+                <div class="activity-filters">
+                    <div class="filter-group">
+                        <button class="filter-btn active" data-tab="all">全部</button>
+                        <button class="filter-btn" data-tab="transaction">交易通知</button>
+                        <button class="filter-btn" data-tab="security">安全通知</button>
+                        <button class="filter-btn" data-tab="system">系统通知</button>
+                    </div>
+                            </div>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <button class="admin-btn admin-btn-sm admin-btn-outline" id="enableAllBtn">
+                            <i class="fas fa-check-circle"></i>
+                            全部启用
+                        </button>
+                                <button class="admin-btn admin-btn-sm admin-btn-outline" id="disableAllBtn">
+                            <i class="fas fa-times-circle"></i>
+                            全部禁用
+                        </button>
+                            </div>
+                    </div>
+                </div>
+                
+                    <!-- 交易通知 -->
+                    <div class="admin-item notification-item" data-category="transaction">
+                        <div class="admin-item-info">
+                            <h4>
+                                <i class="fas fa-exchange-alt" style="color: #3b82f6; margin-right: 8px;"></i>
+                                交易确认通知
+                            </h4>
+                            <p>当您发起交易时，系统将发送确认通知</p>
+                            <div class="notification-channels">
+                                <div class="channel-options">
+                                    <label class="channel-option" title="邮件通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="email" data-id="transaction-confirmation">
+                                        <i class="fas fa-envelope"></i>
+                                    </label>
+                                    <label class="channel-option" title="手机通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="mobile" data-id="transaction-confirmation">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </label>
+                                    <label class="channel-option" title="浏览器通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="browser" data-id="transaction-confirmation">
+                                        <i class="fas fa-desktop"></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <button class="admin-btn admin-btn-sm admin-btn-outline preview-btn" data-id="transaction-confirmation">
+                                    <i class="fas fa-eye"></i>
+                                    预览
+                                </button>
+                                <label class="admin-toggle-switch">
+                                    <input type="checkbox" checked class="notification-toggle" data-id="transaction-confirmation">
+                                    <span class="admin-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item notification-item" data-category="transaction">
+                        <div class="admin-item-info">
+                            <h4>
+                                <i class="fas fa-check-circle" style="color: #10b981; margin-right: 8px;"></i>
+                                交易完成通知
+                            </h4>
+                            <p>当您的交易完成时，系统将发送通知</p>
+                            <div class="notification-channels">
+                                <div class="channel-options">
+                                    <label class="channel-option" title="邮件通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="email" data-id="transaction-complete">
+                                        <i class="fas fa-envelope"></i>
+                                    </label>
+                                    <label class="channel-option" title="手机通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="mobile" data-id="transaction-complete">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </label>
+                                    <label class="channel-option" title="浏览器通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="browser" data-id="transaction-complete">
+                                        <i class="fas fa-desktop"></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <button class="admin-btn admin-btn-sm admin-btn-outline preview-btn" data-id="transaction-complete">
+                                    <i class="fas fa-eye"></i>
+                                    预览
+                                </button>
+                                <label class="admin-toggle-switch">
+                                    <input type="checkbox" checked class="notification-toggle" data-id="transaction-complete">
+                                    <span class="admin-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 安全通知 -->
+                    <div class="admin-item notification-item" data-category="security">
+                        <div class="admin-item-info">
+                            <h4>
+                                <i class="fas fa-sign-in-alt" style="color: #f59e0b; margin-right: 8px;"></i>
+                                登录提醒
+                                <span class="importance-badge high">重要</span>
+                            </h4>
+                            <p>当您的账户在新设备上登录时，系统将发送通知</p>
+                            <div class="notification-channels">
+                                <div class="channel-options">
+                                    <label class="channel-option" title="邮件通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="email" data-id="login-alert">
+                                        <i class="fas fa-envelope"></i>
+                                    </label>
+                                    <label class="channel-option" title="手机通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="mobile" data-id="login-alert">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </label>
+                                    <label class="channel-option" title="浏览器通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="browser" data-id="login-alert">
+                                        <i class="fas fa-desktop"></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <button class="admin-btn admin-btn-sm admin-btn-outline preview-btn" data-id="login-alert">
+                                    <i class="fas fa-eye"></i>
+                                    预览
+                                </button>
+                                <label class="admin-toggle-switch">
+                                    <input type="checkbox" checked class="notification-toggle" data-id="login-alert">
+                                    <span class="admin-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item notification-item" data-category="security">
+                        <div class="admin-item-info">
+                            <h4>
+                                <i class="fas fa-shield-alt" style="color: #ef4444; margin-right: 8px;"></i>
+                                安全设置变更
+                                <span class="importance-badge high">重要</span>
+                            </h4>
+                            <p>当您的安全设置发生变更时，系统将发送通知</p>
+                            <div class="notification-channels">
+                                <div class="channel-options">
+                                    <label class="channel-option" title="邮件通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="email" data-id="security-change">
+                                        <i class="fas fa-envelope"></i>
+                                    </label>
+                                    <label class="channel-option" title="手机通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="mobile" data-id="security-change">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </label>
+                                    <label class="channel-option" title="浏览器通知">
+                                        <input type="checkbox" class="channel-toggle" data-channel="browser" data-id="security-change">
+                                        <i class="fas fa-desktop"></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <button class="admin-btn admin-btn-sm admin-btn-outline preview-btn" data-id="security-change">
+                                    <i class="fas fa-eye"></i>
+                                    预览
+                                </button>
+                                <label class="admin-toggle-switch">
+                                    <input type="checkbox" checked class="notification-toggle" data-id="security-change">
+                                    <span class="admin-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 系统通知 -->
+                    <div class="admin-item notification-item" data-category="system">
+                        <div class="admin-item-info">
+                            <h4>
+                                <i class="fas fa-server" style="color: #8b5cf6; margin-right: 8px;"></i>
+                                系统维护通知
+                                <span class="importance-badge medium">中等</span>
+                            </h4>
+                            <p>当系统计划维护时，系统将提前发送通知</p>
+                            <div class="notification-channels">
+                                <div class="channel-options">
+                                    <label class="channel-option" title="邮件通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="email" data-id="system-maintenance">
+                                        <i class="fas fa-envelope"></i>
+                                    </label>
+                                    <label class="channel-option" title="手机通知">
+                                        <input type="checkbox" class="channel-toggle" data-channel="mobile" data-id="system-maintenance">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </label>
+                                    <label class="channel-option" title="浏览器通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="browser" data-id="system-maintenance">
+                                        <i class="fas fa-desktop"></i>
+                                    </label>
+                                </div>
+                                <div class="frequency-select">
+                                    <select class="form-select" data-id="system-maintenance">
+                                        <option value="immediate">实时</option>
+                                        <option value="daily" selected>每日</option>
+                                        <option value="weekly">每周</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <button class="admin-btn admin-btn-sm admin-btn-outline preview-btn" data-id="system-maintenance">
+                                    <i class="fas fa-eye"></i>
+                                    预览
+                                </button>
+                                <label class="admin-toggle-switch">
+                                    <input type="checkbox" checked class="notification-toggle" data-id="system-maintenance">
+                                    <span class="admin-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-item notification-item" data-category="system">
+                        <div class="admin-item-info">
+                            <h4>
+                                <i class="fas fa-bullhorn" style="color: #06b6d4; margin-right: 8px;"></i>
+                                新功能公告
+                                <span class="importance-badge low">低</span>
+                            </h4>
+                            <p>当平台发布新功能时，系统将发送通知</p>
+                            <div class="notification-channels">
+                                <div class="channel-options">
+                                    <label class="channel-option" title="邮件通知">
+                                        <input type="checkbox" checked class="channel-toggle" data-channel="email" data-id="new-feature">
+                                        <i class="fas fa-envelope"></i>
+                                    </label>
+                                    <label class="channel-option" title="手机通知">
+                                        <input type="checkbox" class="channel-toggle" data-channel="mobile" data-id="new-feature">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </label>
+                                    <label class="channel-option" title="浏览器通知">
+                                        <input type="checkbox" class="channel-toggle" data-channel="browser" data-id="new-feature">
+                                        <i class="fas fa-desktop"></i>
+                                    </label>
+                                </div>
+                                <div class="frequency-select">
+                                    <select class="form-select" data-id="new-feature">
+                                        <option value="immediate">实时</option>
+                                        <option value="daily">每日</option>
+                                        <option value="weekly" selected>每周</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="admin-item-action">
+                            <div class="admin-action-group">
+                                <button class="admin-btn admin-btn-sm admin-btn-outline preview-btn" data-id="new-feature">
+                                    <i class="fas fa-eye"></i>
+                                    预览
+                                </button>
+                                <label class="admin-toggle-switch">
+                                    <input type="checkbox" class="notification-toggle" data-id="new-feature">
+                                    <span class="admin-toggle-slider"></span>
+                                </label>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="admin-item" style="border-bottom: none; padding-bottom: 0;">
+                        <div class="admin-item-info">
+                            <div class="admin-action-group" style="justify-content: flex-start;">
+                                <button class="admin-btn admin-btn-primary" id="saveSettingsBtn">
+                        <i class="fas fa-save"></i>
+                        保存通知设置
+                    </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 通知预览模态框 -->
+    <div class="modal" id="previewModal">
+        <div class="modal-content preview-modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-eye"></i> 通知预览</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="preview-container">
+                    <div class="preview-tabs">
+                        <div class="preview-tab active" data-preview="email">
+                            <i class="fas fa-envelope"></i>
+                            邮件通知
+                        </div>
+                        <div class="preview-tab" data-preview="mobile">
+                            <i class="fas fa-mobile-alt"></i>
+                            手机通知
+                        </div>
+                        <div class="preview-tab" data-preview="browser">
+                            <i class="fas fa-desktop"></i>
+                            浏览器通知
+                        </div>
+                    </div>
+                    
+                    <div class="preview-content">
+                        <!-- 邮件预览 -->
+                        <div class="preview-panel active" data-preview-content="email">
+                            <div class="email-preview">
+                                <div class="email-header">
+                                    <div class="email-controls">
+                                        <span class="email-control-dot" style="background-color: #ff6054;"></span>
+                                        <span class="email-control-dot" style="background-color: #ffbd2e;"></span>
+                                        <span class="email-control-dot" style="background-color: #28ca41;"></span>
+                                    </div>
+                                    <div class="email-address-bar">
+                                        <i class="fas fa-envelope"></i>
+                                        <span>user@example.com</span>
+                                    </div>
+                                </div>
+                                <div class="email-content">
+                                    <div class="email-subject">
+                                        <span class="email-subject-label">主题:</span>
+                                        <span class="email-subject-text" id="emailSubject">交易确认通知</span>
+                                    </div>
+                                    <div class="email-body">
+                                        <div class="email-message">
+                                            <p class="email-greeting">尊敬的用户：</p>
+                                            <p class="email-paragraph" id="emailBody">您有一笔交易需要确认，请及时处理。</p>
+                                            <div class="email-action">
+                                                <button class="btn btn-primary">查看详情</button>
+                                            </div>
+                                            <p class="email-signature">
+                                                此致，<br>Sapphire Mall 团队
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 手机通知预览 -->
+                        <div class="preview-panel" data-preview-content="mobile">
+                            <div class="mobile-preview">
+                                <div class="mobile-device">
+                                    <div class="mobile-notch"></div>
+                                    <div class="mobile-screen">
+                                        <div class="mobile-status-bar">
+                                            <div class="mobile-time">10:30</div>
+                                            <div class="mobile-status-icons">
+                                                <i class="fas fa-wifi"></i>
+                                                <i class="fas fa-signal"></i>
+                                                <i class="fas fa-battery-full"></i>
+                                            </div>
+                                        </div>
+                                        <div class="mobile-notification">
+                                            <div class="mobile-notification-header">
+                                                <div class="app-icon">
+                                                    <i class="fas fa-shopping-bag"></i>
+                                                </div>
+                                                <div class="app-info">
+                                                    <div class="app-name">Sapphire Mall</div>
+                                                    <div class="notification-time">刚刚</div>
+                                                </div>
+                                            </div>
+                                            <div class="mobile-notification-content">
+                                                <div class="notification-title" id="mobileTitle">交易确认通知</div>
+                                                <div class="notification-body" id="mobileBody">您有一笔交易需要确认，请及时处理。</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mobile-home-button"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 浏览器通知预览 -->
+                        <div class="preview-panel" data-preview-content="browser">
+                            <div class="browser-preview">
+                                <div class="browser-notification">
+                                    <div class="browser-notification-header">
+                                        <div class="notification-icon">
+                                        <i class="fas fa-shopping-bag"></i>
+                                        </div>
+                                        <div class="notification-info">
+                                            <div class="notification-site">Sapphire Mall</div>
+                                            <div class="notification-time">刚刚</div>
+                                        </div>
+                                        <div class="notification-close">×</div>
+                                    </div>
+                                    <div class="browser-notification-content">
+                                        <div class="browser-notification-title" id="browserTitle">交易确认通知</div>
+                                        <div class="browser-notification-body" id="browserBody">您有一笔交易需要确认，请及时处理。</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/page-common.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/iframe-height-reporter.js"></script>
+</body>
+</html> 

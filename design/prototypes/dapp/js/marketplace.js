@@ -760,6 +760,91 @@ function getFilterTypeName(filterType) {
 function bindProductCardEvents(container) {
     const productCards = container.querySelectorAll('.product-card');
     productCards.forEach(card => {
+        // 商品卡片点击事件 - 跳转到商品详情页面
+        card.addEventListener('click', (e) => {
+            // 如果点击的是购买按钮，不触发卡片点击事件
+            if (e.target.closest('.buy-btn')) {
+                return;
+            }
+            
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const productName = card.querySelector('.product-title').textContent;
+            const price = card.querySelector('.product-price').textContent;
+            
+            // 添加点击效果
+            card.style.transform = 'scale(0.98)';
+            card.style.transition = 'transform 0.1s ease';
+            
+            setTimeout(() => {
+                card.style.transform = '';
+            }, 100);
+            
+            // 获取商品完整信息
+            const productElement = card.closest('[data-product-name]');
+            const finalProductName = productElement?.getAttribute('data-product-name') || 
+                              card.querySelector('.product-title')?.textContent?.trim() || 
+                              productName;
+            
+            const priceElement = card.querySelector('.product-price');
+            const finalPrice = priceElement?.textContent?.trim() || price;
+            
+            // 尝试从商品数据中获取完整信息
+            let productData = null;
+            
+            // 从 allProducts 数组中查找匹配的商品
+            if (typeof allProducts !== 'undefined') {
+                productData = allProducts.find(product => 
+                    product.title === finalProductName || 
+                    product.title.includes(finalProductName) ||
+                    finalProductName.includes(product.title)
+                );
+            }
+            
+            // 生成商品详情页URL（基于商品名称）
+            const productSlug = finalProductName.toLowerCase()
+                .replace(/[^\w\s-]/g, '') // 移除特殊字符
+                .replace(/\s+/g, '-') // 空格替换为连字符
+                .replace(/--+/g, '-') // 多个连字符合并为一个
+                .trim();
+            
+            // 构建完整的URL参数
+            let detailUrl = `product-detail.html?product=${encodeURIComponent(productSlug)}&name=${encodeURIComponent(finalProductName)}&price=${encodeURIComponent(finalPrice)}`;
+            
+            // 如果找到了完整的商品数据，添加更多参数
+            if (productData) {
+                detailUrl += `&category=${encodeURIComponent(productData.category)}`;
+                if (productData.subcategory) {
+                    detailUrl += `&subcategory=${encodeURIComponent(productData.subcategory)}`;
+                }
+                if (productData.description) {
+                    detailUrl += `&description=${encodeURIComponent(productData.description)}`;
+                }
+                if (productData.rating) {
+                    detailUrl += `&rating=${productData.rating}`;
+                }
+                if (productData.id) {
+                    detailUrl += `&id=${productData.id}`;
+                }
+            }
+            
+            // 显示跳转提示
+            if (typeof window.DAppCommon !== 'undefined' && window.DAppCommon.showToast) {
+                window.DAppCommon.showToast(
+                    window.currentLang === 'zh' ? `正在查看 ${finalProductName} 详情...` : `Viewing ${finalProductName} details...`, 
+                    'info'
+                );
+            }
+            
+            // 跳转到商品详情页
+            setTimeout(() => {
+                window.location.href = detailUrl;
+            }, 300);
+            
+            console.log('Navigate to product detail via card click:', productName, price);
+        });
+        
         // 购买按钮
         const buyBtn = card.querySelector('.buy-btn');
         if (buyBtn) {
@@ -776,21 +861,64 @@ function bindProductCardEvents(container) {
                 buyBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>正在跳转...';
                 buyBtn.style.pointerEvents = 'none';
                 
+                // 保存对元素的引用，避免在setTimeout中this上下文丢失
+                const currentCard = card;
+                const currentBtn = buyBtn;
+                
                 // 模拟跳转延迟
                 setTimeout(() => {
+                    // 获取商品完整信息 - 使用保存的引用而不是this
+                    const productElement = currentCard.closest('[data-product-name]');
+                    const finalProductName = productElement?.getAttribute('data-product-name') || 
+                                      currentCard.querySelector('.product-title')?.textContent?.trim() || 
+                                      productName;
+                    
+                    const priceElement = currentCard.querySelector('.product-price');
+                    const finalPrice = priceElement?.textContent?.trim() || price;
+                    
+                    // 尝试从商品数据中获取完整信息
+                    let productData = null;
+                    
+                    // 从 allProducts 数组中查找匹配的商品
+                    if (typeof allProducts !== 'undefined') {
+                        productData = allProducts.find(product => 
+                            product.title === finalProductName || 
+                            product.title.includes(finalProductName) ||
+                            finalProductName.includes(product.title)
+                        );
+                    }
+                    
                     // 生成商品详情页URL（基于商品名称）
-                    const productSlug = productName.toLowerCase()
+                    const productSlug = finalProductName.toLowerCase()
                         .replace(/[^\w\s-]/g, '') // 移除特殊字符
                         .replace(/\s+/g, '-') // 空格替换为连字符
                         .replace(/--+/g, '-') // 多个连字符合并为一个
                         .trim();
                     
-                    const detailUrl = `product-detail.html?product=${encodeURIComponent(productSlug)}&name=${encodeURIComponent(productName)}&price=${encodeURIComponent(price)}`;
+                    // 构建完整的URL参数
+                    let detailUrl = `product-detail.html?product=${encodeURIComponent(productSlug)}&name=${encodeURIComponent(finalProductName)}&price=${encodeURIComponent(finalPrice)}`;
+                    
+                    // 如果找到了完整的商品数据，添加更多参数
+                    if (productData) {
+                        detailUrl += `&category=${encodeURIComponent(productData.category)}`;
+                        if (productData.subcategory) {
+                            detailUrl += `&subcategory=${encodeURIComponent(productData.subcategory)}`;
+                        }
+                        if (productData.description) {
+                            detailUrl += `&description=${encodeURIComponent(productData.description)}`;
+                        }
+                        if (productData.rating) {
+                            detailUrl += `&rating=${productData.rating}`;
+                        }
+                        if (productData.id) {
+                            detailUrl += `&id=${productData.id}`;
+                        }
+                    }
                     
                     // 显示跳转提示
                     if (typeof window.DAppCommon !== 'undefined' && window.DAppCommon.showToast) {
                         window.DAppCommon.showToast(
-                            window.currentLang === 'zh' ? `正在跳转到 ${productName} 详情页...` : `Redirecting to ${productName} details...`, 
+                            window.currentLang === 'zh' ? `正在跳转到 ${finalProductName} 详情页...` : `Redirecting to ${finalProductName} details...`, 
                             'info'
                         );
                     }
@@ -1434,6 +1562,7 @@ function createProductHTML(product) {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
+    // 初始化筛选和交互功能
     initFilterButton();
     initCategorySelection();
     initFilterTags();
@@ -1443,5 +1572,13 @@ document.addEventListener('DOMContentLoaded', () => {
     initMoreButtons();
     initLoadMoreCategories();
     fixDropdownZIndex();
+    
+    // 为页面上现有的所有商品卡片绑定事件
+    const mainContainer = document.querySelector('.space-y-6');
+    if (mainContainer) {
+        bindProductCardEvents(mainContainer);
+        console.log('All existing product cards events bound');
+    }
+    
     console.log('Marketplace filter functionality initialized');
 }); 

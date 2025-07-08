@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>流动性质押 - Sapphire Mall</title>
+    <title>质押池 - Sapphire Mall</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/dapp-common.css">
+    <link rel="stylesheet" href="css/marketplace.css">
     <script>
         tailwind.config = {
             theme: {
@@ -28,417 +30,456 @@
             }
         }
     </script>
-    <style>
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
-        }
-        .glass-bg {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-        }
-        .pool-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-        .pool-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
-        }
-        .stake-button {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            transition: all 0.3s ease;
-        }
-        .stake-button:hover {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-        }
-        .unstake-button {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            transition: all 0.3s ease;
-        }
-        .unstake-button:hover {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-        }
-        .apy-highlight {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-        .countdown {
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-        }
-    </style>
 </head>
 <body class="min-h-screen text-white">
+    <!-- 主容器 -->
     <div class="mx-auto px-6 py-4" style="width: 90%;">
-        <!-- 总览统计 -->
-        <div class="mb-6">
-            <div class="glass-bg rounded-xl p-6">
-                <h2 class="text-2xl font-bold mb-6 text-center" data-zh="流动性质押" data-en="Liquidity Staking">流动性质押</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="text-center">
-                        <div class="glass-bg rounded-lg p-4">
-                            <div class="text-3xl font-bold text-sapphire-400 mb-2">$2.4M</div>
-                            <div class="text-gray-400 text-sm" data-zh="总锁仓价值" data-en="Total Value Locked">总锁仓价值</div>
+        <!-- 统计区 -->
+        <div class="filter-card rounded-xl px-10 py-16 mb-0 flex flex-col gap-4 relative z-10" style="min-height: 260px;" style="width: 90%;">
+          <!-- 预言机数据卡片（右上角绝对定位） -->
+          <div class="absolute right-10 top-10 flex flex-row gap-4 z-20">
+            <div class="bg-gradient-to-br from-gray-800/80 via-gray-900/90 to-sapphire-900/90 backdrop-blur-lg border border-sapphire-800 rounded-2xl px-6 py-4 flex flex-col items-start shadow-lg min-w-[180px]">
+              <div class="flex items-center gap-2 mb-1">
+                <i class="fas fa-coins text-sapphire-400 text-lg"></i>
+                <span class="text-base font-semibold text-white">SAP/USD</span>
                         </div>
+              <div class="text-2xl font-bold text-white leading-tight">$1.023</div>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-green-400 font-semibold text-sm">+2.15%</span>
+                <span class="text-xs text-gray-400">24h</span>
                     </div>
-                    <div class="text-center">
-                        <div class="glass-bg rounded-lg p-4">
-                            <div class="text-3xl font-bold text-green-400 mb-2">18.5%</div>
-                            <div class="text-gray-400 text-sm" data-zh="平均年化收益" data-en="Average APY">平均年化收益</div>
+              <div class="text-xs text-gray-400 mt-2">预言机更新时间 12:34:56</div>
                         </div>
+            <div class="bg-gradient-to-br from-gray-800/80 via-gray-900/90 to-sapphire-900/90 backdrop-blur-lg border border-sapphire-800 rounded-2xl px-6 py-4 flex flex-col items-start shadow-lg min-w-[180px]">
+              <div class="flex items-center gap-2 mb-1">
+                <i class="fas fa-chart-line text-sapphire-400 text-lg"></i>
+                <span class="text-base font-semibold text-white">ETH/USD</span>
                     </div>
-                    <div class="text-center">
-                        <div class="glass-bg rounded-lg p-4">
-                            <div class="text-3xl font-bold text-purple-400 mb-2">1,234</div>
-                            <div class="text-gray-400 text-sm" data-zh="质押用户数" data-en="Stakers">质押用户数</div>
+              <div class="text-2xl font-bold text-white leading-tight">$3,245.67</div>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-red-400 font-semibold text-sm">-1.08%</span>
+                <span class="text-xs text-gray-400">24h</span>
                         </div>
-                    </div>
-                    <div class="text-center">
-                        <div class="glass-bg rounded-lg p-4">
-                            <div class="text-3xl font-bold text-yellow-400 mb-2">156K</div>
-                            <div class="text-gray-400 text-sm" data-zh="待领取奖励" data-en="Pending Rewards">待领取奖励 SAP</div>
-                        </div>
-                    </div>
+              <div class="text-xs text-gray-400 mt-2">预言机更新时间 12:34:56</div>
+            </div>
+        </div>
+          <!-- 标题+链下拉 -->
+          <div class="flex items-center gap-4 min-w-0">
+            <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=64&h=64&fit=crop" alt="Sapphire Logo" class="w-16 h-16 rounded-full shadow-md flex-shrink-0">
+            <span class="text-3xl md:text-4xl font-extrabold text-white truncate">Sapphire Mall 质押市场</span>
+            <!-- 链下拉 -->
+            <div class="relative ml-3">
+              <button id="chainDropdownBtn" class="flex items-center bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg text-white font-medium text-base border border-gray-700 min-w-[120px] shadow transition-all focus:outline-none focus:ring-2 focus:ring-sapphire-500">
+                <i id="chainIcon" class="fab fa-ethereum text-blue-400 text-lg mr-2"></i>
+                <span id="chainName" class="truncate">Ethereum 主网</span>
+                <i class="fas fa-chevron-down text-xs ml-2 text-gray-400"></i>
+                    </button>
+              <div id="chainDropdownMenu" class="absolute left-0 top-full mt-2 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-lg z-50 hidden">
+                <a href="#" class="flex items-center px-4 py-2 text-gray-200 hover:bg-gray-700 rounded-t-lg transition-all" data-chain="ethereum">
+                  <i class="fab fa-ethereum text-blue-400 mr-2"></i>Ethereum 主网
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-gray-200 hover:bg-gray-700 transition-all" data-chain="bsc">
+                  <i class="fas fa-cube text-yellow-400 mr-2"></i>BSC
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 text-gray-200 hover:bg-gray-700 rounded-b-lg transition-all" data-chain="polygon">
+                  <i class="fab fa-polygon text-purple-400 mr-2"></i>Polygon
+                </a>
                 </div>
             </div>
         </div>
-
-        <!-- 我的质押概览 -->
-        <div class="mb-6">
-            <div class="glass-bg rounded-xl p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold" data-zh="我的质押" data-en="My Stakes">我的质押</h3>
-                    <button class="bg-sapphire-600 hover:bg-sapphire-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">
-                        <i class="fas fa-coins mr-2"></i>
-                        <span data-zh="领取全部奖励" data-en="Claim All Rewards">领取全部奖励</span>
-                    </button>
+          <!-- 副标题 -->
+          <div class="text-gray-400 text-base mt-1 truncate">多链资产质押，灵活收益，安全透明</div>
+          <!-- 统计数据区 -->
+          <div id="statsRow" class="flex flex-row gap-10 md:gap-16 items-center justify-start flex-shrink-0 mt-2">
+            <div class="flex flex-col items-start">
+              <span class="text-gray-400 text-xs mb-1">总锁仓量（TVL）</span>
+              <span id="stat-tvl" class="text-2xl md:text-3xl font-bold text-white leading-tight">$12.34M</span>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-gray-400 text-xs mb-1">可用流动性</span>
+              <span id="stat-liquidity" class="text-2xl md:text-3xl font-bold text-white leading-tight">$8.76M</span>
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-gray-400 text-xs mb-1">已质押总额</span>
+              <span id="stat-staked" class="text-2xl md:text-3xl font-bold text-white leading-tight">$3.58M</span>
+                        </div>
+                        </div>
+                    </div>
+        <!-- 主内容卡片（上移到统计区下方红色区域，加大宽度） -->
+        <div class="category-main-card mt-0 md:mt-[-32px] relative z-20 mx-auto w-[95%] md:w-[92%] lg:w-[90%] xl:w-[90%] shadow-2xl bg-gradient-to-br from-gray-800/80 via-gray-900/90 to-sapphire-900/90 backdrop-blur-lg border border-gray-700 rounded-3xl transition-all duration-300" style="top:-5px;">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                    <div class="text-xl font-bold text-white tracking-wide">Staking Pools</div>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="glass-bg rounded-lg p-4 text-center">
-                        <div class="text-2xl font-bold text-sapphire-400 mb-1">12,500 SAP</div>
-                        <div class="text-gray-400 text-sm" data-zh="已质押总量" data-en="Total Staked">已质押总量</div>
-                    </div>
-                    <div class="glass-bg rounded-lg p-4 text-center">
-                        <div class="text-2xl font-bold text-green-400 mb-1">2,340 SAP</div>
-                        <div class="text-gray-400 text-sm" data-zh="待领取奖励" data-en="Pending Rewards">待领取奖励</div>
-                    </div>
-                    <div class="glass-bg rounded-lg p-4 text-center">
-                        <div class="text-2xl font-bold text-purple-400 mb-1">$45,600</div>
-                        <div class="text-gray-400 text-sm" data-zh="总价值" data-en="Total Value">总价值</div>
-                    </div>
+                <div class="relative w-full md:w-80">
+                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-sapphire-400 text-lg pointer-events-none"></i>
+                    <input type="text" class="search-input w-full pl-12 pr-4 py-2 bg-gradient-to-r from-gray-800/80 via-gray-900/80 to-sapphire-900/80 border border-sapphire-700 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sapphire-500 focus:border-sapphire-500 shadow transition-all duration-200" placeholder="Search asset pair, symbol, or address" id="searchInput">
                 </div>
             </div>
-        </div>
-
-        <!-- 质押池列表 -->
-        <div class="space-y-4">
-            <!-- 单币质押池 -->
-            <div class="pool-card rounded-xl p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-sapphire-500 to-sapphire-600 rounded-full flex items-center justify-center">
-                            <span class="text-white font-bold text-lg">SAP</span>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold" data-zh="SAP 单币质押" data-en="SAP Single Staking">SAP 单币质押</h3>
-                            <p class="text-gray-400 text-sm" data-zh="质押SAP获得额外收益和治理权" data-en="Stake SAP for rewards and governance">质押SAP获得额外收益和治理权</p>
-                        </div>
-                    </div>
-                    <div class="apy-highlight px-4 py-2 rounded-lg">
-                        <div class="text-sm opacity-90" data-zh="年化收益" data-en="APY">年化收益</div>
-                        <div class="text-2xl font-bold">24.5%</div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="总质押量" data-en="Total Staked">总质押量</div>
-                        <div class="font-bold">890K SAP</div>
-                    </div>
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="我的质押" data-en="My Stake">我的质押</div>
-                        <div class="font-bold">5,000 SAP</div>
-                    </div>
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="待领取" data-en="Pending">待领取</div>
-                        <div class="font-bold text-green-400">125.3 SAP</div>
-                    </div>
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="锁定期" data-en="Lock Period">锁定期</div>
-                        <div class="font-bold">30 天</div>
-                    </div>
-                </div>
-                
-                <div class="flex items-center justify-between">
-                    <div class="countdown text-green-400">
-                        <span data-zh="解锁倒计时: " data-en="Unlock in: ">解锁倒计时: </span>
-                        <span id="countdown-1">15天 08:24:36</span>
-                    </div>
-                    <div class="flex space-x-3">
-                        <button class="stake-button text-white px-6 py-2 rounded-lg font-medium">
-                            <i class="fas fa-plus mr-2"></i>
-                            <span data-zh="追加质押" data-en="Stake More">追加质押</span>
-                        </button>
-                        <button class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                            <i class="fas fa-gift mr-2"></i>
-                            <span data-zh="领取奖励" data-en="Claim">领取奖励</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 流动性挖矿池 -->
-            <div class="pool-card rounded-xl p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="flex -space-x-2">
-                            <div class="w-12 h-12 bg-gradient-to-br from-sapphire-500 to-sapphire-600 rounded-full flex items-center justify-center border-2 border-gray-800">
-                                <span class="text-white font-bold text-sm">SAP</span>
-                            </div>
-                            <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center border-2 border-gray-800">
-                                <span class="text-white font-bold text-sm">ETH</span>
-                            </div>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold" data-zh="SAP-ETH 流动性挖矿" data-en="SAP-ETH Liquidity Mining">SAP-ETH 流动性挖矿</h3>
-                            <p class="text-gray-400 text-sm" data-zh="提供流动性获得交易手续费分成" data-en="Provide liquidity to earn trading fees">提供流动性获得交易手续费分成</p>
-                        </div>
-                    </div>
-                    <div class="apy-highlight px-4 py-2 rounded-lg">
-                        <div class="text-sm opacity-90" data-zh="年化收益" data-en="APY">年化收益</div>
-                        <div class="text-2xl font-bold">45.8%</div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="总流动性" data-en="Total Liquidity">总流动性</div>
-                        <div class="font-bold">$1.2M</div>
-                    </div>
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="我的LP代币" data-en="My LP Tokens">我的LP代币</div>
-                        <div class="font-bold">250 LP</div>
-                    </div>
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="24h交易费" data-en="24h Fees">24h交易费</div>
-                        <div class="font-bold text-green-400">$2,456</div>
-                    </div>
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="我的份额" data-en="My Share">我的份额</div>
-                        <div class="font-bold">0.52%</div>
-                    </div>
-                </div>
-                
-                <div class="flex items-center justify-between">
-                    <div class="text-sm text-gray-400">
-                        <span data-zh="池子组成: " data-en="Pool Composition: ">池子组成: </span>
-                        <span class="text-white">50% SAP + 50% ETH</span>
-                    </div>
-                    <div class="flex space-x-3">
-                        <button class="stake-button text-white px-6 py-2 rounded-lg font-medium">
-                            <i class="fas fa-plus mr-2"></i>
-                            <span data-zh="添加流动性" data-en="Add Liquidity">添加流动性</span>
-                        </button>
-                        <button class="unstake-button text-white px-6 py-2 rounded-lg font-medium">
-                            <i class="fas fa-minus mr-2"></i>
-                            <span data-zh="移除流动性" data-en="Remove">移除流动性</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- NFT质押池 -->
-            <div class="pool-card rounded-xl p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-images text-white text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold" data-zh="NFT 质押挖矿" data-en="NFT Staking Mining">NFT 质押挖矿</h3>
-                            <p class="text-gray-400 text-sm" data-zh="质押特定NFT获得稀有奖励" data-en="Stake specific NFTs for rare rewards">质押特定NFT获得稀有奖励</p>
-                        </div>
-                    </div>
-                    <div class="apy-highlight px-4 py-2 rounded-lg">
-                        <div class="text-sm opacity-90" data-zh="奖励倍数" data-en="Multiplier">奖励倍数</div>
-                        <div class="text-2xl font-bold">3.5x</div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="已质押NFT" data-en="Staked NFTs">已质押NFT</div>
-                        <div class="font-bold">1,234 个</div>
-                    </div>
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="我的NFT" data-en="My NFTs">我的NFT</div>
-                        <div class="font-bold">3 个</div>
-                    </div>
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="特殊奖励" data-en="Special Rewards">特殊奖励</div>
-                        <div class="font-bold text-purple-400">稀有道具</div>
-                    </div>
-                    <div>
-                        <div class="text-gray-400 text-sm mb-1" data-zh="等级要求" data-en="Level Req">等级要求</div>
-                        <div class="font-bold">传奇+</div>
-                    </div>
-                </div>
-                
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=40&h=40&fit=crop" alt="NFT" class="w-10 h-10 rounded-lg">
-                        <img src="https://images.unsplash.com/photo-1614332287897-cdc485fa562d?w=40&h=40&fit=crop" alt="NFT" class="w-10 h-10 rounded-lg">
-                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=40&h=40&fit=crop" alt="NFT" class="w-10 h-10 rounded-lg">
-                        <div class="text-gray-400 text-sm" data-zh="我质押的NFT" data-en="My Staked NFTs">我质押的NFT</div>
-                    </div>
-                    <div class="flex space-x-3">
-                        <button class="stake-button text-white px-6 py-2 rounded-lg font-medium">
-                            <i class="fas fa-plus mr-2"></i>
-                            <span data-zh="质押NFT" data-en="Stake NFT">质押NFT</span>
-                        </button>
-                        <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                            <i class="fas fa-eye mr-2"></i>
-                            <span data-zh="查看收藏" data-en="View Collection">查看收藏</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 新池预告 -->
-            <div class="pool-card rounded-xl p-6 opacity-75">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center">
-                            <i class="fas fa-clock text-white text-2xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold" data-zh="USDC-SAP 池即将上线" data-en="USDC-SAP Pool Coming Soon">USDC-SAP 池即将上线</h3>
-                            <p class="text-gray-400 text-sm" data-zh="稳定币对，低风险高收益" data-en="Stablecoin pair, low risk high yield">稳定币对，低风险高收益</p>
-                        </div>
-                    </div>
-                    <div class="bg-gray-600 px-4 py-2 rounded-lg">
-                        <div class="text-sm opacity-90" data-zh="预计年化" data-en="Est. APY">预计年化</div>
-                        <div class="text-2xl font-bold">??.?%</div>
-                    </div>
-                </div>
-                
-                <div class="text-center">
-                    <div class="countdown text-yellow-400 text-lg mb-4">
-                        <span data-zh="启动倒计时: " data-en="Launch in: ">启动倒计时: </span>
-                        <span id="countdown-new">3天 12:45:22</span>
-                    </div>
-                    <button class="bg-gray-600 text-gray-400 px-6 py-2 rounded-lg font-medium cursor-not-allowed">
-                        <i class="fas fa-bell mr-2"></i>
-                        <span data-zh="设置提醒" data-en="Set Reminder">设置提醒</span>
-                    </button>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left staking-table">
+                    <thead>
+                        <tr class="text-sapphire-200 text-base font-semibold bg-gradient-to-r from-gray-900/80 to-sapphire-900/80 border-b border-sapphire-800 rounded-2xl">
+                            <th class="py-3 px-4 font-bold rounded-tl-2xl">Asset Pair</th>
+                            <th class="py-3 px-4 font-bold">Total Staked</th>
+                            <th class="py-3 px-4 font-bold">APY</th>
+                            <th class="py-3 px-4 font-bold">Capacity</th>
+                            <th class="py-3 px-4 font-bold">24h Rewards</th>
+                            <th class="py-3 px-4 font-bold rounded-tr-2xl"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="stakingTable">
+                        <!-- 质押池数据由JS动态渲染 -->
+                    </tbody>
+                </table>
+                <div id="loadMoreContainer" class="flex justify-center py-6">
+                    <button id="loadMoreBtn" class="btn-primary px-8 py-2" style="display:none;">加载更多</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Scripts -->
     <script>
-        let currentLang = 'zh';
-        
-        // 倒计时功能
-        function updateCountdown() {
-            // 模拟倒计时更新
-            const countdowns = document.querySelectorAll('[id^="countdown"]');
-            countdowns.forEach(countdown => {
-                // 这里应该是真实的倒计时逻辑
-                console.log('Updating countdown:', countdown.id);
-            });
-        }
-        
-        // 质押功能
-        function handleStaking(poolType, action) {
-            console.log(`${action} action for ${poolType} pool`);
-            showToast(`${action === 'stake' ? '质押' : '取消质押'}操作确认中...`, 'info');
-            
-            // 模拟交易确认
-            setTimeout(() => {
-                showToast(`${action === 'stake' ? '质押' : '取消质押'}成功！`, 'success');
-            }, 2000);
-        }
-        
-        // 添加按钮事件监听
-        document.addEventListener('DOMContentLoaded', function() {
-            // 质押按钮
-            document.querySelectorAll('.stake-button').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const poolType = this.closest('.pool-card').querySelector('h3').textContent;
-                    handleStaking(poolType, 'stake');
-                });
-            });
-            
-            // 取消质押按钮
-            document.querySelectorAll('.unstake-button').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const poolType = this.closest('.pool-card').querySelector('h3').textContent;
-                    handleStaking(poolType, 'unstake');
-                });
-            });
-            
-            // 启动倒计时
-            setInterval(updateCountdown, 1000);
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            renderStakingTable(e.target.value.toLowerCase());
         });
-        
-        // Toast 提示功能
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
-            
-            if (type === 'success') {
-                toast.classList.add('bg-green-600');
-            } else if (type === 'error') {
-                toast.classList.add('bg-red-600');
+
+        // 质押池数据
+        const stakingData = [
+            {
+                pair: 'USDC/SAP',
+                icons: [
+                    'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png',
+                    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=32&h=32&fit=crop'
+                ],
+                total: '2,450,000',
+                apy: '18.2%',
+                apyColor: 'text-green-400',
+                capacity: 70,
+                rewards: '+1,234 SAP',
+                btnDisabled: false
+            },
+            {
+                pair: 'USDT/SAP',
+                icons: [
+                    'https://assets.coingecko.com/coins/images/325/large/Tether.png',
+                    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=32&h=32&fit=crop'
+                ],
+                total: '1,800,000',
+                apy: '15.6%',
+                apyColor: 'text-green-400',
+                capacity: 55,
+                rewards: '+980 SAP',
+                btnDisabled: false
+            },
+            {
+                pair: 'ETH/SAP',
+                icons: [
+                    'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
+                    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=32&h=32&fit=crop'
+                ],
+                total: '950,000',
+                apy: '22.4%',
+                apyColor: 'text-green-400',
+                capacity: 80,
+                rewards: '+1,560 SAP',
+                btnDisabled: false
+            },
+            {
+                pair: 'ETH/USDT',
+                icons: [
+                    'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
+                    'https://assets.coingecko.com/coins/images/325/large/Tether.png'
+                ],
+                total: '2,100,000',
+                apy: '12.8%',
+                apyColor: 'text-green-400',
+                capacity: 60,
+                rewards: '+720 USDT',
+                btnDisabled: true
+            },
+            {
+                pair: 'DAI/ETH',
+                icons: [
+                    'https://assets.coingecko.com/coins/images/9956/large/4943.png',
+                    'https://assets.coingecko.com/coins/images/279/large/ethereum.png'
+                ],
+                total: '1,250,000',
+                apy: '10.2%',
+                apyColor: 'text-green-400',
+                capacity: 40,
+                rewards: '+410 DAI',
+                btnDisabled: false
+            },
+            // 以下为模拟更多数据
+            {
+                pair: 'BTC/SAP',
+                icons: [
+                    'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
+                    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=32&h=32&fit=crop'
+                ],
+                total: '1,000,000',
+                apy: '9.8%',
+                apyColor: 'text-green-400',
+                capacity: 30,
+                rewards: '+300 SAP',
+                btnDisabled: false
+            },
+            {
+                pair: 'ETH/DAI',
+                icons: [
+                    'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
+                    'https://assets.coingecko.com/coins/images/9956/large/4943.png'
+                ],
+                total: '1,500,000',
+                apy: '13.2%',
+                apyColor: 'text-green-400',
+                capacity: 50,
+                rewards: '+600 DAI',
+                btnDisabled: false
+            },
+            {
+                pair: 'USDC/USDT',
+                icons: [
+                    'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png',
+                    'https://assets.coingecko.com/coins/images/325/large/Tether.png'
+                ],
+                total: '2,200,000',
+                apy: '11.5%',
+                apyColor: 'text-green-400',
+                capacity: 65,
+                rewards: '+900 USDT',
+                btnDisabled: false
+            },
+            {
+                pair: 'BTC/ETH',
+                icons: [
+                    'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
+                    'https://assets.coingecko.com/coins/images/279/large/ethereum.png'
+                ],
+                total: '1,700,000',
+                apy: '14.7%',
+                apyColor: 'text-green-400',
+                capacity: 75,
+                rewards: '+1,100 ETH',
+                btnDisabled: false
+            },
+            {
+                pair: 'USDT/DAI',
+                icons: [
+                    'https://assets.coingecko.com/coins/images/325/large/Tether.png',
+                    'https://assets.coingecko.com/coins/images/9956/large/4943.png'
+                ],
+                total: '1,300,000',
+                apy: '12.1%',
+                apyColor: 'text-green-400',
+                capacity: 60,
+                rewards: '+500 DAI',
+                btnDisabled: false
+            },
+            {
+                pair: 'ETH/BTC',
+                icons: [
+                    'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
+                    'https://assets.coingecko.com/coins/images/1/large/bitcoin.png'
+                ],
+                total: '1,900,000',
+                apy: '16.3%',
+                apyColor: 'text-green-400',
+                capacity: 85,
+                rewards: '+1,300 BTC',
+                btnDisabled: false
+            }
+        ];
+        let stakingShowCount = 10;
+
+        function renderStakingTable(searchTerm = '') {
+            const table = document.getElementById('stakingTable');
+            table.innerHTML = '';
+            let filtered = stakingData.filter(item =>
+                item.pair.toLowerCase().includes(searchTerm)
+            );
+            const showList = filtered.slice(0, stakingShowCount);
+            showList.forEach(item => {
+                table.innerHTML += `
+                <tr class="table-row border-b border-gray-700">
+                    <td class="py-4">
+                        <div class="flex items-center gap-2">
+                            <img src="${item.icons[0]}" alt="token1" class="w-8 h-8 rounded-full object-cover border-2 border-gray-800">
+                            <img src="${item.icons[1]}" alt="token2" class="w-8 h-8 rounded-full object-cover border-2 border-gray-800 -ml-2">
+                            <span class="ml-3 font-semibold">${item.pair}</span>
+                        </div>
+                    </td>
+                    <td class="py-4">${item.total}</td>
+                    <td class="py-4 ${item.apyColor} font-bold">${item.apy}</td>
+                    <td class="py-4">
+                        <div class="w-24 bg-gray-700 rounded-full h-2 mb-1">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: ${item.capacity}%"></div>
+                        </div>
+                        <span class="text-xs text-gray-400">${item.capacity}%</span>
+                    </td>
+                    <td class="py-4">${item.rewards}</td>
+                    <td class="py-4">
+                        <button class="btn-primary" ${item.btnDisabled ? 'disabled' : ''}>去质押</button>
+                    </td>
+                </tr>
+                `;
+            });
+            // 加载更多按钮逻辑
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            if (filtered.length > stakingShowCount) {
+                loadMoreBtn.style.display = '';
             } else {
-                toast.classList.add('bg-sapphire-600');
+                loadMoreBtn.style.display = 'none';
             }
-            
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
-            setTimeout(() => {
-                toast.classList.add('translate-x-full');
-                setTimeout(() => document.body.removeChild(toast), 300);
-            }, 3000);
         }
-        
-        // 语言切换功能
-        function updateLanguage(lang) {
-            currentLang = lang;
-            document.querySelectorAll('[data-zh], [data-en]').forEach(element => {
-                const text = element.getAttribute(`data-${lang}`);
-                if (text) {
-                    element.textContent = text;
-                }
-            });
-        }
-        
-        // 监听来自父窗口的语言变更消息
-        window.addEventListener('message', function(event) {
-            if (event.data.type === 'LANGUAGE_CHANGE') {
-                updateLanguage(event.data.language);
-            }
+        document.getElementById('loadMoreBtn').onclick = function() {
+            stakingShowCount += 10;
+            renderStakingTable(document.getElementById('searchInput').value.toLowerCase());
+        };
+        // 初始化渲染
+        renderStakingTable();
+
+        // 链下拉交互与统计数据切换
+        const chainDropdownBtn = document.getElementById('chainDropdownBtn');
+        const chainDropdownMenu = document.getElementById('chainDropdownMenu');
+        const chainName = document.getElementById('chainName');
+        const chainIcon = document.getElementById('chainIcon');
+        const statTVL = document.getElementById('stat-tvl');
+        const statLiquidity = document.getElementById('stat-liquidity');
+        const statStaked = document.getElementById('stat-staked');
+        const chainStats = {
+          ethereum: {
+            name: 'Ethereum 主网',
+            icon: '<i class="fab fa-ethereum text-blue-400 text-lg mr-2"></i>',
+            tvl: '$12.34M',
+            liquidity: '$8.76M',
+            staked: '$3.58M'
+          },
+          bsc: {
+            name: 'BSC',
+            icon: '<i class="fas fa-cube text-yellow-400 text-lg mr-2"></i>',
+            tvl: '$8.12M',
+            liquidity: '$5.43M',
+            staked: '$2.69M'
+          },
+          polygon: {
+            name: 'Polygon',
+            icon: '<i class="fab fa-polygon text-purple-400 text-lg mr-2"></i>',
+            tvl: '$6.78M',
+            liquidity: '$4.21M',
+            staked: '$1.97M'
+          }
+        };
+        // 显示/隐藏下拉
+        chainDropdownBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          chainDropdownMenu.classList.toggle('hidden');
         });
-        
-        console.log('Staking page loaded');
+        // 点击外部关闭下拉
+        document.addEventListener('click', function() {
+          chainDropdownMenu.classList.add('hidden');
+        });
+        // 切换链
+        chainDropdownMenu.querySelectorAll('a').forEach(a => {
+          a.addEventListener('click', function(e) {
+            e.preventDefault();
+            const chain = a.getAttribute('data-chain');
+            chainName.textContent = chainStats[chain].name;
+            chainIcon.outerHTML = chainStats[chain].icon;
+            statTVL.textContent = chainStats[chain].tvl;
+            statLiquidity.textContent = chainStats[chain].liquidity;
+            statStaked.textContent = chainStats[chain].staked;
+            chainDropdownMenu.classList.add('hidden');
+          });
+        });
+
+        // 预言机数据动态更新时间（每10秒刷新一次时间）
+        function updateOracleTime() {
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString('zh-CN', { hour12: false });
+          document.querySelectorAll('.oracle-update-time').forEach(el => {
+            el.textContent = '预言机更新时间 ' + timeStr;
+          });
+        }
+        setInterval(updateOracleTime, 10000);
+        updateOracleTime();
     </script>
+    <style>
+        .category-main-card {
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25), 0 1.5px 8px 0 rgba(0,0,0,0.12);
+            border-radius: 1.5rem;
+            border: 1.5px solid rgba(80,100,180,0.12);
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .category-main-card:hover {
+            box-shadow: 0 16px 48px 0 rgba(80,150,255,0.18), 0 4px 24px 0 rgba(0,0,0,0.18);
+            transform: translateY(-6px) scale(1.012);
+            border-color: #3b82f6;
+        }
+        .staking-table tr {
+            transition: box-shadow 0.2s, background 0.2s;
+            border-radius: 1.25rem;
+        }
+        .staking-table tr:hover {
+            background: rgba(59,130,246,0.10);
+            box-shadow: 0 2px 12px 0 rgba(59,130,246,0.12);
+        }
+        .staking-table th, .staking-table td {
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+        }
+        .staking-table th {
+            background: linear-gradient(90deg, rgba(30,41,59,0.95) 0%, rgba(30,58,138,0.92) 100%);
+            font-weight: 700;
+            border-bottom: 1.5px solid #334155;
+        }
+        .staking-table tbody tr {
+            border-bottom: 1px solid #25304d;
+        }
+        .staking-table tbody tr:last-child {
+            border-bottom: none;
+        }
+        .search-input {
+            box-shadow: 0 2px 12px 0 rgba(59,130,246,0.10);
+            background: linear-gradient(90deg, rgba(30,41,59,0.85) 0%, rgba(30,58,138,0.80) 100%);
+            border-radius: 1.25rem;
+            border: 1.5px solid #334155;
+            transition: box-shadow 0.2s, border 0.2s;
+        }
+        .search-input:focus {
+            box-shadow: 0 0 0 3px #3b82f6, 0 2px 12px 0 rgba(59,130,246,0.18);
+            border-color: #3b82f6;
+        }
+        .btn-primary {
+            min-width: 96px;
+            height: 40px;
+            border-radius: 1.25rem;
+            font-weight: 600;
+            font-size: 1rem;
+            background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+            color: #fff;
+            box-shadow: 0 2px 8px 0 rgba(59,130,246,0.10);
+            border: none;
+            outline: none;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+            box-shadow: 0 4px 16px 0 rgba(59,130,246,0.18);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .btn-primary:disabled,
+        .btn-primary[disabled] {
+            background: #334155;
+            color: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+            border: none;
+            transform: none;
+        }
+    </style>
 </body>
 </html> 

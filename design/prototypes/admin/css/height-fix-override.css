@@ -1,0 +1,109 @@
+/* 
+ * 高度自适应支持样式
+ * 配合JavaScript实现iframe内容高度自适应
+ */
+
+/* 确保所有容器支持高度自适应 */
+.admin-container {
+    display: grid !important;
+    grid-template-columns: 280px 1fr !important;
+    grid-template-rows: auto !important; /* 改为auto，支持内容驱动高度 */
+    align-items: start !important;
+    height: auto !important;
+    min-height: calc(100vh - 40px) !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+/* 侧边栏Grid项目 */
+.sidebar {
+    grid-column: 1 !important;
+    height: auto !important;
+    min-height: 500px !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* 内容区域Grid项目 */
+.content-area {
+    grid-column: 2 !important;
+    height: auto !important;
+    min-height: 500px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* 主卡片容器 */
+.admin-main-card {
+    height: auto !important;
+    min-height: 500px !important;
+    max-height: none !important;
+    overflow: visible !important; /* 改为visible，让内容可以撑开 */
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* 卡片主体 */
+.admin-main-card-body {
+    height: auto !important;
+    min-height: 500px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    flex: 1 !important;
+    display: block !important;
+    padding: 0 !important;
+}
+
+/* iframe优化 - 配合JavaScript高度管理 */
+#contentIframe {
+    width: 100% !important;
+    /* 移除固定高度，让JavaScript完全控制 */
+    height: auto !important;
+    min-height: 400px !important; /* 降低最小高度，避免干扰 */
+    max-height: none !important;
+    border: none !important;
+    background: transparent !important;
+    overflow: visible !important; /* 确保内容不被截断 */
+    display: block !important;
+    border-bottom-left-radius: 16px !important;
+    border-bottom-right-radius: 16px !important;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .admin-container {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto auto !important;
+        gap: 12px !important;
+    }
+    
+    .sidebar {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+        height: auto !important;
+        min-height: auto !important;
+    }
+    
+    .content-area {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+    }
+    
+    #contentIframe {
+        min-height: 400px !important;
+    }
+}
+
+/* 移除所有CSS contain限制 */
+* {
+    contain: none !important;
+}
+
+/* 确保模态框正常显示 */
+.modal-overlay {
+    position: fixed !important;
+    z-index: 999999 !important;
+} 

@@ -1,0 +1,892 @@
+/* 治理概览页面特有样式 */
+
+/* 治理权重标题行布局 */
+.governance-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* 重新设计的权重等级徽章 */
+.power-level-badge {
+    background: linear-gradient(135deg, #f59e0b, #d97706, #f59e0b);
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease-in-out infinite;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.power-level-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.power-level-badge:hover::before {
+    left: 100%;
+}
+
+.power-level-badge:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+}
+
+.power-level-badge i {
+    font-size: 14px;
+    color: #fbbf24;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    animation: crownGlow 3s ease-in-out infinite;
+}
+
+.power-level-badge span {
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes crownGlow {
+    0%, 100% {
+        color: #fbbf24;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        color: #fde047;
+        text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+    }
+}
+
+/* 优化治理权重和统计概览的标题样式 */
+.admin-section-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #f8fafc !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    border-bottom: none !important;
+    display: flex !important;
+    align-items: center !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.5px;
+}
+
+.admin-section-title i {
+    margin-right: 12px !important;
+    color: #60a5fa !important;
+    font-size: 20px !important;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+    border-radius: 8px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+/* 活跃提案区域标题行布局 */
+.admin-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* 美化查看全部按钮 */
+.view-all-btn {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08)) !important;
+    border: 1px solid rgba(59, 130, 246, 0.4) !important;
+    color: #60a5fa !important;
+    padding: 8px 16px !important;
+    border-radius: 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15) !important;
+    letter-spacing: 0.3px !important;
+    text-transform: none !important;
+    min-height: 36px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+}
+
+.view-all-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.view-all-btn:hover::before {
+    left: 100%;
+}
+
+.view-all-btn:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15)) !important;
+    border-color: rgba(59, 130, 246, 0.6) !important;
+    color: #3b82f6 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25) !important;
+}
+
+.view-all-btn:active {
+    transform: translateY(0) !important;
+    transition: all 0.1s ease !important;
+}
+
+.view-all-btn i {
+    font-size: 11px !important;
+    transition: transform 0.3s ease !important;
+}
+
+.view-all-btn:hover i {
+    transform: translateX(2px) !important;
+}
+
+/* 治理统计卡片特殊样式 */
+.governance-stat-card {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(139, 92, 246, 0.08));
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px !important;
+    padding: 28px !important;
+}
+
+.governance-stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    animation: shimmer 4s ease-in-out infinite;
+    border-radius: 20px 20px 0 0;
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scaleX(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scaleX(1.05);
+    }
+}
+
+/* 优化治理统计卡片的数值显示 */
+.governance-stat-card .stat-value {
+    font-size: 24px !important;
+    font-weight: 800 !important;
+    color: #f1f5f9 !important;
+    margin-bottom: 6px !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    letter-spacing: -0.3px;
+    line-height: 1.1;
+}
+
+.governance-stat-card .stat-label {
+    color: #cbd5e1 !important;
+    font-size: 13px !important;
+    margin-bottom: 10px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.4px;
+    opacity: 0.95;
+    text-transform: uppercase;
+}
+
+.governance-stat-card .stat-change {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    padding: 5px 10px !important;
+    border-radius: 15px !important;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+}
+
+/* 治理统计图标优化 */
+.governance-stat-icon {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 18px !important;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15)) !important;
+    color: #60a5fa !important;
+    border: 2px solid rgba(59, 130, 246, 0.4) !important;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3) !important;
+    font-size: 22px !important;
+}
+
+.governance-stat-icon-blue {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 18px !important;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.15)) !important;
+    color: #60a5fa !important;
+    border: 2px solid rgba(59, 130, 246, 0.4) !important;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3) !important;
+    font-size: 22px !important;
+}
+
+.governance-stat-icon-green {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 18px !important;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.15)) !important;
+    color: #34d399 !important;
+    border: 2px solid rgba(16, 185, 129, 0.4) !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3) !important;
+    font-size: 22px !important;
+}
+
+.governance-stat-icon-purple {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 18px !important;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(139, 92, 246, 0.15)) !important;
+    color: #a78bfa !important;
+    border: 2px solid rgba(139, 92, 246, 0.4) !important;
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3) !important;
+    font-size: 22px !important;
+}
+
+/* 优化普通统计卡片的样式 */
+.orders-stat-card {
+    border-radius: 18px !important;
+    padding: 26px !important;
+    gap: 18px !important;
+}
+
+.orders-stat-card .stat-icon {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 16px !important;
+    font-size: 20px !important;
+}
+
+.orders-stat-card .stat-value {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    margin-bottom: 5px !important;
+    letter-spacing: -0.2px;
+}
+
+.orders-stat-card .stat-label {
+    font-size: 12px !important;
+    margin-bottom: 8px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+.orders-stat-card .stat-change {
+    font-size: 10px !important;
+    padding: 4px 9px !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+}
+
+/* 提案列表样式 */
+.proposals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 20px;
+}
+
+.proposal-item {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8));
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 20px;
+    padding: 28px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+}
+
+.proposal-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 20px 20px 0 0;
+}
+
+.proposal-item:hover {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 1));
+    border-color: rgba(59, 130, 246, 0.5);
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 15px 45px rgba(59, 130, 246, 0.2);
+}
+
+.proposal-item:hover::before {
+    opacity: 1;
+}
+
+.proposal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.proposal-id {
+    color: #64748b;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    background: rgba(100, 116, 139, 0.15);
+    padding: 6px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(100, 116, 139, 0.25);
+}
+
+.proposal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 14px;
+    line-height: 1.4;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.proposal-description {
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 22px;
+    opacity: 0.9;
+}
+
+.proposal-meta {
+    margin-bottom: 22px;
+}
+
+.proposal-info {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 12px;
+    color: #94a3b8;
+    flex-wrap: wrap;
+}
+
+.proposal-info span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(148, 163, 184, 0.12);
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.proposal-info span:hover {
+    background: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #60a5fa;
+}
+
+.proposal-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 16px;
+}
+
+/* 重新设计的投票按钮样式 - 参考退款页面操作按钮 */
+.vote-btn {
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.2px;
+    text-transform: none;
+    min-width: 100px;
+    max-width: 120px;
+    justify-content: center;
+    width: auto;
+    text-align: center;
+}
+
+.vote-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.vote-btn:active {
+    transform: translateY(0);
+    transition: all 0.1s ease;
+}
+
+.vote-btn i {
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+.vote-btn-yes {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: 1px solid transparent;
+    min-width: 100px;
+    max-width: 120px;
+}
+
+.vote-btn-yes:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.vote-btn-no {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: 1px solid transparent;
+    min-width: 100px;
+    max-width: 120px;
+}
+
+.vote-btn-no:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.vote-btn-abstain {
+    background: rgba(15, 23, 42, 0.3);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    backdrop-filter: blur(10px);
+    min-width: 100px;
+    max-width: 120px;
+}
+
+.vote-btn-abstain:hover {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: #3b82f6;
+    color: #60a5fa;
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+
+.vote-btn-voted {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: 1px solid transparent;
+    cursor: default;
+    opacity: 0.8;
+    min-width: 100px;
+    max-width: 120px;
+    font-size: 12px;
+    padding: 8px 14px;
+    min-height: 34px;
+}
+
+.vote-btn-voted:hover {
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vote-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    min-width: 100px;
+    max-width: 120px;
+    font-size: 12px;
+    padding: 8px 14px;
+    min-height: 34px;
+}
+
+/* 确保div元素的投票按钮也有相同的样式 */
+div.vote-btn {
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.2px;
+    text-transform: none;
+    min-width: 100px;
+    max-width: 120px;
+    justify-content: center;
+    width: auto;
+    text-align: center;
+}
+
+div.vote-btn-voted {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: 1px solid transparent;
+    cursor: default;
+    opacity: 0.8;
+    min-width: 100px;
+    max-width: 120px;
+    font-size: 12px;
+    padding: 8px 14px;
+    min-height: 34px;
+}
+
+/* 状态徽章样式 */
+.status-badge {
+    padding: 7px 14px;
+    border-radius: 22px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+}
+
+.status-active {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.2));
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% {
+        box-shadow: 0 3px 10px rgba(59, 130, 246, 0.15);
+    }
+    50% {
+        box-shadow: 0 5px 18px rgba(59, 130, 246, 0.3);
+    }
+}
+
+.status-passed {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.2));
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.status-failed {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.2));
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.status-ended {
+    background: linear-gradient(135deg, rgba(148, 163, 184, 0.3), rgba(148, 163, 184, 0.2));
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+/* 快速操作网格 */
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 22px;
+    margin-top: 24px;
+}
+
+.action-item {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8));
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 20px;
+    padding: 26px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+}
+
+.action-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 20px 20px 0 0;
+}
+
+.action-item:hover {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 1));
+    border-color: rgba(59, 130, 246, 0.5);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 18px 55px rgba(59, 130, 246, 0.2);
+}
+
+.action-item:hover::before {
+    opacity: 1;
+}
+
+.action-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.action-item:hover .action-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.action-icon.blue {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.action-icon.green {
+    background: linear-gradient(135deg, #10b981, #047857);
+}
+
+.action-icon.purple {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.action-icon.orange {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.action-content {
+    flex: 1;
+}
+
+.action-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 7px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.3px;
+}
+
+.action-description {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .governance-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .power-level-badge {
+        font-size: 11px;
+        padding: 6px 12px;
+        gap: 4px;
+    }
+
+    .power-level-badge i {
+        font-size: 12px;
+    }
+
+    .proposal-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .proposal-actions {
+        justify-content: flex-start;
+        gap: 8px;
+    }
+
+    .actions-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .action-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+
+    .admin-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .view-all-btn {
+        font-size: 11px !important;
+        padding: 6px 12px !important;
+        min-height: 32px !important;
+    }
+
+    .vote-btn {
+        font-size: 12px;
+        padding: 8px 14px;
+        min-height: 36px;
+    }
+
+    .proposal-title {
+        font-size: 16px;
+    }
+
+    .orders-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .admin-section-title {
+        font-size: 16px !important;
+    }
+
+    .admin-section-title i {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 18px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .governance-header-row {
+        gap: 8px;
+    }
+
+    .power-level-badge {
+        font-size: 10px;
+        padding: 5px 10px;
+    }
+
+    .proposal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .proposal-actions {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .vote-btn {
+        width: 100%;
+        justify-content: center;
+        min-width: auto;
+        max-width: none;
+        font-size: 12px;
+        padding: 10px 14px;
+        min-height: 40px;
+    }
+
+    div.vote-btn {
+        width: 100%;
+        justify-content: center;
+        min-width: auto;
+        max-width: none;
+        font-size: 12px;
+        padding: 10px 14px;
+        min-height: 40px;
+    }
+
+    .orders-stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .governance-stat-card,
+    .orders-stat-card {
+        padding: 20px !important;
+    }
+
+    .governance-stat-icon,
+    .governance-stat-icon-blue,
+    .governance-stat-icon-green,
+    .governance-stat-icon-purple {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 18px !important;
+    }
+} 

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统管理员后台演示 - Sapphire Mall</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                        accent: '#F59E0B',
+                        success: '#10B981',
+                        warning: '#F59E0B',
+                        error: '#EF4444'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .demo-frame {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .demo-frame:hover {
+            border-color: #dc2626;
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .module-header {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 页面头部 -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-4">
+                        <i class="fas fa-shield-alt text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">系统管理员后台演示</h1>
+                        <p class="text-sm text-gray-600">平台管理、合约管理、DAO治理管理、系统管理</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="window.close()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-times mr-2"></i>
+                        关闭演示
+                    </button>
+                    <button onclick="openFullDemo()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                        <i class="fas fa-expand mr-2"></i>
+                        完整体验
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- 角色介绍 -->
+        <div class="bg-gradient-to-r from-red-500 to-red-600 rounded-xl p-8 text-white mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4">系统管理员后台</h2>
+                    <p class="text-red-100 text-lg mb-6">
+                        系统管理员拥有最高权限，可以管理整个平台的运营、合约部署、DAO治理和系统配置
+                    </p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">5</div>
+                            <div class="text-red-100 text-sm">主要模块</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">20</div>
+                            <div class="text-red-100 text-sm">功能页面</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">100%</div>
+                            <div class="text-red-100 text-sm">权限控制</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold">Admin</div>
+                            <div class="text-red-100 text-sm">超级管理员</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden lg:block">
+                    <div class="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-6xl text-white/80"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模块1: 个人中心 -->
+        <section class="mb-12">
+            <div class="module-header px-6 py-4 rounded-t-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-user text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="text-xl font-bold">个人中心</h3>
+                        <p class="text-red-100">管理员信息、权限设置、操作日志</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white p-6 rounded-b-xl border border-gray-200">
+                <!-- 管理员信息 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">管理员信息</h4>
+                        <p class="text-sm text-gray-600">超级管理员资料</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" 
+                                 alt="管理员头像" class="w-16 h-16 rounded-full mr-4">
+                            <div>
+                                <h5 class="font-semibold text-gray-900">Admin User</h5>
+                                <p class="text-sm text-gray-600">admin@sapphiremall.com</p>
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    超级管理员
+                                </span>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">管理员ID:</span>
+                                <span class="text-sm font-mono text-red-600">ADMIN-001</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">权限等级:</span>
+                                <span class="text-red-600 font-medium">Level 10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 权限管理 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">权限管理</h4>
+                        <p class="text-sm text-gray-600">角色权限配置</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-900">平台管理</span>
+                                <span class="text-green-600 text-sm">完全权限</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-900">合约管理</span>
+                                <span class="text-green-600 text-sm">完全权限</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-900">用户管理</span>
+                                <span class="text-green-600 text-sm">完全权限</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-900">系统配置</span>
+                                <span class="text-green-600 text-sm">完全权限</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作日志 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">操作日志</h4>
+                        <p class="text-sm text-gray-600">最近操作记录</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="text-sm">
+                                <div class="font-medium">更新系统配置</div>
+                                <div class="text-gray-500">2小时前</div>
+                            </div>
+                            <div class="text-sm">
+                                <div class="font-medium">审核商户申请</div>
+                                <div class="text-gray-500">4小时前</div>
+                            </div>
+                            <div class="text-sm">
+                                <div class="font-medium">部署新合约</div>
+                                <div class="text-gray-500">1天前</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块2: 平台管理 -->
+        <section class="mb-12">
+            <div class="module-header px-6 py-4 rounded-t-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-cogs text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="text-xl font-bold">平台管理</h3>
+                        <p class="text-red-100">用户管理、商户审核、订单监控、数据统计</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-white p-6 rounded-b-xl border border-gray-200">
+                <!-- 用户管理 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">用户管理</h4>
+                        <p class="text-sm text-gray-600">用户账户、权限管理</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-3 gap-4 mb-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-600">1,245</div>
+                                <div class="text-xs text-gray-600">总用户</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-green-600">89</div>
+                                <div class="text-xs text-gray-600">认证商户</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-orange-600">12</div>
+                                <div class="text-xs text-gray-600">待审核</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 商户审核 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">商户审核</h4>
+                        <p class="text-sm text-gray-600">KYC审核、资质验证</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-medium">Tech Solutions Ltd</span>
+                                    <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">待审核</span>
+                                </div>
+                                <p class="text-sm text-gray-600">申请时间: 2024-01-20</p>
+                            </div>
+                            <div class="border border-gray-200 rounded-lg p-3">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-medium">Creative Studio</span>
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">已通过</span>
+                                </div>
+                                <p class="text-sm text-gray-600">审核时间: 2024-01-19</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块3: 合约管理 -->
+        <section class="mb-12">
+            <div class="module-header px-6 py-4 rounded-t-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-file-contract text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="text-xl font-bold">合约管理</h3>
+                        <p class="text-red-100">智能合约部署、升级、监控</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white p-6 rounded-b-xl border border-gray-200">
+                <!-- 合约部署 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">合约部署</h4>
+                        <p class="text-sm text-gray-600">新合约部署管理</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">SAP Token:</span>
+                                <span class="text-green-600 text-sm">已部署</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Marketplace:</span>
+                                <span class="text-green-600 text-sm">已部署</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">DAO Governance:</span>
+                                <span class="text-yellow-600 text-sm">部署中</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 合约监控 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">合约监控</h4>
+                        <p class="text-sm text-gray-600">合约状态监控</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Gas使用:</span>
+                                <span class="text-blue-600 font-medium">2.5M</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">交易数:</span>
+                                <span class="text-green-600 font-medium">1,234</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">错误率:</span>
+                                <span class="text-red-600 font-medium">0.1%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 合约升级 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">合约升级</h4>
+                        <p class="text-sm text-gray-600">版本管理和升级</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="text-sm">
+                                <div class="font-medium">当前版本: v1.2.0</div>
+                                <div class="text-gray-500">最后更新: 2024-01-15</div>
+                            </div>
+                            <div class="text-sm">
+                                <div class="font-medium">待升级: v1.3.0</div>
+                                <div class="text-gray-500">计划时间: 2024-01-25</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块4: DAO治理管理 -->
+        <section class="mb-12">
+            <div class="module-header px-6 py-4 rounded-t-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-vote-yea text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="text-xl font-bold">DAO治理管理</h3>
+                        <p class="text-red-100">提案管理、投票监控、治理参数</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 bg-white p-6 rounded-b-xl border border-gray-200">
+                <!-- 提案管理 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">提案管理</h4>
+                        <p class="text-sm text-gray-600">社区提案审核管理</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h5 class="font-medium text-gray-900">提案 #001</h5>
+                                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">进行中</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">增加新的商品分类支持</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="text-sm text-gray-500">参与率: 65%</div>
+                                    <div class="text-sm text-gray-500">剩余 5 天</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 治理参数 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">治理参数</h4>
+                        <p class="text-sm text-gray-600">DAO治理参数配置</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">最小提案门槛:</span>
+                                <span class="font-medium">1000 SAP</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">投票周期:</span>
+                                <span class="font-medium">7 天</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">通过阈值:</span>
+                                <span class="font-medium">51%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模块5: 系统管理 -->
+        <section class="mb-12">
+            <div class="module-header px-6 py-4 rounded-t-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-server text-2xl mr-4"></i>
+                    <div>
+                        <h3 class="text-xl font-bold">系统管理</h3>
+                        <p class="text-red-100">系统配置、安全设置、备份恢复</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 bg-white p-6 rounded-b-xl border border-gray-200">
+                <!-- 系统配置 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">系统配置</h4>
+                        <p class="text-sm text-gray-600">平台参数配置</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">平台手续费:</span>
+                                <span class="font-medium">2.5%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">最小交易额:</span>
+                                <span class="font-medium">1 SAP</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">系统状态:</span>
+                                <span class="text-green-600 font-medium">正常</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 安全设置 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">安全设置</h4>
+                        <p class="text-sm text-gray-600">安全策略配置</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-900">双重认证</span>
+                                <span class="text-green-600 text-sm">已启用</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-900">IP白名单</span>
+                                <span class="text-green-600 text-sm">已配置</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-900">API限流</span>
+                                <span class="text-green-600 text-sm">已启用</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 备份恢复 -->
+                <div class="demo-frame">
+                    <div class="bg-gray-100 px-4 py-3 border-b border-gray-200">
+                        <h4 class="font-semibold text-gray-900">备份恢复</h4>
+                        <p class="text-sm text-gray-600">数据备份管理</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="text-sm">
+                                <div class="font-medium">最后备份</div>
+                                <div class="text-gray-500">2024-01-20 02:00</div>
+                            </div>
+                            <div class="text-sm">
+                                <div class="font-medium">备份状态</div>
+                                <div class="text-green-500">成功</div>
+                            </div>
+                            <div class="text-sm">
+                                <div class="font-medium">下次备份</div>
+                                <div class="text-gray-500">2024-01-21 02:00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 快速操作 -->
+        <section class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">
+                <i class="fas fa-bolt text-yellow-500 mr-2"></i>
+                快速操作
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="openFullDemo()" class="flex flex-col items-center p-6 bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
+                    <i class="fas fa-desktop text-red-600 text-2xl mb-3"></i>
+                    <span class="text-sm font-medium text-gray-700">完整体验</span>
+                </button>
+                
+                <button onclick="openPage('admin-users.html')" class="flex flex-col items-center p-6 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                    <i class="fas fa-users text-blue-600 text-2xl mb-3"></i>
+                    <span class="text-sm font-medium text-gray-700">用户管理</span>
+                </button>
+                
+                <button onclick="openPage('admin-contracts.html')" class="flex flex-col items-center p-6 bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
+                    <i class="fas fa-file-contract text-green-600 text-2xl mb-3"></i>
+                    <span class="text-sm font-medium text-gray-700">合约管理</span>
+                </button>
+                
+                <button onclick="openPage('admin-system.html')" class="flex flex-col items-center p-6 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
+                    <i class="fas fa-server text-purple-600 text-2xl mb-3"></i>
+                    <span class="text-sm font-medium text-gray-700">系统配置</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-red-600 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-shield-alt text-white"></i>
+                    </div>
+                    <span class="text-lg font-semibold text-gray-900">系统管理员后台演示</span>
+                </div>
+                <p class="text-gray-600 mb-4">Sapphire Mall 区块链商城平台</p>
+                <p class="text-sm text-gray-500">© 2024 Sapphire Mall. 基于现代Web技术构建的高保真原型</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 打开完整演示
+        function openFullDemo() {
+            window.open('index.html?role=admin', '_blank');
+        }
+        
+        // 打开具体页面
+        function openPage(page) {
+            window.open(page, '_blank');
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('系统管理员后台演示页面加载完成');
+            
+            // 添加一些交互效果
+            const cards = document.querySelectorAll('.demo-frame');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

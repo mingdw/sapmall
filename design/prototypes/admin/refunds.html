@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>退款/售后 - Sapphire Mall</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/iframe-content-common.css">
+    <link rel="stylesheet" href="css/refunds.css">
+</head>
+<body class="page-container">
+    <div class="admin-content-container">
+        <!-- 售后统计概览卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-shield-alt"></i>
+                        售后服务概览
+                    </h3>
+                    <div class="orders-header-actions">
+                        <button class="admin-btn admin-btn-outline admin-btn-sm" onclick="exportRefunds()">
+                            <i class="fas fa-download"></i>
+                            导出记录
+                        </button>
+                        <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="refreshRefunds()">
+                            <i class="fas fa-refresh"></i>
+                            刷新
+                        </button>
+                    </div>
+                    
+                    <!-- 统计数据网格 -->
+                    <div class="orders-stats-grid">
+                        <div class="orders-stat-card refund-stat-card">
+                            <div class="stat-icon refund-stat-icon">
+                                <i class="fas fa-undo"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">12</div>
+                                <div class="stat-label">总申请数</div>
+                                <div class="stat-change positive">+2 本月</div>
+                            </div>
+                        </div>
+                        
+                        <div class="orders-stat-card refund-stat-card">
+                            <div class="stat-icon refund-stat-icon-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">8</div>
+                                <div class="stat-label">已完成</div>
+                                <div class="stat-change positive">66.7% 成功率</div>
+                            </div>
+                        </div>
+                        
+                        <div class="orders-stat-card refund-stat-card">
+                            <div class="stat-icon refund-stat-icon-warning">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">3</div>
+                                <div class="stat-label">处理中</div>
+                                <div class="stat-change neutral">平均3天</div>
+                            </div>
+                        </div>
+                        
+                        <div class="orders-stat-card refund-stat-card">
+                            <div class="stat-icon refund-stat-icon-purple">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">15.6 SAP</div>
+                                <div class="stat-label">退款金额</div>
+                                <div class="stat-change neutral">已退回</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快捷申请卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-plus-circle"></i>
+                        申请售后服务
+                    </h3>
+                    <div class="apply-grid">
+                        <div class="apply-card" onclick="showRefundModal()">
+                            <div class="apply-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="apply-content">
+                                <h5>申请退款</h5>
+                                <p>商品有质量问题或不符合描述</p>
+                            </div>
+                            <div class="apply-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="apply-card" onclick="showExchangeModal()">
+                            <div class="apply-icon apply-icon-orange">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div class="apply-content">
+                                <h5>申请换货</h5>
+                                <p>商品功能正常但需要更换</p>
+                            </div>
+                            <div class="apply-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="apply-card" onclick="showRepairModal()">
+                            <div class="apply-icon apply-icon-blue">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="apply-content">
+                                <h5>申请维修</h5>
+                                <p>数字商品需要技术支持</p>
+                            </div>
+                            <div class="apply-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="apply-card" onclick="showConsultModal()">
+                            <div class="apply-icon apply-icon-purple">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="apply-content">
+                                <h5>咨询客服</h5>
+                                <p>遇到问题需要人工帮助</p>
+                            </div>
+                            <div class="apply-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 售后记录卡片 -->
+        <div class="admin-info-card">
+            <div class="admin-card-content">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">
+                        <i class="fas fa-history"></i>
+                        售后记录
+                    </h3>
+                    
+                    <!-- 筛选和搜索区域 -->
+                    <div class="order-filters-container">
+                        <div class="filters-left">
+                            <div class="filter-group">
+                                <button class="filter-btn active" data-status="all">全部</button>
+                                <button class="filter-btn" data-status="pending">处理中</button>
+                                <button class="filter-btn" data-status="approved">已同意</button>
+                                <button class="filter-btn" data-status="completed">已完成</button>
+                                <button class="filter-btn" data-status="rejected">已拒绝</button>
+                            </div>
+                        </div>
+                        <div class="filters-right">
+                            <div class="quick-filters">
+                                <select class="filter-select" id="typeFilter" onchange="applyTypeFilter()">
+                                    <option value="all">所有类型</option>
+                                    <option value="refund">退款</option>
+                                    <option value="exchange">换货</option>
+                                    <option value="repair">维修</option>
+                                </select>
+                                <select class="filter-select" id="timeFilter" onchange="applyTimeFilter()">
+                                    <option value="all">全部时间</option>
+                                    <option value="today">今天</option>
+                                    <option value="week">本周</option>
+                                    <option value="month">本月</option>
+                                </select>
+                            </div>
+                            <div class="search-input-container enhanced">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="搜索订单号或商品..." class="search-input enhanced-search" id="searchInput">
+                                <button class="search-clear-btn" id="clearSearch" onclick="clearSearch()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 售后记录表格 -->
+                    <div class="refunds-list-container">
+                        <!-- 表头 -->
+                        <div class="refunds-table-header">
+                            <div class="header-item">申请信息</div>
+                            <div class="header-item">订单信息</div>
+                            <div class="header-item">金额</div>
+                            <div class="header-item">状态</div>
+                            <div class="header-item">申请时间</div>
+                            <div class="header-item">操作</div>
+                        </div>
+                        
+                        <!-- 售后记录列表 -->
+                        <div class="refunds-list" id="refundsList">
+                            <!-- 售后记录将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                    
+                    <!-- 空状态 -->
+                    <div class="empty-state" id="emptyState" style="display: none;">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>暂无售后记录</h3>
+                        <p>您还没有提交过售后申请</p>
+                        <button class="admin-btn admin-btn-primary" onclick="showRefundModal()">
+                            <i class="fas fa-plus"></i>
+                            立即申请
+                        </button>
+                    </div>
+                    
+                    <!-- 分页 -->
+                    <div class="order-pagination">
+                        <div class="pagination">
+                            <button class="pagination-btn" id="prevPage" onclick="changePage(-1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <div class="pagination-info">
+                                第 <span id="currentPage">1</span>/<span id="totalPages">3</span> 页 · 共 <span id="totalRecords">12</span> 条
+                            </div>
+                            <button class="pagination-btn" id="nextPage" onclick="changePage(1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 申请退款模态框 -->
+    <div class="modal" id="refundModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-money-bill-wave"></i>
+                    申请退款
+                </h3>
+                <span class="close-modal" onclick="closeRefundModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form class="refund-form" id="refundForm">
+                    <div class="form-step">
+                        <h4 class="step-title">
+                            <i class="fas fa-shopping-bag"></i>
+                            选择订单
+                        </h4>
+                        <div class="order-selector">
+                            <select id="orderSelect" required>
+                                <option value="">请选择要退款的订单</option>
+                            </select>
+                        </div>
+                        <div class="selected-order" id="selectedOrder" style="display: none;">
+                            <!-- 选中的订单信息 -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-step">
+                        <h4 class="step-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            退款原因
+                        </h4>
+                        <div class="reason-options">
+                            <label class="reason-option">
+                                <input type="radio" name="reason" value="quality" required>
+                                <span class="reason-text">商品质量问题</span>
+                            </label>
+                            <label class="reason-option">
+                                <input type="radio" name="reason" value="description" required>
+                                <span class="reason-text">与商品描述不符</span>
+                            </label>
+                            <label class="reason-option">
+                                <input type="radio" name="reason" value="service" required>
+                                <span class="reason-text">商家服务问题</span>
+                            </label>
+                            <label class="reason-option">
+                                <input type="radio" name="reason" value="personal" required>
+                                <span class="reason-text">个人原因不需要</span>
+                            </label>
+                            <label class="reason-option">
+                                <input type="radio" name="reason" value="other" required>
+                                <span class="reason-text">其他原因</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-step">
+                        <h4 class="step-title">
+                            <i class="fas fa-edit"></i>
+                            问题描述
+                        </h4>
+                        <textarea 
+                            id="description" 
+                            placeholder="请详细描述遇到的问题，我们会根据您的描述进行处理..." 
+                            rows="4" 
+                            required
+                        ></textarea>
+                    </div>
+                    
+                    <div class="form-step">
+                        <h4 class="step-title">
+                            <i class="fas fa-camera"></i>
+                            上传凭证
+                        </h4>
+                        <div class="file-upload">
+                            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>点击上传图片或拖拽文件到此处</p>
+                                <span class="upload-tips">支持 JPG、PNG、GIF 格式，最多3张，每张不超过5MB</span>
+                            </div>
+                            <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+                            <div class="upload-preview" id="uploadPreview"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="admin-btn admin-btn-outline" onclick="closeRefundModal()">取消</button>
+                        <button type="submit" class="admin-btn admin-btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            提交申请
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 售后详情模态框 -->
+    <div class="modal" id="refundDetailModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-clipboard-list"></i>
+                    售后详情
+                </h3>
+                <span class="close-modal" onclick="closeRefundDetailModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="refundDetailBody">
+                <!-- 售后详情内容将动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 客服沟通模态框 -->
+    <div class="modal" id="chatModal">
+        <div class="modal-content modal-chat">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-comments"></i>
+                    在线客服
+                </h3>
+                <span class="close-modal" onclick="closeChatModal()">&times;</span>
+            </div>
+            <div class="modal-body chat-body">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- 聊天消息将动态加载 -->
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="chat-toolbar">
+                            <button class="toolbar-btn" onclick="insertEmoji()">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                            <button class="toolbar-btn" onclick="uploadFile()">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                        </div>
+                        <div class="chat-input">
+                            <textarea id="messageInput" placeholder="输入消息..." rows="2"></textarea>
+                            <button class="send-btn" onclick="sendMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入脚本文件 -->
+    <script src="js/page-common.js"></script>
+    <script src="js/refunds.js"></script>
+</body>
+</html> 

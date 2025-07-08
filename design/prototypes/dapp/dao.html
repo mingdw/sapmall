@@ -30,636 +30,1826 @@
     </script>
     <style>
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
         }
-        .glass-bg {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+        .soft-card {
+            background: linear-gradient(120deg, rgba(30,41,59,0.92) 60%, rgba(30,58,138,0.90) 100%);
+            border-radius: 2rem;
+            box-shadow: 0 4px 24px 0 rgba(59,130,246,0.10);
+            border: none;
+            transition: box-shadow 0.3s, transform 0.3s;
         }
-        .proposal-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+        .soft-card:hover {
+            box-shadow: 0 8px 32px 0 rgba(80,150,255,0.13);
+            transform: translateY(-2px) scale(1.01);
         }
-        .proposal-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+        .soft-btn {
+            background: linear-gradient(90deg, #60a5fa 0%, #a5b4fc 100%);
+            color: #fff;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.6rem 1.6rem;
+            box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
+            border: none;
+            outline: none;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            cursor: pointer;
         }
-        .vote-for {
-            background: linear-gradient(135deg, #10b981, #059669);
-            transition: all 0.3s ease;
+        .soft-btn:hover:not(:disabled) {
+            background: linear-gradient(90deg, #a5b4fc 0%, #60a5fa 100%);
+            box-shadow: 0 4px 16px 0 rgba(59,130,246,0.13);
+            transform: translateY(-1px) scale(1.03);
         }
-        .vote-for:hover {
-            background: linear-gradient(135deg, #059669, #047857);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #e0e7ef;
+            letter-spacing: 0.01em;
         }
-        .vote-against {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            transition: all 0.3s ease;
+        .proposal-status {
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.2rem 1rem;
+            color: #fff;
         }
-        .vote-against:hover {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-        }
-        .vote-abstain {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            transition: all 0.3s ease;
-        }
-        .vote-abstain:hover {
-            background: linear-gradient(135deg, #4b5563, #374151);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.4);
-        }
+        .status-active { background: linear-gradient(90deg, #38bdf8, #2563eb); }
+        .status-ended { background: linear-gradient(90deg, #a1a1aa, #64748b); }
+        .status-pending { background: linear-gradient(90deg, #fbbf24, #f59e42); }
         .progress-bar {
+            background: linear-gradient(90deg, #60a5fa, #a5b4fc);
             height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
+            border-radius: 9999px;
             transition: width 0.3s ease;
         }
-        .progress-for {
-            background: linear-gradient(90deg, #10b981, #34d399);
-        }
-        .progress-against {
-            background: linear-gradient(90deg, #ef4444, #f87171);
-        }
-        .progress-abstain {
-            background: linear-gradient(90deg, #6b7280, #9ca3af);
-        }
-        .status-active {
-            background: linear-gradient(135deg, #10b981, #059669);
+        .soft-badge {
+            background: linear-gradient(90deg, #fbbf24, #f59e42);
             color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 0.2rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
             font-weight: 600;
         }
-        .status-pending {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
+        .soft-list li {
+            border-left: 4px solid #60a5fa;
+            padding-left: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        .soft-list li:last-child { margin-bottom: 0; }
+        .marquee {
+            width: 100%;
+            overflow: hidden;
+            background: #1e2329;
+            color: #ef4444;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .marquee i {
+            margin-right: 0.75rem;
+            color: #ef4444;
+        }
+        .marquee-track {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            will-change: transform;
+            animation: marquee-track 24s linear infinite;
+        }
+        .marquee-item {
+            margin-right: 2.5rem;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: #ef4444;
+        }
+        .marquee-item .date {
+            color: #fbbf24;
+            font-size: 0.95em;
+            margin-right: 0.5em;
+        }
+        @keyframes marquee-track {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        /* 数据概览区美化 */
+        .dao-overview-card {
+            background: rgba(30,41,59,0.92);
+            border-radius: 1rem;
+            border: 1.5px solid #384157;
+            box-shadow: none;
+            transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            min-width: 0;
+        }
+        .dao-overview-card:hover {
+            border-color: #60a5fa;
+            box-shadow: 0 6px 24px 0 rgba(59,130,246,0.10);
+            transform: scale(1.045);
+        }
+        .dao-overview-number {
+            font-size: 2.1rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+        }
+        .dao-overview-label {
+            font-size: 1.05rem;
+            color: #cbd5e1;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        .dao-overview-desc {
+            font-size: 0.95rem;
+            color: #60a5fa;
             font-weight: 600;
         }
-        .status-ended {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            color: white;
-            padding: 4px 12px;
+        .dao-overview-title {
+            font-size: 2.3rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 0.01em;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .dao-overview-title .highlight {
+            color: #60a5fa;
+            background: linear-gradient(90deg, #60a5fa, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .dao-overview-subtitle {
+            font-size: 1.02rem;
+            color: #a0aec0;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 2.2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* DAO页面主体内容区升级样式 */
+        .dao-tabbar {
+            display: flex;
+            gap: 8px;
+            background: rgba(30,41,59,0.7);
+            border-radius: 9999px;
+            padding: 6px 12px;
+            box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
+            border: 1.5px solid #334155;
+            margin-bottom: 18px;
+        }
+        .dao-tab-btn {
+            padding: 8px 24px;
+            border-radius: 9999px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #94a3b8;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .dao-tab-btn.active {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            color: #fff;
+            box-shadow: 0 2px 8px 0 rgba(59,130,246,0.13);
+        }
+        .dao-tab-btn:hover:not(.active) {
+            background: rgba(51,65,85,0.25);
+            color: #e0e8f0;
+        }
+        .dao-proposal-card {
+            background: linear-gradient(120deg, rgba(30,41,59,0.96) 60%, rgba(30,58,138,0.93) 100%);
+            border-radius: 20px;
+            border: 1.5px solid #384157;
+            box-shadow: 0 4px 24px 0 rgba(59,130,246,0.10);
+            padding: 28px 32px;
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            transition: box-shadow 0.25s, border 0.25s, transform 0.2s;
+            position: relative;
+        }
+        .dao-proposal-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 8px 32px 0 rgba(80,150,255,0.16), 0 0 16px 2px #60a5fa33;
+            transform: translateY(-2px) scale(1.01);
+        }
+        .dao-proposal-avatar {
+            width: 48px; height: 48px;
             border-radius: 12px;
-            font-size: 12px;
+            background: linear-gradient(135deg, #3b82f6 60%, #8b5cf6 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; color: #fff; font-weight: bold;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .dao-proposal-main {
+            flex: 1;
+            min-width: 0;
+        }
+        .dao-proposal-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .dao-proposal-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: #8b5cf6;
+            background: rgba(139,92,246,0.12);
+            border-radius: 8px;
+            padding: 2px 10px;
             font-weight: 600;
         }
-        .delegate-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+        .dao-proposal-status {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 2px 12px;
+            margin-right: 4px;
         }
-        .delegate-card:hover {
-            background: rgba(255, 255, 255, 0.06);
-            transform: translateY(-1px);
+        .dao-status-active { background: linear-gradient(90deg, #38bdf8, #2563eb); color: #fff; }
+        .dao-status-completed { background: linear-gradient(90deg, #a1a1aa, #64748b); color: #fff; }
+        .dao-status-pending { background: linear-gradient(90deg, #fbbf24, #f59e42); color: #fff; }
+        .dao-proposal-title {
+            font-size: 1.18rem;
+            font-weight: 700;
+            color: #e0e7ef;
+            margin-bottom: 2px;
+            line-height: 1.3;
         }
-        .countdown {
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
+        .dao-proposal-desc {
+            color: #b6c3d6;
+            font-size: 15px;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .dao-proposal-meta {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .dao-proposal-reward {
+            background: linear-gradient(90deg, #fbbf24, #f59e42);
+            color: #fff;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 2px 14px;
+            margin-left: 4px;
+        }
+        .dao-proposal-progress-bg {
+            width: 100%;
+            background: #232e45;
+            border-radius: 9999px;
+            height: 8px;
+            margin-bottom: 8px;
+        }
+        .dao-proposal-progress {
+            background: linear-gradient(90deg, #60a5fa, #a5b4fc);
+            height: 8px;
+            border-radius: 9999px;
+            transition: width 0.3s;
+        }
+        .dao-proposal-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            min-width: 140px;
+        }
+        .dao-proposal-time {
+            font-size: 12px;
+            color: #60a5fa;
+            background: #1e293b;
+            border-radius: 9999px;
+            padding: 3px 14px;
+            font-family: 'JetBrains Mono', 'Fira Mono', 'Consolas', monospace;
+            margin-bottom: 2px;
+        }
+        .dao-proposal-btn {
+            background: linear-gradient(90deg, #60a5fa, #a5b4fc);
+            color: #fff;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 8px 28px;
+            border: none;
+            outline: none;
+            box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+        }
+        .dao-proposal-btn:hover:not(:disabled) {
+            background: linear-gradient(90deg, #a5b4fc, #60a5fa);
+            box-shadow: 0 4px 16px 0 rgba(59,130,246,0.13);
+            transform: translateY(-1px) scale(1.03);
+        }
+        .dao-proposal-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        /* 右侧榜单卡片升级 */
+        .dao-info-card {
+            background: rgba(15,23,42,0.7);
+            border: 1.5px solid #334155;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px 0 rgba(59,130,246,0.08);
+            padding: 24px 20px 20px 20px;
+            margin-bottom: 0;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .dao-info-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 6px 24px 0 rgba(59,130,246,0.13);
+        }
+        .dao-info-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e0e8f0;
+            margin-bottom: 14px;
+        }
+        .dao-info-icon {
+            font-size: 1.2rem;
+        }
+        .dao-user-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+        .dao-user-avatar {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #3b82f6 60%, #8b5cf6 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: #fff; font-weight: bold;
+        }
+        .dao-user-rank {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-right: 2px;
+        }
+        .dao-user-name {
+            font-weight: 600;
+            color: #60a5fa;
+        }
+        .dao-user-score {
+            font-size: 13px;
+            color: #a5b4fc;
+            margin-left: 4px;
+        }
+        .dao-topic-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+        .dao-topic-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.3rem;
+            height: 1.3rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+        }
+        .dao-topic-index.idx-1 { color: #fff; background: #991b1b; }
+        .dao-topic-index.idx-2 { color: #fff; background: #ef4444; }
+        .dao-topic-index.idx-3 { color: #fff; background: #f87171; }
+        .dao-topic-index.idx-gray { color: #fff; background: #64748b; }
+        .dao-topic-title {
+            color: #e0e7ef;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dao-topic-title:hover {
+            color: #fbbf24;
+            text-decoration: underline;
+        }
+        .dao-topic-label {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.88rem;
+            font-weight: 600;
+            border-radius: 0.7em;
+            padding: 0.12em 0.9em;
+            margin-left: 0.7em;
+            margin-right: 0.2em;
+            color: #fff;
+        }
+        .dao-topic-label.hot {
+            background: #fbbf24;
+        }
+        .dao-topic-label.new {
+            background: #ef4444;
+        }
+        .dao-topic-hot {
+            font-size: 13px;
+            color: #fbbf24;
+            margin-left: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .dao-topic-hot .hot-icon {
+            margin-left: 0.25rem;
+            font-size: 1em;
+        }
+        .dao-topic-more-btn {
+            background: #232e2f;
+            color: #cbd5e1;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.12rem 0.7rem;
+            border: none;
+            outline: none;
+            transition: background 0.18s, box-shadow 0.18s;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+        .dao-topic-more-btn:hover {
+            background: #334155;
+            color: #fff;
+            box-shadow: 0 2px 8px 0 #64748b33;
+        }
+        .dao-history-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            font-size: 15px;
+            margin-bottom: 12px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #232e45;
+        }
+        .dao-history-list li:last-child {
+            border-bottom: none;
+        }
+        .dao-history-date {
+            background: #334155;
+            color: #fff;
+            font-size: 13px;
+            font-family: 'JetBrains Mono', 'Fira Mono', 'Consolas', monospace;
+            border-radius: 0.7em;
+            padding: 0.12em 0.9em;
+            margin-right: 2px;
+            font-weight: 700;
+            min-width: 5.2em;
+            text-align: center;
+        }
+        .dao-history-main {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+        }
+        .dao-history-title-link {
+            color: #fff;
+            font-size: 1.08em;
+            font-weight: 700;
+            text-decoration: none;
+            line-height: 1.3;
+            margin-bottom: 0.1em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.18s;
+        }
+        .dao-history-title-link:hover {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+        .dao-history-desc-link {
+            color: #a5b4fc;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 0.1em;
+            text-decoration: none;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.18s;
+            cursor: pointer;
+        }
+        .dao-history-desc-link:hover {
+            color: #fbbf24;
+            text-decoration: underline;
+        }
+        .dao-history-title {
+            color: #60a5fa;
+            font-weight: 700;
+            font-size: 1.05em;
+            margin-right: 0.5em;
+        }
+        .dao-history-desc {
+            color: #a5b4fc;
+            font-size: 13px;
+            margin-left: 4px;
+            flex: 1;
+        }
+        .dao-info-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e0e8f0;
+            margin-bottom: 24px;
+        }
+        .dao-history-more-btn {
+            background: #232e2f;
+            color: #cbd5e1;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.12rem 0.7rem;
+            border: none;
+            outline: none;
+            transition: background 0.18s, box-shadow 0.18s;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+        .dao-history-more-btn:hover {
+            background: #334155;
+            color: #fff;
+            box-shadow: 0 2px 8px 0 #64748b33;
+        }
+        .stat-tab-btn {
+            background: linear-gradient(90deg, #232e45 0%, #334155 100%);
+            color: #a5b4fc;
+            border: 1.5px solid #334155;
+            box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
+            transition: all 0.18s;
+            outline: none;
+            position: relative;
+        }
+        .stat-tab-btn.active, .stat-tab-btn:focus {
+            background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+            color: #fff;
+            border-color: #60a5fa;
+            box-shadow: 0 4px 16px 0 rgba(59,130,246,0.13);
+            z-index: 1;
+        }
+        .stat-tab-btn:hover:not(.active) {
+            background: #334155;
+            color: #e0e8f0;
+            border-color: #64748b;
+            transform: translateY(-1px) scale(1.03);
+        }
+        .stat-select {
+            border-radius: 9999px;
+            background: #232e45;
+            color: #a5b4fc;
+            border: 1.5px solid #334155;
+            font-size: 1rem;
+            padding: 0.5rem 2.2rem 0.5rem 1.2rem;
+            outline: none;
+            transition: border 0.18s, box-shadow 0.18s;
+            box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
+            appearance: none;
+            position: relative;
+        }
+        .stat-select:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 4px 16px 0 rgba(59,130,246,0.13);
+        }
+        .stat-select option:checked {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .proposal-tab-btn {
+            background: linear-gradient(90deg, #232e45 0%, #334155 100%);
+            color: #a5b4fc;
+            border: 1.5px solid #384157;
+            box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
+            transition: all 0.18s;
+            outline: none;
+            position: relative;
+        }
+        .proposal-tab-btn.active, .proposal-tab-btn:focus {
+            background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+            color: #fff;
+            border-color: #60a5fa;
+            box-shadow: 0 4px 16px 0 rgba(59,130,246,0.13);
+            z-index: 1;
+        }
+        .proposal-tab-btn:hover:not(.active) {
+            background: #334155;
+            color: #e0e8f0;
+            border-color: #64748b;
+            transform: translateY(-1px) scale(1.03);
+        }
+        .dao-proposal-card {
+            border: 1.5px solid #384157 !important;
+            display: flex;
+            gap: 0;
+            align-items: stretch;
+            background: linear-gradient(120deg, rgba(30,41,59,0.96) 60%, rgba(30,58,138,0.93) 100%);
+            border-radius: 20px;
+            box-shadow: 0 4px 24px 0 rgba(59,130,246,0.10);
+            padding: 0;
+            overflow: hidden;
+        }
+        .dao-proposal-avatar {
+            width: 64px; height: 64px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #3b82f6 60%, #8b5cf6 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; color: #fff; font-weight: bold;
+            margin: 32px 0 32px 32px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px 0 rgba(59,130,246,0.10);
+        }
+        .dao-proposal-main {
+            flex: 1;
+            min-width: 0;
+            padding: 28px 32px 28px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .dao-proposal-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .dao-proposal-title {
+            font-size: 1.18rem;
+            font-weight: 700;
+            color: #e0e7ef;
+            margin-bottom: 2px;
+            line-height: 1.3;
+        }
+        .dao-proposal-desc {
+            color: #b6c3d6;
+            font-size: 15px;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .dao-proposal-meta {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .dao-proposal-reward {
+            background: linear-gradient(90deg, #fbbf24, #f59e42);
+            color: #fff;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 2px 14px;
+            margin-left: 4px;
+        }
+        .dao-proposal-progress-bg {
+            width: 100%;
+            background: #232e45;
+            border-radius: 9999px;
+            height: 8px;
+            margin-bottom: 8px;
+        }
+        .dao-proposal-progress {
+            background: linear-gradient(90deg, #fbbf24, #f59e42);
+            height: 8px;
+            border-radius: 9999px;
+            transition: width 0.3s;
+        }
+        .dao-proposal-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            min-width: 140px;
+            justify-content: center;
+            padding-right: 32px;
+        }
+        .dao-proposal-time {
+            font-size: 12px;
+            color: #60a5fa;
+            background: #1e293b;
+            border-radius: 9999px;
+            padding: 3px 14px;
+            font-family: 'JetBrains Mono', 'Fira Mono', 'Consolas', monospace;
+            margin-bottom: 2px;
+        }
+        .dao-proposal-btn {
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 8px 28px;
+            border: none;
+            outline: none;
+            box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+        }
+        .dao-proposal-btn-vote {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            color: #fff;
+        }
+        .dao-proposal-btn-wait {
+            background: linear-gradient(90deg, #64748b, #a1a1aa);
+            color: #fff;
+        }
+        .dao-proposal-btn-done {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            color: #fff;
+        }
+        .dao-proposal-progress {
+            background: linear-gradient(90deg, #fdba74, #f59e42) !important;
+        }
+        .user-rank-filter-btn {
+            background: linear-gradient(90deg, #232e45 0%, #334155 100%);
+            color: #a5b4fc;
+            border: 1.5px solid #384157;
+            box-shadow: 0 2px 8px 0 rgba(59,130,246,0.08);
+            transition: all 0.18s;
+            outline: none;
+            position: relative;
+        }
+        .user-rank-filter-btn.active, .user-rank-filter-btn:focus {
+            background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+            color: #fff;
+            border-color: #60a5fa;
+            box-shadow: 0 4px 16px 0 rgba(59,130,246,0.13);
+            z-index: 1;
+        }
+        .user-rank-filter-btn:hover:not(.active) {
+            background: #334155;
+            color: #e0e8f0;
+            border-color: #64748b;
+            transform: translateY(-1px) scale(1.03);
+        }
+        .user-rank-addr {
+            color: #e0e7ef;
+            font-family: 'JetBrains Mono', 'Fira Mono', 'Consolas', monospace;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .user-rank-votes {
+            color: #22c55e;
+            font-weight: 700;
+            font-size: 1rem;
+            text-align: right;
+            padding-right: 1rem;
+        }
+        .user-rank-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.15rem;
+            height: 1.15rem;
+            border-radius: 9999px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+        .user-rank-num.rank-1 {
+            background: linear-gradient(135deg, #ef4444 60%, #dc2626 100%);
+        }
+        .user-rank-num.rank-2 {
+            background: linear-gradient(135deg, #fbbf24 60%, #f59e42 100%);
+        }
+        .user-rank-num.rank-3 {
+            background: linear-gradient(135deg, #3b82f6 60%, #60a5fa 100%);
+        }
+        .user-rank-num.rank-gray {
+            background: linear-gradient(135deg, #64748b 60%, #a1a1aa 100%);
+        }
+        .user-rank-crown {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.15rem;
+            height: 1.15rem;
+        }
+        .user-rank-crown .crown-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.95rem;
+        }
+        .user-rank-crown .crown-num {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        .dao-help-list {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 2px;
+        }
+        .dao-help-item {
+          border: none !important;
+          border-radius: 0 !important;
+          background: none !important;
+          box-shadow: none !important;
+          transition: none !important;
+          overflow: visible !important;
+        }
+        .dao-help-item:hover {
+          border: none !important;
+          box-shadow: none !important;
+          background: rgba(59,130,246,0.06);
+        }
+        .dao-help-header {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 12px; /* 缩小上下内边距 */
+          cursor: pointer;
+          transition: background 0.2s;
+          user-select: none;
+        }
+        .dao-help-header:hover {
+          background: rgba(59,130,246,0.1);
+        }
+        .dao-help-number {
+          color: #60a5fa;
+          font-weight: 700;
+          font-size: 0.9rem;
+          min-width: 32px;
+        }
+        .dao-help-title {
+          color: #e0e7ef;
+          font-size: 0.95rem;
+          font-weight: 600;
+          flex: 1;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          transition: color 0.2s;
+        }
+        .dao-help-title:hover {
+          color: #60a5fa;
+        }
+        .dao-help-arrow {
+          color: #64748b;
+          font-size: 0.8rem;
+          transition: transform 0.3s ease;
+        }
+        .dao-help-item.expanded .dao-help-arrow {
+          transform: rotate(180deg);
+          color: #60a5fa;
+        }
+        .dao-help-content {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease;
+        }
+        .dao-help-item.expanded .dao-help-content {
+          max-height: 500px;
+        }
+        .dao-help-desc-collapsed {
+          color: #a5b4fc;
+          font-size: 13px;
+          line-height: 1.5;
+          padding: 0 12px 8px 12px; /* 缩小内边距 */
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+        .dao-help-desc-collapsed:hover {
+          color: #fbbf24;
+        }
+        .dao-help-item.expanded .dao-help-desc-collapsed {
+          display: none;
+        }
+        .dao-help-desc-expanded {
+          padding: 0 12px 10px 12px; /* 缩小内边距 */
+          color: #cbd5e1;
+          font-size: 13px;
+          line-height: 1.6;
+          display: none;
+        }
+        .dao-help-item.expanded .dao-help-desc-expanded {
+          display: block;
+        }
+        .dao-help-desc-expanded p {
+          margin-bottom: 8px;
+        }
+        .dao-help-desc-expanded p:last-child {
+          margin-bottom: 0;
+        }
+        .dao-help-desc-expanded strong {
+          color: #60a5fa;
+          font-weight: 600;
+        }
+        /* Tooltip样式 */
+        .dao-help-tooltip {
+          position: relative;
+        }
+        .dao-help-tooltip:hover::after {
+          content: attr(title);
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(0,0,0,0.9);
+          color: white;
+          padding: 8px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          white-space: nowrap;
+          z-index: 1000;
+          margin-bottom: 5px;
+        }
+        .dao-help-tooltip:hover::before {
+          content: '';
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          border: 5px solid transparent;
+          border-top-color: rgba(0,0,0,0.9);
+          z-index: 1000;
+          margin-bottom: -5px;
+        }
+        .operation-log-list {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+        .operation-log-item {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          padding: 10px 0;
+          font-size: 15px;
+          transition: background 0.18s;
+        }
+        .operation-log-item:hover {
+          background: rgba(59,130,246,0.07);
+        }
+        .operation-log-avatar {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #3b82f6 60%, #8b5cf6 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.1rem;
+          color: #fff;
+          font-weight: bold;
+          flex-shrink: 0;
+          overflow: hidden;
+        }
+        .operation-log-main {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+        }
+        .operation-log-meta {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 2px;
+        }
+        .operation-log-user {
+          color: #60a5fa;
+          font-weight: 600;
+          font-size: 1em;
+          margin-right: 2px;
+        }
+        .operation-log-type {
+          display: inline-flex;
+          align-items: center;
+          font-size: 0.85em;
+          font-weight: 700;
+          border-radius: 0.7em;
+          padding: 0.12em 0.9em;
+          margin-left: 0.5em;
+          color: #fff;
+        }
+        .log-type-proposal { background: #3b82f6; }
+        .log-type-vote { background: #22c55e; }
+        .log-type-comment { background: #fbbf24; color: #232e45; }
+        .log-type-other { background: #64748b; }
+        .operation-log-content {
+          color: #e0e7ef;
+          font-size: 0.98em;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          cursor: pointer;
+        }
+        .operation-log-content:hover {
+          color: #fbbf24;
+        }
+        .operation-log-time {
+          color: #a5b4fc;
+          font-size: 0.85em;
+          margin-left: 1em;
+          white-space: nowrap;
         }
     </style>
 </head>
 <body class="min-h-screen text-white">
-    <div class="mx-auto px-6 py-4" style="width: 90%;">
-        <!-- DAO 治理概览 -->
-        <div class="mb-6">
-            <div class="glass-bg rounded-xl p-6">
-                <h2 class="text-2xl font-bold mb-6 text-center" data-zh="Sapphire DAO 治理中心" data-en="Sapphire DAO Governance">Sapphire DAO 治理中心</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="text-center">
-                        <div class="glass-bg rounded-lg p-4">
-                            <div class="text-3xl font-bold text-sapphire-400 mb-2">2.4M</div>
-                            <div class="text-gray-400 text-sm" data-zh="总治理代币" data-en="Total Governance Tokens">总治理代币</div>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <div class="glass-bg rounded-lg p-4">
-                            <div class="text-3xl font-bold text-green-400 mb-2">15</div>
-                            <div class="text-gray-400 text-sm" data-zh="活跃提案" data-en="Active Proposals">活跃提案</div>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <div class="glass-bg rounded-lg p-4">
-                            <div class="text-3xl font-bold text-purple-400 mb-2">68%</div>
-                            <div class="text-gray-400 text-sm" data-zh="参与率" data-en="Participation Rate">参与率</div>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <div class="glass-bg rounded-lg p-4">
-                            <div class="text-3xl font-bold text-yellow-400 mb-2">1,856</div>
-                            <div class="text-gray-400 text-sm" data-zh="DAO 成员" data-en="DAO Members">DAO 成员</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 我的治理权力 -->
-        <div class="mb-6">
-            <div class="glass-bg rounded-xl p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold" data-zh="我的治理权力" data-en="My Governance Power">我的治理权力</h3>
-                    <button class="bg-sapphire-600 hover:bg-sapphire-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">
-                        <i class="fas fa-plus mr-2"></i>
-                        <span data-zh="创建提案" data-en="Create Proposal">创建提案</span>
-                    </button>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="glass-bg rounded-lg p-4">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-sapphire-400 mb-1">15,000 SAP</div>
-                            <div class="text-gray-400 text-sm" data-zh="持有治理代币" data-en="Governance Tokens">持有治理代币</div>
-                        </div>
-                    </div>
-                    <div class="glass-bg rounded-lg p-4">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-green-400 mb-1">25,000 vSAP</div>
-                            <div class="text-gray-400 text-sm" data-zh="总投票权重" data-en="Total Voting Power">总投票权重</div>
-                        </div>
-                    </div>
-                    <div class="glass-bg rounded-lg p-4">
-                        <div class="text-center">
-                            <div class="text-2xl font-bold text-purple-400 mb-1">1.2%</div>
-                            <div class="text-gray-400 text-sm" data-zh="在DAO中占比" data-en="DAO Share">在DAO中占比</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 委托状态 -->
-                <div class="mt-6 p-4 bg-gray-800 rounded-lg">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h4 class="font-bold mb-1" data-zh="投票权委托" data-en="Vote Delegation">投票权委托</h4>
-                            <p class="text-sm text-gray-400" data-zh="已委托 10,000 vSAP 给活跃代表" data-en="Delegated 10,000 vSAP to active delegate">已委托 10,000 vSAP 给活跃代表</p>
-                        </div>
-                        <button class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors">
-                            <i class="fas fa-users mr-2"></i>
-                            <span data-zh="管理委托" data-en="Manage Delegation">管理委托</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- 活跃提案列表 -->
-            <div class="lg:col-span-2">
-                <div class="glass-bg rounded-xl p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold" data-zh="活跃提案" data-en="Active Proposals">活跃提案</h3>
-                        <div class="flex space-x-2">
-                            <button class="bg-sapphire-600 text-white px-3 py-1 rounded text-sm">
-                                <span data-zh="全部" data-en="All">全部</span>
-                            </button>
-                            <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition-colors">
-                                <span data-zh="进行中" data-en="Active">进行中</span>
-                            </button>
-                            <button class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm transition-colors">
-                                <span data-zh="已结束" data-en="Ended">已结束</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="space-y-4">
-                        <!-- 提案 1 -->
-                        <div class="proposal-card rounded-xl p-6">
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="flex-1">
-                                    <div class="flex items-center space-x-3 mb-2">
-                                        <span class="status-active" data-zh="投票中" data-en="Active">投票中</span>
-                                        <span class="text-sm text-gray-400">#SAP-15</span>
-                                    </div>
-                                    <h4 class="text-lg font-bold mb-2" data-zh="降低交易手续费至 0.05%" data-en="Reduce Trading Fee to 0.05%">降低交易手续费至 0.05%</h4>
-                                    <p class="text-gray-400 text-sm mb-4" data-zh="提议将平台交易手续费从当前的 0.1% 降低至 0.05%，以提高交易量和用户体验。" data-en="Propose to reduce platform trading fee from 0.1% to 0.05% to increase trading volume and user experience.">提议将平台交易手续费从当前的 0.1% 降低至 0.05%，以提高交易量和用户体验。</p>
-                                </div>
-                                <div class="text-right">
-                                    <div class="countdown text-yellow-400 text-sm">
-                                        <span data-zh="剩余时间: " data-en="Time left: ">剩余时间: </span>
-                                        <span>2天 15:42:33</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 投票进度 -->
-                            <div class="mb-4">
-                                <div class="flex justify-between text-sm text-gray-400 mb-2">
-                                    <span data-zh="投票进度" data-en="Voting Progress">投票进度</span>
-                                    <span>1.2M / 2.4M vSAP (50%)</span>
-                                </div>
-                                <div class="progress-bar mb-3">
-                                    <div class="progress-fill progress-for" style="width: 72%"></div>
-                                </div>
-                                <div class="grid grid-cols-3 gap-4 text-sm">
-                                    <div class="text-center">
-                                        <div class="text-green-400 font-bold">864K vSAP</div>
-                                        <div class="text-gray-400" data-zh="赞成 (72%)" data-en="For (72%)">赞成 (72%)</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-red-400 font-bold">240K vSAP</div>
-                                        <div class="text-gray-400" data-zh="反对 (20%)" data-en="Against (20%)">反对 (20%)</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-gray-400 font-bold">96K vSAP</div>
-                                        <div class="text-gray-400" data-zh="弃权 (8%)" data-en="Abstain (8%)">弃权 (8%)</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 投票按钮 -->
-                            <div class="flex space-x-3">
-                                <button class="vote-for flex-1 py-2 rounded-lg font-medium text-white text-sm">
-                                    <i class="fas fa-thumbs-up mr-2"></i>
-                                    <span data-zh="赞成" data-en="For">赞成</span>
-                                </button>
-                                <button class="vote-against flex-1 py-2 rounded-lg font-medium text-white text-sm">
-                                    <i class="fas fa-thumbs-down mr-2"></i>
-                                    <span data-zh="反对" data-en="Against">反对</span>
-                                </button>
-                                <button class="vote-abstain flex-1 py-2 rounded-lg font-medium text-white text-sm">
-                                    <i class="fas fa-minus mr-2"></i>
-                                    <span data-zh="弃权" data-en="Abstain">弃权</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 提案 2 -->
-                        <div class="proposal-card rounded-xl p-6">
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="flex-1">
-                                    <div class="flex items-center space-x-3 mb-2">
-                                        <span class="status-pending" data-zh="等待中" data-en="Pending">等待中</span>
-                                        <span class="text-sm text-gray-400">#SAP-16</span>
-                                    </div>
-                                    <h4 class="text-lg font-bold mb-2" data-zh="新增 NFT 市场模块" data-en="Add NFT Marketplace Module">新增 NFT 市场模块</h4>
-                                    <p class="text-gray-400 text-sm mb-4" data-zh="提议在平台上新增专门的 NFT 交易市场，支持创作者发布和交易数字艺术作品。" data-en="Propose to add a dedicated NFT marketplace for creators to publish and trade digital artworks.">提议在平台上新增专门的 NFT 交易市场，支持创作者发布和交易数字艺术作品。</p>
-                                </div>
-                                <div class="text-right">
-                                    <div class="countdown text-blue-400 text-sm">
-                                        <span data-zh="开始投票: " data-en="Voting starts: ">开始投票: </span>
-                                        <span>1天 08:15:22</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 最低票数要求 -->
-                            <div class="mb-4 p-3 bg-gray-800 rounded-lg">
-                                <div class="flex justify-between text-sm">
-                                    <span data-zh="最低票数要求" data-en="Minimum Votes Required">最低票数要求</span>
-                                    <span class="font-bold">500K vSAP</span>
-                                </div>
-                                <div class="flex justify-between text-sm text-gray-400">
-                                    <span data-zh="当前提案支持" data-en="Current Support">当前提案支持</span>
-                                    <span>750K vSAP</span>
-                                </div>
-                            </div>
-
-                            <!-- 等待状态按钮 -->
-                            <button class="w-full py-2 bg-gray-700 text-gray-400 rounded-lg font-medium text-sm cursor-not-allowed">
-                                <i class="fas fa-clock mr-2"></i>
-                                <span data-zh="等待投票开始" data-en="Waiting for Voting">等待投票开始</span>
-                            </button>
-                        </div>
-
-                        <!-- 提案 3 -->
-                        <div class="proposal-card rounded-xl p-6">
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="flex-1">
-                                    <div class="flex items-center space-x-3 mb-2">
-                                        <span class="status-ended" data-zh="已通过" data-en="Passed">已通过</span>
-                                        <span class="text-sm text-gray-400">#SAP-14</span>
-                                    </div>
-                                    <h4 class="text-lg font-bold mb-2" data-zh="增加质押奖励池" data-en="Increase Staking Reward Pool">增加质押奖励池</h4>
-                                    <p class="text-gray-400 text-sm mb-4" data-zh="提议增加 500 万 SAP 到质押奖励池，以提高年化收益率。已于 3 天前执行。" data-en="Proposed to add 5M SAP to staking reward pool to increase APY. Executed 3 days ago.">提议增加 500 万 SAP 到质押奖励池，以提高年化收益率。已于 3 天前执行。</p>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-green-400 text-sm font-medium">
-                                        <i class="fas fa-check mr-1"></i>
-                                        <span data-zh="已执行" data-en="Executed">已执行</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 最终投票结果 -->
-                            <div class="mb-4">
-                                <div class="flex justify-between text-sm text-gray-400 mb-2">
-                                    <span data-zh="最终结果" data-en="Final Result">最终结果</span>
-                                    <span>1.8M / 2.4M vSAP (75%)</span>
-                                </div>
-                                <div class="progress-bar mb-3">
-                                    <div class="progress-fill progress-for" style="width: 85%"></div>
-                                </div>
-                                <div class="grid grid-cols-3 gap-4 text-sm">
-                                    <div class="text-center">
-                                        <div class="text-green-400 font-bold">1.53M vSAP</div>
-                                        <div class="text-gray-400" data-zh="赞成 (85%)" data-en="For (85%)">赞成 (85%)</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-red-400 font-bold">180K vSAP</div>
-                                        <div class="text-gray-400" data-zh="反对 (10%)" data-en="Against (10%)">反对 (10%)</div>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="text-gray-400 font-bold">90K vSAP</div>
-                                        <div class="text-gray-400" data-zh="弃权 (5%)" data-en="Abstain (5%)">弃权 (5%)</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 查看详情按钮 -->
-                            <button class="w-full py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium text-sm transition-colors">
-                                <i class="fas fa-eye mr-2"></i>
-                                <span data-zh="查看详情" data-en="View Details">查看详情</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 侧边栏 -->
-            <div class="space-y-6">
-                <!-- 委托代表 -->
-                <div class="glass-bg rounded-xl p-6">
-                    <h3 class="text-lg font-bold mb-4" data-zh="推荐代表" data-en="Recommended Delegates">推荐代表</h3>
-                    
-                    <div class="space-y-3">
-                        <div class="delegate-card rounded-lg p-4">
-                            <div class="flex items-center space-x-3 mb-3">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" alt="Delegate" class="w-10 h-10 rounded-full">
-                                <div class="flex-1">
-                                    <div class="font-bold text-sm">Alex Chen</div>
-                                    <div class="text-xs text-gray-400" data-zh="核心开发者" data-en="Core Developer">核心开发者</div>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-3 text-xs mb-3">
-                                <div>
-                                    <div class="text-gray-400" data-zh="委托权重" data-en="Delegated Power">委托权重</div>
-                                    <div class="font-bold">850K vSAP</div>
-                                </div>
-                                <div>
-                                    <div class="text-gray-400" data-zh="参与率" data-en="Participation">参与率</div>
-                                    <div class="font-bold text-green-400">95%</div>
-                                </div>
-                            </div>
-                            <button class="w-full py-2 bg-sapphire-600 hover:bg-sapphire-700 text-white rounded text-xs transition-colors">
-                                <span data-zh="委托投票权" data-en="Delegate Votes">委托投票权</span>
-                            </button>
-                        </div>
-
-                        <div class="delegate-card rounded-lg p-4">
-                            <div class="flex items-center space-x-3 mb-3">
-                                <img src="https://images.unsplash.com/photo-1494790108755-2616b6962fc6?w=40&h=40&fit=crop&crop=face" alt="Delegate" class="w-10 h-10 rounded-full">
-                                <div class="flex-1">
-                                    <div class="font-bold text-sm">Sarah Kim</div>
-                                    <div class="text-xs text-gray-400" data-zh="社区领袖" data-en="Community Leader">社区领袖</div>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-3 text-xs mb-3">
-                                <div>
-                                    <div class="text-gray-400" data-zh="委托权重" data-en="Delegated Power">委托权重</div>
-                                    <div class="font-bold">620K vSAP</div>
-                                </div>
-                                <div>
-                                    <div class="text-gray-400" data-zh="参与率" data-en="Participation">参与率</div>
-                                    <div class="font-bold text-green-400">88%</div>
-                                </div>
-                            </div>
-                            <button class="w-full py-2 bg-sapphire-600 hover:bg-sapphire-700 text-white rounded text-xs transition-colors">
-                                <span data-zh="委托投票权" data-en="Delegate Votes">委托投票权</span>
-                            </button>
-                        </div>
-
-                        <div class="delegate-card rounded-lg p-4">
-                            <div class="flex items-center space-x-3 mb-3">
-                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" alt="Delegate" class="w-10 h-10 rounded-full">
-                                <div class="flex-1">
-                                    <div class="font-bold text-sm">Mike Johnson</div>
-                                    <div class="text-xs text-gray-400" data-zh="投资专家" data-en="Investment Expert">投资专家</div>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-3 text-xs mb-3">
-                                <div>
-                                    <div class="text-gray-400" data-zh="委托权重" data-en="Delegated Power">委托权重</div>
-                                    <div class="font-bold">430K vSAP</div>
-                                </div>
-                                <div>
-                                    <div class="text-gray-400" data-zh="参与率" data-en="Participation">参与率</div>
-                                    <div class="font-bold text-yellow-400">76%</div>
-                                </div>
-                            </div>
-                            <button class="w-full py-2 bg-sapphire-600 hover:bg-sapphire-700 text-white rounded text-xs transition-colors">
-                                <span data-zh="委托投票权" data-en="Delegate Votes">委托投票权</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <button class="w-full mt-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium text-sm transition-colors">
-                        <span data-zh="查看所有代表" data-en="View All Delegates">查看所有代表</span>
-                    </button>
-                </div>
-
-                <!-- 社区讨论 -->
-                <div class="glass-bg rounded-xl p-6">
-                    <h3 class="text-lg font-bold mb-4" data-zh="社区讨论" data-en="Community Forum">社区讨论</h3>
-                    
-                    <div class="space-y-3">
-                        <div class="p-3 bg-gray-800 rounded-lg">
-                            <div class="text-sm font-medium mb-1" data-zh="关于手续费调整的讨论" data-en="Discussion on Fee Adjustment">关于手续费调整的讨论</div>
-                            <div class="text-xs text-gray-400 mb-2">24 条回复 • 2 小时前</div>
-                            <div class="text-xs text-gray-300" data-zh="大部分社区成员支持降低手续费..." data-en="Most community members support fee reduction...">大部分社区成员支持降低手续费...</div>
-                        </div>
-
-                        <div class="p-3 bg-gray-800 rounded-lg">
-                            <div class="text-sm font-medium mb-1" data-zh="NFT 市场功能需求分析" data-en="NFT Market Feature Analysis">NFT 市场功能需求分析</div>
-                            <div class="text-xs text-gray-400 mb-2">18 条回复 • 5 小时前</div>
-                            <div class="text-xs text-gray-300" data-zh="创作者们期待更多的版税设置选项..." data-en="Creators expect more royalty options...">创作者们期待更多的版税设置选项...</div>
-                        </div>
-
-                        <div class="p-3 bg-gray-800 rounded-lg">
-                            <div class="text-sm font-medium mb-1" data-zh="治理代币分配机制优化" data-en="Governance Token Distribution">治理代币分配机制优化</div>
-                            <div class="text-xs text-gray-400 mb-2">31 条回复 • 1 天前</div>
-                            <div class="text-xs text-gray-300" data-zh="建议增加对长期持有者的激励..." data-en="Suggest increasing incentives for long-term holders...">建议增加对长期持有者的激励...</div>
-                        </div>
-                    </div>
-
-                    <button class="w-full mt-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-sm transition-colors">
-                        <i class="fas fa-comments mr-2"></i>
-                        <span data-zh="访问论坛" data-en="Visit Forum">访问论坛</span>
-                    </button>
-                </div>
-
-                <!-- 治理统计 -->
-                <div class="glass-bg rounded-xl p-6">
-                    <h3 class="text-lg font-bold mb-4" data-zh="治理统计" data-en="Governance Stats">治理统计</h3>
-                    
-                    <div class="space-y-4">
-                        <div class="flex justify-between">
-                            <span class="text-sm text-gray-400" data-zh="总提案数" data-en="Total Proposals">总提案数</span>
-                            <span class="font-bold">42</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-sm text-gray-400" data-zh="通过提案" data-en="Passed Proposals">通过提案</span>
-                            <span class="font-bold text-green-400">31</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-sm text-gray-400" data-zh="否决提案" data-en="Rejected Proposals">否决提案</span>
-                            <span class="font-bold text-red-400">8</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-sm text-gray-400" data-zh="平均参与率" data-en="Avg Participation">平均参与率</span>
-                            <span class="font-bold text-blue-400">68%</span>
-                        </div>
-                    </div>
+    <!-- 公告横幅紧贴顶部，宽度与主内容区一致 -->
+    <div class="w-[90%] mx-auto px-0" style="margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0;">
+        <div class="marquee" id="marquee" style="margin-top:0;margin-bottom:0;border-radius:0 0 1.5rem 1.5rem;background:transparent;border:none;">
+            <i class="fas fa-bullhorn"></i>
+            <div class="marquee-content" style="flex:1;overflow:hidden;min-width:0;display:flex;">
+                <div class="marquee-track" id="marquee-track">
+                    <a href="#" class="marquee-item"><span class="date">[2024-06-01]</span> Sapphire DAO 治理V2上线</a>
+                    <a href="#" class="marquee-item"><span class="date">[2024-05-28]</span> NFT市场模块提案通过</a>
+                    <a href="#" class="marquee-item"><span class="date">[2024-05-20]</span> 论坛功能升级完成</a>
+                    <!-- 复制一遍实现无缝循环 -->
+                    <a href="#" class="marquee-item"><span class="date">[2024-06-01]</span> Sapphire DAO 治理V2上线</a>
+                    <a href="#" class="marquee-item"><span class="date">[2024-05-28]</span> NFT市场模块提案通过</a>
+                    <a href="#" class="marquee-item"><span class="date">[2024-05-20]</span> 论坛功能升级完成</a>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Scripts -->
+    <!-- DAO治理数据概览区（左右两栏布局） -->
+    <section class="w-full mx-auto mt-12 mb-10 flex flex-row gap-8 px-4 h-72 min-h-[22rem] items-stretch" style="width: 90%;">
+      <!-- 左侧：数据卡片区（标题、副标题在上，卡片在下，整体居中） -->
+      <div class="flex flex-col justify-between h-full" style="width: 60%;">
+        <div class="flex flex-col items-center w-full">
+          <h1 class="dao-overview-title mb-2 text-center w-full" style="font-size:2rem;line-height:1.15;">
+            DAO 治理 · <span class="highlight">共识驱动</span>
+          </h1>
+          <div class="mb-2 text-center w-full text-sapphire-400 font-semibold text-lg" style="letter-spacing:0.02em;">
+            Sapphire Mall DAO — 让每一份共识都能转化为社区价值
+          </div>
+          <p class="dao-overview-subtitle mb-2 text-center w-full" style="font-size:1.08rem;max-width:95%;line-height:1.7;">
+            Sapphire DAO 让每一位成员都能参与决策，推动社区自治与平台共赢。无论你是治理新手还是资深DAO玩家，都能在这里发起提案、参与投票、见证每一次社区成长。
+          </p>
+          <div class="text-center w-full text-slate-400 text-sm max-w-2xl mx-auto" style="line-height:1.7;">
+            我们致力于打造一个开放、透明、高效的Web3治理平台，支持多种提案类型与创新激励机制，助力社区成员共同探索去中心化自治的无限可能。加入Sapphire Mall DAO，开启你的链上治理之旅！
+          </div>
+        </div>
+        <div class="flex-1 flex items-end w-full">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-full mx-auto">
+            <div class="dao-overview-card flex flex-col items-center justify-center text-center cursor-pointer py-5 px-2 min-w-0" style="min-width:0;">
+              <div class="dao-overview-number text-sapphire-400" style="font-size:1.45rem;">2,456,789</div>
+              <div class="dao-overview-label" style="font-size:1.02rem;">治理代币总量</div>
+              <div class="dao-overview-desc text-green-400" style="font-size:0.95rem;">SAP</div>
+            </div>
+            <div class="dao-overview-card flex flex-col items-center justify-center text-center cursor-pointer py-5 px-2 min-w-0" style="min-width:0;">
+              <div class="dao-overview-number text-purple-400" style="font-size:1.45rem;">15</div>
+              <div class="dao-overview-label" style="font-size:1.02rem;">活跃提案数</div>
+              <div class="dao-overview-desc text-blue-400" style="font-size:0.95rem;">当前活跃</div>
+            </div>
+            <div class="dao-overview-card flex flex-col items-center justify-center text-center cursor-pointer py-5 px-2 min-w-0" style="min-width:0;">
+              <div class="dao-overview-number text-green-400" style="font-size:1.45rem;">68.5%</div>
+              <div class="dao-overview-label" style="font-size:1.02rem;">参与率</div>
+              <div class="dao-overview-desc text-green-400" style="font-size:0.95rem;">近30天</div>
+            </div>
+            <div class="dao-overview-card flex flex-col items-center justify-center text-center cursor-pointer py-5 px-2 min-w-0" style="min-width:0;">
+              <div class="dao-overview-number text-yellow-400" style="font-size:1.45rem;">1,856</div>
+              <div class="dao-overview-label" style="font-size:1.02rem;">DAO成员数</div>
+              <div class="dao-overview-desc text-sapphire-400" style="font-size:0.95rem;">已注册</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 右侧：统计图表区，下边缘与左侧卡片区对齐 -->
+      <div class="flex flex-col justify-start h-full" style="width: 40%;">
+        <div class="w-full min-w-[320px] bg-[rgba(30,41,59,0.82)] rounded-2xl p-0 flex flex-col items-center justify-start h-full shadow-lg" style="box-shadow:0 4px 24px 0 rgba(59,130,246,0.10);border:none;">
+          <div class="w-full flex flex-row items-center justify-between px-4 pt-2" style="min-height:3.5rem;">
+            <div class="flex gap-2 items-center" style="align-items:center;">
+              <button class="stat-tab-btn px-4 py-1 rounded-full font-semibold text-base active" data-type="total">提案总数</button>
+              <button class="stat-tab-btn px-4 py-1 rounded-full font-semibold text-base" data-type="pass">通过率</button>
+            </div>
+            <div>
+              <select class="stat-select" id="stat-range-select">
+                <option value="30">最近30天</option>
+                <option value="7">最近7天</option>
+                <option value="1">最近24小时</option>
+              </select>
+            </div>
+          </div>
+          <!-- 统计折线图区域 -->
+          <div class="w-full h-60 bg-[rgba(30,41,59,0.7)] rounded-2xl flex items-end justify-end relative overflow-x-auto mt-4 mb-2 px-0" style="border:1px solid #232e45;">
+            <svg id="stat-chart" width="100%" height="100%" viewBox="0 0 600 240" preserveAspectRatio="none" class="w-full h-full">
+              <!-- 网格线 -->
+              <g stroke="#334155" stroke-width="1">
+                <line x1="40" y1="40" x2="580" y2="40" />
+                <line x1="40" y1="120" x2="580" y2="120" />
+                <line x1="40" y1="200" x2="580" y2="200" />
+              </g>
+              <!-- Y轴刻度 -->
+              <text x="20" y="38" font-size="14" fill="#64748b">3,000</text>
+              <text x="20" y="118" font-size="14" fill="#64748b">2,000</text>
+              <text x="20" y="198" font-size="14" fill="#64748b">1,000</text>
+              <text x="20" y="238" font-size="14" fill="#64748b">0</text>
+              <!-- 折线（平滑） -->
+              <polyline id="stat-polyline" fill="none" stroke="#3b82f6" stroke-width="4" points="60,200 120,160 180,120 240,100 300,160 360,60 420,180 480,120 540,170 580,130" style="filter:drop-shadow(0 2px 8px #60a5fa55)"/>
+              <!-- 拐点 -->
+              <circle cx="60" cy="200" r="4" fill="#3b82f6" />
+              <circle cx="120" cy="160" r="4" fill="#3b82f6" />
+              <circle cx="180" cy="120" r="4" fill="#3b82f6" />
+              <circle cx="240" cy="100" r="4" fill="#3b82f6" />
+              <circle cx="300" cy="160" r="4" fill="#3b82f6" />
+              <circle cx="360" cy="60" r="4" fill="#3b82f6" />
+              <circle cx="420" cy="180" r="4" fill="#3b82f6" />
+              <circle cx="480" cy="120" r="4" fill="#3b82f6" />
+              <circle cx="540" cy="170" r="4" fill="#3b82f6" />
+              <circle cx="580" cy="130" r="4" fill="#3b82f6" />
+              <!-- X轴日期 -->
+              <text x="60" y="230" font-size="13" fill="#64748b" transform="rotate(-20 60,230)">2025-06-08</text>
+              <text x="120" y="230" font-size="13" fill="#64748b" transform="rotate(-20 120,230)">2025-06-10</text>
+              <text x="180" y="230" font-size="13" fill="#64748b" transform="rotate(-20 180,230)">2025-06-12</text>
+              <text x="240" y="230" font-size="13" fill="#64748b" transform="rotate(-20 240,230)">2025-06-14</text>
+              <text x="300" y="230" font-size="13" fill="#64748b" transform="rotate(-20 300,230)">2025-06-16</text>
+              <text x="360" y="230" font-size="13" fill="#64748b" transform="rotate(-20 360,230)">2025-06-18</text>
+              <text x="420" y="230" font-size="13" fill="#64748b" transform="rotate(-20 420,230)">2025-06-20</text>
+              <text x="480" y="230" font-size="13" fill="#64748b" transform="rotate(-20 480,230)">2025-06-22</text>
+              <text x="540" y="230" font-size="13" fill="#64748b" transform="rotate(-20 540,230)">2025-06-24</text>
+              <text x="580" y="230" font-size="13" fill="#64748b" transform="rotate(-20 580,230)">2025-06-26</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="w-[90%] mx-auto px-4 py-8 min-h-[600px]">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 min-h-[600px] items-start">
+            <!-- 左侧内容区（3/4） -->
+            <div class="lg:col-span-3 flex flex-col gap-8 min-h-[600px]">
+                <!-- 活跃提案区美化 -->
+                <div class="w-full bg-[rgba(30,41,59,0.92)] rounded-2xl shadow-lg border border-[#384157] mb-10">
+                    <!-- 表头 -->
+                    <div class="flex items-center justify-between px-8 py-5 border-b border-[#384157]">
+                        <div class="flex items-center gap-3 text-2xl font-extrabold text-white tracking-wide">
+                            <i class="fas fa-fire text-sapphire-400 text-2xl"></i>
+                            <span class="drop-shadow">活跃提案</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="proposal-tab-btn px-5 py-1.5 rounded-full font-semibold text-base active" data-tab="all">全部</button>
+                            <button class="proposal-tab-btn px-5 py-1.5 rounded-full font-semibold text-base" data-tab="active">活跃</button>
+                            <button class="proposal-tab-btn px-5 py-1.5 rounded-full font-semibold text-base" data-tab="completed">已完结</button>
+                            <button class="proposal-tab-btn px-5 py-1.5 rounded-full font-semibold text-base" data-tab="pending">未开始</button>
+                        </div>
+                    </div>
+                    <!-- 内容区 -->
+                    <div class="flex flex-col gap-5 px-8 py-6 min-h-[600px]" id="proposal-list-wrap">
+                        <div id="proposal-list" class="flex flex-col gap-5">
+                            <!-- JS渲染提案卡片 -->
+                        </div>
+                        <div id="proposal-pagination" class="flex justify-center mt-6"></div>
+                    </div>
+                </div>
+                <!-- 最新操作记录卡片 -->
+                <div class="w-full bg-[rgba(30,41,59,0.92)] rounded-2xl shadow-lg border border-[#384157] mb-10">
+                  <div class="flex items-center justify-between px-8 py-5 border-b border-[#384157]">
+                    <div class="flex items-center gap-3 text-xl font-extrabold text-white tracking-wide">
+                      <i class="fas fa-clock-rotate-left text-sapphire-400 text-xl"></i>
+                      <span class="drop-shadow">最新操作记录</span>
+                    </div>
+                  </div>
+                  <div class="flex flex-col px-8 py-4">
+                    <ul class="operation-log-list divide-y divide-[#334155]">
+                      <!-- JS渲染操作记录 -->
+                    </ul>
+                  </div>
+                </div>
+            </div>
+            <!-- 右侧信息区（1/4） -->
+            <div class="flex flex-col gap-8 min-h-0">
+                <!-- 活跃用户榜 -->
+                <div class="dao-info-card">
+                    <div class="dao-info-title flex items-center justify-between w-full mb-2">
+                        <div class="flex items-center gap-2"><i class="fas fa-fire dao-info-icon text-orange-400"></i>活跃用户榜</div>
+                        <div class="flex gap-2">
+                            <button class="user-rank-filter-btn px-3 py-1 rounded-full font-semibold text-xs active" data-range="week">最近一周</button>
+                            <button class="user-rank-filter-btn px-3 py-1 rounded-full font-semibold text-xs" data-range="month">最近一月</button>
+                        </div>
+                    </div>
+                    <div class="w-full mt-2">
+                        <div class="flex text-slate-400 text-xs font-semibold mb-2">
+                            <div class="w-1/3 pl-2">排名</div>
+                            <div class="w-1/3">钱包地址</div>
+                            <div class="w-1/3 text-right pr-4">投票数</div>
+                        </div>
+                        <ul class="dao-user-list flex flex-col gap-1">
+                            <!-- JS渲染用户榜 -->
+                        </ul>
+                    </div>
+                </div>
+                <!-- 社区热门话题 -->
+                <div class="dao-info-card">
+                    <div class="dao-info-title flex items-center justify-between w-full mb-2">
+                        <div class="flex items-center gap-2"><i class="fas fa-bolt dao-info-icon text-orange-400"></i>社区热门话题</div>
+                        <button class="dao-topic-more-btn">查看更多</button>
+                    </div>
+                    <ul class="dao-topic-list">
+                        <li><span class="dao-topic-index idx-1">1</span><span class="dao-topic-title">DAO治理激励机制如何优化？</span><span class="dao-topic-label hot">热</span></li>
+                        <li><span class="dao-topic-index idx-2">2</span><span class="dao-topic-title">NFT提案投票门槛讨论</span><span class="dao-topic-label hot">热</span></li>
+                        <li><span class="dao-topic-index idx-3">3</span><span class="dao-topic-title">社区贡献榜单建议</span><span class="dao-topic-label hot">热</span></li>
+                        <li><span class="dao-topic-index idx-gray">4</span><span class="dao-topic-title">链上治理与现实治理的异同</span></li>
+                        <li><span class="dao-topic-index idx-gray">5</span><span class="dao-topic-title">DAO成员如何高效协作？</span></li>
+                        <li><span class="dao-topic-index idx-gray">6</span><span class="dao-topic-title">SBT在DAO治理中的应用前景</span><span class="dao-topic-label new">新</span></li>
+                        <li><span class="dao-topic-index idx-gray">7</span><span class="dao-topic-title">多签钱包安全性讨论</span></li>
+                        <li><span class="dao-topic-index idx-gray">8</span><span class="dao-topic-title">DAO提案流程优化建议</span></li>
+                        <li><span class="dao-topic-index idx-gray">9</span><span class="dao-topic-title">社区新手引导机制</span></li>
+                        <li><span class="dao-topic-index idx-gray">10</span><span class="dao-topic-title">治理代币分配公平性问题</span></li>
+                    </ul>
+                </div>
+                <!-- 历史升级事件 -->
+                <div class="dao-info-card">
+                    <div class="dao-info-title flex items-center justify-between w-full mb-2">
+                        <div class="flex items-center gap-2"><i class="fas fa-history dao-info-icon text-yellow-400"></i>历史升级事件</div>
+                        <button class="dao-history-more-btn">查看更多</button>
+                    </div>
+                    <ul class="dao-history-list">
+                        <li><span class="dao-history-date">2024-06-01</span><div class="dao-history-main"><a href="#" class="dao-history-title-link" title="Sapphire DAO 治理V2上线">Sapphire DAO 治理V2上线</a><a href="#" class="dao-history-desc-link" title="全新治理模块正式启用，支持多类型提案。">全新治理模块正式启用，支持多类型提案。</a></div></li>
+                        <li><span class="dao-history-date">2024-05-28</span><div class="dao-history-main"><a href="#" class="dao-history-title-link" title="NFT市场模块提案通过">NFT市场模块提案通过</a><a href="#" class="dao-history-desc-link" title="NFT交易市场功能上线，丰富资产类型。">NFT交易市场功能上线，丰富资产类型。</a></div></li>
+                        <li><span class="dao-history-date">2024-05-20</span><div class="dao-history-main"><a href="#" class="dao-history-title-link" title="论坛功能升级完成">论坛功能升级完成</a><a href="#" class="dao-history-desc-link" title="社区交流体验优化，支持多媒体内容。">社区交流体验优化，支持多媒体内容。</a></div></li>
+                        <li><span class="dao-history-date">2024-05-10</span><div class="dao-history-main"><a href="#" class="dao-history-title-link" title="DAO成员激励发放">DAO成员激励发放</a><a href="#" class="dao-history-desc-link" title="季度激励已全部发放至成员钱包。">季度激励已全部发放至成员钱包。</a></div></li>
+                        <li><span class="dao-history-date">2024-04-30</span><div class="dao-history-main"><a href="#" class="dao-history-title-link" title="治理代币空投活动">治理代币空投活动</a><a href="#" class="dao-history-desc-link" title="完成首轮治理代币空投，活跃用户受益。">完成首轮治理代币空投，活跃用户受益。</a></div></li>
+                        <li><span class="dao-history-date">2024-04-15</span><div class="dao-history-main"><a href="#" class="dao-history-title-link" title="多签钱包上线">多签钱包上线</a><a href="#" class="dao-history-desc-link" title="DAO资产安全性大幅提升。">DAO资产安全性大幅提升。</a></div></li>
+                        <li><span class="dao-history-date">2024-03-28</span><div class="dao-history-main"><a href="#" class="dao-history-title-link" title="提案流程优化">提案流程优化</a><a href="#" class="dao-history-desc-link" title="提案审核与投票流程更高效。">提案审核与投票流程更高效。</a></div></li>
+                        <li><span class="dao-history-date">2024-03-10</span><div class="dao-history-main"><a href="#" class="dao-history-title-link" title="社区贡献榜单发布">社区贡献榜单发布</a><a href="#" class="dao-history-desc-link" title="首期社区贡献榜单上线，表彰活跃成员。">首期社区贡献榜单上线，表彰活跃成员。</a></div></li>
+                        <li><span class="dao-history-date">2024-02-25</span><div class="dao-history-main"><a href="#" class="dao-history-title-link" title="治理文档中心上线">治理文档中心上线</a><a href="#" class="dao-history-desc-link" title="治理规则与操作指南集中展示。">治理规则与操作指南集中展示。</a></div></li>
+                        <li><span class="dao-history-date">2024-02-01</span><div class="dao-history-main"><a href="#" class="dao-history-title-link" title="DAO官网全新改版">DAO官网全新改版</a><a href="#" class="dao-history-desc-link" title="视觉与交互体验全面升级。">视觉与交互体验全面升级。</a></div></li>
+                    </ul>
+                </div>
+                <!-- 帮助中心（高度自适应内容） -->
+                <div class="dao-info-card flex flex-col min-h-0">
+                  <div class="dao-info-title flex items-center justify-between w-full mb-2">
+                    <div class="flex items-center gap-2"><i class="fas fa-question-circle dao-info-icon text-green-400"></i>帮助中心</div>
+                    <button class="dao-history-more-btn">查看更多</button>
+                  </div>
+                  <ul class="dao-help-list divide-y divide-[#334155] min-h-0" style="padding-bottom:0;">
+                    <li class="dao-help-item">
+                      <div class="dao-help-header" onclick="toggleHelpItem(this)">
+                        <span class="dao-help-number">Q1:</span>
+                        <span class="dao-help-title dao-help-tooltip" title="如何参与DAO提案投票？">如何参与DAO提案投票？</span>
+                        <i class="fas fa-chevron-down dao-help-arrow"></i>
+                      </div>
+                      <div class="dao-help-content">
+                        <div class="dao-help-desc-collapsed dao-help-tooltip" title="了解DAO提案投票的流程与注意事项，快速上手社区治理。">了解DAO提案投票的流程与注意事项，快速上手社区治理。</div>
+                        <div class="dao-help-desc-expanded">
+                          <p>1. 首先确保您已绑定钱包并持有足够的治理代币</p>
+                          <p>2. 在提案列表中选择您感兴趣的提案</p>
+                          <p>3. 仔细阅读提案详情和讨论内容</p>
+                          <p>4. 点击"参与投票"按钮</p>
+                          <p>5. 选择您的投票选项（赞成/反对/弃权）</p>
+                          <p>6. 确认投票并等待交易确认</p>
+                          <p>7. 投票成功后可在个人中心查看投票记录</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="dao-help-item">
+                      <div class="dao-help-header" onclick="toggleHelpItem(this)">
+                        <span class="dao-help-number">Q2:</span>
+                        <span class="dao-help-title dao-help-tooltip" title="如何发起新提案？">如何发起新提案？</span>
+                        <i class="fas fa-chevron-down dao-help-arrow"></i>
+                      </div>
+                      <div class="dao-help-content">
+                        <div class="dao-help-desc-collapsed dao-help-tooltip" title="发起提案的条件、步骤及审核机制说明。">发起提案的条件、步骤及审核机制说明。</div>
+                        <div class="dao-help-desc-expanded">
+                          <p><strong>发起条件：</strong></p>
+                          <p>• 持有至少1000 SAP治理代币</p>
+                          <p>• 账户注册时间超过30天</p>
+                          <p>• 无违规记录</p>
+                          <p><strong>发起步骤：</strong></p>
+                          <p>1. 点击"发起提案"按钮</p>
+                          <p>2. 填写提案标题和详细描述</p>
+                          <p>3. 选择提案类型和投票期限</p>
+                          <p>4. 提交审核</p>
+                          <p>5. 等待审核通过后开始投票</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="dao-help-item">
+                      <div class="dao-help-header" onclick="toggleHelpItem(this)">
+                        <span class="dao-help-number">Q3:</span>
+                        <span class="dao-help-title dao-help-tooltip" title="如何绑定/更换钱包？">如何绑定/更换钱包？</span>
+                        <i class="fas fa-chevron-down dao-help-arrow"></i>
+                      </div>
+                      <div class="dao-help-content">
+                        <div class="dao-help-desc-collapsed dao-help-tooltip" title="钱包绑定流程及常见问题解答。">钱包绑定流程及常见问题解答。</div>
+                        <div class="dao-help-desc-expanded">
+                          <p><strong>绑定钱包：</strong></p>
+                          <p>1. 点击右上角"连接钱包"</p>
+                          <p>2. 选择您的钱包类型（MetaMask等）</p>
+                          <p>3. 授权连接请求</p>
+                          <p>4. 确认钱包地址</p>
+                          <p><strong>更换钱包：</strong></p>
+                          <p>1. 进入个人中心</p>
+                          <p>2. 点击"钱包管理"</p>
+                          <p>3. 选择"更换钱包"</p>
+                          <p>4. 按上述步骤绑定新钱包</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="dao-help-item">
+                      <div class="dao-help-header" onclick="toggleHelpItem(this)">
+                        <span class="dao-help-number">Q4:</span>
+                        <span class="dao-help-title dao-help-tooltip" title="如何查看我的投票记录？">如何查看我的投票记录？</span>
+                        <i class="fas fa-chevron-down dao-help-arrow"></i>
+                      </div>
+                      <div class="dao-help-content">
+                        <div class="dao-help-desc-collapsed dao-help-tooltip" title="在个人中心快速查找历史投票详情。">在个人中心快速查找历史投票详情。</div>
+                        <div class="dao-help-desc-expanded">
+                          <p>1. 登录您的账户</p>
+                          <p>2. 点击右上角头像进入个人中心</p>
+                          <p>3. 选择"投票记录"标签</p>
+                          <p>4. 查看您的所有投票历史</p>
+                          <p>5. 可以按时间、提案类型等筛选</p>
+                          <p>6. 点击具体记录查看详细投票信息</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="dao-help-item">
+                      <div class="dao-help-header" onclick="toggleHelpItem(this)">
+                        <span class="dao-help-number">Q5:</span>
+                        <span class="dao-help-title dao-help-tooltip" title="DAO治理代币如何获取？">DAO治理代币如何获取？</span>
+                        <i class="fas fa-chevron-down dao-help-arrow"></i>
+                      </div>
+                      <div class="dao-help-content">
+                        <div class="dao-help-desc-collapsed dao-help-tooltip" title="获取治理代币的方式与参与激励活动指引。">获取治理代币的方式与参与激励活动指引。</div>
+                        <div class="dao-help-desc-expanded">
+                          <p><strong>获取方式：</strong></p>
+                          <p>• 参与平台交易获得空投</p>
+                          <p>• 完成社区任务获得奖励</p>
+                          <p>• 参与提案投票获得激励</p>
+                          <p>• 在二级市场购买</p>
+                          <p><strong>激励活动：</strong></p>
+                          <p>• 新用户注册奖励</p>
+                          <p>• 每日签到奖励</p>
+                          <p>• 社区贡献奖励</p>
+                          <p>• 提案发起奖励</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="dao-help-item">
+                      <div class="dao-help-header" onclick="toggleHelpItem(this)">
+                        <span class="dao-help-number">Q6:</span>
+                        <span class="dao-help-title dao-help-tooltip" title="遇到安全问题怎么办？">遇到安全问题怎么办？</span>
+                        <i class="fas fa-chevron-down dao-help-arrow"></i>
+                      </div>
+                      <div class="dao-help-content">
+                        <div class="dao-help-desc-collapsed dao-help-tooltip" title="常见安全风险及官方联系方式。">常见安全风险及官方联系方式。</div>
+                        <div class="dao-help-desc-expanded">
+                          <p><strong>常见安全问题：</strong></p>
+                          <p>• 钱包被盗或私钥泄露</p>
+                          <p>• 误操作导致资产损失</p>
+                          <p>• 钓鱼网站诈骗</p>
+                          <p>• 合约漏洞风险</p>
+                          <p><strong>解决方案：</strong></p>
+                          <p>1. 立即联系官方客服</p>
+                          <p>2. 提供详细问题描述</p>
+                          <p>3. 保留相关证据截图</p>
+                          <p>4. 等待官方处理回复</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="dao-help-item">
+                      <div class="dao-help-header" onclick="toggleHelpItem(this)">
+                        <span class="dao-help-number">Q7:</span>
+                        <span class="dao-help-title dao-help-tooltip" title="如何加入社区贡献榜？">如何加入社区贡献榜？</span>
+                        <i class="fas fa-chevron-down dao-help-arrow"></i>
+                      </div>
+                      <div class="dao-help-content">
+                        <div class="dao-help-desc-collapsed dao-help-tooltip" title="提升社区活跃度，参与贡献榜单评选。">提升社区活跃度，参与贡献榜单评选。</div>
+                        <div class="dao-help-desc-expanded">
+                          <p><strong>贡献方式：</strong></p>
+                          <p>• 积极参与提案讨论</p>
+                          <p>• 发起有价值的提案</p>
+                          <p>• 帮助新用户解答问题</p>
+                          <p>• 参与社区活动</p>
+                          <p>• 提供建设性建议</p>
+                          <p><strong>评选标准：</strong></p>
+                          <p>• 活跃度评分</p>
+                          <p>• 贡献质量评分</p>
+                          <p>• 社区影响力</p>
+                          <p>• 持续参与度</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="dao-help-item">
+                      <div class="dao-help-header" onclick="toggleHelpItem(this)">
+                        <span class="dao-help-number">Q8:</span>
+                        <span class="dao-help-title dao-help-tooltip" title="如何设置通知提醒？">如何设置通知提醒？</span>
+                        <i class="fas fa-chevron-down dao-help-arrow"></i>
+                      </div>
+                      <div class="dao-help-content">
+                        <div class="dao-help-desc-collapsed dao-help-tooltip" title="自定义治理相关通知，及时掌握社区动态。">自定义治理相关通知，及时掌握社区动态。</div>
+                        <div class="dao-help-desc-expanded">
+                          <p>1. 进入个人中心</p>
+                          <p>2. 点击"通知设置"</p>
+                          <p>3. 选择通知类型：</p>
+                          <p>• 新提案通知</p>
+                          <p>• 投票开始提醒</p>
+                          <p>• 投票结果通知</p>
+                          <p>• 社区活动通知</p>
+                          <p>4. 设置通知方式（邮件/短信/推送）</p>
+                          <p>5. 保存设置</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="dao-help-item">
+                      <div class="dao-help-header" onclick="toggleHelpItem(this)">
+                        <span class="dao-help-number">Q9:</span>
+                        <span class="dao-help-title dao-help-tooltip" title="DAO治理规则在哪里查看？">DAO治理规则在哪里查看？</span>
+                        <i class="fas fa-chevron-down dao-help-arrow"></i>
+                      </div>
+                      <div class="dao-help-content">
+                        <div class="dao-help-desc-collapsed dao-help-tooltip" title="查阅最新治理规则与操作指南。">查阅最新治理规则与操作指南。</div>
+                        <div class="dao-help-desc-expanded">
+                          <p><strong>查看途径：</strong></p>
+                          <p>1. 首页底部"治理文档"链接</p>
+                          <p>2. 个人中心"帮助文档"</p>
+                          <p>3. 提案页面"规则说明"</p>
+                          <p>4. 官方GitHub文档库</p>
+                          <p><strong>文档内容：</strong></p>
+                          <p>• 治理代币经济模型</p>
+                          <p>• 提案发起与投票规则</p>
+                          <p>• 争议解决机制</p>
+                          <p>• 社区行为准则</p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="dao-help-item">
+                      <div class="dao-help-header" onclick="toggleHelpItem(this)">
+                        <span class="dao-help-number">Q10:</span>
+                        <span class="dao-help-title dao-help-tooltip" title="如何联系客服？">如何联系客服？</span>
+                        <i class="fas fa-chevron-down dao-help-arrow"></i>
+                      </div>
+                      <div class="dao-help-content">
+                        <div class="dao-help-desc-collapsed dao-help-tooltip" title="获取官方支持与反馈渠道。">获取官方支持与反馈渠道。</div>
+                        <div class="dao-help-desc-expanded">
+                          <p><strong>联系方式：</strong></p>
+                          <p>• 在线客服：右下角聊天窗口</p>
+                          <p>• 邮箱：support@sapphiremall.com</p>
+                          <p>• 电报群：@SapphireMallDAO</p>
+                          <p>• Discord：Sapphire Mall Official</p>
+                          <p>• 工作时间：9:00-18:00 (UTC+8)</p>
+                          <p><strong>反馈渠道：</strong></p>
+                          <p>• 功能建议：GitHub Issues</p>
+                          <p>• Bug报告：客服工单</p>
+                          <p>• 社区讨论：论坛专区</p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
-        let currentLang = 'zh';
-
-        // 投票功能
-        function vote(proposalId, voteType) {
-            const voteTypeZh = {
-                'for': '赞成',
-                'against': '反对',
-                'abstain': '弃权'
-            };
-            const voteTypeEn = {
-                'for': 'For',
-                'against': 'Against',
-                'abstain': 'Abstain'
-            };
-            
-            const voteText = currentLang === 'zh' ? voteTypeZh[voteType] : voteTypeEn[voteType];
-            showToast(currentLang === 'zh' ? `正在提交${voteText}投票...` : `Submitting ${voteText} vote...`, 'info');
-            
-            // 模拟投票确认
-            setTimeout(() => {
-                showToast(currentLang === 'zh' ? `${voteText}投票已提交` : `${voteText} vote submitted`, 'success');
-                // 这里可以更新投票进度
-            }, 2000);
+    // 公告栏悬浮暂停轮播
+    const marquee = document.getElementById('marquee');
+    const track = document.getElementById('marquee-track');
+    marquee.addEventListener('mouseenter', () => {
+      track.style.animationPlayState = 'paused';
+    });
+    marquee.addEventListener('mouseleave', () => {
+      track.style.animationPlayState = 'running';
+    });
+    </script>
+    <script>
+    // ================== DAO提案Tab与加载更多交互 ==================
+    // 样例数据（每个Tab下各10+条，内容多样）
+    const proposalData = {
+      active: [
+        { id: 'SAP-15', type: '治理', typeIcon: 'gavel', status: 'active', reward: 50, title: '降低交易手续费至 0.05%', desc: '提议将平台交易手续费从当前的 0.1% 降低至 0.05%，以提高交易量和用户体验。', initiator: 'Alice', avatar: 'A', agree: 1234, oppose: 567, abstain: 45, progress: 68.5, time: '剩余 2天', creat_time: '2025-06-01 12:00:00', btn: '参与投票', btnDisabled: false },
+        { id: 'SAP-16', type: 'NFT', typeIcon: 'palette', status: 'pending', reward: 75, title: '新增 NFT 市场模块', desc: '提议在平台上新增专门的 NFT 交易市场，支持创作者发布和交易数字艺术作品。', initiator: 'Carol', avatar: 'C', agree: 0, oppose: 0, abstain: 0, progress: 0, time: '开始 1天', creat_time: '2025-07-01 12:00:00', btn: '等待投票', btnDisabled: true },
+        { id: 'SAP-17', type: '参数', typeIcon: 'sliders-h', status: 'active', reward: 30, title: '调整最小投票门槛', desc: '建议将最小投票门槛从1000 SAP降至500 SAP，提升社区参与度。', initiator: 'Bob', avatar: 'B', agree: 320, oppose: 12, abstain: 8, progress: 45, time: '剩余 1天', creat_time: '2025-07-01 12:00:00', btn: '参与投票', btnDisabled: false },
+        { id: 'SAP-18', type: '紧急', typeIcon: 'exclamation-triangle', status: 'active', reward: 100, title: '紧急修复合约漏洞', desc: '发现合约存在安全隐患，需紧急修复并升级。', initiator: 'Dave', avatar: 'D', agree: 800, oppose: 20, abstain: 5, progress: 90, time: '剩余 8小时', creat_time: '2025-07-01 12:00:00', btn: '参与投票', btnDisabled: false },
+        { id: 'SAP-25', type: '治理', typeIcon: 'gavel', status: 'active', reward: 45, title: 'DAO治理结构优化', desc: '建议调整DAO治理结构，提升决策效率。', initiator: 'Mallory', avatar: 'M', agree: 350, oppose: 18, abstain: 6, progress: 40, time: '剩余 2天', creat_time: '2025-07-01 12:00:00', btn: '参与投票', btnDisabled: false },
+      ],
+      completed: [
+        { id: 'SAP-10', type: '治理', typeIcon: 'gavel', status: 'completed', reward: 50, title: 'DAO治理V2上线', desc: 'DAO治理V2版本正式上线，功能更完善。', initiator: 'Alice', avatar: 'A', agree: 2000, oppose: 100, abstain: 20, progress: 100, time: '已完成', creat_time: '2025-07-01 12:00:00', btn: '查看详情', btnDisabled: false },
+        { id: 'SAP-11', type: 'NFT', typeIcon: 'palette', status: 'completed', reward: 60, title: 'NFT市场模块提案通过', desc: 'NFT市场模块提案已通过，功能已上线。', initiator: 'Bob', avatar: 'B', agree: 1500, oppose: 80, abstain: 10, progress: 100, time: '已完成', creat_time: '2025-07-01 12:00:00', btn: '查看详情', btnDisabled: false },
+       
+        { id: 'SAP-14', type: '治理', typeIcon: 'gavel', status: 'completed', reward: 40, title: 'DAO成员激励发放', desc: 'DAO成员激励已全部发放。', initiator: 'Eve', avatar: 'E', agree: 900, oppose: 10, abstain: 1, progress: 100, time: '已完成', creat_time: '2025-07-01 12:00:00', btn: '查看详情', btnDisabled: false },
+        // ...可继续补充更多样例...
+      ],
+      pending: [
+        { id: 'SAP-26', type: '治理', typeIcon: 'gavel', status: 'pending', reward: 55, title: '新提案等待审核', desc: '新提案已提交，等待审核。', initiator: 'Frank', avatar: 'F', agree: 0, oppose: 0, abstain: 0, progress: 0, time: '待审核', creat_time: '2025-07-01 12:00:00', btn: '等待审核', btnDisabled: true },
+        { id: 'SAP-27', type: 'NFT', typeIcon: 'palette', status: 'pending', reward: 70, title: 'NFT新功能等待审核', desc: 'NFT新功能提案已提交，等待审核。', initiator: 'Grace', avatar: 'G', agree: 0, oppose: 0, abstain: 0, progress: 0, time: '待审核', creat_time: '2025-07-01 12:00:00', btn: '等待审核', btnDisabled: true },
+        // ...可继续补充更多样例...
+      ]
+    };
+    let proposalPage = 1;
+    const PAGE_SIZE = 10;
+    let currentTab = 'all';
+    function renderProposals(reset = false) {
+      const list = document.getElementById('proposal-list');
+      const pagin = document.getElementById('proposal-pagination');
+      if (reset) {
+        list.innerHTML = '';
+        proposalPage = 1;
+      }
+      // all tab合并所有数据
+      let data = [];
+      if(currentTab==='all') {
+        data = [...(proposalData.active||[]), ...(proposalData.completed||[]), ...(proposalData.pending||[])];
+      } else {
+        data = proposalData[currentTab] || [];
+      }
+      const totalPage = Math.ceil(data.length / PAGE_SIZE);
+      const start = (proposalPage-1)*PAGE_SIZE;
+      const end = start + PAGE_SIZE;
+      const toShow = data.slice(start, end);
+      list.innerHTML = '';
+      toShow.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'dao-proposal-card';
+        // 按状态按钮色
+        let btnClass = 'dao-proposal-btn';
+        let btnText = item.btn;
+        if(item.status==='active') btnClass += ' dao-proposal-btn-vote';
+        else if(item.status==='pending') btnClass += ' dao-proposal-btn-wait';
+        else if(item.status==='completed') btnClass += ' dao-proposal-btn-done';
+        // 真实头像图片
+        const avatarUrl = `https://randomuser.me/api/portraits/${idx%2===0?'men':'women'}/${(idx+proposalPage*10)%80}.jpg`;
+        // 发起时间
+        let launchTime = item.time || '2024-06-01 12:00';
+        // 钱包地址缩写
+        const walletAddr = item.addr || `0x${Math.random().toString(16).slice(2,6)}...${Math.random().toString(16).slice(2,6)}`;
+        card.innerHTML = `
+          <div class="dao-proposal-avatar overflow-hidden"><img src="${avatarUrl}" alt="avatar" class="w-full h-full object-cover" style="border-radius:16px;" /></div>
+          <div class="dao-proposal-main">
+            <div class="dao-proposal-header">
+              <span class="dao-proposal-status dao-status-${item.status}">${item.status === 'active' ? '投票中' : item.status === 'completed' ? '已完成' : '等待中'}</span>
+              <span class="dao-proposal-type"><i class="fas fa-${item.typeIcon}"></i> ${item.type}</span>
+              <span class="text-xs text-sapphire-200">#${item.id}</span>
+              <span class="dao-proposal-reward">奖励: ${item.reward} SAP</span>
+            </div>
+            <div class="dao-proposal-title">${item.title}</div>
+            <div class="dao-proposal-desc">${item.desc}</div>
+            <div class="dao-proposal-meta">
+              <span>发起人: <span class="text-sapphire-400">${walletAddr}</span></span>
+              <span class="text-slate-400">${(launchTime||'').split(' ')[0]}</span>
+              <span>赞成: ${item.agree}</span>
+              <span>反对: ${item.oppose}</span>
+              <span>弃权: ${item.abstain}</span>
+              <span>提案时间: ${item.creat_time||''}</span>
+            </div>
+            <div class="dao-proposal-progress-bg">
+              <div class="dao-proposal-progress" style="width: ${item.progress}%; background: linear-gradient(90deg, #fdba74, #f59e42);"></div>
+            </div>
+          </div>
+          <div class="dao-proposal-actions">
+            <div class="flex flex-col items-end gap-1">
+              <div class="dao-proposal-time">${item.time||''}</div>
+              <button class="${btnClass}" ${item.btnDisabled ? 'disabled' :''}>${btnText}</button>
+            </div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+      // 分页
+      pagin.innerHTML = '';
+      if(totalPage>1) {
+        let html = `<div class='flex items-center gap-2 text-slate-400 text-sm mr-4'>共${data.length}条</div><div class="flex gap-2">`;
+        html += `<button class="px-3 py-1 rounded-full font-semibold text-base ${proposalPage===1?'bg-slate-600 text-slate-300 cursor-not-allowed':'bg-sapphire-600 text-white hover:bg-sapphire-700'}" onclick="gotoProposalPage(${Math.max(1,proposalPage-1)})" ${proposalPage===1?'disabled':''}>上一页</button>`;
+        for(let i=1;i<=totalPage;i++) {
+          html += `<button class="px-3 py-1 rounded-full font-semibold text-base ${i===proposalPage?'bg-sapphire-600 text-white':'bg-slate-700 text-slate-300 hover:bg-sapphire-700'}" onclick="gotoProposalPage(${i})">${i}</button>`;
         }
-
-        // 委托功能
-        function delegate(delegateName) {
-            showToast(currentLang === 'zh' ? `正在委托投票权给 ${delegateName}...` : `Delegating votes to ${delegateName}...`, 'info');
-            
-            setTimeout(() => {
-                showToast(currentLang === 'zh' ? `委托成功` : `Delegation successful`, 'success');
-            }, 2000);
+        html += `<button class="px-3 py-1 rounded-full font-semibold text-base ${proposalPage===totalPage?'bg-slate-600 text-slate-300 cursor-not-allowed':'bg-sapphire-600 text-white hover:bg-sapphire-700'}" onclick="gotoProposalPage(${Math.min(totalPage,proposalPage+1)})" ${proposalPage===totalPage?'disabled':''}>下一页</button>`;
+        html += '</div>';
+        pagin.innerHTML = html;
+      }
+    }
+    function gotoProposalPage(page) {
+      proposalPage = page;
+      renderProposals();
+    }
+    document.querySelectorAll('.proposal-tab-btn').forEach(tab => {
+      tab.onclick = function() {
+        document.querySelectorAll('.proposal-tab-btn').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        currentTab = this.getAttribute('data-tab');
+        proposalPage = 1;
+        renderProposals(true);
+      }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+      renderProposals(true);
+    });
+    </script>
+    <script>
+    // 统计图表联动数据
+    const statChartData = {
+      total: {
+        30: { points: "60,200 120,160 180,120 240,100 300,160 360,60 420,180 480,120 540,170 580,130", y: ["3,000","2,000","1,000","0"], x: ["2025-06-08","2025-06-10","2025-06-12","2025-06-14","2025-06-16","2025-06-18","2025-06-20","2025-06-22","2025-06-24","2025-06-26"] },
+        7: { points: "60,200 120,160 180,120 240,100 300,160 360,60", y: ["3,000","2,000","1,000","0"], x: ["2025-06-20","2025-06-21","2025-06-22","2025-06-23","2025-06-24","2025-06-25","2025-06-26"] },
+        1: { points: "60,200 120,160 180,120 240,100", y: ["3,000","2,000","1,000","0"], x: ["2025-06-25","2025-06-26","2025-06-27","2025-06-28"] }
+      },
+      pass: {
+        30: { points: "60,120 120,100 180,80 240,60 300,100 360,40 420,120 480,80 540,110 580,90", y: ["100%","80%","60%","0%"], x: ["2025-06-08","2025-06-10","2025-06-12","2025-06-14","2025-06-16","2025-06-18","2025-06-20","2025-06-22","2025-06-24","2025-06-26"] },
+        7: { points: "60,120 120,100 180,80 240,60 300,100 360,40 420,120", y: ["100%","80%","60%","0%"], x: ["2025-06-20","2025-06-21","2025-06-22","2025-06-23","2025-06-24","2025-06-25","2025-06-26"] },
+        1: { points: "60,120 120,100 180,80 240,60", y: ["100%","80%","60%","0%"], x: ["2025-06-25","2025-06-26","2025-06-27","2025-06-28"] }
+      }
+    };
+    let statType = 'total';
+    let statRange = '30';
+    function renderStatChart() {
+      const data = statChartData[statType][statRange];
+      document.getElementById('stat-polyline').setAttribute('points', data.points);
+      // Y轴
+      const svg = document.getElementById('stat-chart');
+      svg.querySelectorAll('.stat-y').forEach((el,i)=>{
+        el.textContent = data.y[i]||'';
+      });
+      // X轴
+      svg.querySelectorAll('.stat-x').forEach((el,i)=>{
+        el.textContent = data.x[i]||'';
+      });
+    }
+    document.querySelectorAll('.stat-tab-btn').forEach(btn => {
+      btn.onclick = function() {
+        document.querySelectorAll('.stat-tab-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        statType = this.getAttribute('data-type');
+        renderStatChart();
+      }
+    });
+    document.getElementById('stat-range-select').onchange = function() {
+      statRange = this.value;
+      renderStatChart();
+    };
+    document.addEventListener('DOMContentLoaded', function() {
+      // 补充Y/X轴class
+      const svg = document.getElementById('stat-chart');
+      svg.querySelectorAll('text').forEach((el,i)=>{
+        if(i<4) el.classList.add('stat-y');
+        else el.classList.add('stat-x');
+      });
+      renderStatChart();
+    });
+    </script>
+    <script>
+    const userRankDataWeek = [
+      { addr: '0x1234...abcd', votes: 32 },
+      { addr: '0x5678...ef12', votes: 28 },
+      { addr: '0x9abc...3456', votes: 25 },
+      { addr: '0x7890...cdef', votes: 22 },
+      { addr: '0x1111...2222', votes: 20 },
+      { addr: '0x3333...4444', votes: 18 },
+      { addr: '0x5555...6666', votes: 16 },
+      { addr: '0x7777...8888', votes: 15 },
+      { addr: '0xaaaa...bbbb', votes: 13 },
+      { addr: '0xcccc...dddd', votes: 12 }
+    ];
+    const userRankDataMonth = [
+      { addr: '0x1234...abcd', votes: 60 },
+      { addr: '0x5678...ef12', votes: 55 },
+      { addr: '0x9abc...3456', votes: 50 },
+      { addr: '0x7890...cdef', votes: 48 },
+      { addr: '0x1111...2222', votes: 45 },
+      { addr: '0x3333...4444', votes: 40 },
+      { addr: '0x5555...6666', votes: 38 },
+      { addr: '0x7777...8888', votes: 35 },
+      { addr: '0xaaaa...bbbb', votes: 33 },
+      { addr: '0xcccc...dddd', votes: 30 }
+    ];
+    let userRankRange = 'week';
+    function renderUserRank() {
+      const ul = document.querySelector('.dao-user-list');
+      ul.innerHTML = '';
+      const data = userRankRange==='week'?userRankDataWeek:userRankDataMonth;
+      data.slice(0,10).forEach((user, idx) => {
+        let rankHtml = '';
+        if(idx===0) {
+          rankHtml = `<div class="user-rank-crown">
+            <span class="user-rank-num rank-1"></span>
+            <i class="fas fa-crown crown-icon" style="color:#ef4444"></i>
+            <span class="crown-num">1</span>
+          </div>`;
+        } else if(idx===1) {
+          rankHtml = `<div class="user-rank-crown">
+            <span class="user-rank-num rank-2"></span>
+            <i class="fas fa-crown crown-icon" style="color:#fbbf24"></i>
+            <span class="crown-num">2</span>
+          </div>`;
+        } else if(idx===2) {
+          rankHtml = `<div class="user-rank-crown">
+            <span class="user-rank-num rank-3"></span>
+            <i class="fas fa-crown crown-icon" style="color:#3b82f6"></i>
+            <span class="crown-num">3</span>
+          </div>`;
+        } else {
+          rankHtml = `<span class="user-rank-num rank-gray">${idx+1}</span>`;
         }
-
-        // 初始化事件监听器
-        document.addEventListener('DOMContentLoaded', function() {
-            // 投票按钮
-            document.querySelectorAll('.vote-for').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const proposalCard = this.closest('.proposal-card');
-                    const proposalId = proposalCard.querySelector('.text-gray-400').textContent;
-                    vote(proposalId, 'for');
-                });
-            });
-
-            document.querySelectorAll('.vote-against').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const proposalCard = this.closest('.proposal-card');
-                    const proposalId = proposalCard.querySelector('.text-gray-400').textContent;
-                    vote(proposalId, 'against');
-                });
-            });
-
-            document.querySelectorAll('.vote-abstain').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const proposalCard = this.closest('.proposal-card');
-                    const proposalId = proposalCard.querySelector('.text-gray-400').textContent;
-                    vote(proposalId, 'abstain');
-                });
-            });
-
-            // 委托按钮
-            document.querySelectorAll('.delegate-card button').forEach(btn => {
-                if (btn.textContent.includes('委托') || btn.textContent.includes('Delegate')) {
-                    btn.addEventListener('click', function() {
-                        const delegateCard = this.closest('.delegate-card');
-                        const delegateName = delegateCard.querySelector('.font-bold').textContent;
-                        delegate(delegateName);
-                    });
-                }
-            });
-
-            // 创建提案按钮
-            document.querySelector('[data-zh="创建提案"]').addEventListener('click', function() {
-                showToast(currentLang === 'zh' ? '跳转至提案创建页面...' : 'Redirecting to proposal creation...', 'info');
-            });
-        });
-
-        // Toast 提示功能
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
-            
-            if (type === 'success') {
-                toast.classList.add('bg-green-600');
-            } else if (type === 'error') {
-                toast.classList.add('bg-red-600');
-            } else {
-                toast.classList.add('bg-sapphire-600');
-            }
-            
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
-            setTimeout(() => {
-                toast.classList.add('translate-x-full');
-                setTimeout(() => document.body.removeChild(toast), 300);
-            }, 3000);
+        ul.innerHTML += `
+          <li class="flex items-center w-full">
+            <div class="w-1/3 flex items-center pl-2">${rankHtml}</div>
+            <div class="w-1/3 user-rank-addr">${user.addr}</div>
+            <div class="w-1/3 user-rank-votes">${user.votes}</div>
+          </li>
+        `;
+      });
+    }
+    document.querySelectorAll('.user-rank-filter-btn').forEach(btn => {
+      btn.onclick = function() {
+        document.querySelectorAll('.user-rank-filter-btn').forEach(b=>b.classList.remove('active'));
+        this.classList.add('active');
+        userRankRange = this.getAttribute('data-range');
+        renderUserRank();
+      }
+    });
+    document.addEventListener('DOMContentLoaded', renderUserRank);
+    </script>
+    <script>
+    // ================== 帮助中心折叠功能 ==================
+    function toggleHelpItem(header) {
+      const item = header.parentElement;
+      const isExpanded = item.classList.contains('expanded');
+      
+      // 关闭其他展开的项目
+      document.querySelectorAll('.dao-help-item.expanded').forEach(expandedItem => {
+        if (expandedItem !== item) {
+          expandedItem.classList.remove('expanded');
         }
-
-        // 语言切换功能
-        function updateLanguage(lang) {
-            currentLang = lang;
-            document.querySelectorAll('[data-zh], [data-en]').forEach(element => {
-                const text = element.getAttribute(`data-${lang}`);
-                if (text) {
-                    element.textContent = text;
-                }
-            });
-        }
-
-        // 监听来自父窗口的语言变更消息
-        window.addEventListener('message', function(event) {
-            if (event.data.type === 'LANGUAGE_CHANGE') {
-                updateLanguage(event.data.language);
-            }
-        });
-
-        // 模拟倒计时更新
-        function updateCountdowns() {
-            document.querySelectorAll('.countdown span:last-child').forEach(element => {
-                // 这里应该是真实的倒计时逻辑
-                console.log('Updating countdown:', element.textContent);
-            });
-        }
-
-        setInterval(updateCountdowns, 1000);
-
-        console.log('DAO page loaded');
+      });
+      
+      // 切换当前项目
+      if (isExpanded) {
+        item.classList.remove('expanded');
+      } else {
+        item.classList.add('expanded');
+      }
+    }
+    </script>
+    <script>
+    // ...原有JS...
+    // ========== 最新操作记录渲染 ==========
+    const operationLogData = [
+      { user: 'Alice', avatar: 'A', type: 'proposal', typeText: '发起提案', content: '发起了"DAO治理结构优化"提案', time: '2024-06-10 14:23' },
+      { user: 'Bob', avatar: 'B', type: 'vote', typeText: '投票', content: '对"降低手续费"提案投票：赞成', time: '2024-06-10 13:58' },
+      { user: 'Carol', avatar: 'C', type: 'comment', typeText: '评论', content: '评论了"紧急修复合约漏洞"提案', time: '2024-06-10 13:40' },
+      { user: 'Dave', avatar: 'D', type: 'vote', typeText: '投票', content: '对"NFT市场模块"提案投票：反对', time: '2024-06-10 13:20' },
+      { user: 'Eve', avatar: 'E', type: 'other', typeText: '其他', content: '绑定了新钱包', time: '2024-06-10 12:50' },
+      { user: 'Mallory', avatar: 'M', type: 'proposal', typeText: '发起提案', content: '发起了"DAO激励机制优化"提案', time: '2024-06-10 12:30' },
+    ];
+    function renderOperationLog() {
+      const ul = document.querySelector('.operation-log-list');
+      ul.innerHTML = '';
+      operationLogData.forEach(item => {
+        ul.innerHTML += `
+          <li class="operation-log-item">
+            <div class="operation-log-avatar">${item.avatar}</div>
+            <div class="operation-log-main">
+              <div class="operation-log-meta">
+                <span class="operation-log-user">${item.user}</span>
+                <span class="operation-log-type log-type-${item.type}">${item.typeText}</span>
+                <span class="operation-log-time">${item.time}</span>
+              </div>
+              <div class="operation-log-content" title="${item.content}">${item.content}</div>
+            </div>
+          </li>
+        `;
+      });
+    }
+    document.addEventListener('DOMContentLoaded', renderOperationLog);
     </script>
 </body>
 </html> 

@@ -1,0 +1,482 @@
+/* 管理员提案管理专用样式 */
+
+/* 管理员专属功能区 */
+.admin-controls {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-controls::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.1), transparent);
+    transition: all 0.8s ease;
+}
+
+.admin-controls:hover::before {
+    left: 100%;
+}
+
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.admin-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.admin-title i {
+    color: #ef4444;
+    font-size: 20px;
+}
+
+.admin-badge {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.admin-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.admin-action-card {
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    border-radius: 12px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.admin-action-card:hover {
+    background: rgba(30, 41, 59, 0.6);
+    border-color: rgba(239, 68, 68, 0.4);
+    transform: translateY(-2px);
+}
+
+.admin-action-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.admin-action-icon.review {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.admin-action-icon.manage {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.admin-action-icon.config {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.admin-action-icon.monitor {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.admin-action-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 6px;
+}
+
+.admin-action-description {
+    font-size: 12px;
+    color: #94a3b8;
+    line-height: 1.4;
+}
+
+/* 待审核提案区域 */
+.pending-proposals {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.pending-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+    border-bottom: 1px solid rgba(251, 191, 36, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pending-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.pending-title i {
+    color: #fbbf24;
+}
+
+.urgent-badge {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.pending-item {
+    border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+    padding: 20px 24px;
+    transition: all 0.3s ease;
+}
+
+.pending-item:last-child {
+    border-bottom: none;
+}
+
+.pending-item:hover {
+    background: rgba(30, 41, 59, 0.3);
+}
+
+.pending-content {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.pending-main {
+    flex: 1;
+}
+
+.pending-id {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.pending-title-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 8px;
+}
+
+.pending-description {
+    color: #94a3b8;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.pending-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: #64748b;
+    flex-wrap: wrap;
+}
+
+.pending-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.approve-btn {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.approve-btn:hover {
+    background: rgba(16, 185, 129, 0.3);
+    transform: translateY(-1px);
+}
+
+.reject-btn {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.reject-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    transform: translateY(-1px);
+}
+
+.modify-btn {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.modify-btn:hover {
+    background: rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+}
+
+/* 管理员筛选标签 */
+.filter-tab.active {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+/* 管理员统计卡片 */
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.admin-stat-card {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.admin-stat-card:hover {
+    border-color: rgba(71, 85, 105, 0.6);
+    transform: translateY(-1px);
+}
+
+.admin-stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ef4444;
+    margin-bottom: 4px;
+}
+
+.admin-stat-label {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* 系统提案列表 */
+.system-proposals {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(51, 65, 85, 0.4);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.system-proposals-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+    border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.system-proposals-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.system-proposals-title i {
+    color: #ef4444;
+}
+
+.system-proposal-item {
+    border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+    padding: 20px 24px;
+    transition: all 0.3s ease;
+}
+
+.system-proposal-item:last-child {
+    border-bottom: none;
+}
+
+.system-proposal-item:hover {
+    background: rgba(30, 41, 59, 0.3);
+}
+
+.system-proposal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.priority-badge {
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.priority-high {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.priority-medium {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.priority-low {
+    background: rgba(100, 116, 139, 0.2);
+    color: #64748b;
+    border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.admin-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.force-execute-btn {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.force-execute-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    transform: translateY(-1px);
+}
+
+.pause-btn {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.pause-btn:hover {
+    background: rgba(251, 191, 36, 0.3);
+    transform: translateY(-1px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .admin-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pending-content {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .system-proposal-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-actions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-stats {
+        grid-template-columns: 1fr;
+    }
+} 

@@ -3,61 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品详情 - Sapphire Mall</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>商品详情 - Sapphire Mall v3.1</title>
+    
+    <!-- 外部依赖 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/dapp-common.css">
-    <style>
-        .product-detail-container {
-            background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9));
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(107, 114, 128, 0.3);
-            border-radius: 1rem;
-            min-height: 80vh;
-        }
-        
-        .product-image-large {
-            border-radius: 1rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        
-        .buy-now-btn {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 0.75rem;
-            font-size: 1.125rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 
-                0 6px 20px rgba(79, 70, 229, 0.4),
-                0 4px 10px rgba(124, 58, 237, 0.3);
-        }
-        
-        .buy-now-btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 
-                0 10px 30px rgba(79, 70, 229, 0.5),
-                0 6px 16px rgba(124, 58, 237, 0.4);
-        }
-        
-        .back-btn {
-            background: rgba(107, 114, 128, 0.2);
-            border: 1px solid rgba(107, 114, 128, 0.3);
-            color: #d1d5db;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .back-btn:hover {
-            background: rgba(107, 114, 128, 0.3);
-            border-color: rgba(156, 163, 175, 0.5);
-            color: white;
-        }
-    </style>
+    
+    <!-- 项目样式文件 -->
+    <link rel="stylesheet" href="css/dapp-common.css?v=20241221-14">
+    <link rel="stylesheet" href="css/product-detail.css?v=20241221-14">
+    
+    <!-- Tailwind 配置 -->
     <script>
         tailwind.config = {
             theme: {
@@ -82,169 +41,1283 @@
     </script>
 </head>
 <body class="min-h-screen text-white">
-    <div class="container mx-auto px-6 py-8">
-        <!-- 返回按钮 -->
-        <div class="mb-6">
-            <button onclick="window.history.back()" class="back-btn">
-                <i class="fas fa-arrow-left mr-2"></i>
-                <span data-zh="返回商城" data-en="Back to Store">返回商城</span>
-            </button>
+    <!-- 面包屑导航 -->
+    <div>
+        <div class="page-container">
+            <nav class="flex items-center space-x-2 text-sm py-1" id="breadcrumbNav">
+                <a href="../dapp.html" class="breadcrumb-link" target="_parent">
+                    <i class="fas fa-home mr-1"></i>首页
+                </a>
+                <i class="fas fa-chevron-right text-gray-500"></i>
+                <a href="marketplace.html?category=online-courses" class="breadcrumb-link" id="categoryBreadcrumb" target="_parent">在线课程</a>
+                <i class="fas fa-chevron-right text-gray-500 subcategory-chevron" id="subcategoryChevron"></i>
+                <a href="marketplace.html" class="breadcrumb-link subcategory-breadcrumb" id="subcategoryBreadcrumb" target="_parent">区块链开发</a>
+                <i class="fas fa-chevron-right text-gray-500"></i>
+                <span class="breadcrumb-current" id="productBreadcrumb">区块链开发基础课程</span>
+            </nav>
         </div>
-        
-        <!-- 商品详情容器 -->
-        <div class="product-detail-container p-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- 商品图片 -->
-                <div class="space-y-4">
-                    <img id="productImage" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=400&fit=crop" alt="商品图片" class="product-image-large w-full h-96 object-cover">
+    </div>
+
+    <div class="page-container">
+        <!-- 主要内容区域 -->
+        <div class="bg-white/5 backdrop-blur-sm border border-gray-700/30 rounded-xl p-6">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 min-h-[600px]">
+                <!-- 左侧：商品图片区域 - 占2/5宽度 -->
+                <div class="lg:col-span-2 flex flex-col h-full image-container-tight">
+                    <!-- 主图显示区域 -->
+                    <div class="flex-1">
+                        <div class="aspect-square bg-gray-800/50 rounded-lg overflow-hidden relative group h-full max-h-[480px]" id="mainImageContainer">
+                            <img id="mainProductImage" 
+                                 src="https://images.unsplash.com/photo-1607705703571-c5a8695f18f6?w=500&h=500&fit=crop" 
+                                 alt="商品图片" 
+                                 class="w-full h-full object-cover cursor-crosshair transition-all duration-300">
+                            
+                            <!-- 矩形放大指示器 -->
+                            <div id="zoomLens" 
+                                 class="zoom-lens"></div>
+                            
+                            <!-- 放大镜提示图标 -->
+                            <div class="absolute top-3 right-3 bg-black/50 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                                <i class="fas fa-search-plus text-white text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <!-- 缩略图 -->
-                    <div class="grid grid-cols-4 gap-2">
-                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=150&h=150&fit=crop" alt="缩略图1" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=150&h=150&fit=crop" alt="缩略图2" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
-                        <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=150&h=150&fit=crop" alt="缩略图3" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
-                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=150&h=150&fit=crop" alt="缩略图4" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-100 transition-opacity">
+                    <!-- 缩略图列表 -->
+                    <div class="relative">
+                        <div class="flex space-x-2 overflow-hidden" id="thumbnailContainer">
+                            <!-- 左切换按钮 -->
+                            <button class="thumbnail-nav-btn thumbnail-nav-left flex-shrink-0 opacity-50 hover:opacity-100" id="thumbnailPrev">
+                                <i class="fas fa-chevron-left text-gray-400"></i>
+                            </button>
+                            
+                            <!-- 缩略图滚动容器 -->
+                            <div class="flex space-x-2 overflow-x-auto scrollbar-hide" id="thumbnailScroll">
+                                <div class="thumbnail-item flex-shrink-0">
+                                    <img src="https://images.unsplash.com/photo-1607705703571-c5a8695f18f6?w=80&h=80&fit=crop" 
+                                         alt="蓝色科技界面" 
+                                         class="w-12 h-12 object-cover rounded cursor-pointer border-2 border-transparent hover:border-orange-400 transition-all thumbnail active"
+                                         data-large="https://images.unsplash.com/photo-1607705703571-c5a8695f18f6?w=500&h=500&fit=crop">
+                                </div>
+                                <div class="thumbnail-item flex-shrink-0">
+                                    <img src="https://images.unsplash.com/photo-1565043666747-69f6646db940?w=80&h=80&fit=crop" 
+                                         alt="绿色自然风景" 
+                                         class="w-12 h-12 object-cover rounded cursor-pointer border-2 border-transparent hover:border-orange-400 transition-all thumbnail"
+                                         data-large="https://images.unsplash.com/photo-1565043666747-69f6646db940?w=500&h=500&fit=crop">
+                                </div>
+                                <div class="thumbnail-item flex-shrink-0">
+                                    <img src="https://images.unsplash.com/photo-1574274405403-dd124b96a8db?w=80&h=80&fit=crop" 
+                                         alt="红色咖啡杯" 
+                                         class="w-12 h-12 object-cover rounded cursor-pointer border-2 border-transparent hover:border-orange-400 transition-all thumbnail"
+                                         data-large="https://images.unsplash.com/photo-1574274405403-dd124b96a8db?w=500&h=500&fit=crop">
+                                </div>
+                                <div class="thumbnail-item flex-shrink-0">
+                                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=80&h=80&fit=crop" 
+                                         alt="紫色山峰日落" 
+                                         class="w-12 h-12 object-cover rounded cursor-pointer border-2 border-transparent hover:border-orange-400 transition-all thumbnail"
+                                         data-large="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=500&fit=crop">
+                                </div>
+                                <div class="thumbnail-item flex-shrink-0">
+                                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=80&h=80&fit=crop" 
+                                         alt="黄色花朵特写" 
+                                         class="w-12 h-12 object-cover rounded cursor-pointer border-2 border-transparent hover:border-orange-400 transition-all thumbnail"
+                                         data-large="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&h=500&fit=crop">
+                                </div>
+                                <div class="thumbnail-item flex-shrink-0">
+                                    <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=80&h=80&fit=crop" 
+                                         alt="粉色天空星空" 
+                                         class="w-12 h-12 object-cover rounded cursor-pointer border-2 border-transparent hover:border-orange-400 transition-all thumbnail"
+                                         data-large="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=500&h=500&fit=crop">
+                                </div>
+                            </div>
+                            
+                            <!-- 右切换按钮 -->
+                            <button class="thumbnail-nav-btn thumbnail-nav-right flex-shrink-0 opacity-50 hover:opacity-100" id="thumbnailNext">
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- 商品信息 -->
-                <div class="space-y-6">
+                <!-- 右侧：商品信息区域 - 占3/5宽度 -->
+                <div class="lg:col-span-3 flex flex-col justify-between h-full space-y-6 relative">
+                    <!-- 放大镜显示区域 - 放在右侧信息区域的右上角 -->
+                    <div id="zoomContainer" 
+                         class="zoom-container">
+                        <div id="zoomImage" 
+                             class="zoom-image"></div>
+                    </div>
+                    
                     <!-- 商品标题和标签 -->
-                    <div>
-                        <div class="flex items-center gap-2 mb-3">
-                            <span id="productBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-purple-600 text-white">热门</span>
+                    <div class="pb-4 border-b border-gray-700/30">
+                        <div class="flex items-start justify-between gap-4 mb-4">
+                            <h1 id="productTitle" class="text-2xl lg:text-3xl font-bold text-white leading-tight flex-1">区块链开发基础课程</h1>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <span class="px-2 py-1 bg-red-500 text-white text-xs font-medium rounded-md shadow-sm">热门</span>
+                                <span class="px-2 py-1 bg-green-500 text-white text-xs font-medium rounded-md shadow-sm">精品</span>
+                                <span class="px-2 py-1 bg-orange-500 text-white text-xs font-medium rounded-md shadow-sm">限时优惠</span>
+                            </div>
                         </div>
-                        <h1 id="productTitle" class="text-3xl font-bold text-white mb-4">区块链开发基础课程</h1>
-                        <p id="productDescription" class="text-gray-300 text-lg leading-relaxed">
-                            从零开始学习区块链核心概念，掌握智能合约开发技能，适合初学者入门。本课程包含完整的理论讲解和实战项目，帮助你快速掌握区块链开发技术。
+                        <p id="productDescription" class="text-gray-300 text-sm leading-relaxed mt-3">
+                            从零开始学习区块链核心概念，掌握智能合约开发技能，适合初学者入门。本课程包含完整的理论讲解和实战项目，帮助您快速进入Web3开发领域。
                         </p>
                     </div>
                     
-                    <!-- 价格和评分 -->
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <span class="text-4xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent" id="productPrice">299</span>
-                            <span class="text-gray-400 text-lg ml-2">SAP</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="flex text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
+                    <!-- 价格和评分区域 -->
+                    <div class="bg-gradient-to-r from-gray-800/40 to-gray-700/40 border border-gray-600/40 rounded-lg p-4 shadow-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-baseline gap-3">
+                                <span class="text-red-400 text-3xl font-bold" id="productPrice">299</span>
+                                <span class="text-gray-400 text-base font-medium">SAP</span>
+                                <span class="text-gray-500 line-through text-base">399 SAP</span>
+                                <span class="bg-red-500 text-white px-2 py-1 rounded-md text-sm font-semibold">7.5折</span>
                             </div>
-                            <span id="productRating" class="text-gray-300 font-medium">4.9</span>
-                            <span class="text-gray-500">(128 评价)</span>
-                        </div>
-                    </div>
-                    
-                    <!-- 商品详细信息 -->
-                    <div class="space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-gray-800 p-3 rounded-lg">
-                                <span class="text-gray-400 text-sm">销量</span>
-                                <p class="text-white font-semibold">1,256</p>
-                            </div>
-                            <div class="bg-gray-800 p-3 rounded-lg">
-                                <span class="text-gray-400 text-sm">库存</span>
-                                <p class="text-white font-semibold">充足</p>
+                            <div class="text-green-400 font-semibold text-base flex items-center gap-2">
+                                <i class="fas fa-check-circle"></i>
+                                <span>现货</span>
                             </div>
                         </div>
                         
-                        <div class="bg-gray-800 p-4 rounded-lg">
-                            <h3 class="text-white font-semibold mb-2">课程特色</h3>
-                            <ul class="text-gray-300 space-y-1">
-                                <li><i class="fas fa-check text-green-400 mr-2"></i>理论与实践相结合</li>
-                                <li><i class="fas fa-check text-green-400 mr-2"></i>提供完整项目源码</li>
-                                <li><i class="fas fa-check text-green-400 mr-2"></i>专业讲师在线答疑</li>
-                                <li><i class="fas fa-check text-green-400 mr-2"></i>终身免费更新</li>
-                            </ul>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="flex text-yellow-400 text-lg">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                                <span class="text-white font-semibold text-base">4.9</span>
+                                <span class="text-gray-400 text-sm">(128)</span>
+                            </div>
+                            <div class="text-gray-400 text-sm">
+                                已售 <span class="text-white font-semibold">1,256</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- 购买按钮 -->
-                    <div class="space-y-3">
-                        <button class="buy-now-btn w-full">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            <span data-zh="立即购买" data-en="Buy Now">立即购买</span>
-                        </button>
-                        <button class="w-full bg-gray-700 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-600 transition-colors">
-                            <i class="fas fa-heart mr-2"></i>
-                            <span data-zh="加入收藏" data-en="Add to Favorites">加入收藏</span>
-                        </button>
+                    <!-- 规格选择 -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <span class="text-white font-semibold text-sm w-16 flex-shrink-0">版本选择</span>
+                            <div class="flex gap-2 flex-wrap">
+                                <button class="spec-btn-compact spec-btn-active" data-spec="version" data-value="basic">
+                                    基础版
+                                </button>
+                                <button class="spec-btn-compact" data-spec="version" data-value="pro">
+                                    专业版 <span class="text-orange-400 text-xs ml-1">+200</span>
+                                </button>
+                                <button class="spec-btn-compact" data-spec="version" data-value="ultimate">
+                                    旗舰版 <span class="text-orange-400 text-xs ml-1">+500</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4">
+                            <span class="text-white font-semibold text-sm w-16 flex-shrink-0">语言版本</span>
+                            <div class="flex gap-2 flex-wrap">
+                                <button class="spec-btn-compact spec-btn-active" data-spec="language" data-value="chinese">中文</button>
+                                <button class="spec-btn-compact" data-spec="language" data-value="english">English</button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4">
+                            <span class="text-white font-semibold text-sm w-16 flex-shrink-0">数量</span>
+                            <div class="flex items-center">
+                                <div class="flex items-center border border-gray-600 rounded-lg overflow-hidden bg-gray-800/50">
+                                    <button class="quantity-btn-compact bg-gray-700 hover:bg-gray-600" onclick="decreaseQuantity()">
+                                        <i class="fas fa-minus text-xs"></i>
+                                    </button>
+                                    <input type="number" value="1" min="1" max="99" class="quantity-input-compact bg-transparent text-center border-0" id="quantityInput">
+                                    <button class="quantity-btn-compact bg-gray-700 hover:bg-gray-600" onclick="increaseQuantity()">
+                                        <i class="fas fa-plus text-xs"></i>
+                                    </button>
+                                </div>
+                                <span class="text-gray-500 text-xs ml-3">库存充足</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- 商品详细描述 -->
-            <div class="mt-12 space-y-8">
-                <div class="border-t border-gray-700 pt-8">
-                    <h2 class="text-2xl font-bold text-white mb-6">商品详情</h2>
-                    <div class="prose prose-gray max-w-none">
-                        <p class="text-gray-300 leading-relaxed mb-4">
-                            这是一门专为区块链初学者设计的综合性课程。通过系统性的学习，你将掌握区块链的核心概念、技术原理和实际应用。
-                        </p>
-                        <p class="text-gray-300 leading-relaxed mb-4">
-                            课程内容包括但不限于：区块链基础概念、加密算法、智能合约开发、DeFi应用构建、NFT项目实战等。
-                        </p>
-                        <p class="text-gray-300 leading-relaxed">
-                            无论你是完全的初学者，还是有一定编程基础的开发者，这门课程都能帮助你快速进入区块链开发领域。
-                        </p>
+                    
+                    <!-- 服务保障 -->
+                    <div class="py-3 border-t border-gray-700/30">
+                        <h3 class="text-white font-semibold text-sm mb-2 flex items-center gap-2">
+                            <i class="fas fa-shield-alt text-blue-400"></i>
+                            服务保障
+                        </h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="flex items-center text-gray-300">
+                                <i class="fas fa-shield-alt text-green-400 mr-2 w-4 text-center"></i>
+                                <span class="text-xs">正品保障</span>
+                            </div>
+                            <div class="flex items-center text-gray-300">
+                                <i class="fas fa-undo text-blue-400 mr-2 w-4 text-center"></i>
+                                <span class="text-xs">7天退换</span>
+                            </div>
+                            <div class="flex items-center text-gray-300">
+                                <i class="fas fa-truck text-purple-400 mr-2 w-4 text-center"></i>
+                                <span class="text-xs">即时交付</span>
+                            </div>
+                            <div class="flex items-center text-gray-300">
+                                <i class="fas fa-headset text-yellow-400 mr-2 w-4 text-center"></i>
+                                <span class="text-xs">24h客服</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 购买按钮组 -->
+                    <div class="purchase-button-row">
+                        <button class="buy-btn-compact-primary flex-1 font-semibold py-2.5 px-4" onclick="handlePurchase()">
+                            <i class="fas fa-bolt mr-1.5"></i>
+                            立即购买
+                        </button>
+                        <button class="buy-btn-compact-secondary flex-1 font-semibold py-2.5 px-4" onclick="addToCart()">
+                            <i class="fas fa-cart-plus mr-1.5"></i>
+                            加入购物车
+                        </button>
+                        <button class="action-btn-compact" onclick="toggleFavorite()" id="favoriteBtn" title="收藏商品">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="action-btn-compact" onclick="shareProduct()" title="分享商品">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // 获取URL参数
-        function getUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                product: params.get('product'),
-                name: params.get('name'),
-                price: params.get('price')
-            };
-        }
+    <!-- Tab页面区域 -->
+    <div class="page-container tab-section">
+        <div class="glass-bg rounded-2xl p-6 shadow-xl">
+            <!-- Tab导航 -->
+            <div class="border-b border-gray-700 mb-6">
+                <nav class="tab-navigation">
+                    <button class="tab-button active" data-tab="detail">
+                        <i class="fas fa-file-alt mr-2"></i>
+                        商品详情
+                    </button>
+                    <button class="tab-button" data-tab="specs">
+                        <i class="fas fa-cogs mr-2"></i>
+                        规格参数
+                    </button>
+                    <button class="tab-button" data-tab="reviews">
+                        <i class="fas fa-comments mr-2"></i>
+                        用户评价 <span class="text-xs bg-sapphire-500 px-2 py-1 rounded-full ml-2">128</span>
+                    </button>
+                    <button class="tab-button" data-tab="service">
+                        <i class="fas fa-shield-alt mr-2"></i>
+                        售后保障
+                    </button>
+                </nav>
+            </div>
+            
+            <!-- Tab内容 -->
+            <div class="tab-content">
+                <!-- 商品详情 -->
+                <div id="detail-tab" class="tab-pane active">
+                    <div class="space-y-8">
+                        <!-- 基础属性区域 -->
+                        <div class="attributes-section">
+                            <!-- 统一的属性网格，包含查看更多参数 -->
+                            <div class="attributes-unified-grid">
+                                <div class="attribute-item">
+                                    <span class="attribute-label">艺术类型:</span>
+                                    <span class="attribute-value">数字绘画</span>
+                                </div>
+                                <div class="attribute-item">
+                                    <span class="attribute-label">创作工具:</span>
+                                    <span class="attribute-value">Procreate</span>
+                                </div>
+                                <div class="more-params-item">
+                                    <span class="special-link" onclick="switchToTab('specs')">查看更多参数 ></span>
+                                </div>
+                                
+                                <div class="attribute-item">
+                                    <span class="attribute-label">艺术风格:</span>
+                                    <span class="attribute-value">未来主义</span>
+                                </div>
+                                <div class="attribute-item">
+                                    <span class="attribute-label">尺寸:</span>
+                                    <span class="attribute-value">4000×3000像素</span>
+                                </div>
+                                <div class="empty-cell"></div>
+                                
+                                <div class="attribute-item">
+                                    <span class="attribute-label">课程时长:</span>
+                                    <span class="attribute-value">20小时</span>
+                                </div>
+                                <div class="attribute-item">
+                                    <span class="attribute-label">难度等级:</span>
+                                    <span class="attribute-value">初级-中级</span>
+                                </div>
+                                <div class="empty-cell"></div>
+                                
+                                <div class="attribute-item">
+                                    <span class="attribute-label">更新状态:</span>
+                                    <span class="attribute-value">持续更新</span>
+                                </div>
+                                <div class="attribute-item">
+                                    <span class="attribute-label">支持平台:</span>
+                                    <span class="attribute-value">全平台</span>
+                                </div>
+                                <div class="empty-cell"></div>
+                                
+                                <div class="attribute-item">
+                                    <span class="attribute-label">学习人数:</span>
+                                    <span class="attribute-value">3,562人</span>
+                                </div>
+                                <div class="attribute-item">
+                                    <span class="attribute-label">用户评分:</span>
+                                    <span class="attribute-value">4.9分 (128评价)</span>
+                                </div>
+                                <div class="empty-cell"></div>
+                                
+                                <div class="attribute-item">
+                                    <span class="attribute-label">语言版本:</span>
+                                    <span class="attribute-value">中文/English</span>
+                                </div>
+                                <div class="empty-cell"></div>
+                                <div class="empty-cell"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-8">
+                        <!-- 详细介绍区域 -->
+                        <div class="course-intro-section">
+                            <iframe 
+                                src="product-detail-content.html" 
+                                class="detail-content-iframe"
+                                frameborder="0"
+                                scrolling="no"
+                                onload="resizeIframe(this)"
+                                id="detailContentFrame">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 规格参数 -->
+                <div id="specs-tab" class="tab-pane hidden">
+                    <div class="space-y-6">
+                        <!-- 规格参数表格 -->
+                        <div class="specs-table-section">
+                            <div class="specs-table-header">
+                                <h3>规格参数</h3>
+                            </div>
+                            <div class="specs-table">
+                                <div class="specs-row">
+                                    <div class="specs-label">课程类型</div>
+                                    <div class="specs-value">在线视频课程</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">课程时长</div>
+                                    <div class="specs-value">20小时</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">章节数量</div>
+                                    <div class="specs-value">6章</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">视频质量</div>
+                                    <div class="specs-value">1080P高清</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">字幕支持</div>
+                                    <div class="specs-value">中英双语</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">实战项目</div>
+                                    <div class="specs-value">5个完整项目</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">学习期限</div>
+                                    <div class="specs-value">终身有效</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">编程基础</div>
+                                    <div class="specs-value">JavaScript基础</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">开发环境</div>
+                                    <div class="specs-value">Node.js 16+</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">推荐工具</div>
+                                    <div class="specs-value">VS Code</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">操作系统</div>
+                                    <div class="specs-value">Windows/macOS/Linux</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">内存要求</div>
+                                    <div class="specs-value">8GB RAM推荐</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">网络环境</div>
+                                    <div class="specs-value">稳定网络连接</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">区块链平台</div>
+                                    <div class="specs-value">Ethereum</div>
+                                </div>
+                                <div class="specs-row">
+                                    <div class="specs-label">课程编号</div>
+                                    <div class="specs-value">BLOCKCHAIN2024001</div>
+                                </div>
+                            </div>
+                        </div>
 
-        // 初始化页面
-        function initPage() {
-            const params = getUrlParams();
+                        <!-- 包装清单 -->
+                        <div class="package-list-section">
+                            <div class="package-list-header">
+                                <h3>包装清单</h3>
+                            </div>
+                            <div class="package-content">
+                                <p>完整区块链开发课程包含：视频教程、项目源码、开发工具配置指南、学习路线图</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 用户评价 -->
+                <div id="reviews-tab" class="tab-pane hidden">
+                    <div class="reviews-container">
+                        <!-- 评价统计头部 -->
+                        <div class="reviews-header">
+                            <div class="rating-summary">
+                                <div class="rating-score">
+                                    <span class="score-number">4.7</span>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <div class="rating-text">共 3 条评价</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 评价列表 -->
+                        <div class="reviews-list" id="reviewsList">
+                            <!-- 评价项目1 -->
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="reviewer-details">
+                                            <div class="reviewer-name">0x71C7...970F</div>
+                                            <div class="review-stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-date">2024-03-15</div>
+                                </div>
+                                <div class="review-specs">
+                                    <span class="spec-item">规格：标准版</span>
+                                    <span class="spec-item">颜色：深空灰</span>
+                                </div>
+                                <div class="review-content">
+                                    商品质量非常好，包装也很完整，物流速度快，很满意的一次购物体验！
+                                </div>
+                                <div class="review-images">
+                                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=80&h=80&fit=crop" alt="评价图片1" class="review-image">
+                                    <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=80&h=80&fit=crop" alt="评价图片2" class="review-image">
+                                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=80&h=80&fit=crop" alt="评价图片3" class="review-image">
+                                </div>
+                            </div>
+
+                            <!-- 评价项目2 -->
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="reviewer-details">
+                                            <div class="reviewer-name">0x2B5A...D6cF</div>
+                                            <div class="review-stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="far fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-date">2024-03-14</div>
+                                </div>
+                                <div class="review-specs">
+                                    <span class="spec-item">规格：豪华版</span>
+                                    <span class="spec-item">颜色：银色</span>
+                                </div>
+                                <div class="review-content">
+                                    商品不错，性价比很高，就是发货稍微有点慢。整体来说还是很满意的购物体验，会继续关注店铺的其他商品。
+                                </div>
+                            </div>
+
+                            <!-- 评价项目3 -->
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="reviewer-details">
+                                            <div class="reviewer-name">0x8F3E...A2B9</div>
+                                            <div class="review-stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-date">2024-03-13</div>
+                                </div>
+                                <div class="review-specs">
+                                    <span class="spec-item">规格：标准版</span>
+                                    <span class="spec-item">颜色：玫瑰金</span>
+                                </div>
+                                <div class="review-content">
+                                    课程内容非常详细，讲解清晰易懂，项目实战很有帮助。老师的教学风格很好，推荐给想学区块链的朋友们！
+                                </div>
+                            </div>
+
+                            <!-- 评价项目4 -->
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="reviewer-details">
+                                            <div class="reviewer-name">0x4D7C...E5F1</div>
+                                            <div class="review-stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-date">2024-03-12</div>
+                                </div>
+                                <div class="review-specs">
+                                    <span class="spec-item">规格：专业版</span>
+                                    <span class="spec-item">颜色：深空灰</span>
+                                </div>
+                                <div class="review-content">
+                                    非常棒的学习体验，从零基础到能够独立开发智能合约，课程设计很合理，循序渐进。
+                                </div>
+                            </div>
+
+                            <!-- 评价项目5 -->
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="reviewer-details">
+                                            <div class="reviewer-name">0x9A6B...C3D8</div>
+                                            <div class="review-stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="far fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-date">2024-03-11</div>
+                                </div>
+                                <div class="review-specs">
+                                    <span class="spec-item">规格：标准版</span>
+                                    <span class="spec-item">颜色：白色</span>
+                                </div>
+                                <div class="review-content">
+                                    课程质量很高，老师讲解很专业，实战项目很实用。唯一的小建议是希望能增加更多的练习题。
+                                </div>
+                            </div>
+
+                            <!-- 评价项目6 -->
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="reviewer-details">
+                                            <div class="reviewer-name">0x1E5F...B7A4</div>
+                                            <div class="review-stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-date">2024-03-10</div>
+                                </div>
+                                <div class="review-specs">
+                                    <span class="spec-item">规格：豪华版</span>
+                                    <span class="spec-item">颜色：蓝色</span>
+                                </div>
+                                <div class="review-content">
+                                    超值的课程！内容丰富，讲解详细，项目实战性强。学完后对区块链有了全面的理解。
+                                </div>
+                            </div>
+
+                            <!-- 评价项目7 -->
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="reviewer-details">
+                                            <div class="reviewer-name">0x7C2A...F9E6</div>
+                                            <div class="review-stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-date">2024-03-09</div>
+                                </div>
+                                <div class="review-specs">
+                                    <span class="spec-item">规格：专业版</span>
+                                    <span class="spec-item">颜色：黑色</span>
+                                </div>
+                                <div class="review-content">
+                                    课程设计很棒，从基础到进阶都有涵盖，老师的教学方式很容易理解，强烈推荐！
+                                </div>
+                            </div>
+
+                            <!-- 评价项目8 -->
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="reviewer-details">
+                                            <div class="reviewer-name">0x3B8D...A1C5</div>
+                                            <div class="review-stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="far fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-date">2024-03-08</div>
+                                </div>
+                                <div class="review-specs">
+                                    <span class="spec-item">规格：标准版</span>
+                                    <span class="spec-item">颜色：红色</span>
+                                </div>
+                                <div class="review-content">
+                                    很好的入门课程，适合初学者。内容循序渐进，实战项目很有价值。
+                                </div>
+                            </div>
+
+                            <!-- 评价项目9 -->
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="reviewer-details">
+                                            <div class="reviewer-name">0x6F4E...D2B7</div>
+                                            <div class="review-stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-date">2024-03-07</div>
+                                </div>
+                                <div class="review-specs">
+                                    <span class="spec-item">规格：豪华版</span>
+                                    <span class="spec-item">颜色：绿色</span>
+                                </div>
+                                <div class="review-content">
+                                    课程质量非常高，老师经验丰富，讲解生动有趣。学完后收获很大，值得推荐！
+                                </div>
+                            </div>
+
+                            <!-- 评价项目10 -->
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="reviewer-details">
+                                            <div class="reviewer-name">0x5A9C...E8F3</div>
+                                            <div class="review-stars">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-date">2024-03-06</div>
+                                </div>
+                                <div class="review-specs">
+                                    <span class="spec-item">规格：专业版</span>
+                                    <span class="spec-item">颜色：紫色</span>
+                                </div>
+                                <div class="review-content">
+                                    非常满意的学习体验，课程内容全面，实战项目丰富，老师讲解清晰，强烈推荐给想学区块链的朋友！
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 分页控件 -->
+                        <div class="pagination-container">
+                            <div class="pagination-info">
+                                显示第 <span class="current-range">1-10</span> 条，共 <span class="total-count">128</span> 条评价
+                            </div>
+                            <div class="pagination-controls">
+                                <button class="pagination-btn prev-btn" disabled>
+                                    <i class="fas fa-chevron-left"></i>
+                                    上一页
+                                </button>
+                                <div class="pagination-numbers">
+                                    <button class="pagination-number active">1</button>
+                                    <button class="pagination-number">2</button>
+                                    <button class="pagination-number">3</button>
+                                    <button class="pagination-number">4</button>
+                                    <button class="pagination-number">5</button>
+                                    <span class="pagination-ellipsis">...</span>
+                                    <button class="pagination-number">13</button>
+                                </div>
+                                <button class="pagination-btn next-btn">
+                                    下一页
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 售后保障 -->
+                <div id="service-tab" class="tab-pane hidden">
+                    <div class="service-container">
+                        <!-- 服务承诺区域 -->
+                        <div class="service-section">
+                            <div class="service-header">
+                                <h3>服务承诺</h3>
+                            </div>
+                            <div class="service-grid">
+                                <div class="service-item">
+                                    <div class="service-icon green">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="service-content">
+                                        <h4>正品保证</h4>
+                                        <p>平台保证所售商品均为正品，支持验证</p>
+                                    </div>
+                                </div>
+                                <div class="service-item">
+                                    <div class="service-icon blue">
+                                        <i class="fas fa-undo"></i>
+                                    </div>
+                                    <div class="service-content">
+                                        <h4>7天无理由退换</h4>
+                                        <p>购买后7天内可申请无理由退换货</p>
+                                    </div>
+                                </div>
+                                <div class="service-item">
+                                    <div class="service-icon purple">
+                                        <i class="fas fa-truck"></i>
+                                    </div>
+                                    <div class="service-content">
+                                        <h4>即时交付</h4>
+                                        <p>数字商品支付成功后即时交付</p>
+                                    </div>
+                                </div>
+                                <div class="service-item">
+                                    <div class="service-icon orange">
+                                        <i class="fas fa-headset"></i>
+                                    </div>
+                                    <div class="service-content">
+                                        <h4>24/7客服支持</h4>
+                                        <p>专业客服团队全天候为您服务</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 权益保障区域 -->
+                        <div class="service-section">
+                            <div class="service-header">
+                                <h3>权益保障</h3>
+                            </div>
+                            <div class="rights-list">
+                                <div class="rights-item">
+                                    <div class="rights-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>购买后立即获得学习权限</span>
+                                </div>
+                                <div class="rights-item">
+                                    <div class="rights-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>支持多设备同时学习</span>
+                                </div>
+                                <div class="rights-item">
+                                    <div class="rights-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>课程内容终身有效</span>
+                                </div>
+                                <div class="rights-item">
+                                    <div class="rights-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>免费获得后续更新内容</span>
+                                </div>
+                                <div class="rights-item">
+                                    <div class="rights-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>提供学习证书认证</span>
+                                </div>
+                                <div class="rights-item">
+                                    <div class="rights-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>专属学习群交流支持</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 退换货政策 -->
+                        <div class="service-section">
+                            <div class="service-header">
+                                <h3>退换货政策</h3>
+                            </div>
+                            <div class="policy-content">
+                                <div class="policy-item">
+                                    <div class="policy-title">
+                                        <i class="fas fa-clock text-blue-400"></i>
+                                        <span>退换时限</span>
+                                    </div>
+                                    <p>自购买之日起7天内，如对课程不满意可申请退款</p>
+                                </div>
+                                <div class="policy-item">
+                                    <div class="policy-title">
+                                        <i class="fas fa-file-alt text-green-400"></i>
+                                        <span>退款条件</span>                           
+                                    </div>
+                                    <p>课程学习进度不超过30%，且无违规行为记录</p>
+                                </div>
+                                <div class="policy-item">
+                                    <div class="policy-title">
+                                        <i class="fas fa-credit-card text-purple-400"></i>
+                                        <span>退款方式</span>
+                                    </div>
+                                    <p>原路退回至您的支付账户，3-5个工作日到账</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 联系客服 -->
+                        <div class="service-section">
+                            <div class="service-header">
+                                <h3>联系客服</h3>
+                            </div>
+                            <div class="contact-grid">
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-comments"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <h4>在线客服</h4>
+                                        <p>工作时间：9:00-22:00</p>
+                                        <button class="contact-btn">立即咨询</button>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fab fa-weixin"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <h4>微信客服</h4>
+                                        <p>客服微信：SapphireMall</p>
+                                        <button class="contact-btn">添加微信</button>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <div class="contact-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <h4>邮箱支持</h4>
+                                        <p>support@sapphiremall.com</p>
+                                        <button class="contact-btn">发送邮件</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 商品推荐区域 -->
+    <div class="page-container recommendation-section">
+        <div class="glass-bg rounded-2xl p-6 shadow-xl">
+            <div class="recommendation-header">
+                <div>
+                    <h5>
+                        <i class="fas fa-heart"></i>
+                        相关推荐
+                    </h5>
+                   
+                </div>
+            </div>
             
-            if (params.name) {
-                document.getElementById('productTitle').textContent = params.name;
-                document.title = `${params.name} - Sapphire Mall`;
+            <!-- 推荐商品容器 -->
+            <div class="recommendation-container" id="recommendationContainer">
+                <div class="recommendation-grid" id="recommendationGrid">
+                    <!-- 推荐商品将通过JavaScript动态加载 -->
+                    <div class="recommendation-skeleton hidden">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-title"></div>
+                            <div class="skeleton-price"></div>
+                            <div class="skeleton-rating"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 推荐商品分页 -->
+            <div class="recommendation-pagination" id="recommendationPagination">
+                <div class="pagination-info">
+                    显示第 <span class="current-range" id="recommendationCurrentRange">1-10</span> 条，共 <span class="total-count" id="recommendationTotalCount">12</span> 条推荐
+                </div>
+                <div class="pagination-controls">
+                    <button class="pagination-btn prev-btn" id="recommendationPrevBtn">
+                        <i class="fas fa-chevron-left"></i>
+                        上一页
+                    </button>
+                    <div class="pagination-numbers" id="recommendationPageNumbers">
+                        <button class="pagination-number active">1</button>
+                        <button class="pagination-number">2</button>
+                    </div>
+                    <button class="pagination-btn next-btn" id="recommendationNextBtn">
+                        下一页
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 项目脚本文件 -->
+    <script src="js/dapp-common.js"></script>
+    <script src="js/product-detail.js"></script>
+    
+    <!-- 新增功能脚本 -->
+    <script>
+        // 切换到指定Tab页面
+        function switchToTab(tabName) {
+            // 移除所有Tab按钮的active类
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 隐藏所有Tab内容
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+                pane.classList.add('hidden');
+            });
+            
+            // 激活指定的Tab按钮
+            const targetButton = document.querySelector(`[data-tab="${tabName}"]`);
+            if (targetButton) {
+                targetButton.classList.add('active');
             }
             
-            if (params.price) {
-                document.getElementById('productPrice').textContent = params.price;
+            // 显示指定的Tab内容
+            const targetPane = document.getElementById(`${tabName}-tab`);
+            if (targetPane) {
+                targetPane.classList.remove('hidden');
+                targetPane.classList.add('active');
             }
             
-            // 根据商品名称生成合适的图片
-            const imageMapping = {
-                '区块链': 'photo-1516321318423-f06f85e504b3',
-                '智能合约': 'photo-1551288049-bebda4e38f71',
-                'NFT': 'photo-1518709268805-4e9042af2176',
-                'DeFi': 'photo-1559526324-4b87b5e36e44',
-                'Web3': 'photo-1460925895917-afdab827c52f'
+            // 显示切换提示
+            showToast(`已切换到${getTabName(tabName)}`, 'info');
+        }
+        
+        // 获取Tab中文名称
+        function getTabName(tabName) {
+            const tabNames = {
+                'detail': '商品详情',
+                'specs': '规格参数', 
+                'reviews': '用户评价',
+                'service': '售后保障'
             };
+            return tabNames[tabName] || tabName;
+        }
+        
+        // 切换FAQ展开/收起
+        function toggleFAQ(element) {
+            const content = element.querySelector('.text-gray-300');
+            const icon = element.querySelector('.fas');
             
-            let imageId = 'photo-1516321318423-f06f85e504b3'; // 默认图片
-            if (params.name) {
-                for (const [keyword, id] of Object.entries(imageMapping)) {
-                    if (params.name.includes(keyword)) {
-                        imageId = id;
-                        break;
+            if (content.classList.contains('hidden')) {
+                // 展开
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                // 收起
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        // Toast提示函数
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-600');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-600');
+            } else {
+                toast.classList.add('bg-blue-600');
+            }
+            
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
                     }
+                }, 300);
+            }, 3000);
+        }
+        
+        // iframe自动调整高度函数
+        function resizeIframe(iframe) {
+            try {
+                // 等待iframe内容加载完成
+                setTimeout(() => {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    if (iframeDoc) {
+                        const body = iframeDoc.body;
+                        const html = iframeDoc.documentElement;
+                        
+                        // 检查body和html是否存在
+                        if (body && html) {
+                            // 获取内容的实际高度
+                            const height = Math.max(
+                                body.scrollHeight || 0,
+                                body.offsetHeight || 0,
+                                html.clientHeight || 0,
+                                html.scrollHeight || 0,
+                                html.offsetHeight || 0
+                            );
+                            
+                            // 设置iframe高度，添加一些额外空间
+                            iframe.style.height = (height + 50) + 'px';
+                            
+                            console.log('Iframe height adjusted to:', height + 50);
+                        } else {
+                            // 如果无法获取body或html，设置默认高度
+                            iframe.style.height = '1200px';
+                            console.log('Using default iframe height due to missing body/html elements');
+                        }
+                    } else {
+                        // 如果无法获取iframe文档，设置默认高度
+                        iframe.style.height = '1200px';
+                        console.log('Using default iframe height due to inaccessible document');
+                    }
+                }, 500);
+            } catch (error) {
+                console.log('无法调整iframe高度，可能是跨域限制:', error);
+                // 如果无法获取内容高度，设置一个默认高度
+                iframe.style.height = '1200px';
+            }
+        }
+        
+        // 页面加载完成后调整iframe高度
+        document.addEventListener('DOMContentLoaded', function() {
+            const iframe = document.getElementById('detailContentFrame');
+            if (iframe) {
+                // 监听iframe加载事件
+                iframe.addEventListener('load', function() {
+                    resizeIframe(this);
+                });
+                
+                // 如果iframe已经加载，立即调整高度
+                if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+                    resizeIframe(iframe);
                 }
             }
             
-            document.getElementById('productImage').src = `https://images.unsplash.com/${imageId}?w=600&h=400&fit=crop`;
+            // 初始化分页功能
+            initPagination();
+            
+            // 初始化推荐商品
+            if (typeof initRecommendations === 'function') {
+                initRecommendations();
+            }
+        });
+        
+        // 分页功能
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        const totalItems = 128;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        
+        function initPagination() {
+            updatePaginationInfo();
+            updatePaginationButtons();
+            
+            // 绑定分页按钮事件
+            document.querySelector('.prev-btn').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePagination();
+                }
+            });
+            
+            document.querySelector('.next-btn').addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                }
+            });
+            
+            // 绑定页码按钮事件
+            document.querySelectorAll('.pagination-number').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const page = parseInt(e.target.textContent);
+                    if (page && page !== currentPage) {
+                        currentPage = page;
+                        updatePagination();
+                    }
+                });
+            });
         }
-
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', initPage);
+        
+        function updatePagination() {
+            updatePaginationInfo();
+            updatePaginationButtons();
+            updatePaginationNumbers();
+            
+            // 模拟加载新数据
+            showToast(`已切换到第${currentPage}页`, 'info');
+        }
+        
+        function updatePaginationInfo() {
+            const start = (currentPage - 1) * itemsPerPage + 1;
+            const end = Math.min(currentPage * itemsPerPage, totalItems);
+            
+            document.querySelector('.current-range').textContent = `${start}-${end}`;
+            document.querySelector('.total-count').textContent = totalItems;
+        }
+        
+        function updatePaginationButtons() {
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+        }
+        
+        function updatePaginationNumbers() {
+            const numbersContainer = document.querySelector('.pagination-numbers');
+            numbersContainer.innerHTML = '';
+            
+            // 计算显示的页码范围
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, currentPage + 2);
+            
+            // 确保显示5个页码（如果可能）
+            if (endPage - startPage < 4) {
+                if (startPage === 1) {
+                    endPage = Math.min(totalPages, startPage + 4);
+                } else {
+                    startPage = Math.max(1, endPage - 4);
+                }
+            }
+            
+            // 添加页码按钮
+            for (let i = startPage; i <= endPage; i++) {
+                const btn = document.createElement('button');
+                btn.className = `pagination-number ${i === currentPage ? 'active' : ''}`;
+                btn.textContent = i;
+                btn.addEventListener('click', () => {
+                    if (i !== currentPage) {
+                        currentPage = i;
+                        updatePagination();
+                    }
+                });
+                numbersContainer.appendChild(btn);
+            }
+            
+            // 添加省略号和最后一页（如果需要）
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'pagination-ellipsis';
+                    ellipsis.textContent = '...';
+                    numbersContainer.appendChild(ellipsis);
+                }
+                
+                const lastBtn = document.createElement('button');
+                lastBtn.className = 'pagination-number';
+                lastBtn.textContent = totalPages;
+                lastBtn.addEventListener('click', () => {
+                    currentPage = totalPages;
+                    updatePagination();
+                });
+                numbersContainer.appendChild(lastBtn);
+            }
+        }
     </script>
+    
+    <!-- 页脚组件 -->
+    <div class="footer-component">
+        <iframe src="components/footer.html" frameborder="0" style="width: 100%; height: 400px; border: none;"></iframe>
+    </div>
 </body>
 </html> 
