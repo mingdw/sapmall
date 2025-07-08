@@ -185,39 +185,6 @@ open design/prototypes/admin.html
    - 实现区块链数据索引和处理
    - 构建高可用和可扩展的服务
 
-#### English Guide
-We have configured specialized AI Agents for project development, including:
-
-1. **Product Manager Agent** (`promit/PM_Web3_Agent_Prompt.md`)
-   - Focuses on Web3 product requirement analysis and product planning
-   - Develops product roadmaps and feature priorities
-   - Writes detailed product requirements documents (PRD)
-   - Designs user stories and user journeys
-
-2. **UI/UX Designer Agent** (`promit/UIUX_Designer_Web3_Agent_Prompt.md`)
-   - Focuses on Web3 interface design and user experience
-   - Supports multi-platform prototype creation (desktop, mobile, mini-program)
-   - Uses HTML + Tailwind CSS + FontAwesome tech stack
-   - Generates pixel-perfect high-fidelity prototypes
-
-3. **Smart Contract Engineer Agent** (`promit/Smart_Contract_Engineer_Agent_Prompt.md`)
-   - Focuses on smart contract development and security auditing
-   - Supports multi-chain development (Ethereum, Layer2, BSC, Solana, etc.)
-   - Follows latest security standards and best practices
-   - Uses Solidity/Vyper/Rust and other tech stacks
-
-4. **Frontend Developer Agent** (`promit/Web_Client_Web3_Agent_Prompt.md`)
-   - Focuses on Web3 frontend application development
-   - Uses React + TypeScript + Web3 tech stack
-   - Implements wallet connection and blockchain interaction
-   - Builds responsive and user-friendly interfaces
-
-5. **Backend Developer Agent** (`promit/Backend_Engineer_Agent_Prompt.md`)
-   - Focuses on backend services and API development
-   - Uses Go + microservice architecture
-   - Implements blockchain data indexing and processing
-   - Builds highly available and scalable services
-
 ### 📝 提示词工程最佳实践
 
 #### 中文指南
