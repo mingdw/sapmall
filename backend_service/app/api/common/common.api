@@ -1,0 +1,47 @@
+syntax = "v1"
+
+type (
+	// 通用响应结构
+	BaseResp {
+		Code int    `json:"code"`
+		Msg  string `json:"msg"`
+		Data string `json:"data"`
+	}
+	// 健康检查请求
+	HealthCheckReq {
+		Service string `json:"service"`
+	}
+	// 健康检查响应
+	HealthCheckResp {
+		Code    int    `json:"code"`
+		Msg     string `json:"msg"`
+		Service string `json:"service"`
+		Status  string `json:"status"`
+		Time    int64  `json:"time"`
+	}
+	// 版本信息请求
+	VersionReq  {}
+	// 版本信息响应
+	VersionResp {
+		Code      int    `json:"code"`
+		Msg       string `json:"msg"`
+		Version   string `json:"version"`
+		BuildTime string `json:"build_time"`
+		GitCommit string `json:"git_commit"`
+		GoVersion string `json:"go_version"`
+	}
+)
+
+@server (
+	group:      common
+	prefix:     api/common
+	middleware: OIDCAuthMiddleware
+)
+service CommonService {
+	@handler HealthCheck
+	get /api/common/health (HealthCheckReq) returns (HealthCheckResp)
+
+	@handler GetVersion
+	get /api/common/version (VersionReq) returns (VersionResp)
+}
+
