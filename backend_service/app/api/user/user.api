@@ -1,0 +1,63 @@
+syntax = "v1"
+
+type (
+	// 用户信息
+	UserInfo {
+		Id                string `json:"id"`
+		WalletAddress     string `json:"wallet_address"`
+		Username          string `json:"username"`
+		Email             string `json:"email"`
+		Role              string `json:"role"`
+		KycStatus         string `json:"kyc_status"`
+		PreferredLanguage string `json:"preferred_language"`
+		CreatedAt         int64  `json:"created_at"`
+		UpdatedAt         int64  `json:"updated_at"`
+	}
+	// 用户注册请求
+	RegisterReq {
+		WalletAddress     string `json:"wallet_address"`
+		Username          string `json:"username"`
+		Email             string `json:"email"`
+		PreferredLanguage string `json:"preferred_language"`
+	}
+	// 用户注册响应
+	RegisterResp {
+		Code     int      `json:"code"`
+		Msg      string   `json:"msg"`
+		UserInfo UserInfo `json:"user_info"`
+	}
+	// 用户登录请求
+	LoginReq {
+		WalletAddress string `json:"wallet_address"`
+		Signature     string `json:"signature"`
+		Message       string `json:"message"`
+	}
+	// 用户登录响应
+	LoginResp {
+		Code     int      `json:"code"`
+		Msg      string   `json:"msg"`
+		Token    string   `json:"token"`
+		UserInfo UserInfo `json:"user_info"`
+	}
+	// 获取用户信息请求
+	GetUserInfoReq {
+		UserId string `json:"user_id"`
+	}
+	// 获取用户信息响应
+	GetUserInfoResp {
+		Code     int      `json:"code"`
+		Msg      string   `json:"msg"`
+		UserInfo UserInfo `json:"user_info"`
+	}
+)
+
+@server (
+	group:      user
+	prefix:     api/user
+	middleware: AuthMiddleware
+)
+service UserService {
+	@handler GetUserInfo
+	get /api/user/info (GetUserInfoReq) returns (GetUserInfoResp)
+}
+

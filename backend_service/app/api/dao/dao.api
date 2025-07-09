@@ -1,0 +1,94 @@
+syntax = "v1"
+
+type (
+	// 提案信息
+	ProposalInfo {
+		Id              string `json:"id"`
+		CreatorId       string `json:"creator_id"`
+		Title           string `json:"title"`
+		Description     string `json:"description"`
+		ProposalType    string `json:"proposal_type"`
+		Status          string `json:"status"`
+		VotingPower     string `json:"voting_power"`
+		YesVotes        string `json:"yes_votes"`
+		NoVotes         string `json:"no_votes"`
+		AbstainVotes    string `json:"abstain_votes"`
+		StartTime       int64  `json:"start_time"`
+		EndTime         int64  `json:"end_time"`
+		CreatedAt       int64  `json:"created_at"`
+		UpdatedAt       int64  `json:"updated_at"`
+	}
+	
+	// 投票信息
+	VoteInfo {
+		Id         string `json:"id"`
+		UserId     string `json:"user_id"`
+		ProposalId string `json:"proposal_id"`
+		Vote       string `json:"vote"`
+		VotingPower string `json:"voting_power"`
+		Reason     string `json:"reason"`
+		CreatedAt  int64  `json:"created_at"`
+	}
+	
+	// 创建提案请求
+	CreateProposalReq {
+		CreatorId    string `json:"creator_id"`
+		Title        string `json:"title"`
+		Description  string `json:"description"`
+		ProposalType string `json:"proposal_type"`
+		StartTime    int64  `json:"start_time"`
+		EndTime      int64  `json:"end_time"`
+	}
+	
+	// 创建提案响应
+	CreateProposalResp {
+		Code          int           `json:"code"`
+		Msg           string        `json:"msg"`
+		ProposalInfo  ProposalInfo  `json:"proposal_info"`
+	}
+	
+	// 提案列表请求
+	ListProposalsReq {
+		Page         int64  `json:"page"`
+		PageSize     int64  `json:"page_size"`
+		Status       string `json:"status"`
+		ProposalType string `json:"proposal_type"`
+		CreatorId    string `json:"creator_id"`
+	}
+	
+	// 提案列表响应
+	ListProposalsResp {
+		Code      int             `json:"code"`
+		Msg       string          `json:"msg"`
+		Proposals []ProposalInfo  `json:"proposals"`
+		Total     int64           `json:"total"`
+	}
+	
+	// 投票请求
+	VoteReq {
+		UserId      string `json:"user_id"`
+		ProposalId  string `json:"proposal_id"`
+		Vote        string `json:"vote"`
+		Reason      string `json:"reason"`
+	}
+	
+	// 投票响应
+	VoteResp {
+		Code        int       `json:"code"`
+		Msg         string    `json:"msg"`
+		VoteInfo    VoteInfo  `json:"vote_info"`
+	}
+	
+	// 获取用户投票信息请求
+	GetUserVoteReq {
+		UserId      string `json:"user_id"`
+		ProposalId  string `json:"proposal_id"`
+	}
+	
+	// 获取用户投票信息响应
+	GetUserVoteResp {
+		Code        int       `json:"code"`
+		Msg         string    `json:"msg"`
+		VoteInfo    VoteInfo  `json:"vote_info"`
+	}
+) 
