@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        // Tailwind 配置扩展主色
         tailwind.config = {
             theme: {
                 extend: {
@@ -33,7 +32,6 @@
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
-        /* 渐变边框样式，用于主要卡片 */
         .gradient-border {
             background: linear-gradient(45deg, #3b82f6, #8b5cf6);
             padding: 2px;
@@ -44,7 +42,6 @@
             border-radius: 14px;
             padding: 1.5rem;
         }
-        /* 主要功能卡片悬浮动效 */
         .feature-card {
             transition: all 0.3s ease;
         }
@@ -52,7 +49,6 @@
             transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
         }
-        /* 顶部导航链接悬浮下划线动画 */
         .nav-link {
             position: relative;
             transition: all 0.3s ease;
@@ -74,18 +70,15 @@
         .nav-link:hover::after {
             width: 100%;
         }
-        /* Banner区背景渐变 */
         .hero-gradient {
             background: linear-gradient(135deg, 
                 rgba(59, 130, 246, 0.1) 0%, 
                 rgba(139, 92, 246, 0.1) 50%, 
                 rgba(59, 130, 246, 0.1) 100%);
         }
-        /* 统计数字字体优化 */
         .stats-counter {
             font-variant-numeric: tabular-nums;
         }
-        /* 语言切换下拉菜单样式 */
         .language-dropdown {
             position: relative;
         }
@@ -108,7 +101,6 @@
             visibility: visible;
             transform: translateY(0);
         }
-        /* 启动应用按钮动效 */
         .launch-btn {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             border: none;
@@ -139,15 +131,191 @@
         .launch-btn:hover::before {
             left: 100%;
         }
-        /* 其它卡片、区块动效省略，见下方结构注释 */
+        .about-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .about-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.25);
+            border-color: #3b82f6;
+        }
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: all 0.6s ease;
+            z-index: 1;
+        }
+        .about-card:hover::before {
+            left: 100%;
+        }
+        .about-card > * {
+            position: relative;
+            z-index: 2;
+        }
+        .about-main-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .about-main-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+        .about-main-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.08), transparent);
+            transition: all 0.8s ease;
+            z-index: 1;
+        }
+        .about-main-card:hover::before {
+            left: 100%;
+        }
+        .about-main-card > * {
+            position: relative;
+            z-index: 2;
+        }
+        .about-value-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .about-value-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
+        }
+        .about-value-card:hover .about-value-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        .about-value-icon {
+            transition: all 0.3s ease;
+        }
+        .about-contact-item {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .about-contact-item:hover {
+            transform: translateY(-4px);
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 12px;
+        }
+        .about-contact-item:hover .about-contact-icon {
+            transform: scale(1.15);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+        .about-contact-icon {
+            transition: all 0.3s ease;
+        }
+        .core-mission-card {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .core-mission-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.25);
+            border-color: #3b82f6;
+        }
+        .core-mission-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.12), transparent);
+            transition: all 0.7s ease;
+            z-index: 1;
+        }
+        .core-mission-card:hover::before {
+            left: 100%;
+        }
+        .core-mission-card > * {
+            position: relative;
+            z-index: 2;
+        }
+        .core-mission-card:hover .core-mission-icon {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+        .core-mission-icon {
+            transition: all 0.4s ease;
+        }
+        .core-advantage-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+        }
+        .core-advantage-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+        .core-advantage-card:hover .core-advantage-icon {
+            transform: scale(1.15) rotate(-5deg);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        .core-advantage-icon {
+            transition: all 0.3s ease;
+        }
+        .core-business-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .core-business-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.15);
+            border-color: #3b82f6;
+        }
+        .core-business-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.06), transparent);
+            transition: all 0.8s ease;
+            z-index: 1;
+        }
+        .core-business-card:hover::before {
+            left: 100%;
+        }
+        .core-business-card > * {
+            position: relative;
+            z-index: 2;
+        }
+        .core-business-section {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .core-business-section:hover {
+            transform: translateY(-2px);
+        }
+        .core-business-section:hover h4 {
+            color: #60a5fa;
+        }
     </style>
 </head>
 <body class="min-h-screen text-white">
-    <!-- ================== 顶部导航区 ================== -->
+    <!-- Navigation -->
     <nav class="bg-gray-900/80 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-50">
         <div class="mx-auto px-6 py-4" style="width: 90%;">
             <div class="flex items-center justify-between">
-                <!-- LOGO及平台名 -->
+                <!-- Logo -->
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
                         <i class="fas fa-gem text-white text-lg"></i>
@@ -157,7 +325,8 @@
                         <p class="text-xs text-gray-400">Web3虚拟商品交易平台</p>
                     </div>
                 </div>
-                <!-- 主导航链接 -->
+
+                <!-- Navigation Links -->
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#home" class="nav-link text-gray-300 hover:text-sapphire-400" data-zh="首页" data-en="Home">首页</a>
                     <a href="#core-values" class="nav-link text-gray-300 hover:text-sapphire-400" data-zh="核心价值" data-en="Core Values">核心价值</a>
@@ -165,9 +334,10 @@
                     <a href="#about" class="nav-link text-gray-300 hover:text-sapphire-400" data-zh="关于我们" data-en="About Us">关于我们</a>
                     <a href="#docs" class="nav-link text-gray-300 hover:text-sapphire-400" data-zh="文档" data-en="Documentation">文档</a>
                 </div>
-                <!-- 右侧语言切换与启动按钮 -->
+
+                <!-- Right Side -->
                 <div class="flex items-center space-x-4">
-                    <!-- 语言切换下拉 -->
+                    <!-- Language Switch -->
                     <div class="language-dropdown">
                         <button onclick="toggleLanguageDropdown()" class="flex items-center space-x-2 text-gray-300 hover:text-sapphire-400 transition-colors">
                             <i class="fas fa-globe"></i>
@@ -183,7 +353,8 @@
                             </button>
                         </div>
                     </div>
-                    <!-- 启动DApp按钮 -->
+
+                    <!-- Launch App Button -->
                     <button onclick="launchDApp()" class="launch-btn">
                         <i class="fas fa-rocket mr-2"></i>
                         <span data-en="Launch App">启动应用</span>
@@ -193,11 +364,11 @@
         </div>
     </nav>
 
-    <!-- ================== Banner/主介绍区 ================== -->
+    <!-- Hero Section -->
     <section id="home" class="py-20 hero-gradient">
         <div class="mx-auto px-6" style="width: 90%;">
             <div class="max-w-6xl mx-auto">
-                <!-- Banner主内容：大标题、副标题、定位标签、CTA按钮 -->
+                <!-- Main Hero Content -->
                 <div class="text-center mb-16">
                     <h1 class="text-5xl md:text-7xl font-bold mb-6">
                         <span data-zh="构建" data-en="Building the">构建</span>
@@ -207,14 +378,16 @@
                     <p class="text-xl text-gray-300 mb-8 max-w-3xl mx-auto" data-zh="Sapphire Mall致力于打造全球领先的Web3虚拟商品交易平台，通过创新的流动性质押机制、DAO治理和多元化资产支持，为用户提供安全、高效、收益丰厚的交易体验。" data-en="Sapphire Mall is committed to building the world's leading Web3 virtual goods trading platform, providing users with secure, efficient, and profitable trading experiences through innovative liquidity staking mechanisms, DAO governance, and diversified asset support.">
                         Sapphire Mall致力于打造全球领先的Web3虚拟商品交易平台，通过创新的流动性质押机制、DAO治理和多元化资产支持，为用户提供安全、高效、收益丰厚的交易体验。
                     </p>
-                    <!-- 定位标签区 -->
+                    
+                    <!-- Platform Positioning -->
                     <div class="flex flex-wrap justify-center gap-4 mb-10">
                         <span class="bg-sapphire-500/20 text-sapphire-300 px-4 py-2 rounded-full text-sm font-medium" data-zh="全球首创70%分成机制" data-en="World's First 70% Revenue Sharing">全球首创70%分成机制</span>
                         <span class="bg-purple-500/20 text-purple-300 px-4 py-2 rounded-full text-sm font-medium" data-zh="DAO驱动治理" data-en="DAO-Driven Governance">DAO驱动治理</span>
                         <span class="bg-green-500/20 text-green-300 px-4 py-2 rounded-full text-sm font-medium" data-zh="多链生态支持" data-en="Multi-Chain Support">多链生态支持</span>
                         <span class="bg-yellow-500/20 text-yellow-300 px-4 py-2 rounded-full text-sm font-medium" data-zh="全球化服务" data-en="Global Service">全球化服务</span>
                     </div>
-                    <!-- CTA按钮区 -->
+                    
+                    <!-- CTA Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
                         <button onclick="launchDApp()" class="bg-gradient-to-r from-sapphire-500 to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-sapphire-600 hover:to-purple-700 transition-all duration-300 transform hover:translateY(-2px) hover:shadow-lg">
                             <i class="fas fa-rocket mr-2"></i>
@@ -230,9 +403,9 @@
                         </button>
                     </div>
                 </div>
-                <!-- ================== 数据概览区 ================== -->
+
+                <!-- Platform Stats -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-                    <!-- 单个数据卡片，内容可动态渲染 -->
                     <div class="text-center bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
                         <div class="text-3xl font-bold text-sapphire-400 stats-counter mb-2" data-count="125000">$0</div>
                         <div class="text-sm text-gray-400" data-zh="总锁定价值" data-en="Total Value Locked">总锁定价值</div>
@@ -258,7 +431,7 @@
         </div>
     </section>
 
-    <!-- ================== 核心价值区 ================== -->
+    <!-- Core Values Section -->
     <section id="core-values" class="py-20 bg-gray-900/50">
         <div class="mx-auto px-6" style="width: 90%;">
             <div class="text-center mb-16">
@@ -267,9 +440,9 @@
                     我们致力于重新定义虚拟商品交易，为Web3生态创造真正的价值和意义
                 </p>
             </div>
-            <!-- 使命与愿景卡片区 -->
+
+            <!-- Mission & Vision -->
             <div class="grid md:grid-cols-2 gap-12 mb-16">
-                <!-- 使命卡片 -->
                 <div class="core-mission-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
                     <div class="core-mission-icon w-16 h-16 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center mb-6">
                         <i class="fas fa-bullseye text-white text-2xl"></i>
@@ -283,7 +456,7 @@
                         <span class="font-semibold" data-zh="价值共创 • 利益共享" data-en="Value Co-creation • Benefit Sharing">价值共创 • 利益共享</span>
                     </div>
                 </div>
-                <!-- 愿景卡片 -->
+
                 <div class="core-mission-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
                     <div class="core-mission-icon w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mb-6">
                         <i class="fas fa-eye text-white text-2xl"></i>
@@ -298,11 +471,11 @@
                     </div>
                 </div>
             </div>
-            <!-- 平台核心优势区 -->
+
+            <!-- Core Advantages -->
             <div class="mb-16">
                 <h3 class="text-3xl font-bold text-center mb-12" data-zh="平台核心优势" data-en="Platform Core Advantages">平台核心优势</h3>
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- 单个优势卡片 -->
                     <div class="core-advantage-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700 text-center">
                         <div class="core-advantage-icon w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
                             <i class="fas fa-percentage text-white text-xl"></i>
@@ -310,28 +483,67 @@
                         <h4 class="font-bold mb-2" data-zh="70%收益分成" data-en="70% Revenue Sharing">70%收益分成</h4>
                         <p class="text-gray-400 text-sm" data-zh="全球首创，平台70%手续费分配给质押用户" data-en="World's first 70% platform fees distributed to staking users">全球首创，平台70%手续费分配给质押用户</p>
                     </div>
-                    <!-- 其它优势卡片同理，省略 -->
+                    <div class="core-advantage-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700 text-center">
+                        <div class="core-advantage-icon w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-white text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-2" data-zh="多重安全保障" data-en="Multi-layer Security">多重安全保障</h4>
+                        <p class="text-gray-400 text-sm" data-zh="智能合约审计、KYC认证、资金托管" data-en="Smart contract audits, KYC verification, fund escrow">智能合约审计、KYC认证、资金托管</p>
+                    </div>
+                    <div class="core-advantage-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700 text-center">
+                        <div class="core-advantage-icon w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-users text-white text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-2" data-zh="社区自治" data-en="Community Governance">社区自治</h4>
+                        <p class="text-gray-400 text-sm" data-zh="DAO治理，社区决策，透明公开" data-en="DAO governance, community decisions, transparent and open">DAO治理，社区决策，透明公开</p>
+                    </div>
+                    <div class="core-advantage-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700 text-center">
+                        <div class="core-advantage-icon w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-globe text-white text-xl"></i>
+                        </div>
+                        <h4 class="font-bold mb-2" data-zh="全球生态" data-en="Global Ecosystem">全球生态</h4>
+                        <p class="text-gray-400 text-sm" data-zh="多链支持、多语言服务、全球覆盖" data-en="Multi-chain support, multi-language service, global coverage">多链支持、多语言服务、全球覆盖</p>
+                    </div>
                 </div>
             </div>
-            <!-- 业务背景与市场定位区 -->
+
+            <!-- Business Background -->
             <div class="core-business-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
                 <h3 class="text-2xl font-bold mb-6" data-zh="业务背景与市场定位" data-en="Business Background & Market Positioning">业务背景与市场定位</h3>
                 <div class="grid md:grid-cols-3 gap-8">
-                    <!-- 市场机遇、竞争优势、发展规划三栏 -->
                     <div class="core-business-section">
                         <h4 class="text-lg font-semibold text-sapphire-400 mb-3" data-zh="市场机遇" data-en="Market Opportunity">市场机遇</h4>
                         <ul class="text-gray-300 space-y-2 text-sm">
                             <li data-zh="• 虚拟商品市场规模超过$500亿" data-en="• Virtual goods market exceeds $50B">• 虚拟商品市场规模超过$500亿</li>
-                            <!-- 其它列表项省略 -->
+                            <li data-zh="• Web3游戏用户快速增长" data-en="• Rapid growth of Web3 gaming users">• Web3游戏用户快速增长</li>
+                            <li data-zh="• 数字资产交易需求激增" data-en="• Surging demand for digital asset trading">• 数字资产交易需求激增</li>
+                            <li data-zh="• 传统平台收费过高痛点" data-en="• Traditional platforms' high fee pain points">• 传统平台收费过高痛点</li>
                         </ul>
                     </div>
-                    <!-- 其它两栏同理，省略 -->
+                    <div class="core-business-section">
+                        <h4 class="text-lg font-semibold text-sapphire-400 mb-3" data-zh="竞争优势" data-en="Competitive Advantages">竞争优势</h4>
+                        <ul class="text-gray-300 space-y-2 text-sm">
+                            <li data-zh="• 独创的收益分享机制" data-en="• Unique revenue sharing mechanism">• 独创的收益分享机制</li>
+                            <li data-zh="• 完整的DAO治理体系" data-en="• Complete DAO governance system">• 完整的DAO治理体系</li>
+                            <li data-zh="• 多元化资产类型支持" data-en="• Diversified asset type support">• 多元化资产类型支持</li>
+                            <li data-zh="• 专业的技术团队保障" data-en="• Professional technical team guarantee">• 专业的技术团队保障</li>
+                        </ul>
+                    </div>
+                    <div class="core-business-section">
+                        <h4 class="text-lg font-semibold text-sapphire-400 mb-3" data-zh="发展规划" data-en="Development Roadmap">发展规划</h4>
+                        <ul class="text-gray-300 space-y-2 text-sm">
+                            <li data-zh="• Q1: 主网上线，核心功能完善" data-en="• Q1: Mainnet launch, core features">• Q1: 主网上线，核心功能完善</li>
+                            <li data-zh="• Q2: 多链部署，生态拓展" data-en="• Q2: Multi-chain deployment, ecosystem expansion">• Q2: 多链部署，生态拓展</li>
+                            <li data-zh="• Q3: 移动端发布，用户增长" data-en="• Q3: Mobile release, user growth">• Q3: 移动端发布，用户增长</li>
+                            <li data-zh="• Q4: 全球化运营，战略合作" data-en="• Q4: Global operations, strategic partnerships">• Q4: 全球化运营，战略合作</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ================== 平台功能区 ================== -->
+    <!-- Features Section -->
     <section id="features" class="py-20">
         <div class="mx-auto px-6" style="width: 90%;">
             <div class="text-center mb-16">
@@ -340,8 +552,9 @@
                     探索让Sapphire Mall成为领先Web3虚拟商品交易平台的强大功能
                 </p>
             </div>
+
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- 单个功能卡片，内容可动态渲染 -->
+                <!-- Feature 1: Liquidity Staking -->
                 <div class="feature-card gradient-border">
                     <div class="gradient-border-content">
                         <div class="w-16 h-16 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center mb-6">
@@ -354,12 +567,81 @@
                         <div class="text-sapphire-400 font-semibold" data-zh="最高15%年化收益" data-en="Up to 15% APY">最高15%年化收益</div>
                     </div>
                 </div>
-                <!-- 其它功能卡片同理，省略 -->
+
+                <!-- Feature 2: DAO Governance -->
+                <div class="feature-card gradient-border">
+                    <div class="gradient-border-content">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-vote-yea text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4" data-zh="DAO治理" data-en="DAO Governance">DAO治理</h3>
+                        <p class="text-gray-400 mb-4" data-zh="使用SAP代币参与平台治理。对提案进行投票，塑造平台未来。" data-en="Participate in platform governance with SAP tokens. Vote on proposals and shape the future of the platform.">
+                            使用SAP代币参与平台治理。对提案进行投票，塑造平台未来。
+                        </p>
+                        <div class="text-purple-400 font-semibold" data-zh="社区驱动" data-en="Community Driven">社区驱动</div>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Global Marketplace -->
+                <div class="feature-card gradient-border">
+                    <div class="gradient-border-content">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-globe text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4" data-zh="全球市场" data-en="Global Marketplace">全球市场</h3>
+                        <p class="text-gray-400 mb-4" data-zh="多语言支持和多样化支付选项，在全球范围内交易虚拟商品。" data-en="Trade virtual goods globally with multi-language support and diverse payment options.">
+                            多语言支持和多样化支付选项，在全球范围内交易虚拟商品。
+                        </p>
+                        <div class="text-green-400 font-semibold" data-zh="多语言支持" data-en="Multi-Language">多语言支持</div>
+                    </div>
+                </div>
+
+                <!-- Feature 4: Secure Trading -->
+                <div class="feature-card gradient-border">
+                    <div class="gradient-border-content">
+                        <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-shield-alt text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4" data-zh="安全交易" data-en="Secure Trading">安全交易</h3>
+                        <p class="text-gray-400 mb-4" data-zh="基于区块链技术，智能合约自动化和托管服务确保交易安全。" data-en="Built on blockchain technology with smart contract automation and escrow services for secure transactions.">
+                            基于区块链技术，智能合约自动化和托管服务确保交易安全。
+                        </p>
+                        <div class="text-yellow-400 font-semibold" data-zh="区块链保障" data-en="Blockchain Secured">区块链保障</div>
+                    </div>
+                </div>
+
+                <!-- Feature 5: Multi-Asset Support -->
+                <div class="feature-card gradient-border">
+                    <div class="gradient-border-content">
+                        <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-layer-group text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4" data-zh="海量商品交易" data-en="Massive Commodity Trading">海量商品交易</h3>
+                        <p class="text-gray-400 mb-4" data-zh="支持游戏道具、数字艺术、虚拟土地、音乐、时装和收藏品等多平台资产。" data-en="Support for gaming items, digital art, virtual land, music, fashion, and collectibles across multiple platforms.">
+                            支持游戏道具、数字艺术、虚拟土地、音乐、时装和收藏品等多平台资产。
+                        </p>
+                        <div class="text-red-400 font-semibold" data-zh="全品类覆盖" data-en="All Categories">全品类覆盖</div>
+                    </div>
+                </div>
+
+                <!-- Feature 6: Advanced Analytics -->
+                <div class="feature-card gradient-border">
+                    <div class="gradient-border-content">
+                        <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-chart-line text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4" data-zh="高级分析" data-en="Advanced Analytics">高级分析</h3>
+                        <p class="text-gray-400 mb-4" data-zh="实时市场数据、价格分析和交易洞察，帮助您做出明智决策。" data-en="Real-time market data, price analytics, and trading insights to help you make informed decisions.">
+                            实时市场数据、价格分析和交易洞察，帮助您做出明智决策。
+                        </p>
+                        <div class="text-indigo-400 font-semibold" data-zh="数据驱动" data-en="Data Driven">数据驱动</div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- ================== 关于我们区 ================== -->
+    <!-- About Section -->
     <section id="about" class="py-20 bg-gray-900/50">
         <div class="mx-auto px-6" style="width: 90%;">
             <div class="max-w-6xl mx-auto">
@@ -369,14 +651,14 @@
                         构建虚拟商品交易的未来，赋能Web3生态发展
                     </p>
                 </div>
+
                 <div class="grid lg:grid-cols-2 gap-16 items-center mb-16">
-                    <!-- 团队介绍与团队图片 -->
                     <div>
                         <h3 class="text-3xl font-bold mb-6" data-zh="团队介绍" data-en="Our Team">团队介绍</h3>
                         <p class="text-gray-300 mb-6 leading-relaxed" data-zh="Sapphire Mall由一支经验丰富的Web3团队打造，团队成员来自知名科技公司和区块链项目，在去中心化金融、智能合约开发、产品设计和全球化运营方面拥有丰富经验。我们致力于通过技术创新解决传统虚拟商品交易的痛点。" data-en="Sapphire Mall is built by an experienced Web3 team with members from renowned tech companies and blockchain projects. We have extensive experience in DeFi, smart contract development, product design, and global operations. We are committed to solving traditional virtual goods trading pain points through technological innovation.">
                             Sapphire Mall由一支经验丰富的Web3团队打造，团队成员来自知名科技公司和区块链项目，在去中心化金融、智能合约开发、产品设计和全球化运营方面拥有丰富经验。我们致力于通过技术创新解决传统虚拟商品交易的痛点。
                         </p>
-                        <!-- 团队亮点列表 -->
+                        
                         <div class="space-y-4">
                             <div class="flex items-start space-x-3">
                                 <i class="fas fa-check-circle text-sapphire-400 mt-1"></i>
@@ -385,15 +667,29 @@
                                     <p class="text-sm text-gray-400" data-zh="区块链、智能合约、分布式系统、安全审计" data-en="Blockchain, smart contracts, distributed systems, security audits">区块链、智能合约、分布式系统、安全审计</p>
                                 </div>
                             </div>
-                            <!-- 其它亮点同理，省略 -->
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-sapphire-400 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold" data-zh="行业经验" data-en="Industry Experience">行业经验</h4>
+                                    <p class="text-sm text-gray-400" data-zh="累计5年+Web3开发经验，参与多个DeFi项目" data-en="5+ years of Web3 development experience, participated in multiple DeFi projects">累计5年+Web3开发经验，参与多个DeFi项目</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-sapphire-400 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold" data-zh="全球视野" data-en="Global Perspective">全球视野</h4>
+                                    <p class="text-sm text-gray-400" data-zh="多元化背景团队，深度理解全球市场需求" data-en="Diverse team background, deep understanding of global market needs">多元化背景团队，深度理解全球市场需求</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!-- 团队图片与浮动数据卡片 -->
+
                     <div class="relative">
                         <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&h=400&fit=crop&crop=center" alt="Web3 Technology" class="rounded-xl shadow-2xl">
                         <!-- 图片来源: Unsplash - Web3/区块链技术 -->
                         <div class="absolute inset-0 bg-gradient-to-tr from-sapphire-500/20 to-purple-500/20 rounded-xl"></div>
-                        <!-- 浮动数据卡片 -->
+                        
+                        <!-- Floating Stats -->
                         <div class="absolute -top-4 -right-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 border border-gray-700">
                             <div class="text-center">
                                 <div class="text-2xl font-bold text-sapphire-400">100+</div>
@@ -408,9 +704,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- 公司价值观区 -->
+
+                <!-- Company Values -->
                 <div class="grid md:grid-cols-3 gap-8 mb-16">
-                    <!-- 单个价值观卡片 -->
                     <div class="about-value-card text-center">
                         <div class="about-value-icon w-16 h-16 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center">
                             <i class="fas fa-lightbulb text-white text-xl"></i>
@@ -418,16 +714,30 @@
                         <h3 class="text-xl font-semibold mb-3" data-zh="创新驱动" data-en="Innovation Driven">创新驱动</h3>
                         <p class="text-gray-400" data-zh="持续探索Web3技术前沿，为用户提供最佳交易体验" data-en="Continuously explore Web3 technology frontiers to provide the best trading experience for users">持续探索Web3技术前沿，为用户提供最佳交易体验</p>
                     </div>
-                    <!-- 其它价值观卡片同理，省略 -->
+                    <div class="about-value-card text-center">
+                        <div class="about-value-icon w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-handshake text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3" data-zh="用户至上" data-en="User First">用户至上</h3>
+                        <p class="text-gray-400" data-zh="以用户需求为中心，打造简单易用的Web3产品" data-en="User-centered approach to create simple and easy-to-use Web3 products">以用户需求为中心，打造简单易用的Web3产品</p>
+                    </div>
+                    <div class="about-value-card text-center">
+                        <div class="about-value-icon w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-heart text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-3" data-zh="社区共建" data-en="Community Building">社区共建</h3>
+                        <p class="text-gray-400" data-zh="与社区成员共同建设和治理平台，实现价值共创" data-en="Build and govern the platform together with community members to achieve value co-creation">与社区成员共同建设和治理平台，实现价值共创</p>
+                    </div>
                 </div>
-                <!-- 联系方式区 -->
+
+                <!-- Contact Information -->
                 <div class="about-main-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
                     <div class="text-center mb-8">
                         <h3 class="text-2xl font-bold mb-4" data-zh="联系我们" data-en="Contact Us">联系我们</h3>
                         <p class="text-gray-400" data-zh="准备好加入虚拟商品交易的未来了吗？我们的团队随时为您提供支持" data-en="Ready to join the future of virtual goods trading? Our team is here to support you">准备好加入虚拟商品交易的未来了吗？我们的团队随时为您提供支持</p>
                     </div>
+
                     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <!-- 单个联系方式卡片 -->
                         <div class="about-contact-item text-center p-4">
                             <div class="about-contact-icon w-12 h-12 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center">
                                 <i class="fas fa-envelope text-white"></i>
@@ -435,9 +745,29 @@
                             <h4 class="font-semibold mb-2" data-zh="商务合作" data-en="Business">商务合作</h4>
                             <p class="text-gray-400 text-sm">business@sapphiremall.com</p>
                         </div>
-                        <!-- 其它联系方式卡片同理，省略 -->
+                        <div class="about-contact-item text-center p-4">
+                            <div class="about-contact-icon w-12 h-12 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center">
+                                <i class="fas fa-headset text-white"></i>
+                            </div>
+                            <h4 class="font-semibold mb-2" data-zh="技术支持" data-en="Support">技术支持</h4>
+                            <p class="text-gray-400 text-sm">support@sapphiremall.com</p>
+                        </div>
+                        <div class="about-contact-item text-center p-4">
+                            <div class="about-contact-icon w-12 h-12 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center">
+                                <i class="fab fa-telegram text-white"></i>
+                            </div>
+                            <h4 class="font-semibold mb-2">Telegram</h4>
+                            <p class="text-gray-400 text-sm">@SapphireMallOfficial</p>
+                        </div>
+                        <div class="about-contact-item text-center p-4">
+                            <div class="about-contact-icon w-12 h-12 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center">
+                                <i class="fab fa-discord text-white"></i>
+                            </div>
+                            <h4 class="font-semibold mb-2">Discord</h4>
+                            <p class="text-gray-400 text-sm">SapphireMall Community</p>
+                        </div>
                     </div>
-                    <!-- 联系我们按钮区 -->
+
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
                         <button onclick="launchDApp()" class="bg-gradient-to-r from-sapphire-500 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-sapphire-600 hover:to-purple-700 transition-all duration-300">
                             <i class="fas fa-rocket mr-2"></i>
@@ -453,7 +783,7 @@
         </div>
     </section>
 
-    <!-- ================== 页脚区 ================== -->
+    <!-- Footer -->
     <footer class="bg-gray-900 border-t border-gray-700 py-12">
         <div class="mx-auto px-6" style="width: 90%;">
             <div class="text-center">
@@ -466,12 +796,19 @@
                 <p class="text-gray-400 mb-6" data-zh="Web3虚拟商品交易的未来" data-en="The future of Web3 virtual goods trading">
                     Web3虚拟商品交易的未来
                 </p>
-                <!-- 社交媒体链接区 -->
                 <div class="flex justify-center space-x-6 mb-6">
                     <a href="#" class="text-gray-400 hover:text-sapphire-400 transition-colors">
                         <i class="fab fa-twitter text-xl"></i>
                     </a>
-                    <!-- 其它社交链接同理，省略 -->
+                    <a href="#" class="text-gray-400 hover:text-sapphire-400 transition-colors">
+                        <i class="fab fa-telegram text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-sapphire-400 transition-colors">
+                        <i class="fab fa-discord text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-sapphire-400 transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
                 </div>
                 <p class="text-sm text-gray-500" data-zh="© 2025 Sapphire Mall. 保留所有权利。" data-en="© 2025 Sapphire Mall. All rights reserved.">
                     © 2025 Sapphire Mall. 保留所有权利。
@@ -481,10 +818,11 @@
     </footer>
 
     <script>
-        // ========== 语言切换与文本多语言管理 ==========
         let currentLang = 'zh';
+        
         // Store original Chinese text
         const originalTexts = new Map();
+        
         function initializeTexts() {
             // Store all original Chinese texts
             document.querySelectorAll('[data-zh], [data-en]').forEach(element => {
@@ -496,18 +834,22 @@
                 });
             });
         }
+
         function toggleLanguageDropdown() {
             const dropdown = document.getElementById('languageDropdown');
             dropdown.classList.toggle('show');
         }
+
         function switchLanguage(lang) {
             currentLang = lang;
             const dropdown = document.getElementById('languageDropdown');
             dropdown.classList.remove('show');
+            
             // Update language indicator
             document.getElementById('currentLanguage').textContent = lang === 'zh' ? '中文' : 'English';
             document.getElementById('zh-check').style.opacity = lang === 'zh' ? '1' : '0';
             document.getElementById('en-check').style.opacity = lang === 'en' ? '1' : '0';
+            
             // Update all text content
             document.querySelectorAll('[data-text-id]').forEach(element => {
                 const textId = element.getAttribute('data-text-id');
@@ -516,23 +858,28 @@
                     element.textContent = texts[lang] || texts.zh;
                 }
             });
+            
             showToast(lang === 'zh' ? '已切换到中文' : 'Switched to English', 'success');
         }
-        // ========== 启动DApp按钮交互 ==========
+
         function launchDApp() {
             showToast(currentLang === 'zh' ? '正在启动DApp应用...' : 'Launching DApp...', 'info');
+            
             setTimeout(() => {
                 showToast(currentLang === 'zh' ? '即将跳转到DApp应用' : 'Redirecting to DApp...', 'success');
                 window.location.href = './dapp.html';
             }, 1500);
         }
-        // ========== 数据统计数字动画 ==========
+
+        // Stats counter animation
         function animateCounters() {
             const counters = document.querySelectorAll('.stats-counter');
+            
             const observerOptions = {
                 threshold: 0.5,
                 rootMargin: '0px'
             };
+            
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -540,12 +887,14 @@
                         const target = parseInt(counter.getAttribute('data-count'));
                         const increment = target / 100;
                         let current = 0;
+                        
                         const timer = setInterval(() => {
                             current += increment;
                             if (current >= target) {
                                 current = target;
                                 clearInterval(timer);
                             }
+                            
                             if (counter.textContent.includes('%')) {
                                 counter.textContent = Math.floor(current) + '%';
                             } else if (counter.textContent.includes('$')) {
@@ -554,18 +903,21 @@
                                 counter.textContent = Math.floor(current).toLocaleString();
                             }
                         }, 20);
+                        
                         observer.unobserve(counter);
                     }
                 });
             }, observerOptions);
+            
             counters.forEach(counter => {
                 observer.observe(counter);
             });
         }
-        // ========== Toast提示 ==========
+
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white transition-all duration-300 transform translate-x-full`;
+            
             if (type === 'success') {
                 toast.classList.add('bg-green-600');
             } else if (type === 'error') {
@@ -573,24 +925,28 @@
             } else {
                 toast.classList.add('bg-sapphire-600');
             }
+            
             toast.textContent = message;
             document.body.appendChild(toast);
+            
             setTimeout(() => toast.classList.remove('translate-x-full'), 100);
             setTimeout(() => {
                 toast.classList.add('translate-x-full');
                 setTimeout(() => document.body.removeChild(toast), 300);
             }, 3000);
         }
-        // ========== 其它交互辅助 ==========
-        // 点击外部关闭语言下拉
+
+        // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('languageDropdown');
             const button = event.target.closest('.language-dropdown');
+            
             if (!button && dropdown.classList.contains('show')) {
                 dropdown.classList.remove('show');
             }
         });
-        // 导航锚点平滑滚动
+
+        // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -603,7 +959,8 @@
                 }
             });
         });
-        // ========== 页面初始化 ==========
+
+        // Initialize animations when page loads
         document.addEventListener('DOMContentLoaded', function() {
             initializeTexts();
             animateCounters();
