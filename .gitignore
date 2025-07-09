@@ -30,7 +30,7 @@ out/
 # 缓存文件
 .cache/
 .parcel-cache/
-
+.next/
 # 数据库文件
 *.db
 *.sqlite
