@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+	"time"
 
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
@@ -25,6 +26,12 @@ func NewHealthCheckLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Healt
 
 func (l *HealthCheckLogic) HealthCheck(req *types.HealthCheckReq) (resp *types.HealthCheckResp, err error) {
 	// todo: add your logic here and delete this line
-
+	resp = &types.HealthCheckResp{
+		Code:    0,
+		Msg:     "success",
+		Service: req.Service,
+		Status:  "ok",
+		Time:    time.Now().Unix(),
+	}
 	return
 }

@@ -8,7 +8,7 @@ type GetUserInfoReq struct {
 }
 
 type GetUserInfoResp struct {
-	Code     int      `json:"code"`
-	Msg      string   `json:"msg"`
-	UserInfo UserInfo `json:"user_info"`
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+	Data string `json:"data"`
 }

@@ -1,0 +1,229 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": ""
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/common/health": {
+      "get": {
+        "summary": "健康检查",
+        "operationId": "HealthCheck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/HealthCheckResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "service",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "common"
+        ]
+      }
+    },
+    "/api/common/version": {
+      "get": {
+        "summary": "获取版本信息",
+        "operationId": "GetVersion",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/VersionResp"
+            }
+          }
+        },
+        "tags": [
+          "common"
+        ]
+      }
+    },
+    "/api/user/info": {
+      "get": {
+        "summary": "获取用户信息",
+        "operationId": "GetUserInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetUserInfoResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "BaseResp": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "msg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "string"
+        }
+      },
+      "title": "BaseResp",
+      "required": [
+        "code",
+        "msg",
+        "data"
+      ]
+    },
+    "GetUserInfoReq": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string"
+        }
+      },
+      "title": "GetUserInfoReq",
+      "required": [
+        "user_id"
+      ]
+    },
+    "GetUserInfoResp": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "msg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "string"
+        }
+      },
+      "title": "GetUserInfoResp",
+      "required": [
+        "code",
+        "msg",
+        "data"
+      ]
+    },
+    "HealthCheckReq": {
+      "type": "object",
+      "properties": {
+        "service": {
+          "type": "string"
+        }
+      },
+      "title": "HealthCheckReq",
+      "required": [
+        "service"
+      ]
+    },
+    "HealthCheckResp": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "msg": {
+          "type": "string"
+        },
+        "service": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "time": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "HealthCheckResp",
+      "required": [
+        "code",
+        "msg",
+        "service",
+        "status",
+        "time"
+      ]
+    },
+    "VersionReq": {
+      "type": "object",
+      "title": "VersionReq"
+    },
+    "VersionResp": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "msg": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "build_time": {
+          "type": "string"
+        },
+        "git_commit": {
+          "type": "string"
+        },
+        "go_version": {
+          "type": "string"
+        }
+      },
+      "title": "VersionResp",
+      "required": [
+        "code",
+        "msg",
+        "version",
+        "build_time",
+        "git_commit",
+        "go_version"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "description": "Enter JWT Bearer token **_only_**",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}

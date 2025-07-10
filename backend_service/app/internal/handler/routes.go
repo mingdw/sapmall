@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 
+	common "sapphire-mall/app/internal/handler/common"
 	user "sapphire-mall/app/internal/handler/user"
 	"sapphire-mall/app/internal/svc"
 
@@ -18,8 +19,30 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.AuthMiddleware},
 			[]rest.Route{
 				{
+					// 健康检查
 					Method:  http.MethodGet,
-					Path:    "/api/user/info",
+					Path:    "/health",
+					Handler: common.HealthCheckHandler(serverCtx),
+				},
+				{
+					// 获取版本信息
+					Method:  http.MethodGet,
+					Path:    "/version",
+					Handler: common.GetVersionHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/common"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware},
+			[]rest.Route{
+				{
+					// 获取用户信息
+					Method:  http.MethodGet,
+					Path:    "/info",
 					Handler: user.GetUserInfoHandler(serverCtx),
 				},
 			}...,
