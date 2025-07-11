@@ -3,10 +3,11 @@ package common
 import (
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"sapphire-mall/app/internal/logic/common"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func HealthCheckHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

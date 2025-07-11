@@ -2,49 +2,45 @@
 syntax = "v1"
 
 type (
-    // 通用响应结构
-    BaseResp {
-        Code int    `json:"code"`
-        Msg  string `json:"msg"`
-        Data string `json:"data"`
-    }
-    // 健康检查请求
-    HealthCheckReq {
-        Service string `json:"service"`
-    }
-    // 健康检查响应
-    HealthCheckResp {
-        Code    int    `json:"code"`
-        Msg     string `json:"msg"`
-        Service string `json:"service"`
-        Status  string `json:"status"`
-        Time    int64  `json:"time"`
-    }
-    // 版本信息请求
-    VersionReq  {}
-    // 版本信息响应
-    VersionResp {
-        Code      int    `json:"code"`
-        Msg       string `json:"msg"`
-        Version   string `json:"version"`
-        BuildTime string `json:"build_time"`
-        GitCommit string `json:"git_commit"`
-        GoVersion string `json:"go_version"`
-    }
+	// 通用响应结构
+	BaseResp {
+		Code int         `json:"code"`
+		Msg  string      `json:"msg"`
+		Data interface{} `json:"data"`
+	}
+	// 健康检查请求
+	HealthCheckReq {
+		Service string `json:"service"`
+	}
+	// 健康检查响应
+	HealthCheckResp {
+		Status  string `json:"status"`
+		Time    int64  `json:"time"`
+	}
+	// 版本信息请求
+	VersionReq  {}
+	// 版本信息响应
+	VersionResp {
+		Version   string `json:"version"`
+		BuildTime string `json:"build_time"`
+		GitCommit string `json:"git_commit"`
+		GoVersion string `json:"go_version"`
+	}
 )
 
 @server (
-    group:      common
-    prefix:     /api/common
-    middleware: AuthMiddleware
+	group:      common
+	prefix:     /api/common
+	middleware: AuthMiddleware,RespMiddleware
 )
 service sapmall {
-
 	@doc "健康检查"
-    @handler HealthCheck
-    get /health (HealthCheckReq) returns (HealthCheckResp)
+	@handler HealthCheck
+	get /health (HealthCheckReq) returns (HealthCheckResp)
 
 	@doc "获取版本信息"
-    @handler GetVersion
-    get /version (VersionReq) returns (VersionResp)
+	@handler GetVersion
+	get /version (VersionReq) returns (VersionResp)
 }
+
+

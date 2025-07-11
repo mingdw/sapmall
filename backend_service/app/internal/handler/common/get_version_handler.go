@@ -1,12 +1,14 @@
 package common
 
 import (
+	"encoding/json"
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"sapphire-mall/app/internal/logic/common"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 func GetVersionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
@@ -21,8 +23,13 @@ func GetVersionHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		resp, err := l.GetVersion(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
-		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
+			return
 		}
+
+		// 直接返回，不使用中间件
+		responseData, _ := json.Marshal(resp)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(responseData)
 	}
 }

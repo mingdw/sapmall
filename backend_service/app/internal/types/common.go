@@ -8,19 +8,14 @@ type HealthCheckReq struct {
 }
 
 type HealthCheckResp struct {
-	Code    int    `json:"code"`
-	Msg     string `json:"msg"`
-	Service string `json:"service"`
-	Status  string `json:"status"`
-	Time    int64  `json:"time"`
+	Status string `json:"status"`
+	Time   int64  `json:"time"`
 }
 
 type VersionReq struct {
 }
 
 type VersionResp struct {
-	Code      int    `json:"code"`
-	Msg       string `json:"msg"`
 	Version   string `json:"version"`
 	BuildTime string `json:"build_time"`
 	GitCommit string `json:"git_commit"`
