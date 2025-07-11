@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+	"runtime"
 
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
@@ -24,7 +25,12 @@ func NewGetVersionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetVer
 }
 
 func (l *GetVersionLogic) GetVersion(req *types.VersionReq) (resp *types.VersionResp, err error) {
-	// todo: add your logic here and delete this line
-
+	// 返回版本信息
+	resp = &types.VersionResp{
+		Version:   "1.0.0",
+		BuildTime: "2024-01-01T00:00:00Z",
+		GitCommit: "abc123def456",
+		GoVersion: runtime.Version(),
+	}
 	return
 }
