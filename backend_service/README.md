@@ -49,7 +49,8 @@ backend_service/
 │   │   └── sapmall_test.yaml # 测试环境配置
 │   ├── task/              # 定时任务
 │   └── sapmall_start.go   # 应用程序入口
-├── cmd/                   # 命令行工具 (待开发)
+├── cmd/                   # 命令行工具
+│   └── sapctl/           # 代码生成工具
 ├── deploy/                # 部署相关文件 (待开发)
 ├── docs/                  # 文档目录
 │   ├── API.md             # API 接口文档
@@ -120,7 +121,95 @@ cd backend_service
 go mod tidy
 ```
 
-### 3. 数据库配置
+### 3. 编译代码生成工具
+
+```bash
+# 编译 sapctl 工具
+go build -o sapctl.exe cmd/sapctl/main.go
+
+# 验证工具是否可用
+.\sapctl.exe --help
+```
+
+### 4. 使用代码生成工具
+
+#### 生成 Repository 和 Model
+
+项目提供了 `sapctl` 工具来快速生成 Repository 和 Model 代码。每张表都会自动包含以下默认字段：
+
+- `ID` - 主键
+- `CreateAt` - 创建时间
+- `UpdateAt` - 更新时间
+- `IsDeleted` - 软删除标记
+- `Creator` - 创建人
+- `Updator` - 更新人
+
+##### 基本用法
+
+```bash
+# 生成完整的 Repository 和 Model（只有默认字段）
+.\sapctl.exe create repository user --table users
+
+# 生成包含自定义字段的 Repository 和 Model
+.\sapctl.exe create repository product --table products --fields "name:string:required,price:float64,description:string"
+
+# 只生成 Model
+.\sapctl.exe create model category --table categories --fields "name:string:required,status:int"
+```
+
+##### 字段定义格式
+
+字段定义格式为：`字段名:类型:标签`
+
+- **类型**: `int64`, `string`, `float64`, `bool`, `time.Time` 等 Go 类型
+- **标签**: 
+  - `primary` - 主键
+  - `required` - 必填
+  - `unique` - 唯一索引
+  - `default:value` - 默认值
+
+##### 使用示例
+
+```bash
+# 生成用户表（只有默认字段）
+.\sapctl.exe create repository user --table users
+
+# 生成商品表（包含自定义字段）
+.\sapctl.exe create repository product --table products --fields "name:string:required,price:float64,stock:int,status:int"
+
+# 生成订单表（包含复杂字段）
+.\sapctl.exe create repository order --table orders --fields "order_no:string:unique,user_id:int64:required,total_amount:float64,status:int"
+
+# 只生成模型文件
+.\sapctl.exe create model category --table categories --fields "name:string:required,parent_id:int64"
+```
+
+##### 生成的文件结构
+
+生成的代码会保存在以下位置：
+
+```
+app/internal/
+├── model/
+│   ├── user.go          # 用户模型
+│   ├── product.go       # 商品模型
+│   └── order.go         # 订单模型
+└── repository/
+    ├── user.go          # 用户数据访问层
+    ├── product.go       # 商品数据访问层
+    └── order.go         # 订单数据访问层
+```
+
+##### 生成的代码特性
+
+- **完整的 CRUD 操作**: 自动生成 Create、Read、Update、Delete 方法
+- **类型安全**: 使用 GORM 进行类型安全的数据库操作
+- **软删除支持**: 自动包含软删除功能
+- **时间戳**: 自动处理创建时间和更新时间
+- **审计字段**: 自动包含创建人和更新人字段
+- **唯一字段查询**: 对于标记为 `unique` 的字段，自动生成对应的查询方法
+
+### 5. 数据库配置
 
 ```bash
 # 创建数据库
@@ -134,7 +223,7 @@ mysql -u root -p sapphire_mall < docs/init_data.sql
 # 编辑 app/etc/sapmall_dev.yaml 文件
 ```
 
-### 4. 生成代码
+### 6. 生成API代码
 
 ```bash
 # 进入应用目录
@@ -151,7 +240,7 @@ goctl api go -api api/staking/staking.api -dir . -style go_zero
 goctl api go -api api/dao/dao.api -dir . -style go_zero
 ```
 
-### 5. 启动服务
+### 7. 启动服务
 
 ```bash
 # 开发模式启动
@@ -321,7 +410,7 @@ curl -X POST http://localhost:8888/api/user/register \
 ### 核心目录
 
 - **`app/`**: 应用程序主目录，包含所有业务逻辑
-- **`cmd/`**: 命令行工具目录 (待开发)
+- **`cmd/`**: 命令行工具目录，包含代码生成工具
 - **`deploy/`**: 部署相关文件目录 (待开发)
 - **`docs/`**: 文档目录，包含API文档和数据库脚本
 - **`etc/`**: 配置文件目录
@@ -400,6 +489,7 @@ git merge feature/user-management
 - **IPFS存储**: 分布式文件存储
 - **区块链集成**: 支持多链操作
 - **任务调度**: 支持定时任务
+- **代码生成工具**: 快速生成 Repository 和 Model 代码
 
 ## 常见问题
 
@@ -418,6 +508,9 @@ A: 在 `app/etc/` 目录下创建不同环境的配置文件。
 ### Q: 如何添加新的API模块？
 A: 在 `app/api/` 目录下创建新的模块目录，并在 `main.api` 中导入。
 
+### Q: 如何使用代码生成工具？
+A: 使用 `sapctl` 工具快速生成 Repository 和 Model 代码，支持自定义字段和默认字段。
+
 ## 贡献指南
 
 1. Fork 项目
@@ -431,9 +524,9 @@ MIT License
 
 ## 联系方式
 
-- 项目维护者: [Ming]
-- 邮箱: [466830255@qq.com]
-- 项目地址: [https://github.com/mingdw/sapmall.git]
+- 项目维护者: [Your Name]
+- 邮箱: [your-email@example.com]
+- 项目地址: [GitHub Repository URL]
 
 ## 更新日志
 
@@ -444,3 +537,4 @@ MIT License
 - 支持多语言（中英文）
 - 基于 go-zero 微服务框架
 - 完整的项目结构组织
+- 新增代码生成工具 `sapctl`，支持快速生成 Repository 和 Model 代码
