@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+	"errors"
 	"runtime"
 
 	"sapphire-mall/app/internal/svc"
@@ -32,5 +33,6 @@ func (l *GetVersionLogic) GetVersion(req *types.VersionReq) (resp *types.Version
 		GitCommit: "abc123def456",
 		GoVersion: runtime.Version(),
 	}
+	err = errors.New("test")
 	return
 }

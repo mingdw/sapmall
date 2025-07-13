@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	consts "sapphire-mall/app/internal/const"
@@ -69,8 +68,6 @@ func (r *unifiedResponseInterceptor) Header() http.Header {
 
 // processUnifiedResponse 处理统一响应
 func (r *unifiedResponseInterceptor) processUnifiedResponse() {
-	// 添加调试信息
-	fmt.Printf("DEBUG: statusCode=%d, body=%s\n", r.statusCode, string(r.body))
 
 	// 如果已经设置了错误状态码，直接处理错误
 	if r.isError {
@@ -90,7 +87,6 @@ func (r *unifiedResponseInterceptor) processUnifiedResponse() {
 					// 尝试解析为标准格式
 					var resp response.Response
 					if err := json.Unmarshal(r.body, &resp); err == nil {
-						fmt.Printf("DEBUG: 解析为标准格式: code=%d, message=%s\n", resp.Code, resp.Message)
 						if resp.Code != 0 {
 							// 业务错误
 							r.handleUnifiedError()
@@ -103,21 +99,17 @@ func (r *unifiedResponseInterceptor) processUnifiedResponse() {
 					}
 				} else {
 					// 不包含标准字段，作为原始数据包装
-					fmt.Printf("DEBUG: 包装原始数据: %+v\n", rawData)
 					r.writeUnifiedResponse(consts.SUCCESS, "success", rawData)
 					return
 				}
 			}
 		} else {
-			fmt.Printf("DEBUG: 解析原始数据失败: %v\n", err)
 			// 非JSON响应，作为字符串处理
 			r.writeUnifiedResponse(consts.SUCCESS, "success", string(r.body))
 			return
 		}
 	}
 
-	// 空响应，返回成功
-	fmt.Printf("DEBUG: 空响应\n")
 	r.writeUnifiedResponse(consts.SUCCESS, "success", nil)
 }
 
@@ -134,10 +126,7 @@ func (r *unifiedResponseInterceptor) handleUnifiedError() {
 	}
 
 	// 使用HTTP状态码对应的错误信息
-	r.writeUnifiedResponse(r.errorCode, r.errorMsg, map[string]interface{}{
-		"status_code": r.statusCode,
-		"body":        string(r.body),
-	})
+	r.writeUnifiedResponse(r.errorCode, r.errorMsg, nil)
 }
 
 // writeUnifiedResponse 写入统一响应格式
@@ -146,14 +135,10 @@ func (r *unifiedResponseInterceptor) writeUnifiedResponse(code int, msg string, 
 	if data == nil {
 		data = map[string]interface{}{}
 	}
-
 	// 确保message不为空
 	if msg == "" {
 		msg = "success"
 	}
-
-	fmt.Printf("DEBUG: 写入统一响应: code=%d, message=%s, data=%+v\n", code, msg, data)
-
 	unifiedResp := response.Response{
 		Code:    code,
 		Message: msg,
@@ -162,11 +147,8 @@ func (r *unifiedResponseInterceptor) writeUnifiedResponse(code int, msg string, 
 
 	responseData, err := json.Marshal(unifiedResp)
 	if err != nil {
-		fmt.Printf("DEBUG: JSON序列化失败: %v\n", err)
 		return
 	}
-
-	fmt.Printf("DEBUG: 序列化后的JSON: %s\n", string(responseData))
 
 	r.ResponseWriter.Header().Set("Content-Type", "application/json")
 	r.ResponseWriter.WriteHeader(http.StatusOK)

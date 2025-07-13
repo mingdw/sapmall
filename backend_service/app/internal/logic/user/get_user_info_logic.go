@@ -2,7 +2,9 @@ package user
 
 import (
 	"context"
+	"encoding/json"
 
+	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
 
@@ -24,7 +26,18 @@ func NewGetUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 }
 
 func (l *GetUserInfoLogic) GetUserInfo(req *types.GetUserInfoReq) (resp *types.GetUserInfoResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+	userRepository := repository.NewUserRepository(l.svcCtx.GormDB)
+	user, err := userRepository.GetByID(l.ctx, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	userInfoJson, err := json.Marshal(user)
+	if err != nil {
+		return nil, err
+	}
+	return &types.GetUserInfoResp{
+		Code: 0,
+		Msg:  "success",
+		Data: string(userInfoJson),
+	}, nil
 }

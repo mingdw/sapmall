@@ -37,12 +37,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware},
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 获取用户信息
 					Method:  http.MethodGet,
-					Path:    "/info",
+					Path:    "/info/:user_id",
 					Handler: user.GetUserInfoHandler(serverCtx),
 				},
 			}...,
