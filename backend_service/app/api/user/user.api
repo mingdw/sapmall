@@ -3,7 +3,7 @@ syntax = "v1"
 
 type (
     GetUserInfoReq {
-        UserId string `json:"user_id"`
+        UserId int64 `path:"user_id"`
     }
     // 获取用户信息响应
     GetUserInfoResp {
@@ -16,11 +16,11 @@ type (
 @server (
     group:      user
     prefix:     /api/user
-    middleware: AuthMiddleware
+    middleware: AuthMiddleware,RespMiddleware
 )
 service sapmall {
 
     @doc "获取用户信息"
     @handler GetUserInfo
-    get /info (GetUserInfoReq) returns (GetUserInfoResp)
+    get /info/:user_id (GetUserInfoReq) returns (GetUserInfoResp)
 }
