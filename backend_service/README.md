@@ -431,9 +431,9 @@ MIT License
 
 ## 联系方式
 
-- 项目维护者: [Your Name]
-- 邮箱: [your-email@example.com]
-- 项目地址: [GitHub Repository URL]
+- 项目维护者: [Ming]
+- 邮箱: [466830255@qq.com]
+- 项目地址: [https://github.com/mingdw/sapmall.git]
 
 ## 更新日志
 
