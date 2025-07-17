@@ -45,10 +45,13 @@ out/
 *.backup
 
 # 系统文件
-.DS_Store
+
 .DS_Store?
 ._*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.db
+
+
+#docker mysql 本地数据
+/docker_mysql/mysql_data/

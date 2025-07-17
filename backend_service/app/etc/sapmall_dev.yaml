@@ -4,7 +4,7 @@ Port: 8888
 
 DB:
   Driver: mysql
-  DataSource: root:mdw19921129#@tcp(127.0.0.1:3306)/sapphire_mall?charset=utf8mb4&parseTime=True&loc=Local
+  DataSource: root:root123456#@tcp(127.0.0.1:3306)/sapphire_mall?charset=utf8mb4&parseTime=True&loc=Local
 
 Redis:
   Host: 127.0.0.1
