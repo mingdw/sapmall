@@ -1,0 +1,54 @@
+version: '0.1'
+
+services:
+  redis:
+    image: redis:7.2-alpine
+    container_name: sapmall-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - sapmall-net
+
+  mysql:
+    image: mysql:8.0
+    container_name: sapmall-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456   # root用户密码
+      MYSQL_DATABASE: sapphire_mall         # 初始化数据库名
+      MYSQL_USER: sapmall_user        # 普通用户（可选）
+      MYSQL_PASSWORD: sapmall_pass    # 普通用户密码（可选）
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    command:
+      --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./docker_mysql/mysql_data:/var/lib/mysql
+      - ./docker_mysql/mysql_init:/docker-entrypoint-initdb.d
+    networks:
+      - sapmall-net
+
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.13
+    container_name: sapmall-etcd
+    environment:
+      - ETCD_NAME=etcd-node
+      - ETCD_DATA_DIR=/etcd-data
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://0.0.0.0:2380
+      - ETCD_INITIAL_CLUSTER=etcd-node=http://0.0.0.0:2380
+      - ETCD_INITIAL_CLUSTER_STATE=new
+      - ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster-1
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    networks:
+      - sapmall-net
+
+networks:
+  sapmall-net:
+    driver: bridge
