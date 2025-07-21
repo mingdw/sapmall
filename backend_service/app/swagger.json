@@ -40,6 +40,34 @@
         ]
       }
     },
+    "/api/common/login": {
+      "post": {
+        "summary": "登录",
+        "operationId": "Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/LoginResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 登录请求",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginReq"
+            }
+          }
+        ],
+        "tags": [
+          "common"
+        ]
+      }
+    },
     "/api/common/version": {
       "get": {
         "summary": "获取版本信息",
@@ -57,7 +85,32 @@
         ]
       }
     },
-    "/api/user/info": {
+    "/api/common/{wallet_address}/nonce": {
+      "get": {
+        "summary": "获取随机数",
+        "operationId": "GetNonceByAddress",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetNonceByAddressResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "wallet_address",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "common"
+        ]
+      }
+    },
+    "/api/user/info/{user_id}": {
       "get": {
         "summary": "获取用户信息",
         "operationId": "GetUserInfo",
@@ -72,7 +125,7 @@
         "parameters": [
           {
             "name": "user_id",
-            "in": "query",
+            "in": "path",
             "required": true,
             "type": "string"
           }
@@ -95,7 +148,7 @@
           "type": "string"
         },
         "data": {
-          "type": "string"
+          "type": "object"
         }
       },
       "title": "BaseResp",
@@ -105,17 +158,25 @@
         "data"
       ]
     },
-    "GetUserInfoReq": {
+    "GetNonceByAddressReq": {
+      "type": "object",
+      "title": "GetNonceByAddressReq"
+    },
+    "GetNonceByAddressResp": {
       "type": "object",
       "properties": {
-        "user_id": {
+        "nonce": {
           "type": "string"
         }
       },
-      "title": "GetUserInfoReq",
+      "title": "GetNonceByAddressResp",
       "required": [
-        "user_id"
+        "nonce"
       ]
+    },
+    "GetUserInfoReq": {
+      "type": "object",
+      "title": "GetUserInfoReq"
     },
     "GetUserInfoResp": {
       "type": "object",
@@ -153,16 +214,6 @@
     "HealthCheckResp": {
       "type": "object",
       "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "msg": {
-          "type": "string"
-        },
-        "service": {
-          "type": "string"
-        },
         "status": {
           "type": "string"
         },
@@ -173,27 +224,41 @@
       },
       "title": "HealthCheckResp",
       "required": [
-        "code",
-        "msg",
-        "service",
         "status",
         "time"
       ]
     },
-    "VersionReq": {
+    "LoginReq": {
       "type": "object",
-      "title": "VersionReq"
+      "properties": {
+        "wallet_address": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string"
+        }
+      },
+      "title": "LoginReq",
+      "required": [
+        "wallet_address",
+        "signature"
+      ]
+    },
+    "LoginResp": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "title": "LoginResp",
+      "required": [
+        "token"
+      ]
     },
     "VersionResp": {
       "type": "object",
       "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "msg": {
-          "type": "string"
-        },
         "version": {
           "type": "string"
         },
@@ -209,8 +274,6 @@
       },
       "title": "VersionResp",
       "required": [
-        "code",
-        "msg",
         "version",
         "build_time",
         "git_commit",

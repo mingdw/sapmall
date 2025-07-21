@@ -12,7 +12,7 @@ type User struct {
 	Nickname   string      `gorm:"column:nickname;not null;default:'';comment:昵称"`
 	Avatar     string      `gorm:"column:avatar;not null;default:'';comment:头像"`
 	Gender     int         `gorm:"column:gender;not null;default:0;comment:性别"`
-	Birthday   time.Time   `gorm:"column:birthday;comment:生日"`
+	Birthday   *time.Time  `gorm:"column:birthday;comment:生日"`
 	Email      string      `gorm:"column:email;not null;default:'';comment:邮箱"`
 	Phone      string      `gorm:"column:phone;not null;default:'';comment:手机号"`
 	Password   string      `gorm:"column:password;not null;default:'';comment:密码"`

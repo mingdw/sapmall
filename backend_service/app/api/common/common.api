@@ -17,8 +17,6 @@ type (
 		Status  string `json:"status"`
 		Time    int64  `json:"time"`
 	}
-	// 版本信息请求
-	VersionReq  {}
 	// 版本信息响应
 	VersionResp {
 		Version   string `json:"version"`
@@ -26,12 +24,33 @@ type (
 		GitCommit string `json:"git_commit"`
 		GoVersion string `json:"go_version"`
 	}
+
+	// 获取随机数请求
+	GetNonceByAddressReq {
+		WalletAddress string `path:"wallet_address"`
+	}
+
+	// 获取随机数响应
+	GetNonceByAddressResp {
+		Nonce string `json:"nonce"`
+	}
+
+	// 登录请求
+	LoginReq {
+		WalletAddress string `json:"wallet_address"`
+		Signature     string `json:"signature"`
+	}
+
+	// 登录响应
+	LoginResp {
+		Token string `json:"token"`
+	}
 )
 
 @server (
 	group:      common
 	prefix:     /api/common
-	middleware: AuthMiddleware,RespMiddleware
+	middleware: RespMiddleware
 )
 service sapmall {
 	@doc "健康检查"
@@ -40,7 +59,15 @@ service sapmall {
 
 	@doc "获取版本信息"
 	@handler GetVersion
-	get /version (VersionReq) returns (VersionResp)
+	get /version  returns (VersionResp)
+
+	@doc "获取随机数"
+	@handler GetNonceByAddress
+	get /:wallet_address/nonce (GetNonceByAddressReq) returns (GetNonceByAddressResp)
+
+	@doc "登录"
+	@handler Login
+	post /login (LoginReq) returns (LoginResp)
 }
 
 

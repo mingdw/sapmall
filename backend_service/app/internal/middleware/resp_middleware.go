@@ -23,6 +23,13 @@ func (m *UnifiedResponseMiddleware) Handle(next http.HandlerFunc) http.HandlerFu
 		// 创建统一响应拦截器
 		interceptor := &unifiedResponseInterceptor{
 			ResponseWriter: w,
+			body:           []byte{},
+			statusCode:     0,
+			headers:        make(http.Header),
+
+			isError:   false,
+			errorCode: 0,
+			errorMsg:  "",
 		}
 
 		// 调用下一个处理器
@@ -123,10 +130,13 @@ func (r *unifiedResponseInterceptor) handleUnifiedError() {
 			r.writeUnifiedResponse(resp.Code, resp.Message, resp.Data)
 			return
 		}
+		// 不是标准json格式，直接将body内容作为msg返回
+		msg := string(r.body)
+		r.writeUnifiedResponse(consts.SYSTEM_ERROR, msg, map[string]interface{}{})
+		return
 	}
-
-	// 使用HTTP状态码对应的错误信息
-	r.writeUnifiedResponse(r.errorCode, r.errorMsg, nil)
+	// 没有body，返回默认系统错误
+	r.writeUnifiedResponse(consts.SYSTEM_ERROR, consts.GetErrorMessage(consts.SYSTEM_ERROR), map[string]interface{}{})
 }
 
 // writeUnifiedResponse 写入统一响应格式

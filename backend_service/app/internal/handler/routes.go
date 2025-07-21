@@ -16,13 +16,25 @@ import (
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.RespMiddleware},
 			[]rest.Route{
+				{
+					// 获取随机数
+					Method:  http.MethodGet,
+					Path:    "/:wallet_address/nonce",
+					Handler: common.GetNonceByAddressHandler(serverCtx),
+				},
 				{
 					// 健康检查
 					Method:  http.MethodGet,
 					Path:    "/health",
 					Handler: common.HealthCheckHandler(serverCtx),
+				},
+				{
+					// 登录
+					Method:  http.MethodPost,
+					Path:    "/login",
+					Handler: common.LoginHandler(serverCtx),
 				},
 				{
 					// 获取版本信息
