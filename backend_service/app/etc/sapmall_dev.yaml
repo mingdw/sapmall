@@ -13,11 +13,6 @@ Redis:
   Password: ""
   DB: 0
 
-Cos:
-  secretId: AKIDNgswnbCexIvPjyd9Viokma8WihT2PbbP
-  secretKey: f6KK7dy87uWv67xc4JLCrLNFuNeomX9b
-  bucketName: sap01-1251895040
-  region: ap-guangzhou
 
 Auth:
   AccessSecret: "sapmall-secret"
