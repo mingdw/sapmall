@@ -1,16 +1,27 @@
 Name: sapmall
 Host: 0.0.0.0
 Port: 8888
+Version: "1.0.0"
 
 DB:
   Driver: mysql
-  DataSource: root:root123456#@tcp(127.0.0.1:3306)/sapphire_mall?charset=utf8mb4&parseTime=True&loc=Local
+  DataSource: root:mdw19921129#@tcp(127.0.0.1:3306)/sapphire_mall?charset=utf8mb4&parseTime=True&loc=Local
 
 Redis:
   Host: 127.0.0.1
   Port: 6379
   Password: ""
   DB: 0
+
+Cos:
+  secretId: AKIDNgswnbCexIvPjyd9Viokma8WihT2PbbP
+  secretKey: f6KK7dy87uWv67xc4JLCrLNFuNeomX9b
+  bucketName: sap01-1251895040
+  region: ap-guangzhou
+
+Auth:
+  AccessSecret: "sapmall-secret"
+  AccessExpire: 86400
 
 # Swagger 配置
 Swagger:
