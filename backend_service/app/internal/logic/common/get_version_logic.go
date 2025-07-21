@@ -2,8 +2,8 @@ package common
 
 import (
 	"context"
-	"errors"
 	"runtime"
+	"time"
 
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
@@ -17,6 +17,7 @@ type GetVersionLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
+// 获取版本信息
 func NewGetVersionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetVersionLogic {
 	return &GetVersionLogic{
 		Logger: logx.WithContext(ctx),
@@ -25,14 +26,13 @@ func NewGetVersionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetVer
 	}
 }
 
-func (l *GetVersionLogic) GetVersion(req *types.VersionReq) (resp *types.VersionResp, err error) {
+func (l *GetVersionLogic) GetVersion() (resp *types.VersionResp, err error) {
 	// 返回版本信息
 	resp = &types.VersionResp{
-		Version:   "1.0.0",
-		BuildTime: "2024-01-01T00:00:00Z",
-		GitCommit: "abc123def456",
+		Version:   l.svcCtx.Config.Version,
+		BuildTime: time.Now().Format("2006-01-02 15:04:05"),
+		GitCommit: "",
 		GoVersion: runtime.Version(),
 	}
-	err = errors.New("test")
 	return
 }
