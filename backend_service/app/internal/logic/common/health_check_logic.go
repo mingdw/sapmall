@@ -30,5 +30,5 @@ func (l *HealthCheckLogic) HealthCheck(req *types.HealthCheckReq) (resp *types.H
 		Status: "ok",
 		Time:   time.Now().Unix(),
 	}
-	return
+	return resp, nil
 }

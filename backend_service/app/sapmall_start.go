@@ -17,7 +17,7 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/sapmall_dev.yaml", "the config file")
+var configFile = flag.String("f", "./etc/sapmall_dev.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -32,7 +32,7 @@ func main() {
 	handler.RegisterHandlers(server, ctx)
 
 	// 设置 Swagger 路由
-	setupSwaggerRoutes(server)
+	//setupSwaggerRoutes(server)
 
 	server.Start()
 }
