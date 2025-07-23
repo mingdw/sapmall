@@ -5,8 +5,9 @@ package handler
 
 import (
 	"net/http"
-
+	category "sapphire-mall/app/internal/handler/category"
 	common "sapphire-mall/app/internal/handler/common"
+	product "sapphire-mall/app/internal/handler/product"
 	user "sapphire-mall/app/internal/handler/user"
 	"sapphire-mall/app/internal/svc"
 
@@ -60,5 +61,60 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/user"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Route{
+				{
+					// 查询产品详细信息
+					Method:  http.MethodPost,
+					Path:    "/getProductDetails",
+					Handler: product.GetProductDetailsHandler(serverCtx),
+				},
+				{
+					// 分页查询多个产品
+					Method:  http.MethodPost,
+					Path:    "/products",
+					Handler: product.ProductsHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/product"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Route{
+				{
+					// 获取商品目录
+					Method:  http.MethodPost,
+					Path:    "/getCategory",
+					Handler: category.GetCategoryHandler(serverCtx),
+				},
+				{
+					// 获取商品目录树
+					Method:  http.MethodGet,
+					Path:    "/getCategoryTree",
+					Handler: category.GetCategoryTreeHandler(serverCtx),
+				},
+				{
+					// 修改商品目录
+					Method:  http.MethodPut,
+					Path:    "/modifyCategory",
+					Handler: category.ModifyCategoryHandler(serverCtx),
+				},
+				{
+					// 删除商品目录
+					Method:  http.MethodDelete,
+					Path:    "/delete/:id",
+					Handler: category.DeleteCategoryHandler(serverCtx),
+				},
+
+			}...,
+		),
+		rest.WithPrefix("/api/category"),
 	)
 }

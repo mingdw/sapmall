@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	_ "github.com/dgrijalva/jwt-go"
 	_ "github.com/ethereum/go-ethereum/accounts"
 	_ "github.com/go-playground/validator/v10"
@@ -23,5 +24,7 @@ import (
 	_ "gorm.io/driver/mysql"
 	_ "gorm.io/gorm"
 )
+
+var configFile = flag.String("f", "etc/product.yaml", "the config file")
 
 func main() {}
