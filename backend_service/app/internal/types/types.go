@@ -8,3 +8,50 @@ type BaseResp struct {
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
+
+type CreateProductReq struct {
+	CreatorId     string `json:"creator_id"`
+	TitleEn       string `json:"title_en"`
+	TitleZh       string `json:"title_zh"`
+	DescriptionEn string `json:"description_en"`
+	DescriptionZh string `json:"description_zh"`
+	Price         string `json:"price"`
+	Category      string `json:"category"`
+	IpfsHash      string `json:"ipfs_hash"`
+	Inventory     int64  `json:"inventory"`
+}
+
+type CreateProductResp struct {
+	Code        int         `json:"code"`
+	Msg         string      `json:"msg"`
+	ProductInfo ProductInfo `json:"product_info"`
+}
+
+type ProductInfo struct {
+	Id            string `json:"id"`
+	CreatorId     string `json:"creator_id"`
+	TitleEn       string `json:"title_en"`
+	TitleZh       string `json:"title_zh"`
+	DescriptionEn string `json:"description_en"`
+	DescriptionZh string `json:"description_zh"`
+	Price         string `json:"price"`
+	Category      string `json:"category"`
+	Status        string `json:"status"`
+	IpfsHash      string `json:"ipfs_hash"`
+	Inventory     int64  `json:"inventory"`
+	SalesCount    int64  `json:"sales_count"`
+	CreatedAt     int64  `json:"created_at"`
+	UpdatedAt     int64  `json:"updated_at"`
+}
+
+type ReviewProductReq struct {
+	ProductId     string `json:"product_id"`
+	Status        string `json:"status"`
+	ReviewComment string `json:"review_comment"`
+}
+
+type ReviewProductResp struct {
+	Code        int         `json:"code"`
+	Msg         string      `json:"msg"`
+	ProductInfo ProductInfo `json:"product_info"`
+}
