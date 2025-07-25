@@ -2,7 +2,6 @@ package common
 
 import (
 	"context"
-	"errors"
 	"runtime"
 	"time"
 
@@ -35,6 +34,6 @@ func (l *GetVersionLogic) GetVersion() (resp *types.VersionResp, err error) {
 		GitCommit: "",
 		GoVersion: runtime.Version(),
 	}
-	err = errors.New("test")
-	return resp, err
+
+	return resp, nil
 }
