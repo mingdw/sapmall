@@ -34,7 +34,11 @@ const (
 
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// TODO generate middleware implement function, delete after code implementation
+		if !m.config.Auth.StartAuth {
+			next(w, r)
+			return
+		}
+
 		token := r.Header.Get(AuthorizationHeader)
 		if token == "" {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)

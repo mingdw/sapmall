@@ -5,7 +5,8 @@ import "github.com/zeromicro/go-zero/rest"
 type Config struct {
 	rest.RestConf
 	Version string `json:"version"`
-	DB      struct {
+
+	DB struct {
 		Driver     string
 		DataSource string
 	}
@@ -24,5 +25,6 @@ type Config struct {
 	Auth struct {
 		AccessSecret string
 		AccessExpire int64
+		StartAuth    bool
 	}
 }
