@@ -32,7 +32,7 @@ func main() {
 	handler.RegisterHandlers(server, ctx)
 
 	// 设置 Swagger 路由
-	//setupSwaggerRoutes(server)
+	setupSwaggerRoutes(server)
 
 	server.Start()
 }
