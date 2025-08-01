@@ -29,8 +29,6 @@ func NewProductsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Products
 }
 
 func (l *ProductsLogic) Products(req *types.ListProductsReq) (resp *types.ListProductsResp, err error) {
-	// todo: add your logic here and delete this line
-
 	productRepository := repository.NewProductRepository(l.svcCtx.GormDB)
 
 	categoryRepository := repository.NewCategoryRepository(l.svcCtx.GormDB)

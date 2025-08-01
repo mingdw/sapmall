@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"gorm.io/gorm"
 	"sapphire-mall/app/internal/model"
 	"sort"
 )
@@ -32,12 +33,12 @@ type AddressRepository interface {
 }
 
 type addressRepository struct {
-	*Repository
+	db *gorm.DB
 }
 
-func NewAddressRepository(r *Repository) AddressRepository {
+func NewAddressRepository(_db *gorm.DB) AddressRepository {
 	return &addressRepository{
-		Repository: r,
+		db: _db,
 	}
 }
 
