@@ -5,7 +5,7 @@ Version: "1.0.0"
 
 DB:
   Driver: mysql
-  DataSource: root:root123456@tcp(127.0.0.1:3306)/sapphire_mall?charset=utf8mb4&parseTime=True&loc=Local
+  DataSource: root:root123456@tcp(mysql:3306)/sapphire_mall?charset=utf8mb4&parseTime=True&loc=Local
 
 Redis:
   Host: 127.0.0.1
@@ -22,7 +22,7 @@ Cos:
 Auth:
   AccessSecret: "sapmall-secret"
   AccessExpire: 86400
-  StartAuth: true
+  StartAuth: false
 
 # Swagger 配置
 Swagger:

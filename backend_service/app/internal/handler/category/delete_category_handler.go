@@ -19,11 +19,11 @@ func DeleteCategoryHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 		l := category.NewDeleteCategoryLogic(r.Context(), svcCtx)
-		resp, err := l.DeleteCategory(&req)
+		err := l.DeleteCategory(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
+			httpx.Ok(w)
 		}
 	}
 }
