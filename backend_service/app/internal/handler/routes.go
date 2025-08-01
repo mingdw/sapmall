@@ -5,6 +5,7 @@ package handler
 
 import (
 	"net/http"
+	"sapphire-mall/app/internal/handler/address"
 	category "sapphire-mall/app/internal/handler/category"
 	common "sapphire-mall/app/internal/handler/common"
 	product "sapphire-mall/app/internal/handler/product"
@@ -57,6 +58,24 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/info/:user_id",
 					Handler: user.GetUserInfoHandler(serverCtx),
+				},
+				{
+					// 获取用户地址
+					Method:  http.MethodPost,
+					Path:    "/userAddress",
+					Handler: address.GetUserAddressHandler(serverCtx),
+				},
+				{
+					// 创建或者修改用户地址
+					Method:  http.MethodPost,
+					Path:    "/userAddress/addAndUpdate",
+					Handler: address.AddAndUpdateUserAddressHandler(serverCtx),
+				},
+				{
+					// 删除用户
+					Method:  http.MethodDelete,
+					Path:    "/userAddress/delete/:id",
+					Handler: address.DeleteUserAddressHandler(serverCtx),
 				},
 			}...,
 		),
@@ -112,9 +131,40 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/delete/:id",
 					Handler: category.DeleteCategoryHandler(serverCtx),
 				},
-
 			}...,
 		),
 		rest.WithPrefix("/api/category"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/getAllAddress",
+					Handler: address.GetAllAddressHandler(serverCtx),
+				},
+				{
+					// 获取用户地址
+					Method:  http.MethodPost,
+					Path:    "/userAddress",
+					Handler: address.GetUserAddressHandler(serverCtx),
+				},
+				{
+					// 创建或者修改用户地址
+					Method:  http.MethodPost,
+					Path:    "/userAddress/addAndUpdate",
+					Handler: address.AddAndUpdateUserAddressHandler(serverCtx),
+				},
+				{
+					// 删除用户
+					Method:  http.MethodDelete,
+					Path:    "/userAddress/delete/:id",
+					Handler: address.DeleteUserAddressHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/address"),
 	)
 }

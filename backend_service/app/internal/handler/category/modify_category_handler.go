@@ -19,11 +19,11 @@ func ModifyCategoryHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := category.NewModifyCategoryLogic(r.Context(), svcCtx)
-		resp, err := l.ModifyCategory(&req)
+		err := l.ModifyCategory(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
+			httpx.Ok(w)
 		}
 	}
 }
