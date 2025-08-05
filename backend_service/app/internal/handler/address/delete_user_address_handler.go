@@ -1,25 +1,25 @@
-package category
+package address
 
 import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"sapphire-mall/app/internal/logic/category"
+	"sapphire-mall/app/internal/logic/address"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
 )
 
-// 修改商品目录
-func ModifyCategoryHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// 删除用户
+func DeleteUserAddressHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.CategoryModifyRequest
+		var req types.DeleteUserRequest
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := category.NewModifyCategoryLogic(r.Context(), svcCtx)
-		err := l.ModifyCategory(&req)
+		l := address.NewDeleteUserAddressLogic(r.Context(), svcCtx)
+		err := l.DeleteUserAddress(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
