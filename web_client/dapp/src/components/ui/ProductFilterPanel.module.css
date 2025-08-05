@@ -1,0 +1,87 @@
+/* ProductFilterPanel.module.css */
+
+.filter-card {
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9));
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.filter-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* .category-item {
+  transition: all 0.3s ease;
+  position: relative;
+  background: none;
+}
+.category-item.active {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+.category-item:hover {
+  color: #60a5fa;
+}
+.category-item .category-count {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+  color: #60a5fa;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  white-space: nowrap;
+} */
+
+/* 筛选标签 */
+.filter-tag {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+.filter-tag:hover, .filter-tag:focus {
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+}
+
+.clear-btn, .clear-single-btn {
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.15), rgba(75, 85, 99, 0.15));
+  border: 1px solid rgba(107, 114, 128, 0.4);
+  color: #9ca3af;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.clear-btn:hover, .clear-single-btn:hover {
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.25), rgba(75, 85, 99, 0.25));
+  border-color: #6b7280;
+  color: #d1d5db;
+}
+
+.more-btn {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.more-btn:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(139, 92, 246, 0.25));
+  border-color: #3b82f6;
+  color: #93c5fd;
+}
+
+.search-input {
+  transition: all 0.3s ease;
+}
+.search-input:focus {
+  border-color: #3b82f6;
+  background-color: #374151;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+} 
