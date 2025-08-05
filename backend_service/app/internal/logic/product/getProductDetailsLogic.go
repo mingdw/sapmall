@@ -26,7 +26,6 @@ func NewGetProductDetailsLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *GetProductDetailsLogic) GetProductDetails(req *types.GetProductReq) (resp *types.GetProductResp, err error) {
-	// todo: add your logic here and delete this line
 	// 获取单个商品信息
 	productRepository := repository.NewProductRepository(l.svcCtx.GormDB)
 
