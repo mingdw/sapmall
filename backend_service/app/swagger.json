@@ -134,6 +134,1317 @@
           "user"
         ]
       }
+    },
+    "/api/address/getAllAddress": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "address"
+        ],
+        "summary": "GetAllAddress",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "level",
+                "parent_code"
+              ],
+              "properties": {
+                "level": {
+                  "type": "integer"
+                },
+                "parent_code": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "address_node": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "code",
+                      "name",
+                      "parent_code",
+                      "level",
+                      "province_code",
+                      "province_name",
+                      "city_code",
+                      "city_name",
+                      "district_code",
+                      "district_name",
+                      "street_code",
+                      "street_name",
+                      "full_address",
+                      "post_code",
+                      "sort",
+                      "createdAt",
+                      "updatedAt",
+                      "isDeleted",
+                      "creator",
+                      "updator",
+                      "children"
+                    ],
+                    "properties": {
+                      "children": {
+                        "description": "添加子节点字段，用于树形结构",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "code",
+                            "name",
+                            "parent_code",
+                            "level",
+                            "province_code",
+                            "province_name",
+                            "city_code",
+                            "city_name",
+                            "district_code",
+                            "district_name",
+                            "street_code",
+                            "street_name",
+                            "full_address",
+                            "post_code",
+                            "sort",
+                            "children"
+                          ],
+                          "properties": {
+                            "children": {
+                              "description": "添加子节点字段，用于树形结构",
+                              "type": "array",
+                              "items": {
+                                "type": "object"
+                              }
+                            },
+                            "city_code": {
+                              "type": "string"
+                            },
+                            "city_name": {
+                              "type": "string"
+                            },
+                            "code": {
+                              "type": "string"
+                            },
+                            "district_code": {
+                              "type": "string"
+                            },
+                            "district_name": {
+                              "type": "string"
+                            },
+                            "full_address": {
+                              "type": "string"
+                            },
+                            "id": {
+                              "type": "integer"
+                            },
+                            "level": {
+                              "type": "integer"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "parent_code": {
+                              "type": "string"
+                            },
+                            "post_code": {
+                              "type": "string"
+                            },
+                            "province_code": {
+                              "type": "string"
+                            },
+                            "province_name": {
+                              "type": "string"
+                            },
+                            "sort": {
+                              "type": "integer"
+                            },
+                            "street_code": {
+                              "type": "string"
+                            },
+                            "street_name": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "city_code": {
+                        "type": "string"
+                      },
+                      "city_name": {
+                        "type": "string"
+                      },
+                      "code": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "integer"
+                      },
+                      "creator": {
+                        "type": "string"
+                      },
+                      "district_code": {
+                        "type": "string"
+                      },
+                      "district_name": {
+                        "type": "string"
+                      },
+                      "full_address": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "isDeleted": {
+                        "type": "integer"
+                      },
+                      "level": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "parent_code": {
+                        "type": "string"
+                      },
+                      "post_code": {
+                        "type": "string"
+                      },
+                      "province_code": {
+                        "type": "string"
+                      },
+                      "province_name": {
+                        "type": "string"
+                      },
+                      "sort": {
+                        "type": "integer"
+                      },
+                      "street_code": {
+                        "type": "string"
+                      },
+                      "street_name": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "integer"
+                      },
+                      "updator": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/address/userAddress": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "address"
+        ],
+        "summary": "获取用户地址",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "userId",
+                "userCode"
+              ],
+              "properties": {
+                "userCode": {
+                  "type": "string"
+                },
+                "userId": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_addresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "userId",
+                      "userCode",
+                      "reciverName",
+                      "reciverPhone",
+                      "provinceCode",
+                      "provinceName",
+                      "cityCode",
+                      "cityName",
+                      "districtCode",
+                      "districtName",
+                      "streetCode",
+                      "streetName",
+                      "houseAddress",
+                      "fullAddress",
+                      "isDefault",
+                      "longitude",
+                      "latitude",
+                      "createdAt",
+                      "updatedAt",
+                      "DeletedAt"
+                    ],
+                    "properties": {
+                      "DeletedAt": {
+                        "type": "integer"
+                      },
+                      "cityCode": {
+                        "description": "市编码",
+                        "type": "string"
+                      },
+                      "cityName": {
+                        "description": "市名称",
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "integer"
+                      },
+                      "districtCode": {
+                        "description": "区编码",
+                        "type": "string"
+                      },
+                      "districtName": {
+                        "description": "区名称",
+                        "type": "string"
+                      },
+                      "fullAddress": {
+                        "description": "完整地址",
+                        "type": "string"
+                      },
+                      "houseAddress": {
+                        "description": "门牌号",
+                        "type": "string"
+                      },
+                      "id": {
+                        "description": "主键id",
+                        "type": "integer"
+                      },
+                      "isDefault": {
+                        "description": "是否默认",
+                        "type": "integer"
+                      },
+                      "latitude": {
+                        "description": "纬度",
+                        "type": "string"
+                      },
+                      "longitude": {
+                        "description": "经度",
+                        "type": "string"
+                      },
+                      "provinceCode": {
+                        "description": "省编码",
+                        "type": "string"
+                      },
+                      "provinceName": {
+                        "description": "省名称",
+                        "type": "string"
+                      },
+                      "reciverName": {
+                        "description": "收货人姓名",
+                        "type": "string"
+                      },
+                      "reciverPhone": {
+                        "description": "手机号",
+                        "type": "string"
+                      },
+                      "streetCode": {
+                        "description": "街道编码",
+                        "type": "string"
+                      },
+                      "streetName": {
+                        "description": "街道名称",
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "integer"
+                      },
+                      "userCode": {
+                        "description": "用户编码",
+                        "type": "string"
+                      },
+                      "userId": {
+                        "description": "用户id",
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/address/userAddress/addAndUpdate": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "address"
+        ],
+        "summary": "创建或者修改用户地址",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "userId",
+                "userCode",
+                "reciverName",
+                "reciverPhone",
+                "provinceCode",
+                "provinceName",
+                "cityCode",
+                "cityName",
+                "districtCode",
+                "districtName",
+                "streetCode",
+                "streetName",
+                "houseAddress",
+                "fullAddress",
+                "isDefault",
+                "longitude",
+                "latitude",
+                "isDeleted",
+                "creator",
+                "updator"
+              ],
+              "properties": {
+                "cityCode": {
+                  "description": "市编码",
+                  "type": "string"
+                },
+                "cityName": {
+                  "description": "市名称",
+                  "type": "string"
+                },
+                "creator": {
+                  "description": "创建人",
+                  "type": "string"
+                },
+                "districtCode": {
+                  "description": "区编码",
+                  "type": "string"
+                },
+                "districtName": {
+                  "description": "区名称",
+                  "type": "string"
+                },
+                "fullAddress": {
+                  "description": "完整地址",
+                  "type": "string"
+                },
+                "houseAddress": {
+                  "description": "门牌号",
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "isDefault": {
+                  "description": "是否默认",
+                  "type": "integer"
+                },
+                "isDeleted": {
+                  "description": "是否删除",
+                  "type": "integer"
+                },
+                "latitude": {
+                  "description": "纬度",
+                  "type": "string"
+                },
+                "longitude": {
+                  "description": "经度",
+                  "type": "string"
+                },
+                "provinceCode": {
+                  "description": "省编码",
+                  "type": "string"
+                },
+                "provinceName": {
+                  "description": "省名称",
+                  "type": "string"
+                },
+                "reciverName": {
+                  "description": "收货人姓名",
+                  "type": "string"
+                },
+                "reciverPhone": {
+                  "description": "手机号",
+                  "type": "string"
+                },
+                "streetCode": {
+                  "description": "街道编码",
+                  "type": "string"
+                },
+                "streetName": {
+                  "description": "街道名称",
+                  "type": "string"
+                },
+                "updator": {
+                  "type": "string"
+                },
+                "userCode": {
+                  "description": "用户编码",
+                  "type": "string"
+                },
+                "userId": {
+                  "description": "用户id",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/api/address/userAddress/delete/{id}": {
+      "delete": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "address"
+        ],
+        "summary": "删除用户",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/api/category/delete/{id}": {
+      "delete": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "category"
+        ],
+        "summary": "删除商品目录",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "category_id"
+              ],
+              "properties": {
+                "category_id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/api/category/getCategory": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "category"
+        ],
+        "summary": "获取商品目录",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "icon": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "isDeleted": {
+                  "type": "integer"
+                },
+                "level": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "parentCode": {
+                  "type": "string"
+                },
+                "parentId": {
+                  "type": "integer"
+                },
+                "sort": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/category/getCategoryTree": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "category"
+        ],
+        "summary": "获取商品目录树",
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "attrGroups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "name",
+                      "code",
+                      "sort",
+                      "type",
+                      "description",
+                      "status",
+                      "attrs"
+                    ],
+                    "properties": {
+                      "attrs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "name",
+                            "code",
+                            "type",
+                            "status",
+                            "groupId",
+                            "description",
+                            "sort"
+                          ],
+                          "properties": {
+                            "code": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "groupId": {
+                              "type": "integer"
+                            },
+                            "id": {
+                              "type": "integer"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "sort": {
+                              "type": "integer"
+                            },
+                            "status": {
+                              "type": "integer"
+                            },
+                            "type": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      },
+                      "code": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "sort": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "integer"
+                      },
+                      "type": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "children": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "name",
+                      "code",
+                      "level",
+                      "sort",
+                      "parentId",
+                      "icon",
+                      "attrGroups",
+                      "children"
+                    ],
+                    "properties": {
+                      "attrGroups": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "name",
+                            "code",
+                            "sort",
+                            "type",
+                            "description",
+                            "status",
+                            "attrs"
+                          ],
+                          "properties": {
+                            "attrs": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "code",
+                                  "type",
+                                  "status",
+                                  "groupId",
+                                  "description",
+                                  "sort"
+                                ],
+                                "properties": {
+                                  "code": {
+                                    "type": "string"
+                                  },
+                                  "description": {
+                                    "type": "string"
+                                  },
+                                  "groupId": {
+                                    "type": "integer"
+                                  },
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "sort": {
+                                    "type": "integer"
+                                  },
+                                  "status": {
+                                    "type": "integer"
+                                  },
+                                  "type": {
+                                    "type": "integer"
+                                  }
+                                }
+                              }
+                            },
+                            "code": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "id": {
+                              "type": "integer"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "sort": {
+                              "type": "integer"
+                            },
+                            "status": {
+                              "type": "integer"
+                            },
+                            "type": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      },
+                      "children": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "id",
+                            "name",
+                            "code",
+                            "level",
+                            "sort",
+                            "parentId",
+                            "icon",
+                            "attrGroups",
+                            "children"
+                          ],
+                          "properties": {
+                            "attrGroups": {
+                              "type": "array",
+                              "items": {
+                                "type": "object"
+                              }
+                            },
+                            "children": {
+                              "type": "array",
+                              "items": {
+                                "type": "object"
+                              }
+                            },
+                            "code": {
+                              "type": "string"
+                            },
+                            "icon": {
+                              "type": "string"
+                            },
+                            "id": {
+                              "type": "integer"
+                            },
+                            "level": {
+                              "type": "integer"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "parentId": {
+                              "type": "integer"
+                            },
+                            "sort": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      },
+                      "code": {
+                        "type": "string"
+                      },
+                      "icon": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer"
+                      },
+                      "level": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "parentId": {
+                        "type": "integer"
+                      },
+                      "sort": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "code": {
+                  "type": "string"
+                },
+                "icon": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "level": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "parentId": {
+                  "type": "integer"
+                },
+                "sort": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/category/modifyCategory": {
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "category"
+        ],
+        "summary": "修改商品目录",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "id",
+                "name",
+                "code",
+                "sort",
+                "parentId",
+                "parentCode",
+                "level",
+                "icon",
+                "status"
+              ],
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "icon": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "level": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "parentCode": {
+                  "type": "string"
+                },
+                "parentId": {
+                  "type": "integer"
+                },
+                "sort": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {}
+          }
+        }
+      }
+    },
+    "/api/product/getProductDetails": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "product"
+        ],
+        "summary": "查询产品详细信息",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "product_id",
+                "product_code"
+              ],
+              "properties": {
+                "product_code": {
+                  "type": "string"
+                },
+                "product_id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "msg": {
+                  "type": "string"
+                },
+                "product_info": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "creator_id",
+                    "title_en",
+                    "title_zh",
+                    "description_en",
+                    "description_zh",
+                    "price",
+                    "category",
+                    "status",
+                    "ipfs_hash",
+                    "inventory",
+                    "sales_count",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "properties": {
+                    "category": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "integer"
+                    },
+                    "creator_id": {
+                      "type": "string"
+                    },
+                    "description_en": {
+                      "type": "string"
+                    },
+                    "description_zh": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string"
+                    },
+                    "inventory": {
+                      "type": "integer"
+                    },
+                    "ipfs_hash": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "string"
+                    },
+                    "sales_count": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "title_en": {
+                      "type": "string"
+                    },
+                    "title_zh": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/product/products": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "https"
+        ],
+        "tags": [
+          "product"
+        ],
+        "summary": "分页查询多个产品",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "categoryCodes",
+                "productName",
+                "page",
+                "pageSize"
+              ],
+              "properties": {
+                "categoryCodes": {
+                  "description": "分类编码，多个用逗号分隔",
+                  "type": "string"
+                },
+                "page": {
+                  "description": "页码",
+                  "type": "integer"
+                },
+                "pageSize": {
+                  "description": "每页数量",
+                  "type": "integer"
+                },
+                "productName": {
+                  "description": "商品名称",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "msg": {
+                  "type": "string"
+                },
+                "products": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "creator_id",
+                      "title_en",
+                      "title_zh",
+                      "description_en",
+                      "description_zh",
+                      "price",
+                      "category",
+                      "status",
+                      "ipfs_hash",
+                      "inventory",
+                      "sales_count",
+                      "created_at",
+                      "updated_at"
+                    ],
+                    "properties": {
+                      "category": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "integer"
+                      },
+                      "creator_id": {
+                        "type": "string"
+                      },
+                      "description_en": {
+                        "type": "string"
+                      },
+                      "description_zh": {
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "inventory": {
+                        "type": "integer"
+                      },
+                      "ipfs_hash": {
+                        "type": "string"
+                      },
+                      "price": {
+                        "type": "string"
+                      },
+                      "sales_count": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "title_en": {
+                        "type": "string"
+                      },
+                      "title_zh": {
+                        "type": "string"
+                      },
+                      "updated_at": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {

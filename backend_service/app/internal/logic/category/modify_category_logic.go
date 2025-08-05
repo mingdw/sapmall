@@ -27,20 +27,20 @@ func NewModifyCategoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Mo
 	}
 }
 
-func (l *ModifyCategoryLogic) ModifyCategory(req *types.CategoryModifyRequest) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
+func (l *ModifyCategoryLogic) ModifyCategory(req *types.CategoryModifyRequest) error {
+
 	categoryRepository := repository.NewCategoryRepository(l.svcCtx.GormDB)
 
-	ecategory, err := categoryRepository.GetCategoryByCode(l.ctx, req.Code)
+	category, err := categoryRepository.GetCategoryByCode(l.ctx, req.Code)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if req.ID != 0 {
 		// 更新
-		if ecategory != nil && ecategory.ID != req.ID {
-			return nil, errors.New("code已存在")
+		if category != nil && category.ID != req.ID {
+			return errors.New("code已存在")
 		}
 		category := model.Category{
 			ID:         req.ID,
@@ -55,12 +55,12 @@ func (l *ModifyCategoryLogic) ModifyCategory(req *types.CategoryModifyRequest) (
 		}
 		err := categoryRepository.Update(l.ctx, &category)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	} else {
 		//先判断保存的code是否存在
-		if ecategory != nil {
-			return nil, errors.New("code已存在")
+		if category != nil {
+			return errors.New("code已存在")
 		}
 		// 创建
 		category := model.Category{
@@ -75,12 +75,9 @@ func (l *ModifyCategoryLogic) ModifyCategory(req *types.CategoryModifyRequest) (
 		}
 		err2 := categoryRepository.Create(l.ctx, &category)
 		if err2 != nil {
-			return nil, err2
+			return err2
 		}
 	}
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "success",
-		Data: nil,
-	}, nil
+
+	return nil
 }

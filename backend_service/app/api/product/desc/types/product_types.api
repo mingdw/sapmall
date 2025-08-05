@@ -49,7 +49,8 @@ type (
 
         // 获取商品信息请求
     GetProductReq {
-        ProductId string `json:"product_id"`
+        ProductId   int64  `json:"product_id"`
+        ProductCode string `json:"product_code"`
     }
 
         // 获取商品信息响应
@@ -61,12 +62,16 @@ type (
 
         // 商品列表请求
     ListProductsReq {
-        Page int64 `json:"page"`
-        PageSize int64 `json:"page_size"`
-        Category string `json:"category"`
-        Status string `json:"status"`
-        CreatorId string `json:"creator_id"`
-        Keyword string `json:"keyword"`
+//        Page int64 `json:"page"`
+//        PageSize int64 `json:"page_size"`
+//        Category string `json:"category"`
+//        Status string `json:"status"`
+//        CreatorId string `json:"creator_id"`
+//        Keyword string `json:"keyword"`
+        CategoryCodes string `json:"categoryCodes"` // 分类编码，多个用逗号分隔
+        ProductName   string `json:"productName"`   // 商品名称
+        Page          int    `json:"page"`          // 页码
+        PageSize      int    `json:"pageSize"`      // 每页数量
     }
 
         // 商品列表响应

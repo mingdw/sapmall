@@ -25,15 +25,15 @@ func NewDeleteCategoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *De
 	}
 }
 
-func (l *DeleteCategoryLogic) DeleteCategory(req *types.DeleteCategoryReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
+func (l *DeleteCategoryLogic) DeleteCategory(req *types.DeleteCategoryReq) error {
+
 	categoryRepository := repository.NewCategoryRepository(l.svcCtx.GormDB)
 	categoryAttrGroupRepository := repository.NewCategoryAttrGroupRepository(l.svcCtx.GormDB)
 	attrGroupRepository := repository.NewAttrGroupRepository(l.svcCtx.GormDB)
 
 	categoryAttrGroups, err := categoryAttrGroupRepository.FindByCategoryID(l.ctx, req.CategoryID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	attrGroupsIds := make([]uint, 0)
@@ -47,7 +47,7 @@ func (l *DeleteCategoryLogic) DeleteCategory(req *types.DeleteCategoryReq) (resp
 	if len(attrGroupsIds) > 0 {
 		err = attrGroupRepository.DeleteByCategoryID(l.ctx, attrGroupsIds)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
 
@@ -55,18 +55,14 @@ func (l *DeleteCategoryLogic) DeleteCategory(req *types.DeleteCategoryReq) (resp
 	if len(categoryIds) > 0 {
 		err = categoryAttrGroupRepository.DeleteByCategoryIDs(l.ctx, categoryIds)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
 
 	// 删除目录
 	err = categoryRepository.Delete(l.ctx, req.CategoryID)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "success",
-		Data: nil,
-	}, nil
+	return nil
 }

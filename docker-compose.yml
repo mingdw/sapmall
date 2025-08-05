@@ -48,6 +48,26 @@ services:
       - "2380:2380"
     networks:
       - sapmall-net
+  
+  app:
+    image: golang:1.24.3
+    container_name: sapmall-app
+    volumes:
+      - ./:/go/src/sapphire-mall
+    working_dir: /go/src/sapphire-mall/backend_service/app
+    command: go run sapmall_start.go
+    environment:
+      - TZ=Asia/Shanghai
+      - GO111MODULE=on
+      - GIN_MODE=release
+    ports:
+      - "8888:8888"
+    depends_on:
+      - mysql
+      - redis
+      - etcd
+    networks:
+      - sapmall-net
 
 networks:
   sapmall-net:
