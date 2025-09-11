@@ -1,0 +1,24 @@
+FROM quay.io/coreos/etcd:v3.5.13
+
+# 设置时区
+ENV TZ=Asia/Shanghai
+
+# 设置工作目录
+WORKDIR /etcd
+
+# 暴露端口
+EXPOSE 2379 2380
+
+# 设置默认环境变量
+ENV ETCD_NAME=etcd-node
+ENV ETCD_DATA_DIR=/etcd-data
+ENV ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+ENV ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+ENV ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+ENV ETCD_INITIAL_ADVERTISE_PEER_URLS=http://0.0.0.0:2380
+ENV ETCD_INITIAL_CLUSTER=etcd-node=http://0.0.0.0:2380
+ENV ETCD_INITIAL_CLUSTER_STATE=new
+ENV ETCD_INITIAL_CLUSTER_TOKEN=etcd-cluster-1
+
+# 启动命令
+CMD ["etcd"]
