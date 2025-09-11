@@ -1,0 +1,203 @@
+{
+  "nav": {
+    "home": "首页",
+    "coreValues": "核心价值",
+    "features": "平台功能",
+    "about": "关于我们",
+    "docs": "文档",
+    "launchApp": "启动应用",
+    "menu": "菜单"
+  },
+  "language": {
+    "zh": "中文",
+    "en": "English"
+  },
+  "hero": {
+    "title": "构建 Web3 虚拟商品交易生态",
+    "subtitle": "Sapphire Mall致力于打造全球领先的Web3虚拟商品交易平台，通过创新的流动性质押机制、DAO治理和多元化资产支持，为用户提供安全、高效、收益丰厚的交易体验。",
+    "features": {
+      "revenueSharing": "全球首创70%分成机制",
+      "daoGovernance": "DAO驱动治理",
+      "multiChain": "多链生态支持",
+      "globalService": "全球化服务"
+    },
+    "buttons": {
+      "startTrading": "开始交易",
+      "readWhitepaper": "阅读白皮书",
+      "watchDemo": "观看演示"
+    }
+  },
+  "stats": {
+    "tvl": "总锁定价值",
+    "activeUsers": "活跃用户",
+    "transactions": "交易笔数",
+    "apy": "平均年化收益",
+    "stakingRewards": "质押奖励",
+    "tvlChange": "↗ 24h +12.5%",
+    "usersChange": "↗ 30d +45%",
+    "transactionsChange": "↗ 7d +18%"
+  },
+  "coreValues": {
+    "title": "核心价值",
+    "subtitle": "我们致力于重新定义虚拟商品交易，为Web3生态创造真正的价值和意义",
+    "mission": {
+      "title": "我们的使命",
+      "content": "构建去中心化、安全且用户友好的Web3虚拟商品交易平台，通过创新的流动性质押机制和DAO治理，让每个参与者都能分享平台成长的收益，真正实现价值共创、利益共享。",
+      "tagline": "价值共创 • 利益共享"
+    },
+    "vision": {
+      "title": "我们的愿景",
+      "content": "成为全球领先的Web3虚拟商品交易生态系统，连接数百万用户和创作者，推动虚拟经济的繁荣发展，让数字资产在现实世界中发挥更大价值，构建真正属于社区的数字经济新时代。",
+      "tagline": "全球领先 • 社区驱动"
+    },
+    "advantages": {
+      "title": "平台核心优势",
+      "revenueSharing": {
+        "title": "70%收益分成",
+        "desc": "全球首创，平台70%手续费分配给质押用户"
+      },
+      "security": {
+        "title": "多重安全保障",
+        "desc": "智能合约审计、KYC认证、资金托管"
+      },
+      "governance": {
+        "title": "社区自治",
+        "desc": "DAO治理，社区决策，透明公开"
+      },
+      "ecosystem": {
+        "title": "全球生态",
+        "desc": "多链支持、多语言服务、全球覆盖"
+      }
+    },
+    "business": {
+      "title": "业务背景与市场定位",
+      "opportunity": {
+        "title": "市场机遇",
+        "items": [
+          "• 虚拟商品市场规模超过$500亿",
+          "• Web3游戏用户快速增长",
+          "• 数字资产交易需求激增",
+          "• 传统平台收费过高痛点"
+        ]
+      },
+      "advantages": {
+        "title": "竞争优势",
+        "items": [
+          "• 独创的收益分享机制",
+          "• 完整的DAO治理体系",
+          "• 多元化资产类型支持",
+          "• 专业的技术团队保障"
+        ]
+      },
+      "roadmap": {
+        "title": "发展规划",
+        "items": [
+          "• Q1: 主网上线，核心功能完善",
+          "• Q2: 多链部署，生态拓展",
+          "• Q3: 移动端发布，用户增长",
+          "• Q4: 全球化运营，战略合作"
+        ]
+      }
+    }
+  },
+  "features": {
+    "title": "平台功能",
+    "subtitle": "探索让Sapphire Mall成为领先Web3虚拟商品交易平台的强大功能",
+    "liquidityStaking": {
+      "title": "流动性质押",
+      "desc": "通过流动性质押获得70%平台手续费分成。提供流动性，获得SAP代币奖励。",
+      "highlight": "最高15%年化收益"
+    },
+    "daoGovernance": {
+      "title": "DAO治理",
+      "desc": "使用SAP代币参与平台治理。对提案进行投票，塑造平台未来。",
+      "highlight": "社区驱动"
+    },
+    "globalMarketplace": {
+      "title": "全球市场",
+      "desc": "多语言支持和多样化支付选项，在全球范围内交易虚拟商品。",
+      "highlight": "多语言支持"
+    },
+    "secureTrading": {
+      "title": "安全交易",
+      "desc": "基于区块链技术，智能合约自动化和托管服务确保交易安全。",
+      "highlight": "区块链保障"
+    },
+    "multiAsset": {
+      "title": "海量商品交易",
+      "desc": "支持游戏道具、数字艺术、虚拟土地、音乐、时装和收藏品等多平台资产。",
+      "highlight": "全品类覆盖"
+    },
+    "analytics": {
+      "title": "高级分析",
+      "desc": "实时市场数据、价格分析和交易洞察，帮助您做出明智决策。",
+      "highlight": "数据驱动"
+    }
+  },
+  "about": {
+    "title": "关于我们",
+    "subtitle": "构建虚拟商品交易的未来，赋能Web3生态发展",
+    "team": {
+      "title": "团队介绍",
+      "content": "Sapphire Mall由一支经验丰富的Web3团队打造，团队成员来自知名科技公司和区块链项目，在去中心化金融、智能合约开发、产品设计和全球化运营方面拥有丰富经验。我们致力于通过技术创新解决传统虚拟商品交易的痛点。",
+      "expertise": {
+        "title": "技术专长",
+        "desc": "区块链、智能合约、分布式系统、安全审计"
+      },
+      "experience": {
+        "title": "行业经验",
+        "desc": "累计5年+Web3开发经验，参与多个DeFi项目"
+      },
+      "vision": {
+        "title": "全球视野",
+        "desc": "多元化背景团队，深度理解全球市场需求"
+      }
+    },
+    "values": {
+      "innovation": {
+        "title": "创新驱动",
+        "desc": "持续探索Web3技术前沿，为用户提供最佳交易体验"
+      },
+      "userFirst": {
+        "title": "用户至上",
+        "desc": "以用户需求为中心，打造简单易用的Web3产品"
+      },
+      "community": {
+        "title": "社区共建",
+        "desc": "与社区成员共同建设和治理平台，实现价值共创"
+      }
+    },
+    "contact": {
+      "title": "联系我们",
+      "subtitle": "准备好加入虚拟商品交易的未来了吗？我们的团队随时为您提供支持",
+      "business": {
+        "title": "商务合作",
+        "email": "business@sapphiremall.com"
+      },
+      "support": {
+        "title": "技术支持",
+        "email": "support@sapphiremall.com"
+      },
+      "telegram": {
+        "title": "Telegram",
+        "handle": "@SapphireMallOfficial"
+      },
+      "discord": {
+        "title": "Discord",
+        "community": "SapphireMall Community"
+      },
+      "buttons": {
+        "startNow": "立即开始",
+        "joinCommunity": "加入社区"
+      }
+    },
+    "stats": {
+      "projects": "项目经验",
+      "support": "技术支持"
+    }
+  },
+  "footer": {
+    "tagline": "Web3虚拟商品交易的未来",
+    "copyright": "© 2025 Sapphire Mall. 保留所有权利。"
+  }
+}

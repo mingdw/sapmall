@@ -1,0 +1,349 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* 自定义样式 - 从原型中提取 */
+.gradient-border {
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  padding: 2px;
+  border-radius: 16px;
+}
+
+.gradient-border-content {
+  background: #1f2937;
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+
+.feature-card {
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+}
+
+.nav-link {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #60a5fa;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 50%;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.1) 0%, 
+    rgba(139, 92, 246, 0.1) 50%, 
+    rgba(59, 130, 246, 0.1) 100%);
+}
+
+.stats-counter {
+  font-variant-numeric: tabular-nums;
+}
+
+.language-dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  min-width: 120px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 50;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.launch-btn {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.launch-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.launch-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+.launch-btn:hover::before {
+  left: 100%;
+}
+
+.about-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(59, 130, 246, 0.25);
+  border-color: #3b82f6;
+}
+
+.about-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: all 0.6s ease;
+  z-index: 1;
+}
+
+.about-card:hover::before {
+  left: 100%;
+}
+
+.about-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.about-main-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-main-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+}
+
+.about-main-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.08), transparent);
+  transition: all 0.8s ease;
+  z-index: 1;
+}
+
+.about-main-card:hover::before {
+  left: 100%;
+}
+
+.about-main-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.about-value-card {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-value-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
+}
+
+.about-value-card:hover .about-value-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.about-value-icon {
+  transition: all 0.3s ease;
+}
+
+.about-contact-item {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.about-contact-item:hover {
+  transform: translateY(-4px);
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 12px;
+}
+
+.about-contact-item:hover .about-contact-icon {
+  transform: scale(1.15);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+}
+
+.about-contact-icon {
+  transition: all 0.3s ease;
+}
+
+.core-mission-card {
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.core-mission-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(59, 130, 246, 0.25);
+  border-color: #3b82f6;
+}
+
+.core-mission-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.12), transparent);
+  transition: all 0.7s ease;
+  z-index: 1;
+}
+
+.core-mission-card:hover::before {
+  left: 100%;
+}
+
+.core-mission-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.core-mission-card:hover .core-mission-icon {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+}
+
+.core-mission-icon {
+  transition: all 0.4s ease;
+}
+
+.core-advantage-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  cursor: pointer;
+}
+
+.core-advantage-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+}
+
+.core-advantage-card:hover .core-advantage-icon {
+  transform: scale(1.15) rotate(-5deg);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.core-advantage-icon {
+  transition: all 0.3s ease;
+}
+
+.core-business-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.core-business-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(59, 130, 246, 0.15);
+  border-color: #3b82f6;
+}
+
+.core-business-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.06), transparent);
+  transition: all 0.8s ease;
+  z-index: 1;
+}
+
+.core-business-card:hover::before {
+  left: 100%;
+}
+
+.core-business-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.core-business-section {
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.core-business-section:hover {
+  transform: translateY(-2px);
+}
+
+.core-business-section:hover h4 {
+  color: #60a5fa;
+}

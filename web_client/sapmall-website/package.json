@@ -1,78 +1,60 @@
 {
   "name": "sapmall-website",
-  "version": "1.2.4",
-  "description": "Sapphire Mall Website - Admin Dashboard System",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/creativetimofficial/argon-dashboard-react.git"
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@ant-design/icons": "^6.0.1",
+    "@fortawesome/fontawesome-svg-core": "^7.0.1",
+    "@fortawesome/free-brands-svg-icons": "^7.0.1",
+    "@fortawesome/free-solid-svg-icons": "^7.0.1",
+    "@fortawesome/react-fontawesome": "^3.0.2",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.126",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@types/react-router-dom": "^5.3.3",
+    "antd": "^5.27.3",
+    "autoprefixer": "^10.4.21",
+    "i18next": "^25.5.2",
+    "i18next-browser-languagedetector": "^8.2.0",
+    "i18next-http-backend": "^1.4.2",
+    "postcss": "^8.5.6",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-helmet-async": "^2.0.5",
+    "react-i18next": "^15.7.3",
+    "react-router-dom": "^7.8.2",
+    "react-scripts": "5.0.1",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
   },
-  "keywords": [
-    "react",
-    "reactjs",
-    "argon",
-    "argon-react",
-    "dashboard",
-    "dashboard-react",
-    "argon-dashboard",
-    "argon-dashboard-react"
-  ],
-  "author": "Creative Tim",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/creativetimofficial/argon-dashboard-react/issues"
-  },
-  "homepage": "https://sapphiremall.com/admin",
   "scripts": {
-    "start": "PORT=3003 FAST_REFRESH=true react-scripts start",
-    "start:3000": "FAST_REFRESH=true react-scripts start",
-    "build": "cross-env PUBLIC_URL=/ react-scripts build",
+    "start": "PORT=3003 react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
-    "compile:scss": "sass src/assets/scss/argon-dashboard-react.scss src/assets/css/argon-dashboard-react.css",
-    "minify:scss": "sass src/assets/scss/argon-dashboard-react.scss src/assets/css/argon-dashboard-react.min.css --style compressed",
-    "build:scss": "npm run compile:scss && npm run minify:scss && npm run map:scss"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
-  "dependencies": {
-    "@fortawesome/fontawesome-free": "6.5.1",
-    "ajv": "^8.16.0",
-    "bootstrap": "4.6.2",
-    "chart.js": "2.9.4",
-    "classnames": "2.3.2",
-    "moment": "2.29.4",
-    "nouislider": "15.4.0",
-    "react": "18.2.0",
-    "react-chartjs-2": "2.11.2",
-    "react-copy-to-clipboard": "5.1.0",
-    "react-datetime": "3.2.0",
-    "react-dom": "18.2.0",
-    "react-router-dom": "6.21.1",
-    "react-scripts": "5.0.1",
-    "reactstrap": "8.10.0",
-    "sass": "1.69.5"
-  },
-  "devDependencies": {
-    "gulp": "4.0.2",
-    "gulp-append-prepend": "1.0.9",
-    "cross-env": "^7.0.3"
-  },
-  "optionalDependencies": {
-    "eslint-plugin-flowtype": "8.0.3",
-    "typescript": "5.3.3"
-  },
-  "overrides": {
-    "svgo": "3.0.2",
-    "fsevents": "2.3.2",
-    "chokidar": "3.5.3"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
