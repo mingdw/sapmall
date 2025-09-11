@@ -19,7 +19,7 @@ const SEO: React.FC<SEOProps> = ({
   url = 'https://sapphiremall.com',
   type = 'website'
 }) => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   
   const currentLang = i18n.language;
   const siteName = 'Sapphire Mall';

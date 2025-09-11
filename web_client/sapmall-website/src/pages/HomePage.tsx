@@ -610,18 +610,18 @@ const HomePage: React.FC = () => {
               {t('footer.tagline')}
             </p>
             <div className="flex justify-center space-x-6 mb-6">
-              <a href="#" className="text-gray-400 hover:text-sapphire-400 transition-colors">
+              <button className="text-gray-400 hover:text-sapphire-400 transition-colors">
                 <FontAwesomeIcon icon={faTwitter} className="text-xl" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-sapphire-400 transition-colors">
+              </button>
+              <button className="text-gray-400 hover:text-sapphire-400 transition-colors">
                 <FontAwesomeIcon icon={faTelegram} className="text-xl" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-sapphire-400 transition-colors">
+              </button>
+              <button className="text-gray-400 hover:text-sapphire-400 transition-colors">
                 <FontAwesomeIcon icon={faDiscord} className="text-xl" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-sapphire-400 transition-colors">
+              </button>
+              <button className="text-gray-400 hover:text-sapphire-400 transition-colors">
                 <FontAwesomeIcon icon={faGithub} className="text-xl" />
-              </a>
+              </button>
             </div>
             <p className="text-sm text-gray-500">
               {t('footer.copyright')}
