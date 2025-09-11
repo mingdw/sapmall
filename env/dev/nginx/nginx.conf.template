@@ -1,0 +1,160 @@
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    # 后端服务配置 - IDE实例优先
+    upstream backend_servers {
+        server ${HOST_IP}:8888;  # IDE实例（优先）
+        server ${HOST_IP}:8889 backup;  # 容器实例（备份）
+    }
+
+    # 管理后台配置 - IDE实例优先
+    upstream admin_servers {
+        server ${HOST_IP}:3001;  # IDE实例（优先）
+        server ${HOST_IP}:3004 backup;  # 容器实例（备份）
+    }
+
+    # DApp应用配置 - IDE实例优先
+    upstream dapp_servers {
+        server ${HOST_IP}:3002;  # IDE实例（优先）
+        server ${HOST_IP}:3005 backup;  # 容器实例（备份）
+    }
+
+    # 官网首页配置 - IDE实例优先
+    upstream website_servers {
+        server ${HOST_IP}:3003;  # IDE实例（优先）
+        server ${HOST_IP}:3006 backup;  # 容器实例（备份）
+    }
+
+    # 管理后台 + API 服务器 - 端口 7101
+    server {
+        listen 7101;
+        server_name localhost;
+
+        # 后端 API 路由
+        location /api/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger UI 路由
+        location /swagger-ui/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger JSON 路由
+        location /swagger.json {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # 管理后台路由
+        location / {
+            proxy_pass http://admin_servers/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+
+    # DApp应用 + API 服务器 - 端口 7102
+    server {
+        listen 7102;
+        server_name localhost;
+
+        # 后端 API 路由
+        location /api/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger UI 路由
+        location /swagger-ui/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger JSON 路由
+        location /swagger.json {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # DApp应用路由
+        location / {
+            proxy_pass http://dapp_servers/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+
+    # 官网首页 + API 服务器 - 端口 7103
+    server {
+        listen 7103;
+        server_name localhost;
+
+        # 后端 API 路由
+        location /api/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger UI 路由
+        location /swagger-ui/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger JSON 路由
+        location /swagger.json {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # 官网首页路由
+        location / {
+            proxy_pass http://website_servers/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}

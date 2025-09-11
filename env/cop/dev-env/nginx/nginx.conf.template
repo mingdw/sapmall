@@ -1,0 +1,74 @@
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    # API Server 配置
+    upstream api_servers {
+        server ${HOST_IP}:5301;  # IDE实例
+        server ${HOST_IP}:5302 backup;  # 默认实例（备份）
+    }
+
+    # Mobile Web 配置
+    upstream mobile_web {
+        server ${HOST_IP}:5201;  # IDE实例
+        server ${HOST_IP}:5202 backup;  # 默认实例（备份）
+    }
+
+    # Desktop Web 配置
+    upstream desktop_web {
+        server ${HOST_IP}:5501;  # IDE实例
+        server ${HOST_IP}:5502 backup;  # 默认实例（备份）
+    }
+
+    server {
+        listen 5100;
+        server_name localhost;
+
+        # API Server 路由
+        location /api/ {
+            proxy_pass http://api_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Mobile Web 路由
+        location / {
+            proxy_pass http://mobile_web;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+
+    server {
+        listen 5101;
+        server_name localhost;
+
+        # API Server 路由
+        location /api/ {
+            proxy_pass http://api_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Desktop Web 路由
+        location / {
+            proxy_pass http://desktop_web;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+} 
