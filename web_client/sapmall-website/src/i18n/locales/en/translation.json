@@ -1,0 +1,203 @@
+{
+  "nav": {
+    "home": "Home",
+    "coreValues": "Core Values",
+    "features": "Platform Features",
+    "about": "About Us",
+    "docs": "Documentation",
+    "launchApp": "Launch App",
+    "menu": "Menu"
+  },
+  "language": {
+    "zh": "中文",
+    "en": "English"
+  },
+  "hero": {
+    "title": "Building the Web3 Virtual Goods Ecosystem",
+    "subtitle": "Sapphire Mall is committed to building the world's leading Web3 virtual goods trading platform, providing users with secure, efficient, and profitable trading experiences through innovative liquidity staking mechanisms, DAO governance, and diversified asset support.",
+    "features": {
+      "revenueSharing": "World's First 70% Revenue Sharing",
+      "daoGovernance": "DAO-Driven Governance",
+      "multiChain": "Multi-Chain Support",
+      "globalService": "Global Service"
+    },
+    "buttons": {
+      "startTrading": "Start Trading",
+      "readWhitepaper": "Read Whitepaper",
+      "watchDemo": "Watch Demo"
+    }
+  },
+  "stats": {
+    "tvl": "Total Value Locked",
+    "activeUsers": "Active Users",
+    "transactions": "Total Transactions",
+    "apy": "Average APY",
+    "stakingRewards": "Staking Rewards",
+    "tvlChange": "↗ 24h +12.5%",
+    "usersChange": "↗ 30d +45%",
+    "transactionsChange": "↗ 7d +18%"
+  },
+  "coreValues": {
+    "title": "Core Values",
+    "subtitle": "We are committed to redefining virtual goods trading and creating real value and meaning for the Web3 ecosystem",
+    "mission": {
+      "title": "Our Mission",
+      "content": "Build a decentralized, secure, and user-friendly Web3 virtual goods trading platform. Through innovative liquidity staking mechanisms and DAO governance, enable every participant to share in the platform's growth, truly achieving value co-creation and benefit sharing.",
+      "tagline": "Value Co-creation • Benefit Sharing"
+    },
+    "vision": {
+      "title": "Our Vision",
+      "content": "Become the world's leading Web3 virtual goods trading ecosystem, connecting millions of users and creators, promoting the prosperity of the virtual economy, enabling digital assets to play greater value in the real world, and building a new era of digital economy that truly belongs to the community.",
+      "tagline": "Global Leadership • Community Driven"
+    },
+    "advantages": {
+      "title": "Platform Core Advantages",
+      "revenueSharing": {
+        "title": "70% Revenue Sharing",
+        "desc": "World's first 70% platform fees distributed to staking users"
+      },
+      "security": {
+        "title": "Multi-layer Security",
+        "desc": "Smart contract audits, KYC verification, fund escrow"
+      },
+      "governance": {
+        "title": "Community Governance",
+        "desc": "DAO governance, community decisions, transparent and open"
+      },
+      "ecosystem": {
+        "title": "Global Ecosystem",
+        "desc": "Multi-chain support, multi-language service, global coverage"
+      }
+    },
+    "business": {
+      "title": "Business Background & Market Positioning",
+      "opportunity": {
+        "title": "Market Opportunity",
+        "items": [
+          "• Virtual goods market exceeds $50B",
+          "• Rapid growth of Web3 gaming users",
+          "• Surging demand for digital asset trading",
+          "• Traditional platforms' high fee pain points"
+        ]
+      },
+      "advantages": {
+        "title": "Competitive Advantages",
+        "items": [
+          "• Unique revenue sharing mechanism",
+          "• Complete DAO governance system",
+          "• Diversified asset type support",
+          "• Professional technical team guarantee"
+        ]
+      },
+      "roadmap": {
+        "title": "Development Roadmap",
+        "items": [
+          "• Q1: Mainnet launch, core features",
+          "• Q2: Multi-chain deployment, ecosystem expansion",
+          "• Q3: Mobile release, user growth",
+          "• Q4: Global operations, strategic partnerships"
+        ]
+      }
+    }
+  },
+  "features": {
+    "title": "Platform Features",
+    "subtitle": "Discover the powerful features that make Sapphire Mall the leading Web3 virtual goods trading platform",
+    "liquidityStaking": {
+      "title": "Liquidity Staking",
+      "desc": "Earn 70% of platform fees through liquidity staking. Provide liquidity and get rewarded with SAP tokens.",
+      "highlight": "Up to 15% APY"
+    },
+    "daoGovernance": {
+      "title": "DAO Governance",
+      "desc": "Participate in platform governance with SAP tokens. Vote on proposals and shape the future of the platform.",
+      "highlight": "Community Driven"
+    },
+    "globalMarketplace": {
+      "title": "Global Marketplace",
+      "desc": "Trade virtual goods globally with multi-language support and diverse payment options.",
+      "highlight": "Multi-Language"
+    },
+    "secureTrading": {
+      "title": "Secure Trading",
+      "desc": "Built on blockchain technology with smart contract automation and escrow services for secure transactions.",
+      "highlight": "Blockchain Secured"
+    },
+    "multiAsset": {
+      "title": "Massive Commodity Trading",
+      "desc": "Support for gaming items, digital art, virtual land, music, fashion, and collectibles across multiple platforms.",
+      "highlight": "All Categories"
+    },
+    "analytics": {
+      "title": "Advanced Analytics",
+      "desc": "Real-time market data, price analytics, and trading insights to help you make informed decisions.",
+      "highlight": "Data Driven"
+    }
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "Building the Future of Virtual Goods Trading, Empowering Web3 Ecosystem Development",
+    "team": {
+      "title": "Team Introduction",
+      "content": "Sapphire Mall is built by an experienced Web3 team, with members from renowned technology companies and blockchain projects, possessing rich experience in decentralized finance, smart contract development, product design, and global operations. We are committed to solving the pain points of traditional virtual goods trading through technological innovation.",
+      "expertise": {
+        "title": "Technical Expertise",
+        "desc": "Blockchain, Smart Contracts, Distributed Systems, Security Auditing"
+      },
+      "experience": {
+        "title": "Industry Experience",
+        "desc": "5+ years of Web3 development experience, participated in multiple DeFi projects"
+      },
+      "vision": {
+        "title": "Global Vision",
+        "desc": "Diverse background team with deep understanding of global market needs"
+      }
+    },
+    "values": {
+      "innovation": {
+        "title": "Innovation Driven",
+        "desc": "Continuously exploring Web3 technology frontiers to provide users with the best trading experience"
+      },
+      "userFirst": {
+        "title": "User First",
+        "desc": "User-centric approach, creating simple and easy-to-use Web3 products"
+      },
+      "community": {
+        "title": "Community Co-creation",
+        "desc": "Building and governing the platform together with community members to achieve value co-creation"
+      }
+    },
+    "contact": {
+      "title": "Contact Us",
+      "subtitle": "Ready to join the future of virtual goods trading? Our team is always here to support you",
+      "business": {
+        "title": "Business Cooperation",
+        "email": "business@sapphiremall.com"
+      },
+      "support": {
+        "title": "Technical Support",
+        "email": "support@sapphiremall.com"
+      },
+      "telegram": {
+        "title": "Telegram",
+        "handle": "@SapphireMallOfficial"
+      },
+      "discord": {
+        "title": "Discord",
+        "community": "SapphireMall Community"
+      },
+      "buttons": {
+        "startNow": "Get Started Now",
+        "joinCommunity": "Join Community"
+      }
+    },
+    "stats": {
+      "projects": "Project Experience",
+      "support": "Technical Support"
+    }
+  },
+  "footer": {
+    "tagline": "The future of Web3 virtual goods trading",
+    "copyright": "© 2025 Sapphire Mall. All rights reserved."
+  }
+}
