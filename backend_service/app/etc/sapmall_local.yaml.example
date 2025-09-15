@@ -1,0 +1,42 @@
+Name: sapmall
+Mode: dev
+Host: 0.0.0.0
+Port: 8888
+Timeout: 10000
+
+Mysql:
+  Host: 127.0.0.1
+  Port: 3306
+  User: root
+  Password: "your-mysql-password"
+  DBName: sapmall
+  MaxOpenConns: 100
+  MaxIdleConns: 10
+  ConnMaxLifetime: 3600
+
+Redis:
+  Host: 127.0.0.1
+  Port: 6379
+  Password: ""
+  DB: 0
+
+Cos:
+  secretId: "your-tencent-secret-id"
+  secretKey: "your-tencent-secret-key"
+  bucketName: "your-bucket-name"
+  region: "ap-guangzhou"
+
+Auth:
+  AccessSecret: "your-jwt-secret"
+  AccessExpire: 86400
+  StartAuth: false
+
+Log:
+  ServiceName: sapmall
+  Mode: file
+  Level: info
+  Filename: logs/sapmall.log
+  MaxSize: 200
+  MaxAge: 7
+  MaxBackups: 10
+  Compress: true
