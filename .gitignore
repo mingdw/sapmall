@@ -7,6 +7,11 @@ vendor/
 .env.production
 .env.development
 
+# 后端配置文件（包含敏感信息）
+backend_service/app/etc/sapmall_local.yaml
+backend_service/app/etc/sapmall_dev.yaml
+backend_service/app/etc/sapmall_test.yaml
+
 # 日志文件
 *.log
 logs/
