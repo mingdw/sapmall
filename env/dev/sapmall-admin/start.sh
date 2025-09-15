@@ -39,7 +39,7 @@ echo -e "${GREEN}使用容器运行时: $CONTAINER_RUNTIME${NC}"
 
 # 设置变量
 CONTAINER_NAME="sapmall-admin"
-ADMIN_PORT=3004
+ADMIN_PORT=3001  # 容器映射到3001端口
 
 # 删除已有容器和镜像
 echo -e "${YELLOW}正在删除已有的SapMall Admin容器和镜像...${NC}"

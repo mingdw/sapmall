@@ -10,11 +10,11 @@ RUN npm install -g serve
 COPY web_client/sapmall-admin/build ./build
 
 # 设置环境变量
-ENV PORT=3004
+ENV PORT=3001
 ENV HOST=0.0.0.0
 
 # 暴露端口
-EXPOSE 3004
+EXPOSE 3001
 
 # 启动应用，使用serve提供静态文件服务
-CMD ["serve", "-s", "build", "-l", "3004"]
+CMD ["serve", "-s", "build", "-l", "3001"]

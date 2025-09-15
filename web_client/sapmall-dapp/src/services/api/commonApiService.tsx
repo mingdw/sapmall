@@ -12,6 +12,7 @@ interface LoginReq {
 
 interface LoginResp {
   token: string;
+  user_id: string;
 }
 
 interface HealthCheckResp {

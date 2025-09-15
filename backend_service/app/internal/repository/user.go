@@ -75,17 +75,27 @@ func (r *userRepository) List(ctx context.Context, offset, limit int) ([]*model.
 func (r *userRepository) GetByAddress(ctx context.Context, address string) (*model.User, error) {
 	var user model.User
 	err := r.db.WithContext(ctx).Where("user_code = ? and is_deleted = ?", address, "0").First(&user).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
-		return nil, err
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil // 用户不存在，返回 nil, nil
+		}
+		return nil, err // 其他错误
 	}
-	return nil, nil
+	return &user, nil // 找到用户，返回用户信息
 }
 
+// GetMaxID 获取最大ID，处理空表情况
 func (r *userRepository) GetMaxID(ctx context.Context) (int64, error) {
-	var maxID int64
+	var maxID *int64 // 使用指针类型处理 NULL 值
 	err := r.db.WithContext(ctx).Model(&model.User{}).Select("MAX(id)").Scan(&maxID).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
+	if err != nil {
 		return 0, err
 	}
-	return maxID, nil
+
+	// 如果 maxID 为 nil（表为空），返回 0
+	if maxID == nil {
+		return 0, nil
+	}
+
+	return *maxID, nil
 }
