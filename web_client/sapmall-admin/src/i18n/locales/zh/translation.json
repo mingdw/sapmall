@@ -1,0 +1,24 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "search": "搜索",
+    "submit": "提交",
+    "confirm": "确认",
+    "success": "成功",
+    "error": "错误",
+    "warning": "警告",
+    "info": "信息"
+  },
+  "navigation": {
+    "dashboard": "仪表板"
+  },
+  "dashboard": {
+    "title": "SapMall 管理后台",
+    "welcome": "欢迎使用 SapMall 管理后台"
+  }
+}

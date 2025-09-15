@@ -1,69 +1,51 @@
 {
-  "name": "sapphire-mall-web",
+  "name": "sapmall-dapp",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "dev:3002": "WATCHPACK_POLLING=true next dev -p 3002",
-    "build": "next build",
-    "build:analyze": "ANALYZE=true next build",
-    "build:production": "NODE_ENV=production next build",
-    "start": "next start -p 3002",
-    "lint": "next lint",
-    "type-check": "tsc --noEmit",
-    "clean": "rm -rf .next out node_modules/.cache",
-    "prebuild": "npm run clean",
-    "postbuild": "echo 'Build completed successfully!'"
-  },
   "dependencies": {
-    "@ant-design/icons": "^5.2.5",
-    "@hookform/resolvers": "^3.9.0",
-    "@rainbow-me/rainbowkit": "^2.0.0",
-    "@tailwindcss/forms": "^0.5.7",
-    "@tailwindcss/typography": "^0.5.10",
-    "@tanstack/react-query": "^5.59.16",
-    "@types/node": "^22.10.2",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "@web3modal/ethereum": "^2.7.1",
-    "@web3modal/react": "^2.7.1",
-    "antd": "^5.15.7",
-    "autoprefixer": "^10.4.20",
-    "axios": "^1.7.9",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "critters": "^0.0.23",
-    "ethers": "^6.12.0",
-    "i18next": "^25.4.1",
-    "i18next-browser-languagedetector": "^8.0.2",
-    "i18next-http-backend": "^2.5.0",
-    "lucide-react": "^0.468.0",
-    "next": "14.2.5",
-    "next-themes": "^0.4.4",
-    "pino-pretty": "^13.1.1",
-    "postcss": "^8.4.49",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-hook-form": "^7.53.2",
-    "react-hot-toast": "^2.4.1",
-    "react-i18next": "^15.1.1",
-    "swr": "^2.3.0",
-    "tailwind-merge": "^2.2.1",
-    "tailwindcss": "^3.4.1",
-    "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.6.3",
-    "viem": "^2.15.0",
-    "wagmi": "^2.10.5",
-    "zod": "^3.23.8",
-    "zustand": "^4.5.2"
+    "@ant-design/icons": "^6.0.1",
+    "@fortawesome/fontawesome-svg-core": "^7.0.1",
+    "@fortawesome/free-brands-svg-icons": "^7.0.1",
+    "@fortawesome/free-solid-svg-icons": "^7.0.1",
+    "@fortawesome/react-fontawesome": "^3.0.2",
+    "@types/node": "^16.18.126",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/react-router-dom": "^5.3.3",
+    "ajv": "^8.17.1",
+    "antd": "^5.27.3",
+    "autoprefixer": "^10.4.21",
+    "i18next": "^25.5.2",
+    "i18next-browser-languagedetector": "^8.2.0",
+    "postcss": "^8.5.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^15.7.3",
+    "react-router-dom": "^7.8.2",
+    "react-scripts": "5.0.1",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.0.0"
   },
-  "devDependencies": {
-    "@types/ws": "^8.5.10",
-    "@typescript-eslint/eslint-plugin": "^8.15.0",
-    "@typescript-eslint/parser": "^8.15.0",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.5",
-    "prettier": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.5.12"
+  "scripts": {
+    "start": "PORT=3004 react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

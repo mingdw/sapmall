@@ -14,22 +14,22 @@ http {
         server ${HOST_IP}:8889 backup;  # 容器实例（备份）
     }
 
-    # 管理后台配置 - IDE实例优先
+    # 管理后台配置 - 容器实例优先
     upstream admin_servers {
-        server ${HOST_IP}:3001;  # IDE实例（优先）
-        server ${HOST_IP}:3004 backup;  # 容器实例（备份）
+        server ${HOST_IP}:3004;  # 容器实例（优先）
+        server ${HOST_IP}:3001 backup;  # IDE实例（备份）
     }
 
-    # DApp应用配置 - IDE实例优先
+    # DApp应用配置 - 容器实例优先
     upstream dapp_servers {
-        server ${HOST_IP}:3002;  # IDE实例（优先）
-        server ${HOST_IP}:3005 backup;  # 容器实例（备份）
+        server ${HOST_IP}:3005;  # 容器实例（优先）
+        server ${HOST_IP}:3002 backup;  # IDE实例（备份）
     }
 
-    # 官网首页配置 - IDE实例优先
+    # 官网首页配置 - 容器实例优先
     upstream website_servers {
-        server ${HOST_IP}:3003;  # IDE实例（优先）
-        server ${HOST_IP}:3006 backup;  # 容器实例（备份）
+        server ${HOST_IP}:3006;  # 容器实例（优先）
+        server ${HOST_IP}:3003 backup;  # IDE实例（备份）
     }
 
     # 管理后台 + API 服务器 - 端口 7101

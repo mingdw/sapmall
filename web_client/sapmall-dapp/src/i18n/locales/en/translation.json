@@ -1,0 +1,54 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info",
+    "explore": "Explore",
+    "connect": "Connect",
+    "stake": "Stake",
+    "participate": "Participate"
+  },
+  "navigation": {
+    "home": "Home",
+    "marketplace": "Marketplace",
+    "wallet": "Wallet",
+    "staking": "Staking",
+    "exchange": "Exchange",
+    "dao": "DAO",
+    "help": "Help Center"
+  },
+  "user": {
+    "profile": "Profile",
+    "cart": "My Cart",
+    "favorites": "My Favorites",
+    "orders": "My Orders",
+    "history": "Transaction History",
+    "settings": "Settings",
+    "disconnect": "Disconnect"
+  },
+  "homepage": {
+    "title": "SapMall DApp",
+    "subtitle": "Decentralized E-commerce Platform",
+    "welcome": "Welcome to SapMall DApp",
+    "description": "Experience decentralized e-commerce ecosystem and enjoy the new shopping experience brought by Web3",
+    "ready": "System is ready, waiting for feature modules configuration...",
+    "marketplace": "Marketplace",
+    "marketplaceDesc": "Browse and purchase decentralized products",
+    "wallet": "Wallet",
+    "walletDesc": "Manage your digital assets",
+    "staking": "Staking",
+    "stakingDesc": "Participate in ecosystem governance for rewards",
+    "dao": "DAO Governance",
+    "daoDesc": "Participate in community decisions and governance"
+  }
+}
