@@ -8,6 +8,8 @@
     "@fortawesome/free-brands-svg-icons": "^7.0.1",
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
     "@fortawesome/react-fontawesome": "^3.0.2",
+    "@rainbow-me/rainbowkit": "^2.2.8",
+    "@tanstack/react-query": "^5.87.4",
     "@types/node": "^16.18.126",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
@@ -15,6 +17,7 @@
     "ajv": "^8.17.1",
     "antd": "^5.27.3",
     "autoprefixer": "^10.4.21",
+    "ethers": "^5.8.0",
     "i18next": "^25.5.2",
     "i18next-browser-languagedetector": "^8.2.0",
     "postcss": "^8.5.6",
@@ -24,7 +27,9 @@
     "react-router-dom": "^7.8.2",
     "react-scripts": "5.0.1",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "wagmi": "^2.16.9",
+    "zustand": "^5.0.8"
   },
   "scripts": {
     "start": "PORT=3004 react-scripts start",
