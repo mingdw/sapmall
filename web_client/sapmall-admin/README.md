@@ -1,12 +1,73 @@
-# React + Vite
+# SapMall Admin
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SapMall 管理后台系统
 
-Currently, two official plugins are available:
+## 技术栈
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React 19.1.1
+- TypeScript 4.9.5
+- Ant Design 5.27.3
+- Tailwind CSS 3.4.17
+- React Router DOM 7.8.2
+- i18next (国际化)
+- Create React App
 
-## Expanding the ESLint configuration
+## 开发
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 安装依赖
+
+```bash
+npm install
+```
+
+### 启动开发服务器
+
+```bash
+npm start
+```
+
+应用将在 http://localhost:3002 上运行
+
+### 构建生产版本
+
+```bash
+npm run build
+```
+
+### 运行测试
+
+```bash
+npm test
+```
+
+## 项目结构
+
+```
+src/
+├── components/          # 通用组件
+├── layout/             # 布局组件
+├── pages/              # 页面组件
+├── i18n/               # 国际化配置
+├── types/              # TypeScript 类型定义
+├── utils/              # 工具函数
+├── App.tsx             # 主应用组件
+├── index.tsx           # 入口文件
+└── index.css           # 全局样式
+```
+
+## 功能特性
+
+- 📱 响应式设计
+- 🌍 国际化支持（中文/英文）
+- 🎨 现代化 UI 设计
+- 📊 数据可视化
+- 🔐 权限管理
+- 📈 实时数据更新
+
+## 开发规范
+
+- 使用 TypeScript 进行类型检查
+- 遵循 React Hooks 最佳实践
+- 使用 Tailwind CSS 进行样式开发
+- 组件采用函数式组件 + Hooks
+- 使用 Ant Design 组件库

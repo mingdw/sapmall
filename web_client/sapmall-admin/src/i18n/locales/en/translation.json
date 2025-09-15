@@ -1,0 +1,24 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info"
+  },
+  "navigation": {
+    "dashboard": "Dashboard"
+  },
+  "dashboard": {
+    "title": "SapMall Admin Dashboard",
+    "welcome": "Welcome to SapMall Admin Dashboard"
+  }
+}
