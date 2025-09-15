@@ -44,6 +44,7 @@ type (
 	// 登录响应
 	LoginResp {
 		Token string `json:"token"`
+		UserId string `json:"user_id"`
 	}
 )
 

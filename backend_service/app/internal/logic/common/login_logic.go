@@ -75,11 +75,11 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		}
 		maxID++
 
-		avatar, err := createUserAvatar(req.WalletAddress, l.svcCtx)
-		if err != nil {
-			logx.Errorf("create user avatar failed: %v", err)
-			return nil, err
-		}
+		// avatar, err := createUserAvatar(req.WalletAddress, l.svcCtx)
+		// if err != nil {
+		// 	logx.Errorf("create user avatar failed: %v", err)
+		// 	return nil, err
+		// }
 		userInfo = &model.User{
 			UniqueId:   fmt.Sprintf("U%d", maxID),
 			UserCode:   req.WalletAddress,
@@ -87,7 +87,6 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 			StatusDesc: "正常",
 			Type:       0,
 			TypeDesc:   "普通用户",
-			Avatar:     avatar,
 			CreatedAt:  time.Now(),
 			UpdatedAt:  time.Now(),
 		}
@@ -114,25 +113,30 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	}
 
 	return &types.LoginResp{
-		Token: token,
+		Token:  token,
+		UserId: fmt.Sprintf("%d", userInfo.ID),
 	}, nil
 
 }
 
 func VerifyEthWallet(address, nonce, signature string) error {
-	logx.Infof("address: %v, nonce: %v, signature: %v", address, nonce, signature)
 	addrKey := common.HexToAddress(address)
 	sig := hexutil.MustDecode(signature)
 	if sig[64] == 27 || sig[64] == 28 {
 		sig[64] -= 27
 	}
+
+	// 使用Ethereum标准前缀，与前端signMessageAsync一致
 	msg := fmt.Sprintf("\x19Ethereum Signed Message:\n%d%s", len(nonce), nonce)
 	msg256 := crypto.Keccak256([]byte(msg))
+
 	pubKey, err := crypto.SigToPub(msg256, sig)
 	if err != nil {
+		logx.Errorf("签名验证失败: %v", err)
 		return err
 	}
 	recoverAddr := crypto.PubkeyToAddress(*pubKey)
+
 	if recoverAddr != addrKey {
 		return errors.DefaultError("Address mismatch")
 	}

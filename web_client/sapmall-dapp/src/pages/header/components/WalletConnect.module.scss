@@ -1,0 +1,210 @@
+// web_client/sapmall-dapp/src/pages/header/components/WalletConnect.module.scss
+.userDropdown {
+  :global(.ant-dropdown-menu) {
+    background-color: #1f2937 !important;
+    border: 1px solid #4B5563 !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    min-width: 200px !important;
+  }
+
+  :global(.ant-dropdown-menu-item) {
+    color: #D1D5DB !important;
+    padding: 12px 16px !important;
+    border-bottom: none !important;
+    transition: all 0.2s !important;
+
+    &:hover {
+      background-color: #374151 !important;
+      color: #ffffff !important;
+    }
+  }
+
+  :global(.ant-dropdown-menu-item-divider) {
+    background-color: #4B5563 !important;
+    margin: 8px 0 !important;
+  }
+}
+
+.userButton {
+  background-color: #374151 !important;
+  border-color: #4B5563 !important;
+  color: #D1D5DB !important;
+  height: auto !important;
+  padding: 8px 16px !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid #4B5563 !important;
+  transition: all 0.2s !important;
+
+  &:hover {
+    background-color: #4B5563 !important;
+    border-color: #6B7280 !important;
+  }
+
+  &:focus {
+    background-color: #4B5563 !important;
+    border-color: #6B7280 !important;
+    box-shadow: none !important;
+  }
+}
+
+.networkButton {
+  background-color: #1F2937 !important;
+  border-color: #374151 !important;
+  color: #ffffff !important;
+  height: auto !important;
+  padding: 8px 16px !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid #374151 !important;
+  transition: all 0.2s !important;
+  min-width: 120px !important;
+  font-weight: 500 !important;
+
+  &:hover {
+    background-color: #374151 !important;
+    border-color: #4B5563 !important;
+  }
+
+  &:focus {
+    background-color: #374151 !important;
+    border-color: #4B5563 !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5) !important;
+  }
+}
+
+.networkIcon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  color: white;
+}
+
+.networkEthereum {
+  background: linear-gradient(135deg, #627eea, #4c6ef5);
+}
+
+.networkPolygon {
+  background: linear-gradient(135deg, #8247e5, #7c3aed);
+}
+
+.networkBsc {
+  background: linear-gradient(135deg, #f3ba2f, #fbbf24);
+}
+
+.userModal {
+  :global(.ant-modal-header) {
+    background-color: #f9fafb !important;
+    border-bottom: 1px solid #e5e7eb !important;
+  }
+
+  :global(.ant-modal-title) {
+    color: #111827 !important;
+  }
+
+  :global(.ant-modal-body) {
+    padding: 24px !important;
+  }
+}
+
+.menuItemWithBadge {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.badge {
+  margin-left: auto;
+  background-color: #ef4444;
+  color: white;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.badgePink {
+  background-color: #ec4899;
+}
+
+.disconnectItem {
+  color: #f87171 !important;
+
+  &:hover {
+    background-color: #374151 !important;
+    color: #fca5a5 !important;
+  }
+}
+
+// 自定义下拉菜单样式 - 与语言下拉保持一致
+:global(.custom-dropdown) {
+  .ant-dropdown-menu {
+    background: #1f2937 !important; // bg-gray-800
+    border: 1px solid #4b5563 !important; // border-gray-600
+    border-radius: 8px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+    padding: 8px 0 !important;
+    min-width: 150px !important;
+  }
+
+  .ant-dropdown-menu-item {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    
+    &:hover {
+      background: transparent !important;
+    }
+  }
+
+  .ant-dropdown-menu-item-divider {
+    background: #4b5563 !important; // border-gray-600
+    margin: 4px 0 !important;
+  }
+}
+
+// 更高优先级的选择器，确保覆盖Antd默认样式
+:global(.ant-dropdown.custom-dropdown) {
+  .ant-dropdown-menu {
+    background: #1f2937 !important;
+    border: 1px solid #4b5563 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+    padding: 8px 0 !important;
+    min-width: 150px !important;
+  }
+
+  .ant-dropdown-menu-item {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    
+    &:hover {
+      background: transparent !important;
+    }
+  }
+
+  .ant-dropdown-menu-item-divider {
+    background: #4b5563 !important;
+    margin: 4px 0 !important;
+  }
+}
+
+// 下拉菜单样式 - 与原型保持一致
+.dropdown {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.3s ease;
+}
+
+.dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}

@@ -26,7 +26,8 @@ type LoginReq struct {
 }
 
 type LoginResp struct {
-	Token string `json:"token"`
+	Token  string `json:"token"`
+	UserId string `json:"user_id"`
 }
 
 type VersionResp struct {

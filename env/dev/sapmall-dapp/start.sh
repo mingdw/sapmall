@@ -39,7 +39,7 @@ echo -e "${GREEN}使用容器运行时: $CONTAINER_RUNTIME${NC}"
 
 # 设置变量
 CONTAINER_NAME="sapmall-dapp"
-DAPP_PORT=3005
+DAPP_PORT=3002
 
 # 删除已有容器和镜像
 echo -e "${YELLOW}正在删除已有的SapMall DApp容器和镜像...${NC}"

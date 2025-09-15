@@ -39,7 +39,7 @@ echo -e "${GREEN}使用容器运行时: $CONTAINER_RUNTIME${NC}"
 
 # 设置变量
 CONTAINER_NAME="sapmall-website"
-WEBSITE_PORT=3006
+WEBSITE_PORT=3003
 
 # 删除已有容器和镜像
 echo -e "${YELLOW}正在删除已有的SapMall Website容器和镜像...${NC}"
