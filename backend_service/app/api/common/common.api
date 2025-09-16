@@ -14,8 +14,8 @@ type (
 	}
 	// 健康检查响应
 	HealthCheckResp {
-		Status  string `json:"status"`
-		Time    int64  `json:"time"`
+		Status string `json:"status"`
+		Time   int64  `json:"time"`
 	}
 	// 版本信息响应
 	VersionResp {
@@ -24,27 +24,27 @@ type (
 		GitCommit string `json:"git_commit"`
 		GoVersion string `json:"go_version"`
 	}
-
 	// 获取随机数请求
 	GetNonceByAddressReq {
 		WalletAddress string `path:"wallet_address"`
 	}
-
 	// 获取随机数响应
 	GetNonceByAddressResp {
 		Nonce string `json:"nonce"`
 	}
-
 	// 登录请求
 	LoginReq {
 		WalletAddress string `json:"wallet_address"`
 		Signature     string `json:"signature"`
 	}
-
 	// 登录响应
 	LoginResp {
-		Token string `json:"token"`
+		Token  string `json:"token"`
 		UserId string `json:"user_id"`
+	}
+	// 获取目录请求
+	GetCategoryTreeReq {
+		CategoryType int `path:"category_type"`
 	}
 )
 
@@ -60,7 +60,7 @@ service sapmall {
 
 	@doc "获取版本信息"
 	@handler GetVersion
-	get /version  returns (VersionResp)
+	get /version returns (VersionResp)
 
 	@doc "获取随机数"
 	@handler GetNonceByAddress
@@ -69,6 +69,9 @@ service sapmall {
 	@doc "登录"
 	@handler Login
 	post /login (LoginReq) returns (LoginResp)
-}
 
+	@doc "获取导航目录结构"
+	@handler GetCategoryTree
+	get /:category_type/categories (GetCategoryTreeReq) returns (BaseResp)
+}
 

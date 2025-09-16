@@ -1,3 +1,4 @@
+import { CategoryTreeResp } from "../types/categoryTypes";
 import baseClient from "./baseClient";
 
 // 定义类型
@@ -59,6 +60,14 @@ export const commonApiService = {
   getVersion: async (): Promise<VersionResp> => {
     const response = await baseClient.get<VersionResp>('/api/common/version', {
       skipAuth: true, // 版本信息不需要认证
+    });
+    return response.data;
+  },
+
+  // 获取目录树结构
+  getCategoryTree: async (categoryType: number): Promise<CategoryTreeResp> => {
+    const response = await baseClient.get<CategoryTreeResp>(`/api/common/${categoryType}/categories`, {
+      skipAuth: true, // 获取目录树结构不需要认证
     });
     return response.data;
   },
