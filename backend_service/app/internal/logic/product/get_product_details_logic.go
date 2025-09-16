@@ -2,10 +2,11 @@ package product
 
 import (
 	"context"
-	"encoding/json"
+
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
+	"sapphire-mall/pkg/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -33,14 +34,20 @@ func (l *GetProductDetailsLogic) GetProductDetails(req *types.GetProductReq) (re
 	if err != nil {
 		return nil, err
 	}
-	productInfoJson, err := json.Marshal(product)
+	// 使用PrettyJSON格式化JSON，避免转义符号
+	formattedJSON, err := utils.PrettyJSON(product)
 	if err != nil {
-		return nil, err
+		logx.Errorf("格式化JSON失败: %v", err)
+		return &types.GetProductResp{
+			Code: 1,
+			Msg:  "JSON格式化失败",
+			Data: "",
+		}, nil
 	}
 
 	return &types.GetProductResp{
 		Code: 0,
 		Msg:  "success",
-		Data: string(productInfoJson),
-	}, err
+		Data: formattedJSON,
+	}, nil
 }

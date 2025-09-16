@@ -5,58 +5,7 @@
   backdrop-filter: blur(10px);
 }
 
-// 分类项
-.categoryItem {
-  background: rgba(55, 65, 81, 0.6);
-  border: 1px solid rgba(75, 85, 99, 0.3);
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: rgba(75, 85, 99, 0.8);
-    border-color: rgba(107, 114, 128, 0.5);
-  }
-  
-  &.active {
-    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    border-color: #2563eb;
-    color: white;
-  }
-}
-
-// 分类图标
-.categoryIcon {
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-// 分类计数
-.categoryCount {
-  background: rgba(75, 85, 99, 0.6);
-  color: #d1d5db;
-  font-size: 0.75rem;
-  padding: 2px 8px;
-  min-width: 20px;
-  text-align: center;
-}
-
-// 下拉菜单
-.dropdownMenu {
-  background: #1f2937;
-  border: 1px solid #4b5563;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-8px);
-  transition: all 0.3s ease;
-  
-  .categoryItem:hover & {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-}
+// 分类项样式已移至 CategoryButton.module.scss
 
 // 搜索输入框
 .searchInput {

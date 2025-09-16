@@ -1,51 +1,68 @@
 import baseClient from "./baseClient";
 import { Product, ProductQueryParams, ProductListResp, FilterOptions } from "../types/productTypes";
 
+// 后端API响应格式
+interface BackendProductListResp {
+  code: number;
+  msg: string;
+  data: Array<{
+    categoryId: number;
+    categoryCode: string;
+    categoryName: string;
+    productCount: number;
+    products: Product[];
+  }>;
+}
+
 export const productApiService = {
   // 获取商品列表
   getProducts: async (params: ProductQueryParams = {}): Promise<ProductListResp> => {
-    // 构建查询参数
-    const queryParams: Record<string, any> = {
-      categoryIds: params.categoryIds?.length ? params.categoryIds.join(',') : undefined,
-      search: params.search,
+    // 构建请求体，与后端API保持一致
+    const requestBody = {
+      categoryCodes: params.categoryCodes || '',
+      productName: params.productName || params.search || '',
       page: params.page || 1,
       pageSize: params.pageSize || 20,
-      sortBy: params.sortBy,
-      sortOrder: params.sortOrder,
     };
 
-    // 添加筛选条件
-    if (params.filters) {
-      Object.entries(params.filters).forEach(([key, value]) => {
-        if (value && value.length > 0) {
-          queryParams[key] = value.join(',');
-        }
-      });
-    }
-
-    // 构建URL查询字符串
-    const searchParams = new URLSearchParams();
-    Object.entries(queryParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
-        searchParams.append(key, String(value));
-      }
-    });
-
-    const queryString = searchParams.toString();
-    const url = queryString ? `/api/product/list?${queryString}` : '/api/product/list';
-
-    const response = await baseClient.get<ProductListResp>(url, {
+    const response = await baseClient.post<BackendProductListResp>('/api/product/products', requestBody, {
       skipAuth: true, // 商品列表不需要认证
     });
-    return response.data;
+    
+    // 转换后端响应格式为前端期望的格式
+    const backendData = response.data;
+    if (backendData.code !== 0) {
+      throw new Error(backendData.msg || '获取商品列表失败');
+    }
+    
+    // 合并所有分类的商品
+    const allProducts: Product[] = [];
+    let totalCount = 0;
+    
+    backendData.data.forEach(categoryData => {
+      allProducts.push(...categoryData.products);
+      totalCount += categoryData.productCount;
+    });
+    
+    return {
+      code: backendData.code,
+      msg: backendData.msg,
+      products: allProducts,
+      total: totalCount
+    };
   },
 
   // 获取商品详情
-  getProductById: async (id: number): Promise<Product> => {
-    const response = await baseClient.get<Product>(`/api/product/${id}`, {
+  getProductById: async (id: string): Promise<Product> => {
+    const requestBody = {
+      product_id: parseInt(id),
+      product_code: id,
+    };
+    
+    const response = await baseClient.post<{code: number, msg: string, product_info: Product}>('/api/product/getProductDetails', requestBody, {
       skipAuth: true, // 商品详情不需要认证
     });
-    return response.data;
+    return response.data.product_info;
   },
 
   // 获取商品分类
@@ -56,36 +73,4 @@ export const productApiService = {
     return response.data;
   },
 
-  // 搜索商品
-  searchProducts: async (query: string, filters?: FilterOptions): Promise<ProductListResp> => {
-    // 构建查询参数
-    const queryParams: Record<string, any> = {
-      q: query,
-    };
-
-    // 添加筛选条件
-    if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value && value.length > 0) {
-          queryParams[key] = value.join(',');
-        }
-      });
-    }
-
-    // 构建URL查询字符串
-    const searchParams = new URLSearchParams();
-    Object.entries(queryParams).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
-        searchParams.append(key, String(value));
-      }
-    });
-
-    const queryString = searchParams.toString();
-    const url = queryString ? `/api/product/search?${queryString}` : '/api/product/search';
-
-    const response = await baseClient.get<ProductListResp>(url, {
-      skipAuth: true, // 搜索不需要认证
-    });
-    return response.data;
-  }
 };

@@ -1,16 +1,44 @@
-// 商品类型定义
+// 商品类型定义 - 与后端API保持一致
 export interface Product {
+  // 后端返回的基础字段
   id: number;
-  title: string;
-  description: string;
+  code: string;
+  name: string;
+  category1Id: number;
+  category1Code: string;
+  category2Id: number;
+  category2Code: string;
+  category3Id: number;
+  category3Code: string;
+  brand: string;
   price: number;
-  rating: number;
-  image: string;
-  badges: string[];
-  categoryId: number;
-  categoryName: string;
-  createdAt?: string;
-  updatedAt?: string;
+  realPrice: number;
+  totalSales: number;
+  totalStock: number;
+  status: number;
+  images: string[];
+  description: string;
+  attributes: any;
+  skuList: any;
+  
+  // 前端显示用的字段
+  title?: string;
+  image?: string;
+  badges?: string[];
+  categoryId?: number;
+  categoryName?: string;
+  category?: string;
+  rating?: number;
+  creator_id?: string;
+  title_en?: string;
+  title_zh?: string;
+  description_en?: string;
+  description_zh?: string;
+  ipfs_hash?: string;
+  inventory?: number;
+  sales_count?: number;
+  created_at?: number;
+  updated_at?: number;
 }
 
 // 筛选条件类型
@@ -24,24 +52,25 @@ export interface FilterOptions {
   feature: string[];
 }
 
-// 商品查询参数
+// 商品查询参数 - 与后端API保持一致
 export interface ProductQueryParams {
-  categoryIds?: number[];
+  categoryCodes?: string; // 分类编码，多个用逗号分隔
+  productName?: string;   // 商品名称
+  page?: number;          // 页码
+  pageSize?: number;      // 每页数量
+  // 前端扩展字段
   filters?: FilterOptions;
   search?: string;
-  page?: number;
-  pageSize?: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }
 
-// 商品列表响应
+// 商品列表响应 - 与后端API保持一致
 export interface ProductListResp {
+  code: number;
+  msg: string;
   products: Product[];
   total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
 }
 
 // 商品徽章类型

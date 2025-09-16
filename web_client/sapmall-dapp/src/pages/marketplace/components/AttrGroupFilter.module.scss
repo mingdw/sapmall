@@ -1,0 +1,29 @@
+/* 筛选标签样式 */
+.filterTag {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(107, 114, 128, 0.2);
+  color: #d1d5db;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-weight: 500;
+  white-space: nowrap;
+  
+  &:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+  }
+  
+  &.active {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border-color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+  }
+  
+  &.active:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-1px);
+  }
+}

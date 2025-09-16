@@ -17,13 +17,6 @@ type GetProductResp struct {
 }
 
 type ListProductsReq struct {
-	//Page      int64  `json:"page"`
-	//PageSize  int64  `json:"page_size"`
-	//Category  string `json:"category"`
-	//Status    string `json:"status"`
-	//CreatorId string `json:"creator_id"`
-	//Keyword   string `json:"keyword"`
-
 	CategoryCodes string `json:"categoryCodes"` // 分类编码，多个用逗号分隔
 	ProductName   string `json:"productName"`   // 商品名称
 	Page          int    `json:"page"`          // 页码
@@ -31,12 +24,9 @@ type ListProductsReq struct {
 }
 
 type ListProductsResp struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
-	Data string `json:"data"`
-
-	//Total      int64               `json:"total"`      // 总记录数
-	//Categories []*CategoryProducts `json:"categories"` // 分类商品列表
+	Code int                 `json:"code"`
+	Msg  string              `json:"msg"`
+	Data []*CategoryProducts `json:"data"`
 }
 
 // 分类商品
@@ -73,9 +63,32 @@ type Product struct {
 
 // 商品属性
 type ProductAttrs struct {
-	BasicAttrs string `json:"basicAttrs"` // 基础属性
-	SaleAttrs  string `json:"saleAttrs"`  // 销售属性
-	SpecAttrs  string `json:"specAttrs"`  // 规格属性
+	BasicAttrs BasicAttr `json:"basicAttrs"` // 基础属性
+	SaleAttrs  SaleAttr  `json:"saleAttrs"`  // 销售属性
+	SpecAttrs  SpecAttr  `json:"specAttrs"`  // 规格属性
+}
+
+// 基础属性,json格式: {"艺术类型":"数字绘画","创作工具":"Procreate","艺术风格":"未来主义","尺寸":"4000x3000像素"}
+type BasicAttr struct {
+	Code  string `json:"code"`  // 编码
+	Name  string `json:"name"`  // 名称
+	Value string `json:"value"` // 值
+}
+
+// 销售属性
+// 销售属性,json格式: {"艺术家":"Alex Future","创作时间":"2023-03-15","区块链平台":"Ethereum","发行数量":"100","作品编号":"FUTURE2023001"}
+type SaleAttr struct {
+	Code  string `json:"code"`  // 编码
+	Name  string `json:"name"`  // 名称
+	Value string `json:"value"` // 值
+}
+
+// 规格属性
+// 规格属性,json格式: {"分辨率":["4K","8K"],"版本":["标准版","收藏版","艺术家签名版"]}
+type SpecAttr struct {
+	Code  string   `json:"code"`  // 编码
+	Name  string   `json:"name"`  // 名称
+	Value []string `json:"value"` // 值
 }
 
 type ProductSku struct {

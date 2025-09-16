@@ -2,9 +2,9 @@ package category
 
 import (
 	"context"
-	"encoding/json"
 	model "sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
+	"sapphire-mall/pkg/utils"
 	"sort"
 
 	"sapphire-mall/app/internal/svc"
@@ -81,15 +81,21 @@ func (l *GetCategoryTreeLogic) GetCategoryTree() (resp *types.BaseResp, err erro
 	// 7. 构建目录树，从顶级目录开始
 	categoryTree := buildCategoryTree(categories, categoryAttrGroupMap, attrGroupMap, 0)
 
-	categoryTreeJson, err := json.Marshal(categoryTree)
+	// 使用PrettyJSON格式化JSON，避免转义符号
+	formattedJSON, err := utils.PrettyJSON(categoryTree)
 	if err != nil {
-		return nil, err
+		logx.Errorf("格式化JSON失败: %v", err)
+		return &types.BaseResp{
+			Code: 1,
+			Msg:  "JSON格式化失败",
+			Data: "",
+		}, nil
 	}
 
 	return &types.BaseResp{
 		Code: 0,
 		Msg:  "success",
-		Data: string(categoryTreeJson),
+		Data: formattedJSON,
 	}, nil
 
 }
