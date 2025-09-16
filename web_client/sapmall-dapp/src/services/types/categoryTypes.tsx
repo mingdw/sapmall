@@ -8,6 +8,7 @@ export interface CategoryTreeResp {
   parentCode: string;
   icon: string;
   attrGroups: AttrGroupResp[];
+  children?: CategoryTreeResp[]; // 添加children字段用于层级菜单
 }   
 
 export interface AttrGroupResp {

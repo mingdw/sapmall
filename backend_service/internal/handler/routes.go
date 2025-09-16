@@ -6,10 +6,10 @@ package handler
 import (
 	"net/http"
 
-	common "sapphire-mall/app/internal/handler/common"
-	product "sapphire-mall/app/internal/handler/product"
-	user "sapphire-mall/app/internal/handler/user"
-	"sapphire-mall/app/internal/svc"
+	common "sapphire-mall/internal/handler/common"
+	product "sapphire-mall/internal/handler/product"
+	user "sapphire-mall/internal/handler/user"
+	"sapphire-mall/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

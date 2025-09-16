@@ -73,5 +73,6 @@ service sapmall {
 	@doc "获取导航目录结构"
 	@handler GetCategoryTree
 	get /:category_type/categories (GetCategoryTreeReq) returns (BaseResp)
+	
 }
 

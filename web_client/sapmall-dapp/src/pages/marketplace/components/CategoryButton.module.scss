@@ -1,0 +1,128 @@
+/* CategoryButton 组件样式 - 1:1 还原原型设计 */
+
+.categoryItem {
+  @apply px-3 py-2 rounded-lg font-medium cursor-pointer relative;
+  transition: all 0.3s ease;
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(107, 114, 128, 0.15);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+}
+
+.categoryItem:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.categoryItem.active {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.categoryItem.active:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: translateY(-1px);
+}
+
+.categoryItem.active .categoryIcon {
+  color: white !important;
+}
+
+.categoryItem.active .categoryCount {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* 图标样式 */
+.categoryIcon {
+  transition: all 0.3s ease;
+}
+
+.categoryItem:hover .categoryIcon {
+  transform: scale(1.1);
+}
+
+/* 商品数量标签已移除 */
+
+/* 下拉菜单 */
+.dropdownMenu {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.3s ease;
+  background: rgba(30, 41, 59, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  z-index: 99999 !important;
+  position: absolute !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  border-radius: 0.5rem;
+  min-width: 160px;
+}
+
+.categoryItem:hover .dropdownMenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* 通过JavaScript控制的显示状态 */
+.dropdownMenu.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+  z-index: 99999 !important;
+}
+
+/* 下拉菜单项样式 */
+.dropdownMenu a {
+  transition: all 0.2s ease;
+  border-radius: 0.375rem;
+  margin: 0 0.25rem;
+}
+
+.dropdownMenu a:hover {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+  transform: translateX(4px);
+}
+
+/* 子菜单样式 */
+.subDropdownMenu {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-8px);
+  transition: all 0.3s ease;
+  background: rgba(30, 41, 59, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  z-index: 99999 !important;
+  position: absolute !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  border-radius: 0.5rem;
+  min-width: 180px;
+  margin-left: 0.5rem;
+}
+
+.subDropdownMenu.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(0) !important;
+  z-index: 99999 !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .categoryItem {
+    font-size: 0.875rem;
+  }
+}

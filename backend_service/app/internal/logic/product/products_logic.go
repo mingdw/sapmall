@@ -2,9 +2,9 @@ package product
 
 import (
 	"context"
-	"encoding/json"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
+
 	"strings"
 
 	"sapphire-mall/app/internal/svc"
@@ -125,11 +125,9 @@ func (l *ProductsLogic) Products(req *types.ListProductsReq) (resp *types.ListPr
 			Products:     productSpus,
 		})
 	}
-	productCategoriesJson, err := json.Marshal(productCategories)
-
 	return &types.ListProductsResp{
 		Code: 0,
 		Msg:  "success",
-		Data: string(productCategoriesJson),
+		Data: productCategories,
 	}, nil
 }

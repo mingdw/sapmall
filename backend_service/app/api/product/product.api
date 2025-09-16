@@ -8,9 +8,9 @@ import (
 	//     jwt: Auth
 	group: product
 	prefix:     /api/product
-	middleware: AuthMiddleware,RespMiddleware
+	middleware: RespMiddleware
 )
-service product {
+service sapmall {
 	@doc "分页查询多个产品"
 	@handler products
 	post /products (ListProductsReq) returns (ListProductsResp)
@@ -19,6 +19,3 @@ service product {
 	@handler getProductDetails
 	post /getProductDetails (GetProductReq) returns (GetProductResp)
 }
-
-//router.POST("/products", productHandler.ListProducts)
-//router.POST("/products/getProductDetails", productHandler.GetProductDetail)

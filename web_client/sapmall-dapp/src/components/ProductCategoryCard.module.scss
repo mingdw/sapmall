@@ -1,0 +1,116 @@
+/* 分类主卡片样式 */
+.categoryMainCard {
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9));
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  width: 100%;
+  min-height: 350px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.categoryMainCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* 分类头部区域 */
+.categoryMainHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(107, 114, 128, 0.2);
+  min-height: 50px;
+}
+
+.categoryMainTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.categoryMainIcon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.categoryMainIcon i {
+  font-size: 1.25rem;
+  color: white;
+}
+
+.categoryMainInfo h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+}
+
+.categoryItemCount {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.categoryMoreBtn {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.categoryMoreBtn:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #93c5fd;
+  transform: translateX(2px);
+}
+
+.categoryMoreBtn i {
+  font-size: 0.75rem;
+  transition: transform 0.3s ease;
+}
+
+.categoryMoreBtn:hover i {
+  transform: translateX(2px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .categoryMainCard {
+    padding: 1rem;
+    min-height: 300px;
+    margin-bottom: 1rem;
+  }
+  
+  .categoryMainHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    min-height: auto;
+  }
+  
+  .categoryMoreBtn {
+    align-self: flex-end;
+  }
+}
