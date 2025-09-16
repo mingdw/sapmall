@@ -96,6 +96,21 @@
   background: linear-gradient(135deg, #f3ba2f, #fbbf24);
 }
 
+.networkSepolia {
+  background: linear-gradient(135deg, #627eea, #4c6ef5);
+  border: 1px solid #3b82f6;
+}
+
+.networkGoerli {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border: 1px solid #1e40af;
+}
+
+.networkHolesky {
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  border: 1px solid #1e3a8a;
+}
+
 .userModal {
   :global(.ant-modal-header) {
     background-color: #f9fafb !important;

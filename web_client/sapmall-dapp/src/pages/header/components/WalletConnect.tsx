@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Dropdown, Menu, Modal } from 'antd';
 import { useConnect, useDisconnect, useAccount, useBalance, useSignMessage, useSwitchChain } from 'wagmi';
@@ -21,12 +21,19 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showNetworkMenu, setShowNetworkMenu] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
+  const [isProcessingConnection, setIsProcessingConnection] = useState(false);
+  const [lastProcessedAddress, setLastProcessedAddress] = useState<string | null>(null);
+  const signingRef = useRef<boolean>(false);
 
   // Wagmi hooks
   const { connect, connectors, isPending, error } = useConnect();
   const { disconnect } = useDisconnect();
   const { address, isConnected, chainId } = useAccount();
-  const { data: balance } = useBalance({ address });
+  const { data: balance } = useBalance({ 
+    address: isConnected ? address : undefined,
+    query: { enabled: isConnected && !!address }
+  });
   const { signMessageAsync } = useSignMessage();
   const { switchChain } = useSwitchChain();
 
@@ -43,16 +50,62 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
 
   // 监听连接状态变化
   useEffect(() => {
-    console.log('连接状态变化:', { isConnected, address, isLoggedIn });
+    console.log('连接状态变化:', { isConnected, address, isLoggedIn, isConnecting, isDisconnecting, isProcessingConnection, lastProcessedAddress });
     
+    // 防止在断开连接过程中触发重新连接
+    if (isDisconnecting) {
+      console.log('正在断开连接中，跳过状态处理');
+      return;
+    }
+    
+    // 防止重复处理连接
+    if (isConnecting || isProcessingConnection) {
+      console.log('正在连接中，跳过重复处理');
+      return;
+    }
+    
+    // 防止重复处理同一个地址
+    if (isConnected && address && address === lastProcessedAddress) {
+      console.log('地址已处理过，跳过重复处理:', address);
+      return;
+    }
+    
+    // 只有在真正连接且有地址且未登录时才处理连接
     if (isConnected && address && !isLoggedIn) {
       console.log('开始处理钱包连接...');
+      setLastProcessedAddress(address);
       handleWalletConnected(address);
-    } else if (!isConnected && isLoggedIn) {
+    } 
+    // 只有在真正断开连接且已登录时才处理断开
+    else if (!isConnected && isLoggedIn && address === undefined) {
       console.log('开始处理钱包断开连接...');
+      setLastProcessedAddress(null);
       handleWalletDisconnected();
     }
-  }, [isConnected, address, isLoggedIn]);
+  }, [isConnected, address, isLoggedIn, isDisconnecting, isProcessingConnection, lastProcessedAddress]);
+
+  // 监听钱包错误
+  useEffect(() => {
+    if (error) {
+      console.error('钱包错误:', error);
+      // 如果是未授权错误，清理状态
+      if (error.message?.includes('UnauthorizedProviderError') || 
+          error.message?.includes('not authorized') ||
+          error.message?.includes('The requested account and/or method has not been authorized')) {
+        console.log('检测到未授权错误，清理状态...');
+        setIsDisconnecting(true);
+        localStorage.removeItem('auth_token');
+        logout();
+        setConnectionError('钱包连接已断开，请重新连接');
+        
+        // 延迟重置状态
+        setTimeout(() => {
+          setIsDisconnecting(false);
+          setConnectionError(null);
+        }, 2000);
+      }
+    }
+  }, [error]);
 
   // 点击外部关闭下拉菜单
   useEffect(() => {
@@ -72,9 +125,19 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
 
   // 钱包连接成功后的处理
   const handleWalletConnected = async (walletAddress: string) => {
+    // 防止重复调用
+    if (isConnecting || isProcessingConnection || signingRef.current) {
+      console.log('正在处理连接中，跳过重复调用');
+      return;
+    }
+
     try {
       setIsConnecting(true);
+      setIsProcessingConnection(true);
+      signingRef.current = true;
       setConnectionError(null);
+      
+      console.log('开始处理钱包连接，地址:', walletAddress);
       
       // 1. 获取随机数
       const nonceResponse = await commonApiService.getNonceByAddress(walletAddress);
@@ -101,7 +164,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
 
       // 4. 获取用户信息
       const userInfo = await userApiService.getUserInfo(userId);
-
+      console.log('用户信息:', userInfo);
       // 5. 保存用户信息
       localStorage.setItem('auth_token', loginResponse.token);
       setUser(userInfo);
@@ -126,20 +189,33 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       // 不要自动断开钱包连接，让用户手动重试
     } finally {
       setIsConnecting(false);
+      setIsProcessingConnection(false);
+      signingRef.current = false;
     }
   };
 
   // 钱包断开连接
   const handleWalletDisconnected = async () => {
     try {
-      // 调用后端登出接口
-      if (localStorage.getItem('auth_token')) {
-       // await userApiService.logout();
-      }
-
-      // 清除本地状态
+      setIsDisconnecting(true);
+      setIsProcessingConnection(false);
+      signingRef.current = false;
+      
+      console.log('开始处理钱包断开连接...');
+      
+      // 先清除本地状态，避免后续操作触发错误
       localStorage.removeItem('auth_token');
       logout();
+      
+      // 调用后端登出接口（如果token存在）
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        try {
+          // await userApiService.logout();
+        } catch (logoutError) {
+          console.warn('后端登出失败，但本地状态已清除:', logoutError);
+        }
+      }
       
       // 通知父组件
       onDisconnect?.();
@@ -148,19 +224,36 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       
     } catch (error: any) {
       console.error('登出失败:', error);
-      // 即使登出失败也要清除本地状态
+      // 确保本地状态被清除
       localStorage.removeItem('auth_token');
       logout();
+    } finally {
+      // 延迟重置断开连接状态，避免立即触发重新连接
+      setTimeout(() => {
+        setIsDisconnecting(false);
+        setIsProcessingConnection(false);
+        signingRef.current = false;
+        setLastProcessedAddress(null);
+      }, 1000);
     }
   };
 
   // 处理断开连接
   const handleDisconnect = () => {
-    // 先断开钱包连接
-    disconnect();
-    // 然后清理登录状态
-    handleWalletDisconnected();
-    setShowUserDropdown(false);
+    try {
+      // 先清理登录状态
+      handleWalletDisconnected();
+      setShowUserDropdown(false);
+      
+      // 然后断开钱包连接
+      disconnect();
+    } catch (error: any) {
+      console.error('断开连接处理失败:', error);
+      // 确保状态被清理
+      localStorage.removeItem('auth_token');
+      logout();
+      disconnect();
+    }
   };
 
   // 复制地址到剪贴板
@@ -174,6 +267,9 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   // 网络配置
   const networks = [
     { id: 1, name: 'Ethereum', icon: 'fab fa-ethereum', color: 'text-blue-400', iconClass: 'networkEthereum', symbol: 'Ξ' },
+    { id: 11155111, name: 'Sepolia', icon: 'fab fa-ethereum', color: 'text-blue-300', iconClass: 'networkSepolia', symbol: 'Ξ' },
+    { id: 5, name: 'Goerli', icon: 'fab fa-ethereum', color: 'text-blue-200', iconClass: 'networkGoerli', symbol: 'Ξ' },
+    { id: 17000, name: 'Holesky', icon: 'fab fa-ethereum', color: 'text-blue-100', iconClass: 'networkHolesky', symbol: 'Ξ' },
     { id: 56, name: 'BSC', icon: 'fas fa-cube', color: 'text-yellow-400', iconClass: 'networkBsc', symbol: 'B' },
     { id: 137, name: 'Polygon', icon: 'fab fa-polygon', color: 'text-purple-400', iconClass: 'networkPolygon', symbol: '⬢' },
   ];

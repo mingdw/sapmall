@@ -31,10 +31,9 @@ type ListProductsReq struct {
 }
 
 type ListProductsResp struct {
-	Code  int    `json:"code"`
-	Msg   string `json:"msg"`
-	Data  string `json:"data"`
-
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+	Data string `json:"data"`
 
 	//Total      int64               `json:"total"`      // 总记录数
 	//Categories []*CategoryProducts `json:"categories"` // 分类商品列表
