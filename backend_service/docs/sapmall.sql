@@ -16,12 +16,6 @@
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for sys_address
--- ----------------------------
-INSERT INTO `sys_address` VALUES (1, '110000', '北京市', '0', 1, '110000', '北京市', '', '', '', '', '', '', '北京市', '100000', 1, '2025-03-11 23:02:13', '2025-03-11 23:02:13', 'admin', 'admin', 0);
-
 -- ----------------------------
 -- Records of sys_address
 -- ----------------------------
@@ -972,13 +966,13 @@ CREATE TABLE `sys_category_attr_group`  (
 -- Records of sys_category_attr_group
 -- ----------------------------
 INSERT INTO `sys_category_attr_group` VALUES (1, 1, '100000', 1, 'NFT_APPLICATION_FIELD', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
-INSERT INTO `sys_category_attr_group` VALUES (2, 7, '110000', 2, 'NFT_TECH_FORM', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
-INSERT INTO `sys_category_attr_group` VALUES (3, 14, '111000', 3, 'NFT_ART_STYLE', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
-INSERT INTO `sys_category_attr_group` VALUES (4, 14, '111000', 4, 'NFT_ART_THEME', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
-INSERT INTO `sys_category_attr_group` VALUES (5, 15, '112000', 5, 'NFT_CREATION_METHOD', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
-INSERT INTO `sys_category_attr_group` VALUES (6, 15, '112000', 6, 'NFT_MUSIC_TYPE', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
-INSERT INTO `sys_category_attr_group` VALUES (7, 16, '113000', 7, 'NFT_VIDEO_TYPE', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
-INSERT INTO `sys_category_attr_group` VALUES (8, 16, '113000', 8, 'NFT_VIDEO_DURATION', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
+INSERT INTO `sys_category_attr_group` VALUES (2, 1, '100000', 2, 'NFT_TECH_FORM', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
+INSERT INTO `sys_category_attr_group` VALUES (3, 1, '100000', 3, 'NFT_ART_STYLE', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
+INSERT INTO `sys_category_attr_group` VALUES (4, 2, '200000', 4, 'NFT_ART_THEME', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
+INSERT INTO `sys_category_attr_group` VALUES (5, 2, '200000', 5, 'NFT_CREATION_METHOD', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
+INSERT INTO `sys_category_attr_group` VALUES (6, 3, '300000', 6, 'NFT_MUSIC_TYPE', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
+INSERT INTO `sys_category_attr_group` VALUES (7, 4, '400000', 7, 'NFT_VIDEO_TYPE', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
+INSERT INTO `sys_category_attr_group` VALUES (8, 4, '400000', 8, 'NFT_VIDEO_DURATION', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
 INSERT INTO `sys_category_attr_group` VALUES (9, 17, '114000', 9, 'NFT_TEXT_GENRE', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
 INSERT INTO `sys_category_attr_group` VALUES (10, 17, '114000', 10, 'NFT_TEXT_LANGUAGE', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');
 INSERT INTO `sys_category_attr_group` VALUES (11, 8, '120000', 11, 'NFT_APP_PLATFORM', 0, '2025-03-11 22:26:36', '2025-03-11 22:26:36', 0, 'admin', 'admin');

@@ -8,6 +8,7 @@ import CategoryButton from './components/CategoryButton';
 import AttrGroupFilter from './components/AttrGroupFilter';
 import ProductCategoryComponent from '../../components/ProductCategoryCard';
 import ProductDetailComponent from '../../components/ProductCard';  
+import Pagination from '../../components/Pagination';
 import { useCategoryStore } from '../../store/categoryStore';
 import { transformProductForDisplay } from '../../utils/productUtils';
 
@@ -25,9 +26,16 @@ const MarketPlacePageDetail: React.FC = () => {
   });
   const [attrGroupFilters, setAttrGroupFilters] = useState<{[key: number]: number[]}>({});
   const [products, setProducts] = useState<Product[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(''); // 实际用于搜索的查询词
+  const [searchInput, setSearchInput] = useState(''); // 搜索输入框的值
   const [displayedAttrGroups, setDisplayedAttrGroups] = useState<AttrGroupResp[]>([]);
   const [displayedCategoriesCount, setDisplayedCategoriesCount] = useState(3); // 默认显示前3个分类
+  
+  // 分页相关状态
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10); // 每页显示10个商品
+  const [totalItems, setTotalItems] = useState(0);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   
   // 使用状态管理
   const {
@@ -72,10 +80,26 @@ const MarketPlacePageDetail: React.FC = () => {
     return categories.filter(cat => cat.level === 1);
   }, [categories]);
 
+  // 递归查找分类数据（包括子分类）
+  const findCategoryById = useCallback((categories: CategoryTreeResp[], targetId: number): CategoryTreeResp | null => {
+    for (const category of categories) {
+      if (category.id === targetId) {
+        return category;
+      }
+      if (category.children && category.children.length > 0) {
+        const found = findCategoryById(category.children, targetId);
+        if (found) {
+          return found;
+        }
+      }
+    }
+    return null;
+  }, []);
+
   const selectedCategoryData = useMemo(() => {
     if (selectedCategory === null || selectedCategory === 0) return null;
-    return categories.find(cat => cat.id === selectedCategory);
-  }, [selectedCategory, categories]);
+    return findCategoryById(categories, selectedCategory);
+  }, [selectedCategory, categories, findCategoryById]);
 
   // 监听分类选择变化，更新显示的attrGroups
   useEffect(() => {
@@ -97,76 +121,124 @@ const MarketPlacePageDetail: React.FC = () => {
   }, [selectedCategory, categories]);
 
   // 使用 useCallback 缓存商品获取函数
-  const fetchProducts = useCallback(async () => {
+  const fetchProductsWithQuery = useCallback(async (query: string, page: number = currentPage, resetPage: boolean = false) => {
     try {
-      let allProducts: Product[] = [];
+      setIsLoadingProducts(true);
+      
+      if (resetPage) {
+        setCurrentPage(1);
+        page = 1;
+      }
 
+      let categoryCodes = '';
+      
       if (selectedCategory === null || selectedCategory === 0) {
-        // 默认情况：获取前3个1级目录的商品
-        const categoriesToFetch = firstLevelCategories.slice(0, 3);
-        
-        if (categoriesToFetch.length > 0) {
-          // 获取每个分类的商品
-          const categoryCodes = categoriesToFetch.map(cat => cat.code).join(',');
-          
-          const queryParams: ProductQueryParams = {
-            categoryCodes: categoryCodes,
-            page: 1,
-            pageSize: 50, // 增加每页数量以获取更多商品
-          };
-
-          // 添加搜索条件
-          if (searchQuery) {
-            queryParams.productName = searchQuery;
-          }
-
-          const response = await productApiService.getProducts(queryParams);
-          allProducts = response.products.map(transformProductForDisplay);
-        }
+        // 全部商品：不传categoryCodes或传空字符串
+        categoryCodes = '';
       } else {
-        // 选择特定分类：获取该分类的所有商品
+        // 选择特定分类：传递分类编码
         if (selectedCategoryData) {
-          const queryParams: ProductQueryParams = {
-            categoryCodes: selectedCategoryData.code,
-            page: 1,
-            pageSize: 100, // 获取更多商品
-          };
-
-          // 添加搜索条件
-          if (searchQuery) {
-            queryParams.productName = searchQuery;
-          }
-
-          const response = await productApiService.getProducts(queryParams);
-          allProducts = response.products.map(transformProductForDisplay);
+          categoryCodes = selectedCategoryData.code;
         }
       }
 
-      setProducts(allProducts);
+      const queryParams: ProductQueryParams = {
+        categoryCodes: categoryCodes,
+        productName: query, // 使用传入的查询参数
+        page: page,
+        pageSize: pageSize,
+      };
+
+      console.log('商品查询参数:', queryParams);
+      console.log('当前状态 - selectedCategory:', selectedCategory, 'searchQuery:', query);
+
+      const response = await productApiService.getProducts(queryParams);
+      const processedProducts = response.products.map(transformProductForDisplay);
+      
+      setProducts(processedProducts);
+      setTotalItems(response.total || 0);
     } catch (error) {
       console.error('获取商品失败:', error);
       setProducts([]);
+      setTotalItems(0);
+    } finally {
+      setIsLoadingProducts(false);
     }
-  }, [selectedCategory, searchQuery, firstLevelCategories, selectedCategoryData]);
+  }, [selectedCategory, currentPage, pageSize, selectedCategoryData]);
 
-  // 获取商品数据
+  const fetchProducts = useCallback(async (page: number = currentPage, resetPage: boolean = false) => {
+    // 调用fetchProductsWithQuery，使用当前的searchQuery
+    return fetchProductsWithQuery(searchQuery, page, resetPage);
+  }, [fetchProductsWithQuery, searchQuery]);
+
+  // 获取商品数据的统一逻辑
   useEffect(() => {
-    // 只有在分类数据加载完成后才获取商品
-    if (categories.length > 0) {
-      fetchProducts();
+    if (categories.length === 0) return; // 分类数据未加载时不执行
+
+    if (selectedCategory === null || selectedCategory === 0) {
+      // 全部商品：获取前几个分类的商品数据
+      const fetchInitialProducts = async () => {
+        try {
+          const categoriesToFetch = firstLevelCategories.slice(0, displayedCategoriesCount);
+          
+          if (categoriesToFetch.length > 0) {
+            const categoryCodes = categoriesToFetch.map(cat => cat.code).join(',');
+            
+            const queryParams: ProductQueryParams = {
+              categoryCodes: categoryCodes,
+              page: 1,
+              pageSize: 100, // 获取每个分类的前100个商品用于展示
+            };
+
+            if (searchQuery) {
+              queryParams.productName = searchQuery;
+            }
+
+            console.log('获取初始分类商品:', {
+              categoriesToFetch: categoriesToFetch.map(cat => ({ id: cat.id, name: cat.name, code: cat.code })),
+              categoryCodes,
+              searchQuery
+            });
+
+            const response = await productApiService.getProducts(queryParams);
+            const processedProducts = response.products.map(transformProductForDisplay);
+            setProducts(processedProducts);
+            setTotalItems(response.total || 0);
+          }
+        } catch (error) {
+          console.error('获取初始商品失败:', error);
+          setProducts([]);
+          setTotalItems(0);
+        }
+      };
+
+      fetchInitialProducts();
+    } else {
+      // 选择特定分类：使用分页逻辑
+      fetchProducts(currentPage, false);
     }
-  }, [categories.length, fetchProducts]);
+  }, [categories.length, selectedCategory, displayedCategoriesCount, searchQuery, currentPage, pageSize]); // 合并所有依赖
 
 
   // 处理分类选择 - 改为单选
   const handleCategorySelect = (categoryId: number) => {
     setSelectedCategory(categoryId);
+    // 清空搜索条件
+    setSearchQuery('');
+    setSearchInput('');
+    // 重置到第一页
+    setCurrentPage(1);
   };
 
   // 处理子分类选择
   const handleSubCategorySelect = (categoryId: number, subCategoryId: number) => {
     // 选择子分类时，更新选中的分类ID
     setSelectedCategory(subCategoryId);
+    // 清空搜索条件
+    setSearchQuery('');
+    setSearchInput('');
+    // 重置到第一页
+    setCurrentPage(1);
     console.log('选择子分类:', categoryId, subCategoryId);
   };
 
@@ -208,48 +280,83 @@ const MarketPlacePageDetail: React.FC = () => {
 
   // 处理搜索
   const handleSearch = () => {
-    // 搜索逻辑将在API实现后添加
-    console.log('搜索:', searchQuery);
+    // 将输入框的值设置为搜索查询词
+    setSearchQuery(searchInput);
+    // 搜索时重置到第一页，并立即触发搜索
+    // 使用searchInput而不是searchQuery，因为状态更新是异步的
+    setTimeout(() => {
+      fetchProductsWithQuery(searchInput, 1, true);
+    }, 0);
+  };
+
+  // 处理分页变化
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // 处理每页条数变化
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1); // 重置到第一页
   };
 
   // 处理加载更多分类
-  const handleLoadMoreCategories = useCallback(() => {
-    setDisplayedCategoriesCount(prev => prev + 3);
+  const handleLoadMoreCategories = useCallback(async () => {
+    const newDisplayedCount = displayedCategoriesCount + 3;
+    setDisplayedCategoriesCount(newDisplayedCount);
     
-    // 重新获取商品数据以包含更多分类
-    const fetchMoreProducts = async () => {
+    // 获取新显示的分类的商品数据
+    const fetchNewCategoriesProducts = async () => {
       try {
-        const categoriesToFetch = firstLevelCategories.slice(0, displayedCategoriesCount + 3);
+        // 获取新显示的分类（从当前显示数量到新的显示数量）
+        const newCategories = firstLevelCategories.slice(displayedCategoriesCount, newDisplayedCount);
         
-        if (categoriesToFetch.length > 0) {
-          const categoryCodes = categoriesToFetch.map(cat => cat.code).join(',');
+        if (newCategories.length > 0) {
+          const categoryCodes = newCategories.map(cat => cat.code).join(',');
           
           const queryParams: ProductQueryParams = {
             categoryCodes: categoryCodes,
             page: 1,
-            pageSize: 100,
+            pageSize: 100, // 获取每个分类的前100个商品用于展示
           };
 
           if (searchQuery) {
             queryParams.productName = searchQuery;
           }
 
+          console.log('加载更多分类:', {
+            newCategories: newCategories.map(cat => ({ id: cat.id, name: cat.name, code: cat.code })),
+            categoryCodes,
+            searchQuery
+          });
+
           const response = await productApiService.getProducts(queryParams);
-          const processedProducts = response.products.map(transformProductForDisplay);
-          setProducts(processedProducts);
+          const newProcessedProducts = response.products.map(transformProductForDisplay);
+          
+          // 将新商品数据添加到现有数据中
+          setProducts(prevProducts => {
+            // 合并现有商品和新商品，去重
+            const existingProductIds = new Set(prevProducts.map(p => p.id));
+            const uniqueNewProducts = newProcessedProducts.filter(p => !existingProductIds.has(p.id));
+            return [...prevProducts, ...uniqueNewProducts];
+          });
         }
       } catch (error) {
-        console.error('获取更多商品失败:', error);
+        console.error('获取更多分类商品失败:', error);
       }
     };
 
-    fetchMoreProducts();
+    await fetchNewCategoriesProducts();
   }, [firstLevelCategories, displayedCategoriesCount, searchQuery]);
 
   // 处理分类更多按钮点击
   const handleCategoryMoreClick = (categoryId: number) => {
     console.log('查看分类更多商品:', categoryId);
-    // TODO: 跳转到分类详情页面或展开更多商品
+    // 设置选中的分类并重置分页和搜索条件
+    setSelectedCategory(categoryId);
+    setCurrentPage(1);
+    setSearchQuery(''); // 清空搜索条件
+    setSearchInput(''); // 清空搜索输入框
   };
 
   // 处理商品点击
@@ -264,26 +371,20 @@ const MarketPlacePageDetail: React.FC = () => {
     // TODO: 实现购买逻辑
   };
 
-  // 按分类分组商品
+  // 按分类分组商品和商品总数
   const productsByCategory = products.reduce((acc, product) => {
-    // 使用分类编码或分类名称作为分组键
-    const categoryKey = product.category || product.categoryName || 'unknown';
-    
-    // 查找对应的分类ID
-    const category = categories.find(cat => 
-      cat.code === categoryKey || 
-      cat.name === categoryKey || 
-      cat.id.toString() === categoryKey
-    );
-    
-    const categoryId = category ? category.id : 0;
+    // 使用商品的分类信息
+    const categoryId = (product as any).categoryId || 0;
     
     if (!acc[categoryId]) {
-      acc[categoryId] = [];
+      acc[categoryId] = {
+        products: [],
+        totalCount: (product as any).categoryProductCount || 0
+      };
     }
-    acc[categoryId].push(product);
+    acc[categoryId].products.push(product);
     return acc;
-  }, {} as {[key: number]: Product[]});
+  }, {} as {[key: number]: {products: Product[], totalCount: number}});
 
   // 创建"全部商品"选项
   const allProductsCategory = {
@@ -354,8 +455,8 @@ const MarketPlacePageDetail: React.FC = () => {
                       <input 
                         type="text" 
                         placeholder="搜索商品..." 
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                         className={`${styles.searchInput} w-72 pl-9 pr-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-sapphire-500 focus:outline-none focus:bg-gray-700 transition-all text-sm`}
                       />
@@ -468,71 +569,120 @@ const MarketPlacePageDetail: React.FC = () => {
         {/* 商品列表展示区域 */}
         <div className="space-y-6">
           {(() => {
-            // 根据选中的分类过滤商品
-            let displayCategories: Array<{ category: CategoryTreeResp; products: Product[] }> = [];
-            
             if (selectedCategory === null || selectedCategory === 0) {
-              // 默认情况：显示指定数量的1级分类的商品
-              const categoriesToShow = firstLevelCategories.slice(0, displayedCategoriesCount);
-              displayCategories = categoriesToShow.map(category => {
-                const categoryProducts = productsByCategory[category.id] || [];
-                return { category, products: categoryProducts };
-              }).filter(item => item.products.length > 0); // 只显示有商品的分类
-            } else {
-              // 只显示选中的分类
-              if (selectedCategoryData) {
-                const categoryProducts = productsByCategory[selectedCategory] || [];
-                displayCategories = [{ category: selectedCategoryData, products: categoryProducts }];
+              // 如果有搜索条件，显示"全部商品"分类卡片
+              if (searchQuery) {
+                return (
+                  <ProductCategoryComponent
+                    key="all-products-search"
+                    categoryId={0}
+                    categoryName="全部商品"
+                    categoryCode=""
+                    categoryIcon="fas fa-search"
+                    productCount={totalItems}
+                    products={products}
+                    onMoreClick={() => {
+                      setSearchQuery('');
+                      setSearchInput('');
+                    }}
+                    onProductClick={handleProductClick}
+                    onProductBuy={handleProductBuy}
+                    maxDisplayCount={pageSize}
+                    showMoreButton={true}
+                    showPagination={true}
+                    paginationProps={{
+                      currentPage,
+                      totalPages: Math.ceil(totalItems / pageSize),
+                      totalItems,
+                      itemsPerPage: pageSize,
+                      onPageChange: handlePageChange,
+                      onPageSizeChange: handlePageSizeChange,
+                      isLoading: isLoadingProducts
+                    }}
+                  />
+                );
               }
+
+              // 没有搜索条件时：显示分类卡片形式
+              const categoriesToShow = firstLevelCategories.slice(0, displayedCategoriesCount);
+              const displayCategories = categoriesToShow.map(category => {
+                const categoryData = productsByCategory[category.id];
+                const categoryProducts = categoryData ? categoryData.products : [];
+                const categoryTotalCount = categoryData ? categoryData.totalCount : 0;
+                return { category, products: categoryProducts, totalCount: categoryTotalCount };
+              }).filter(item => item.products.length > 0);
+
+              return (
+                <>
+                  {displayCategories.map(({ category, products, totalCount }) => (
+                    <ProductCategoryComponent
+                      key={category.id}
+                      categoryId={category.id}
+                      categoryName={category.name}
+                      categoryCode={category.code}
+                      categoryIcon={category.icon}
+                      productCount={totalCount}
+                      products={products}
+                      onMoreClick={handleCategoryMoreClick}
+                      onProductClick={handleProductClick}
+                      onProductBuy={handleProductBuy}
+                      maxDisplayCount={10} // 2行5列
+                      showMoreButton={true}
+                      showPagination={false}
+                    />
+                  ))}
+
+                  {/* 加载更多类别链接 */}
+                  {firstLevelCategories.length > displayedCategoriesCount && (
+                    <div className="flex justify-center">
+                      <button 
+                        onClick={handleLoadMoreCategories}
+                        className={`${styles.loadMoreCategoriesLink}`}
+                      >
+                        <span>加载更多类别</span>
+                        <i className="fas fa-chevron-down"></i>
+                      </button>
+                    </div>
+                  )}
+                </>
+              );
+            } else {
+              // 选择特定分类：只显示该分类的分页商品，其他分类隐藏
+              if (selectedCategoryData) {
+                return (
+                  <ProductCategoryComponent
+                    key={`selected-${selectedCategory}`}
+                    categoryId={selectedCategory}
+                    categoryName={selectedCategoryData.name}
+                    categoryCode={selectedCategoryData.code}
+                    categoryIcon={selectedCategoryData.icon}
+                    productCount={totalItems}
+                    products={products}
+                    onMoreClick={() => {
+                      setSelectedCategory(null);
+                      setSearchQuery('');
+                      setSearchInput('');
+                    }} // 点击返回商城按钮
+                    onProductClick={handleProductClick}
+                    onProductBuy={handleProductBuy}
+                    maxDisplayCount={pageSize} // 使用分页大小
+                    showMoreButton={true}
+                    showPagination={true} // 显示分页
+                    paginationProps={{
+                      currentPage,
+                      totalPages: Math.ceil(totalItems / pageSize),
+                      totalItems,
+                      itemsPerPage: pageSize,
+                      onPageChange: handlePageChange,
+                      onPageSizeChange: handlePageSizeChange,
+                      isLoading: isLoadingProducts
+                    }}
+                  />
+                );
+              }
+              return null;
             }
-
-            return displayCategories.map(({ category, products }) => (
-              <ProductCategoryComponent
-                key={category.id}
-                categoryId={category.id}
-                categoryName={category.name}
-                categoryCode={category.code}
-                categoryIcon={category.icon}
-                productCount={products.length}
-                products={products}
-                onMoreClick={handleCategoryMoreClick}
-                onProductClick={handleProductClick}
-                onProductBuy={handleProductBuy}
-                maxDisplayCount={10} // 2行5列
-                showMoreButton={true}
-              />
-            ));
           })()}
-
-          {/* 空状态 */}
-          {products.length === 0 && !isLoading && (
-            <div className="text-center py-12">
-              <div className="text-gray-400 text-lg mb-4">
-                <i className="fas fa-search text-4xl mb-4 block"></i>
-                <p>暂无商品数据</p>
-                <p className="text-sm mt-2">请稍后再试或联系管理员</p>
-              </div>
-            </div>
-          )}
-
-          {/* 加载更多类别链接 - 只在有更多分类时显示 */}
-          {selectedCategory === null || selectedCategory === 0 ? (
-            (() => {
-              const hasMoreCategories = firstLevelCategories.length > 3;
-              
-              return hasMoreCategories ? (
-                <div className="flex justify-center">
-                  <button 
-                    onClick={handleLoadMoreCategories}
-                    className={`${styles.loadMoreCategoriesLink}`}
-                  >
-                    <span>加载更多类别</span>
-                    <i className="fas fa-chevron-down"></i>
-                  </button>
-                </div>
-              ) : null;
-            })()
-          ) : null}
         </div>
       </div>
     </div>

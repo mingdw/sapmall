@@ -3,6 +3,26 @@ import { Product } from '../services/types/productTypes';
 import { formatPrice } from '../utils/productUtils';
 import styles from './ProductCard.module.scss';
 
+// 徽章显示文本映射
+const getBadgeDisplayText = (badge: string): string => {
+  const badgeTextMap: { [key: string]: string } = {
+    'hot': '热门',
+    'new': '新品',
+    'featured': '精选',
+    'art': '艺术',
+    'tool': '工具',
+    'epic': '史诗',
+    'legendary': '传奇',
+    'mythical': '神话',
+    'sale': '促销',
+    'limited': '限量',
+    'trending': '热门',
+    'premium': '高级'
+  };
+  
+  return badgeTextMap[badge.toLowerCase()] || badge;
+};
+
 interface ProductDetailComponentProps {
   product: Product;
   onProductClick?: (product: Product) => void;
@@ -44,7 +64,7 @@ const ProductDetailComponent: React.FC<ProductDetailComponentProps> = ({
               key={badgeIndex} 
               className={`${styles.productBadge} ${styles[badge.toLowerCase()]}`}
             >
-              {badge}
+              {getBadgeDisplayText(badge)}
             </div>
           ))}
         </div>

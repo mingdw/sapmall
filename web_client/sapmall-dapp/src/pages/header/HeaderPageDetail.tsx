@@ -27,7 +27,7 @@ const HeaderPageDetail: React.FC = () => {
   if (!ready) {
     return (
       <nav className="border-b border-gray-700">
-        <div className="w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-6">
           <div className="flex h-16">
             {/* 第一部分：Logo区域 - 占1/3 */}
             <div className="flex-1 flex items-center">
@@ -88,9 +88,9 @@ const HeaderPageDetail: React.FC = () => {
   return (
     <header className="bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
       {/* 分割线宽度控制 - 95%宽度，居中，包含分割线 */}
-      <div className="w-[95%] mx-auto border-b border-gray-700">
-        {/* 导航栏内容区域 - 完全填充分割线宽度，无内边距 */}
-        <div className="flex items-center justify-between py-4 w-full">
+      <div className="w-full border-b border-gray-700">
+        {/* 导航栏内容区域 - 完全填充分割线宽度，添加内边距与内容区域对齐 */}
+        <div className="flex items-center justify-between py-4 w-full px-6">
           {/* Logo区域 */}
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">

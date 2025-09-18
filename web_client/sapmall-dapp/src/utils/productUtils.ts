@@ -39,34 +39,43 @@ export const generateProductBadges = (product: Product): string[] => {
   const salesCount = product.totalSales || product.sales_count || 0;
   const inventory = product.totalStock || product.inventory || 0;
   
+  // 根据销量和库存生成徽章（使用英文类名）
   if (salesCount > 1000) {
-    badges.push('热门');
+    badges.push('hot');
   }
   if (inventory < 10) {
-    badges.push('限量');
+    badges.push('limited');
   }
   if (product.status === 1) { // 后端返回的是数字状态
-    badges.push('在售');
+    badges.push('new');
   }
   if (salesCount > 500) {
-    badges.push('精品');
+    badges.push('featured');
   }
   if (product.status === 2) { // 假设2是推荐状态
-    badges.push('推荐');
+    badges.push('trending');
   }
   if (inventory === 0) {
-    badges.push('售罄');
+    badges.push('sale');
   }
   
   // 根据品牌添加特殊徽章
   if (product.brand?.includes('Legendary') || product.brand?.includes('传奇')) {
-    badges.push('传奇');
+    badges.push('legendary');
   }
   if (product.brand?.includes('Mythical') || product.brand?.includes('神话')) {
-    badges.push('神话');
+    badges.push('mythical');
   }
   if (product.brand?.includes('Epic') || product.brand?.includes('史诗')) {
-    badges.push('史诗');
+    badges.push('epic');
+  }
+  
+  // 根据分类添加徽章
+  if (product.category1Code?.includes('art') || product.category1Code?.includes('艺术')) {
+    badges.push('art');
+  }
+  if (product.category1Code?.includes('tool') || product.category1Code?.includes('工具')) {
+    badges.push('tool');
   }
   
   return badges;

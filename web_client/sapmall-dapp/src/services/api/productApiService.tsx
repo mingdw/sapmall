@@ -4,7 +4,7 @@ import { Product, ProductQueryParams, ProductListResp, FilterOptions } from "../
 // 后端API响应格式
 interface BackendProductListResp {
   code: number;
-  msg: string;
+  message: string; // 后端实际返回的是message字段
   data: Array<{
     categoryId: number;
     categoryCode: string;
@@ -31,22 +31,65 @@ export const productApiService = {
     
     // 转换后端响应格式为前端期望的格式
     const backendData = response.data;
-    if (backendData.code !== 0) {
-      throw new Error(backendData.msg || '获取商品列表失败');
+    if (response.code !== 0) {
+      throw new Error(response.message || '获取商品列表失败');
     }
     
-    // 合并所有分类的商品
+    // 检查data是否存在
+    if (!response.data || !Array.isArray(response.data)) {
+      console.warn('后端返回的data字段为空或不是数组:', backendData);
+      return {
+        code: response.code,
+        msg: response.message,
+        products: [],
+        total: 0
+      };
+    }
+    
+    // 处理分类数据
     const allProducts: Product[] = [];
     let totalCount = 0;
     
-    backendData.data.forEach(categoryData => {
-      allProducts.push(...categoryData.products);
-      totalCount += categoryData.productCount;
+    response.data.forEach(categoryData => {
+      if (categoryData.products && Array.isArray(categoryData.products)) {
+        // 为每个商品添加分类信息
+        const productsWithCategory = categoryData.products.map((product: any) => ({
+          ...product,
+          categoryId: categoryData.categoryId,
+          categoryCode: categoryData.categoryCode,
+          categoryName: categoryData.categoryName,
+          categoryProductCount: categoryData.productCount // 添加分类商品总数
+        }));
+        
+        allProducts.push(...productsWithCategory);
+        
+        // 如果是"全部商品"分类（categoryId为0或categoryCode为空），直接使用其productCount
+        if (categoryData.categoryId === 0 || categoryData.categoryCode === '') {
+          totalCount = categoryData.productCount || 0;
+        } else {
+          // 否则累加所有分类的productCount
+          totalCount += categoryData.productCount || 0;
+        }
+      }
+    });
+    
+    console.log('API响应数据处理:', {
+      categoriesCount: response.data.length,
+      allProductsCount: allProducts.length,
+      totalCount,
+      hasSearchQuery: !!requestBody.productName,
+      categories: response.data.map(cat => ({
+        categoryId: cat.categoryId,
+        categoryCode: cat.categoryCode,
+        categoryName: cat.categoryName,
+        productCount: cat.productCount,
+        productsLength: cat.products?.length || 0
+      }))
     });
     
     return {
-      code: backendData.code,
-      msg: backendData.msg,
+      code: response.code,
+      msg: response.message,
       products: allProducts,
       total: totalCount
     };

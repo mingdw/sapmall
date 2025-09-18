@@ -1,0 +1,210 @@
+/* 分页容器 */
+.paginationContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 0.75rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+}
+
+/* 分页信息 */
+.paginationInfo {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  white-space: nowrap;
+  
+  .highlight {
+    color: #60a5fa;
+    font-weight: 600;
+  }
+}
+
+/* 分页控制 */
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* 分页按钮 */
+.paginationBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.5rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 0.5rem;
+  color: #60a5fa;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover:not(.disabled) {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: #3b82f6;
+    color: #93c5fd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-color: #3b82f6;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  }
+
+  &.disabled {
+    background: rgba(107, 114, 128, 0.1);
+    border-color: rgba(107, 114, 128, 0.3);
+    color: #6b7280;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+/* 页码按钮 */
+.paginationPage {
+  font-weight: 600;
+  min-width: 2.5rem;
+}
+
+/* 页码容器 */
+.paginationPages {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* 省略号 */
+.paginationEllipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* 每页条数选择器 */
+.pageSizeSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pageSizeSelect {
+  padding: 0.5rem 0.75rem;
+  background: rgba(31, 41, 55, 0.8);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  border-radius: 0.5rem;
+  color: #ffffff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #3b82f6;
+    background: rgba(31, 41, 55, 0.9);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  option {
+    background: #1f2937;
+    color: #ffffff;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .paginationContainer {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .paginationInfo {
+    order: 2;
+    font-size: 0.8rem;
+  }
+
+  .paginationControls {
+    order: 1;
+    gap: 0.125rem;
+  }
+
+  .paginationBtn {
+    min-width: 2rem;
+    height: 2rem;
+    font-size: 0.8rem;
+  }
+
+  .paginationPage {
+    min-width: 2rem;
+  }
+
+  .paginationEllipsis {
+    min-width: 2rem;
+    height: 2rem;
+    font-size: 0.8rem;
+  }
+
+  .pageSizeSelector {
+    order: 3;
+  }
+
+  .pageSizeSelect {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .paginationContainer {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .paginationInfo {
+    font-size: 0.75rem;
+  }
+
+  .paginationBtn {
+    min-width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.75rem;
+  }
+
+  .paginationPage {
+    min-width: 1.75rem;
+  }
+
+  .paginationEllipsis {
+    min-width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.75rem;
+  }
+
+  .pageSizeSelect {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.5rem;
+  }
+}
