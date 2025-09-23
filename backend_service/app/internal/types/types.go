@@ -31,6 +31,33 @@ type GetCategoryTreeReq struct {
 	CategoryType int `path:"category_type"`
 }
 
+type GetNonceByAddressReq struct {
+	WalletAddress string `path:"wallet_address"`
+}
+
+type GetNonceByAddressResp struct {
+	Nonce string `json:"nonce"`
+}
+
+type HealthCheckReq struct {
+	Service string `json:"service"`
+}
+
+type HealthCheckResp struct {
+	Status string `json:"status"`
+	Time   int64  `json:"time"`
+}
+
+type LoginReq struct {
+	WalletAddress string `json:"wallet_address"`
+	Signature     string `json:"signature"`
+}
+
+type LoginResp struct {
+	Token    string   `json:"token"`
+	UserInfo UserInfo `json:"user_info"`
+}
+
 type ProductInfo struct {
 	Id            string `json:"id"`
 	CreatorId     string `json:"creator_id"`
@@ -58,4 +85,22 @@ type ReviewProductResp struct {
 	Code        int         `json:"code"`
 	Msg         string      `json:"msg"`
 	ProductInfo ProductInfo `json:"product_info"`
+}
+
+type UserInfo struct {
+	Id        int64    `json:"id"`
+	Address   string   `json:"address"`
+	Nickname  string   `json:"nickname"`
+	Avatar    string   `json:"avatar"`
+	Status    int      `json:"status"`
+	Roles     []string `json:"roles"`
+	CreatedAt string   `json:"created_at"`
+	UpdatedAt string   `json:"updated_at"`
+}
+
+type VersionResp struct {
+	Version   string `json:"version"`
+	BuildTime string `json:"build_time"`
+	GitCommit string `json:"git_commit"`
+	GoVersion string `json:"go_version"`
 }

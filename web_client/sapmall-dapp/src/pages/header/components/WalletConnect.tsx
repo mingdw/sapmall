@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Button, Dropdown, Menu, Modal } from 'antd';
 import { useConnect, useDisconnect, useAccount, useBalance, useSignMessage, useSwitchChain } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -8,6 +9,7 @@ import { useUserStore } from '../../../store/userStore';
 import MessageUtils from '../../../utils/messageUtils';
 import { userApiService } from '../../../services/api/userApiService';
 import styles from './WalletConnect.module.scss';
+import { UserStatus } from '../../../services/types/userTypes';
 
 interface WalletConnectProps {
   onConnect?: (address: string) => void;
@@ -16,6 +18,7 @@ interface WalletConnectProps {
 
 const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }) => {
   const { t, ready } = useTranslation();
+  const navigate = useNavigate();
   const [isConnecting, setIsConnecting] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -45,8 +48,19 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     setUser, 
     setTokenBalances, 
     setLoggedIn, 
+    setConnected,
+    setStatus,
+    setAuthToken,
+    login,
     logout 
   } = useUserStore();
+
+  // 同步wagmi连接状态到userStore
+  useEffect(() => {
+    console.log('同步连接状态到userStore:', { isConnected, address });
+    setConnected(isConnected);
+    setStatus(isConnected ? UserStatus.ACTIVE : UserStatus.INACTIVE);
+  }, [isConnected, address, setConnected, setStatus]);
 
   // 监听连接状态变化
   useEffect(() => {
@@ -94,7 +108,6 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
           error.message?.includes('The requested account and/or method has not been authorized')) {
         console.log('检测到未授权错误，清理状态...');
         setIsDisconnecting(true);
-        localStorage.removeItem('auth_token');
         logout();
         setConnectionError('钱包连接已断开，请重新连接');
         
@@ -157,24 +170,27 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       });
       
       // 3. 调用登录接口
-      const loginResponse = await commonApiService.login(walletAddress, signature);
-      
-      const token = loginResponse.token;
-      const userId = loginResponse.user_id;
+      const loginApiResponse = await commonApiService.login(walletAddress, signature);
+      console.log('登陆结果:', loginApiResponse);
+      if (loginApiResponse.token === '') {
+        throw new Error('Not Authorized');
+      }
+      const userInfo = loginApiResponse.user_info;
 
-      // 4. 获取用户信息
-      const userInfo = await userApiService.getUserInfo(userId);
-      console.log('用户信息:', userInfo);
-      // 5. 保存用户信息
-      localStorage.setItem('auth_token', loginResponse.token);
-      setUser(userInfo);
-      setLoggedIn(true);
+      const completeUserInfo = {
+        id: userInfo.id.toString(),
+        address: userInfo.address,
+        nickname: userInfo.nickname,
+        avatar: userInfo.avatar,
+        status: userInfo.status,
+        roles: userInfo.roles,
+        created_at: userInfo.created_at,
+        updated_at: userInfo.updated_at,
+        token: loginApiResponse.token // 将token也保存在user对象中
+      };
       
-      console.log('钱包连接成功，状态已更新:', { 
-        isLoggedIn: true, 
-        user: userInfo, 
-        address: walletAddress 
-      });
+      // 5. 使用login方法保存用户信息和token
+      login(completeUserInfo, loginApiResponse.token);
       
       // 6. 通知父组件
       onConnect?.(walletAddress);
@@ -204,11 +220,11 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       console.log('开始处理钱包断开连接...');
       
       // 先清除本地状态，避免后续操作触发错误
-      localStorage.removeItem('auth_token');
       logout();
       
       // 调用后端登出接口（如果token存在）
-      const token = localStorage.getItem('auth_token');
+      const { getAuthToken } = useUserStore.getState();
+      const token = getAuthToken();
       if (token) {
         try {
           // await userApiService.logout();
@@ -225,7 +241,6 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     } catch (error: any) {
       console.error('登出失败:', error);
       // 确保本地状态被清除
-      localStorage.removeItem('auth_token');
       logout();
     } finally {
       // 延迟重置断开连接状态，避免立即触发重新连接
@@ -250,7 +265,6 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     } catch (error: any) {
       console.error('断开连接处理失败:', error);
       // 确保状态被清理
-      localStorage.removeItem('auth_token');
       logout();
       disconnect();
     }
@@ -291,26 +305,32 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     }
   };
 
-  // 处理菜单项点击 - 简化逻辑，只处理URL跳转
+  // 处理菜单项点击 - 跳转到admin后台并定位到对应菜单
   const handleMenuClick = ({ key }: { key: string }) => {
     switch (key) {
       case 'profile':
-        setShowUserModal(true);
+        // 跳转到admin后台的个人信息页面
+        navigate('/admin?menu=profile');
         break;
       case 'cart':
-        window.open('/cart', '_blank');
+        // 跳转到admin后台的商品管理页面
+        navigate('/admin?menu=cart');
         break;
       case 'favorites':
-        window.open('/favorites', '_blank');
+        // 跳转到admin后台的资产管理页面
+        navigate('/admin?menu=favorites');
         break;
       case 'orders':
-        window.open('/orders', '_blank');
+        // 跳转到admin后台的订单管理页面
+        navigate('/admin?menu=orders');
         break;
       case 'history':
-        window.open('/history', '_blank');
+        // 跳转到admin后台的交易记录页面
+        navigate('/admin?menu=history');
         break;
       case 'settings':
-        window.open('/settings', '_blank');
+        // 跳转到admin后台的系统设置页面
+        navigate('/admin?menu=settings');
         break;
       case 'disconnect':
         handleDisconnect();

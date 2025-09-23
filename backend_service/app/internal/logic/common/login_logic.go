@@ -59,10 +59,13 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	}
 
 	userRepository := repository.NewUserRepository(l.svcCtx.GormDB)
-	// 3. 查询用户
-	userInfo, err := userRepository.GetByAddress(l.ctx, req.WalletAddress)
+	roleRepository := repository.NewRoleRepository(l.svcCtx.GormDB)
+	userRoleRepository := repository.NewUserRoleRepository(l.svcCtx.GormDB)
+
+	// 3. 查询用户（包含角色信息）
+	userInfo, err := userRepository.GetByAddressWithRoles(l.ctx, req.WalletAddress)
 	if err != nil {
-		logx.Errorf("get comer by address failed: %v", err)
+		logx.Errorf("get user by address failed: %v", err)
 		return nil, err
 	}
 
@@ -83,12 +86,14 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		userInfo = &model.User{
 			UniqueId:   fmt.Sprintf("U%d", maxID),
 			UserCode:   req.WalletAddress,
-			Status:     0,
+			Nickname:   fmt.Sprintf("用户%d", maxID), // 设置默认昵称
+			Status:     1,                          // 设置为正常状态
 			StatusDesc: "正常",
 			Type:       0,
 			TypeDesc:   "普通用户",
 			CreatedAt:  time.Now(),
 			UpdatedAt:  time.Now(),
+			UserRoles:  []*model.UserRole{},
 		}
 
 		err = userRepository.Create(l.ctx, userInfo)
@@ -97,6 +102,59 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 			return nil, err
 		}
 
+		// 5. 为新用户分配默认角色（R0003 - 普通用户）
+		normalUserRole, err := roleRepository.GetByCode(l.ctx, "R0003")
+		if err != nil {
+			logx.Errorf("get normal user role failed: %v", err)
+			return nil, err
+		}
+
+		if normalUserRole == nil {
+			// 如果普通用户角色不存在，创建一个
+			normalUserRole = &model.Role{
+				Code:        "R0003",
+				Name:        "普通用户",
+				Description: "普通用户角色",
+				IsDeleted:   0,
+				Creator:     "system",
+				Updator:     "system",
+				CreatedAt:   time.Now(),
+				UpdatedAt:   time.Now(),
+			}
+			err = roleRepository.Create(l.ctx, normalUserRole)
+			if err != nil {
+				logx.Errorf("create normal user role failed: %v", err)
+				return nil, err
+			}
+		}
+
+		// 创建用户角色关联
+		userRole := &model.UserRole{
+			UserID:    userInfo.ID,
+			UserCode:  userInfo.UserCode,
+			RoleID:    normalUserRole.ID,
+			RoleCode:  normalUserRole.Code,
+			IsDeleted: 0,
+			Creator:   "system",
+			Updator:   "system",
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		}
+
+		err = userRoleRepository.Create(l.ctx, userRole)
+		if err != nil {
+			logx.Errorf("create user role failed: %v", err)
+			return nil, err
+		}
+
+		logx.Infof("new user created with role: %s", normalUserRole.Code)
+
+		// 重新查询用户信息以获取角色信息
+		userInfo, err = userRepository.GetByAddressWithRoles(l.ctx, req.WalletAddress)
+		if err != nil {
+			logx.Errorf("get user with roles after creation failed: %v", err)
+			return nil, err
+		}
 	}
 
 	// 6. 删除 nonce
@@ -112,9 +170,28 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		return nil, err
 	}
 
+	// 8. 构建用户信息响应
+	userInfoResp := types.UserInfo{
+		Id:        userInfo.ID,
+		Address:   req.WalletAddress,
+		Nickname:  userInfo.Nickname,
+		Avatar:    userInfo.Avatar,
+		Status:    userInfo.Status,
+		Roles:     make([]string, 0),
+		CreatedAt: userInfo.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt: userInfo.UpdatedAt.Format("2006-01-02 15:04:05"),
+	}
+
+	// 9. 添加角色信息
+	for _, userRole := range userInfo.UserRoles {
+		for _, role := range userRole.Roles {
+			userInfoResp.Roles = append(userInfoResp.Roles, role.Code)
+		}
+	}
+
 	return &types.LoginResp{
-		Token:  token,
-		UserId: fmt.Sprintf("%d", userInfo.ID),
+		Token:    token,
+		UserInfo: userInfoResp,
 	}, nil
 
 }

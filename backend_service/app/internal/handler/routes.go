@@ -85,6 +85,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/info/:user_id",
 					Handler: user.GetUserInfoHandler(serverCtx),
 				},
+				{
+					// 获取用户后台菜单
+					Method:  http.MethodGet,
+					Path:    "/menus",
+					Handler: user.GetRoleMenuHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/user"),

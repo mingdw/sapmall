@@ -1,4 +1,5 @@
 import { CategoryTreeResp } from "../types/categoryTypes";
+import { LoginResp } from "../types/userTypes";
 import baseClient from "./baseClient";
 
 // 定义类型
@@ -9,11 +10,6 @@ interface GetNonceByAddressResp {
 interface LoginReq {
   wallet_address: string;
   signature: string;
-}
-
-interface LoginResp {
-  token: string;
-  user_id: string;
 }
 
 interface HealthCheckResp {

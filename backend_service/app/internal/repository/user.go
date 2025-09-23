@@ -12,6 +12,7 @@ type UserRepository interface {
 	Create(ctx context.Context, user *model.User) error
 	GetByID(ctx context.Context, id int64) (*model.User, error)
 	GetByAddress(ctx context.Context, address string) (*model.User, error)
+	GetByAddressWithRoles(ctx context.Context, address string) (*model.User, error)
 	Update(ctx context.Context, user *model.User) error
 	Delete(ctx context.Context, id int64) error
 	List(ctx context.Context, offset, limit int) ([]*model.User, int64, error)
@@ -75,6 +76,22 @@ func (r *userRepository) List(ctx context.Context, offset, limit int) ([]*model.
 func (r *userRepository) GetByAddress(ctx context.Context, address string) (*model.User, error) {
 	var user model.User
 	err := r.db.WithContext(ctx).Where("user_code = ? and is_deleted = ?", address, "0").First(&user).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil // 用户不存在，返回 nil, nil
+		}
+		return nil, err // 其他错误
+	}
+	return &user, nil // 找到用户，返回用户信息
+}
+
+// GetByAddressWithRoles 根据地址获取 User（包含角色信息）
+func (r *userRepository) GetByAddressWithRoles(ctx context.Context, address string) (*model.User, error) {
+	var user model.User
+	err := r.db.WithContext(ctx).
+		Preload("UserRoles.Roles").
+		Where("user_code = ? and is_deleted = ?", address, "0").
+		First(&user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil // 用户不存在，返回 nil, nil

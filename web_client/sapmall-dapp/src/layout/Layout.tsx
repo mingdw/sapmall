@@ -1,21 +1,26 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import HeaderPageDetail from '../pages/header/HeaderPageDetail';
 import ContentLayout from './ContentLayout';
 
 const Layout: React.FC = () => {
+  const location = useLocation();
+  
+  // 判断是否为admin路由
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* 整体宽度控制 - 95%宽度，自适应，居中 */}
-      <div className="w-[95%] mx-auto">
-        {/* Header 区域 - 固定高度 */}
-        <HeaderPageDetail />
-        
-        {/* 主内容区域 - 由ContentLayout管理路由 */}
+    <div className="h-screen bg-gray-900 text-white flex flex-col">
+      {/* Header 区域 - admin路由时隐藏 */}
+      {<HeaderPageDetail />}
+      
+      {/* 主内容区域 - 由ContentLayout管理路由，占据剩余空间 */}
+      <div className="flex-1 min-h-0">
         <ContentLayout />
-        
-        {/* Footer 区域 - 自适应内容高度 */}
-        {/* <Footer /> */}
       </div>
+      
+      {/* Footer 区域 - 自适应内容高度 */}
+      {/* <Footer /> */}
     </div>
   );
 };

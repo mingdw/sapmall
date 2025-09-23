@@ -23,4 +23,10 @@ service sapmall {
     @doc "获取用户信息"
     @handler GetUserInfo
     get /info/:user_id (GetUserInfoReq) returns (GetUserInfoResp)
+
+    @doc "获取用户后台菜单"
+    @handler GetRoleMenu
+    get /menus returns (BaseResp)
+
+
 }
