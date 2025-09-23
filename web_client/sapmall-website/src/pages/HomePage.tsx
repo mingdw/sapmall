@@ -78,6 +78,7 @@ const HomePage: React.FC = () => {
 
   const launchDApp = () => {
     console.log('Launching DApp...');
+    window.open('https://localhost:7102', '_blank');
   };
 
   const toggleLanguageDropdown = () => {

@@ -39,10 +39,10 @@ fi
 
 # 使用项目中的 init_data.sql 文件
 PROJECT_ROOT="$(cd "$cwd/../../.." && pwd)"
-INIT_DATA_FILE="$PROJECT_ROOT/backend_service/docs/sapmall.sql"
+INIT_DATA_FILE="$PROJECT_ROOT/backend_service/docs/sapphire_mall.sql" 
 
 if [ ! -f "$INIT_DATA_FILE" ]; then
-    echo -e "${RED}错误: sapmall.sql 文件不存在: $INIT_DATA_FILE${NC}"
+    echo -e "${RED}错误: sapphire_mall.sql 文件不存在: $INIT_DATA_FILE${NC}"
     exit 1
 fi
 

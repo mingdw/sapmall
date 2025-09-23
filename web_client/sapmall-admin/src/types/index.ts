@@ -5,40 +5,15 @@ export interface ApiResponse<T = any> {
   data: T;
 }
 
-// 用户相关类型
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  role: 'admin' | 'merchant' | 'user';
-  status: 'active' | 'inactive';
-  createdAt: string;
-  updatedAt: string;
+// iframe传递的参数类型
+export interface IframeParams {
+  menu?: string;           // 目标菜单项
+  userId?: string;         // 用户ID
+  userToken?: string;      // 用户认证token
+  userAddress?: string;    // 用户钱包地址
+  userRole?: string;       // 用户角色
+  userRoles?: string;      // 用户角色列表（逗号分隔）
+  nickname?: string;       // 用户昵称
+  status?: string;         // 用户状态
 }
 
-// 商品相关类型
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  status: 'active' | 'inactive';
-  createdAt: string;
-  updatedAt: string;
-}
-
-// 订单相关类型
-export interface Order {
-  id: string;
-  userId: string;
-  products: Array<{
-    productId: string;
-    quantity: number;
-    price: number;
-  }>;
-  total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  createdAt: string;
-  updatedAt: string;
-}

@@ -37,10 +37,21 @@ type (
 		WalletAddress string `json:"wallet_address"`
 		Signature     string `json:"signature"`
 	}
+	// 用户信息
+	UserInfo {
+		Id        int64    `json:"id"`
+		Address   string   `json:"address"`
+		Nickname  string   `json:"nickname"`
+		Avatar    string   `json:"avatar"`
+		Status    int      `json:"status"`
+		Roles     []string `json:"roles"`
+		CreatedAt string   `json:"created_at"`
+		UpdatedAt string   `json:"updated_at"`
+	}
 	// 登录响应
 	LoginResp {
-		Token  string `json:"token"`
-		UserId string `json:"user_id"`
+		Token    string   `json:"token"`
+		UserInfo UserInfo `json:"user_info"`
 	}
 	// 获取目录请求
 	GetCategoryTreeReq {
@@ -73,6 +84,5 @@ service sapmall {
 	@doc "获取导航目录结构"
 	@handler GetCategoryTree
 	get /:category_type/categories (GetCategoryTreeReq) returns (BaseResp)
-	
 }
 

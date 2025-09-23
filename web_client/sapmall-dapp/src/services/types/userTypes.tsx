@@ -22,6 +22,24 @@ export interface User {
   user_roles?: UserRole[];
 }
 
+// 登录接口返回的用户信息（简化版）
+export interface LoginUserInfo {
+  id: number;
+  address: string;
+  nickname: string;
+  avatar: string;
+  status: number;
+  roles: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+// 登录接口响应
+export interface LoginResp {
+  token: string;
+  user_info: LoginUserInfo;
+}
+
 // 用户角色类型
 export interface UserRole {
   id: number;
@@ -35,10 +53,9 @@ export interface UserRole {
 
 // 用户状态枚举
 export enum UserStatus {
-  INACTIVE = 0,
-  ACTIVE = 1,
-  SUSPENDED = 2,
-  DELETED = 3
+  ACTIVE = 0, // 正常
+  INACTIVE = 1, // 禁用
+  DELETED = 2 // 删除
 }
 
 // 用户类型枚举
