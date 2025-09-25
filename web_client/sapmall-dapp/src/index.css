@@ -15,3 +15,5 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Admin iframe 样式已移至 dapp-common.css 中统一管理 */

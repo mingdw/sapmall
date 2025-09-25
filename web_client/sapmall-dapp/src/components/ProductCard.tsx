@@ -55,7 +55,6 @@ const ProductDetailComponent: React.FC<ProductDetailComponentProps> = ({
       <div className={`${styles.productImageContainer}`}>
         <img 
           src={product.image} 
-          alt={product.title} 
           className={`${styles.productImage}`} 
         />
         <div className={`${styles.productBadges}`}>

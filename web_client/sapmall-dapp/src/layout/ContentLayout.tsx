@@ -9,7 +9,7 @@ import AdminIframeEmbedded from '../components/AdminIframeEmbedded';
 
 const ContentLayout: React.FC = () => {
   return (
-    <main className="flex-1 min-h-0">
+    <main className="flex-1 min-h-0" style={{ overflow: 'visible', position: 'relative' }}>
       <Routes>
         {/* 默认重定向到代币商城 */}
         <Route path="/" element={<Navigate to="/marketplace" replace />} />
@@ -39,7 +39,7 @@ const ContentLayout: React.FC = () => {
             <HelpPageDetail />
           </div>
         } />
-        {/* 后台管理路由 - 使用iframe嵌入admin系统 */}
+        {/* 后台管理路由 - 使用iframe嵌入admin系统，不使用容器限制 */}
         <Route path="/admin" element={<AdminIframeEmbedded />} />
       </Routes>
     </main>

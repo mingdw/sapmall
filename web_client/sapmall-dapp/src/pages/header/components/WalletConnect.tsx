@@ -60,6 +60,17 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     console.log('同步连接状态到userStore:', { isConnected, address });
     setConnected(isConnected);
     setStatus(isConnected ? UserStatus.ACTIVE : UserStatus.INACTIVE);
+    
+    // 当钱包完全断开连接时，清理所有状态
+    if (!isConnected && !address) {
+      console.log('钱包完全断开，清理所有状态');
+      setConnectionError(null);
+      setIsConnecting(false);
+      setIsDisconnecting(false);
+      setIsProcessingConnection(false);
+      setLastProcessedAddress(null);
+      signingRef.current = false;
+    }
   }, [isConnected, address, setConnected, setStatus]);
 
   // 监听连接状态变化
@@ -102,21 +113,40 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   useEffect(() => {
     if (error) {
       console.error('钱包错误:', error);
-      // 如果是未授权错误，清理状态
-      if (error.message?.includes('UnauthorizedProviderError') || 
-          error.message?.includes('not authorized') ||
-          error.message?.includes('The requested account and/or method has not been authorized')) {
-        console.log('检测到未授权错误，清理状态...');
+      
+      // 检查是否是授权相关错误
+      const isAuthError = error.message?.includes('UnauthorizedProviderError') || 
+                         error.message?.includes('not authorized') ||
+                         error.message?.includes('The requested account and/or method has not been authorized') ||
+                         error.message?.includes('User rejected') ||
+                         error.message?.includes('rejected') ||
+                         error.name === 'UserRejectedRequestError';
+      
+      if (isAuthError) {
+        console.log('检测到授权错误，清理状态并静默处理...');
+        
+        // 静默清理状态，不显示错误提示
         setIsDisconnecting(true);
         logout();
-        setConnectionError('钱包连接已断开，请重新连接');
         
-        // 延迟重置状态
+        // 清理所有连接相关状态
+        setConnectionError(null);
+        setIsConnecting(false);
+        setIsProcessingConnection(false);
+        setLastProcessedAddress(null);
+        signingRef.current = false;
+        
+        // 延迟重置断开状态
         setTimeout(() => {
           setIsDisconnecting(false);
-          setConnectionError(null);
-        }, 2000);
+        }, 1000);
+        
+        // 不显示错误消息，让用户重新连接
+        return;
       }
+      
+      // 其他错误正常处理
+      setConnectionError(error.message || '连接失败');
     }
   }, [error]);
 
@@ -161,6 +191,23 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       // 2. 使用personal_sign方法，避免Ethereum前缀
       const signature = await signMessageAsync({ 
         message: nonce
+      }).catch((signError) => {
+        console.error('签名失败:', signError);
+        
+        // 检查是否是用户拒绝签名
+        if (signError.message?.includes('User rejected') || 
+            signError.message?.includes('rejected') ||
+            signError.name === 'UserRejectedRequestError') {
+          throw new Error('用户取消了签名');
+        }
+        
+        // 检查是否是授权错误
+        if (signError.message?.includes('not authorized') ||
+            signError.message?.includes('The requested account and/or method has not been authorized')) {
+          throw new Error('钱包授权已撤销，请重新连接钱包');
+        }
+        
+        throw signError;
       });
       
       console.log('签名信息:', {
@@ -199,10 +246,27 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       
     } catch (error: any) {
       console.error('签名或登录失败:', error);
+      
+      // 检查是否是授权相关错误
+      const isAuthError = error.message?.includes('not authorized') ||
+                         error.message?.includes('The requested account and/or method has not been authorized') ||
+                         error.message?.includes('钱包授权已撤销') ||
+                         error.message?.includes('用户取消了签名');
+      
+      if (isAuthError) {
+        console.log('检测到授权错误，静默处理...');
+        // 静默清理状态，不显示错误提示
+        setConnectionError(null);
+        setIsConnecting(false);
+        setIsProcessingConnection(false);
+        signingRef.current = false;
+        return;
+      }
+      
+      // 其他错误正常处理
       const errorMessage = error.message || '登录失败，请重试';
       setConnectionError(errorMessage);
       MessageUtils.error(errorMessage);
-      // 不要自动断开钱包连接，让用户手动重试
     } finally {
       setIsConnecting(false);
       setIsProcessingConnection(false);
@@ -210,63 +274,57 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     }
   };
 
-  // 钱包断开连接
+  // 简化的钱包断开连接处理
   const handleWalletDisconnected = async () => {
     try {
-      setIsDisconnecting(true);
-      setIsProcessingConnection(false);
-      signingRef.current = false;
+      console.log('处理钱包断开连接...');
       
-      console.log('开始处理钱包断开连接...');
-      
-      // 先清除本地状态，避免后续操作触发错误
+      // 清除本地状态
       logout();
       
-      // 调用后端登出接口（如果token存在）
-      const { getAuthToken } = useUserStore.getState();
-      const token = getAuthToken();
-      if (token) {
-        try {
-          // await userApiService.logout();
-        } catch (logoutError) {
-          console.warn('后端登出失败，但本地状态已清除:', logoutError);
-        }
-      }
+      // 关闭所有弹窗和下拉菜单
+      setShowUserModal(false);
+      setShowUserDropdown(false);
+      setShowNetworkMenu(false);
+      
+      // 重置所有连接相关状态
+      setIsConnecting(false);
+      setIsDisconnecting(false);
+      setIsProcessingConnection(false);
+      setConnectionError(null);
+      setLastProcessedAddress(null);
+      signingRef.current = false;
       
       // 通知父组件
       onDisconnect?.();
       
-      MessageUtils.info('钱包已断开连接');
+      console.log('钱包断开连接完成');
       
     } catch (error: any) {
-      console.error('登出失败:', error);
+      console.error('断开连接处理失败:', error);
       // 确保本地状态被清除
       logout();
-    } finally {
-      // 延迟重置断开连接状态，避免立即触发重新连接
-      setTimeout(() => {
-        setIsDisconnecting(false);
-        setIsProcessingConnection(false);
-        signingRef.current = false;
-        setLastProcessedAddress(null);
-      }, 1000);
+      // 强制清理所有状态
+      setConnectionError(null);
+      setIsConnecting(false);
+      setIsDisconnecting(false);
+      setIsProcessingConnection(false);
     }
   };
 
   // 处理断开连接
   const handleDisconnect = () => {
     try {
-      // 先清理登录状态
-      handleWalletDisconnected();
-      setShowUserDropdown(false);
-      
-      // 然后断开钱包连接
+      // 先断开钱包连接
       disconnect();
+      
+      // 然后清理状态
+      handleWalletDisconnected();
+      
     } catch (error: any) {
       console.error('断开连接处理失败:', error);
       // 确保状态被清理
       logout();
-      disconnect();
     }
   };
 
@@ -384,8 +442,9 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     );
   }
 
-  // 如果已连接但未登录，显示连接中状态或错误状态
+  // 如果已连接但未登录，显示连接中状态
   if (isConnected && !isLoggedIn) {
+    // 如果有连接错误，显示重试按钮
     if (connectionError) {
       return (
         <div className="flex items-center space-x-2">
@@ -397,7 +456,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
             重试连接
           </Button>
           <Button 
-            onClick={() => disconnect()} 
+            onClick={() => handleDisconnect()} 
             type="default"
             icon={<i className="fas fa-times"></i>}
           >
@@ -407,11 +466,45 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       );
     }
     
+    // 如果正在处理连接，显示加载状态
+    if (isProcessingConnection) {
+      return (
+        <Button loading>
+          <i className="fas fa-wallet mr-2"></i>
+          连接中...
+        </Button>
+      );
+    }
+    
+    // 如果钱包已连接但用户未登录，且不在处理中，显示连接钱包按钮
     return (
-      <Button loading>
-        <i className="fas fa-wallet mr-2"></i>
-        连接中...
-      </Button>
+      <ConnectButton.Custom>
+        {({ openConnectModal, mounted }) => {
+          const ready = mounted;
+          
+          return (
+            <div
+              {...(!ready && {
+                'aria-hidden': true,
+                style: {
+                  opacity: 0,
+                  pointerEvents: 'none',
+                  userSelect: 'none',
+                },
+              })}
+            >
+              <Button
+                type="primary"
+                icon={<i className="fas fa-wallet"></i>}
+                onClick={openConnectModal}
+                loading={isPending || isConnecting}
+              >
+                连接钱包
+              </Button>
+            </div>
+          );
+        }}
+      </ConnectButton.Custom>
     );
   }
 

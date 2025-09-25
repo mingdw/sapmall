@@ -11,7 +11,6 @@ export interface IframeParams {
   userId?: string;         // 用户ID
   userToken?: string;      // 用户认证token
   userAddress?: string;    // 用户钱包地址
-  userRole?: string;       // 用户角色
   userRoles?: string;      // 用户角色列表（逗号分隔）
   nickname?: string;       // 用户昵称
   status?: string;         // 用户状态

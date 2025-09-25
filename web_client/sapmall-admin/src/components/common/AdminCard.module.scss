@@ -1,0 +1,62 @@
+/* AdminCard 组件样式 */
+
+.adminInfoCard {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  overflow: visible;
+  height: auto;
+  min-height: 100%;
+  margin-bottom: 20px;
+  border: 1px solid rgba(51, 65, 85, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.adminInfoCard:last-child {
+  margin-bottom: 0;
+}
+
+.adminCardContent {
+  padding: 24px;
+}
+
+.adminSection {
+  margin-bottom: 30px;
+  background: rgba(30, 41, 59, 0.4);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.adminSection:last-child {
+  margin-bottom: 0;
+}
+
+.governanceHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.adminSectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+  display: flex;
+  align-items: center;
+}
+
+.adminSectionTitle i {
+  margin-right: 8px;
+  color: #3b82f6;
+}
+
+.dashboardActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+

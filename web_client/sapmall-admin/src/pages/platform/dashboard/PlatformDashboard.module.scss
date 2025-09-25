@@ -1,0 +1,571 @@
+/* PlatformDashboard.module.scss - 按照原型设计 */
+
+.dashboard {
+  @apply w-full h-fit overflow-visible space-y-6;
+  min-height: auto;
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+/* 基础卡片样式 - 按照原型 */
+.adminInfoCard {
+  @apply bg-slate-900/40 border border-slate-700/30 rounded-xl backdrop-blur-sm;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.adminCardContent {
+  @apply p-6;
+}
+
+.adminSection {
+  @apply w-full;
+}
+
+.governanceHeaderRow {
+  @apply flex justify-between items-center mb-6;
+}
+
+.adminSectionTitle {
+  @apply text-slate-50 text-xl font-semibold flex items-center gap-3 mb-0;
+  
+  i {
+    @apply text-blue-500;
+  }
+}
+
+.dashboardActions {
+  @apply flex gap-3;
+}
+
+.adminBtn {
+  @apply bg-slate-800/60 border border-slate-700/40 text-slate-200 rounded-lg px-4 py-2 transition-all duration-300 flex items-center gap-2;
+  
+  &:hover {
+    @apply bg-slate-700/80 border-blue-500/50 text-slate-50 -translate-y-0.5;
+  }
+  
+  &.adminBtnPrimary {
+    @apply bg-blue-600/80 border-blue-500/50 text-white;
+    
+    &:hover {
+      @apply bg-blue-500/90 border-blue-400/70;
+    }
+  }
+}
+
+.systemStatusRefreshBtn {
+  @apply bg-slate-800/60 border border-slate-700/40 text-slate-200 rounded-lg px-3 py-2 transition-all duration-300 flex items-center gap-2;
+  
+  &:hover {
+    @apply bg-slate-700/80 border-blue-500/50 text-slate-50;
+  }
+}
+
+/* 核心数据卡片样式 - 按照原型 */
+.dashboardStatsGrid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6;
+}
+
+.dashboardStatCard {
+  @apply bg-slate-800/60 border border-slate-700/40 rounded-xl p-6 transition-all duration-300 relative overflow-hidden;
+  
+  &:hover {
+    @apply border-blue-500/50 shadow-lg shadow-blue-500/10 -translate-y-1;
+  }
+  
+  &.statPrimary {
+    @apply bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-blue-500/30;
+  }
+  
+  &.statSuccess {
+    @apply bg-gradient-to-br from-green-500/20 to-green-600/20 border-green-500/30;
+  }
+  
+  &.statPurple {
+    @apply bg-gradient-to-br from-purple-500/20 to-purple-600/20 border-purple-500/30;
+  }
+  
+  &.statOrange {
+    @apply bg-gradient-to-br from-orange-500/20 to-orange-600/20 border-orange-500/30;
+  }
+}
+
+.statContentWrapper {
+  @apply flex items-center gap-4 mb-4;
+}
+
+.statIcon {
+  @apply w-12 h-12 flex items-center justify-center rounded-lg text-white text-lg;
+  
+  .statPrimary & {
+    @apply bg-blue-500/80;
+  }
+  
+  .statSuccess & {
+    @apply bg-green-500/80;
+  }
+  
+  .statPurple & {
+    @apply bg-purple-500/80;
+  }
+  
+  .statOrange & {
+    @apply bg-orange-500/80;
+  }
+  
+  i {
+    color: #fff !important;
+    font-size: 18px;
+    line-height: 1;
+  }
+}
+
+.statContent {
+  @apply flex-1;
+  
+  h3 {
+    @apply text-2xl font-bold text-slate-50 mb-1;
+  }
+  
+  p {
+    @apply text-slate-400 text-sm;
+  }
+}
+
+.statTrend {
+  @apply flex items-center gap-1 text-sm font-medium;
+  
+  &.positive {
+    @apply text-green-400;
+  }
+  
+  &.negative {
+    @apply text-red-400;
+  }
+}
+
+/* 系统状态监控样式 - 按照原型 */
+.systemStatusGrid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-4;
+}
+
+.systemStatusCard {
+  @apply bg-slate-800/60 border border-slate-700/40 rounded-lg p-4 transition-all duration-300;
+  
+  &:hover {
+    @apply border-blue-500/50 shadow-lg shadow-blue-500/10 -translate-y-0.5;
+  }
+  
+  &.statusHealthy {
+    @apply border-green-500/30 bg-green-500/10;
+  }
+  
+  &.statusWarning {
+    @apply border-orange-500/30 bg-orange-500/10;
+  }
+}
+
+.statusIcon {
+  @apply w-10 h-10 flex items-center justify-center rounded-lg text-lg mb-3;
+  
+  .statusHealthy & {
+    @apply bg-green-500/80 text-white;
+  }
+  
+  .statusWarning & {
+    @apply bg-orange-500/80 text-white;
+  }
+}
+
+.statusContent {
+  h4 {
+    @apply text-slate-50 font-semibold mb-1;
+  }
+  
+  p {
+    @apply text-slate-300 text-sm mb-2;
+  }
+}
+
+.statusDetail {
+  @apply text-slate-400 text-xs;
+}
+
+.dashboardActions {
+  @apply flex gap-3;
+}
+
+.actionBtn {
+  @apply bg-slate-800/60 border border-slate-700/40 text-slate-200 rounded-lg px-4 py-2 transition-all duration-300;
+
+  &:hover {
+    @apply bg-slate-700/80 border-blue-500/50 text-slate-50 -translate-y-0.5;
+  }
+}
+
+.refreshBtn {
+  @apply bg-slate-800/60 border border-slate-700/40 text-slate-200 rounded-lg px-3 py-2 transition-all duration-300;
+
+  &:hover {
+    @apply bg-slate-700/80 border-blue-500/50 text-slate-50;
+  }
+}
+
+/* 核心数据卡片样式 */
+.coreStatsCard {
+  @apply bg-slate-900/40 border border-slate-700/30 rounded-xl backdrop-blur-sm p-6;
+
+  :global {
+    .ant-card-body {
+      @apply p-0;
+    }
+  }
+}
+
+.statCard {
+  @apply bg-slate-800/60 border border-slate-700/40 rounded-xl p-6 transition-all duration-300 relative overflow-hidden;
+
+  &:hover {
+    @apply border-blue-500/50 shadow-lg shadow-blue-500/10 -translate-y-1;
+  }
+
+  &.statPrimary {
+    @apply bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-blue-500/30;
+  }
+
+  &.statSuccess {
+    @apply bg-gradient-to-br from-green-500/20 to-green-600/20 border-green-500/30;
+  }
+
+  &.statPurple {
+    @apply bg-gradient-to-br from-purple-500/20 to-purple-600/20 border-purple-500/30;
+  }
+
+  &.statOrange {
+    @apply bg-gradient-to-br from-orange-500/20 to-orange-600/20 border-orange-500/30;
+  }
+}
+
+.statContentWrapper {
+  @apply flex items-center gap-4;
+}
+
+.statIcon {
+  @apply w-12 h-12 flex items-center justify-center rounded-lg text-white text-lg;
+  
+  .statPrimary & {
+    @apply bg-blue-500/80;
+  }
+  
+  .statSuccess & {
+    @apply bg-green-500/80;
+  }
+  
+  .statPurple & {
+    @apply bg-purple-500/80;
+  }
+  
+  .statOrange & {
+    @apply bg-orange-500/80;
+  }
+}
+
+.statContent {
+  @apply flex-1;
+  
+  h3 {
+    @apply text-2xl font-bold text-slate-50 mb-1;
+  }
+  
+  p {
+    @apply text-slate-400 text-sm;
+  }
+}
+
+.statTrend {
+  @apply flex items-center gap-1 text-sm font-medium;
+  
+  &.positive {
+    @apply text-green-400;
+  }
+  
+  &.negative {
+    @apply text-red-400;
+  }
+}
+
+/* 系统状态卡片样式 */
+.systemStatusCard {
+  @apply bg-slate-900/40 border border-slate-700/30 rounded-xl backdrop-blur-sm p-6;
+
+  :global {
+    .ant-card-body {
+      @apply p-0;
+    }
+  }
+}
+
+.systemStatusItem {
+  @apply bg-slate-800/60 border border-slate-700/40 rounded-lg p-4 transition-all duration-300;
+
+  &:hover {
+    @apply border-blue-500/50 shadow-lg shadow-blue-500/10 -translate-y-0.5;
+  }
+
+  &.statusHealthy {
+    @apply border-green-500/30 bg-green-500/10;
+  }
+
+  &.statusWarning {
+    @apply border-orange-500/30 bg-orange-500/10;
+  }
+}
+
+.statusIcon {
+  @apply w-10 h-10 flex items-center justify-center rounded-lg text-lg mb-3;
+  
+  .statusHealthy & {
+    @apply bg-green-500/80 text-white;
+  }
+  
+  .statusWarning & {
+    @apply bg-orange-500/80 text-white;
+  }
+}
+
+.statusContent {
+  h4 {
+    @apply text-slate-50 font-semibold mb-1;
+  }
+  
+  p {
+    @apply text-slate-300 text-sm mb-2;
+  }
+}
+
+.statusDetail {
+  @apply text-slate-400 text-xs;
+}
+
+/* 交易监控卡片样式 */
+.transactionCard {
+  @apply bg-slate-900/40 border border-slate-700/30 rounded-xl backdrop-blur-sm p-6;
+
+  :global {
+    .ant-card-body {
+      @apply p-0;
+    }
+  }
+}
+
+.transactionList {
+  @apply space-y-4;
+}
+
+.transactionItem {
+  @apply flex items-center gap-4 p-4 bg-slate-800/40 rounded-lg border border-slate-700/30 transition-all duration-300;
+
+  &:hover {
+    @apply border-blue-500/50 shadow-lg shadow-blue-500/10;
+  }
+}
+
+.transactionIcon {
+  @apply w-10 h-10 flex items-center justify-center bg-blue-500/20 rounded-lg text-blue-400;
+}
+
+.transactionInfo {
+  @apply flex-1;
+}
+
+.transactionTitle {
+  @apply text-slate-50 font-medium mb-1;
+}
+
+.transactionDetails {
+  @apply flex gap-4 text-sm;
+}
+
+.buyer {
+  @apply text-slate-400;
+}
+
+.amount {
+  @apply text-green-400 font-semibold;
+}
+
+.transactionTime {
+  @apply text-slate-400 text-sm;
+}
+
+/* 快捷操作卡片样式 */
+.quickActionsCard {
+  @apply bg-slate-900/40 border border-slate-700/30 rounded-xl backdrop-blur-sm p-6;
+
+  :global {
+    .ant-card-body {
+      @apply p-0;
+    }
+  }
+}
+
+.quickActionItem {
+  @apply bg-slate-800/60 border border-slate-700/40 rounded-lg p-4 transition-all duration-300 cursor-pointer;
+
+  &:hover {
+    @apply border-blue-500/50 shadow-lg shadow-blue-500/10 -translate-y-1;
+  }
+}
+
+.actionIcon {
+  @apply w-12 h-12 flex items-center justify-center bg-blue-500/20 rounded-lg text-blue-400 text-xl mb-3;
+}
+
+.actionContent {
+  h5 {
+    @apply text-slate-50 font-semibold mb-1;
+  }
+  
+  p {
+    @apply text-slate-400 text-sm;
+  }
+}
+
+/* 告警卡片样式 */
+.alertsCard {
+  @apply bg-slate-900/40 border border-slate-700/30 rounded-xl backdrop-blur-sm p-6;
+
+  :global {
+    .ant-card-body {
+      @apply p-0;
+    }
+  }
+}
+
+.alertsList {
+  @apply space-y-4;
+}
+
+.alertItem {
+  @apply flex items-center gap-4 p-4 rounded-lg border transition-all duration-300;
+
+  &.alertWarning {
+    @apply bg-orange-500/10 border-orange-500/30;
+  }
+
+  &.alertInfo {
+    @apply bg-blue-500/10 border-blue-500/30;
+  }
+}
+
+.alertIcon {
+  @apply w-10 h-10 flex items-center justify-center rounded-lg text-lg;
+  
+  .alertWarning & {
+    @apply bg-orange-500/20 text-orange-400;
+  }
+  
+  .alertInfo & {
+    @apply bg-blue-500/20 text-blue-400;
+  }
+}
+
+.alertContent {
+  @apply flex-1;
+}
+
+.alertTitle {
+  @apply text-slate-50 font-semibold mb-1;
+}
+
+.alertDescription {
+  @apply text-slate-400 text-sm mb-1;
+}
+
+.alertTime {
+  @apply text-slate-500 text-xs;
+}
+
+.alertActions {
+  @apply flex gap-2;
+}
+
+.alertBtn {
+  @apply bg-slate-700/60 border border-slate-600/40 text-slate-200 rounded-lg px-3 py-1 text-xs transition-all duration-300;
+
+  &:hover {
+    @apply bg-slate-600/80 border-blue-500/50 text-slate-50;
+  }
+}
+
+/* 实时交易监控样式 - 按照原型 */
+.realtimeTransactions {
+  @apply space-y-4;
+}
+
+.transactionItem {
+  @apply flex items-center gap-4 p-4 bg-slate-800/40 rounded-lg border border-slate-700/30 transition-all duration-300;
+  
+  &:hover {
+    @apply border-blue-500/50 shadow-lg shadow-blue-500/10;
+  }
+}
+
+.transactionIcon {
+  @apply w-10 h-10 flex items-center justify-center bg-blue-500/20 rounded-lg text-blue-400;
+}
+
+.transactionInfo {
+  @apply flex-1;
+}
+
+.transactionTitle {
+  @apply text-slate-50 font-medium mb-1;
+}
+
+.transactionDetails {
+  @apply flex gap-4 text-sm;
+}
+
+.buyer {
+  @apply text-slate-400;
+}
+
+.amount {
+  @apply text-green-400 font-semibold;
+}
+
+.transactionTime {
+  @apply text-slate-400 text-sm;
+}
+
+/* 快捷操作样式 - 按照原型 */
+.quickActionsGrid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4;
+}
+
+.quickActionCard {
+  @apply bg-slate-800/60 border border-slate-700/40 rounded-lg p-4 transition-all duration-300 cursor-pointer;
+  
+  &:hover {
+    @apply border-blue-500/50 shadow-lg shadow-blue-500/10 -translate-y-1;
+  }
+}
+
+.actionIcon {
+  @apply w-12 h-12 flex items-center justify-center bg-blue-500/20 rounded-lg text-blue-400 text-xl mb-3;
+}
+
+.actionContent {
+  h5 {
+    @apply text-slate-50 font-semibold mb-1;
+  }
+  
+  p {
+    @apply text-slate-400 text-sm;
+  }
+}

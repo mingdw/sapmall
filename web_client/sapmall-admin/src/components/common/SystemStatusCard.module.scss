@@ -1,0 +1,111 @@
+/* SystemStatusCard 组件样式 */
+
+.systemStatusCard {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.6));
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.systemStatusCard:hover {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 1), rgba(30, 41, 59, 0.8));
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+}
+
+/* 状态变体 */
+.statusHealthy {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.statusWarning {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.statusError {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.statusIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.statusHealthy .statusIcon {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.statusWarning .statusIcon {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1));
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.statusError .statusIcon {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.statusContent {
+  flex: 1;
+}
+
+.statusContent h4 {
+  color: #f8fafc;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.statusContent p {
+  color: #cbd5e1;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.statusDetail {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .systemStatusCard {
+    padding: 16px;
+  }
+  
+  .statusIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .statusContent h4 {
+    font-size: 13px;
+  }
+  
+  .statusContent p {
+    font-size: 11px;
+  }
+  
+  .statusDetail {
+    font-size: 10px;
+  }
+}
+
