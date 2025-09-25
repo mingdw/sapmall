@@ -1,0 +1,198 @@
+/* StatCard 组件样式 - 参考系统监控模块 */
+
+.dashboardStatCard {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.6));
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dashboardStatCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981, #f59e0b);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dashboardStatCard:hover {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 1), rgba(30, 41, 59, 0.8));
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
+}
+
+.dashboardStatCard:hover::before {
+  opacity: 1;
+}
+
+/* 变体样式 */
+.statPrimary {
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.statPrimary .statIcon {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.statSuccess {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.statSuccess .statIcon {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.statPurple {
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.statPurple .statIcon {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1));
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.statOrange {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.statOrange .statIcon {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1));
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.statIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.statIcon i {
+  color: #fff !important;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.statContent {
+  flex: 1;
+}
+
+.statValueRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.statContent h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.5px;
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.dashboardStatCard:hover .statContent h3 {
+  color: #ffffff;
+}
+
+.statContent p {
+  color: #cbd5e1;
+  font-size: 12px;
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  opacity: 0.9;
+}
+
+.statTrend {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.statTrend.positive {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.2));
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.statTrend.negative {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.2));
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.statTrend.neutral {
+  background: linear-gradient(135deg, rgba(148, 163, 184, 0.3), rgba(148, 163, 184, 0.2));
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .dashboardStatCard {
+    padding: 16px;
+  }
+  
+  .statIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .statIcon i {
+    font-size: 14px;
+  }
+  
+  .statContent h3 {
+    font-size: 18px;
+  }
+  
+  .statContent p {
+    font-size: 11px;
+  }
+  
+  .statTrend {
+    font-size: 8px;
+    padding: 1px 3px;
+  }
+}

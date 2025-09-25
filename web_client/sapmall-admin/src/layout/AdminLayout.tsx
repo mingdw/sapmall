@@ -1,231 +1,201 @@
-import React, { useState, useEffect } from 'react';
-import { Layout as AntLayout, Menu, Button, Dropdown, Avatar, Typography } from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
+import { Layout as AntLayout, Menu, Button, Typography, Spin } from 'antd';
 import { 
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  GlobalOutlined,
-  UserOutlined,
-  LogoutOutlined
+  ReloadOutlined
 } from '@ant-design/icons';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { IframeParams } from '../types';
-import { menuConfig } from '../config/menuConfig';
+import { useIframeParams } from '../hooks/useIframeParams';
+import { useMenuData } from '../hooks/useMenuData';
+import { CategoryTreeResp } from '../services/types/categoryTypes';
+import AdminContentComponent from '../components/AdminContentComponent';
+
 
 const { Header: AntHeader, Sider, Content } = AntLayout;
-const { Text } = Typography;
+const { Title, Text } = Typography;
 
-// 定义菜单项类型
-interface MenuItem {
-  id: string;
-  name: string;
-  icon: string;
-  url: string;
-  title: string;
-}
-
-// 定义菜单组类型
-interface MenuGroup {
-  id: string;
-  title: string;
-  icon: string;
-  items: MenuItem[];
-}
-
-// 定义布局组件属性
 interface AdminLayoutProps {
-  children: React.ReactNode;
   iframeParams?: IframeParams;
   onLogout?: () => void;
 }
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ 
-  children,
   iframeParams,
   onLogout 
 }) => {
-  const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { i18n } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [selectedMenuId, setSelectedMenuId] = useState<number | null>(null);
+  const [selectedMenu, setSelectedMenu] = useState<CategoryTreeResp | null>(null);
+  
+  // 内容区域引用，用于滚动提示
+  const contentRef = useRef<HTMLDivElement>(null);
 
-  // 默认用户信息
-  const user = {
-    id: iframeParams?.userId || '1',
-    username: iframeParams?.nickname || 'admin',
-    email: 'admin@example.com',
-    role: (iframeParams?.userRole as 'admin' | 'merchant' | 'user') || 'admin',
-    status: 'active' as const,
-    createdAt: '',
-    updatedAt: ''
-  };
+  // 处理iframe参数
+  useIframeParams(iframeParams);
+  
+  // 获取菜单数据
+  const {
+    menuTree,
+    isLoading,
+    hasMenus,
+    setActiveMenuByUrl,
+    refreshMenus,
+    fetchUserMenus
+  } = useMenuData(); 
 
-  // 获取当前角色的菜单配置
-  const currentMenuConfig = menuConfig[user.role] || [];
+  // 根据iframe参数设置选中的菜单项
+  useEffect(() => {
+    if (hasMenus && iframeParams?.menu && menuTree.length > 0) {
+      const targetMenu = iframeParams.menu;
+      console.log('根据iframe参数设置菜单选中状态:', targetMenu);
+      
+      // 查找对应的菜单项
+      const findMenuByUrl = (menus: CategoryTreeResp[], url: string): CategoryTreeResp | null => {
+        for (const menu of menus) {
+          if (menu.url === url) {
+            return menu;
+          }
+          if (menu.children) {
+            const found = findMenuByUrl(menu.children, url);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
 
-  // 将菜单配置转换为Ant Design Menu的格式
-  const menuItems = currentMenuConfig.map((group: MenuGroup) => ({
-    key: group.id,
-    icon: <i className={group.icon} />,
-    label: group.title,
-    children: group.items.map((item: MenuItem) => ({
-      key: item.id,
-      icon: <i className={item.icon} />,
-      label: item.name,
-      onClick: () => handleMenuClick(item)
-    }))
-  }));
+      const foundMenu = findMenuByUrl(menuTree, targetMenu);
+      if (foundMenu) {
+        console.log('找到匹配的菜单项:', foundMenu);
+        setSelectedMenuId(foundMenu.id);
+        setSelectedMenu(foundMenu);
+        setActiveMenuByUrl(foundMenu.url);
+      } else {
+        console.log('未找到匹配的菜单项，使用默认欢迎页面');
+        setSelectedMenuId(null);
+        setSelectedMenu(null);
+      }
+    }
+  }, [hasMenus, iframeParams?.menu, menuTree, setActiveMenuByUrl]);
+
+  // 强制触发菜单获取（当检测到iframe参数但没有菜单时）
+  useEffect(() => {
+    if (iframeParams && !hasMenus && !isLoading) {
+      console.log('检测到iframe参数但没有菜单数据，强制触发菜单获取');
+      const timer = setTimeout(() => {
+        fetchUserMenus();
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [iframeParams, hasMenus, isLoading]);
 
   // 处理菜单点击
-  const handleMenuClick = (menuItem: MenuItem) => {
-    setSelectedKeys([menuItem.id]);
-    navigate(menuItem.url);
-  };
-
-  // 根据当前路径设置选中的菜单项
-  useEffect(() => {
-    const currentPath = location.pathname;
-    const currentMenuItem = currentMenuConfig
-      .flatMap((group: MenuGroup) => group.items)
-      .find((item: MenuItem) => item.url === currentPath);
+  const handleMenuClick = (menuItem: CategoryTreeResp) => {
+    setSelectedMenuId(menuItem.id);
+    setSelectedMenu(menuItem);
+    setActiveMenuByUrl(menuItem.url);
     
-    if (currentMenuItem) {
-      setSelectedKeys([currentMenuItem.id]);
+    // 通知父窗口菜单变化
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'MENU_CHANGE',
+        menu: menuItem.url
+      }, '*');
     }
-  }, [location.pathname, currentMenuConfig]);
-
-  // 语言切换
-  const languageItems = [
-    {
-      key: 'zh',
-      label: '中文',
-    },
-    {
-      key: 'en',
-      label: 'English',
-    },
-  ];
-
-  const handleLanguageChange = ({ key }: { key: string }) => {
-    i18n.changeLanguage(key);
   };
 
-  // 用户下拉菜单
-  const userMenuItems = [
-    {
-      key: 'profile',
-      icon: <UserOutlined />,
-      label: '个人信息',
-      onClick: () => navigate('/profile')
-    },
-    {
-      type: 'divider' as const,
-    },
-    {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: '退出登录',
-      onClick: onLogout
-    }
-  ];
-
-  // 获取当前页面标题
-  const getCurrentPageTitle = () => {
-    const currentMenuItem = currentMenuConfig
-      .flatMap((group: MenuGroup) => group.items)
-      .find((item: MenuItem) => item.id === selectedKeys[0]);
-    return currentMenuItem?.title || '后台管理';
+  // 构建菜单项
+  const buildMenuItems = (menus: CategoryTreeResp[]): any[] => {
+    return menus.map(menu => ({
+      key: menu.id.toString(),
+      label: menu.name,
+      icon: menu.icon ? <i className={menu.icon}></i> : null,
+      children: menu.children && menu.children.length > 0 
+        ? buildMenuItems(menu.children)
+        : undefined,
+      onClick: menu.children && menu.children.length > 0 
+        ? undefined 
+        : () => handleMenuClick(menu)
+    }));
   };
 
-  // 获取角色显示名称
-  const getRoleDisplayName = (role: string) => {
-    const roleMap: { [key: string]: string } = {
-      admin: '超级管理员',
-      merchant: '认证商户',
-      user: '普通用户'
-    };
-    return roleMap[role] || '未知角色';
+  // 移除 renderContent 函数，使用 AdminContentComponent 组件
+
+  // 渲染菜单内容
+  const renderMenuContent = () => {
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center h-32">
+          <Spin size="large" />
+        </div>
+      );
+    }
+
+    if (!hasMenus) {
+      return (
+        <div className="p-4 text-center">
+          <div className="flex flex-col items-center justify-center h-64">
+            <i className="fas fa-exclamation-triangle text-4xl text-yellow-500 mb-4"></i>
+            <Text type="secondary" className="text-lg mb-2 text-white">菜单获取失败</Text>
+            <Text type="secondary" className="text-sm mb-4 text-gray-300">
+              无法获取用户菜单，请检查网络连接或联系管理员
+            </Text>
+            <Button 
+              type="primary" 
+              icon={<ReloadOutlined />}
+              onClick={refreshMenus}
+              size="small"
+            >
+              重新获取
+            </Button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="menu-container">
+        {menuTree.map((menuGroup, groupIndex) => (
+          <div key={groupIndex} className="menu-group">
+            <div className="menu-group-title">
+              <i className={menuGroup.icon || 'fas fa-folder'}></i>
+              {!collapsed && <span>{menuGroup.name}</span>}
+            </div>
+            <div className="menu-group-content">
+              {menuGroup.children && menuGroup.children.map((menuItem) => (
+                <div
+                  key={menuItem.id}
+                  className={`menu-item ${selectedMenuId === menuItem.id ? 'active' : ''}`}
+                  onClick={() => handleMenuClick(menuItem)}
+                >
+                  <div className="menu-item-content">
+                    <i className={menuItem.icon || 'fas fa-circle'}></i>
+                    {!collapsed && <span>{menuItem.name}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
-    <AntLayout className="h-full w-full">
-      <Sider 
-        trigger={null} 
-        collapsible 
-        collapsed={collapsed}
-        className="shadow-lg"
-        width={260}
-      >
-        <div className="h-16 flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-700">
-          <span className="text-white font-bold text-lg">
-            {collapsed ? 'SM' : 'SapMall Admin'}
-          </span>
-        </div>
-        
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={selectedKeys}
-          items={menuItems}
-          className="mt-4 border-r-0"
-          style={{ height: 'calc(100% - 64px)', overflowY: 'auto' }}
-        />
-      </Sider>
+    <div className="admin-container">
+      {/* 左侧菜单栏 */}
+      <aside className="sidebar" id="sidebar">
+        {renderMenuContent()}
+      </aside>
       
-      <AntLayout>
-        <AntHeader className="bg-white px-4 flex items-center justify-between shadow-sm border-b">
-          <div className="flex items-center">
-            <Button
-              type="text"
-              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-              onClick={() => setCollapsed(!collapsed)}
-              className="text-lg mr-4"
-            />
-            <Text strong className="text-lg">
-              {getCurrentPageTitle()}
-            </Text>
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            <Dropdown
-              menu={{ 
-                items: languageItems, 
-                onClick: handleLanguageChange 
-              }}
-              placement="bottomRight"
-            >
-              <Button type="text" icon={<GlobalOutlined />}>
-                {i18n.language === 'zh' ? '中文' : 'English'}
-              </Button>
-            </Dropdown>
-            
-            <Dropdown
-              menu={{ items: userMenuItems }}
-              placement="bottomRight"
-            >
-              <div className="flex items-center cursor-pointer hover:bg-gray-50 px-2 py-1 rounded">
-                <Avatar 
-                  icon={<UserOutlined />} 
-                  className="mr-2"
-                  style={{ backgroundColor: '#1890ff' }}
-                />
-                <div className="flex flex-col">
-                  <Text strong className="text-sm">{user.username}</Text>
-                  <Text type="secondary" className="text-xs">
-                    {getRoleDisplayName(user.role)}
-                  </Text>
-                </div>
-              </div>
-            </Dropdown>
-          </div>
-        </AntHeader>
-        
-        <Content className="p-6 bg-gray-50" style={{ height: 'calc(100% - 64px)', overflow: 'auto' }}>
-          {children}
-        </Content>
-      </AntLayout>
-    </AntLayout>
+      {/* 右侧内容区域 */}
+      <main className="content-area">
+        <AdminContentComponent selectedMenu={selectedMenu} />
+      </main>
+    </div>
   );
 };
 

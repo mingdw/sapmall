@@ -3,16 +3,20 @@ package model
 // Category 商品目录分类
 type Category struct {
 	BaseModel
-	ID         uint   `json:"id" gorm:"primaryKey"`
-	Code       string `json:"code" gorm:"column:code;not null;default:'';comment:编码"`
-	Name       string `json:"name" gorm:"column:name;not null;default:'';comment:名称"`
-	ParentID   uint   `json:"parentId" gorm:"column:parent_id;not null;default:0;comment:父级id"`
-	ParentCode string `json:"parentCode" gorm:"column:parent_code;not null;default:'';comment:父级编码"`
-	Level      int    `json:"level" gorm:"column:level;not null;default:0;comment:级别"`
-	Sort       int    `json:"sort" gorm:"column:sort;not null;default:0;comment:排序"`
-	Icon       string `json:"icon" gorm:"column:icon;not null;default:'';comment:图标"`
-	Status     int    `json:"status" gorm:"column:status;not null;default:0;comment:状态"`
-	IsDeleted  int    `json:"isDeleted" gorm:"column:is_deleted;default:0;comment:是否删除"`
+	ID          uint   `json:"id" gorm:"primaryKey"`
+	Code        string `json:"code" gorm:"column:code;not null;default:'';comment:编码"`
+	Name        string `json:"name" gorm:"column:name;not null;default:'';comment:名称"`
+	ParentID    uint   `json:"parentId" gorm:"column:parent_id;not null;default:0;comment:父级id"`
+	ParentCode  string `json:"parentCode" gorm:"column:parent_code;not null;default:'';comment:父级编码"`
+	Level       int    `json:"level" gorm:"column:level;not null;default:0;comment:级别"`
+	Sort        int    `json:"sort" gorm:"column:sort;not null;default:0;comment:排序"`
+	Icon        string `json:"icon" gorm:"column:icon;not null;default:'';comment:图标"`
+	Status      int    `json:"status" gorm:"column:status;not null;default:0;comment:状态"`
+	IsDeleted   int    `json:"isDeleted" gorm:"column:is_deleted;default:0;comment:是否删除"`
+	IsExternal  bool   `json:"is_external" gorm:"column:is_external;not null;default:0;comment:是否外部链接"`
+	ExternalURL string `json:"external_url" gorm:"column:external_url;not null;default:'';comment:外部链接"`
+	Path        string `json:"path" gorm:"column:path;not null;default:'';comment:路由路径"`
+	Component   string `json:"component" gorm:"column:component;not null;default:'';comment:组件路径"`
 }
 
 // TableName 表名

@@ -1,5 +1,6 @@
 import { ApiResponse } from   '../types/baseTypes';
 import MessageUtils from '../../utils/messageUtils';
+import { useUserStore } from '../../store/userStore';
 
 // 请求配置
 interface RequestConfig {
@@ -45,7 +46,15 @@ class BaseClient {
 
   // 获取认证token
   private getAuthToken(): string | null {
-    return localStorage.getItem('auth_token');
+    // 优先从localStorage获取（兼容iframe传递的token）
+    const localToken = localStorage.getItem('auth_token');
+    if (localToken) {
+      return localToken;
+    }
+    
+    // 从userStore获取当前用户token
+    const { getCurrentUserToken } = useUserStore.getState();
+    return getCurrentUserToken();
   }
 
   // 获取当前语言
@@ -332,7 +341,7 @@ class BaseClient {
 
 // 修改baseURL配置
 export const baseClient = new BaseClient({
-  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:7102', // 使用nginx代理端口
+  baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:7101', // admin后端服务端口
   timeout: 10000,
 });
 

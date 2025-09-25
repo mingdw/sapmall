@@ -24,7 +24,7 @@ func NewAuthMiddleware(db *gorm.DB, config *config.Config) *AuthMiddleware {
 }
 
 const (
-	AuthorizationHeader = "AUTHORIZATION"
+	AuthorizationHeader = "Authorization"
 
 	ComerUinContextKey  = "COMUNIONCOMERUIN"
 	ComerRoleContextKey = "COMUNIONROLE"
@@ -39,10 +39,16 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		token := r.Header.Get(AuthorizationHeader)
-		if token == "" {
+		authHeader := r.Header.Get(AuthorizationHeader)
+		if authHeader == "" {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
+		}
+
+		// 处理Bearer token格式
+		token := authHeader
+		if len(authHeader) > 7 && authHeader[:7] == "Bearer " {
+			token = authHeader[7:]
 		}
 
 		userID, err := jwt.Verify(token, m.config.Auth.AccessSecret)

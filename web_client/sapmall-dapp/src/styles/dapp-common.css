@@ -1,9 +1,30 @@
 /* DApp 通用样式文件 - 按照原型图1:1还原 */
 
 /* 页面基础样式 */
-body {
+html, body {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+    overflow-x: hidden; /* 隐藏水平滚动条 */
+    overflow-y: auto; /* 普通页面允许垂直滚动 */
+}
+
+/* Admin iframe 嵌套容器样式 - 隐藏滚动条方案 */
+/* 参考：https://cloud.tencent.com/developer/article/1449864 方法1 */
+.outer-container {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden; /* 隐藏外层滚动条 */
+}
+
+.inner-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: -5%; /* 向右移动5%，将滚动条推到可视区域外 */
+    bottom: 0;
+    overflow-x: hidden; /* 隐藏水平滚动条 */
+    overflow-y: scroll; /* 保持垂直滚动功能，确保内容完全展示 */
 }
 
 /* 导航链接样式 - 按照原型图 */
