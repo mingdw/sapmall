@@ -35,7 +35,9 @@ const AdminCard: React.FC<AdminCardProps> = ({
               )}
             </div>
           )}
-          {children}
+          <div className={styles.adminCardBody}>
+            {children}
+          </div>
         </div>
       </div>
     </div>

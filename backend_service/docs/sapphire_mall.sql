@@ -2382,4 +2382,159 @@ INSERT INTO `sys_role_category` (`id`, `role_id`, `role_code`, `category_id`, `c
 (65, 2, 'R0002', 240, 'B001005', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin');
 COMMIT;
 
+
+-- ==============================================
+-- 主翻译表 - 存储所有翻译数据
+-- ==============================================
+DROP TABLE IF EXISTS `sys_translation`;
+CREATE TABLE `sys_translation` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `table_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '表名',
+  `record_id` bigint NOT NULL COMMENT '记录ID',
+  `field_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字段名',
+  `language` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '语言代码',
+  `translation` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '翻译内容',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int DEFAULT '0' COMMENT '是否删除 0:未删除 1:已删除',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_translation` (`table_name`, `record_id`, `field_name`, `language`, `is_deleted`) USING BTREE,
+  KEY `idx_table_record` (`table_name`, `record_id`) USING BTREE,
+  KEY `idx_language` (`language`) USING BTREE,
+  KEY `idx_created_at` (`created_at`) USING BTREE,
+  KEY `idx_is_deleted` (`is_deleted`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='翻译表';
+
+
+-- ==============================================
+-- 翻译字段元数据表 - 管理可翻译字段的配置
+-- ==============================================
+DROP TABLE IF EXISTS `sys_translation_meta`;
+CREATE TABLE `sys_translation_meta` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `table_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '表名',
+  `field_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字段名',
+  `field_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'text' COMMENT '字段类型 varchar/text/longtext',
+  `is_required` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否必填 0:非必填 1:必填',
+  `max_length` int DEFAULT NULL COMMENT '最大长度',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '字段描述',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` int NOT NULL DEFAULT '1' COMMENT '状态 0:禁用 1:启用',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int DEFAULT '0' COMMENT '是否删除 0:未删除 1:已删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_meta` (`table_name`, `field_name`) USING BTREE,
+  KEY `idx_table` (`table_name`) USING BTREE,
+  KEY `idx_status` (`status`) USING BTREE,
+  KEY `idx_is_deleted` (`is_deleted`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='翻译字段元数据表';
+
+
+-- ==============================================
+-- 支持的语言表 - 管理系统支持的语言
+-- ==============================================
+DROP TABLE IF EXISTS `sys_supported_language`;
+CREATE TABLE `sys_supported_language` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '语言代码',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '语言名称',
+  `native_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '本地名称',
+  `flag` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '国旗图标',
+  `is_default` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否默认语言 0:否 1:是',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用 0:禁用 1:启用',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_code` (`code`) USING BTREE,
+  KEY `idx_active` (`is_active`) USING BTREE,
+  KEY `idx_sort` (`sort`) USING BTREE,
+  KEY `idx_is_default` (`is_default`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='支持的语言表';
+
+-- ==============================================
+-- 系统配置表 - 管理系统配置参数
+-- ==============================================
+DROP TABLE IF EXISTS `sys_config`;
+CREATE TABLE `sys_config` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `config_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置键',
+  `config_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '配置名称',
+  `config_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT '配置值',
+  `config_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'string' COMMENT '配置类型 string/number/boolean/json/array',
+  `config_group` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'default' COMMENT '配置分组',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '配置描述',
+  `is_system` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否系统配置 0:否 1:是',
+  `is_encrypted` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否加密 0:否 1:是',
+  `is_editable` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否可编辑 0:否 1:是',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` int NOT NULL DEFAULT '1' COMMENT '状态 0:禁用 1:启用',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int DEFAULT '0' COMMENT '是否删除 0:未删除 1:已删除',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_config_key` (`config_key`) USING BTREE,
+  KEY `idx_config_group` (`config_group`) USING BTREE,
+  KEY `idx_status` (`status`) USING BTREE,
+  KEY `idx_is_system` (`is_system`) USING BTREE,
+  KEY `idx_sort` (`sort`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='系统配置表';
+
+-- ==============================================
+-- 字典分类表 - 管理字典分类
+-- ==============================================
+DROP TABLE IF EXISTS `sys_dict_category`;
+CREATE TABLE `sys_dict_category` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典类型',
+  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '分类编码',
+  `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '分类描述',
+  `level` int NOT NULL DEFAULT '1' COMMENT '层级',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` int NOT NULL DEFAULT '1' COMMENT '状态 0:禁用 1:启用',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int DEFAULT '0' COMMENT '是否删除 0:未删除 1:已删除',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_type_code` (`type`, `code`) USING BTREE,
+  KEY `idx_type` (`type`) USING BTREE,
+  KEY `idx_status` (`status`) USING BTREE,
+  KEY `idx_sort` (`sort`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='字典分类表';
+
+
+-- ==============================================
+-- 字典明细表 - 管理字典具体数据
+-- ==============================================
+DROP TABLE IF EXISTS `sys_dict_item`;
+CREATE TABLE `sys_dict_item` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典类型',
+  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典编码',
+  `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典值',
+  `label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典标签',
+  `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '字典描述',
+  `level` int NOT NULL DEFAULT '1' COMMENT '层级',
+  `sort` int NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` int NOT NULL DEFAULT '1' COMMENT '状态 0:禁用 1:启用',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int DEFAULT '0' COMMENT '是否删除 0:未删除 1:已删除',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uk_type_code` (`type`, `code`) USING BTREE,
+  KEY `idx_type` (`type`) USING BTREE,
+  KEY `idx_status` (`status`) USING BTREE,
+  KEY `idx_sort` (`sort`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='字典明细表';
+
+
 SET FOREIGN_KEY_CHECKS = 1;

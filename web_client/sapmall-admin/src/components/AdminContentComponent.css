@@ -1,0 +1,184 @@
+/* 管理后台内容卡片样式 - 完全匹配原型图深色主题 */
+.admin-content-main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-content-main:hover {
+  border-color: rgba(71, 85, 105, 0.6);
+  box-shadow: 0 12px 48px rgba(59, 130, 246, 0.08);
+}
+
+/* 卡片标题头部 - 完全匹配原型图深色主题 */
+.admin-content-card-header {
+  height: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 16px 16px 0 0;
+  padding: 0 24px;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.admin-content-card-title {
+  display: flex;
+  align-items: center;
+  font-weight: 800; /* 更重的字重 */
+  color: #ffffff; /* 更亮的白色 */
+  font-size: 18px; /* 更大的字体 */
+  letter-spacing: 0.8px; /* 更大的字母间距 */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* 添加文字阴影 */
+}
+
+.admin-content-card-title i {
+  margin-right: 12px;
+  color: #60a5fa; /* 更亮的蓝色 */
+  font-size: 18px; /* 更大的图标 */
+  opacity: 1; /* 完全不透明 */
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.3)); /* 添加发光效果 */
+}
+
+.admin-content-card-title span {
+  font-size: 18px; /* 更大的字体 */
+  font-weight: 800; /* 更重的字重 */
+  letter-spacing: 0.8px; /* 更大的字母间距 */
+}
+
+/* 常见问题按钮样式 - 深色主题 */
+.admin-content-help-btn {
+  color: #93c5fd !important;
+  font-size: 13px !important;
+  padding: 6px 12px !important;
+  height: auto !important;
+  line-height: 1 !important;
+  background: rgba(51, 65, 85, 0.3) !important;
+  border: 1px solid rgba(51, 65, 85, 0.5) !important;
+  border-radius: 6px !important;
+  transition: all 0.3s ease !important;
+}
+
+.admin-content-help-btn:hover {
+  color: #60a5fa !important;
+  background: rgba(51, 65, 85, 0.5) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+}
+
+/* 卡片内容区域 - 完全匹配原型图深色主题 */
+.admin-content-card-body {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background: transparent;
+  min-height: 400px; /* 确保有足够的内容高度 */
+}
+
+/* 欢迎页面样式 - 深色主题 */
+.admin-content-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.welcome-icon {
+  font-size: 4rem;
+  color: #3b82f6;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3));
+}
+
+.welcome-title {
+  margin-bottom: 1rem !important;
+  color: #f1f5f9 !important;
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.welcome-subtitle {
+  font-size: 1.125rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+/* 外部链接页面样式 - 深色主题 */
+.admin-content-external {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.external-icon {
+  font-size: 3rem;
+  color: #f59e0b;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.3));
+}
+
+.external-title {
+  margin-bottom: 1rem !important;
+  color: #f1f5f9 !important;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.external-subtitle {
+  font-size: 1.125rem;
+  color: #cbd5e1;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.external-actions {
+  margin-top: 1rem;
+}
+
+.external-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+}
+
+.external-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+}
