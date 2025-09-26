@@ -12,6 +12,7 @@ export interface CategoryTreeResp {
   external_url?: string; // 外部链接地址
   path?: string; // 路由路径
   component?: string; // 组件名称
+  help_key?: string; // 帮助文档键值，用于显示常见问题
   children?: CategoryTreeResp[]; // 层级菜单
 }   
 

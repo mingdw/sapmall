@@ -18,6 +18,8 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: visible; /* 允许内容完全显示，使用DApp外层滚动条 */
+  background: #0f172a; /* 深色主题背景，匹配原型图 */
+  color: #e2e8f0; /* 浅色文字 */
 }
 
 #root {
@@ -51,7 +53,7 @@ code {
   margin: 0;
   gap: 20px;
   padding: 20px 24px;
-  background: transparent;
+  background: transparent; /* 透明背景，使用body的深色背景 */
   min-height: auto;
   max-height: none !important;
   overflow: visible !important;
@@ -82,129 +84,9 @@ code {
   grid-row: 1;
 }
 
-/* 管理后台内容组件 */
-.admin-content-container {
-  width: 100%;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(51, 65, 85, 0.4);
-  border-radius: 16px;
-  overflow: visible;
-  height: auto;
-  min-height: auto;
-  max-height: none;
-  padding: 24px;
-  box-sizing: border-box;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  flex: none;
-  align-items: stretch;
-}
+/* 移除重复的样式定义，使用 AdminContentComponent.css 中的样式 */
 
-.admin-content-container:hover {
-  border-color: rgba(71, 85, 105, 0.6);
-  box-shadow: 0 12px 48px rgba(59, 130, 246, 0.08);
-}
-
-.admin-content-welcome {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 500px;
-  text-align: center;
-  width: 100%;
-  max-width: none;
-}
-
-.welcome-icon {
-  font-size: 4rem;
-  color: #3b82f6;
-  margin-bottom: 1.5rem;
-  filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3));
-}
-
-.welcome-title {
-  margin-bottom: 1rem !important;
-  color: #f1f5f9 !important;
-  font-size: 2rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.welcome-subtitle {
-  font-size: 1.125rem;
-  color: #cbd5e1;
-  line-height: 1.6;
-}
-
-.admin-content-external {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 500px;
-  text-align: center;
-  width: 100%;
-  max-width: none;
-}
-
-.external-icon {
-  font-size: 3rem;
-  color: #f59e0b;
-  margin-bottom: 1.5rem;
-  filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.3));
-}
-
-.external-title {
-  margin-bottom: 1rem !important;
-  color: #f1f5f9 !important;
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.external-subtitle {
-  font-size: 1.125rem;
-  color: #cbd5e1;
-  margin-bottom: 2rem;
-  line-height: 1.6;
-}
-
-.external-actions {
-  margin-top: 1rem;
-}
-
-.external-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-}
-
-.external-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
-}
-
-.admin-content-main {
-  width: 100%;
-  height: fit-content;
-  overflow: visible;
-}
+/* 移除重复的样式定义，使用 AdminContentComponent.css 中的样式 */
 
 /* Web3 风格的页面建设中样式 */
 .web3-coming-soon {
@@ -505,15 +387,20 @@ code {
   grid-column: 1;
   background: rgba(15, 23, 42, 0.8);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(51, 65, 85, 0.4);
+  border: 1px solid rgba(51, 65, 85, 0.6); /* 加深边框透明度 */
   border-radius: 16px;
   overflow: visible;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* 加深阴影效果 */
   height: fit-content;
   min-height: 600px;
   max-height: none;
   overflow: visible;
+}
+
+.sidebar:hover {
+  border-color: rgba(71, 85, 105, 0.8); /* 悬停时边框更深 */
+  box-shadow: 0 12px 48px rgba(59, 130, 246, 0.1); /* 悬停时阴影增强 */
 }
 
 /* 移除侧边栏头部样式 */
@@ -531,7 +418,7 @@ code {
 /* 菜单组 */
 .menu-group {
   margin: 0 0 18px 0;
-  border: none;
+  border: 1px solid rgba(51, 65, 85, 0.4); /* 添加边框 */
   border-radius: 16px;
   background: rgba(15, 23, 42, 0.8);
   backdrop-filter: blur(25px);
@@ -551,6 +438,7 @@ code {
 
 .menu-group:hover {
   background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(71, 85, 105, 0.6); /* 悬停时边框更深 */
   box-shadow: 0 12px 48px rgba(59, 130, 246, 0.12);
   transform: translateY(-2px);
 }

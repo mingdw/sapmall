@@ -1,7 +1,9 @@
 import React from 'react';
-import { Typography } from 'antd';
+import { Typography, Button } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import ComponentMapper from './ComponentMapper';
 import { CategoryTreeResp } from '../services/types/categoryTypes';
+import './AdminContentComponent.css';
 
 const { Title, Text } = Typography;
 
@@ -10,6 +12,13 @@ interface AdminContentComponentProps {
 }
 
 const AdminContentComponent: React.FC<AdminContentComponentProps> = ({ selectedMenu }) => {
+  // 处理常见问题点击
+  const handleHelpClick = () => {
+    // 这里可以打开帮助弹窗或跳转到帮助页面
+    console.log('打开常见问题帮助');
+    // 可以根据 selectedMenu 的 help_key 或相关字段来显示对应的帮助内容
+  };
+
   // 渲染内容
   const renderContent = () => {
     if (!selectedMenu) {
@@ -57,19 +66,38 @@ const AdminContentComponent: React.FC<AdminContentComponentProps> = ({ selectedM
     // 根据component字段渲染对应的组件
     return (
       <div className="admin-content-main">
-        <ComponentMapper 
-          componentName={selectedMenu.component} 
-          menuData={selectedMenu}
-        />
+        {/* 卡片标题头部 - 参考原型图设计 */}
+        <div className="admin-content-card-header">
+          <div className="admin-content-card-title">
+            <i className={`fas ${selectedMenu.icon || 'fa-cog'}`}></i>
+            <span>{selectedMenu.name}</span>
+          </div>
+          {/* 常见问题按钮 - 可能没有，根据菜单配置决定 */}
+          {selectedMenu.help_key && (
+            <Button 
+              type="link" 
+              size="small"
+              icon={<QuestionCircleOutlined />}
+              onClick={handleHelpClick}
+              className="admin-content-help-btn"
+            >
+              常见问题
+            </Button>
+          )}
+        </div>
+        
+        {/* 内容区域 */}
+        <div className="admin-content-card-body">
+          <ComponentMapper 
+            componentName={selectedMenu.component} 
+            menuData={selectedMenu}
+          />
+        </div>
       </div>
     );
   };
 
-  return (
-    <div className="admin-content-container">
-      {renderContent()}
-    </div>
-  );
+  return renderContent();
 };
 
 export default AdminContentComponent;

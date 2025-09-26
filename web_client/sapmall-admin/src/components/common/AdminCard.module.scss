@@ -1,62 +1,333 @@
-/* AdminCard 组件样式 */
+/* AdminCard 组件样式 - 重新设计匹配原型图 */
 
 .adminInfoCard {
-  background: rgba(15, 23, 42, 0.6);
+  width: 100%;
+  background: rgba(15, 23, 42, 0.85); /* 更深的背景 */
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(51, 65, 85, 0.6); /* 更深的边框 */
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  overflow: visible;
-  height: auto;
-  min-height: 100%;
-  margin-bottom: 20px;
-  border: 1px solid rgba(51, 65, 85, 0.3);
-  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); /* 更深的阴影 */
+  margin-bottom: 16px;
+  height: fit-content;
+  min-height: auto;
+  max-height: none;
 }
 
 .adminInfoCard:last-child {
   margin-bottom: 0;
 }
 
+.adminInfoCard:hover {
+  border-color: rgba(71, 85, 105, 0.6);
+  box-shadow: 0 12px 48px rgba(59, 130, 246, 0.08);
+}
+
 .adminCardContent {
-  padding: 24px;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
 .adminSection {
-  margin-bottom: 30px;
-  background: rgba(30, 41, 59, 0.4);
-  border-radius: 12px;
-  padding: 20px;
-}
-
-.adminSection:last-child {
-  margin-bottom: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
 .governanceHeaderRow {
+  height: 56px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 16px 16px 0 0;
+  padding: 0 24px;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+  margin: 0;
 }
 
 .adminSectionTitle {
-  font-size: 16px;
-  font-weight: 600;
-  color: #f1f5f9;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+  font-size: 14px; /* 更小的字体 */
+  font-weight: 600; /* 更轻的字重 */
+  color: #cbd5e1; /* 更暗的颜色 */
+  margin: 0;
+  padding: 0;
+  border: none;
   display: flex;
   align-items: center;
+  letter-spacing: 0.3px; /* 更小的字母间距 */
 }
 
 .adminSectionTitle i {
-  margin-right: 8px;
-  color: #3b82f6;
+  margin-right: 10px; /* 更小的间距 */
+  color: #64748b; /* 更暗的灰色 */
+  font-size: 14px; /* 更小的图标 */
+  opacity: 0.8; /* 半透明 */
+  transition: all 0.3s ease;
 }
 
 .dashboardActions {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+
+/* 内容区域样式 */
+.adminCardBody {
+  padding: 24px;
+  background: transparent;
+  min-height: 200px;
+  overflow-y: auto;
+}
+
+/* 统计卡片网格 */
+.dashboardStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
+  margin-bottom: 0;
+}
+
+/* 统计卡片 - 内部卡片样式，比外部卡片更浅 */
+.dashboardStatCard {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.3)); /* 更浅的背景 */
+  border-radius: 8px; /* 更小的圆角 */
+  padding: 16px 14px 12px 16px; /* 更紧凑的内边距 */
+  border: 1px solid rgba(71, 85, 105, 0.3); /* 更浅的边框 */
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(6px); /* 更弱的毛玻璃效果 */
+  animation: cardFadeIn 0.6s ease-out;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15); /* 更浅的阴影 */
+}
+
+.dashboardStatCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.dashboardStatCard:hover {
+  transform: translateY(-2px); /* 更小的上移距离 */
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3); /* 更深的悬停阴影 */
+  border-color: rgba(59, 130, 246, 0.6); /* 更亮的悬停边框 */
+}
+
+.dashboardStatCard:hover::before {
+  opacity: 1;
+}
+
+/* 卡片动画效果 */
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboardStatCard:nth-child(1) { animation-delay: 0.1s; }
+.dashboardStatCard:nth-child(2) { animation-delay: 0.2s; }
+.dashboardStatCard:nth-child(3) { animation-delay: 0.3s; }
+.dashboardStatCard:nth-child(4) { animation-delay: 0.4s; }
+
+/* 统计内容包装器 */
+.statContentWrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* 统计图标 - 内部卡片图标样式 */
+.statIcon {
+  width: 48px; /* 稍小的图标容器 */
+  height: 48px;
+  border-radius: 8px; /* 更小的圆角 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(51, 65, 85, 0.3); /* 添加背景色 */
+  border: 1px solid rgba(71, 85, 105, 0.4); /* 添加边框 */
+}
+
+.statIcon i {
+  color: #93c5fd !important; /* 使用蓝色图标 */
+  font-size: 16px; /* 稍小的图标 */
+  line-height: 1;
+  opacity: 0.9;
+}
+
+/* 统计内容 - 内部卡片字体样式，更暗的颜色 */
+.statContent h3 {
+  font-size: 20px; /* 稍小的字体 */
+  font-weight: 600; /* 稍轻的字重 */
+  color: #cbd5e1; /* 更暗的文字颜色 */
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+  letter-spacing: 0.5px; /* 添加字母间距 */
+}
+
+.statContent p {
+  font-size: 13px; /* 更小的字体 */
+  color: #64748b; /* 更暗的辅助文字颜色 */
+  margin: 0;
+  font-weight: 400; /* 更轻的字重 */
+  letter-spacing: 0.3px; /* 添加字母间距 */
+}
+
+/* 统计趋势 - 内部卡片趋势样式 */
+.statTrend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px; /* 稍小的字体 */
+  font-weight: 500; /* 稍轻的字重 */
+  padding: 4px 8px; /* 添加内边距 */
+  border-radius: 4px; /* 添加圆角 */
+  background: rgba(51, 65, 85, 0.2); /* 添加背景 */
+}
+
+.statTrend.positive {
+  color: #34d399; /* 更亮的绿色 */
+  background: rgba(52, 211, 153, 0.1); /* 绿色背景 */
+}
+
+.statTrend.negative {
+  color: #f87171; /* 更亮的红色 */
+  background: rgba(248, 113, 113, 0.1); /* 红色背景 */
+}
+
+.statTrend i {
+  font-size: 11px; /* 稍小的图标 */
+}
+
+/* 内部卡片变体样式 - 提供更多视觉层次 */
+.dashboardStatCard.statPrimary {
+  border-left: 3px solid #3b82f6; /* 蓝色左边框 */
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(30, 41, 59, 0.8));
+}
+
+.dashboardStatCard.statSuccess {
+  border-left: 3px solid #10b981; /* 绿色左边框 */
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(30, 41, 59, 0.8));
+}
+
+.dashboardStatCard.statWarning {
+  border-left: 3px solid #f59e0b; /* 橙色左边框 */
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(30, 41, 59, 0.8));
+}
+
+.dashboardStatCard.statDanger {
+  border-left: 3px solid #ef4444; /* 红色左边框 */
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(30, 41, 59, 0.8));
+}
+
+/* 系统状态卡片特殊样式 - 比外部卡片更浅 */
+.systemStatusCard {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.3), rgba(15, 23, 42, 0.2)); /* 更浅的背景 */
+  border-radius: 6px; /* 更小的圆角 */
+  padding: 12px 14px 10px 14px; /* 更紧凑的内边距 */
+  border: 1px solid rgba(71, 85, 105, 0.2); /* 更浅的边框 */
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(4px); /* 更弱的毛玻璃效果 */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* 更浅的阴影 */
+}
+
+.systemStatusCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* 系统状态图标 */
+.systemStatusIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(51, 65, 85, 0.4);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+}
+
+.systemStatusIcon.healthy {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.systemStatusIcon.warning {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.systemStatusIcon.error {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.systemStatusIcon i {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.systemStatusIcon.healthy i {
+  color: #34d399 !important;
+}
+
+.systemStatusIcon.warning i {
+  color: #fbbf24 !important;
+}
+
+.systemStatusIcon.error i {
+  color: #f87171 !important;
+}
+
+/* 系统状态内容 - 更暗的文字颜色 */
+.systemStatusContent {
+  flex: 1;
+  margin-left: 12px;
+}
+
+.systemStatusContent h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #cbd5e1; /* 更暗的颜色 */
+  margin: 0 0 2px 0;
+  line-height: 1.2;
+}
+
+.systemStatusContent p {
+  font-size: 12px;
+  color: #64748b; /* 更暗的辅助文字颜色 */
+  margin: 0;
+  font-weight: 400;
 }
 

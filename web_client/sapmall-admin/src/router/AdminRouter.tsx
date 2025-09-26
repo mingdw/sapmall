@@ -4,6 +4,7 @@ import NotFound from '../components/NotFound';
 
 // 导入页面组件
 import PlatformDashboard from '../pages/platform/dashboard/PlatformDashboard';
+import UserManagement from '../pages/platform/users/UserManage';
 
 interface AdminRouterProps {
   menuData?: any;
@@ -16,7 +17,7 @@ const AdminRouter: React.FC<AdminRouterProps> = ({ menuData }) => {
       <Route path="/platform/dashboard" element={<PlatformDashboard menuData={menuData} />} />
       
       {/* 用户管理路由 */}
-      {/* <Route path="/user/management" element={<UserManagement menuData={menuData} />} /> */}
+      <Route path="/platform/users" element={<UserManagement />} />
       {/* <Route path="/user/profile" element={<UserProfile menuData={menuData} />} /> */}
       
       {/* 订单管理路由 */}
