@@ -1,15 +1,13 @@
-/* AdminCard 组件样式 - 重新设计匹配原型图 */
+/* AdminCard 组件样式 - 简洁无卡片效果 */
 
 .adminInfoCard {
-  width: 100%;
-  background: rgba(15, 23, 42, 0.85); /* 更深的背景 */
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(51, 65, 85, 0.6); /* 更深的边框 */
-  border-radius: 16px;
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); /* 更深的阴影 */
-  margin-bottom: 16px;
+  width: 98%;
+  margin: 0 auto;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  margin-bottom: 0;
   height: fit-content;
   min-height: auto;
   max-height: none;
@@ -17,11 +15,6 @@
 
 .adminInfoCard:last-child {
   margin-bottom: 0;
-}
-
-.adminInfoCard:hover {
-  border-color: rgba(71, 85, 105, 0.6);
-  box-shadow: 0 12px 48px rgba(59, 130, 246, 0.08);
 }
 
 .adminCardContent {
@@ -43,34 +36,34 @@
 }
 
 .governanceHeaderRow {
-  height: 56px;
+  height: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(30, 41, 59, 0.8);
-  border-radius: 16px 16px 0 0;
-  padding: 0 24px;
+  background: transparent;
+  border-radius: 0;
+  padding: 12px 0;
   border-bottom: 1px solid rgba(51, 65, 85, 0.3);
-  margin: 0;
+  margin: 0 0 20px 0;
 }
 
 .adminSectionTitle {
-  font-size: 14px; /* 更小的字体 */
-  font-weight: 600; /* 更轻的字重 */
-  color: #cbd5e1; /* 更暗的颜色 */
+  font-size: 16px; /* 缩小的标题字体 */
+  font-weight: 500; /* 中等字重 */
+  color: #94a3b8; /* 更暗的标题颜色 */
   margin: 0;
   padding: 0;
   border: none;
   display: flex;
   align-items: center;
-  letter-spacing: 0.3px; /* 更小的字母间距 */
+  letter-spacing: 0.3px;
 }
 
 .adminSectionTitle i {
-  margin-right: 10px; /* 更小的间距 */
-  color: #64748b; /* 更暗的灰色 */
-  font-size: 14px; /* 更小的图标 */
-  opacity: 0.8; /* 半透明 */
+  margin-right: 8px;
+  color: #64748b; /* 更暗的图标颜色 */
+  font-size: 16px;
+  opacity: 0.8;
   transition: all 0.3s ease;
 }
 
@@ -82,10 +75,10 @@
 
 /* 内容区域样式 */
 .adminCardBody {
-  padding: 24px;
+  padding: 0;
   background: transparent;
-  min-height: 200px;
-  overflow-y: auto;
+  min-height: auto;
+  overflow: visible;
 }
 
 /* 统计卡片网格 */

@@ -1,0 +1,452 @@
+.attributeGroupList {
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    h4 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: #e2e8f0;
+    }
+  }
+
+  .collapse {
+    :global {
+      .ant-collapse-item {
+        background: rgba(15, 23, 42, 0.4);
+        border: 1px solid rgba(51, 65, 85, 0.3);
+        border-radius: 8px;
+        margin-bottom: 8px;
+      }
+
+      .ant-collapse-header {
+        background: rgba(30, 41, 59, 0.8);
+        color: #f1f5f9;
+        border-radius: 8px 8px 0 0;
+        padding: 12px 16px;
+        font-weight: 500;
+      }
+
+      .ant-collapse-content {
+        background: rgba(15, 23, 42, 0.4);
+        border-radius: 0 0 8px 8px;
+        border-top: 1px solid rgba(51, 65, 85, 0.3);
+      }
+
+      .ant-collapse-content-box {
+        padding: 16px;
+      }
+
+      .ant-collapse-expand-icon {
+        color: #94a3b8;
+      }
+
+      .ant-collapse-expand-icon:hover {
+        color: #e2e8f0;
+      }
+    }
+  }
+
+  .panelHeader {
+    width: 100%;
+
+    .groupInfo {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .groupHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .groupLeft {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .groupName {
+      font-weight: 500;
+      color: #f1f5f9;
+      font-size: 14px;
+    }
+
+    .descriptionText {
+      color: #cbd5e1;
+      font-size: 12px;
+      line-height: 1.4;
+      display: inline-block;
+      max-width: 400px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: help;
+    }
+
+    .statusActions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      :global {
+        .ant-btn {
+          color: #94a3b8 !important;
+          font-size: 12px !important;
+          padding: 4px !important;
+          width: 24px !important;
+          height: 24px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          border-radius: 4px !important;
+          transition: all 0.2s ease !important;
+          border: none !important;
+          background: transparent !important;
+          min-width: 24px !important;
+
+          // 编辑按钮悬停变绿色
+          &:first-child:hover {
+            color: #10b981 !important;
+            background: rgba(16, 185, 129, 0.15) !important;
+          }
+
+          // 删除按钮悬停变红色
+          &:last-child:hover {
+            color: #ef4444 !important;
+            background: rgba(239, 68, 68, 0.15) !important;
+          }
+
+          // 通用悬停效果
+          &:hover {
+            transform: scale(1.05);
+          }
+        }
+      }
+    }
+
+    // 确认按钮特殊样式
+    .confirmBtn {
+      color: #94a3b8 !important;
+      
+      &:hover {
+        color: #10b981 !important;
+        background: rgba(16, 185, 129, 0.15) !important;
+        transform: scale(1.05);
+      }
+    }
+
+    // 取消按钮特殊样式
+    .cancelBtn {
+      color: #94a3b8 !important;
+      
+      &:hover {
+        color: #ef4444 !important;
+        background: rgba(239, 68, 68, 0.15) !important;
+        transform: scale(1.05);
+      }
+    }
+  }
+
+
+  .code {
+    background: rgba(30, 41, 59, 0.6);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 12px;
+    color: #3b82f6;
+  }
+
+  .codeTag {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #60a5fa;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: rgba(59, 130, 246, 0.5);
+      color: #3b82f6;
+    }
+  }
+
+  .expandedContent {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+  }
+
+  .empty {
+    margin: 40px 0;
+    
+    :global {
+      .ant-empty-description {
+        color: #94a3b8;
+      }
+    }
+  }
+
+  .panelContent {
+    .descriptions {
+      margin-bottom: 16px;
+      
+      :global {
+        .ant-descriptions-item-label {
+          color: #94a3b8;
+          font-size: 12px;
+          font-weight: 500;
+          width: 90px;
+          vertical-align: top;
+        }
+
+        .ant-descriptions-item-content {
+          color: #e2e8f0;
+          font-size: 12px;
+          vertical-align: top;
+        }
+
+        .ant-descriptions-item {
+          padding-bottom: 8px;
+        }
+
+        // 强制覆盖所有输入框样式
+        .ant-input,
+        .ant-input-number,
+        .ant-input-number-input {
+          background: rgba(30, 41, 59, 0.6) !important;
+          border-color: rgba(51, 65, 85, 0.5) !important;
+          color: #e2e8f0 !important;
+
+          &::placeholder {
+            color: #64748b !important;
+          }
+
+          &:hover {
+            border-color: rgba(71, 85, 105, 0.8) !important;
+            background: rgba(30, 41, 59, 0.7) !important;
+          }
+
+          &:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+            background: rgba(30, 41, 59, 0.8) !important;
+          }
+        }
+
+        .ant-input-number {
+          &:focus-within {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+            background: rgba(30, 41, 59, 0.8) !important;
+          }
+
+          .ant-input-number-input {
+            background: transparent !important;
+            color: #e2e8f0 !important;
+          }
+
+          .ant-input-number-handler-wrap {
+            background: rgba(30, 41, 59, 0.4) !important;
+            border-left-color: rgba(51, 65, 85, 0.5) !important;
+
+            .ant-input-number-handler {
+              border-color: rgba(51, 65, 85, 0.5) !important;
+
+              &:hover {
+                background: rgba(51, 65, 85, 0.6) !important;
+              }
+
+              .ant-input-number-handler-up-inner,
+              .ant-input-number-handler-down-inner {
+                color: #94a3b8 !important;
+              }
+            }
+          }
+        }
+
+        // Switch 开关样式
+        .ant-switch {
+          &.ant-switch-disabled {
+            opacity: 1;
+            cursor: not-allowed;
+            
+            &.ant-switch-checked {
+              background: #10b981;
+            }
+            
+            &:not(.ant-switch-checked) {
+              background: rgba(51, 65, 85, 0.5);
+            }
+          }
+
+          &:not(.ant-switch-disabled) {
+            cursor: pointer;
+            
+            &.ant-switch-checked {
+              background: #10b981;
+            }
+            
+            &:not(.ant-switch-checked) {
+              background: rgba(51, 65, 85, 0.5);
+            }
+
+            &:hover {
+              &.ant-switch-checked {
+                background: #059669;
+              }
+              
+              &:not(.ant-switch-checked) {
+                background: rgba(51, 65, 85, 0.7);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .editInput {
+      width: 100%;
+      max-width: 200px;
+
+      :global {
+        .ant-input {
+          background: rgba(30, 41, 59, 0.6) !important;
+          border-color: rgba(51, 65, 85, 0.5) !important;
+          color: #e2e8f0 !important;
+
+          &::placeholder {
+            color: #64748b !important;
+          }
+
+          &:hover {
+            border-color: rgba(71, 85, 105, 0.8) !important;
+            background: rgba(30, 41, 59, 0.7) !important;
+          }
+
+          &:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+            background: rgba(30, 41, 59, 0.8) !important;
+          }
+        }
+
+        .ant-input-number {
+          background: rgba(30, 41, 59, 0.6) !important;
+          border-color: rgba(51, 65, 85, 0.5) !important;
+
+          &:hover {
+            border-color: rgba(71, 85, 105, 0.8) !important;
+            background: rgba(30, 41, 59, 0.7) !important;
+          }
+
+          &:focus-within {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+            background: rgba(30, 41, 59, 0.8) !important;
+          }
+
+          .ant-input-number-input {
+            background: transparent !important;
+            color: #e2e8f0 !important;
+          }
+
+          .ant-input-number-handler-wrap {
+            background: rgba(30, 41, 59, 0.4) !important;
+            border-left-color: rgba(51, 65, 85, 0.5) !important;
+
+            .ant-input-number-handler {
+              border-color: rgba(51, 65, 85, 0.5) !important;
+
+              &:hover {
+                background: rgba(51, 65, 85, 0.6) !important;
+              }
+
+              .ant-input-number-handler-up-inner,
+              .ant-input-number-handler-down-inner {
+                color: #94a3b8 !important;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .editTextarea {
+      width: 100%;
+
+      :global {
+        .ant-input {
+          background: rgba(30, 41, 59, 0.6) !important;
+          border-color: rgba(51, 65, 85, 0.5) !important;
+          color: #e2e8f0 !important;
+
+          &::placeholder {
+            color: #64748b !important;
+          }
+
+          &:hover {
+            border-color: rgba(71, 85, 105, 0.8) !important;
+            background: rgba(30, 41, 59, 0.7) !important;
+          }
+
+          &:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+            background: rgba(30, 41, 59, 0.8) !important;
+          }
+        }
+      }
+    }
+
+    .emptyText {
+      color: #64748b;
+      font-style: italic;
+    }
+
+    .codeValue {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      display: inline-block;
+      line-height: 1.5;
+    }
+
+    .descriptionFullText {
+      color: #e2e8f0;
+      font-size: 12px;
+      line-height: 1.6;
+      display: inline-block;
+      max-width: 600px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: help;
+    }
+
+    .attributeSection {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(51, 65, 85, 0.3);
+    }
+  }
+}

@@ -1,0 +1,99 @@
+.adminModal {
+  :global {
+    // 模态框内容背景
+    .ant-modal-content {
+      background: #1e293b;
+      border-color: #334155;
+    }
+
+    // 头部背景
+    .ant-modal-header {
+      background: #1e293b;
+      border-bottom-color: #334155;
+      padding: 5px 5px 5px 5px; // 增加底部间距
+
+      .ant-modal-title {
+        color: #f1f5f9;
+        text-align: left; // 标题左对齐
+        margin: 0; // 移除默认margin
+      }
+    }
+
+    // 主体背景
+    .ant-modal-body {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 5px 5px 5px 5px; // 调整上下间距
+
+      // 表单样式
+      .ant-form {
+        max-width: 500px; // 限制表单最大宽度
+        
+        // 表单项标签颜色
+        .ant-form-item-label > label {
+          color: #e2e8f0;
+        }
+
+        // 必填星号颜色
+        .ant-form-item-label > label.ant-form-item-required::before {
+          color: #ef4444;
+        }
+
+        // 限制输入框宽度
+        .ant-input,
+        .ant-input-number,
+        .ant-select {
+          width: 100%; // 使用100%宽度，由父容器控制
+          max-width: 300px;
+        }
+
+        // 输入框样式
+        .ant-input,
+        .ant-input-number-input,
+        .ant-select-selector {
+          background: rgba(30, 41, 59, 0.6);
+          border-color: rgba(51, 65, 85, 0.5);
+          color: #e2e8f0;
+
+          &::placeholder {
+            color: #64748b;
+          }
+
+          &:hover {
+            border-color: rgba(71, 85, 105, 0.8);
+          }
+
+          &:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+          }
+        }
+
+        // 禁用状态的输入框
+        .ant-input:disabled,
+        .ant-input-number-input:disabled {
+          background: rgba(30, 41, 59, 0.3);
+          color: #94a3b8;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    // 底部背景
+    .ant-modal-footer {
+      background: #1e293b;
+      border-top-color: #334155;
+      padding: 10px 5px 5px 5px; // 增加顶部间距
+    }
+
+    // 关闭按钮颜色
+    .ant-modal-close {
+      color: #94a3b8;
+
+      &:hover {
+        color: #f1f5f9;
+      }
+    }
+  }
+}
+

@@ -7,6 +7,7 @@ interface AdminCardProps {
   actions?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  showHeader?: boolean; // 新增：是否显示标题部分，默认为true
 }
 
 const AdminCard: React.FC<AdminCardProps> = ({
@@ -14,13 +15,14 @@ const AdminCard: React.FC<AdminCardProps> = ({
   icon,
   actions,
   children,
-  className = ''
+  className = '',
+  showHeader = true // 默认显示标题部分
 }) => {
   return (
     <div className={`${styles.adminInfoCard} ${className}`}>
       <div className={styles.adminCardContent}>
         <div className={styles.adminSection}>
-          {(title || actions) && (
+          {showHeader && (title || actions) && (
             <div className={styles.governanceHeaderRow}>
               {title && (
                 <h3 className={styles.adminSectionTitle}>
