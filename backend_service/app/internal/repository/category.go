@@ -9,7 +9,7 @@ import (
 
 type CategoryRepository interface {
 	GetCategory(ctx context.Context, id int64) (*model.Category, error)
-	FindAll(ctx context.Context) ([]model.Category, error)
+	FindAll(ctx context.Context, menuType int) ([]model.Category, error)
 	GetCategories(ctx context.Context, categoryCodes []string) ([]*model.Category, error)
 	GetCategoriesByParams(ctx context.Context, params *model.Category) ([]*model.Category, error)
 	Create(ctx context.Context, category *model.Category) error
@@ -38,9 +38,9 @@ func (r *categoryRepository) GetCategory(ctx context.Context, id int64) (*model.
 	return &category, nil
 }
 
-func (r *categoryRepository) FindAll(ctx context.Context) ([]model.Category, error) {
+func (r *categoryRepository) FindAll(ctx context.Context, menuType int) ([]model.Category, error) {
 	var categories []model.Category
-	if err := r.db.WithContext(ctx).Where("is_deleted = ?", 0).Find(&categories).Error; err != nil {
+	if err := r.db.WithContext(ctx).Where("is_deleted = ? and menu_type = ?", 0, menuType).Find(&categories).Error; err != nil {
 		return nil, err
 	}
 	return categories, nil

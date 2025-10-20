@@ -60,7 +60,7 @@ const MarketPlacePageDetail: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await commonApiService.getCategoryTree(1); // 假设1是商品分类类型
+        const response = await commonApiService.getCategoryTree(0); // 假设1是商品分类类型
         const categoryList = Array.isArray(response) ? response : [response];
         setCategories(categoryList);
         setLastFetchTime(Date.now());
