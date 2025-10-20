@@ -58,7 +58,3 @@ type CategoryModifyRequest struct {
 	Icon       string `json:"icon"`
 	Status     int    `json:"status"`
 }
-
-type DeleteCategoryReq struct {
-	CategoryID int64 `json:"category_id"`
-}

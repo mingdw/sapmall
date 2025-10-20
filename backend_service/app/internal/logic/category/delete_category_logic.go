@@ -31,7 +31,7 @@ func (l *DeleteCategoryLogic) DeleteCategory(req *types.DeleteCategoryReq) error
 	categoryAttrGroupRepository := repository.NewCategoryAttrGroupRepository(l.svcCtx.GormDB)
 	attrGroupRepository := repository.NewAttrGroupRepository(l.svcCtx.GormDB)
 
-	categoryAttrGroups, err := categoryAttrGroupRepository.FindByCategoryID(l.ctx, req.CategoryID)
+	categoryAttrGroups, err := categoryAttrGroupRepository.FindByCategoryID(l.ctx, int64(req.ID))
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (l *DeleteCategoryLogic) DeleteCategory(req *types.DeleteCategoryReq) error
 	}
 
 	// 删除目录
-	err = categoryRepository.Delete(l.ctx, req.CategoryID)
+	err = categoryRepository.Delete(l.ctx, int64(req.ID))
 	if err != nil {
 		return err
 	}

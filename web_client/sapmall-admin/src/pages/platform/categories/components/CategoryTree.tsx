@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tree, Button, Space, Tooltip, ConfigProvider, Form, Input } from 'antd';
+import { Tree, Button, Space, Tooltip, ConfigProvider, Form, Input, InputNumber, message } from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import type { DataNode } from 'antd/es/tree';
 import AdminModal from '../../../../components/common/AdminModal';
+import { SaveCategoryReq } from '../../../../services/api/categoryApi';
 import styles from './CategoryTree.module.scss';
 
 interface Category {
@@ -28,6 +29,7 @@ interface CategoryTreeProps {
   onAdd: (parentCategory?: Category) => void;
   onEdit: (category: Category) => void;
   onDelete: (category: Category) => void;
+  onSave: (formData: SaveCategoryReq) => Promise<boolean>;
 }
 
 const CategoryTree: React.FC<CategoryTreeProps> = ({
@@ -37,11 +39,13 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
   onAdd,
   onEdit,
   onDelete,
+  onSave,
 }) => {
   const [expandedKeys, setExpandedKeys] = React.useState<React.Key[]>([]);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [modalType, setModalType] = React.useState<'view' | 'edit' | 'add'>('view');
   const [currentCategory, setCurrentCategory] = React.useState<Category | null>(null);
+  const [submitting, setSubmitting] = React.useState(false);
   const [form] = Form.useForm();
 
   // 默认展开第一个一级目录
@@ -63,14 +67,31 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
     setCurrentCategory(category);
     setModalVisible(true);
     
-    if (category) {
+    if (type === 'edit' && category) {
+      // 编辑模式：填充现有数据
       form.setFieldsValue({
         name: category.name,
         code: category.code,
         sort: category.sort,
+        icon: category.icon || '',
+      });
+    } else if (type === 'add') {
+      // 新增模式：重置表单，设置默认值
+      form.resetFields();
+      form.setFieldsValue({
+        sort: 0, // 默认排序值
+        icon: '',
       });
     } else {
-      form.resetFields();
+      // 查看模式
+      if (category) {
+        form.setFieldsValue({
+          name: category.name,
+          code: category.code,
+          sort: category.sort,
+          icon: category.icon || '',
+        });
+      }
     }
   };
 
@@ -82,23 +103,66 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
   };
 
   // 处理模态框确认
-  const handleModalOk = () => {
+  const handleModalOk = async () => {
     if (modalType === 'view') {
       closeModal();
       return;
     }
 
-    form.validateFields().then(values => {
+    try {
+      const values = await form.validateFields();
       console.log('表单数据:', values);
       
-      if (modalType === 'edit' && currentCategory) {
-        onEdit(currentCategory);
-      } else if (modalType === 'add') {
-        onAdd(currentCategory || undefined);
-      }
+      setSubmitting(true);
       
-      closeModal();
-    });
+      // 构建保存请求数据
+      const saveData: SaveCategoryReq = {
+        name: values.name,
+        code: values.code,
+        sort: values.sort || 0,
+        icon: values.icon || '',
+        menuType: 0, // 0=商品目录
+      };
+
+      if (modalType === 'edit' && currentCategory) {
+        // 编辑模式：设置ID
+        saveData.id = currentCategory.id;
+        saveData.parentId = currentCategory.parentId;
+        saveData.level = currentCategory.level;
+      } else if (modalType === 'add') {
+        // 新增模式：设置父目录信息
+        if (currentCategory) {
+          // 添加子目录
+          saveData.parentId = currentCategory.id;
+          saveData.parentCode = currentCategory.code;
+          saveData.level = currentCategory.level + 1;
+        } else {
+          // 添加根目录
+          saveData.parentId = 0;
+          saveData.parentCode = '';
+          saveData.level = 1;
+        }
+      }
+
+      console.log('保存数据:', saveData);
+      
+      // 调用保存接口
+      const success = await onSave(saveData);
+      
+      if (success) {
+        closeModal();
+        // 调用父组件的回调
+        if (modalType === 'edit' && currentCategory) {
+          onEdit(currentCategory);
+        } else if (modalType === 'add') {
+          onAdd(currentCategory || undefined);
+        }
+      }
+    } catch (error) {
+      console.error('表单验证失败:', error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // 获取模态框标题
@@ -283,6 +347,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
         width={520}
         okText={modalType === 'view' ? '关闭' : '确定'}
         cancelButtonProps={{ style: { display: modalType === 'view' ? 'none' : 'inline-block' } }}
+        confirmLoading={submitting}
       >
         <Form
           form={form}
@@ -291,7 +356,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
           wrapperCol={{ span: 18 }}
           autoComplete="off"
         >
-           {currentCategory && (
+          {modalType === 'add' && currentCategory && (
             <Form.Item label="父目录">
               <Input
                 value={currentCategory.name}
@@ -299,25 +364,35 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
               />
             </Form.Item>
           )}
+          
           <Form.Item
             label="目录名称"
             name="name"
-            rules={[{ required: modalType !== 'view', message: '请输入目录名称' }]}
+            rules={[
+              { required: modalType !== 'view', message: '请输入目录名称' },
+              { max: 50, message: '目录名称不能超过50个字符' }
+            ]}
           >
             <Input
               placeholder="请输入目录名称"
               disabled={modalType === 'view'}
+              maxLength={50}
             />
           </Form.Item>
 
           <Form.Item
             label="目录编码"
             name="code"
-            rules={[{ required: modalType !== 'view', message: '请输入目录编码' }]}
+            rules={[
+              { required: modalType !== 'view', message: '请输入目录编码' },
+              { pattern: /^[A-Z0-9_]+$/, message: '编码只能包含大写字母、数字和下划线' },
+              { max: 30, message: '编码不能超过30个字符' }
+            ]}
           >
             <Input
-              placeholder="请输入目录编码"
-              disabled={modalType === 'view'}
+              placeholder="请输入目录编码（大写字母、数字、下划线）"
+              disabled={modalType === 'view' || modalType === 'edit'}
+              maxLength={30}
             />
           </Form.Item>
 
@@ -326,14 +401,25 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
             name="sort"
             rules={[{ required: modalType !== 'view', message: '请输入排序值' }]}
           >
-            <Input
-              type="number"
+            <InputNumber
               placeholder="请输入排序值"
               disabled={modalType === 'view'}
+              min={0}
+              max={9999}
+              style={{ width: '100%' }}
             />
           </Form.Item>
 
-         
+          <Form.Item
+            label="图标"
+            name="icon"
+          >
+            <Input
+              placeholder="请输入图标名称（可选）"
+              disabled={modalType === 'view'}
+              maxLength={50}
+            />
+          </Form.Item>
         </Form>
       </AdminModal>
     </div>

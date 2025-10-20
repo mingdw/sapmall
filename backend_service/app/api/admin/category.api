@@ -1,0 +1,39 @@
+// backend_service/app/api/admin/category.api
+syntax = "v1"
+
+type (
+    // 保存目录请求（新增/编辑共用，通过id区分：id为0或空表示新增，有值表示编辑）
+    SaveCategoryReq {
+        ID         uint   `json:"id,optional"`         // 目录ID，为0或空表示新增，有值表示编辑
+        Name       string `json:"name"`                // 目录名称
+        Code       string `json:"code"`                // 目录编码
+        ParentID   uint   `json:"parentId,optional"`   // 父目录ID
+        ParentCode string `json:"parentCode,optional"` // 父目录编码
+        Level      int    `json:"level,optional"`      // 层级
+        Sort       int    `json:"sort"`                // 排序
+        Icon       string `json:"icon,optional"`       // 图标
+        MenuType   int    `json:"menuType"`            // 目录类型：0=商品目录 1=菜单目录
+    }
+    // 删除目录请求
+    DeleteCategoryReq {
+        ID uint `path:"id"` // 目录ID
+    }
+)
+
+@server (
+    group:      admin
+    prefix:     /api/admin
+    middleware: AuthMiddleware,RespMiddleware
+)
+service sapmall {
+
+    @doc "保存目录（新增/编辑）"
+    @handler SaveCategory
+    post /category (SaveCategoryReq) returns (BaseResp)
+
+    @doc "删除目录"
+    @handler DeleteCategory
+    delete /category/:id (DeleteCategoryReq) returns (BaseResp)
+
+}
+
