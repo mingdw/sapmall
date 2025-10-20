@@ -98,7 +98,7 @@ const HeaderPageDetail: React.FC = () => {
             </div>
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
-              <p className="text-xs font-semibold text-gray-400">Web3虚拟商品交易平台</p>
+              <p className="text-xs font-semibold text-gray-400">Web3去中心化虚拟商品交易平台</p>
             </div>
           </div>
 

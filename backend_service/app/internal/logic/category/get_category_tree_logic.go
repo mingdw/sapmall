@@ -28,7 +28,7 @@ func NewGetCategoryTreeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 	}
 }
 
-func (l *GetCategoryTreeLogic) GetCategoryTree() (resp *types.BaseResp, err error) {
+func (l *GetCategoryTreeLogic) GetCategoryTree(req *types.GetCategoryTreeReq) (resp *types.BaseResp, err error) {
 	// todo: add your logic here and delete this line
 
 	categoryRepository := repository.NewCategoryRepository(l.svcCtx.GormDB)
@@ -37,7 +37,7 @@ func (l *GetCategoryTreeLogic) GetCategoryTree() (resp *types.BaseResp, err erro
 	attrRepository := repository.NewAttrRepository(l.svcCtx.GormDB)
 
 	// 1. 获取所有目录
-	categories, err := categoryRepository.FindAll(l.ctx)
+	categories, err := categoryRepository.FindAll(l.ctx, req.CategoryType)
 	if err != nil {
 		return nil, err
 	}

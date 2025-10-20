@@ -62,7 +62,7 @@ func (r *roleRepository) GetRoleCategorys(ctx context.Context, roleID int64) ([]
 	err := r.db.WithContext(ctx).
 		Table("sys_category m").
 		Joins("INNER JOIN sys_role_category rm ON m.id = rm.category_id").
-		Where("rm.role_id = ? AND m.status = ?", roleID, 1).
+		Where("rm.role_id = ? AND m.status = ? AND m.menu_type = ? AND m.is_deleted = ?", roleID, 1, 1, 0).
 		Order("m.level ASC, m.sort ASC").
 		Find(&menus).Error
 	if err != nil {

@@ -38,7 +38,7 @@ func (l *GetCategoryTreeLogic) GetCategoryTree(req *types.GetCategoryTreeReq) (r
 	attrRepository := repository.NewAttrRepository(l.svcCtx.GormDB)
 
 	// 1. 获取所有目录
-	categories, err := categoryRepository.FindAll(l.ctx)
+	categories, err := categoryRepository.FindAll(l.ctx, req.CategoryType)
 	if err != nil {
 		return nil, err
 	}
