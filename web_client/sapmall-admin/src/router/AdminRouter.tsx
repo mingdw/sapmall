@@ -6,8 +6,8 @@ import NotFound from '../components/NotFound';
 import PlatformDashboard from '../pages/platform/dashboard/PlatformDashboard';
 import UserManagement from '../pages/platform/users/UserManage';
 import MerchantManager from '../pages/platform/merchants/MerchantManager';
-import CategoryManger from '../pages/platform/categories/CategoryManger';
 import OrderManager from '../pages/platform/orders/OrderManager';
+import CategoryManagement from '../pages/platform/categories/CategoryManagement';
 
 interface AdminRouterProps {
   menuData?: any;
@@ -29,7 +29,7 @@ const AdminRouter: React.FC<AdminRouterProps> = ({ menuData }) => {
       <Route path="/platform/orders" element={<OrderManager />} />
       
       {/* 商品目录设置路由 */}
-      <Route path="/platform/categories" element={<CategoryManger />} />
+      <Route path="/platform/categories" element={<CategoryManagement />} />
       
       <Route path="/" element={<Navigate to="/platform/dashboard" replace />} />
       

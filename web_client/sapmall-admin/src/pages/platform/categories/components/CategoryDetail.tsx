@@ -1,0 +1,99 @@
+import React from 'react';
+import { Descriptions, Empty, Divider } from 'antd';
+import AttributeGroupList from './AttributeGroupList';
+import styles from './CategoryDetail.module.scss';
+
+interface Attribute {
+  id: number;
+  name: string;
+  code: string;
+  type: number;
+  status: number;
+  groupId: number;
+  description: string;
+  sort: number;
+}
+
+interface AttributeGroup {
+  id: number;
+  name: string;
+  code: string;
+  sort: number;
+  type: number;
+  description: string;
+  status: number;
+  attrs: Attribute[];
+}
+
+interface Category {
+  id: number;
+  name: string;
+  code: string;
+  level: number;
+  sort: number;
+  parentId: number;
+  icon?: string;
+  children?: Category[];
+  attrGroups?: AttributeGroup[];
+}
+
+interface CategoryDetailProps {
+  category: Category | null;
+  onEditCategory: (category: Category) => void;
+}
+
+const CategoryDetail: React.FC<CategoryDetailProps> = ({
+  category,
+  onEditCategory,
+}) => {
+  if (!category) {
+    return (
+      <div className={styles.emptyState}>
+        <Empty
+          description="请从左侧选择一个商品目录"
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.categoryDetail}>
+      {/* 目录基本信息 */}
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h4>目录信息</h4>
+        </div>
+        <Descriptions column={2} size="small" className={styles.descriptions}>
+          <Descriptions.Item label="目录名称">{category.name}</Descriptions.Item>
+          <Descriptions.Item label="目录编码">{category.code}</Descriptions.Item>
+          <Descriptions.Item label="目录层级">
+            第 {category.level} 级
+          </Descriptions.Item>
+          <Descriptions.Item label="排序">
+            {category.sort}
+          </Descriptions.Item>
+          <Descriptions.Item label="父级ID">
+            {category.parentId || '无（根目录）'}
+          </Descriptions.Item>
+          <Descriptions.Item label="子目录数量">
+            {category.children?.length || 0}
+          </Descriptions.Item>
+        </Descriptions>
+      </div>
+
+      <Divider className={styles.divider} />
+
+      {/* 属性组管理 */}
+      <div className={styles.section}>
+        <AttributeGroupList 
+          categoryId={category.id} 
+          attrGroups={category.attrGroups || []}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default CategoryDetail;
+

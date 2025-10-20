@@ -1,0 +1,29 @@
+.categoryManagement {
+  .container {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 20px;
+    min-height: 400px;
+    align-items: start;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: 300px 1fr;
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .leftPanel {
+    height: auto;
+    overflow: visible;
+  }
+
+  .rightPanel {
+    height: auto;
+    min-height: 600px;
+    overflow: visible;
+  }
+}
+
