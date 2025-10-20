@@ -67,7 +67,8 @@ func (r *categoryRepository) Create(ctx context.Context, category *model.Categor
 }
 
 func (r *categoryRepository) Update(ctx context.Context, category *model.Category) error {
-	return r.db.WithContext(ctx).Updates(category).Error
+	// 使用主键 ID 作为 WHERE 条件进行更新
+	return r.db.WithContext(ctx).Model(&model.Category{}).Where("id = ?", category.ID).Updates(category).Error
 }
 
 func (r *categoryRepository) GetCategoryByCode(ctx context.Context, code string) (*model.Category, error) {
@@ -82,5 +83,6 @@ func (r *categoryRepository) GetCategoryByCode(ctx context.Context, code string)
 }
 
 func (r *categoryRepository) Delete(ctx context.Context, id int64) error {
-	return r.db.WithContext(ctx).Where("id = ? and is_deleted = 0", id).Delete(&model.Category{}).Error
+	// 逻辑删除：将 is_deleted 设置为 1，而不是物理删除
+	return r.db.WithContext(ctx).Model(&model.Category{}).Where("id = ?", id).Update("is_deleted", 1).Error
 }

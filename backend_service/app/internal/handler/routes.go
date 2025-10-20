@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 
+	admin "sapphire-mall/app/internal/handler/admin"
 	common "sapphire-mall/app/internal/handler/common"
 	product "sapphire-mall/app/internal/handler/product"
 	user "sapphire-mall/app/internal/handler/user"
@@ -15,6 +16,27 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Route{
+				{
+					// 保存目录（新增/编辑）
+					Method:  http.MethodPost,
+					Path:    "/category",
+					Handler: admin.SaveCategoryHandler(serverCtx),
+				},
+				{
+					// 删除目录
+					Method:  http.MethodDelete,
+					Path:    "/category/:id",
+					Handler: admin.DeleteCategoryHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/admin"),
+	)
+
 	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.RespMiddleware},

@@ -4,6 +4,7 @@ import AdminCard from '../../../components/common/AdminCard';
 import CategoryTree from './components/CategoryTree';
 import CategoryDetail from './components/CategoryDetail';
 import { commonApiService } from '../../../services/api/commonApiService';
+import { categoryApi, SaveCategoryReq } from '../../../services/api/categoryApi';
 import styles from './CategoryManagement.module.scss';
 
 // 目录数据类型
@@ -49,39 +50,78 @@ const CategoryManagement: React.FC = () => {
     setSelectedCategory(category);
   };
 
+  // 处理保存目录（新增/编辑）
+  const handleSaveCategory = async (formData: SaveCategoryReq) => {
+    try {
+      setLoading(true);
+      const response = await categoryApi.saveCategory(formData);
+      
+      if (response.code === 0) {
+        message.success(formData.id ? '编辑成功' : '创建成功');
+        // 重新加载目录树
+        await loadCategories();
+        return true;
+      } else {
+        message.error(response.message || '操作失败');
+        return false;
+      }
+    } catch (error) {
+      console.error('保存目录失败:', error);
+      message.error('保存失败: ' + (error as Error).message);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // 处理添加目录
   const handleAddCategory = (parentCategory?: Category) => {
-    message.info(`添加子目录功能开发中... 父目录: ${parentCategory?.name || '根目录'}`);
-    // TODO: 打开添加目录的表单弹窗
+    // 此回调会被 CategoryTree 组件的模态框调用
+    console.log('添加子目录，父目录:', parentCategory);
   };
 
   // 处理编辑目录
   const handleEditCategory = (category: Category) => {
+    // 此回调会被 CategoryTree 组件的模态框调用
+    console.log('编辑目录:', category);
     setSelectedCategory(category);
-    message.info(`编辑目录功能开发中... 目录: ${category.name}`);
-    // TODO: 打开编辑目录的表单弹窗
   };
 
   // 处理删除目录
-  const handleDeleteCategory = (category: Category) => {
+  const handleDeleteCategory = async (category: Category) => {
+    // 检查是否有子目录
+    if (category.children && category.children.length > 0) {
+      message.warning('该目录下存在子目录，请先删除子目录');
+      return;
+    }
+
     Modal.confirm({
       title: '确认删除',
-      content: `确定要删除目录"${category.name}"吗？${
-        category.children?.length
-          ? '\n注意：删除后，该目录下的所有子目录也将被删除！'
-          : ''
-      }`,
+      content: `确定要删除目录"${category.name}"吗？`,
       okText: '确定',
+      okType: 'danger',
       cancelText: '取消',
       onOk: async () => {
         try {
-          message.info(`删除功能开发中... 目录ID: ${category.id}`);
-          // TODO: 调用删除接口
-          // await categoryApi.deleteCategory(category.id);
-          // await loadCategories();
-          // message.success('删除成功');
+          setLoading(true);
+          const response = await categoryApi.deleteCategory(category.id);
+          
+          if (response.code === 0) {
+            message.success('删除成功');
+            // 重新加载目录树
+            await loadCategories();
+            // 如果删除的是当前选中的目录，清空选中状态
+            if (selectedCategory?.id === category.id) {
+              setSelectedCategory(null);
+            }
+          } else {
+            message.error(response.message || '删除失败');
+          }
         } catch (error) {
-          message.error('删除失败');
+          console.error('删除目录失败:', error);
+          message.error('删除失败: ' + (error as Error).message);
+        } finally {
+          setLoading(false);
         }
       },
     });
@@ -101,6 +141,7 @@ const CategoryManagement: React.FC = () => {
                 onAdd={handleAddCategory}
                 onEdit={handleEditCategory}
                 onDelete={handleDeleteCategory}
+                onSave={handleSaveCategory}
               />
             </div>
 

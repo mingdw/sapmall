@@ -27,6 +27,10 @@ type CreateProductResp struct {
 	ProductInfo ProductInfo `json:"product_info"`
 }
 
+type DeleteCategoryReq struct {
+	ID uint `path:"id"` // 目录ID
+}
+
 type GetCategoryTreeReq struct {
 	CategoryType int `path:"category_type"`
 }
@@ -85,6 +89,18 @@ type ReviewProductResp struct {
 	Code        int         `json:"code"`
 	Msg         string      `json:"msg"`
 	ProductInfo ProductInfo `json:"product_info"`
+}
+
+type SaveCategoryReq struct {
+	ID         uint   `json:"id,optional"`         // 目录ID，为0或空表示新增，有值表示编辑
+	Name       string `json:"name"`                // 目录名称
+	Code       string `json:"code"`                // 目录编码
+	ParentID   uint   `json:"parentId,optional"`   // 父目录ID
+	ParentCode string `json:"parentCode,optional"` // 父目录编码
+	Level      int    `json:"level,optional"`      // 层级
+	Sort       int    `json:"sort"`                // 排序
+	Icon       string `json:"icon,optional"`       // 图标
+	MenuType   int    `json:"menuType"`            // 目录类型：0=商品目录 1=菜单目录
 }
 
 type UserInfo struct {
