@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	JWT "github.com/dgrijalva/jwt-go"
+	JWT "github.com/golang-jwt/jwt/v5"
 )
 
 // Sign jwt token for current uin.
@@ -22,14 +22,47 @@ func Sign(uin uint64, secret string, expired int64) (token string, err error) {
 
 // Verify jwt token if success then return the uin.
 func Verify(token, secret string) (uin uint64, err error) {
+	// 解析JWT令牌并验证签名
 	auth, err := JWT.Parse(token, func(t *JWT.Token) (interface{}, error) {
+		// 验证签名方法
+		if _, ok := t.Method.(*JWT.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+		}
 		return []byte(secret), nil
 	})
+	
 	if err != nil {
-		return
+		return 0, fmt.Errorf("failed to parse token: %w", err)
 	}
-	claims, _ := auth.Claims.(JWT.MapClaims)
-	uinStr, _ := claims["comer_uin"].(string)
+	
+	// 验证令牌是否有效
+	if !auth.Valid {
+		return 0, fmt.Errorf("invalid token")
+	}
+	
+	// 提取声明
+	claims, ok := auth.Claims.(JWT.MapClaims)
+	if !ok {
+		return 0, fmt.Errorf("invalid token claims")
+	}
+	
+	// 验证过期时间
+	if exp, ok := claims["exp"].(float64); ok {
+		if time.Now().Unix() > int64(exp) {
+			return 0, fmt.Errorf("token has expired")
+		}
+	}
+	
+	// 提取用户ID
+	uinStr, ok := claims["comer_uin"].(string)
+	if !ok {
+		return 0, fmt.Errorf("invalid user ID in token")
+	}
+	
 	uin, err = strconv.ParseUint(uinStr, 10, 64)
-	return
+	if err != nil {
+		return 0, fmt.Errorf("invalid user ID format: %w", err)
+	}
+	
+	return uin, nil
 }

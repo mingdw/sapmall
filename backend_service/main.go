@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	_ "github.com/dgrijalva/jwt-go"
 	_ "github.com/ethereum/go-ethereum/accounts"
 	_ "github.com/go-playground/validator/v10"
 	_ "github.com/google/uuid"
