@@ -32,30 +32,53 @@ func (l *AddAndUpdateUserAddressLogic) AddAndUpdateUserAddress(req *types.UserAd
 
 	userAddressRepository := repository.NewUserAddressRepository(l.svcCtx.GormDB)
 
-	userAddressModel := &model.UserAddress{
-		Model:        gorm.Model{ID: uint(req.ID), CreatedAt: time.Now(), UpdatedAt: time.Now()},
-		UserID:       req.UserID,
-		UserCode:     req.UserCode,
-		ReciverName:  req.ReciverName,
-		ReciverPhone: req.ReciverPhone,
-		ProvinceCode: req.ProvinceCode,
-		ProvinceName: req.ProvinceName,
-		CityCode:     req.CityCode,
-		CityName:     req.CityName,
-		DistrictCode: req.DistrictCode,
-		DistrictName: req.DistrictName,
-		StreetCode:   req.StreetCode,
-		StreetName:   req.StreetName,
-		FullAddress:  req.FullAddress,
-		HouseAddress: req.HouseAddress,
-		IsDefault:    req.IsDefault,
-		Longitude:    req.Longitude,
-		Latitude:     req.Latitude,
-	}
-
+	// 根据是否为更新操作来设置gorm.Model
+	var userAddressModel *model.UserAddress
 	if req.ID > 0 {
+		// 更新操作：只设置ID和UpdatedAt，不设置CreatedAt
+		userAddressModel = &model.UserAddress{
+			Model:        gorm.Model{ID: uint(req.ID), UpdatedAt: time.Now()},
+			UserID:       req.UserID,
+			UserCode:     req.UserCode,
+			ReciverName:  req.ReciverName,
+			ReciverPhone: req.ReciverPhone,
+			ProvinceCode: req.ProvinceCode,
+			ProvinceName: req.ProvinceName,
+			CityCode:     req.CityCode,
+			CityName:     req.CityName,
+			DistrictCode: req.DistrictCode,
+			DistrictName: req.DistrictName,
+			StreetCode:   req.StreetCode,
+			StreetName:   req.StreetName,
+			FullAddress:  req.FullAddress,
+			HouseAddress: req.HouseAddress,
+			IsDefault:    req.IsDefault,
+			Longitude:    req.Longitude,
+			Latitude:     req.Latitude,
+		}
 		return userAddressRepository.Update(l.ctx, userAddressModel)
 	} else {
+		// 创建操作：设置CreatedAt和UpdatedAt
+		userAddressModel = &model.UserAddress{
+			Model:        gorm.Model{CreatedAt: time.Now(), UpdatedAt: time.Now()},
+			UserID:       req.UserID,
+			UserCode:     req.UserCode,
+			ReciverName:  req.ReciverName,
+			ReciverPhone: req.ReciverPhone,
+			ProvinceCode: req.ProvinceCode,
+			ProvinceName: req.ProvinceName,
+			CityCode:     req.CityCode,
+			CityName:     req.CityName,
+			DistrictCode: req.DistrictCode,
+			DistrictName: req.DistrictName,
+			StreetCode:   req.StreetCode,
+			StreetName:   req.StreetName,
+			FullAddress:  req.FullAddress,
+			HouseAddress: req.HouseAddress,
+			IsDefault:    req.IsDefault,
+			Longitude:    req.Longitude,
+			Latitude:     req.Latitude,
+		}
 		return userAddressRepository.Create(l.ctx, userAddressModel)
 	}
 }
