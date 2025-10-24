@@ -17,51 +17,44 @@
 
 ## 📋 Project Overview
 
-**Sapphire Mall** is an innovative blockchain e-commerce platform focused on virtual goods trading. The platform uses the self-issued ERC20 token SAP as the core circulation medium, provides convenient token exchange services through liquidity pools, introduces liquidity staking reward mechanisms, and establishes a DAO governance system, creating a Web3 virtual goods ecosystem that integrates shopping, asset circulation, profit acquisition, and community governance.
+**Sapphire Mall** is a decentralized community-driven virtual goods trading platform. The platform is built on blockchain technology with community governance at its core, implementing a fully decentralized decision-making system through DAO mechanisms. The platform uses the self-issued ERC20 token SAP as the ecosystem token, incentivizing community participation through liquidity pools and staking mechanisms, creating a Web3 virtual goods trading ecosystem that is jointly governed and benefited by community members.
 
 ### 🌟 Core Features
 
+- **🏛️ Decentralized Governance**: Fully decentralized community governance system based on DAO mechanisms
+- **👥 Community-Driven**: Jointly decided, built, and benefited by community members
 - **🎯 Virtual Goods Specialization**: Focus on digital content, software tools, online services and other virtual goods trading
-- **💎 Liquidity Pool Exchange**: Provide convenient token exchange services through liquidity pools
-- **💰 Staking Reward Mechanism**: Liquidity providers can receive platform fee sharing rewards
-- **🏛️ DAO Governance Participation**: SAP holders can participate in platform major decision voting
-- **🌍 Multi-language Support**: Support Chinese and English bilingual, targeting global users
-- **🔐 Transparent On-chain Settlement**: All transaction records are immutable, ensuring transaction transparency
+- **💎 Liquidity Pool Incentives**: Incentivize community participation through liquidity pools and staking mechanisms
+- **💰 Revenue Sharing Mechanism**: Platform revenue automatically distributed to community contributors through smart contracts
+- **🌍 Global Community**: Multi-language support, building a global decentralized community
+- **🔐 Transparent On-chain Governance**: All governance decisions and revenue distribution are completely transparent and verifiable on-chain
 
 ## 🏗️ Project Structure
 
 ```
 sapmall/
-├── 📁 docs/                          # Project Documentation
-│   ├── 📄 PRD.md                     # Product Requirements Document (83KB)
-│   ├── 📄 White_Paper.md             # Technical White Paper (27KB)
-│   ├── 📄 Tokenomics_Detailed.md     # Token Economics Detailed Document (16KB)
-│   ├── 📄 Roadmap.md                 # Project Roadmap (21KB)
-│   ├── 📄 User_Story_Map.md          # User Story Map (29KB)
-│   ├── 📄 Metrics_Framework.md       # Metrics Framework (22KB)
-│   └── 📄 Design_Update_Summary.md   # Design Update Summary (5.8KB)
+├── 📁 backend_service/               # Backend Service (Go + go-zero)
+├── 📁 web_client/                    # Frontend Applications
+│   ├── 📁 sapmall-admin/             # Admin Backend (React + TypeScript)
+│   ├── 📁 sapmall-dapp/              # DApp Application (React + Web3)
+│   └── 📁 sapmall-website/           # Official Website (React)
+├── 📁 env/                           # Environment Configuration
+│   └── 📁 dev/                       # Development Environment Docker Configuration
 ├── 📁 design/                        # Design Files
 │   ├── 📁 prototypes/                # Prototype Design
-│   │   ├── 🏠 index.html             # Official Website Homepage
-│   │   ├── 🛒 dapp.html              # DApp Main Interface
-│   │   ├── ⚙️ admin.html             # Admin Backend
-│   │   ├── 📊 homepage.html          # Data Display Page
-│   │   ├── 📁 admin/                 # Admin Function Modules
-│   │   ├── 📁 dapp/                  # DApp Function Modules
-│   │   └── 📁 homepage/              # Homepage Function Modules
-│   ├── 📁 specs/                     # Design Specifications
-│   └── 📄 项目交付总结.md            # Design Delivery Summary
-├── 📁 promit/                        # Prompts and Configuration
-│   ├── 📄 README.md                  # AI Agent Usage Guide
-│   ├── 📄 PM_Web3_Agent_Prompt.md   # Product Manager Agent
-│   ├── 📄 UIUX_Designer_Web3_Agent_Prompt.md  # UI/UX Designer Agent
-│   ├── 📄 Smart_Contract_Engineer_Agent_Prompt.md  # Smart Contract Engineer Agent
-│   ├── 📄 Web_Client_Web3_Agent_Prompt.md  # Frontend Developer Agent
-│   └── 📄 Backend_Engineer_Agent_Prompt.md  # Backend Developer Agent
+│   └── 📁 specs/                     # Design Specifications
+├── 📁 docs/                          # Project Documentation
+│   ├── 📄 PRD.md                     # Product Requirements Document
+│   ├── 📄 White_Paper.md             # Technical White Paper
+│   ├── 📄 Tokenomics_Detailed.md     # Token Economics Model
+│   ├── 📄 Roadmap.md                 # Project Roadmap
+│   ├── 📄 User_Story_Map.md          # User Story Map
+│   └── 📄 Metrics_Framework.md       # Metrics Framework
+├── 📁 promit/                        # AI Agent Prompts
 ├── 📁 pic/                           # Image Resources
-├── 📄 package.json                   # Project Configuration
-├── 📄 tailwind.config.js            # Tailwind Configuration
-└── 📄 generate_favicon.py           # Icon Generation Tool
+├── 📄 docker-compose.yml             # Docker Compose File
+├── 📄 generate_favicon.py           # Icon Generation Tool
+└── 📄 README.md                      # Project Description
 ```
 
 ## 🎨 Design Prototypes
@@ -87,7 +80,121 @@ The project includes complete Web3 virtual goods trading platform interface prot
 
 ## 🚀 Quick Start
 
-### 1. View Design Prototypes
+### 1. One-Click Development Environment Setup
+
+#### Method 1: Complete Container Environment (Recommended for Production Testing)
+```bash
+# Navigate to environment configuration directory
+cd env/dev
+
+# One-click startup of all services (Supports Docker/Podman)
+./start_local_dev_env.sh
+```
+
+#### Method 2: Local Development Environment (Recommended for Development Debugging)
+```bash
+# Navigate to environment configuration directory
+cd env/dev
+
+# Start local development environment
+./start_local_dev.sh
+```
+
+#### Environment Requirements
+- **Container Runtime**: Docker or Podman
+- **Node.js**: Version 18+
+- **Go**: Version 1.19+
+- **Port Requirements**: Ensure the following ports are not occupied
+  - 3004-3006 (Frontend services)
+  - 8080, 7101-7103 (Nginx proxy)
+  - 8888-8889 (Backend API)
+  - 3306 (MySQL), 6379 (Redis), 2379 (etcd)
+
+### 2. Access Services
+
+#### Unified Entry Point (Recommended)
+Access through Nginx proxy with intelligent routing and load balancing:
+
+| Service | Access URL | Description |
+|---------|------------|-------------|
+| 🏠 **Official Website** | http://localhost:7103 | Project website and introduction |
+| 🛒 **DApp Application** | http://localhost:7102 | Web3 virtual goods trading platform |
+| ⚙️ **Admin Backend** | http://localhost:7101 | Platform management and data statistics |
+| 🔧 **Backend API** | http://localhost:7101/api/ | RESTful API endpoints |
+| 📚 **API Documentation** | http://localhost:7101/swagger-ui/ | Swagger API documentation |
+
+#### Direct Access (Development Debugging)
+Bypass Nginx proxy and access services directly:
+
+| Service | Access URL | Description |
+|---------|------------|-------------|
+| 🏠 **Official Website** | http://localhost:3006 | React application |
+| 🛒 **DApp Application** | http://localhost:3005 | React + Web3 application |
+| ⚙️ **Admin Backend** | http://localhost:3004 | React + TypeScript application |
+| 🔧 **Backend API** | http://localhost:8888/api/ | Go + go-zero API |
+| 📚 **API Documentation** | http://localhost:8888/swagger-ui/ | Swagger UI |
+
+### 3. Intelligent Routing Explanation
+
+The project adopts intelligent routing design, supporting multiple access methods:
+
+#### Routing Priority
+1. **IDE Development Instance** (Priority) - Supports hot reload, suitable for development debugging
+2. **Container Instance** (Backup) - Production environment configuration, suitable for testing
+
+#### Routing Configuration
+- **Backend Service**: IDE instance(8889) → Container instance(8888)
+- **Admin Backend**: IDE instance(3004) → Container instance(3001)
+- **DApp Application**: IDE instance(3005) → Container instance(3002)
+- **Official Website**: IDE instance(3006) → Container instance(3003)
+
+### 4. Management Commands
+
+#### Start/Stop Services
+```bash
+# Start complete environment
+./start_local_dev_env.sh
+
+# Stop all services
+./stop_local_dev_env.sh
+
+# Restart services
+./restart_local_dev_env.sh
+
+# Check service status
+./status.sh
+```
+
+#### View Logs
+```bash
+# View Nginx proxy logs
+podman logs -f sapmall-nginx
+
+# View backend service logs
+podman logs -f sapmall-backend_service
+
+# View MySQL logs
+podman logs -f sapmall-mysql
+
+# View frontend application logs
+podman logs -f sapmall-admin
+podman logs -f sapmall-dapp
+podman logs -f sapmall-website
+```
+
+#### Container Debugging
+```bash
+# Enter backend service container
+podman exec -it sapmall-backend_service bash
+
+# Enter MySQL container
+podman exec -it sapmall-mysql bash
+
+# Enter frontend application container
+podman exec -it sapmall-admin sh
+```
+
+### 5. View Design Prototypes
 ```bash
 # Open official website homepage
 open design/prototypes/index.html
@@ -99,7 +206,7 @@ open design/prototypes/dapp.html
 open design/prototypes/admin.html
 ```
 
-### 2. Browse Project Documentation
+### 6. Browse Project Documentation
 - 📋 **Product Requirements**: [PRD.md](docs/PRD.md) - Detailed product requirements document
 - 📖 **Technical White Paper**: [White_Paper.md](docs/White_Paper.md) - Technical architecture and innovations
 - 💰 **Token Economics**: [Tokenomics_Detailed.md](docs/Tokenomics_Detailed.md) - Complete economic model
