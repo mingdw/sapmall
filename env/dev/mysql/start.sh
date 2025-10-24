@@ -1,4 +1,4 @@
-ocker#!/bin/bash
+#!/bin/bash
 
 # 设置颜色输出
 GREEN='\033[0;32m'
