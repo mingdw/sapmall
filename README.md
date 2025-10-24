@@ -17,51 +17,44 @@
 
 ## 📋 项目概述
 
-**Sapphire Mall** 是一个专注于虚拟商品交易的创新型区块链电商平台。平台以自发行的ERC20代币SAP为核心流通媒介，通过流动性池提供便捷的代币兑换服务，引入流动性质押收益机制，并建立DAO治理系统，打造集购物、资产流通、收益获取、社区治理于一体的Web3虚拟商品生态。
+**Sapphire Mall** 是一个去中心化社区自驱动的虚拟商品交易平台。平台基于区块链技术构建，以社区治理为核心，通过DAO机制实现完全去中心化的决策体系。平台采用自发行的ERC20代币SAP作为生态通证，通过流动性池和质押机制激励社区参与，打造一个由社区成员共同治理、共同受益的Web3虚拟商品交易生态。
 
 ### 🌟 核心特色
 
+- **🏛️ 去中心化治理**: 基于DAO机制的完全去中心化社区治理体系
+- **👥 社区自驱动**: 由社区成员共同决策、共同建设、共同受益
 - **🎯 虚拟商品专精**: 专注于数字内容、软件工具、在线服务等虚拟商品交易
-- **💎 流动性池兑换**: 通过流动性池提供便捷的代币兑换服务
-- **💰 质押收益机制**: 流动性提供者可获得平台手续费分成收益
-- **🏛️ DAO治理参与**: SAP持有者可参与平台重大决策投票
-- **🌍 多语言支持**: 支持中英文双语，面向全球用户
-- **🔐 透明链上结算**: 所有交易记录不可篡改，保障交易透明度
+- **💎 流动性池激励**: 通过流动性池和质押机制激励社区参与
+- **💰 收益共享机制**: 平台收益通过智能合约自动分配给社区贡献者
+- **🌍 全球化社区**: 支持多语言，构建全球化的去中心化社区
+- **🔐 透明链上治理**: 所有治理决策和收益分配完全透明，链上可查
 
 ## 🏗️ 项目结构
 
 ```
 sapmall/
-├── 📁 docs/                          # 项目文档
-│   ├── 📄 PRD.md                     # 产品需求文档 (83KB)
-│   ├── 📄 White_Paper.md             # 技术白皮书 (27KB)
-│   ├── 📄 Tokenomics_Detailed.md     # 代币经济模型详细文档 (16KB)
-│   ├── 📄 Roadmap.md                 # 项目路线图 (21KB)
-│   ├── 📄 User_Story_Map.md          # 用户故事地图 (29KB)
-│   ├── 📄 Metrics_Framework.md       # 指标框架 (22KB)
-│   └── 📄 Design_Update_Summary.md   # 设计更新总结 (5.8KB)
+├── 📁 backend_service/               # 后端服务 (Go + go-zero)
+├── 📁 web_client/                    # 前端应用
+│   ├── 📁 sapmall-admin/             # 管理后台 (React + TypeScript)
+│   ├── 📁 sapmall-dapp/              # DApp应用 (React + Web3)
+│   └── 📁 sapmall-website/           # 官网 (React)
+├── 📁 env/                           # 环境配置 一键启停脚本
+│   └── 📁 dev/                       # 开发环境Docker配置
 ├── 📁 design/                        # 设计文件
 │   ├── 📁 prototypes/                # 原型设计
-│   │   ├── 🏠 index.html             # 官网首页
-│   │   ├── 🛒 dapp.html              # DApp主界面
-│   │   ├── ⚙️ admin.html             # 管理后台
-│   │   ├── 📊 homepage.html          # 数据展示页面
-│   │   ├── 📁 admin/                 # 管理功能模块
-│   │   ├── 📁 dapp/                  # DApp功能模块
-│   │   └── 📁 homepage/              # 首页功能模块
-│   ├── 📁 specs/                     # 设计规范
-│   └── 📄 项目交付总结.md            # 设计交付总结
-├── 📁 promit/                        # 提示词和配置
-│   ├── 📄 README.md                  # AI Agent 使用说明
-│   ├── 📄 PM_Web3_Agent_Prompt.md   # 产品经理 Agent
-│   ├── 📄 UIUX_Designer_Web3_Agent_Prompt.md  # UI/UX设计师 Agent
-│   ├── 📄 Smart_Contract_Engineer_Agent_Prompt.md  # 智能合约工程师 Agent
-│   ├── 📄 Web_Client_Web3_Agent_Prompt.md  # 前端开发工程师 Agent
-│   └── 📄 Backend_Engineer_Agent_Prompt.md  # 后端开发工程师 Agent
+│   └── 📁 specs/                     # 设计规范
+├── 📁 docs/                          # 项目文档
+│   ├── 📄 PRD.md                     # 产品需求文档
+│   ├── 📄 White_Paper.md             # 技术白皮书
+│   ├── 📄 Tokenomics_Detailed.md     # 代币经济模型
+│   ├── 📄 Roadmap.md                 # 项目路线图
+│   ├── 📄 User_Story_Map.md          # 用户故事地图
+│   └── 📄 Metrics_Framework.md       # 指标框架
+├── 📁 promit/                        # AI Agent提示词
 ├── 📁 pic/                           # 图片资源
-├── 📄 package.json                   # 项目配置
-├── 📄 tailwind.config.js            # Tailwind配置
-└── 📄 generate_favicon.py           # 图标生成工具
+├── 📄 docker-compose.yml             # Docker编排文件
+├── 📄 generate_favicon.py           # 图标生成工具
+└── 📄 README.md                      # 项目说明
 ```
 
 ## 🎨 设计原型
@@ -87,7 +80,121 @@ sapmall/
 
 ## 🚀 快速开始
 
-### 1. 查看设计原型
+### 1. 一键启动开发环境
+
+#### 方式一：完整容器环境（推荐用于生产测试）
+```bash
+# 进入环境配置目录
+cd env/dev
+
+# 一键启动所有服务（支持Docker/Podman）
+./start_local_dev_env.sh
+```
+
+#### 方式二：本地开发环境（推荐用于开发调试）
+```bash
+# 进入环境配置目录
+cd env/dev
+
+# 启动本地开发环境
+./start_local_dev.sh
+```
+
+#### 环境要求
+- **容器运行时**: Docker 或 Podman
+- **Node.js**: 18+ 版本
+- **Go**: 1.19+ 版本
+- **端口要求**: 确保以下端口未被占用
+  - 3004-3006 (前端服务)
+  - 8080, 7101-7103 (Nginx代理)
+  - 8888-8889 (后端API)
+  - 3306 (MySQL), 6379 (Redis), 2379 (etcd)
+
+### 2. 访问服务
+
+#### 统一入口（推荐）
+通过Nginx代理访问，支持智能路由和负载均衡：
+
+| 服务 | 访问地址 | 说明 |
+|------|----------|------|
+| 🏠 **官网首页** | http://localhost:7103 | 项目官网和介绍 |
+| 🛒 **DApp应用** | http://localhost:7102 | Web3虚拟商品交易平台 |
+| ⚙️ **管理后台** | http://localhost:7101 | 平台管理和数据统计 |
+| 🔧 **后端API** | http://localhost:7101/api/ | RESTful API接口 |
+| 📚 **API文档** | http://localhost:7101/swagger-ui/ | Swagger API文档 |
+
+#### 直接访问（开发调试）
+绕过Nginx代理，直接访问各服务：
+
+| 服务 | 访问地址 | 说明 |
+|------|----------|------|
+| 🏠 **官网首页** | http://localhost:3006 | React应用 |
+| 🛒 **DApp应用** | http://localhost:3005 | React + Web3应用 |
+| ⚙️ **管理后台** | http://localhost:3004 | React + TypeScript应用 |
+| 🔧 **后端API** | http://localhost:8888/api/ | Go + go-zero API |
+| 📚 **API文档** | http://localhost:8888/swagger-ui/ | Swagger UI |
+
+### 3. 智能路由说明
+
+项目采用智能路由设计，支持多种访问方式：
+
+#### 路由优先级
+1. **IDE开发实例** (优先) - 支持热重载，适合开发调试
+2. **容器实例** (备份) - 生产环境配置，适合测试
+
+#### 路由配置
+- **后端服务**: IDE实例(8889) → 容器实例(8888)
+- **管理后台**: IDE实例(3004) → 容器实例(3001)
+- **DApp应用**: IDE实例(3005) → 容器实例(3002)
+- **官网首页**: IDE实例(3006) → 容器实例(3003)
+
+### 4. 管理命令
+
+#### 启动/停止服务
+```bash
+# 启动完整环境
+./start_local_dev_env.sh
+
+# 停止所有服务
+./stop_local_dev_env.sh
+
+# 重启服务
+./restart_local_dev_env.sh
+
+# 查看服务状态
+./status.sh
+```
+
+#### 查看日志
+```bash
+# 查看Nginx代理日志
+podman logs -f sapmall-nginx
+
+# 查看后端服务日志
+podman logs -f sapmall-backend_service
+
+# 查看MySQL日志
+podman logs -f sapmall-mysql
+
+# 查看前端应用日志
+podman logs -f sapmall-admin
+podman logs -f sapmall-dapp
+podman logs -f sapmall-website
+```
+
+#### 进入容器调试
+```bash
+# 进入后端服务容器
+podman exec -it sapmall-backend_service bash
+
+# 进入MySQL容器
+podman exec -it sapmall-mysql bash
+
+# 进入前端应用容器
+podman exec -it sapmall-admin sh
+```
+
+### 5. 查看设计原型
    ```bash
 # 打开官网首页
    open design/prototypes/index.html
@@ -99,7 +206,7 @@ open design/prototypes/dapp.html
 open design/prototypes/admin.html
 ```
 
-### 2. 浏览项目文档
+### 6. 浏览项目文档
 - 📋 **产品需求**: [PRD.md](docs/PRD.md) - 详细的产品需求文档
 - 📖 **技术白皮书**: [White_Paper.md](docs/White_Paper.md) - 技术架构和创新点
 - 💰 **代币经济**: [Tokenomics_Detailed.md](docs/Tokenomics_Detailed.md) - 完整的经济模型
