@@ -33,7 +33,7 @@
     "zustand": "^5.0.8"
   },
   "scripts": {
-    "start":  "react-scripts start",
+    "start": "cross-env PORT=3005 react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject"
   },
@@ -53,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0"
   }
 }
