@@ -6,8 +6,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strings"
+	"syscall"
 
 	"sapphire-mall/app/internal/config"
 	"sapphire-mall/app/internal/handler"
@@ -35,7 +37,21 @@ func main() {
 	// 设置 Swagger 路由
 	setupSwaggerRoutes(server)
 
-	server.Start()
+	// 设置信号处理，确保调试模式可以正常停止
+	sigChan := make(chan os.Signal, 1)
+	// Windows 上主要使用 os.Interrupt (Ctrl+C)，Unix 系统上也可以使用 SIGTERM
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
+
+	// 在 goroutine 中启动服务器
+	go func() {
+		server.Start()
+	}()
+
+	// 等待中断信号
+	<-sigChan
+	log.Println("收到停止信号，正在关闭服务器...")
+	server.Stop()
+	log.Println("服务器已关闭")
 }
 
 // setupSwaggerRoutes 设置 Swagger UI 相关路由

@@ -28,12 +28,12 @@
     "react-scripts": "5.0.1",
     "sass": "^1.92.1",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.0.0",
+    "typescript": "^4.9.5",
     "wagmi": "^2.16.9",
     "zustand": "^5.0.8"
   },
   "scripts": {
-    "start":  "react-scripts start",
+    "start": "cross-env PORT=3005 react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject"
   },
@@ -53,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }

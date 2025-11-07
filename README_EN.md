@@ -91,14 +91,100 @@ cd env/dev
 ./start_local_dev_env.sh
 ```
 
-#### Method 2: Local Development Environment (Recommended for Development Debugging)
-```bash
-# Navigate to environment configuration directory
-cd env/dev
+#### Method 2: Local Development Environment (Windows Platform Development & Debugging)
 
-# Start local development environment
-./start_local_dev.sh
+> The following steps have been verified in **Windows 10/11 + PowerShell** environment, suitable for local debugging and frontend/backend development.
+
+##### 1. Software Installation & Preparation
+- [Node.js 18 LTS](https://nodejs.org/en/) (Check *Automatically install the necessary tools* during installation)
+- [Go 1.19+](https://go.dev/dl/)
+- [MySQL 8.0 Community Edition](https://dev.mysql.com/downloads/installer/)
+- [Redis for Windows](https://github.com/tporadowski/redis) (or run Redis in WSL/Docker)
+- [Nginx for Windows](https://nginx.org/en/download.html) (Extract to `C:\nginx`, optional)
+
+##### 2. Configure and Start MySQL (Database)
+1. Install **MySQL Server 8.0** via MySQL Installer, note down the root password.
+2. Open PowerShell and execute:
+   ```powershell
+   # Navigate to MySQL installation directory (default path)
+   cd "C:\Program Files\MySQL\MySQL Server 8.0\bin"
+
+   # Login to MySQL (enter root password)
+   .\mysql.exe -u root -p
+
+   -- Create database
+   CREATE DATABASE IF NOT EXISTS sapphire_mall CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   EXIT;
+
+   # Import database base structure
+   .\mysql.exe -u root -p sapphire_mall < d:\web3space\sapmall\backend_service\docs\sapphire_mall.sql
+   
+   # Import menu data (requires base structure to be imported first)
+   .\mysql.exe -u root -p sapphire_mall < d:\web3space\sapmall\backend_service\docs\sapphire_mall_menu_20250102.sql
+   ```
+3. If remote connection is needed, create `sapmall_user` user in *MySQL Workbench* and grant all privileges to `sapphire_mall` database.
+
+##### 3. Start Redis (Cache)
+1. Extract Redis to `C:\redis`, execute in PowerShell:
+   ```powershell
+   cd C:\redis
+   .\redis-server.exe redis.windows.conf
+   ```
+2. Open a new PowerShell window to verify:
+   ```powershell
+   cd C:\redis
+   .\redis-cli.exe ping  # Should return PONG if successful
+   ```
+
+##### 4. (Optional) Configure Nginx Unified Entry Point
+1. Copy `env\dev\nginx\nginx.conf.template` from repository to `C:\nginx\conf\nginx.conf`, and replace `${HOST_IP}` with `127.0.0.1`.
+2. Execute in PowerShell:
+   ```powershell
+   cd C:\nginx
+   .\nginx.exe       # Start
+   # To stop: .\nginx.exe -s stop
+   # Reload config: .\nginx.exe -s reload
+   ```
+> After startup, access frontends and API via `http://localhost:7101/7102/7103`.
+
+##### 5. Start Backend Service (Go + go-zero)
+1. Execute in PowerShell:
+   ```powershell
+   cd d:\web3space\sapmall\backend_service\app
+   go mod tidy
+   ```
+2. Modify `DB.DataSource` and `Redis` configuration in `etc\sapmall_dev.yaml` according to your local database information.
+3. Start backend (recommended to use IDE port 8889):
+   ```powershell
+   go run sapmall_start.go -f etc/sapmall_dev.yaml --port 8889
+   ```
+4. Verify API availability by accessing `http://localhost:8889/swagger-ui/` in browser.
+
+##### 6. Start Frontend Admin Backend
+```powershell
+cd d:\web3space\sapmall\web_client\sapmall-admin
+npm install
+$env:PORT=3004; npm start   # Admin backend default port 3004
 ```
+Access URL: `http://localhost:3004` (or via Nginx at `http://localhost:7101`).
+
+##### 7. Start Frontend DApp
+```powershell
+cd d:\web3space\sapmall\web_client\sapmall-dapp
+npm install
+$env:PORT=3005; npm start   # DApp default port 3005
+```
+Access URL: `http://localhost:3005` (or via Nginx at `http://localhost:7102`).
+
+##### 8. Recommended Startup Order
+1. MySQL → 2. Redis → 3. Backend Service → 4. Nginx (optional) → 5. Admin → 6. DApp.
+
+##### 9. Quick Troubleshooting Tips
+- **Port Check**: `Get-NetTCPConnection -LocalPort 8889` (PowerShell)
+- **API Health Check**: `Invoke-WebRequest http://localhost:8889/api/common/health`
+- **Redis Ping**: `redis-cli.exe ping`
+
+After completing the above steps, you can fully run the backend, DApp, and admin backend locally on Windows. To stop, sequentially stop frontend processes, backend `go run` process, and Redis/MySQL/Nginx services.
 
 #### Environment Requirements
 - **Container Runtime**: Docker or Podman

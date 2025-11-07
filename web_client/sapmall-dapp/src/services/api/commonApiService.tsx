@@ -61,8 +61,8 @@ export const commonApiService = {
   },
 
   // 获取目录树结构
-  getCategoryTree: async (categoryType: number): Promise<CategoryTreeResp> => {
-    const response = await baseClient.get<CategoryTreeResp>(`/api/common/${categoryType}/categories`, {
+  getCategoryTree: async (categoryType: number): Promise<CategoryTreeResp | CategoryTreeResp[]> => {
+    const response = await baseClient.get<CategoryTreeResp | CategoryTreeResp[]>(`/api/common/${categoryType}/categories`, {
       skipAuth: true, // 获取目录树结构不需要认证
     });
     return response.data;

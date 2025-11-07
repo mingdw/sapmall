@@ -18,6 +18,37 @@ type (
     DeleteCategoryReq {
         ID uint `path:"id"` // 目录ID
     }
+    // 保存属性组请求（新增/编辑共用，通过id区分：id为0或空表示新增，有值表示编辑）
+    SaveAttrGroupReq {
+        ID            uint   `json:"id,optional"`         // 属性组ID，为0或空表示新增，有值表示编辑
+        CategoryID    uint   `json:"categoryId,optional"` // 目录ID
+        AttrGroupName string `json:"attrGroupName"`       // 属性组名称
+        AttrGroupCode string `json:"attrGroupCode"`       // 属性组编码
+        Type          int    `json:"type,optional"`       // 类型：0=通用 1=目录专用
+        Status        int    `json:"status,optional"`     // 状态：0=启用 1=禁用
+        Sort          int    `json:"sort"`                // 排序
+        Description   string `json:"description,optional"` // 描述
+    }
+    // 删除属性组请求
+    DeleteAttrGroupReq {
+        ID uint `path:"id"` // 属性组ID
+    }
+    // 保存属性请求（新增/编辑共用，通过id区分：id为0或空表示新增，有值表示编辑）
+    SaveAttrReq {
+        ID            uint   `json:"id,optional"`         // 属性ID，为0或空表示新增，有值表示编辑
+        AttrGroupID   uint   `json:"attrGroupId"`         // 属性组ID
+        AttrGroupCode string `json:"attrGroupCode"`       // 属性组编码
+        AttrName      string `json:"attrName"`            // 属性名称
+        AttrCode      string `json:"attrCode"`            // 属性编码
+        AttrType      int    `json:"attrType,optional"`   // 属性类型：1=文本 2=数字
+        Status        int    `json:"status,optional"`     // 状态：0=启用 1=禁用
+        Sort          int    `json:"sort"`                // 排序
+        Description   string `json:"description,optional"` // 描述
+    }
+    // 删除属性请求
+    DeleteAttrReq {
+        ID uint `path:"id"` // 属性ID
+    }
 )
 
 @server (
@@ -34,6 +65,22 @@ service sapmall {
     @doc "删除目录"
     @handler DeleteCategory
     delete /category/:id (DeleteCategoryReq) returns (BaseResp)
+
+    @doc "保存属性组（新增/编辑）"
+    @handler SaveAttrGroup
+    post /attrGroup (SaveAttrGroupReq) returns (BaseResp)
+
+    @doc "删除属性组"
+    @handler DeleteAttrGroup
+    delete /attrGroup/:id (DeleteAttrGroupReq) returns (BaseResp)
+
+    @doc "保存属性（新增/编辑）"
+    @handler SaveAttr
+    post /attr (SaveAttrReq) returns (BaseResp)
+
+    @doc "删除属性"
+    @handler DeleteAttr
+    delete /attr/:id (DeleteAttrReq) returns (BaseResp)
 
 }
 

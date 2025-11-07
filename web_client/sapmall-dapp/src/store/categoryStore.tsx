@@ -86,10 +86,13 @@ export const useCategoryStore = create<CategoryState>()(
         
         if (categoryId === null || categoryId === 0) {
           // 全部商品：显示所有一级目录的attrGroups
+          // 注意：只显示状态为0（启用）的属性组
           const allGroups: AttrGroupResp[] = [];
           categories.forEach(category => {
             if (category.attrGroups && category.attrGroups.length > 0) {
-              allGroups.push(...category.attrGroups);
+              // 过滤出状态为0（启用）的属性组
+              const enabledGroups = category.attrGroups.filter(group => group.status === 0);
+              allGroups.push(...enabledGroups);
             }
           });
           return allGroups;
@@ -113,8 +116,10 @@ export const useCategoryStore = create<CategoryState>()(
         const collectedGroups: AttrGroupResp[] = [];
         
         // 收集当前分类的attrGroups
+        // 注意：只收集状态为0（启用）的属性组
         if (selectedCategory.attrGroups && selectedCategory.attrGroups.length > 0) {
-          collectedGroups.push(...selectedCategory.attrGroups);
+          const enabledGroups = selectedCategory.attrGroups.filter(group => group.status === 0);
+          collectedGroups.push(...enabledGroups);
         }
 
         // 如果是二级或三级分类，还需要收集父级的attrGroups
@@ -138,9 +143,11 @@ export const useCategoryStore = create<CategoryState>()(
           let currentParent = findParentCategory(categories, categoryId);
           while (currentParent && currentParent.level >= 1) {
             if (currentParent.attrGroups && currentParent.attrGroups.length > 0) {
-              // 避免重复添加
+              // 避免重复添加，并且只收集状态为0（启用）的属性组
               const existingIds = collectedGroups.map(g => g.id);
-              const newGroups = currentParent.attrGroups.filter(g => !existingIds.includes(g.id));
+              const newGroups = currentParent.attrGroups.filter(
+                g => !existingIds.includes(g.id) && g.status === 0
+              );
               collectedGroups.unshift(...newGroups); // 父级的放在前面
             }
             

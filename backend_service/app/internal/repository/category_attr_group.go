@@ -11,6 +11,8 @@ type CategoryAttrGroupRepository interface {
 	FindAll(ctx context.Context) ([]model.CategoryAttrGroup, error)
 	DeleteByCategoryIDs(ctx context.Context, ids []uint) error
 	FindByCategoryID(ctx context.Context, id int64) ([]model.CategoryAttrGroup, error)
+	FindByAttrGroupID(ctx context.Context, attrGroupID uint) ([]model.CategoryAttrGroup, error)
+	DeleteByAttrGroupID(ctx context.Context, attrGroupID uint) error
 	Create(ctx context.Context, categoryAttrGroup *model.CategoryAttrGroup) (uint, error)
 }
 
@@ -42,6 +44,18 @@ func (r *categoryAttrGroupRepository) FindByCategoryID(ctx context.Context, id i
 		return nil, err
 	}
 	return categoryAttrGroups, nil
+}
+
+func (r *categoryAttrGroupRepository) FindByAttrGroupID(ctx context.Context, attrGroupID uint) ([]model.CategoryAttrGroup, error) {
+	var categoryAttrGroups []model.CategoryAttrGroup
+	if err := r.db.WithContext(ctx).Where("attr_group_id = ? and is_deleted = 0", attrGroupID).Find(&categoryAttrGroups).Error; err != nil {
+		return nil, err
+	}
+	return categoryAttrGroups, nil
+}
+
+func (r *categoryAttrGroupRepository) DeleteByAttrGroupID(ctx context.Context, attrGroupID uint) error {
+	return r.db.WithContext(ctx).Where("attr_group_id = ?", attrGroupID).Delete(&model.CategoryAttrGroup{}).Error
 }
 
 func (r *categoryAttrGroupRepository) Create(ctx context.Context, categoryAttrGroup *model.CategoryAttrGroup) (uint, error) {
