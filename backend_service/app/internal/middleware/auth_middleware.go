@@ -26,16 +26,29 @@ func NewAuthMiddleware(db *gorm.DB, config *config.Config) *AuthMiddleware {
 const (
 	AuthorizationHeader = "Authorization"
 
-	ComerUinContextKey  = "COMUNIONCOMERUIN"
-	ComerRoleContextKey = "COMUNIONROLE"
-	ComerGuestRole      = "Guest"
-	ComerLoginedRole    = "Comer"
+	ComerUinContextKey = "COMUNIONCOMERUIN"
+	ComerRoleCode      = "R0001" // 如果不开启权限校验，默认使用管理员角色
+	ComerAddress       = "0x67003e9d9B26Ed30B8AfeA6da762279D7c83abC2"
+	ComerUserId        = 1
 )
 
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if !m.config.Auth.StartAuth {
-			next(w, r)
+			// 如果不开启权限校验，默认使用管理员角色
+			ctx := context.WithValue(r.Context(), ComerUinContextKey, ComerUserId)
+			// 需要根据默认的userId获取用户信息
+			userRepository := repository.NewUserRepository(m.db)
+			userInfo, err := userRepository.GetByID(r.Context(), int64(ComerUserId))
+			if err != nil {
+				http.Error(w, "User not found", http.StatusUnauthorized)
+				return
+			}
+			ctx = context.WithValue(ctx, "userInfo", userInfo)
+			// 传递用户信息到上下文
+			ctx = context.WithValue(r.Context(), ComerUinContextKey, ComerUserId)
+			ctx = context.WithValue(ctx, "userInfo", userInfo)
+			next(w, r.WithContext(ctx))
 			return
 		}
 
@@ -66,7 +79,6 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 		// 传递用户信息到上下文
 		ctx := context.WithValue(r.Context(), ComerUinContextKey, userID)
-		ctx = context.WithValue(ctx, ComerRoleContextKey, ComerLoginedRole)
 		ctx = context.WithValue(ctx, "userInfo", userInfo)
 		// Passthrough to next handler if need
 		next(w, r.WithContext(ctx))

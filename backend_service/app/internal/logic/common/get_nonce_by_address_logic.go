@@ -3,14 +3,16 @@ package common
 import (
 	"context"
 	"crypto/rand"
+	"errors"
 	"math/big"
 	"strconv"
 	"time"
 
-	"sapphire-mall/app/internal/errors"
+	appErrors "sapphire-mall/app/internal/errors"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
 
+	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -33,8 +35,14 @@ func (l *GetNonceByAddressLogic) GetNonceByAddress(req *types.GetNonceByAddressR
 	// 从Redis获取已存在的nonce
 	nonce, err := l.svcCtx.Redis.Get(context.TODO(), req.WalletAddress).Result()
 	if err != nil {
-		if err.Error() != "redis: nil" {
-			return nil, errors.DefaultError("Redis Server Error")
+		// redis.Nil 表示 key 不存在，这是正常情况，继续生成新的 nonce
+		if errors.Is(err, redis.Nil) {
+			// key 不存在，这是正常情况，继续执行
+			nonce = ""
+		} else {
+			// 其他 Redis 错误（如连接失败等）
+			logx.Errorf("从Redis获取nonce失败: %v", err)
+			return nil, appErrors.DefaultError("Redis Server Error")
 		}
 	}
 
@@ -49,7 +57,7 @@ func (l *GetNonceByAddressLogic) GetNonceByAddress(req *types.GetNonceByAddressR
 		err = l.svcCtx.Redis.Set(context.TODO(), req.WalletAddress, nonce, time.Hour*24).Err()
 		if err != nil {
 			logx.Errorf("存储nonce到Redis失败: %v", err)
-			return nil, errors.DefaultError("Redis Server Error")
+			return nil, appErrors.DefaultError("Redis Server Error")
 		}
 		logx.Infof("为钱包地址 %s 生成新的6位数nonce: %s", req.WalletAddress, nonce)
 	}
@@ -67,7 +75,7 @@ func (l *GetNonceByAddressLogic) generateSixDigitNonce() (string, error) {
 	max := big.NewInt(900000)
 	randomNum, err := rand.Int(rand.Reader, max)
 	if err != nil {
-		return "", errors.DefaultError("生成随机数失败")
+		return "", appErrors.DefaultError("生成随机数失败")
 	}
 
 	// 将随机数转换为100000-999999范围

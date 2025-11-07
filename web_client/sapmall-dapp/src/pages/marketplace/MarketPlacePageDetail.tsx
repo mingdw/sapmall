@@ -60,7 +60,7 @@ const MarketPlacePageDetail: React.FC = () => {
 
       try {
         setLoading(true);
-        const response = await commonApiService.getCategoryTree(0); // 假设1是商品分类类型
+        const response = await commonApiService.getCategoryTree(0); // 0表示商品分类类型
         const categoryList = Array.isArray(response) ? response : [response];
         setCategories(categoryList);
         setLastFetchTime(Date.now());
@@ -104,10 +104,29 @@ const MarketPlacePageDetail: React.FC = () => {
   // 监听分类选择变化，更新显示的attrGroups
   useEffect(() => {
     const newDisplayedGroups = collectAttrGroupsForCategory(selectedCategory);
-    setDisplayedAttrGroups(newDisplayedGroups);
+    // 过滤条件：
+    // 1. 只显示状态为0（启用）的属性组
+    // 2. 属性组必须有属性（attrs不为空）
+    // 3. 属性组至少有一个启用状态的属性（status === 0）
+    const filteredGroups = newDisplayedGroups.filter(
+      group => {
+        // 检查属性组状态
+        if (group.status !== 0) {
+          return false; // 只显示启用状态的属性组（0=启用，1=禁用）
+        }
+        // 检查属性组是否有属性
+        if (!group.attrs || !Array.isArray(group.attrs) || group.attrs.length === 0) {
+          return false;
+        }
+        // 检查是否至少有一个启用状态的属性
+        const hasEnabledAttr = group.attrs.some(attr => attr.status === 0);
+        return hasEnabledAttr;
+      }
+    );
+    setDisplayedAttrGroups(filteredGroups);
     
     // 清空当前分类不相关的筛选条件
-    const currentGroupIds = newDisplayedGroups.map(g => g.id);
+    const currentGroupIds = filteredGroups.map(g => g.id);
     setAttrGroupFilters(prev => {
       const filtered: {[key: number]: number[]} = {};
       Object.keys(prev).forEach(key => {
@@ -118,7 +137,7 @@ const MarketPlacePageDetail: React.FC = () => {
       });
       return filtered;
     });
-  }, [selectedCategory, categories]);
+  }, [selectedCategory, categories, collectAttrGroupsForCategory]);
 
   // 使用 useCallback 缓存商品获取函数
   const fetchProductsWithQuery = useCallback(async (query: string, page: number = currentPage, resetPage: boolean = false) => {
@@ -480,6 +499,18 @@ const MarketPlacePageDetail: React.FC = () => {
               <div className="space-y-3 relative">
                 {/* 默认显示前3个attrGroups */}
                 {displayedAttrGroups.slice(0, 3).map((attrGroup, index) => {
+                  // 再次检查属性组状态和属性（防御性编程）
+                  // 注意：0=启用，1=禁用，只显示启用状态的属性组和属性
+                  if (
+                    attrGroup.status !== 0 || 
+                    !attrGroup.attrs || 
+                    !Array.isArray(attrGroup.attrs) || 
+                    attrGroup.attrs.length === 0 ||
+                    !attrGroup.attrs.some(attr => attr.status === 0) // 至少有一个启用状态的属性
+                  ) {
+                    return null;
+                  }
+                  
                   const isLastVisible = !showMoreFilters && index === Math.min(2, displayedAttrGroups.length - 1);
                   const hasSelectedFilters = Object.values(attrGroupFilters).some(attrs => attrs.length > 0);
                   
@@ -523,6 +554,18 @@ const MarketPlacePageDetail: React.FC = () => {
                 {showMoreFilters && displayedAttrGroups.length > 3 && (
                   <>
                     {displayedAttrGroups.slice(3).map((attrGroup, index) => {
+                      // 再次检查属性组状态和属性（防御性编程）
+                      // 注意：0=启用，1=禁用，只显示启用状态的属性组和属性
+                      if (
+                        attrGroup.status !== 0 || 
+                        !attrGroup.attrs || 
+                        !Array.isArray(attrGroup.attrs) || 
+                        attrGroup.attrs.length === 0 ||
+                        !attrGroup.attrs.some(attr => attr.status === 0) // 至少有一个启用状态的属性
+                      ) {
+                        return null;
+                      }
+                      
                       const isLastExpanded = index === displayedAttrGroups.slice(3).length - 1;
                       const hasSelectedFilters = Object.values(attrGroupFilters).some(attrs => attrs.length > 0);
                       

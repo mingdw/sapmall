@@ -7,6 +7,18 @@ import { commonApiService } from '../../../services/api/commonApiService';
 import { categoryApi, SaveCategoryReq } from '../../../services/api/categoryApi';
 import styles from './CategoryManagement.module.scss';
 
+// 属性组数据类型
+interface AttributeGroup {
+  id: number;
+  name: string;
+  code: string;
+  sort: number;
+  type: number;
+  description: string;
+  status: number;
+  attrs?: any[];
+}
+
 // 目录数据类型
 interface Category {
   id: number;
@@ -17,6 +29,7 @@ interface Category {
   parentId: number;
   icon?: string;
   children?: Category[];
+  attrGroups?: AttributeGroup[];
 }
 
 const CategoryManagement: React.FC = () => {
@@ -48,6 +61,38 @@ const CategoryManagement: React.FC = () => {
   // 处理选择目录
   const handleSelectCategory = (category: Category) => {
     setSelectedCategory(category);
+  };
+
+  // 处理属性组更新
+  const handleAttrGroupsUpdate = (categoryId: number, attrGroups: Category['attrGroups']) => {
+    // 更新当前选中目录的属性组数据
+    if (selectedCategory && selectedCategory.id === categoryId) {
+      setSelectedCategory({
+        ...selectedCategory,
+        attrGroups: attrGroups || [],
+      });
+    }
+    
+    // 更新目录树中对应目录的属性组数据
+    const updateCategoryInTree = (cats: Category[]): Category[] => {
+      return cats.map(cat => {
+        if (cat.id === categoryId) {
+          return {
+            ...cat,
+            attrGroups: attrGroups || [],
+          };
+        }
+        if (cat.children && cat.children.length > 0) {
+          return {
+            ...cat,
+            children: updateCategoryInTree(cat.children),
+          };
+        }
+        return cat;
+      });
+    };
+    
+    setCategories(updateCategoryInTree(categories));
   };
 
   // 处理保存目录（新增/编辑）
@@ -150,6 +195,8 @@ const CategoryManagement: React.FC = () => {
               <CategoryDetail
                 category={selectedCategory}
                 onEditCategory={handleEditCategory}
+                onRefresh={loadCategories}
+                onAttrGroupsUpdate={handleAttrGroupsUpdate}
               />
             </div>
           </div>

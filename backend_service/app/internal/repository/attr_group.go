@@ -2,14 +2,16 @@ package repository
 
 import (
 	"context"
-	"gorm.io/gorm"
 	"sapphire-mall/app/internal/model"
+
+	"gorm.io/gorm"
 )
 
 type AttrGroupRepository interface {
 	FindAll(ctx context.Context) ([]model.AttrGroup, error)
 	DeleteByCategoryID(ctx context.Context, ids []uint) error
 	GetAttrGroupByCode(ctx context.Context, code string) (*model.AttrGroup, error)
+	GetAttrGroup(ctx context.Context, id uint) (*model.AttrGroup, error)
 	Update(ctx context.Context, attrGroup *model.AttrGroup) error
 	Create(ctx context.Context, attrGroup *model.AttrGroup) (uint, error)
 	Delete(ctx context.Context, id int64) error
@@ -47,8 +49,34 @@ func (r *attrGroupRepository) GetAttrGroupByCode(ctx context.Context, code strin
 	return &attrGroup, nil
 }
 
+func (r *attrGroupRepository) GetAttrGroup(ctx context.Context, id uint) (*model.AttrGroup, error) {
+	var attrGroup model.AttrGroup
+	result := r.db.WithContext(ctx).Where("id = ? and is_deleted = 0", id).First(&attrGroup)
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, result.Error
+	}
+	return &attrGroup, nil
+}
+
 func (r *attrGroupRepository) Update(ctx context.Context, attrGroup *model.AttrGroup) error {
-	return r.db.WithContext(ctx).Model(&model.AttrGroup{}).Where("id = ?", attrGroup.ID).Select("status", "updated_at", "updator").Updates(attrGroup).Error
+	// 使用 map 更新，确保零值字段（如 status=0, type=0）也能被正确更新
+	// 注意：0 是有效值（Status=0表示启用，Type=0表示通用）
+	updateMap := map[string]interface{}{
+		"attr_group_name": attrGroup.AttrGroupName,
+		"attr_group_code": attrGroup.AttrGroupCode,
+		"type":            attrGroup.Type,
+		"status":          attrGroup.Status, // 确保 status=0 也能被更新
+		"sort":            attrGroup.Sort,
+		"description":     attrGroup.Description,
+		"updated_at":      attrGroup.UpdatedAt,
+		"updator":         attrGroup.Updator,
+	}
+	return r.db.WithContext(ctx).Model(&model.AttrGroup{}).
+		Where("id = ? and is_deleted = 0", attrGroup.ID).
+		Updates(updateMap).Error
 }
 
 func (r *attrGroupRepository) Create(ctx context.Context, attrGroup *model.AttrGroup) (uint, error) {

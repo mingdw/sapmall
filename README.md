@@ -91,15 +91,100 @@ cd env/dev
 ./start_local_dev_env.sh
 ```
 
-#### 方式二：本地开发环境（推荐用于开发调试）
-```bash
-# 进入环境配置目录
-cd env/dev
+#### 方式二：本地开发环境（Windows 平台开发调试）
 
-# 启动本地开发环境
-./start_local_dev.sh
+> 以下步骤均在 **Windows 10/11 + PowerShell** 环境中验证通过，适合本地调试与前后端开发。
+
+##### 1. 安装与准备软件
+- [Node.js 18 LTS](https://nodejs.org/en/)（安装时勾选 *Automatically install the necessary tools*）
+- [Go 1.19+](https://go.dev/dl/)
+- [MySQL 8.0 社区版](https://dev.mysql.com/downloads/installer/)
+- [Redis for Windows](https://github.com/tporadowski/redis)（或在 WSL/Docker 中运行 Redis）
+- [Nginx for Windows](https://nginx.org/en/download.html)（解压到 `C:\nginx`，可选）
+
+##### 2. 配置并启动 MySQL（数据库）
+1. 通过 MySQL Installer 安装 **MySQL Server 8.0**，记录 root 密码。
+2. 打开 PowerShell，执行：
+   ```powershell
+   # 进入 MySQL 安装目录（默认路径）
+   cd "C:\Program Files\MySQL\MySQL Server 8.0\bin"
+
+   # 登录 MySQL（输入 root 密码）
+   .\mysql.exe -u root -p
+
+   -- 创建数据库
+   CREATE DATABASE IF NOT EXISTS sapphire_mall CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   EXIT;
+
+   # 导入数据库基础结构
+   .\mysql.exe -u root -p sapphire_mall < d:\web3space\sapmall\backend_service\docs\sapphire_mall.sql
+   
+   # 导入菜单数据（需要先导入基础结构）
+   .\mysql.exe -u root -p sapphire_mall < d:\web3space\sapmall\backend_service\docs\sapphire_mall_menu_20250102.sql
+   ```
+3. 若需远程连接，请在 *MySQL Workbench* 中创建 `sapmall_user` 用户并授予 `sapphire_mall` 所有权限。
+
+##### 3. 启动 Redis（缓存）
+1. 解压 Redis 到 `C:\redis`，在 PowerShell 中执行：
+   ```powershell
+   cd C:\redis
+   .\redis-server.exe redis.windows.conf
+   ```
+2. 新开一个 PowerShell 验证：
+   ```powershell
+   cd C:\redis
+   .\redis-cli.exe ping  # 返回 PONG 即表示成功
+   ```
+
+##### 4. （可选）配置 Nginx 统一入口
+1. 将仓库中的 `env\dev\nginx\nginx.conf.template` 拷贝到 `C:\nginx\conf\nginx.conf`，并将其中 `${HOST_IP}` 替换为 `127.0.0.1`。
+2. 在 PowerShell 中执行：
+   ```powershell
+   cd C:\nginx
+   .\nginx.exe       # 启动
+   # 如需停止： .\nginx.exe -s stop
+   # 重新加载配置： .\nginx.exe -s reload
+   ```
+> 启动后即可通过 `http://localhost:7101/7102/7103` 访问各前端与 API。
+
+##### 5. 启动后端服务（Go + go-zero）
+1. 在 PowerShell 中执行：
+   ```powershell
+   cd d:\web3space\sapmall\backend_service\app
+   go mod tidy
+   ```
+2. 根据本地数据库信息修改 `etc\sapmall_dev.yaml` 中的 `DB.DataSource`、`Redis` 配置。
+3. 启动后端（建议使用 IDE 端口 8889）：
+   ```powershell
+   go run sapmall_start.go -f etc/sapmall_dev.yaml --port 8889
+   ```
+4. 浏览器访问 `http://localhost:8889/swagger-ui/` 验证接口是否可用。
+
+##### 6. 启动前端管理后台（Admin）
+```powershell
+cd d:\web3space\sapmall\web_client\sapmall-admin
+npm install
+$env:PORT=3004; npm start   # 管理后台默认端口 3004
 ```
+访问地址：`http://localhost:3004`（或通过 Nginx 的 `http://localhost:7101`）。
 
+##### 7. 启动前端 DApp
+```powershell
+cd d:\web3space\sapmall\web_client\sapmall-dapp
+npm install
+$env:PORT=3005; npm start   # DApp 默认端口 3005
+```
+访问地址：`http://localhost:3005`（或通过 Nginx 的 `http://localhost:7102`）。
+
+##### 8. 推荐启动顺序
+1. MySQL → 2. Redis → 3. 后端服务 → 4. Nginx（可选）→ 5. Admin → 6. DApp。
+
+##### 9. 快速排查提示
+- **端口占用**：`Get-NetTCPConnection -LocalPort 8889`（PowerShell）
+- **API 健康检查**：`Invoke-WebRequest http://localhost:8889/api/common/health`
+- **Redis 心跳**：`redis-cli.exe ping`
+
+完成上述步骤后，即可在 Windows 本地完整运行后端、DApp 与管理后台。需要关闭时，依次停止前端进程、后端 `go run` 进程、Redis/ MySQL/ Nginx 服务。
 #### 环境要求
 - **容器运行时**: Docker 或 Podman
 - **Node.js**: 18+ 版本

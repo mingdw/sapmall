@@ -11,6 +11,7 @@ type AttrRepository interface {
 	FindAll(ctx context.Context) ([]model.Attr, error)
 	DeleteByAttrGroupID(ctx context.Context, id int64) error
 	GetAttrByCode(ctx context.Context, code string) (*model.Attr, error)
+	GetAttr(ctx context.Context, id uint) (*model.Attr, error)
 	Create(ctx context.Context, attr *model.Attr) error
 	Update(ctx context.Context, attr *model.Attr) error
 	Delete(ctx context.Context, id int64) error
@@ -49,12 +50,34 @@ func (r *attrRepository) GetAttrByCode(ctx context.Context, code string) (*model
 	return &attr, nil
 }
 
+func (r *attrRepository) GetAttr(ctx context.Context, id uint) (*model.Attr, error) {
+	var attr model.Attr
+	result := r.db.WithContext(ctx).Where("id = ? and is_deleted = 0", id).First(&attr)
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, result.Error
+	}
+	return &attr, nil
+}
+
 func (r *attrRepository) Create(ctx context.Context, attr *model.Attr) error {
 	return r.db.WithContext(ctx).Create(attr).Error
 }
 
 func (r *attrRepository) Update(ctx context.Context, attr *model.Attr) error {
-	return r.db.WithContext(ctx).Model(&model.Attr{}).Where("id = ? and is_deleted = 0", attr.ID).Select("status", "sort", "attr_type", "updated_at", "updator").Updates(attr).Error
+	// 使用 map 更新，确保零值字段（如 status=0）也能被正确更新
+	updateMap := map[string]interface{}{
+		"attr_name":  attr.AttrName,
+		"status":     attr.Status,
+		"sort":       attr.Sort,
+		"attr_type":  attr.AttrType,
+		"description": attr.Description,
+		"updated_at": attr.UpdatedAt,
+		"updator":    attr.Updator,
+	}
+	return r.db.WithContext(ctx).Model(&model.Attr{}).Where("id = ? and is_deleted = 0", attr.ID).Updates(updateMap).Error
 }
 
 func (r *attrRepository) Delete(ctx context.Context, id int64) error {

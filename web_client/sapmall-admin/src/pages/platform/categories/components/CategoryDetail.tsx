@@ -40,11 +40,15 @@ interface Category {
 interface CategoryDetailProps {
   category: Category | null;
   onEditCategory: (category: Category) => void;
+  onRefresh?: () => void; // 刷新回调函数（兼容旧版本）
+  onAttrGroupsUpdate?: (categoryId: number, attrGroups: AttributeGroup[]) => void; // 属性组更新回调函数
 }
 
 const CategoryDetail: React.FC<CategoryDetailProps> = ({
   category,
   onEditCategory,
+  onRefresh,
+  onAttrGroupsUpdate,
 }) => {
   if (!category) {
     return (
@@ -89,6 +93,13 @@ const CategoryDetail: React.FC<CategoryDetailProps> = ({
         <AttributeGroupList 
           categoryId={category.id} 
           attrGroups={category.attrGroups || []}
+          onRefresh={onRefresh}
+          onAttrGroupsUpdate={(attrGroups) => {
+            // 通知父组件更新属性组数据
+            if (onAttrGroupsUpdate) {
+              onAttrGroupsUpdate(category.id, attrGroups);
+            }
+          }}
         />
       </div>
     </div>

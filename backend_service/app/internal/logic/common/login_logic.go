@@ -62,8 +62,8 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	roleRepository := repository.NewRoleRepository(l.svcCtx.GormDB)
 	userRoleRepository := repository.NewUserRoleRepository(l.svcCtx.GormDB)
 
-	// 3. 查询用户（包含角色信息）
-	userInfo, err := userRepository.GetByAddressWithRoles(l.ctx, req.WalletAddress)
+	// 3. 查询用户是否存在
+	userInfo, err := userRepository.GetByAddress(l.ctx, req.WalletAddress)
 	if err != nil {
 		logx.Errorf("get user by address failed: %v", err)
 		return nil, err
@@ -148,29 +148,31 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		}
 
 		logx.Infof("new user created with role: %s", normalUserRole.Code)
-
-		// 重新查询用户信息以获取角色信息
-		userInfo, err = userRepository.GetByAddressWithRoles(l.ctx, req.WalletAddress)
-		if err != nil {
-			logx.Errorf("get user with roles after creation failed: %v", err)
-			return nil, err
-		}
 	}
 
-	// 6. 删除 nonce
+	// 6. 获取用户完整信息（包含角色信息）
+	// 新用户：前面已创建用户和角色，直接查询获取完整信息
+	// 老用户：前面只查询了基本信息，需要加载角色信息
+	userInfo, err = userRepository.GetByAddressWithRoles(l.ctx, req.WalletAddress)
+	if err != nil {
+		logx.Errorf("get user with roles failed: %v", err)
+		return nil, err
+	}
+
+	// 7. 删除 nonce
 	_, err = l.svcCtx.Redis.Del(context.TODO(), req.WalletAddress).Result()
 	if err != nil {
 		logx.Errorf("redis remove nonce failed: %v", err)
 	}
 
-	// 7. 生成 jwt
+	// 8. 生成 jwt
 	token, err := jwt.Sign(uint64(userInfo.ID), l.svcCtx.Config.Auth.AccessSecret, l.svcCtx.Config.Auth.AccessExpire)
 	if err != nil {
 		logx.Errorf("generate jwt token failed: %v", err)
 		return nil, err
 	}
 
-	// 8. 构建用户信息响应
+	// 9. 构建用户信息响应
 	userInfoResp := types.UserInfo{
 		Id:        userInfo.ID,
 		Address:   req.WalletAddress,
@@ -182,7 +184,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		UpdatedAt: userInfo.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 
-	// 9. 添加角色信息
+	// 10. 添加角色信息
 	for _, userRole := range userInfo.UserRoles {
 		for _, role := range userRole.Roles {
 			userInfoResp.Roles = append(userInfoResp.Roles, role.Code)
