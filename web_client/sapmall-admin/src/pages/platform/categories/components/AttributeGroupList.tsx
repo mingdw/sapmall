@@ -9,32 +9,11 @@ import {
 } from '@ant-design/icons';
 import AttributeList from './AttributeList';
 import AdminModal from '../../../../components/common/AdminModal';
-import { attributeGroupApi, SaveAttributeGroupReq, AttributeGroupWithAttrs } from '../../../../services/api/attributeGroupApi';
+import { attributeGroupApi, SaveAttributeGroupReq } from '../../../../services/api/attributeGroupApi';
 import styles from './AttributeGroupList.module.scss';
+import type { AttributeGroup } from '../types';
 
 const { Panel } = Collapse;
-
-interface Attribute {
-  id: number;
-  name: string;
-  code: string;
-  type: number;
-  status: number;
-  groupId: number;
-  description: string;
-  sort: number;
-}
-
-interface AttributeGroup {
-  id: number;
-  name: string;
-  code: string;
-  sort: number;
-  type: number;
-  description: string;
-  status: number;
-  attrs: Attribute[];
-}
 
 interface AttributeGroupListProps {
   categoryId: number;
@@ -244,9 +223,8 @@ const AttributeGroupList: React.FC<AttributeGroupListProps> = ({
 
   // 处理删除属性组
   const handleDeleteGroup = (group: AttributeGroup) => {
-    // 检查是否有属性
-    const hasAttributes = group.attrs && group.attrs.length > 0;
-    const attributeCount = hasAttributes ? group.attrs.length : 0;
+    const attributeCount = group.attrs?.length ?? 0;
+    const hasAttributes = attributeCount > 0;
     
     // 构建警告内容
     const warningContent = (

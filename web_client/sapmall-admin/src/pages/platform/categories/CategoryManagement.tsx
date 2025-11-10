@@ -3,34 +3,15 @@ import { message, Modal, Spin } from 'antd';
 import AdminCard from '../../../components/common/AdminCard';
 import CategoryTree from './components/CategoryTree';
 import CategoryDetail from './components/CategoryDetail';
-import { commonApiService } from '../../../services/api/commonApiService';
+import {
+  commonApiService,
+  CategoryTreeResp,
+  AttrGroupResp,
+  AttrResp,
+} from '../../../services/api/commonApiService';
 import { categoryApi, SaveCategoryReq } from '../../../services/api/categoryApi';
 import styles from './CategoryManagement.module.scss';
-
-// 属性组数据类型
-interface AttributeGroup {
-  id: number;
-  name: string;
-  code: string;
-  sort: number;
-  type: number;
-  description: string;
-  status: number;
-  attrs?: any[];
-}
-
-// 目录数据类型
-interface Category {
-  id: number;
-  name: string;
-  code: string;
-  level: number;
-  sort: number;
-  parentId: number;
-  icon?: string;
-  children?: Category[];
-  attrGroups?: AttributeGroup[];
-}
+import type { Category, AttributeGroup, Attribute } from './types';
 
 const CategoryManagement: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -48,7 +29,8 @@ const CategoryManagement: React.FC = () => {
       // 使用 categoryType=0 获取商品目录（menu_type=0）
       const data = await commonApiService.getCategoryTree(0);
       console.log('获取到的商品目录数据:', data);
-      setCategories(Array.isArray(data) ? data : []);
+      const transformed = Array.isArray(data) ? transformCategoryTree(data) : [];
+      setCategories(transformed);
       // 移除成功提示，避免频繁提示
     } catch (error) {
       console.error('加载目录失败:', error);
@@ -64,12 +46,14 @@ const CategoryManagement: React.FC = () => {
   };
 
   // 处理属性组更新
-  const handleAttrGroupsUpdate = (categoryId: number, attrGroups: Category['attrGroups']) => {
+  const handleAttrGroupsUpdate = (categoryId: number, attrGroups: AttributeGroup[] = []) => {
+    const normalizedGroups = attrGroups ?? [];
+
     // 更新当前选中目录的属性组数据
     if (selectedCategory && selectedCategory.id === categoryId) {
       setSelectedCategory({
         ...selectedCategory,
-        attrGroups: attrGroups || [],
+        attrGroups: normalizedGroups,
       });
     }
     
@@ -79,7 +63,7 @@ const CategoryManagement: React.FC = () => {
         if (cat.id === categoryId) {
           return {
             ...cat,
-            attrGroups: attrGroups || [],
+            attrGroups: normalizedGroups,
           };
         }
         if (cat.children && cat.children.length > 0) {
@@ -92,7 +76,7 @@ const CategoryManagement: React.FC = () => {
       });
     };
     
-    setCategories(updateCategoryInTree(categories));
+    setCategories((prev) => updateCategoryInTree(prev));
   };
 
   // 处理保存目录（新增/编辑）
@@ -207,3 +191,46 @@ const CategoryManagement: React.FC = () => {
 };
 
 export default CategoryManagement;
+
+function transformCategoryTree(nodes: CategoryTreeResp[]): Category[] {
+  return nodes.map((node) => ({
+    id: node.id,
+    name: node.name,
+    code: node.code,
+    level: node.level,
+    sort: node.sort,
+    parentId: node.parentId,
+    icon: node.icon,
+    children:
+      node.children && node.children.length > 0
+        ? transformCategoryTree(node.children)
+        : undefined,
+    attrGroups: node.attrGroups ? transformAttributeGroups(node.attrGroups) : undefined,
+  }));
+}
+
+function transformAttributeGroups(groups: AttrGroupResp[]): AttributeGroup[] {
+  return groups.map((group) => ({
+    id: group.id,
+    name: group.name,
+    code: group.code,
+    sort: group.sort,
+    type: group.type,
+    description: group.description ?? '',
+    status: group.status,
+    attrs: group.attrs ? transformAttributes(group.attrs, group.id) : undefined,
+  }));
+}
+
+function transformAttributes(attrs: AttrResp[], groupId: number): Attribute[] {
+  return attrs.map((attr) => ({
+    id: attr.id,
+    name: attr.name,
+    code: attr.code,
+    type: attr.type,
+    status: attr.status,
+    groupId: attr.groupId ?? groupId,
+    description: attr.description ?? '',
+    sort: attr.sort ?? 0,
+  }));
+}

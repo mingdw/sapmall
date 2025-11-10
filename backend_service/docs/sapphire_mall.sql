@@ -2568,4 +2568,28 @@ CREATE TABLE `sys_dict_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='字典明细表';
 
 
+-- ----------------------------
+-- Table structure for i18n_translations
+-- ----------------------------
+DROP TABLE IF EXISTS `i18n_translations`;
+CREATE TABLE `i18n_translations` (
+  `id`              BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `translation_key` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '翻译键（可选：如 category.1001.name）',
+  `table_name`      VARCHAR(64)  NOT NULL DEFAULT '' COMMENT '业务表名称，如 category、attribute_group',
+  `business_id`     BIGINT       NOT NULL COMMENT '业务表主键 ID',
+  `locale`          VARCHAR(16)  NOT NULL DEFAULT '' COMMENT '语言代码，如 zh-CN、en-US',
+  `json_content`    JSON         NOT NULL COMMENT '该记录在指定语言下的所有字段翻译，JSON 格式',
+  `version`         INT          NOT NULL DEFAULT 1 COMMENT '版本号（用于缓存刷新/并发控制）',
+  `version`         INT          NOT NULL DEFAULT 1 COMMENT '版本号（用于缓存刷新/并发控制）',
+  `created_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted`      TINYINT(1)   NOT NULL DEFAULT 0 COMMENT '是否删除 0:未删除 1:已删除',
+  `creator`         VARCHAR(64)  NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator`         VARCHAR(64)  NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_translation_key_locale` (`translation_key`, `locale`),
+  UNIQUE KEY `uniq_table_business_locale` (`table_name`, `business_id`, `locale`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  COMMENT='多语言翻译表：存储各业务数据在不同语言下的翻译内容';
+
 SET FOREIGN_KEY_CHECKS = 1;

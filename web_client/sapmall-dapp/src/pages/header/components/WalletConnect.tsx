@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { Button, Dropdown, Menu, Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import { useConnect, useDisconnect, useAccount, useBalance, useSignMessage, useSwitchChain } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { commonApiService } from '../../../services/api/commonApiService';
@@ -18,7 +17,6 @@ interface WalletConnectProps {
 
 const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }) => {
   const { t, ready } = useTranslation();
-  const navigate = useNavigate();
   const [isConnecting, setIsConnecting] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -30,15 +28,16 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   const signingRef = useRef<boolean>(false);
 
   // Wagmi hooks
-  const { connect, connectors, isPending, error } = useConnect();
+  const { status: connectStatus, error } = useConnect();
   const { disconnect } = useDisconnect();
   const { address, isConnected, chainId } = useAccount();
-  const { data: balance } = useBalance({ 
+  const { data: balance } = useBalance({
     address: isConnected ? address : undefined,
-    query: { enabled: isConnected && !!address }
+    chainId,
   });
   const { signMessageAsync } = useSignMessage();
   const { switchChain } = useSwitchChain();
+  const isPending = connectStatus === 'pending';
 
   // Zustand store
   const { 
@@ -339,6 +338,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   // 网络配置
   const networks = [
     { id: 1, name: 'Ethereum', icon: 'fab fa-ethereum', color: 'text-blue-400', iconClass: 'networkEthereum', symbol: 'Ξ' },
+    { id: 8453, name: 'Base', icon: 'fas fa-layer-group', color: 'text-blue-500', iconClass: 'networkBase', symbol: '◎' },
     { id: 11155111, name: 'Sepolia', icon: 'fab fa-ethereum', color: 'text-blue-300', iconClass: 'networkSepolia', symbol: 'Ξ' },
     { id: 5, name: 'Goerli', icon: 'fab fa-ethereum', color: 'text-blue-200', iconClass: 'networkGoerli', symbol: 'Ξ' },
     { id: 17000, name: 'Holesky', icon: 'fab fa-ethereum', color: 'text-blue-100', iconClass: 'networkHolesky', symbol: 'Ξ' },
@@ -365,30 +365,31 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
 
   // 处理菜单项点击 - 跳转到admin后台并定位到对应菜单
   const handleMenuClick = ({ key }: { key: string }) => {
+    const adminUrlBase = '/admin';
+
+    const redirectToAdmin = (menu: string) => {
+      const url = `${adminUrlBase}?menu=${menu}`;
+      window.open(url, '_self');
+    };
+
     switch (key) {
       case 'profile':
-        // 跳转到admin后台的个人信息页面
-        navigate('/admin?menu=profile');
+        redirectToAdmin('profile');
         break;
       case 'cart':
-        // 跳转到admin后台的商品管理页面
-        navigate('/admin?menu=cart');
+        redirectToAdmin('cart');
         break;
       case 'favorites':
-        // 跳转到admin后台的资产管理页面
-        navigate('/admin?menu=favorites');
+        redirectToAdmin('favorites');
         break;
       case 'orders':
-        // 跳转到admin后台的订单管理页面
-        navigate('/admin?menu=orders');
+        redirectToAdmin('orders');
         break;
       case 'history':
-        // 跳转到admin后台的交易记录页面
-        navigate('/admin?menu=history');
+        redirectToAdmin('history');
         break;
       case 'settings':
-        // 跳转到admin后台的系统设置页面
-        navigate('/admin?menu=settings');
+        redirectToAdmin('settings');
         break;
       case 'disconnect':
         handleDisconnect();

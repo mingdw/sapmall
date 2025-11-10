@@ -10,17 +10,7 @@ import type { DataNode } from 'antd/es/tree';
 import AdminModal from '../../../../components/common/AdminModal';
 import { SaveCategoryReq } from '../../../../services/api/categoryApi';
 import styles from './CategoryTree.module.scss';
-
-interface Category {
-  id: number;
-  name: string;
-  code: string;
-  level: number;
-  sort: number;
-  parentId: number;
-  icon?: string;
-  children?: Category[];
-}
+import type { Category } from '../types';
 
 interface CategoryTreeProps {
   categories: Category[];
