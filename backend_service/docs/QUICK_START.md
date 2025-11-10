@@ -46,7 +46,6 @@ CREATE DATABASE sapphire_mall CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 goctl api go -api api/common.api -dir . -style go_zero
 goctl api go -api api/user.api -dir . -style go_zero
 goctl api go -api api/product.api -dir . -style go_zero
-goctl api go -api api/staking.api -dir . -style go_zero
 goctl api go -api api/dao.api -dir . -style go_zero
 ```
 
@@ -69,7 +68,6 @@ backend_service/
 │   ├── common.api         # 通用服务
 │   ├── user.api           # 用户服务
 │   ├── product.api        # 商品服务
-│   ├── staking.api        # 质押服务
 │   └── dao.api            # DAO治理
 ├── internal/              # 内部包
 │   ├── handler/           # HTTP 处理器

@@ -27,11 +27,11 @@ const SEO: React.FC<SEOProps> = ({
     ? 'Sapphire Mall - Web3虚拟商品交易平台' 
     : 'Sapphire Mall - Web3 Virtual Goods Trading Platform';
   const defaultDescription = currentLang === 'zh'
-    ? 'Sapphire Mall是全球领先的Web3虚拟商品交易平台，通过创新的流动性质押机制、DAO治理和多元化资产支持，为用户提供安全、高效、收益丰厚的交易体验。'
-    : 'Sapphire Mall is the world\'s leading Web3 virtual goods trading platform, providing users with secure, efficient, and profitable trading experiences through innovative liquidity staking mechanisms, DAO governance, and diversified asset support.';
+    ? 'Sapphire Mall是全球领先的Web3虚拟商品交易平台，通过贡献激励、DAO治理和多元化资产支持，为用户提供安全、高效、收益丰厚的交易体验。'
+    : 'Sapphire Mall is the world\'s leading Web3 virtual goods trading platform, providing users with secure, efficient, and rewarding experiences through contribution incentives, DAO governance, and diversified asset support.';
   const defaultKeywords = currentLang === 'zh'
-    ? 'Web3,虚拟商品,交易平台,区块链,DeFi,DAO,流动性质押,数字资产,加密货币,去中心化'
-    : 'Web3,virtual goods,trading platform,blockchain,DeFi,DAO,liquidity staking,digital assets,cryptocurrency,decentralized';
+    ? 'Web3,虚拟商品,交易平台,区块链,DAO,贡献激励,数字资产,加密货币,去中心化'
+    : 'Web3,virtual goods,trading platform,blockchain,DAO,contribution incentives,digital assets,cryptocurrency,decentralized';
 
   const seoTitle = title ? `${title} | ${siteName}` : defaultTitle;
   const seoDescription = description || defaultDescription;

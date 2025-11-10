@@ -233,7 +233,7 @@ const HomePage: React.FC = () => {
               <div className="text-center bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
                 <div className="text-3xl font-bold text-yellow-400 stats-counter mb-2">{stats.apy}%</div>
                 <div className="text-sm text-gray-400">{t('stats.apy')}</div>
-                <div className="text-xs text-sapphire-400 mt-1">{t('stats.stakingRewards')}</div>
+                <div className="text-xs text-sapphire-400 mt-1">{t('stats.contributorRewards')}</div>
               </div>
             </div>
           </div>
@@ -360,17 +360,17 @@ const HomePage: React.FC = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Feature 1: Liquidity Staking */}
+            {/* Feature 1: Contribution Rewards */}
             <div className="feature-card gradient-border">
               <div className="gradient-border-content">
                 <div className="w-16 h-16 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center mb-6">
                   <FontAwesomeIcon icon={faCoins} className="text-white text-2xl" />
                 </div>
-                <h3 className="text-xl font-bold mb-4">{t('features.liquidityStaking.title')}</h3>
+                <h3 className="text-xl font-bold mb-4">{t('features.contributionRewards.title')}</h3>
                 <p className="text-gray-400 mb-4">
-                  {t('features.liquidityStaking.desc')}
+                  {t('features.contributionRewards.desc')}
                 </p>
-                <div className="text-sapphire-400 font-semibold">{t('features.liquidityStaking.highlight')}</div>
+                <div className="text-sapphire-400 font-semibold">{t('features.contributionRewards.highlight')}</div>
               </div>
             </div>
 

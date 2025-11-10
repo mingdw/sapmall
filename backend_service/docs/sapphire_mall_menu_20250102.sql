@@ -72,7 +72,7 @@ INSERT INTO `sys_category` (`id`, `code`, `name`, `parent_id`, `parent_code`, `l
 
 (226, 'U002', '我的资产', 0, '', 1, 2, 1, 'fas fa-wallet', 1, '/assets', '', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),
 (227, 'U002001', '账户余额', 226, 'U002', 2, 1, 1, 'fas fa-coins', 1, '/assets/balance', '/assets/balance', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),
-(228, 'U002002', '质押管理', 226, 'U002', 2, 2, 1, 'fas fa-piggy-bank', 1, '/assets/staking', '/assets/staking', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),
+(228, 'U002002', '权益管理', 226, 'U002', 2, 2, 1, 'fas fa-gift', 1, '/assets/rewards', '/assets/rewards', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),
 (229, 'U002003', '交易记录', 226, 'U002', 2, 3, 1, 'fas fa-history', 1, '/assets/transactions', '/assets/transactions', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),
 
 (230, 'U003', '交易管理', 0, '', 1, 3, 1, 'fas fa-exchange-alt', 1, '/trading', '', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),

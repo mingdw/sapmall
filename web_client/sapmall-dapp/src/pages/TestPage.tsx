@@ -23,7 +23,7 @@ const TestPage: React.FC = () => {
             <ul className="mt-2 space-y-2">
               <li>连接: {t('common.connect')}</li>
               <li>代币商城: {t('navigation.marketplace')}</li>
-              <li>质押挖矿: {t('navigation.staking')}</li>
+              <li>奖励中心: {t('navigation.rewards')}</li>
               <li>DEX交易: {t('navigation.exchange')}</li>
               <li>DAO治理: {t('navigation.dao')}</li>
               <li>帮助中心: {t('navigation.help')}</li>

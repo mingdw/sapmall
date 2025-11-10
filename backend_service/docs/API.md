@@ -2,7 +2,7 @@
 
 ## 概述
 
-Sapphire Mall 后端 API 提供完整的 Web3 虚拟商品交易平台功能，包括用户管理、商品管理、质押挖矿和 DAO 治理。
+Sapphire Mall 后端 API 提供完整的 Web3 虚拟商品交易平台功能，包括用户管理、商品管理、支付结算和 DAO 治理。
 
 ## 基础信息
 
@@ -324,117 +324,7 @@ POST /api/product/review
 }
 ```
 
-### 4. 质押服务 (Staking Service)
-
-#### 获取流动性池列表
-
-```http
-GET /api/staking/pools?page=1&page_size=10&network_id=1
-```
-
-**响应：**
-```json
-{
-  "code": 200,
-  "msg": "success",
-  "pools": [
-    {
-      "id": "pool_789",
-      "token_a": "ETH",
-      "token_b": "USDT",
-      "reserve_a": "1000.0",
-      "reserve_b": "2000000.0",
-      "total_supply": "1000000.0",
-      "fee_rate": "0.003",
-      "contract_address": "0x...",
-      "network_id": "1",
-      "created_at": 1640995200,
-      "updated_at": 1640995200
-    }
-  ],
-  "total": 1
-}
-```
-
-#### 质押
-
-```http
-POST /api/staking/stake
-```
-
-**请求体：**
-```json
-{
-  "user_id": "user_123",
-  "pool_id": "pool_789",
-  "amount": "100.0",
-  "token_a_amount": "50.0",
-  "token_b_amount": "100000.0"
-}
-```
-
-**响应：**
-```json
-{
-  "code": 200,
-  "msg": "success",
-  "staking_info": {
-    "id": "staking_101",
-    "user_id": "user_123",
-    "pool_id": "pool_789",
-    "staked_amount": "100.0",
-    "earned_rewards": "5.0",
-    "apy": "0.12",
-    "start_time": 1640995200,
-    "last_update_time": 1640995200
-  }
-}
-```
-
-#### 解除质押
-
-```http
-POST /api/staking/unstake
-```
-
-**请求体：**
-```json
-{
-  "user_id": "user_123",
-  "pool_id": "pool_789",
-  "amount": "50.0"
-}
-```
-
-#### 获取用户质押信息
-
-```http
-GET /api/staking/user?user_id=user_123&pool_id=pool_789
-```
-
-**响应：**
-```json
-{
-  "code": 200,
-  "msg": "success",
-  "staking_list": [
-    {
-      "id": "staking_101",
-      "user_id": "user_123",
-      "pool_id": "pool_789",
-      "staked_amount": "100.0",
-      "earned_rewards": "5.0",
-      "apy": "0.12",
-      "start_time": 1640995200,
-      "last_update_time": 1640995200
-    }
-  ],
-  "total_staked": "100.0",
-  "total_earned": "5.0"
-}
-```
-
-### 5. DAO 治理服务 (DAO Service)
+### 4. DAO 治理服务 (DAO Service)
 
 #### 创建提案
 
@@ -611,6 +501,6 @@ GET /api/dao/vote/user?user_id=user_123&proposal_id=proposal_202
 
 ### v1.0.0 (2024-01-01)
 - 初始版本发布
-- 支持用户管理、商品管理、质押挖矿、DAO 治理
+- 支持用户管理、商品管理、支付结算、DAO 治理
 - 集成 Web3 钱包认证
 - 支持多语言（中英文） 

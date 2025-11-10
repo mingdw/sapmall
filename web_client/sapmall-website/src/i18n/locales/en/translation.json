@@ -14,7 +14,7 @@
   },
   "hero": {
     "title": "Building the Web3 Virtual Goods Ecosystem",
-    "subtitle": "Sapphire Mall is committed to building the world's leading Web3 virtual goods trading platform, providing users with secure, efficient, and profitable trading experiences through innovative liquidity staking mechanisms, DAO governance, and diversified asset support.",
+    "subtitle": "Sapphire Mall is committed to building the world's leading Web3 virtual goods trading platform, providing users with secure, efficient, and rewarding experiences through contribution incentives, DAO governance, and diversified asset support.",
     "features": {
       "revenueSharing": "World's First 70% Revenue Sharing",
       "daoGovernance": "DAO-Driven Governance",
@@ -32,7 +32,7 @@
     "activeUsers": "Active Users",
     "transactions": "Total Transactions",
     "apy": "Average APY",
-    "stakingRewards": "Staking Rewards",
+    "contributorRewards": "Contributor Rewards",
     "tvlChange": "↗ 24h +12.5%",
     "usersChange": "↗ 30d +45%",
     "transactionsChange": "↗ 7d +18%"
@@ -42,7 +42,7 @@
     "subtitle": "We are committed to redefining virtual goods trading and creating real value and meaning for the Web3 ecosystem",
     "mission": {
       "title": "Our Mission",
-      "content": "Build a decentralized, secure, and user-friendly Web3 virtual goods trading platform. Through innovative liquidity staking mechanisms and DAO governance, enable every participant to share in the platform's growth, truly achieving value co-creation and benefit sharing.",
+      "content": "Build a decentralized, secure, and user-friendly Web3 virtual goods trading platform. Through contribution incentives and DAO governance, enable every participant to share in the platform's growth, truly achieving value co-creation and benefit sharing.",
       "tagline": "Value Co-creation • Benefit Sharing"
     },
     "vision": {
@@ -54,7 +54,7 @@
       "title": "Platform Core Advantages",
       "revenueSharing": {
         "title": "70% Revenue Sharing",
-        "desc": "World's first 70% platform fees distributed to staking users"
+        "desc": "World's first 70% platform fees returned to active contributors"
       },
       "security": {
         "title": "Multi-layer Security",
@@ -103,10 +103,10 @@
   "features": {
     "title": "Platform Features",
     "subtitle": "Discover the powerful features that make Sapphire Mall the leading Web3 virtual goods trading platform",
-    "liquidityStaking": {
-      "title": "Liquidity Staking",
-      "desc": "Earn 70% of platform fees through liquidity staking. Provide liquidity and get rewarded with SAP tokens.",
-      "highlight": "Up to 15% APY"
+    "contributionRewards": {
+      "title": "Contribution Rewards",
+      "desc": "Complete community tasks, audits, and governance activities to earn SAP tokens and platform privileges.",
+      "highlight": "Up to 70% fee rebates"
     },
     "daoGovernance": {
       "title": "DAO Governance",
