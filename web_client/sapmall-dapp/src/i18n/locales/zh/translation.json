@@ -15,14 +15,14 @@
     "info": "信息",
     "explore": "探索",
     "connect": "连接",
-    "stake": "质押",
+    "reward": "奖励",
     "participate": "参与"
   },
   "navigation": {
     "home": "首页",
     "marketplace": "市场",
     "wallet": "钱包",
-    "staking": "质押",
+    "rewards": "奖励中心",
     "exchange": "兑换",
     "dao": "DAO",
     "help": "帮助中心"
@@ -46,8 +46,8 @@
     "marketplaceDesc": "浏览和购买去中心化商品",
     "wallet": "钱包",
     "walletDesc": "管理您的数字资产",
-    "staking": "质押",
-    "stakingDesc": "参与生态治理获得奖励",
+    "rewards": "奖励中心",
+    "rewardsDesc": "完成社区任务并领取激励",
     "dao": "DAO治理",
     "daoDesc": "参与社区决策和治理"
   }

@@ -17,14 +17,14 @@
 
 ## 📋 Project Overview
 
-**Sapphire Mall** is a decentralized community-driven virtual goods trading platform. The platform is built on blockchain technology with community governance at its core, implementing a fully decentralized decision-making system through DAO mechanisms. The platform uses the self-issued ERC20 token SAP as the ecosystem token, incentivizing community participation through liquidity pools and staking mechanisms, creating a Web3 virtual goods trading ecosystem that is jointly governed and benefited by community members.
+**Sapphire Mall** is a decentralized community-driven virtual goods trading platform. The platform is built on blockchain technology with community governance at its core, implementing a fully decentralized decision-making system through DAO mechanisms. The platform uses the self-issued ERC20 token SAP as the ecosystem token, rewarding community participation through contribution tasks and governance incentives, creating a Web3 virtual goods trading ecosystem that is jointly governed and benefited by community members.
 
 ### 🌟 Core Features
 
 - **🏛️ Decentralized Governance**: Fully decentralized community governance system based on DAO mechanisms
 - **👥 Community-Driven**: Jointly decided, built, and benefited by community members
 - **🎯 Virtual Goods Specialization**: Focus on digital content, software tools, online services and other virtual goods trading
-- **💎 Liquidity Pool Incentives**: Incentivize community participation through liquidity pools and staking mechanisms
+- **💎 Contribution Incentives**: Reward community participation through tasks, arbitration, and governance
 - **💰 Revenue Sharing Mechanism**: Platform revenue automatically distributed to community contributors through smart contracts
 - **🌍 Global Community**: Multi-language support, building a global decentralized community
 - **🔐 Transparent On-chain Governance**: All governance decisions and revenue distribution are completely transparent and verifiable on-chain
@@ -73,7 +73,7 @@ The project includes complete Web3 virtual goods trading platform interface prot
 | Page | Function Description | File Path |
 |------|---------------------|-----------|
 | 🏠 **Official Website Homepage** | Platform introduction, data display, quick access | `design/prototypes/index.html` |
-| 🛒 **DApp Main Interface** | Product browsing, token exchange, staking management | `design/prototypes/dapp.html` |
+| 🛒 **DApp Main Interface** | Product browsing, token exchange, governance & rewards center | `design/prototypes/dapp.html` |
 | ⚙️ **Admin Backend** | User management, product review, system configuration | `design/prototypes/admin.html` |
 | 📊 **Data Display** | Real-time data, statistical charts, platform overview | `design/prototypes/homepage.html` |
 | 👤 **User Management** | KYC review, permission assignment, data analysis | `design/prototypes/admin/user-management.html` |
@@ -416,11 +416,11 @@ We have configured specialized AI Agents for project development, including:
 ### Business Goals
 - **Total Transaction Volume**: Monthly transaction target $1M
 - **Token Exchange Volume**: Daily exchange volume > $50K
-- **Total Staking Volume**: Liquidity pool TVL > $5M
+- **SAP Payment Share**: SAP-based orders ≥ 25% of total transactions
 - **Platform Revenue**: Monthly revenue > $20K
 
 ### North Star Metric
-**Monthly Liquidity Staking Active Users** - Reflects platform core value and user trust
+**Monthly Active Contributors** - Measures the vibrancy of governance, arbitration, and community tasks
 
 ## 🤝 Contributing
 
@@ -497,14 +497,6 @@ The following are main page screenshots of the project for quick preview on GitH
 <p align="center">
   <img src="pic/dapp_zh_兑换.png" alt="DApp Exchange (Chinese)" width="800" />
   <br /><em>DApp Exchange (Chinese)</em>
-</p>
-<p align="center">
-  <img src="pic/dapp_zh_质押.png" alt="DApp Staking (Chinese)" width="800" />
-  <br /><em>DApp Staking (Chinese)</em>
-</p>
-<p align="center">
-  <img src="pic/dapp_en_质押.png" alt="DApp Staking (English)" width="800" />
-  <br /><em>DApp Staking (English)</em>
 </p>
 <p align="center">
   <img src="pic/dao首页.png" alt="DAO Homepage" width="800" />

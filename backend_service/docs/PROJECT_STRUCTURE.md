@@ -31,8 +31,6 @@ app/
 │   │   └── user.api      # 用户注册、登录、信息管理
 │   ├── product/          # 🛍️ 商品API模块
 │   │   └── product.api   # 商品CRUD、审核
-│   ├── staking/          # 💰 质押API模块
-│   │   └── staking.api   # 流动性池、质押收益
 │   └── dao/              # 🏛️ DAO治理API模块
 │       └── dao.api       # 提案、投票
 ├── internal/             # 🔒 内部包
@@ -137,7 +135,6 @@ test/
 | **common** | 通用服务 | 健康检查、版本信息 |
 | **user** | 用户管理 | 注册、登录、信息管理 |
 | **product** | 商品管理 | CRUD、审核、查询 |
-| **staking** | 质押挖矿 | 流动性池、质押收益 |
 | **dao** | DAO治理 | 提案、投票、统计 |
 
 ### 内部包 (app/internal/)

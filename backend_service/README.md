@@ -2,7 +2,7 @@
 
 ## 项目概述
 
-Sapphire Mall 是一个基于 Web3 技术的虚拟商品交易平台，提供多语言支持、去中心化治理和流动性挖矿功能。项目采用 go-zero 微服务框架构建，支持高并发、高可用的分布式系统架构。
+Sapphire Mall 是一个基于 Web3 技术的虚拟商品交易平台，提供多语言支持、去中心化治理和贡献激励功能。项目采用 go-zero 微服务框架构建，支持高并发、高可用的分布式系统架构。
 
 ## 技术栈
 
@@ -30,8 +30,6 @@ backend_service/
 │   │   │   └── user.api   # 用户注册、登录、信息管理
 │   │   ├── product/       # 商品API模块
 │   │   │   └── product.api # 商品CRUD、审核
-│   │   ├── staking/       # 质押API模块
-│   │   │   └── staking.api # 流动性池、质押收益
 │   │   └── dao/           # DAO治理API模块
 │   │       └── dao.api    # 提案、投票
 │   ├── internal/          # 内部包
@@ -78,11 +76,11 @@ backend_service/
 - **API**: `/api/product/*`
 - **文件**: `app/api/product/product.api`
 
-### 3. 质押挖矿 (Staking Service)
-- **功能**: 流动性池管理、质押收益计算
-- **特点**: 多网络支持、实时 APY 计算
-- **API**: `/api/staking/*`
-- **文件**: `app/api/staking/staking.api`
+### 3. 支付与激励 (Payment & Rewards Service)
+- **功能**: 订单支付、折扣权益、贡献奖励结算
+- **特点**: 支持多种支付方式、奖励发放日志追踪
+- **API**: `/api/payment/*`（规划中）
+- **文件**: 即将发布
 
 ### 4. DAO 治理 (DAO Service)
 - **功能**: 提案创建、投票、结果统计
@@ -236,7 +234,6 @@ goctl api go -api api/main.api -dir . -style go_zero
 goctl api go -api api/common/common.api -dir . -style go_zero
 goctl api go -api api/user/user.api -dir . -style go_zero
 goctl api go -api api/product/product.api -dir . -style go_zero
-goctl api go -api api/staking/staking.api -dir . -style go_zero
 goctl api go -api api/dao/dao.api -dir . -style go_zero
 ```
 
@@ -340,8 +337,8 @@ goctl api go -api api/main.api -dir . -style go_zero
 
 1. **users** - 用户信息表
 2. **products** - 商品信息表
-3. **pools** - 流动性池表
-4. **staking_records** - 质押记录表
+3. **orders** - 订单信息表
+4. **reward_records** - 贡献奖励记录表
 5. **proposals** - 提案表
 6. **votes** - 投票记录表
 
@@ -532,7 +529,7 @@ MIT License
 
 ### v1.0.0 (2024-01-01)
 - 初始版本发布
-- 支持用户管理、商品管理、质押挖矿、DAO 治理
+- 支持用户管理、商品管理、支付结算、DAO 治理
 - 集成 Web3 钱包认证
 - 支持多语言（中英文）
 - 基于 go-zero 微服务框架

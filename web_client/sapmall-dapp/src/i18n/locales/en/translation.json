@@ -15,14 +15,14 @@
     "info": "Info",
     "explore": "Explore",
     "connect": "Connect",
-    "stake": "Stake",
+    "reward": "Reward",
     "participate": "Participate"
   },
   "navigation": {
     "home": "Home",
     "marketplace": "Marketplace",
     "wallet": "Wallet",
-    "staking": "Staking",
+    "rewards": "Rewards",
     "exchange": "Exchange",
     "dao": "DAO",
     "help": "Help Center"
@@ -46,8 +46,8 @@
     "marketplaceDesc": "Browse and purchase decentralized products",
     "wallet": "Wallet",
     "walletDesc": "Manage your digital assets",
-    "staking": "Staking",
-    "stakingDesc": "Participate in ecosystem governance for rewards",
+    "rewards": "Rewards Center",
+    "rewardsDesc": "Complete community tasks and claim incentives",
     "dao": "DAO Governance",
     "daoDesc": "Participate in community decisions and governance"
   }

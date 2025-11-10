@@ -29,7 +29,7 @@
 
 1. **多个独立的合约文件**: 
 
-   *   为产品的所有 **核心功能和关键流程** 创建独立的合约文件 (例如 `Token.sol`, `Staking.sol`, `Governance.sol`, `Marketplace.sol` 等)。
+   *   为产品的所有 **核心功能和关键流程** 创建独立的合约文件 (例如 `Token.sol`, `Rewards.sol`, `Governance.sol`, `Marketplace.sol` 等)。
    *   **文件名** 应清晰反映合约功能。
    *   每个合约文件 **必须**: 
        *   使用 **Solidity/Vyper/Rust** (或指定语言) 精确实现业务逻辑。

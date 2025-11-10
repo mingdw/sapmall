@@ -14,7 +14,7 @@ const HeaderPageDetail: React.FC = () => {
   const getActiveNavItem = () => {
     const path = location.pathname;
     if (path.startsWith('/marketplace')) return 'marketplace';
-    if (path.startsWith('/staking')) return 'staking';
+    if (path.startsWith('/rewards')) return 'rewards';
     if (path.startsWith('/exchange')) return 'exchange';
     if (path.startsWith('/dao')) return 'dao';
     if (path.startsWith('/help')) return 'help';
@@ -57,7 +57,7 @@ const HeaderPageDetail: React.FC = () => {
   // 主导航菜单项
   const navItems = [
     { key: 'marketplace', label: t('navigation.marketplace'), href: '/marketplace' },
-    { key: 'staking', label: t('navigation.staking'), href: '/staking' },
+    { key: 'rewards', label: t('navigation.rewards'), href: '/rewards' },
     { key: 'exchange', label: t('navigation.exchange'), href: '/exchange' },
     { key: 'dao', label: t('navigation.dao'), href: '/dao' },
     { key: 'help', label: t('navigation.help'), href: '/help' },

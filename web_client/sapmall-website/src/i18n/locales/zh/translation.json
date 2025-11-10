@@ -14,7 +14,7 @@
   },
   "hero": {
     "title": "构建 Web3 虚拟商品交易生态",
-    "subtitle": "Sapphire Mall致力于打造全球领先的Web3虚拟商品交易平台，通过创新的流动性质押机制、DAO治理和多元化资产支持，为用户提供安全、高效、收益丰厚的交易体验。",
+    "subtitle": "Sapphire Mall致力于打造全球领先的Web3虚拟商品交易平台，通过贡献激励、DAO治理和多元化资产支持，为用户提供安全、高效、收益丰厚的交易体验。",
     "features": {
       "revenueSharing": "全球首创70%分成机制",
       "daoGovernance": "DAO驱动治理",
@@ -32,7 +32,7 @@
     "activeUsers": "活跃用户",
     "transactions": "交易笔数",
     "apy": "平均年化收益",
-    "stakingRewards": "质押奖励",
+    "contributorRewards": "贡献者奖励",
     "tvlChange": "↗ 24h +12.5%",
     "usersChange": "↗ 30d +45%",
     "transactionsChange": "↗ 7d +18%"
@@ -42,7 +42,7 @@
     "subtitle": "我们致力于重新定义虚拟商品交易，为Web3生态创造真正的价值和意义",
     "mission": {
       "title": "我们的使命",
-      "content": "构建去中心化、安全且用户友好的Web3虚拟商品交易平台，通过创新的流动性质押机制和DAO治理，让每个参与者都能分享平台成长的收益，真正实现价值共创、利益共享。",
+      "content": "构建去中心化、安全且用户友好的Web3虚拟商品交易平台，通过贡献激励和DAO治理，让每个参与者都能分享平台成长的收益，真正实现价值共创、利益共享。",
       "tagline": "价值共创 • 利益共享"
     },
     "vision": {
@@ -54,7 +54,7 @@
       "title": "平台核心优势",
       "revenueSharing": {
         "title": "70%收益分成",
-        "desc": "全球首创，平台70%手续费分配给质押用户"
+        "desc": "全球首创，平台70%手续费回馈活跃贡献者"
       },
       "security": {
         "title": "多重安全保障",
@@ -103,10 +103,10 @@
   "features": {
     "title": "平台功能",
     "subtitle": "探索让Sapphire Mall成为领先Web3虚拟商品交易平台的强大功能",
-    "liquidityStaking": {
-      "title": "流动性质押",
-      "desc": "通过流动性质押获得70%平台手续费分成。提供流动性，获得SAP代币奖励。",
-      "highlight": "最高15%年化收益"
+    "contributionRewards": {
+      "title": "贡献激励",
+      "desc": "完成社区任务、审核与治理活动，即可获得SAP代币与平台权益。",
+      "highlight": "最高70%手续费返还"
     },
     "daoGovernance": {
       "title": "DAO治理",

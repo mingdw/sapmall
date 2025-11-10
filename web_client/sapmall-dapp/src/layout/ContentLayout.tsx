@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MarketPlacePageDetail from '../pages/marketplace/MarketPlacePageDetail';
-import StakingPageDetail from '../pages/staking/StakingPageDetail';
+import RewardsPageDetail from '../pages/rewards/RewardsPageDetail';
 import ExchangePageDetail from '../pages/exchange/ExchangePageDetail';
 import DaoPageDetail from '../pages/dao/DaoPageDetail';
 import HelpPageDetail from '../pages/help/HelpPageDetail';
@@ -19,9 +19,9 @@ const ContentLayout: React.FC = () => {
             <MarketPlacePageDetail />
           </div>
         } />
-        <Route path="/staking" element={
+        <Route path="/rewards" element={
           <div className="w-[95%] mx-auto h-full">
-            <StakingPageDetail />
+            <RewardsPageDetail />
           </div>
         } />
         <Route path="/exchange" element={

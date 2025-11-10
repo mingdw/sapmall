@@ -2084,8 +2084,8 @@ CREATE TABLE `sys_role` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `sys_role` (`id`, `name`, `code`, `description`, `created_at`, `updated_at`, `is_deleted`, `creator`, `updator`) VALUES (1, '系统管理员', 'R0001', '超级管理员，能够管理合约，升级合约，添加管理员等', '2025-03-16 20:56:52', '2025-03-16 20:56:52', 0, '', '');
-INSERT INTO `sys_role` (`id`, `name`, `code`, `description`, `created_at`, `updated_at`, `is_deleted`, `creator`, `updator`) VALUES (2, '商家用户', 'R0002', '质押池管理，商场管理,包括添加、暂停、删除、配置参数', '2025-03-16 20:56:53', '2025-03-16 20:56:53', 0, '', '');
-INSERT INTO `sys_role` (`id`, `name`, `code`, `description`, `created_at`, `updated_at`, `is_deleted`, `creator`, `updator`) VALUES (3, '普通用户', 'R0003', '质押、解质押、兑换、购买东西', '2025-03-16 20:56:53', '2025-03-16 20:56:53', 0, '', '');
+INSERT INTO `sys_role` (`id`, `name`, `code`, `description`, `created_at`, `updated_at`, `is_deleted`, `creator`, `updator`) VALUES (2, '商家用户', 'R0002', '权益管理、商场管理,包括添加、暂停、删除、配置参数', '2025-03-16 20:56:53', '2025-03-16 20:56:53', 0, '', '');
+INSERT INTO `sys_role` (`id`, `name`, `code`, `description`, `created_at`, `updated_at`, `is_deleted`, `creator`, `updator`) VALUES (3, '普通用户', 'R0003', '参与贡献激励、兑换、购买商品', '2025-03-16 20:56:53', '2025-03-16 20:56:53', 0, '', '');
 COMMIT;
 
 -- ----------------------------
@@ -2279,7 +2279,7 @@ INSERT INTO `sys_category` (`id`, `code`, `name`, `parent_id`, `parent_code`, `l
 
 (226, 'U002', '我的资产', 0, '', 1, 2, 1, 'fas fa-wallet', 1, '/assets', '', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),
 (227, 'U002001', '账户余额', 226, 'U002', 2, 1, 1, 'fas fa-coins', 1, '/assets/balance', '/assets/balance', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),
-(228, 'U002002', '质押管理', 226, 'U002', 2, 2, 1, 'fas fa-piggy-bank', 1, '/assets/staking', '/assets/staking', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),
+(228, 'U002002', '权益管理', 226, 'U002', 2, 2, 1, 'fas fa-gift', 1, '/assets/rewards', '/assets/rewards', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),
 (229, 'U002003', '交易记录', 226, 'U002', 2, 3, 1, 'fas fa-history', 1, '/assets/transactions', '/assets/transactions', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),
 
 (230, 'U003', '交易管理', 0, '', 1, 3, 1, 'fas fa-exchange-alt', 1, '/trading', '', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin'),
