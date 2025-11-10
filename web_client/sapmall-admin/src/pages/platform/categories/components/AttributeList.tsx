@@ -5,19 +5,9 @@ import type { ColumnsType } from 'antd/es/table';
 import AdminModal from '../../../../components/common/AdminModal';
 import { attributeApi, SaveAttributeReq } from '../../../../services/api/attributeApi';
 import styles from './AttributeList.module.scss';
+import type { Attribute } from '../types';
 
 const { Option } = Select;
-
-interface Attribute {
-  id: number;
-  name: string;
-  code: string;
-  type: number;
-  status: number;
-  groupId: number;
-  description: string;
-  sort: number;
-}
 
 interface AttributeListProps {
   attributeGroupId: number;

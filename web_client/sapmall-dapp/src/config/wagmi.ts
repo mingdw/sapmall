@@ -1,6 +1,6 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
-import { mainnet, polygon, bsc, arbitrum, optimism, sepolia, goerli, holesky } from 'wagmi/chains';
 import { http } from 'wagmi';
+import { mainnet, polygon, bsc, arbitrum, optimism, sepolia, goerli, holesky, base } from 'wagmi/chains';
 
 // 获取 WalletConnect Project ID（可选，主要用于 WalletConnect 钱包）
 // 如果没有设置，MetaMask 等注入式钱包仍然可以正常工作
@@ -15,13 +15,13 @@ if (!walletConnectProjectId && process.env.NODE_ENV === 'development') {
   );
 }
 
-// 创建Wagmi配置
 export const config = getDefaultConfig({
   appName: 'Sapphire Mall',
   projectId: walletConnectProjectId,
-  chains: [mainnet, sepolia, goerli, holesky, polygon, bsc, arbitrum, optimism],
+  chains: [mainnet, base, sepolia, goerli, holesky, polygon, bsc, arbitrum, optimism],
   transports: {
     [mainnet.id]: http(),
+    [base.id]: http(),
     [sepolia.id]: http(),
     [goerli.id]: http(),
     [holesky.id]: http(),
@@ -30,5 +30,7 @@ export const config = getDefaultConfig({
     [arbitrum.id]: http(),
     [optimism.id]: http(),
   },
-  ssr: false, // 如果您的dApp使用服务器端渲染(SSR)
+  ssr: false,
 });
+
+export const chains = config.chains;

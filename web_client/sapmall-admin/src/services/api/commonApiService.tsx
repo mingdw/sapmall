@@ -1,7 +1,7 @@
 import baseClient from './baseClient';
 
 // 定义类型
-interface CategoryTreeResp {
+export interface CategoryTreeResp {
   id: number;
   name: string;
   code: string;
@@ -13,7 +13,7 @@ interface CategoryTreeResp {
   children?: CategoryTreeResp[];
 }
 
-interface AttrGroupResp {
+export interface AttrGroupResp {
   id: number;
   name: string;
   code: string;
@@ -21,10 +21,10 @@ interface AttrGroupResp {
   type: number;
   description: string;
   status: number;
-  attrs: AttrResp[];
+  attrs?: AttrResp[];
 }
 
-interface AttrResp {
+export interface AttrResp {
   id: number;
   name: string;
   code: string;
@@ -32,6 +32,7 @@ interface AttrResp {
   status: number;
   type: number;
   description: string;
+  groupId?: number;
 }
 
 export const commonApiService = {

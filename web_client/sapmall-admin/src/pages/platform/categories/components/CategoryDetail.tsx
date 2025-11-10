@@ -2,40 +2,7 @@ import React from 'react';
 import { Descriptions, Empty, Divider } from 'antd';
 import AttributeGroupList from './AttributeGroupList';
 import styles from './CategoryDetail.module.scss';
-
-interface Attribute {
-  id: number;
-  name: string;
-  code: string;
-  type: number;
-  status: number;
-  groupId: number;
-  description: string;
-  sort: number;
-}
-
-interface AttributeGroup {
-  id: number;
-  name: string;
-  code: string;
-  sort: number;
-  type: number;
-  description: string;
-  status: number;
-  attrs: Attribute[];
-}
-
-interface Category {
-  id: number;
-  name: string;
-  code: string;
-  level: number;
-  sort: number;
-  parentId: number;
-  icon?: string;
-  children?: Category[];
-  attrGroups?: AttributeGroup[];
-}
+import type { Category, AttributeGroup } from '../types';
 
 interface CategoryDetailProps {
   category: Category | null;
