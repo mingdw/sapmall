@@ -37,16 +37,24 @@ if [ "$($CONTAINER_RUNTIME ps -aq -f name=$CONTAINER_NAME)" ]; then
     $CONTAINER_RUNTIME rm $CONTAINER_NAME
 fi
 
-# 使用项目中的 init_data.sql 文件
+# 使用项目中的 schema/data SQL 文件
 PROJECT_ROOT="$(cd "$cwd/../../.." && pwd)"
-INIT_DATA_FILE="$PROJECT_ROOT/backend_service/docs/sapphire_mall.sql" 
+INIT_SCHEMA_FILE="$PROJECT_ROOT/backend_service/docs/sapphire_mall_schema.sql"
+INIT_DATA_FILE="$PROJECT_ROOT/backend_service/docs/sapphire_mall_data.sql"
 
-if [ ! -f "$INIT_DATA_FILE" ]; then
-    echo -e "${RED}错误: sapphire_mall.sql 文件不存在: $INIT_DATA_FILE${NC}"
+if [ ! -f "$INIT_SCHEMA_FILE" ]; then
+    echo -e "${RED}错误: sapphire_mall_schema.sql 文件不存在: $INIT_SCHEMA_FILE${NC}"
     exit 1
 fi
 
-echo -e "${GREEN}找到数据库初始化文件: $INIT_DATA_FILE${NC}"
+if [ ! -f "$INIT_DATA_FILE" ]; then
+    echo -e "${RED}错误: sapphire_mall_data.sql 文件不存在: $INIT_DATA_FILE${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}找到数据库初始化文件: "
+echo -e "  Schema -> $INIT_SCHEMA_FILE"
+echo -e "  Data   -> $INIT_DATA_FILE${NC}"
 
 # 构建MySQL镜像
 echo -e "${YELLOW}构建MySQL镜像...${NC}"
@@ -117,20 +125,30 @@ if [ "$TABLES_COUNT" -eq "0" ]; then
     # 创建数据库架构
     echo -e "${YELLOW}创建数据库架构...${NC}"
     
-    # 将 init_data.sql 文件复制到容器中
-    echo -e "${YELLOW}将 init_data.sql 文件复制到容器...${NC}"
+    # 将 schema 和 data SQL 文件复制到容器中
+    echo -e "${YELLOW}将 schema 和 data SQL 文件复制到容器...${NC}"
+    $CONTAINER_RUNTIME cp "$INIT_SCHEMA_FILE" $CONTAINER_NAME:/tmp/init_schema.sql
     $CONTAINER_RUNTIME cp "$INIT_DATA_FILE" $CONTAINER_NAME:/tmp/init_data.sql
 
     # 应用数据库初始化脚本
-    echo -e "${YELLOW}应用数据库初始化脚本...${NC}"
-    if $CONTAINER_RUNTIME exec $CONTAINER_NAME mysql -uroot "-p${MYSQL_ROOT_PASSWORD}" $MYSQL_DATABASE -e "source /tmp/init_data.sql"; then
-        echo -e "${GREEN}数据库初始化脚本已成功应用!${NC}"
+    echo -e "${YELLOW}应用数据库 schema 脚本...${NC}"
+    if $CONTAINER_RUNTIME exec $CONTAINER_NAME mysql -uroot "-p${MYSQL_ROOT_PASSWORD}" $MYSQL_DATABASE -e "source /tmp/init_schema.sql"; then
+        echo -e "${GREEN}数据库 schema 脚本已成功应用!${NC}"
     else
-        echo -e "${RED}应用数据库初始化脚本时出错.${NC}"
+        echo -e "${RED}应用数据库 schema 脚本时出错.${NC}"
+        exit 1
+    fi
+
+    echo -e "${YELLOW}应用数据库 data 脚本...${NC}"
+    if $CONTAINER_RUNTIME exec $CONTAINER_NAME mysql -uroot "-p${MYSQL_ROOT_PASSWORD}" $MYSQL_DATABASE -e "source /tmp/init_data.sql"; then
+        echo -e "${GREEN}数据库 data 脚本已成功应用!${NC}"
+    else
+        echo -e "${RED}应用数据库 data 脚本时出错.${NC}"
         exit 1
     fi
 
     # 清理临时文件
+    $CONTAINER_RUNTIME exec $CONTAINER_NAME rm /tmp/init_schema.sql
     $CONTAINER_RUNTIME exec $CONTAINER_NAME rm /tmp/init_data.sql
 
     echo -e "${GREEN}数据库初始化完成!${NC}"
