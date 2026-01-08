@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MarketPlacePageDetail from '../pages/marketplace/MarketPlacePageDetail';
+import ProductDetailPage from '../pages/marketplace/ProductDetailPage';
 import RewardsPageDetail from '../pages/rewards/RewardsPageDetail';
 import ExchangePageDetail from '../pages/exchange/ExchangePageDetail';
 import DaoPageDetail from '../pages/dao/DaoPageDetail';
@@ -14,6 +15,14 @@ const ContentLayout: React.FC = () => {
         {/* 默认重定向到代币商城 */}
         <Route path="/" element={<Navigate to="/marketplace" replace />} />
         {/* 各功能页面路由 - 使用95%宽度容器 */}
+        <Route
+          path="/marketplace/product/:productId"
+          element={
+            <div className="w-[95%] mx-auto h-full">
+              <ProductDetailPage />
+            </div>
+          }
+        />
         <Route path="/marketplace" element={
           <div className="w-[95%] mx-auto h-full">
             <MarketPlacePageDetail />

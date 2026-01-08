@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styles from './MarketPlacePageDetail.module.scss';
+import { useNavigate } from 'react-router-dom';
 import { commonApiService } from '../../services/api/commonApiService';
 import { productApiService } from '../../services/api/productApiService';
 import { CategoryTreeResp, AttrGroupResp } from '../../services/types/categoryTypes';
@@ -13,6 +14,7 @@ import { useCategoryStore } from '../../store/categoryStore';
 import { transformProductForDisplay } from '../../utils/productUtils';
 
 const MarketPlacePageDetail: React.FC = () => {
+  const navigate = useNavigate();
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null); // 改为单选
   const [selectedFilters, setSelectedFilters] = useState<FilterOptions>({
@@ -380,8 +382,8 @@ const MarketPlacePageDetail: React.FC = () => {
 
   // 处理商品点击
   const handleProductClick = (product: Product) => {
-    console.log('点击商品:', product);
-    // TODO: 跳转到商品详情页面
+    // UI阶段：跳转到商品详情页并携带商品信息，减少二次请求
+    navigate(`/marketplace/product/${product.id}`, { state: { product } });
   };
 
   // 处理商品购买
