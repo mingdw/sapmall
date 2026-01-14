@@ -63,6 +63,63 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Route{
+				{
+					// 保存商品（新增/编辑）
+					Method:  http.MethodPost,
+					Path:    "/product",
+					Handler: admin.SaveProductHandler(serverCtx),
+				},
+				{
+					// 获取商品详情
+					Method:  http.MethodGet,
+					Path:    "/product/:id",
+					Handler: admin.GetProductDetailHandler(serverCtx),
+				},
+				{
+					// 删除商品
+					Method:  http.MethodDelete,
+					Path:    "/product/:id",
+					Handler: admin.DeleteProductHandler(serverCtx),
+				},
+				{
+					// 批量下架商品
+					Method:  http.MethodPost,
+					Path:    "/product/batch-deactivate",
+					Handler: admin.BatchDeactivateProductHandler(serverCtx),
+				},
+				{
+					// 批量删除商品
+					Method:  http.MethodPost,
+					Path:    "/product/batch-delete",
+					Handler: admin.BatchDeleteProductHandler(serverCtx),
+				},
+				{
+					// 导出商品数据
+					Method:  http.MethodPost,
+					Path:    "/product/export",
+					Handler: admin.ExportProductHandler(serverCtx),
+				},
+				{
+					// 获取商品列表（分页、搜索、筛选）
+					Method:  http.MethodPost,
+					Path:    "/product/list",
+					Handler: admin.ListProductHandler(serverCtx),
+				},
+				{
+					// 获取商品统计信息
+					Method:  http.MethodGet,
+					Path:    "/product/stats",
+					Handler: admin.GetProductStatsHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/admin"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.RespMiddleware},
 			[]rest.Route{
 				{

@@ -90,12 +90,17 @@ func (l *ProductsLogic) Products(req *types.ListProductsReq) (resp *types.ListPr
 				Category2Code: product.SPU.Category2Code,
 				Category3Id:   product.SPU.Category3ID,
 				Category3Code: product.SPU.Category3Code,
+				UserId:        product.SPU.UserID,
+				UserCode:      product.SPU.UserCode,
+				TotalSales:    product.SPU.TotalSales,
+				TotalStock:    product.SPU.TotalStock,
 				Brand:         product.SPU.Brand,
 				Price:         product.SPU.Price,
 				RealPrice:     product.SPU.RealPrice,
-				TotalSales:    product.SPU.TotalSales,
-				TotalStock:    product.SPU.TotalStock,
 				Status:        product.SPU.Status,
+				ChainStatus:   product.SPU.ChainStatus,
+				ChainId:       product.SPU.ChainID,
+				ChainTxHash:   product.SPU.ChainTxHash,
 				Images: func() []string {
 					if product.SPU.Images == "" {
 						return []string{}

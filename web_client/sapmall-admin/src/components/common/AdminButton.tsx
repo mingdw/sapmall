@@ -3,7 +3,7 @@ import styles from './AdminButton.module.scss';
 
 interface AdminButtonProps {
   children: React.ReactNode;
-  variant?: 'primary' | 'outline' | 'danger' | 'warning';
+  variant?: 'primary' | 'outline' | 'danger' | 'warning' | 'query' | 'reset' | 'add' | 'delete' | 'export';
   size?: 'sm' | 'md' | 'xs';
   icon?: string;
   onClick?: () => void;

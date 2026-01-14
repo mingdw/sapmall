@@ -41,7 +41,9 @@ func (r *productSpuRepository) GetProductSpu(ctx context.Context, id int64) (*mo
 
 func (r *productSpuRepository) ListProductSpus(ctx context.Context, productId int64) ([]*model.ProductSpu, error) {
 	var spus []*model.ProductSpu
-	err := r.DB(ctx).Where("product_id = ? AND is_deleted = ?", productId, 0).
+	// 注意：表结构中无 product_id 字段，此处使用 id 字段查询
+	// 如需根据用户查询，请使用 user_id 字段
+	err := r.DB(ctx).Where("id = ? AND is_deleted = ?", productId, 0).
 		Find(&spus).Error
 	if err != nil {
 		return nil, err
@@ -56,10 +58,29 @@ func (r *productSpuRepository) CreateProductSpu(ctx context.Context, spu *model.
 func (r *productSpuRepository) UpdateProductSpu(ctx context.Context, spu *model.ProductSpu) error {
 	return r.DB(ctx).Where("id = ?", spu.ID).
 		Updates(map[string]interface{}{
-			"product_id": spu.ID,
-			"name":       spu.Name,
-			"status":     spu.Status,
-			"updated_at": spu.UpdatedAt,
+			"code":          spu.Code,
+			"name":          spu.Name,
+			"category1_id": spu.Category1ID,
+			"category1_code": spu.Category1Code,
+			"category2_id": spu.Category2ID,
+			"category2_code": spu.Category2Code,
+			"category3_id": spu.Category3ID,
+			"category3_code": spu.Category3Code,
+			"user_id":      spu.UserID,
+			"user_code":    spu.UserCode,
+			"total_sales":  spu.TotalSales,
+			"total_stock":  spu.TotalStock,
+			"brand":        spu.Brand,
+			"description": spu.Description,
+			"price":        spu.Price,
+			"real_price":   spu.RealPrice,
+			"status":       spu.Status,
+			"chain_status": spu.ChainStatus,
+			"chain_id":     spu.ChainID,
+			"chain_tx_hash": spu.ChainTxHash,
+			"images":       spu.Images,
+			"updated_at":   spu.UpdatedAt,
+			"updator":      spu.Updator,
 		}).Error
 }
 

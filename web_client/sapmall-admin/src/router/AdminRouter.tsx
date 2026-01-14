@@ -8,6 +8,7 @@ import UserManagement from '../pages/platform/users/UserManage';
 import MerchantManager from '../pages/platform/merchants/MerchantManager';
 import OrderManager from '../pages/platform/orders/OrderManager';
 import CategoryManagement from '../pages/platform/categories/CategoryManagement';
+import ProductManagement from '../pages/business/products/ProductManagement';
 
 interface AdminRouterProps {
   menuData?: any;
@@ -30,6 +31,9 @@ const AdminRouter: React.FC<AdminRouterProps> = ({ menuData }) => {
       
       {/* 商品目录设置路由 */}
       <Route path="/platform/categories" element={<CategoryManagement />} />
+      
+      {/* 商品管理路由 */}
+      <Route path="/business/products" element={<ProductManagement />} />
       
       <Route path="/" element={<Navigate to="/platform/dashboard" replace />} />
       

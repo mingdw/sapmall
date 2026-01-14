@@ -13,19 +13,24 @@ type ProductSpu struct {
 	Category2Code string    `gorm:"column:category2_code;not null" json:"category2Code"` // 商品目录2分类编码
 	Category3ID   int64     `gorm:"column:category3_id;not null" json:"category3Id"`     // 商品目录3分类id
 	Category3Code string    `gorm:"column:category3_code;not null" json:"category3Code"` // 商品目录3分类编码
-	Brand         string    `gorm:"column:brand;not null" json:"brand"`                  // 品牌
-	Description   string    `gorm:"column:description;not null" json:"description"`      // 描述
-	Status        int       `gorm:"column:status;not null" json:"status"`                // 状态
-	Images        string    `gorm:"column:images;not null" json:"images"`                // 图片
+	UserID        int64     `gorm:"column:user_id;not null" json:"userId"`            // 用户ID（关联sys_user.id）
+	UserCode      string    `gorm:"column:user_code;not null" json:"userCode"`         // 用户编码（钱包地址，关联sys_user.user_code）
 	TotalSales    int       `gorm:"column:total_sales;not null" json:"totalSales"`       // 总销量
 	TotalStock    int       `gorm:"column:total_stock;not null" json:"totalStock"`       // 总库存
+	Brand         string    `gorm:"column:brand;not null" json:"brand"`                  // 品牌
+	Description   string    `gorm:"column:description;not null" json:"description"`      // 描述
+	Price         float64   `gorm:"column:price;not null" json:"price"`                  // 价格
+	RealPrice     float64   `gorm:"column:real_price;not null" json:"realPrice"`         // 原价
+	Status        int       `gorm:"column:status;not null" json:"status"`                // 状态
+	ChainStatus   string    `gorm:"column:chain_status;not null" json:"chainStatus"`    // 链上状态：未上链、同步中、已上链、同步失败
+	ChainID       int       `gorm:"column:chain_id;not null" json:"chainId"`            // 链ID（1:Ethereum, 56:BSC, 137:Polygon, 8453:Base等）
+	ChainTxHash   string    `gorm:"column:chain_tx_hash;not null" json:"chainTxHash"`  // 链上交易哈希
+	Images        string    `gorm:"column:images;not null" json:"images"`                // 图片
 	CreatedAt     time.Time `gorm:"column:created_at" json:"createdAt"`                  // 创建时间
 	UpdatedAt     time.Time `gorm:"column:updated_at" json:"updatedAt"`                  // 更新时间
 	IsDeleted     int       `gorm:"column:is_deleted" json:"isDeleted"`                  // 是否删除
 	Creator       string    `gorm:"column:creator;not null" json:"creator"`              // 创建人
 	Updator       string    `gorm:"column:updator;not null" json:"updator"`              // 更新人
-	Price         float64   `gorm:"column:price;not null" json:"price"`                  // 价格
-	RealPrice     float64   `gorm:"column:real_price;not null" json:"realPrice"`         // 原价
 }
 
 // TableName 表名

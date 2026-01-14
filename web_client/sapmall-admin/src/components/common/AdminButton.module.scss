@@ -4,23 +4,23 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 0 16px;
-  height: 36px;
+  gap: 6px;
+  padding: 0 12px;
+  height: 28px;
   border: 1px solid transparent;
-  border-radius: 18px;
+  border-radius: 4px;
   font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   white-space: nowrap;
   user-select: none;
   position: relative;
   overflow: hidden;
-  min-width: 100px;
+  min-width: 70px;
 }
 
 .adminBtn::before {
@@ -99,29 +99,109 @@
   box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
 }
 
+/* 查询按钮 - 蓝色主题 */
+.adminBtnQuery {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: white;
+  box-shadow: 0 3px 12px rgba(59, 130, 246, 0.2);
+}
+
+.adminBtnQuery:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+}
+
+/* 重置按钮 - 灰色主题 */
+.adminBtnReset {
+  background: rgba(51, 65, 85, 0.4);
+  border-color: rgba(71, 85, 105, 0.5);
+  color: #e2e8f0;
+  box-shadow: 0 3px 12px rgba(51, 65, 85, 0.2);
+}
+
+.adminBtnReset:hover {
+  background: rgba(51, 65, 85, 0.6);
+  border-color: rgba(100, 116, 139, 0.5);
+  color: #f1f5f9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(51, 65, 85, 0.3);
+}
+
+/* 新增按钮 - 绿色主题 */
+.adminBtnAdd {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: white;
+  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.2);
+}
+
+.adminBtnAdd:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  border-color: rgba(16, 185, 129, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* 删除按钮 - 红色主题 */
+.adminBtnDelete {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: white;
+  box-shadow: 0 3px 12px rgba(239, 68, 68, 0.2);
+}
+
+.adminBtnDelete:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+}
+
+/* 导出按钮 - 紫色主题 */
+.adminBtnExport {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: white;
+  box-shadow: 0 3px 12px rgba(139, 92, 246, 0.2);
+}
+
+.adminBtnExport:hover {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  border-color: rgba(139, 92, 246, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+}
+
 /* 尺寸样式 */
 .adminBtnSm {
-  height: 32px;
+  height: 30px;
   padding: 0 12px;
   font-size: 11px;
-  min-width: 80px;
-  border-radius: 16px;
+  min-width: 70px;
+  border-radius: 4px;
 }
 
 .adminBtnMd {
-  height: 36px;
-  padding: 0 16px;
+  height: 32px;
+  padding: 0 14px;
   font-size: 12px;
-  min-width: 100px;
-  border-radius: 18px;
+  min-width: 80px;
+  border-radius: 4px;
 }
 
 .adminBtnXs {
-  height: 28px;
+  height: 26px;
   padding: 0 10px;
-  font-size: 10px;
+  font-size: 11px;
   min-width: 60px;
-  border-radius: 14px;
+  border-radius: 4px;
 }
 
 /* 禁用状态 */

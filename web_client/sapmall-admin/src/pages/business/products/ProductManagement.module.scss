@@ -1,0 +1,756 @@
+.productManagement {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  // 区域一：商品概览
+  .statsSection {
+    .timeSelector {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .statsGrid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+
+      @media (max-width: 1200px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+
+  // 区域二：商品管理
+  // 筛选区域和表格合并为一个整体容器
+  .filterAndTableContainer {
+    background: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(51, 65, 85, 0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.15);
+      background: rgba(30, 41, 59, 0.4);
+    }
+
+    @media (max-width: 992px) {
+      padding: 12px;
+    }
+  }
+
+  // 筛选工具栏：作为整体容器的一部分
+  .filterToolbar {
+    margin-bottom: 16px;
+
+    // Ant Design Row 样式覆盖
+    :global(.ant-row) {
+      width: 100%;
+    }
+  }
+
+
+  // 批量操作按钮样式
+  .batchActionBtn {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 11px;
+    border-radius: 4px;
+    background: rgba(15, 23, 42, 0.5) !important;
+    border: 1px solid rgba(51, 65, 85, 0.3) !important;
+    color: #94a3b8 !important;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: rgba(30, 41, 59, 0.7) !important;
+      border-color: rgba(59, 130, 246, 0.3) !important;
+      color: #e2e8f0 !important;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &:global(.ant-btn-dangerous) {
+      background: rgba(239, 68, 68, 0.1) !important;
+      border-color: rgba(239, 68, 68, 0.3) !important;
+      color: #f87171 !important;
+
+      &:hover:not(:disabled) {
+        background: rgba(239, 68, 68, 0.2) !important;
+        border-color: rgba(239, 68, 68, 0.5) !important;
+        color: #ef4444 !important;
+      }
+    }
+  }
+
+  // 表格容器：作为整体容器的一部分
+  .tableWrapper {
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+
+  .productTable {
+    :global {
+      .ant-table {
+        background: transparent;
+        min-width: 100%;
+      }
+
+      // 确保表格可以横向滚动，操作列可见
+      .ant-table-container {
+        overflow-x: auto;
+      }
+
+      // 移除固定列的白色背景和阴影效果
+      .ant-table-cell-fix-right,
+      .ant-table-cell-fix-left {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+
+      .ant-table-cell-fix-right-first::after,
+      .ant-table-cell-fix-left-last::after {
+        box-shadow: none !important;
+      }
+
+      .ant-table-thead > tr > th {
+        background: rgba(30, 41, 59, 0.6) !important;
+        border-bottom: 1px solid rgba(51, 65, 85, 0.4) !important;
+        color: #e2e8f0 !important;
+        font-weight: 600;
+        font-size: 12px;
+        padding: 10px 12px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(30, 41, 59, 0.8) !important;
+        }
+
+        // 操作列表头：移除白色背景，确保可见
+        &:last-child {
+          background: rgba(30, 41, 59, 0.6) !important;
+          width: 150px;
+          min-width: 150px;
+        }
+      }
+
+      .ant-table-tbody > tr {
+        background: transparent;
+        transition: all 0.2s ease;
+
+        // 移除 hover 白色背景效果
+        &:hover {
+          background: transparent !important;
+        }
+
+        > td {
+          border-bottom: 1px solid rgba(51, 65, 85, 0.2) !important;
+          color: #e2e8f0 !important;
+          font-size: 12px;
+          padding: 10px 12px;
+          background: transparent !important;
+        }
+
+        // 操作列特殊处理：移除白色背景和固定定位效果，确保可见
+        > td:last-child {
+          background: transparent !important;
+          width: 120px;
+          min-width: 120px;
+          white-space: nowrap;
+          
+          // 确保操作按钮可见
+          :global(.ant-btn-link) {
+            color: #3b82f6 !important;
+            padding: 0 4px !important;
+            font-size: 12px !important;
+            
+            &:hover {
+              color: #60a5fa !important;
+            }
+            
+            &.ant-btn-dangerous {
+              color: #f87171 !important;
+              
+              &:hover {
+                color: #ef4444 !important;
+              }
+            }
+          }
+        }
+
+        // 商品列样式：固定宽度，两行显示，整列超链接效果
+        > td:first-child {
+          width: 240px;
+          min-width: 240px;
+          padding: 8px 12px !important;
+          
+          > div {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+          }
+        }
+      }
+
+      .ant-table-tbody > tr:last-child > td {
+        border-bottom: none !important;
+      }
+
+      .ant-pagination {
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(51, 65, 85, 0.2);
+
+        .ant-pagination-item {
+          background: rgba(30, 41, 59, 0.4);
+          border-color: rgba(51, 65, 85, 0.3);
+          min-width: 28px;
+          height: 28px;
+          line-height: 26px;
+          font-size: 12px;
+
+          a {
+            color: #94a3b8;
+          }
+
+          &:hover {
+            border-color: #3b82f6;
+            background: rgba(30, 41, 59, 0.6);
+
+            a {
+              color: #3b82f6;
+            }
+          }
+
+          &.ant-pagination-item-active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+
+            a {
+              color: #ffffff;
+            }
+          }
+        }
+
+        .ant-pagination-prev,
+        .ant-pagination-next {
+          .ant-pagination-item-link {
+            background: rgba(30, 41, 59, 0.4);
+            border-color: rgba(51, 65, 85, 0.3);
+            color: #94a3b8;
+            min-width: 32px;
+            height: 32px;
+            line-height: 30px;
+
+            &:hover {
+              border-color: #3b82f6;
+              color: #3b82f6;
+            }
+          }
+        }
+
+        .ant-pagination-options {
+          .ant-select-selector {
+            background: rgba(30, 41, 59, 0.4) !important;
+            border-color: rgba(51, 65, 85, 0.3) !important;
+            color: #e2e8f0 !important;
+            height: 28px !important;
+            font-size: 12px;
+          }
+        }
+
+        .ant-pagination-total-text {
+          color: #94a3b8;
+          font-size: 12px;
+        }
+      }
+
+      .ant-checkbox-wrapper {
+        .ant-checkbox-inner {
+          background: rgba(30, 41, 59, 0.6);
+          border-color: rgba(51, 65, 85, 0.4);
+        }
+
+        .ant-checkbox-checked .ant-checkbox-inner {
+          background: #3b82f6;
+          border-color: #3b82f6;
+        }
+      }
+    }
+  }
+
+  // 商品单元格样式：整列超链接效果
+  .productCell {
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    
+    &:hover {
+      background: rgba(59, 130, 246, 0.08) !important;
+      
+      span {
+        color: #60a5fa !important;
+      }
+    }
+    
+    &:active {
+      background: rgba(59, 130, 246, 0.12) !important;
+    }
+  }
+
+  .selectionBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-size: 13px;
+
+    strong {
+      color: #3b82f6;
+      font-weight: 600;
+    }
+  }
+
+  .gridView {
+    padding: 40px;
+    text-align: center;
+    color: #6b7280;
+  }
+}
+
+// ProductToolbar 组件样式
+.toolbarContainer {
+  width: 100%;
+}
+
+// 工具栏行：使用 flex 布局，筛选条件和按钮按顺序排列，自动换行
+.toolbarRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  row-gap: 12px; // 统一行间距
+  width: 100%;
+}
+
+// 第一个按钮：增加与时间范围选项的距离
+.firstButton {
+  margin-left: 24px !important;
+  
+  @media (max-width: 992px) {
+    margin-left: 0 !important;
+  }
+}
+
+// 强制换行：让后续按钮显示在下一行
+.lineBreak {
+  flex-basis: 100%;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+// 批量删除按钮：红色效果
+.deleteButton {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  color: #f87171 !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15) !important;
+  
+  &:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.25) !important;
+    border-color: rgba(239, 68, 68, 0.6) !important;
+    color: #ef4444 !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25) !important;
+  }
+  
+  &:disabled {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border-color: rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+  }
+}
+
+// 按钮组：紧跟在筛选项后面，但加大距离（保留以防其他地方使用）
+.buttonGroup {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 24px; // 增加与时间范围选项的距离
+  
+  @media (max-width: 992px) {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+.buttonCol {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  
+  @media (max-width: 992px) {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+.filterItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.filterLabel {
+  color: #e2e8f0;
+  font-size: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  width: auto;
+  min-width: 75px;
+  font-weight: 500;
+  margin-right: 0;
+  text-align: right;
+}
+
+.filterInput {
+  width: 140px;
+  height: 28px;
+  background: rgba(15, 23, 42, 0.5) !important;
+  border: 1px solid rgba(51, 65, 85, 0.3) !important;
+  border-radius: 4px !important;
+  color: #e2e8f0 !important;
+  font-size: 12px !important;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.3) !important;
+    background: rgba(15, 23, 42, 0.7) !important;
+  }
+
+  &:focus {
+    border-color: #3b82f6 !important;
+    background: rgba(15, 23, 42, 0.7) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+  }
+
+  &::placeholder {
+    color: #94a3b8 !important;
+  }
+
+  :global(.ant-input) {
+    background: transparent !important;
+    border: none !important;
+    color: #e2e8f0 !important;
+    font-size: 12px !important;
+    padding: 4px 10px !important;
+    height: 28px !important;
+
+    &::placeholder {
+      color: #94a3b8 !important;
+      opacity: 1;
+    }
+
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(51, 65, 85, 0.3);
+  border-radius: 4px;
+  padding: 0;
+  transition: all 0.2s ease;
+  width: 100%;
+
+  &:focus-within {
+    border-color: #3b82f6;
+    background: rgba(15, 23, 42, 0.7);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+
+  :global(.ant-input) {
+    background: transparent;
+    border: none;
+    color: #e2e8f0;
+    font-size: 12px;
+    padding: 4px 10px;
+    height: 28px;
+
+    &::placeholder {
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  .searchBtn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    padding: 2px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    height: auto;
+    margin-right: 2px;
+    font-size: 12px;
+
+    &:hover {
+      color: #3b82f6;
+      background: rgba(59, 130, 246, 0.1);
+    }
+  }
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-size: 12px;
+  padding: 0;
+  outline: none;
+}
+
+// quickFilters 样式已移除，使用 Space 组件替代
+
+.filterSelect {
+  width: 130px;
+  height: 28px;
+  background: rgba(15, 23, 42, 0.5) !important;
+  border: 1px solid rgba(51, 65, 85, 0.3) !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease;
+
+  :global(.ant-select-selector) {
+    background: transparent !important;
+    border: none !important;
+    color: #e2e8f0 !important;
+    padding: 0 10px !important;
+    height: 28px !important;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+
+    .ant-select-selection-placeholder {
+      color: #94a3b8 !important;
+      line-height: 28px;
+      font-size: 12px;
+      opacity: 1 !important;
+      font-weight: 400;
+    }
+
+    .ant-select-selection-item {
+      color: #e2e8f0 !important;
+      line-height: 28px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+
+  :global(.ant-select-arrow) {
+    color: #94a3b8 !important;
+    right: 8px;
+    font-size: 11px;
+  }
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.3) !important;
+    background: rgba(15, 23, 42, 0.7) !important;
+    
+    :global(.ant-select-selector) {
+      .ant-select-selection-placeholder {
+        color: #cbd5e1 !important;
+      }
+    }
+  }
+
+  &:global(.ant-select-focused) {
+    border-color: #3b82f6 !important;
+    background: rgba(15, 23, 42, 0.7) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+    
+    :global(.ant-select-selector) {
+      .ant-select-selection-placeholder {
+        color: #cbd5e1 !important;
+      }
+    }
+  }
+}
+
+// 下拉菜单样式（使用全局样式覆盖）
+:global {
+  .product-filter-dropdown {
+    background: rgba(30, 41, 59, 0.95) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(51, 65, 85, 0.4) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+    padding: 4px !important;
+    font-size: 11px !important;
+
+    .ant-select-item {
+      color: #e2e8f0 !important;
+      background: transparent !important;
+      border-radius: 6px;
+      margin: 2px 0;
+      padding: 6px 12px !important;
+      transition: all 0.2s ease;
+      font-size: 11px !important;
+      line-height: 1.4 !important;
+
+      &:hover {
+        background: rgba(59, 130, 246, 0.2) !important;
+        color: #ffffff !important;
+      }
+
+      &.ant-select-item-option-selected {
+        background: #3b82f6 !important;
+        color: #ffffff !important;
+        font-weight: 500;
+
+        &:hover {
+          background: #2563eb !important;
+        }
+      }
+
+      &.ant-select-item-option-active {
+        background: rgba(59, 130, 246, 0.15) !important;
+      }
+    }
+  }
+}
+
+.clearFilterBtn {
+  color: #94a3b8 !important;
+  padding: 2px 6px !important;
+  height: 28px !important;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  font-size: 11px;
+
+  &:hover {
+    color: #e2e8f0 !important;
+    background: rgba(51, 65, 85, 0.3) !important;
+  }
+}
+
+.viewOptions {
+  display: flex;
+  gap: 2px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(51, 65, 85, 0.3);
+  border-radius: 4px;
+  padding: 2px;
+  backdrop-filter: blur(8px);
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.viewBtn {
+  background: transparent !important;
+  border: none !important;
+  color: #64748b !important;
+  padding: 0 !important;
+  border-radius: 3px !important;
+  transition: all 0.2s ease;
+  min-width: 24px;
+  height: 24px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+
+  &:hover {
+    color: #94a3b8 !important;
+    background: rgba(59, 130, 246, 0.1) !important;
+  }
+
+  &:global(.ant-btn-primary) {
+    background: #3b82f6 !important;
+    color: #ffffff !important;
+    box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
+    font-weight: 500;
+
+    &:hover {
+      background: #2563eb !important;
+      box-shadow: 0 2px 5px rgba(59, 130, 246, 0.4);
+    }
+  }
+}
+
+// 响应式调整
+@media (max-width: 1200px) {
+  .filterToolbar {
+    padding: 10px 14px;
+  }
+
+  .searchBox {
+    width: 200px;
+  }
+
+  .quickFilters {
+    gap: 4px;
+  }
+
+  .filterSelect {
+    min-width: 90px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filterToolbar {
+    padding: 10px;
+  }
+
+  .filterSection {
+    width: 100%;
+  }
+
+  .searchBox {
+    width: 100%;
+  }
+
+  .quickFilters {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .actionSection {
+    width: 100%;
+    justify-content: flex-end;
+    padding-top: 8px;
+    border-top: 1px solid rgba(51, 65, 85, 0.2);
+  }
+
+  .viewOptions {
+    margin-left: auto;
+  }
+}

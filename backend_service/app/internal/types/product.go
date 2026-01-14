@@ -49,12 +49,17 @@ type Product struct {
 	Category2Code string        `json:"category2Code"` // 分类编码
 	Category3Id   int64         `json:"category3Id"`   // 分类ID
 	Category3Code string        `json:"category3Code"` // 分类编码
+	UserId        int64         `json:"userId"`        // 用户ID（关联sys_user.id）
+	UserCode      string        `json:"userCode"`      // 用户编码（钱包地址，关联sys_user.user_code）
+	TotalSales    int           `json:"totalSales"`    // 总销量
+	TotalStock    int           `json:"totalStock"`    // 总库存
 	Brand         string        `json:"brand"`         // 品牌
 	Price         float64       `json:"price"`         // 价格
 	RealPrice     float64       `json:"realPrice"`     // 原价
-	TotalSales    int           `json:"totalSales"`    // 总销量
-	TotalStock    int           `json:"totalStock"`    // 总库存
 	Status        int           `json:"status"`        // 状态
+	ChainStatus   string        `json:"chainStatus"`   // 链上状态：未上链、同步中、已上链、同步失败
+	ChainId       int           `json:"chainId"`       // 链ID（1:Ethereum, 56:BSC, 137:Polygon, 8453:Base等）
+	ChainTxHash   string        `json:"chainTxHash"`   // 链上交易哈希
 	Images        []string      `json:"images"`        // 图片
 	Description   string        `json:"description"`   // 描述
 	Attributes    *ProductAttrs `json:"attributes"`    // 商品属性
