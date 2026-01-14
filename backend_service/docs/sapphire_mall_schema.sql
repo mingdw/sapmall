@@ -473,6 +473,8 @@ CREATE TABLE `sys_product_spu`  (
   `category2_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品目录2分类编码',
   `category3_id` bigint NOT NULL DEFAULT 0 COMMENT '商品目录3分类id',
   `category3_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品目录3分类编码',
+  `user_id` bigint NOT NULL DEFAULT 0 COMMENT '用户ID（关联sys_user.id）',
+  `user_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '用户编码（钱包地址，关联sys_user.user_code）',
   `total_sales` int NOT NULL DEFAULT 0 COMMENT '总销量',
   `total_stock` int NOT NULL DEFAULT 0 COMMENT '总库存',
   `brand` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '品牌',
@@ -480,6 +482,9 @@ CREATE TABLE `sys_product_spu`  (
   `price` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '价格',
   `real_price` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '原价',
   `status` int NOT NULL DEFAULT 0 COMMENT '状态',
+  `chain_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '链上状态：未上链、同步中、已上链、同步失败',
+  `chain_id` int NOT NULL DEFAULT 0 COMMENT '链ID（1:Ethereum, 56:BSC, 137:Polygon, 8453:Base等）',
+  `chain_tx_hash` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '链上交易哈希',
   `images` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '图片',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -487,7 +492,12 @@ CREATE TABLE `sys_product_spu`  (
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
   `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_code`(`code`) USING BTREE
+  UNIQUE INDEX `uk_code`(`code`) USING BTREE,
+  INDEX `idx_user_id`(`user_id`) USING BTREE,
+  INDEX `idx_user_code`(`user_code`) USING BTREE,
+  INDEX `idx_chain_status`(`chain_status`) USING BTREE,
+  INDEX `idx_chain_id`(`chain_id`) USING BTREE,
+  INDEX `idx_chain_tx_hash`(`chain_tx_hash`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 124 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------

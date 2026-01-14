@@ -94,26 +94,49 @@ func (r *productRepository) ListProductsByCategoryCodes(
 		return nil, 0, err
 	}
 
-	// 如果有 SPU 数据，查询关联数据
+	// 如果有 SPU 数据，批量查询关联数据（优化：避免 N+1 查询问题）
 	if len(spus) > 0 {
+		// 收集所有 SPU ID
+		spuIDs := make([]int64, 0, len(spus))
 		for _, spu := range spus {
-			// 查询 SKUs
-			var skus []*model.ProductSku
-			if err := r.db.WithContext(ctx).Where("product_spu_id = ? AND is_deleted = ?", spu.ID, 0).Find(&skus).Error; err != nil {
-				return nil, 0, err
-			}
+			spuIDs = append(spuIDs, spu.ID)
+		}
 
-			// 查询属性参数
-			var attrParams []*model.ProductSpuAttrParams
-			if err := r.db.WithContext(ctx).Where("product_spu_id = ? AND is_deleted = ?", spu.ID, 0).Find(&attrParams).Error; err != nil {
-				return nil, 0, err
-			}
+		// 批量查询所有 SKUs
+		var allSkus []*model.ProductSku
+		if err := r.db.WithContext(ctx).Where("product_spu_id IN ? AND is_deleted = ?", spuIDs, 0).Find(&allSkus).Error; err != nil {
+			return nil, 0, err
+		}
 
-			// 构建完整的 Product 对象
+		// 批量查询所有属性参数
+		var allAttrParams []*model.ProductSpuAttrParams
+		if err := r.db.WithContext(ctx).Where("product_spu_id IN ? AND is_deleted = ?", spuIDs, 0).Find(&allAttrParams).Error; err != nil {
+			return nil, 0, err
+		}
+
+		// 构建 SKU 和属性参数的映射
+		skuMap := make(map[int64][]*model.ProductSku)
+		for _, sku := range allSkus {
+			skuMap[sku.ProductSpuID] = append(skuMap[sku.ProductSpuID], sku)
+		}
+
+		attrParamsMap := make(map[int64][]*model.ProductSpuAttrParams)
+		for _, attrParam := range allAttrParams {
+			attrParamsMap[attrParam.ProductSpuID] = append(attrParamsMap[attrParam.ProductSpuID], attrParam)
+		}
+
+		// 构建完整的 Product 对象
+		for _, spu := range spus {
 			product := &model.Product{
 				SPU:           spu,
-				SKUs:          skus,
-				SPUAttrParams: attrParams,
+				SKUs:          skuMap[spu.ID],
+				SPUAttrParams: attrParamsMap[spu.ID],
+			}
+			if product.SKUs == nil {
+				product.SKUs = []*model.ProductSku{}
+			}
+			if product.SPUAttrParams == nil {
+				product.SPUAttrParams = []*model.ProductSpuAttrParams{}
 			}
 			products = append(products, product)
 		}
@@ -174,26 +197,49 @@ func (r *productRepository) GetProductsBycategoryCode(ctx context.Context, categ
 		return nil, 0, err
 	}
 
-	// 如果有 SPU 数据，查询关联数据
+	// 如果有 SPU 数据，批量查询关联数据（优化：避免 N+1 查询问题）
 	if len(spus) > 0 {
+		// 收集所有 SPU ID
+		spuIDs := make([]int64, 0, len(spus))
 		for _, spu := range spus {
-			// 查询 SKUs
-			var skus []*model.ProductSku
-			if err := r.db.WithContext(ctx).Where("product_spu_id = ? AND is_deleted = ?", spu.ID, 0).Find(&skus).Error; err != nil {
-				return nil, 0, err
-			}
+			spuIDs = append(spuIDs, spu.ID)
+		}
 
-			// 查询属性参数
-			var attrParams []*model.ProductSpuAttrParams
-			if err := r.db.WithContext(ctx).Where("product_spu_id = ? AND is_deleted = ?", spu.ID, 0).Find(&attrParams).Error; err != nil {
-				return nil, 0, err
-			}
+		// 批量查询所有 SKUs
+		var allSkus []*model.ProductSku
+		if err := r.db.WithContext(ctx).Where("product_spu_id IN ? AND is_deleted = ?", spuIDs, 0).Find(&allSkus).Error; err != nil {
+			return nil, 0, err
+		}
 
-			// 构建完整的 Product 对象
+		// 批量查询所有属性参数
+		var allAttrParams []*model.ProductSpuAttrParams
+		if err := r.db.WithContext(ctx).Where("product_spu_id IN ? AND is_deleted = ?", spuIDs, 0).Find(&allAttrParams).Error; err != nil {
+			return nil, 0, err
+		}
+
+		// 构建 SKU 和属性参数的映射
+		skuMap := make(map[int64][]*model.ProductSku)
+		for _, sku := range allSkus {
+			skuMap[sku.ProductSpuID] = append(skuMap[sku.ProductSpuID], sku)
+		}
+
+		attrParamsMap := make(map[int64][]*model.ProductSpuAttrParams)
+		for _, attrParam := range allAttrParams {
+			attrParamsMap[attrParam.ProductSpuID] = append(attrParamsMap[attrParam.ProductSpuID], attrParam)
+		}
+
+		// 构建完整的 Product 对象
+		for _, spu := range spus {
 			product := &model.Product{
 				SPU:           spu,
-				SKUs:          skus,
-				SPUAttrParams: attrParams,
+				SKUs:          skuMap[spu.ID],
+				SPUAttrParams: attrParamsMap[spu.ID],
+			}
+			if product.SKUs == nil {
+				product.SKUs = []*model.ProductSku{}
+			}
+			if product.SPUAttrParams == nil {
+				product.SPUAttrParams = []*model.ProductSpuAttrParams{}
 			}
 			products = append(products, product)
 		}

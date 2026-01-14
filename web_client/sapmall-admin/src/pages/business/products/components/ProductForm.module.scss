@@ -1,0 +1,178 @@
+.productForm {
+  padding: 20px 0;
+
+  .formSection {
+    margin-bottom: 32px;
+
+    .sectionTitle {
+      font-size: 16px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      &::before {
+        content: '';
+        width: 3px;
+        height: 16px;
+        background: #3b82f6;
+        border-radius: 2px;
+      }
+    }
+
+    .sectionDescription {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .fieldTip {
+      display: block;
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: -12px;
+      margin-bottom: 16px;
+    }
+
+    .optional {
+      color: #94a3b8;
+      font-weight: normal;
+    }
+  }
+
+  .imageUploadSection {
+    .mainImageArea {
+      margin-bottom: 24px;
+
+      label {
+        display: block;
+        color: #e2e8f0;
+        font-size: 14px;
+        margin-bottom: 12px;
+        font-weight: 500;
+      }
+    }
+
+    .additionalImagesArea {
+      label {
+        display: block;
+        color: #e2e8f0;
+        font-size: 14px;
+        margin-bottom: 12px;
+        font-weight: 500;
+      }
+
+      .uploadTip {
+        color: #94a3b8;
+        font-size: 12px;
+        margin-top: 12px;
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .comingSoon {
+    text-align: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+    font-size: 14px;
+  }
+
+  .formFooter {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+// Ant Design 组件样式覆盖
+:global {
+  .ant-form-item-label > label {
+    color: #e2e8f0;
+    font-weight: 500;
+  }
+
+  .ant-input,
+  .ant-input-number,
+  .ant-select-selector,
+  .ant-input-number-input {
+    background-color: rgba(51, 65, 85, 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.5);
+    }
+
+    &:focus,
+    &.ant-input-focused,
+    &.ant-select-focused .ant-select-selector {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+  }
+
+  .ant-select-dropdown {
+    background-color: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1);
+
+    .ant-select-item {
+      color: #e2e8f0;
+
+      &:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+      }
+
+      &.ant-select-item-option-selected {
+        background-color: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+      }
+    }
+  }
+
+  .ant-upload.ant-upload-select-picture-card {
+    background-color: rgba(51, 65, 85, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      border-color: #3b82f6;
+    }
+  }
+
+  .ant-upload-list-picture-card .ant-upload-list-item {
+    background-color: rgba(51, 65, 85, 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .ant-tabs {
+    .ant-tabs-nav {
+      margin-bottom: 24px;
+
+      .ant-tabs-tab {
+        color: #94a3b8;
+
+        &:hover {
+          color: #e2e8f0;
+        }
+
+        &.ant-tabs-tab-active .ant-tabs-tab-btn {
+          color: #3b82f6;
+        }
+      }
+
+      .ant-tabs-ink-bar {
+        background: #3b82f6;
+      }
+    }
+
+    .ant-tabs-content-holder {
+      .ant-tabs-content {
+        color: #e2e8f0;
+      }
+    }
+  }
+}

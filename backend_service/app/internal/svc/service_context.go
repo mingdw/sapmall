@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"sapphire-mall/app/internal/config"
 	"sapphire-mall/app/internal/middleware"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 	"github.com/tencentyun/cos-go-sdk-v5"
@@ -34,6 +35,16 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err != nil {
 		panic("failed to connect database: " + err.Error())
 	}
+
+	// 配置数据库连接池和超时设置
+	sqlDB, err := db.DB()
+	if err != nil {
+		panic("failed to get database instance: " + err.Error())
+	}
+	// 设置连接池参数
+	sqlDB.SetMaxIdleConns(10)           // 设置空闲连接池中连接的最大数量
+	sqlDB.SetMaxOpenConns(100)          // 设置打开数据库连接的最大数量
+	sqlDB.SetConnMaxLifetime(time.Hour) // 设置连接可复用的最大时间（1小时）
 
 	secretID := c.Cos.SecretId
 	secretKey := c.Cos.SecretKey
