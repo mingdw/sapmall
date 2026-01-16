@@ -1,7 +1,6 @@
 import React from 'react';
 import { Modal } from 'antd';
 import type { ModalProps } from 'antd';
-import styles from './AdminModal.module.scss';
 
 interface AdminModalProps extends ModalProps {
   children: React.ReactNode;
@@ -18,13 +17,6 @@ const AdminModal: React.FC<AdminModalProps> = ({
   width,
   ...props
 }) => {
-  const modalClasses = [
-    styles.adminModal,
-    styles[`adminModal${variant.charAt(0).toUpperCase() + variant.slice(1)}`],
-    styles[`adminModal${size.charAt(0).toUpperCase() + size.slice(1)}`],
-    className
-  ].filter(Boolean).join(' ');
-
   // 根据 size 设置默认宽度（如果未指定 width）
   const widthMap = {
     small: 480,
@@ -37,7 +29,7 @@ const AdminModal: React.FC<AdminModalProps> = ({
 
   return (
     <Modal
-      className={modalClasses}
+      className={className}
       width={modalWidth}
       {...props}
       centered

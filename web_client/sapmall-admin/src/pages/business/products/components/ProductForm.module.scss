@@ -1,5 +1,32 @@
 .productForm {
   padding: 20px 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  
+  // 确保表单内容居中
+  :global(.ant-form) {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  // Steps 步骤条样式
+  :global(.ant-steps) {
+    width: 100%;
+    margin-bottom: 32px;
+  }
+  
+  // 表单区域确保宽度
+  .formSection {
+    width: 100%;
+    
+    // Row 确保宽度
+    :global(.ant-row) {
+      width: 100%;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+  }
 
   .formSection {
     margin-bottom: 32px;
@@ -53,6 +80,44 @@
         margin-bottom: 12px;
         font-weight: 500;
       }
+
+      // 上传组件内的文字
+      :global(.ant-upload-select-picture-card) {
+        div {
+          color: #94a3b8 !important;
+          
+          small {
+            color: #64748b !important;
+          }
+        }
+
+        .anticon,
+        .anticon svg,
+        .anticon svg path,
+        span.anticon,
+        span.anticon svg,
+        span.anticon svg path {
+          color: #e2e8f0 !important;
+          fill: #e2e8f0 !important;
+        }
+      }
+      
+      // 更具体的选择器确保覆盖全局样式
+      :global(.ant-upload-select-picture-card > div .anticon),
+      :global(.ant-upload-select-picture-card > div .anticon svg),
+      :global(.ant-upload-select-picture-card > div .anticon svg path) {
+        color: #e2e8f0 !important;
+        fill: #e2e8f0 !important;
+      }
+
+      // 确保上传提示文字颜色正确
+      :global(.ant-upload-select-picture-card > div > div) {
+        color: #94a3b8 !important;
+      }
+
+      :global(.ant-upload-select-picture-card > div > small) {
+        color: #64748b !important;
+      }
     }
 
     .additionalImagesArea {
@@ -69,6 +134,36 @@
         font-size: 12px;
         margin-top: 12px;
         margin-bottom: 0;
+      }
+
+      // 上传组件内的文字
+      :global(.ant-upload-select-picture-card) {
+        div {
+          color: #94a3b8 !important;
+        }
+
+        .anticon,
+        .anticon svg,
+        .anticon svg path,
+        span.anticon,
+        span.anticon svg,
+        span.anticon svg path {
+          color: #e2e8f0 !important;
+          fill: #e2e8f0 !important;
+        }
+      }
+      
+      // 更具体的选择器确保覆盖全局样式
+      :global(.ant-upload-select-picture-card > div .anticon),
+      :global(.ant-upload-select-picture-card > div .anticon svg),
+      :global(.ant-upload-select-picture-card > div .anticon svg path) {
+        color: #e2e8f0 !important;
+        fill: #e2e8f0 !important;
+      }
+
+      // 确保上传提示文字颜色正确
+      :global(.ant-upload-select-picture-card > div > div) {
+        color: #94a3b8 !important;
       }
     }
   }
@@ -87,92 +182,370 @@
     display: flex;
     justify-content: flex-end;
   }
-}
 
-// Ant Design 组件样式覆盖
-:global {
-  .ant-form-item-label > label {
-    color: #e2e8f0;
-    font-weight: 500;
+  .stepContent {
+    min-height: 400px;
+    padding: 20px 0;
   }
 
-  .ant-input,
-  .ant-input-number,
-  .ant-select-selector,
-  .ant-input-number-input {
-    background-color: rgba(51, 65, 85, 0.5);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #e2e8f0;
+  .attributesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .specAndSkuContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+}
+
+// Ant Design 组件样式覆盖 - 与模态框样式保持一致
+:global {
+  // 表单标签 - 确保所有表单标签都是浅色
+  .ant-form-item-label > label {
+    color: #e2e8f0 !important;
+    font-weight: 500 !important;
+    
+    .ant-form-item-required::before {
+      color: #ef4444 !important;
+    }
+  }
+
+  // 确保表单内所有文本都是浅色
+  .ant-form-item-label,
+  .ant-form-item-label > label,
+  .ant-form-item-label > label.ant-form-item-required {
+    color: #e2e8f0 !important;
+  }
+
+  // 输入框
+  .ant-input {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(148, 163, 184, 0.2) !important;
+    color: #e2e8f0 !important;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+
+    &::placeholder {
+      color: #64748b !important;
+    }
 
     &:hover {
-      border-color: rgba(59, 130, 246, 0.5);
+      border-color: rgba(59, 130, 246, 0.5) !important;
+      background-color: rgba(30, 41, 59, 0.9) !important;
     }
 
     &:focus,
-    &.ant-input-focused,
-    &.ant-select-focused .ant-select-selector {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    &.ant-input-focused {
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+      background-color: rgba(30, 41, 59, 0.95) !important;
     }
   }
 
-  .ant-select-dropdown {
-    background-color: #1e293b;
-    border-color: rgba(255, 255, 255, 0.1);
+  // 文本域（商品简介）- 简洁样式，与输入框背景颜色一致
+  .ant-input[type="textarea"],
+  textarea.ant-input {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(148, 163, 184, 0.2) !important;
+    color: #e2e8f0 !important;
+    border-radius: 6px;
+    padding: 12px !important;
+    resize: vertical;
+    transition: all 0.2s ease;
+    border-width: 1px;
+    border-style: solid;
 
-    .ant-select-item {
-      color: #e2e8f0;
+    &::placeholder {
+      color: #64748b !important;
+    }
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.5) !important;
+      background-color: rgba(30, 41, 59, 0.9) !important;
+    }
+
+    &:focus {
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+      background-color: rgba(30, 41, 59, 0.95) !important;
+      outline: none;
+    }
+  }
+
+  // 文本域字符计数
+  .ant-input[type="textarea"] + .ant-input-data-count,
+  .ant-input-show-count-suffix,
+  .ant-input-show-count-wrapper .ant-input-data-count {
+    color: #94a3b8 !important;
+  }
+
+  // 数字输入框
+  .ant-input-number {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(148, 163, 184, 0.2) !important;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+
+    .ant-input-number-input,
+    .ant-input-number-input-wrap {
+      background-color: transparent !important;
+      color: #e2e8f0 !important;
+    }
+
+    // 确保占位符也是浅色
+    .ant-input-number-input::placeholder {
+      color: #64748b !important;
+    }
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.5) !important;
+      background-color: rgba(30, 41, 59, 0.9) !important;
+    }
+
+    &.ant-input-number-focused {
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+    }
+
+    .ant-input-number-handler-wrap {
+      background-color: rgba(51, 65, 85, 0.5);
+      border-left: 1px solid rgba(148, 163, 184, 0.2);
+
+      .ant-input-number-handler {
+        color: #94a3b8;
+        border-top: 1px solid rgba(148, 163, 184, 0.2);
+
+        &:hover {
+          color: #3b82f6;
+        }
+      }
+    }
+  }
+
+  // 下拉选择器
+  .ant-select {
+    .ant-select-selector {
+      background-color: rgba(30, 41, 59, 0.8) !important;
+      border-color: rgba(148, 163, 184, 0.2) !important;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+
+      .ant-select-selection-item {
+        color: #e2e8f0 !important;
+      }
+
+      .ant-select-selection-placeholder {
+        color: #64748b !important;
+      }
 
       &:hover {
-        background-color: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.5) !important;
+        background-color: rgba(30, 41, 59, 0.9) !important;
+      }
+    }
+
+    &.ant-select-focused .ant-select-selector {
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+      background-color: rgba(30, 41, 59, 0.95) !important;
+    }
+
+    .ant-select-arrow {
+      color: #94a3b8;
+    }
+  }
+
+  // 下拉选项菜单 - 全局样式（因为下拉菜单会渲染到 body）
+  .ant-select-dropdown {
+    background-color: #1e293b !important;
+    border: 1px solid rgba(51, 65, 85, 0.5) !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    padding: 4px 0;
+
+    .ant-select-item {
+      color: #e2e8f0 !important;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: rgba(59, 130, 246, 0.15) !important;
+        color: #3b82f6 !important;
       }
 
       &.ant-select-item-option-selected {
-        background-color: rgba(59, 130, 246, 0.2);
-        color: #3b82f6;
+        background-color: rgba(59, 130, 246, 0.25) !important;
+        color: #3b82f6 !important;
+        font-weight: 500;
       }
+
+      &.ant-select-item-option-active {
+        background-color: rgba(59, 130, 246, 0.1) !important;
+      }
+    }
+
+    .ant-select-item-empty {
+      color: #64748b !important;
     }
   }
 
+  // 上传组件
   .ant-upload.ant-upload-select-picture-card {
-    background-color: rgba(51, 65, 85, 0.3);
-    border-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(30, 41, 59, 0.6) !important;
+    border-color: rgba(148, 163, 184, 0.2) !important;
+    border-radius: 8px;
+    transition: all 0.2s ease;
 
     &:hover {
-      border-color: #3b82f6;
+      border-color: #3b82f6 !important;
+      background-color: rgba(30, 41, 59, 0.8) !important;
+    }
+
+    // 上传组件内的文字和图标 - 使用更高优先级的选择器
+    .anticon,
+    .anticon svg,
+    .anticon svg path,
+    span.anticon,
+    span.anticon svg,
+    span.anticon svg path {
+      color: #e2e8f0 !important;
+      fill: #e2e8f0 !important;
+    }
+    
+    // 确保上传框内的所有图标都是浅色
+    > div .anticon,
+    > div .anticon svg,
+    > div .anticon svg path,
+    > div span.anticon,
+    > div span.anticon svg,
+    > div span.anticon svg path {
+      color: #e2e8f0 !important;
+      fill: #e2e8f0 !important;
+    }
+
+    // 上传提示文字
+    > div {
+      color: #94a3b8 !important;
+      
+      small {
+        color: #64748b !important;
+      }
     }
   }
 
   .ant-upload-list-picture-card .ant-upload-list-item {
-    background-color: rgba(51, 65, 85, 0.5);
-    border-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    border-color: rgba(148, 163, 184, 0.2) !important;
+    border-radius: 8px;
+
+    &:hover {
+      border-color: #3b82f6;
+    }
   }
 
-  .ant-tabs {
-    .ant-tabs-nav {
-      margin-bottom: 24px;
-
-      .ant-tabs-tab {
-        color: #94a3b8;
-
-        &:hover {
-          color: #e2e8f0;
-        }
-
-        &.ant-tabs-tab-active .ant-tabs-tab-btn {
-          color: #3b82f6;
+  // Steps 步骤条深色主题样式
+  .ant-steps {
+    .ant-steps-item {
+      .ant-steps-item-title {
+        color: #94a3b8 !important;
+        
+        &.ant-steps-item-active .ant-steps-item-title {
+          color: #3b82f6 !important;
         }
       }
 
-      .ant-tabs-ink-bar {
-        background: #3b82f6;
+      .ant-steps-item-description {
+        color: #64748b !important;
+      }
+
+      &.ant-steps-item-active {
+        .ant-steps-item-title {
+          color: #3b82f6 !important;
+        }
+      }
+
+      &.ant-steps-item-finish {
+        .ant-steps-item-title {
+          color: #e2e8f0 !important;
+        }
+      }
+
+      &.ant-steps-item-disabled {
+        .ant-steps-item-title,
+        .ant-steps-item-description {
+          color: #475569 !important;
+        }
       }
     }
 
-    .ant-tabs-content-holder {
-      .ant-tabs-content {
-        color: #e2e8f0;
+    .ant-steps-item-icon {
+      border-color: rgba(148, 163, 184, 0.3) !important;
+      background-color: rgba(30, 41, 59, 0.8) !important;
+      color: #94a3b8 !important;
+
+      .ant-steps-icon {
+        color: #94a3b8 !important;
       }
     }
+
+    .ant-steps-item-active .ant-steps-item-icon {
+      border-color: #3b82f6 !important;
+      background-color: rgba(59, 130, 246, 0.1) !important;
+      
+      .ant-steps-icon {
+        color: #3b82f6 !important;
+      }
+    }
+
+    .ant-steps-item-finish .ant-steps-item-icon {
+      border-color: #3b82f6 !important;
+      background-color: rgba(59, 130, 246, 0.1) !important;
+      
+      .ant-steps-icon {
+        color: #3b82f6 !important;
+      }
+    }
+
+    .ant-steps-item-tail {
+      &::after {
+        background-color: rgba(51, 65, 85, 0.5) !important;
+      }
+    }
+
+    .ant-steps-item-finish .ant-steps-item-tail::after {
+      background-color: #3b82f6 !important;
+    }
+
+    // 为 process 状态的步骤也添加连线样式，确保当前步骤和下一个步骤之间的连线显示
+    // 使用更高的优先级确保样式生效
+    .ant-steps-item-process .ant-steps-item-tail::after,
+    .ant-steps-item.ant-steps-item-process .ant-steps-item-tail::after {
+      background-color: #3b82f6 !important;
+    }
+    
+    // 确保 process 状态的步骤的 tail 元素存在且可见
+    .ant-steps-item-process .ant-steps-item-tail {
+      &::after {
+        background-color: #3b82f6 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+    }
+  }
+
+  // 表单提示文本
+  .ant-form-item-explain-error {
+    color: #f87171 !important;
+  }
+
+  .ant-form-item-explain-success {
+    color: #34d399 !important;
+  }
+
+  // 表单帮助文本
+  .ant-form-item-extra {
+    color: #94a3b8 !important;
   }
 }

@@ -200,6 +200,59 @@ export const productApi = {
       throw error;
     }
   },
+
+  /**
+   * 保存商品属性参数
+   * @param productSpuId 商品SPU ID
+   * @param productSpuCode 商品SPU编码
+   * @param attrType 属性类型：1-基本属性，2-销售属性，3-规格属性
+   * @param value JSON格式的属性值（基础/销售属性是Record<string, string>，规格属性是Record<string, string[]>）
+   */
+  saveProductAttrParams: async (
+    productSpuId: number,
+    productSpuCode: string,
+    attrType: number,
+    value: Record<string, string> | Record<string, string[]>
+  ): Promise<ApiResponse<any>> => {
+    try {
+      const response = await baseClient.post<any>(
+        '/api/admin/product/attr-params',
+        {
+          productSpuId,
+          productSpuCode,
+          code: attrType === 1 ? 'BASIC_ATTRS' : attrType === 2 ? 'SALE_ATTRS' : 'SPEC_ATTRS',
+          name: attrType === 1 ? '基础属性' : attrType === 2 ? '销售属性' : '规格属性',
+          attrType,
+          valueType: 3, // JSON类型
+          value: JSON.stringify(value),
+          sort: attrType,
+          status: 1,
+          isRequired: 1,
+          isGeneric: attrType === 3 ? 0 : 1, // 规格属性不是通用属性
+        }
+      );
+      return response;
+    } catch (error) {
+      console.error('保存商品属性失败:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * 获取商品属性参数
+   * @param productSpuId 商品SPU ID
+   */
+  getProductAttrParams: async (productSpuId: number): Promise<ApiResponse<any[]>> => {
+    try {
+      const response = await baseClient.get<any[]>(
+        `/api/admin/product/${productSpuId}/attr-params`
+      );
+      return response;
+    } catch (error) {
+      console.error('获取商品属性失败:', error);
+      throw error;
+    }
+  },
 };
 
 export default productApi;
