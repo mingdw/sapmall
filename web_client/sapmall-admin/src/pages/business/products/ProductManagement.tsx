@@ -12,7 +12,6 @@ import {
   Col,
   Tooltip,
 } from 'antd';
-import AdminModal from '../../../components/common/AdminModal';
 import {
   PlusOutlined,
   EditOutlined,
@@ -601,7 +600,7 @@ const ProductManagement: React.FC = () => {
       </Spin>
 
       {/* 添加/编辑商品模态框 */}
-      <AdminModal
+      <Modal
         title={currentProduct ? '编辑商品' : '添加商品'}
         open={isModalVisible}
         onCancel={() => {
@@ -609,9 +608,10 @@ const ProductManagement: React.FC = () => {
           setCurrentProduct(null);
         }}
         footer={null}
-        variant="primary"
-        size="large"
+        width={1000}
         destroyOnClose
+        centered
+        maskClosable={false}
       >
         <ProductForm
           product={currentProduct}
@@ -625,7 +625,7 @@ const ProductManagement: React.FC = () => {
             loadProducts();
           }}
         />
-      </AdminModal>
+      </Modal>
     </div>
   );
 };

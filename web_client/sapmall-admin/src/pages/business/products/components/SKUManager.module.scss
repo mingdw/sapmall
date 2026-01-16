@@ -1,0 +1,478 @@
+.skuManager {
+  margin-bottom: 24px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin: 0;
+    }
+
+    .skuCount {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+  }
+
+  .tableWrapper {
+    background-color: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .skuTableRow {
+    // 自定义行样式，确保hover时保持深色背景
+  }
+
+  .skuTable {
+    :global {
+      .ant-table {
+        background-color: transparent;
+        color: #e2e8f0;
+      }
+
+      // 固定表头样式
+      .ant-table-thead > tr > th {
+        background-color: rgba(30, 41, 59, 0.5) !important;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        color: #e2e8f0;
+        font-weight: 600;
+        font-size: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      // 表格容器滚动条样式
+      .ant-table-body {
+        &::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: rgba(30, 41, 59, 0.2);
+          border-radius: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: rgba(148, 163, 184, 0.3);
+          border-radius: 4px;
+          transition: background 0.2s ease;
+
+          &:hover {
+            background: rgba(148, 163, 184, 0.5);
+          }
+
+          &:active {
+            background: rgba(59, 130, 246, 0.6);
+          }
+        }
+      }
+
+      .ant-table-tbody > tr > td {
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        background-color: rgba(30, 41, 59, 0.2) !important;
+      }
+
+      // 完全禁用hover效果，避免白色背景闪烁
+      .ant-table-tbody > tr:hover > td,
+      .ant-table-tbody > tr.ant-table-row-hover > td,
+      .ant-table-tbody > tr:hover,
+      .ant-table-tbody > tr.ant-table-row-hover {
+        background-color: rgba(30, 41, 59, 0.2) !important;
+      }
+
+      // 确保每一列都保持深色背景
+      .ant-table-tbody > tr:hover > td:first-child,
+      .ant-table-tbody > tr:hover > td:last-child,
+      .ant-table-tbody > tr:hover > td:nth-child(n) {
+        background-color: rgba(30, 41, 59, 0.2) !important;
+      }
+
+      // 针对自定义rowClassName的样式
+      .ant-table-tbody > tr.skuTableRow:hover > td,
+      .ant-table-tbody > tr.skuTableRow.ant-table-row-hover > td {
+        background-color: rgba(30, 41, 59, 0.2) !important;
+      }
+
+      .ant-table-tbody > tr:last-child > td {
+        border-bottom: none;
+      }
+
+      // 移除所有transition动画
+      .ant-table,
+      .ant-table-thead > tr > th,
+      .ant-table-tbody > tr,
+      .ant-table-tbody > tr > td {
+        transition: none !important;
+      }
+    }
+  }
+
+  .combinationCell {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .specTag {
+    margin: 0;
+    font-size: 11px;
+    padding: 2px 8px;
+    background-color: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+  }
+
+  .nameCell {
+    width: 100%;
+    overflow: hidden;
+
+    .nameInput {
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .nameInput,
+  .skuCodeInput,
+  .titleInput {
+    background-color: rgba(30, 41, 59, 0.6) !important;
+    border-color: rgba(148, 163, 184, 0.2) !important;
+    color: #e2e8f0 !important;
+    border-radius: 4px;
+    font-size: 12px;
+    width: 100%;
+
+    &::placeholder {
+      color: #64748b !important;
+    }
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.4) !important;
+      background-color: rgba(30, 41, 59, 0.7) !important;
+    }
+
+    &:focus,
+    &.ant-input-focused {
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+      background-color: rgba(30, 41, 59, 0.8) !important;
+    }
+
+    &:disabled {
+      background-color: rgba(30, 41, 59, 0.4) !important;
+      color: #64748b !important;
+      cursor: not-allowed;
+    }
+  }
+
+  .imageListContainer {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .imageThumbnails {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .imageThumbnail {
+    position: relative;
+    flex-shrink: 0;
+
+    .thumbnailWrapper {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background-color: rgba(30, 41, 59, 0.3);
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: rgba(59, 130, 246, 0.5);
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+
+        .removeImageBtn {
+          opacity: 1;
+        }
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .removeImageBtn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(239, 68, 68, 0.9);
+        border: none;
+        border-radius: 0 0 0 4px;
+        color: #ffffff;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        padding: 0;
+        font-size: 10px;
+
+        &:hover {
+          background-color: rgba(239, 68, 68, 1);
+        }
+
+        :global(.anticon) {
+          font-size: 10px;
+        }
+      }
+    }
+  }
+
+  .addImageBtn {
+    flex-shrink: 0;
+
+    .addImageButton {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(30, 41, 59, 0.3);
+      border: 1px dashed rgba(148, 163, 184, 0.3);
+      border-radius: 4px;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0;
+      gap: 2px;
+
+      &:hover {
+        border-color: rgba(59, 130, 246, 0.5);
+        background-color: rgba(30, 41, 59, 0.5);
+        color: #60a5fa;
+      }
+
+      :global(.anticon) {
+        font-size: 14px;
+      }
+
+      span {
+        font-size: 10px;
+        line-height: 1;
+      }
+    }
+  }
+
+  .priceInput,
+  .stockInput {
+    :global {
+      .ant-input-number {
+        background-color: rgba(30, 41, 59, 0.6) !important;
+        border-color: rgba(148, 163, 184, 0.2) !important;
+        width: 100%;
+
+        .ant-input-number-input {
+          color: #e2e8f0 !important;
+          font-size: 12px;
+          background-color: transparent !important;
+        }
+
+        &:hover {
+          border-color: rgba(59, 130, 246, 0.4) !important;
+          background-color: rgba(30, 41, 59, 0.7) !important;
+        }
+
+        &.ant-input-number-focused {
+          border-color: #3b82f6 !important;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+          background-color: rgba(30, 41, 59, 0.8) !important;
+        }
+      }
+    }
+  }
+
+  .emptyTip {
+    padding: 40px 24px;
+    text-align: center;
+    background-color: rgba(30, 41, 59, 0.2);
+    border: 1px dashed rgba(148, 163, 184, 0.2);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(148, 163, 184, 0.3);
+      background-color: rgba(30, 41, 59, 0.3);
+    }
+
+    .emptyIcon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+
+    .emptyText {
+      color: #94a3b8 !important;
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0 0 6px 0;
+    }
+
+    .emptyHint {
+      color: #64748b !important;
+      font-size: 12px;
+      margin: 0;
+    }
+
+    // 确保p标签也应用颜色，使用更强的选择器
+    p.emptyText {
+      color: #94a3b8 !important;
+    }
+
+    p.emptyHint {
+      color: #64748b !important;
+    }
+  }
+}
+
+// 全局样式覆盖
+:global {
+  .skuManager {
+    // 普通输入框
+    .ant-input,
+    input.ant-input {
+      background-color: rgba(30, 41, 59, 0.6) !important;
+      border-color: rgba(148, 163, 184, 0.2) !important;
+      color: #e2e8f0 !important;
+
+      &::placeholder {
+        color: #64748b !important;
+      }
+
+      &:hover {
+        border-color: rgba(59, 130, 246, 0.4) !important;
+        background-color: rgba(30, 41, 59, 0.7) !important;
+      }
+
+      &:focus,
+      &.ant-input-focused,
+      &:focus-within {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+        background-color: rgba(30, 41, 59, 0.8) !important;
+      }
+
+      &:disabled {
+        background-color: rgba(30, 41, 59, 0.4) !important;
+        color: #64748b !important;
+        cursor: not-allowed;
+      }
+    }
+
+    // InputNumber组件
+    .ant-input-number {
+      background-color: rgba(30, 41, 59, 0.6) !important;
+      border-color: rgba(148, 163, 184, 0.2) !important;
+
+      .ant-input-number-input,
+      .ant-input-number-input-wrap {
+        background-color: transparent !important;
+        color: #e2e8f0 !important;
+      }
+
+      &:hover {
+        border-color: rgba(59, 130, 246, 0.4) !important;
+        background-color: rgba(30, 41, 59, 0.7) !important;
+      }
+
+      &.ant-input-number-focused,
+      &:focus-within {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+        background-color: rgba(30, 41, 59, 0.8) !important;
+
+        .ant-input-number-input,
+        .ant-input-number-input-wrap {
+          background-color: transparent !important;
+        }
+      }
+    }
+
+    // 完全禁用表格行的hover效果 - 使用最强的选择器
+    .ant-table-tbody > tr:hover > td,
+    .ant-table-tbody > tr.ant-table-row-hover > td,
+    .ant-table-tbody > tr:hover,
+    .ant-table-tbody > tr.ant-table-row-hover,
+    .ant-table-tbody tr:hover td,
+    .ant-table-tbody tr.ant-table-row-hover td {
+      background-color: rgba(30, 41, 59, 0.2) !important;
+      background: rgba(30, 41, 59, 0.2) !important;
+    }
+
+    // 确保每一列都保持深色背景（使用更强的选择器）
+    .ant-table-tbody > tr:hover > td:first-child,
+    .ant-table-tbody > tr:hover > td:last-child,
+    .ant-table-tbody > tr:hover > td:nth-child(n),
+    .ant-table-tbody > tr.ant-table-row-hover > td:first-child,
+    .ant-table-tbody > tr.ant-table-row-hover > td:last-child,
+    .ant-table-tbody > tr.ant-table-row-hover > td:nth-child(n),
+    .ant-table-tbody tr:hover td:first-child,
+    .ant-table-tbody tr:hover td:last-child,
+    .ant-table-tbody tr:hover td:nth-child(n) {
+      background-color: rgba(30, 41, 59, 0.2) !important;
+      background: rgba(30, 41, 59, 0.2) !important;
+    }
+
+    // 针对自定义rowClassName的样式
+    .ant-table-tbody > tr.skuTableRow:hover > td,
+    .ant-table-tbody > tr.skuTableRow.ant-table-row-hover > td {
+      background-color: rgba(30, 41, 59, 0.2) !important;
+      background: rgba(30, 41, 59, 0.2) !important;
+    }
+
+    // 确保空状态提示文字颜色正确
+    .emptyTip {
+      p.emptyText,
+      p.emptyText * {
+        color: #94a3b8 !important;
+      }
+
+      p.emptyHint,
+      p.emptyHint * {
+        color: #64748b !important;
+      }
+
+      // 确保所有p标签都有正确的颜色
+      p {
+        color: #94a3b8 !important;
+      }
+    }
+  }
+}

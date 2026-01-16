@@ -179,6 +179,167 @@
   box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
 }
 
+/* 保存按钮 - 蓝色主题，用于表单提交 */
+.adminBtnSave {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: white;
+  box-shadow: 0 3px 12px rgba(59, 130, 246, 0.2);
+}
+
+.adminBtnSave:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+}
+
+/* 下一步按钮 - 蓝色主题，用于步骤导航 */
+.adminBtnNext {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: white;
+  box-shadow: 0 3px 12px rgba(59, 130, 246, 0.2);
+}
+
+.adminBtnNext:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+}
+
+/* 取消按钮 - 灰色主题，用于取消操作 */
+.adminBtnCancel {
+  background: rgba(51, 65, 85, 0.4);
+  border-color: rgba(71, 85, 105, 0.5);
+  color: #e2e8f0;
+  box-shadow: 0 3px 12px rgba(51, 65, 85, 0.2);
+}
+
+.adminBtnCancel:hover {
+  background: rgba(51, 65, 85, 0.6);
+  border-color: rgba(100, 116, 139, 0.5);
+  color: #f1f5f9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(51, 65, 85, 0.3);
+}
+
+/* 暂存按钮 - 橙色主题，用于临时保存 */
+.adminBtnDraft {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  border-color: rgba(249, 115, 22, 0.3);
+  color: white;
+  box-shadow: 0 3px 12px rgba(249, 115, 22, 0.2);
+}
+
+.adminBtnDraft:hover {
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+  border-color: rgba(249, 115, 22, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3);
+}
+
+/* 上一步按钮 - 灰色主题，用于返回上一步 */
+.adminBtnPrev {
+  background: rgba(51, 65, 85, 0.5);
+  border-color: rgba(71, 85, 105, 0.6);
+  color: #cbd5e1;
+  box-shadow: 0 3px 12px rgba(51, 65, 85, 0.2);
+}
+
+.adminBtnPrev:hover {
+  background: rgba(71, 85, 105, 0.7);
+  border-color: rgba(100, 116, 139, 0.6);
+  color: #e2e8f0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(51, 65, 85, 0.3);
+}
+
+/* 编辑按钮 - 蓝色主题，用于编辑操作 */
+.adminBtnEdit {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: white;
+  box-shadow: 0 3px 12px rgba(59, 130, 246, 0.2);
+}
+
+.adminBtnEdit:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+}
+
+/* 查看按钮 - 青色主题，用于查看操作 */
+.adminBtnView {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  border-color: rgba(6, 182, 212, 0.3);
+  color: white;
+  box-shadow: 0 3px 12px rgba(6, 182, 212, 0.2);
+}
+
+.adminBtnView:hover {
+  background: linear-gradient(135deg, #0891b2, #0e7490);
+  border-color: rgba(6, 182, 212, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+}
+
+/* 确认按钮 - 绿色主题，用于确认操作 */
+.adminBtnConfirm {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: white;
+  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.2);
+}
+
+.adminBtnConfirm:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  border-color: rgba(16, 185, 129, 0.5);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* 返回按钮 - 灰色主题，用于返回操作 */
+.adminBtnBack {
+  background: rgba(51, 65, 85, 0.4);
+  border-color: rgba(71, 85, 105, 0.5);
+  color: #94a3b8;
+  box-shadow: 0 3px 12px rgba(51, 65, 85, 0.2);
+}
+
+.adminBtnBack:hover {
+  background: rgba(51, 65, 85, 0.6);
+  border-color: rgba(100, 116, 139, 0.5);
+  color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(51, 65, 85, 0.3);
+}
+
+/* 提交按钮 - 深蓝色主题，用于表单提交操作 */
+.adminBtnSubmit {
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  border-color: rgba(30, 64, 175, 0.4);
+  color: white;
+  box-shadow: 0 3px 12px rgba(30, 64, 175, 0.3);
+  font-weight: 600;
+}
+
+.adminBtnSubmit:hover {
+  background: linear-gradient(135deg, #1e3a8a, #1e293b);
+  border-color: rgba(30, 64, 175, 0.6);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+}
+
 /* 尺寸样式 */
 .adminBtnSm {
   height: 30px;

@@ -1,0 +1,323 @@
+.specificationEditor {
+  margin-bottom: 24px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin: 0;
+    }
+  }
+
+  .templateDropdown {
+    :global(.ant-dropdown-menu) {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.95)) !important;
+      backdrop-filter: blur(20px) !important;
+      border: 1px solid rgba(51, 65, 85, 0.4) !important;
+      border-radius: 8px !important;
+      padding: 4px 0 !important;
+      max-height: 300px !important;
+      overflow-y: auto !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    :global(.ant-dropdown-menu-item) {
+      color: #e2e8f0 !important;
+      background: transparent !important;
+      transition: all 0.2s ease !important;
+      padding: 6px 12px !important;
+      margin: 2px 4px !important;
+      border-radius: 6px !important;
+      font-size: 12px !important;
+
+      &:hover:not(:global(.ant-dropdown-menu-item-disabled)) {
+        background-color: rgba(59, 130, 246, 0.2) !important;
+        color: #60a5fa !important;
+      }
+
+      &:global(.ant-dropdown-menu-item-disabled) {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+        color: #64748b !important;
+      }
+
+      &:global(.ant-dropdown-menu-item-active) {
+        background-color: rgba(59, 130, 246, 0.15) !important;
+      }
+    }
+  }
+
+  .templateMenuItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    color: inherit;
+    font-size: 12px;
+
+    .templateIcon {
+      font-size: 14px;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .templateLabel {
+      flex: 1;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .templateUsed {
+      font-size: 10px;
+      color: #94a3b8;
+      font-style: italic;
+    }
+  }
+
+  .specificationList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .specificationItem {
+    padding: 16px;
+    background-color: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.3);
+      background-color: rgba(30, 41, 59, 0.4);
+    }
+
+    &.editing {
+      border-color: rgba(59, 130, 246, 0.5);
+      background-color: rgba(30, 41, 59, 0.5);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+
+    .specHeader {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+
+      .specNameInput {
+        flex: 1;
+        background-color: rgba(30, 41, 59, 0.6);
+        border-color: rgba(148, 163, 184, 0.2);
+        color: #e2e8f0;
+        border-radius: 4px;
+        font-size: 13px;
+        height: 32px;
+
+        &::placeholder {
+          color: #64748b;
+        }
+
+        &:hover {
+          border-color: rgba(59, 130, 246, 0.4);
+          background-color: rgba(30, 41, 59, 0.7);
+        }
+
+        &:focus {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+          background-color: rgba(30, 41, 59, 0.8);
+        }
+      }
+
+      .deleteBtn {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 4px;
+        color: #ef4444;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 0;
+        font-size: 12px;
+
+        :global(.anticon) {
+          font-size: 12px;
+        }
+
+        &:hover {
+          background-color: rgba(239, 68, 68, 0.1);
+          border-color: rgba(239, 68, 68, 0.4);
+          color: #f87171;
+          transform: scale(1.05);
+        }
+
+        &:active {
+          background-color: rgba(239, 68, 68, 0.2);
+          transform: scale(0.95);
+        }
+      }
+    }
+
+    .specValues {
+      padding-left: 0;
+      margin-top: 12px;
+
+      .valuesLabel {
+        font-size: 12px;
+        color: #94a3b8;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .valuesList {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .valueItem {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        .valueInput {
+          width: 140px;
+          background-color: rgba(30, 41, 59, 0.6);
+          border-color: rgba(148, 163, 184, 0.2);
+          color: #e2e8f0;
+          border-radius: 4px;
+          font-size: 12px;
+          height: 28px;
+          padding: 4px 8px;
+
+          &::placeholder {
+            color: #64748b;
+          }
+
+          &:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            background-color: rgba(30, 41, 59, 0.7);
+          }
+
+          &:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+            background-color: rgba(30, 41, 59, 0.8);
+          }
+        }
+
+        .removeValueBtn {
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: transparent;
+          border: 1px solid rgba(239, 68, 68, 0.2);
+          border-radius: 3px;
+          color: #ef4444;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          padding: 0;
+          font-size: 10px;
+
+          :global(.anticon) {
+            font-size: 10px;
+          }
+
+          &:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #f87171;
+          }
+        }
+      }
+    }
+
+    .emptyValuesTip {
+      margin-top: 12px;
+      padding: 12px;
+      text-align: center;
+      background-color: rgba(30, 41, 59, 0.2);
+      border: 1px dashed rgba(148, 163, 184, 0.2);
+      border-radius: 6px;
+    }
+  }
+
+  .emptyTip {
+    padding: 40px 24px;
+    text-align: center;
+    background-color: rgba(30, 41, 59, 0.2);
+    border: 1px dashed rgba(148, 163, 184, 0.2);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(148, 163, 184, 0.3);
+      background-color: rgba(30, 41, 59, 0.3);
+    }
+
+    .emptyIcon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+
+    .emptyText {
+      color: #94a3b8;
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0 0 6px 0;
+    }
+
+    .emptyHint {
+      color: #64748b;
+      font-size: 12px;
+      margin: 0;
+    }
+  }
+}
+
+// 全局样式覆盖
+:global {
+  .specificationEditor {
+    .ant-input {
+      background-color: rgba(30, 41, 59, 0.6) !important;
+      border-color: rgba(148, 163, 184, 0.2) !important;
+      color: #e2e8f0 !important;
+
+      &::placeholder {
+        color: #64748b !important;
+      }
+
+      &:hover {
+        border-color: rgba(59, 130, 246, 0.4) !important;
+        background-color: rgba(30, 41, 59, 0.7) !important;
+      }
+
+      &:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+        background-color: rgba(30, 41, 59, 0.8) !important;
+      }
+
+      &:disabled {
+        background-color: rgba(30, 41, 59, 0.4) !important;
+        color: #64748b !important;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

@@ -1,0 +1,212 @@
+.attributeEditor {
+  margin-bottom: 24px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin: 0;
+    }
+  }
+
+  .attributeList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .attributeItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 6px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.3);
+      background-color: rgba(30, 41, 59, 0.5);
+    }
+
+    &.editing {
+      border-color: rgba(59, 130, 246, 0.5);
+      background-color: rgba(30, 41, 59, 0.6);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+
+    .attributeInputs {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .keyInput {
+        flex: 0 0 180px;
+        background-color: rgba(30, 41, 59, 0.6);
+        border-color: rgba(148, 163, 184, 0.2);
+        color: #e2e8f0;
+        border-radius: 4px;
+        font-size: 13px;
+        height: 32px;
+        padding: 4px 10px;
+
+        &::placeholder {
+          color: #64748b;
+        }
+
+        &:hover {
+          border-color: rgba(59, 130, 246, 0.4);
+          background-color: rgba(30, 41, 59, 0.7);
+        }
+
+        &:focus {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+          background-color: rgba(30, 41, 59, 0.8);
+        }
+      }
+
+      .separator {
+        color: #64748b;
+        font-weight: 400;
+        flex-shrink: 0;
+        font-size: 13px;
+      }
+
+      .valueInput {
+        flex: 1;
+        background-color: rgba(30, 41, 59, 0.6);
+        border-color: rgba(148, 163, 184, 0.2);
+        color: #e2e8f0;
+        border-radius: 4px;
+        font-size: 13px;
+        height: 32px;
+        padding: 4px 10px;
+
+        &::placeholder {
+          color: #64748b;
+        }
+
+        &:hover {
+          border-color: rgba(59, 130, 246, 0.4);
+          background-color: rgba(30, 41, 59, 0.7);
+        }
+
+        &:focus {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+          background-color: rgba(30, 41, 59, 0.8);
+        }
+      }
+    }
+
+    .deleteBtn {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: transparent;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 4px;
+      color: #ef4444;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0;
+      font-size: 12px;
+
+      :global(.anticon) {
+        font-size: 12px;
+      }
+
+      &:hover {
+        background-color: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.4);
+        color: #f87171;
+        transform: scale(1.05);
+      }
+
+      &:active {
+        background-color: rgba(239, 68, 68, 0.2);
+        transform: scale(0.95);
+      }
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .emptyTip {
+    padding: 40px 24px;
+    text-align: center;
+    background-color: rgba(30, 41, 59, 0.2);
+    border: 1px dashed rgba(148, 163, 184, 0.2);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(148, 163, 184, 0.3);
+      background-color: rgba(30, 41, 59, 0.3);
+    }
+
+    .emptyIcon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+
+    .emptyText {
+      color: #94a3b8;
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0 0 6px 0;
+    }
+
+    .emptyHint {
+      color: #64748b;
+      font-size: 12px;
+      margin: 0;
+    }
+  }
+}
+
+// 全局样式覆盖
+:global {
+  .attributeEditor {
+    .ant-input {
+      background-color: rgba(30, 41, 59, 0.8) !important;
+      border-color: rgba(148, 163, 184, 0.2) !important;
+      color: #e2e8f0 !important;
+
+      &::placeholder {
+        color: #64748b !important;
+      }
+
+      &:hover {
+        border-color: rgba(59, 130, 246, 0.5) !important;
+      }
+
+      &:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+      }
+
+      &:disabled {
+        background-color: rgba(30, 41, 59, 0.4) !important;
+        color: #64748b !important;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
