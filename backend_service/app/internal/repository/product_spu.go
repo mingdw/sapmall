@@ -58,7 +58,8 @@ func (r *productSpuRepository) CreateProductSpu(ctx context.Context, spu *model.
 }
 
 func (r *productSpuRepository) UpdateProductSpu(ctx context.Context, spu *model.ProductSpu) error {
-	return r.DB(ctx).Where("id = ?", spu.ID).
+	return r.DB(ctx).Model(&model.ProductSpu{}).
+		Where("id = ?", spu.ID).
 		Updates(map[string]interface{}{
 			"code":          spu.Code,
 			"name":          spu.Name,
