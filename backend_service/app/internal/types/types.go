@@ -128,33 +128,12 @@ type GetProductDetailReq struct {
 	Id int64 `path:"id"` // 商品SPU ID
 }
 
-type GetProductReq struct {
-	ProductId   int64  `json:"product_id"`
-	ProductCode string `json:"product_code"`
-}
-
-type GetProductResp struct {
-	Code        int         `json:"code"`
-	Msg         string      `json:"msg"`
-	ProductInfo ProductInfo `json:"product_info"`
-}
-
 type GetProductStatsReq struct {
 	Period string `json:"period,optional"` // 统计周期：day、week、month，默认为day
 }
 
 type GetSKUDetailReq struct {
 	Id int64 `path:"id"` // SKU ID
-}
-
-type GetUserInfoReq struct {
-	UserId int64 `path:"user_id"`
-}
-
-type GetUserInfoResp struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
-	Data string `json:"data"`
 }
 
 type HealthCheckReq struct {
@@ -194,20 +173,6 @@ type ListProductReq struct {
 type ListProductResp struct {
 	List  []ProductSPUInfo `json:"list"`
 	Total int64            `json:"total"`
-}
-
-type ListProductsReq struct {
-	CategoryCodes string `json:"categoryCodes"` // 分类编码，多个用逗号分隔
-	ProductName   string `json:"productName"`   // 商品名称
-	Page          int    `json:"page"`          // 页码
-	PageSize      int    `json:"pageSize"`      // 每页数量
-}
-
-type ListProductsResp struct {
-	Code     int           `json:"code"`
-	Msg      string        `json:"msg"`
-	Products []ProductInfo `json:"products"`
-	Total    int64         `json:"total"`
 }
 
 type ListSKUReq struct {
