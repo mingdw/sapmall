@@ -21,12 +21,13 @@ type BatchDeleteAttrParamReq struct {
 	Ids []int64 `json:"ids"` // 属性参数ID数组
 }
 
-type BatchDeleteProductReq struct {
-	Ids []int64 `json:"ids"` // 商品SPU ID数组
-}
-
 type BatchDeleteSKUReq struct {
 	Ids []int64 `json:"ids"` // SKU ID数组
+}
+
+type BatchUploadFileResp struct {
+	FileList []FileInfo `json:"fileList"` // 上传成功的文件列表
+	Failed   []string   `json:"failed"`   // 上传失败的文件名列表
 }
 
 type CreateProductReq struct {
@@ -63,12 +64,24 @@ type DeleteCategoryReq struct {
 	ID uint `path:"id"` // 目录ID
 }
 
-type DeleteProductReq struct {
-	Id int64 `path:"id"` // 商品SPU ID
+type DeleteFileReq struct {
+	Key string `json:"key"` // 文件在COS中的key
+}
+
+type DeleteFilesReq struct {
+	Keys []string `json:"keys"` // 文件key数组
+}
+
+type DeleteProductSpusReq struct {
+	Ids []int64 `json:"ids"` // 商品SPU ID数组
 }
 
 type DeleteSKUReq struct {
 	Id int64 `path:"id"` // SKU ID
+}
+
+type DownloadFileReq struct {
+	Key string `path:"key"` // 文件在COS中的key，支持路径参数或查询参数
 }
 
 type ExportProductReq struct {
@@ -80,8 +93,27 @@ type ExportProductReq struct {
 	TimeRange     string `json:"timeRange,optional"`
 }
 
+type FileInfo struct {
+	Key         string `json:"key"`         // 文件在COS中的key
+	Url         string `json:"url"`         // 文件访问URL
+	Name        string `json:"name"`        // 原始文件名
+	Size        int64  `json:"size"`        // 文件大小（字节）
+	ContentType string `json:"contentType"` // 文件MIME类型
+	Category    string `json:"category"`    // 文件分类
+	Folder      string `json:"folder"`      // 存储文件夹
+	UploadTime  string `json:"uploadTime"`  // 上传时间
+}
+
 type GetCategoryTreeReq struct {
 	CategoryType int `path:"category_type"`
+}
+
+type GetFileInfoReq struct {
+	Key string `path:"key"` // 文件在COS中的key
+}
+
+type GetFileInfoResp struct {
+	FileInfo FileInfo `json:"fileInfo"`
 }
 
 type GetNonceByAddressReq struct {
@@ -96,12 +128,33 @@ type GetProductDetailReq struct {
 	Id int64 `path:"id"` // 商品SPU ID
 }
 
+type GetProductReq struct {
+	ProductId   int64  `json:"product_id"`
+	ProductCode string `json:"product_code"`
+}
+
+type GetProductResp struct {
+	Code        int         `json:"code"`
+	Msg         string      `json:"msg"`
+	ProductInfo ProductInfo `json:"product_info"`
+}
+
 type GetProductStatsReq struct {
 	Period string `json:"period,optional"` // 统计周期：day、week、month，默认为day
 }
 
 type GetSKUDetailReq struct {
 	Id int64 `path:"id"` // SKU ID
+}
+
+type GetUserInfoReq struct {
+	UserId int64 `path:"user_id"`
+}
+
+type GetUserInfoResp struct {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+	Data string `json:"data"`
 }
 
 type HealthCheckReq struct {
@@ -141,6 +194,20 @@ type ListProductReq struct {
 type ListProductResp struct {
 	List  []ProductSPUInfo `json:"list"`
 	Total int64            `json:"total"`
+}
+
+type ListProductsReq struct {
+	CategoryCodes string `json:"categoryCodes"` // 分类编码，多个用逗号分隔
+	ProductName   string `json:"productName"`   // 商品名称
+	Page          int    `json:"page"`          // 页码
+	PageSize      int    `json:"pageSize"`      // 每页数量
+}
+
+type ListProductsResp struct {
+	Code     int           `json:"code"`
+	Msg      string        `json:"msg"`
+	Products []ProductInfo `json:"products"`
+	Total    int64         `json:"total"`
 }
 
 type ListSKUReq struct {
@@ -397,6 +464,15 @@ type UpdateChainStatusReq struct {
 	ChainStatus string `json:"chainStatus"`          // 链上状态：未上链、同步中、已上链、同步失败
 	ChainId     int    `json:"chainId,optional"`     // 链ID
 	ChainTxHash string `json:"chainTxHash,optional"` // 链上交易哈希
+}
+
+type UploadFileReq struct {
+	Category string `json:"category,optional"` // 文件分类，如：image、document、video等，用于目录分类
+	Folder   string `json:"folder,optional"`   // 存储文件夹路径，如：products、avatars等
+}
+
+type UploadFileResp struct {
+	FileInfo FileInfo `json:"fileInfo"`
 }
 
 type UserInfo struct {

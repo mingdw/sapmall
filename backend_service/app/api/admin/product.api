@@ -79,13 +79,8 @@ type (
         Images        string `json:"images,optional"`     // 图片，JSON字符串或逗号分隔
     }
 
-    // 删除商品请求
-    DeleteProductReq {
-        Id int64 `path:"id"` // 商品SPU ID
-    }
-
-    // 批量删除商品请求
-    BatchDeleteProductReq {
+    // 删除商品请求（单条删除也使用此接口，传入单个ID的数组）
+    DeleteProductSpusReq {
         Ids []int64 `json:"ids"` // 商品SPU ID数组
     }
 
@@ -320,13 +315,9 @@ service sapmall {
     @handler SaveProduct
     post /product (SaveProductReq) returns (BaseResp)
 
-    @doc "删除商品"
-    @handler DeleteProduct
-    delete /product/:id (DeleteProductReq) returns (BaseResp)
-
-    @doc "批量删除商品"
-    @handler BatchDeleteProduct
-    post /product/batch-delete (BatchDeleteProductReq) returns (BaseResp)
+    @doc "删除商品（单条删除也使用此接口，传入单个ID的数组）"
+    @handler DeleteProductSpus
+    post /product/spu/deletes (DeleteProductSpusReq) returns (BaseResp)
 
     @doc "批量下架商品"
     @handler BatchDeactivateProduct

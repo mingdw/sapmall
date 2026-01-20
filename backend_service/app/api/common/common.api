@@ -57,6 +57,51 @@ type (
 	GetCategoryTreeReq {
 		CategoryType int `path:"category_type"`
 	}
+	// 上传文件请求
+	UploadFileReq {
+		Category string `json:"category,optional"` // 文件分类，如：image、document、video等，用于目录分类
+		Folder   string `json:"folder,optional"`   // 存储文件夹路径，如：products、avatars等
+	}
+	// 文件信息
+	FileInfo {
+		Key         string `json:"key"`         // 文件在COS中的key
+		Url         string `json:"url"`         // 文件访问URL
+		Name        string `json:"name"`        // 原始文件名
+		Size        int64  `json:"size"`        // 文件大小（字节）
+		ContentType string `json:"contentType"` // 文件MIME类型
+		Category    string `json:"category"`    // 文件分类
+		Folder      string `json:"folder"`      // 存储文件夹
+		UploadTime  string `json:"uploadTime"`  // 上传时间
+	}
+	// 上传文件响应
+	UploadFileResp {
+		FileInfo FileInfo `json:"fileInfo"`
+	}
+	// 批量上传文件响应
+	BatchUploadFileResp {
+		FileList []FileInfo `json:"fileList"` // 上传成功的文件列表
+		Failed   []string   `json:"failed"`   // 上传失败的文件名列表
+	}
+	// 下载文件请求
+	DownloadFileReq {
+		Key string `path:"key"` // 文件在COS中的key，支持路径参数或查询参数
+	}
+	// 获取文件信息请求
+	GetFileInfoReq {
+		Key string `path:"key"` // 文件在COS中的key
+	}
+	// 获取文件信息响应
+	GetFileInfoResp {
+		FileInfo FileInfo `json:"fileInfo"`
+	}
+	// 删除文件请求
+	DeleteFileReq {
+		Key string `json:"key"` // 文件在COS中的key
+	}
+	// 批量删除文件请求
+	DeleteFilesReq {
+		Keys []string `json:"keys"` // 文件key数组
+	}
 )
 
 @server (
@@ -84,5 +129,29 @@ service sapmall {
 	@doc "获取导航目录结构"
 	@handler GetCategoryTree
 	get /:category_type/categories (GetCategoryTreeReq) returns (BaseResp)
+
+	@doc "上传单个文件（支持图片、文档等，通过multipart/form-data上传）"
+	@handler UploadFile
+	post /upload (UploadFileReq) returns (UploadFileResp)
+
+	@doc "批量上传文件（支持图片、文档等，通过multipart/form-data上传多个文件）"
+	@handler BatchUploadFile
+	post /upload/batch (UploadFileReq) returns (BatchUploadFileResp)
+
+	@doc "下载文件（根据文件key获取文件）"
+	@handler DownloadFile
+	get /download/:key (DownloadFileReq) returns (BaseResp)
+
+	@doc "获取文件信息"
+	@handler GetFileInfo
+	get /file/info/:key (GetFileInfoReq) returns (GetFileInfoResp)
+
+	@doc "删除文件"
+	@handler DeleteFile
+	delete /file (DeleteFileReq) returns (BaseResp)
+
+	@doc "批量删除文件"
+	@handler DeleteFiles
+	post /file/deletes (DeleteFilesReq) returns (BaseResp)
 }
 

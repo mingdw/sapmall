@@ -78,12 +78,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: admin.GetProductDetailHandler(serverCtx),
 				},
 				{
-					// 删除商品
-					Method:  http.MethodDelete,
-					Path:    "/product/:id",
-					Handler: admin.DeleteProductHandler(serverCtx),
-				},
-				{
 					// 获取商品完整详情（包含SKU、属性参数、详情等）
 					Method:  http.MethodGet,
 					Path:    "/product/:id/full",
@@ -124,12 +118,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/product/batch-deactivate",
 					Handler: admin.BatchDeactivateProductHandler(serverCtx),
-				},
-				{
-					// 批量删除商品
-					Method:  http.MethodPost,
-					Path:    "/product/batch-delete",
-					Handler: admin.BatchDeleteProductHandler(serverCtx),
 				},
 				{
 					// 保存商品详情（包含详情、包装清单、售后服务）
@@ -180,6 +168,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: admin.ListSKUHandler(serverCtx),
 				},
 				{
+					// 删除商品（单条删除也使用此接口，传入单个ID的数组）
+					Method:  http.MethodPost,
+					Path:    "/product/spu/deletes",
+					Handler: admin.DeleteProductSpusHandler(serverCtx),
+				},
+				{
 					// 获取商品统计信息
 					Method:  http.MethodGet,
 					Path:    "/product/stats",
@@ -213,6 +207,30 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: common.GetNonceByAddressHandler(serverCtx),
 				},
 				{
+					// 下载文件（根据文件key获取文件）
+					Method:  http.MethodGet,
+					Path:    "/download/:key",
+					Handler: common.DownloadFileHandler(serverCtx),
+				},
+				{
+					// 删除文件
+					Method:  http.MethodDelete,
+					Path:    "/file",
+					Handler: common.DeleteFileHandler(serverCtx),
+				},
+				{
+					// 批量删除文件
+					Method:  http.MethodPost,
+					Path:    "/file/deletes",
+					Handler: common.DeleteFilesHandler(serverCtx),
+				},
+				{
+					// 获取文件信息
+					Method:  http.MethodGet,
+					Path:    "/file/info/:key",
+					Handler: common.GetFileInfoHandler(serverCtx),
+				},
+				{
 					// 健康检查
 					Method:  http.MethodGet,
 					Path:    "/health",
@@ -223,6 +241,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/login",
 					Handler: common.LoginHandler(serverCtx),
+				},
+				{
+					// 上传单个文件（支持图片、文档等，通过multipart/form-data上传）
+					Method:  http.MethodPost,
+					Path:    "/upload",
+					Handler: common.UploadFileHandler(serverCtx),
+				},
+				{
+					// 批量上传文件（支持图片、文档等，通过multipart/form-data上传多个文件）
+					Method:  http.MethodPost,
+					Path:    "/upload/batch",
+					Handler: common.BatchUploadFileHandler(serverCtx),
 				},
 				{
 					// 获取版本信息
