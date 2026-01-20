@@ -9,12 +9,24 @@ type BaseResp struct {
 	Data interface{} `json:"data"`
 }
 
+type BatchActivateProductReq struct {
+	Ids []int64 `json:"ids"` // 商品SPU ID数组
+}
+
 type BatchDeactivateProductReq struct {
 	Ids []int64 `json:"ids"` // 商品SPU ID数组
 }
 
+type BatchDeleteAttrParamReq struct {
+	Ids []int64 `json:"ids"` // 属性参数ID数组
+}
+
 type BatchDeleteProductReq struct {
 	Ids []int64 `json:"ids"` // 商品SPU ID数组
+}
+
+type BatchDeleteSKUReq struct {
+	Ids []int64 `json:"ids"` // SKU ID数组
 }
 
 type CreateProductReq struct {
@@ -39,6 +51,10 @@ type DeleteAttrGroupReq struct {
 	ID uint `path:"id"` // 属性组ID
 }
 
+type DeleteAttrParamReq struct {
+	Id int64 `path:"id"` // 属性参数ID
+}
+
 type DeleteAttrReq struct {
 	ID uint `path:"id"` // 属性ID
 }
@@ -49,6 +65,10 @@ type DeleteCategoryReq struct {
 
 type DeleteProductReq struct {
 	Id int64 `path:"id"` // 商品SPU ID
+}
+
+type DeleteSKUReq struct {
+	Id int64 `path:"id"` // SKU ID
 }
 
 type ExportProductReq struct {
@@ -80,6 +100,10 @@ type GetProductStatsReq struct {
 	Period string `json:"period,optional"` // 统计周期：day、week、month，默认为day
 }
 
+type GetSKUDetailReq struct {
+	Id int64 `path:"id"` // SKU ID
+}
+
 type HealthCheckReq struct {
 	Service string `json:"service"`
 }
@@ -89,11 +113,25 @@ type HealthCheckResp struct {
 	Time   int64  `json:"time"`
 }
 
+type ListAttrParamReq struct {
+	ProductSpuId   int64  `json:"productSpuId,optional"`   // SPU ID
+	ProductSpuCode string `json:"productSpuCode,optional"` // SPU编码
+	AttrType       int    `json:"attrType,optional"`       // 属性类型：1-基本属性，2-销售属性，3-规格属性
+	Status         int    `json:"status,optional"`         // 状态
+	Page           int    `json:"page"`
+	PageSize       int    `json:"pageSize"`
+}
+
+type ListAttrParamResp struct {
+	List  []ProductAttrParamInfo `json:"list"`
+	Total int64                  `json:"total"`
+}
+
 type ListProductReq struct {
 	CategoryCodes string `json:"categoryCodes,optional"` // 分类编码，多个用逗号分隔
 	ProductName   string `json:"productName,optional"`   // 商品名称（模糊搜索）
 	ProductCode   string `json:"productCode,optional"`   // 商品编码（精确搜索）
-	Status        int    `json:"status,optional"`        // 商品状态：0=下架 1=上架 2=待审核 3=审核失败
+	Status        int    `json:"status,optional"`        // 商品状态：0=草稿 1=待审核 2=上架中 3=已下架
 	ChainStatus   string `json:"chainStatus,optional"`   // 链上状态：未上链、同步中、已上链、同步失败
 	TimeRange     string `json:"timeRange,optional"`     // 时间范围：today、yesterday、week、month、quarter
 	Page          int    `json:"page"`                   // 页码，从1开始
@@ -105,6 +143,20 @@ type ListProductResp struct {
 	Total int64            `json:"total"`
 }
 
+type ListSKUReq struct {
+	ProductSpuId   int64  `json:"productSpuId,optional"`   // SPU ID
+	ProductSpuCode string `json:"productSpuCode,optional"` // SPU编码
+	SkuCode        string `json:"skuCode,optional"`        // SKU编码
+	Status         int    `json:"status,optional"`         // 状态
+	Page           int    `json:"page"`
+	PageSize       int    `json:"pageSize"`
+}
+
+type ListSKUResp struct {
+	List  []ProductSKUInfo `json:"list"`
+	Total int64            `json:"total"`
+}
+
 type LoginReq struct {
 	WalletAddress string `json:"wallet_address"`
 	Signature     string `json:"signature"`
@@ -113,6 +165,42 @@ type LoginReq struct {
 type LoginResp struct {
 	Token    string   `json:"token"`
 	UserInfo UserInfo `json:"user_info"`
+}
+
+type ProductAttrParamInfo struct {
+	Id             int64  `json:"id"`
+	ProductSpuId   int64  `json:"productSpuId"`
+	ProductSpuCode string `json:"productSpuCode"`
+	Code           string `json:"code"`
+	Name           string `json:"name"`
+	AttrType       int    `json:"attrType"`  // 类型：1-基本属性，2-销售属性，3-规格属性
+	ValueType      int    `json:"valueType"` // 值类型：1-文本，2-图片，3-视频，4-音频，5-链接，6-其它
+	Value          string `json:"value"`
+	Sort           int    `json:"sort"`
+	Status         int    `json:"status"`
+	IsRequired     int    `json:"isRequired"` // 是否必填
+	IsGeneric      int    `json:"isGeneric"`  // 是否通用
+	CreatedAt      string `json:"createdAt,optional"`
+	UpdatedAt      string `json:"updatedAt,optional"`
+	Creator        string `json:"creator,optional"`
+	Updator        string `json:"updator,optional"`
+}
+
+type ProductDetailInfo struct {
+	ProductSpuId   int64  `json:"productSpuId"`
+	ProductSpuCode string `json:"productSpuCode"`
+	Detail         string `json:"detail,optional"`      // 详情（HTML或文本）
+	PackingList    string `json:"packingList,optional"` // 包装清单（HTML或文本）
+	AfterSale      string `json:"afterSale,optional"`   // 售后服务（HTML或文本）
+	CreatedAt      string `json:"createdAt,optional"`
+	UpdatedAt      string `json:"updatedAt,optional"`
+}
+
+type ProductFullDetailInfo struct {
+	SPUInfo    ProductSPUInfo         `json:"spuInfo"`
+	SKUList    []ProductSKUInfo       `json:"skuList,optional"`
+	AttrParams []ProductAttrParamInfo `json:"attrParams,optional"`
+	Detail     ProductDetailInfo      `json:"detail,optional"`
 }
 
 type ProductInfo struct {
@@ -130,6 +218,28 @@ type ProductInfo struct {
 	SalesCount    int64  `json:"sales_count"`
 	CreatedAt     int64  `json:"created_at"`
 	UpdatedAt     int64  `json:"updated_at"`
+}
+
+type ProductSKUInfo struct {
+	Id             int64  `json:"id"`
+	ProductSpuId   int64  `json:"productSpuId"`
+	ProductSpuCode string `json:"productSpuCode"`
+	SkuCode        string `json:"skuCode"`
+	Price          string `json:"price"`
+	Stock          int    `json:"stock"`
+	SaleCount      int    `json:"saleCount"`
+	Status         int    `json:"status"`
+	Indexs         string `json:"indexs"`               // 规格索引
+	AttrParams     string `json:"attrParams,optional"`  // 属性参数json
+	OwnerParams    string `json:"ownerParams,optional"` // 所有者参数json
+	Images         string `json:"images,optional"`      // 图片
+	Title          string `json:"title,optional"`
+	SubTitle       string `json:"subTitle,optional"`
+	Description    string `json:"description,optional"`
+	CreatedAt      string `json:"createdAt,optional"`
+	UpdatedAt      string `json:"updatedAt,optional"`
+	Creator        string `json:"creator,optional"`
+	Updator        string `json:"updator,optional"`
 }
 
 type ProductSPUInfo struct {
@@ -195,6 +305,21 @@ type SaveAttrGroupReq struct {
 	Description   string `json:"description,optional"` // 描述
 }
 
+type SaveAttrParamReq struct {
+	Id             int64  `json:"id,optional"`         // 属性参数ID，为0或空表示新增
+	ProductSpuId   int64  `json:"productSpuId"`        // SPU ID
+	ProductSpuCode string `json:"productSpuCode"`      // SPU编码
+	Code           string `json:"code"`                // 编码
+	Name           string `json:"name"`                // 名称
+	AttrType       int    `json:"attrType"`            // 类型：1-基本属性，2-销售属性，3-规格属性
+	ValueType      int    `json:"valueType"`           // 值类型：1-文本，2-图片，3-视频，4-音频，5-链接，6-其它
+	Value          string `json:"value"`               // 值
+	Sort           int    `json:"sort,optional"`       // 排序
+	Status         int    `json:"status,optional"`     // 状态
+	IsRequired     int    `json:"isRequired,optional"` // 是否必填
+	IsGeneric      int    `json:"isGeneric,optional"`  // 是否通用
+}
+
 type SaveAttrReq struct {
 	ID            uint   `json:"id,optional"`          // 属性ID，为0或空表示新增，有值表示编辑
 	AttrGroupID   uint   `json:"attrGroupId"`          // 属性组ID
@@ -219,6 +344,14 @@ type SaveCategoryReq struct {
 	MenuType   int    `json:"menuType"`            // 目录类型：0=商品目录 1=菜单目录
 }
 
+type SaveProductDetailReq struct {
+	ProductSpuId   int64  `json:"productSpuId"`         // SPU ID
+	ProductSpuCode string `json:"productSpuCode"`       // SPU编码
+	Detail         string `json:"detail,optional"`      // 详情（HTML或文本）
+	PackingList    string `json:"packingList,optional"` // 包装清单（HTML或文本）
+	AfterSale      string `json:"afterSale,optional"`   // 售后服务（HTML或文本）
+}
+
 type SaveProductReq struct {
 	Id            int64  `json:"id,optional"`            // 商品SPU ID，为0或空表示新增，有值表示编辑
 	Code          string `json:"code,optional"`          // 商品编码（新增时自动生成，编辑时可修改）
@@ -229,12 +362,41 @@ type SaveProductReq struct {
 	Category2Code string `json:"category2Code,optional"` // 二级分类编码
 	Category3Id   int64  `json:"category3Id,optional"`   // 三级分类ID
 	Category3Code string `json:"category3Code,optional"` // 三级分类编码
+	UserId        int64  `json:"userId,optional"`        // 用户ID（关联sys_user.id）
+	UserCode      string `json:"userCode,optional"`      // 用户编码（钱包地址，关联sys_user.user_code）
 	Brand         string `json:"brand,optional"`         // 品牌
 	Description   string `json:"description,optional"`   // 描述
 	Price         string `json:"price,optional"`         // 价格（SAP代币）
 	RealPrice     string `json:"realPrice,optional"`     // 原价（USD）
-	Status        int    `json:"status"`                 // 状态：0=下架 1=上架 2=待审核 3=审核失败
+	Status        int    `json:"status"`                 // 状态：0=草稿 1=待审核 2=上架中 3=已下架
+	ChainStatus   string `json:"chainStatus,optional"`   // 链上状态：未上链、同步中、已上链、同步失败
+	ChainId       int    `json:"chainId,optional"`       // 链ID（1:Ethereum, 56:BSC, 137:Polygon, 8453:Base等）
+	ChainTxHash   string `json:"chainTxHash,optional"`   // 链上交易哈希
 	Images        string `json:"images,optional"`        // 图片，JSON字符串或逗号分隔
+}
+
+type SaveSKUReq struct {
+	Id             int64  `json:"id,optional"`          // SKU ID，为0或空表示新增
+	ProductSpuId   int64  `json:"productSpuId"`         // SPU ID
+	ProductSpuCode string `json:"productSpuCode"`       // SPU编码
+	SkuCode        string `json:"skuCode,optional"`     // SKU编码（新增时自动生成）
+	Price          string `json:"price"`                // 价格
+	Stock          int    `json:"stock"`                // 库存
+	Status         int    `json:"status"`               // 状态
+	Indexs         string `json:"indexs"`               // 规格索引
+	AttrParams     string `json:"attrParams,optional"`  // 属性参数json
+	OwnerParams    string `json:"ownerParams,optional"` // 所有者参数json
+	Images         string `json:"images,optional"`      // 图片
+	Title          string `json:"title,optional"`
+	SubTitle       string `json:"subTitle,optional"`
+	Description    string `json:"description,optional"`
+}
+
+type UpdateChainStatusReq struct {
+	Id          int64  `json:"id"`                   // 商品SPU ID
+	ChainStatus string `json:"chainStatus"`          // 链上状态：未上链、同步中、已上链、同步失败
+	ChainId     int    `json:"chainId,optional"`     // 链ID
+	ChainTxHash string `json:"chainTxHash,optional"` // 链上交易哈希
 }
 
 type UserInfo struct {

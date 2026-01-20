@@ -17,7 +17,7 @@ import {
 import type { UploadFile, UploadProps } from 'antd';
 import { productApi } from '../../../../services/api/productApi';
 import { commonApiService, CategoryTreeResp } from '../../../../services/api/commonApiService';
-import type { ProductSPU, SaveProductReq } from '../types';
+import type { ProductSPU, ProductSKU, SaveProductReq } from '../types';
 import { ProductStatus } from '../constants';
 import AdminButton from '../../../../components/common/AdminButton';
 import AttributeEditor, { AttributeItem } from './AttributeEditor';
@@ -57,6 +57,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
   const [skuList, setSkuList] = useState<SKUItem[]>([]);
   // 跟踪最大到达的步骤索引（通过"下一步"按钮到达的最远步骤）
   const [maxReachedStep, setMaxReachedStep] = useState(0);
+  // 保存当前商品的完整信息（用于暂存后更新）
+  const [currentProduct, setCurrentProduct] = useState<ProductSPU | null>(product || null);
 
   // 步骤配置
   const steps = [
@@ -89,32 +91,90 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
 
   // 当分类树加载完成且是编辑模式时，加载对应的二级和三级分类选项
   useEffect(() => {
-    if (categoryTree.length > 0 && product?.category1Id) {
-      loadCategory2Options(product.category1Id);
-      if (product.category2Id) {
-        loadCategory3Options(product.category2Id);
+    const prod = currentProduct || product;
+    if (categoryTree.length > 0 && prod?.category1Id) {
+      loadCategory2Options(prod.category1Id);
+      if (prod.category2Id) {
+        loadCategory3Options(prod.category2Id);
       }
     }
-  }, [categoryTree, product?.category1Id, product?.category2Id]);
+  }, [categoryTree, currentProduct?.category1Id, currentProduct?.category2Id, product?.category1Id, product?.category2Id]);
 
+  // 控制连线显示：隐藏从 maxReachedStep 到下一个 wait 步骤的连线
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const stepsContainer = document.querySelector('.ant-steps');
+      if (!stepsContainer) return;
+      
+      const stepsItems = Array.from(stepsContainer.querySelectorAll('.ant-steps-item'));
+      stepsItems.forEach((item, index) => {
+        // 移除之前的 no-tail 类
+        item.classList.remove('no-tail');
+        
+        // 如果是 maxReachedStep，且下一个步骤是 wait，添加 no-tail 类
+        if (index === maxReachedStep && index < steps.length - 1) {
+          const nextItem = stepsItems[index + 1];
+          if (nextItem && nextItem.classList.contains('ant-steps-item-wait')) {
+            item.classList.add('no-tail');
+          }
+        }
+      });
+    }, 0);
+    
+    return () => clearTimeout(timer);
+  }, [currentStep, maxReachedStep, steps.length]);
 
-  // 初始化表单数据
+  // 当外部product prop变化时，更新currentProduct
   useEffect(() => {
     if (product) {
+      console.log('ProductForm: product prop 更新:', product);
+      setCurrentProduct(product);
+    } else {
+      setCurrentProduct(null);
+    }
+  }, [product]);
+
+  // 初始化表单数据（仅当外部传入的product变化时加载，暂存更新currentProduct不触发）
+  useEffect(() => {
+    // 只有当外部传入product prop时，才加载数据（编辑模式）
+    // 暂存成功后更新currentProduct不应该触发这个逻辑
+    if (product && product.id) {
+      console.log('初始化表单数据，商品信息:', product);
+      
       // 编辑模式：填充表单数据
-      form.setFieldsValue({
-        name: product.name,
+      // 注意：price 和 realPrice 后端返回的是 string 类型，需要转换为 number
+      // category2Id 和 category3Id 可能是 0，需要使用 !== undefined 和 !== 0 判断
+      const priceValue = product.price 
+        ? (typeof product.price === 'string' ? parseFloat(product.price) : Number(product.price))
+        : undefined;
+      const realPriceValue = product.realPrice 
+        ? (typeof product.realPrice === 'string' ? parseFloat(product.realPrice) : Number(product.realPrice))
+        : undefined;
+      
+      // 处理分类ID：如果值为 0，则设置为 undefined（表示未选择）
+      const category2IdValue = product.category2Id !== undefined && product.category2Id !== 0 
+        ? product.category2Id 
+        : undefined;
+      const category3IdValue = product.category3Id !== undefined && product.category3Id !== 0 
+        ? product.category3Id 
+        : undefined;
+      
+      const formValues = {
+        name: product.name || '',
         category1Id: product.category1Id,
-        category1Code: product.category1Code,
-        category2Id: product.category2Id || undefined,
+        category1Code: product.category1Code || '',
+        category2Id: category2IdValue,
         category2Code: product.category2Code || undefined,
-        category3Id: product.category3Id || undefined,
+        category3Id: category3IdValue,
         category3Code: product.category3Code || undefined,
         brand: product.brand || '',
         description: product.description || '',
-        price: product.price ? Number(product.price) : undefined,
-        realPrice: product.realPrice ? Number(product.realPrice) : undefined,
-      });
+        price: priceValue,
+        realPrice: realPriceValue,
+      };
+      
+      console.log('设置表单值:', formValues);
+      form.setFieldsValue(formValues);
 
       // 加载图片
       if (product.images) {
@@ -145,14 +205,27 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
         } catch (error) {
           console.error('解析图片数据失败:', error);
         }
+      } else {
+        // 如果没有图片，清空图片列表
+        setMainImageFileList([]);
+        setAdditionalImageFileList([]);
       }
 
-      // 加载属性数据
+      // 加载属性数据（仅编辑模式才加载）
       loadProductAttributes(product.id);
-      // 加载规格和SKU数据
+      // 加载规格和SKU数据（仅编辑模式才加载）
       loadProductSpecifications(product.id);
+    } else if (!product) {
+      // 新增模式：清空表单数据
+      form.resetFields();
+      setMainImageFileList([]);
+      setAdditionalImageFileList([]);
+      setBasicAttributes({});
+      setSaleAttributes({});
+      setSpecifications({});
+      setSkuList([]);
     }
-  }, [product, form]);
+  }, [product, form]); // 只监听 product prop，不监听 currentProduct
 
   // 加载商品属性
   const loadProductAttributes = async (productId: number) => {
@@ -233,20 +306,53 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
       }
 
       // 加载SKU数据
-      // TODO: 需要添加获取SKU列表的API
-      // const skuResponse = await productApi.getProductSKUs(productId);
-      // if (skuResponse.code === 0 && skuResponse.data) {
-      //   const skus: SKUItem[] = skuResponse.data.map((sku: any) => ({
-      //     indexs: sku.indexs,
-      //     combination: '', // 需要根据indexs和规格计算
-      //     price: sku.price,
-      //     stock: sku.stock,
-      //     skuCode: sku.skuCode,
-      //     title: sku.title,
-      //     images: sku.images ? (typeof sku.images === 'string' ? JSON.parse(sku.images) : sku.images) : [],
-      //   }));
-      //   setSkuList(skus);
-      // }
+      const skuResponse = await productApi.getSKUList({
+        productSpuId: productId,
+        page: 1,
+        pageSize: 100, // 获取所有SKU
+      });
+      
+      if (skuResponse.code === 0 && skuResponse.data?.list) {
+        const skus: SKUItem[] = skuResponse.data.list.map((sku: ProductSKU) => {
+          // 根据indexs解析规格组合
+          let combination = '';
+          try {
+            // indexs格式通常是 "0_1" 这样的索引组合
+            // 这里可以根据规格定义解析indexs为可读的规格组合
+            // 暂时使用indexs作为组合标识，后续可以通过规格定义完善
+            combination = sku.indexs;
+          } catch (error) {
+            combination = sku.indexs;
+          }
+          
+          // 处理价格，可能是字符串或数字
+          const price = typeof sku.price === 'string' ? parseFloat(sku.price) : sku.price;
+          
+          // 处理图片
+          let images: string[] = [];
+          if (sku.images) {
+            try {
+              images = typeof sku.images === 'string' 
+                ? (sku.images.includes('[') ? JSON.parse(sku.images) : sku.images.split(',').filter(Boolean))
+                : Array.isArray(sku.images) ? sku.images : [];
+            } catch (error) {
+              console.error('解析SKU图片失败:', error);
+              images = [];
+            }
+          }
+          
+          return {
+            indexs: sku.indexs,
+            combination: combination,
+            price: price || 0,
+            stock: sku.stock || 0,
+            skuCode: sku.skuCode || '',
+            title: sku.title || '',
+            images: images,
+          };
+        });
+        setSkuList(skus);
+      }
     } catch (error) {
       console.error('加载商品规格和SKU失败:', error);
     }
@@ -427,8 +533,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
         }
       });
 
+      // 将价格转换为字符串（后端API要求）
+      const priceStr = values.price !== undefined && values.price !== null 
+        ? (typeof values.price === 'number' ? values.price.toString() : String(values.price))
+        : undefined;
+      const realPriceStr = values.realPrice !== undefined && values.realPrice !== null
+        ? (typeof values.realPrice === 'number' ? values.realPrice.toString() : String(values.realPrice))
+        : undefined;
+
       const formData: SaveProductReq = {
-        id: product?.id,
+        id: currentProduct?.id || product?.id,
         name: values.name || '',
         category1Id: values.category1Id,
         category1Code: values.category1Code || '',
@@ -438,8 +552,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
         category3Code: values.category3Code,
         brand: values.brand || '',
         description: values.description || '',
-        price: typeof values.price === 'number' ? values.price : (values.price ? Number(values.price) : undefined),
-        realPrice: typeof values.realPrice === 'number' ? values.realPrice : (values.realPrice ? Number(values.realPrice) : undefined),
+        price: priceStr,
+        realPrice: realPriceStr,
         status: isDraft ? ProductStatus.DRAFT : ProductStatus.PENDING,
         images: imageUrls.length > 0 ? JSON.stringify(imageUrls) : undefined,
       };
@@ -468,8 +582,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
       }
     });
 
+    // 将价格转换为字符串（后端API要求）
+    const priceStr = values.price !== undefined && values.price !== null 
+      ? (typeof values.price === 'number' ? values.price.toString() : String(values.price))
+      : undefined;
+    const realPriceStr = values.realPrice !== undefined && values.realPrice !== null
+      ? (typeof values.realPrice === 'number' ? values.realPrice.toString() : String(values.realPrice))
+      : undefined;
+
     return {
-      id: product?.id,
+      id: currentProduct?.id || product?.id,
       name: values.name || '',
       category1Id: values.category1Id,
       category1Code: values.category1Code || '',
@@ -479,8 +601,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
       category3Code: values.category3Code,
       brand: values.brand || '',
       description: values.description || '',
-      price: typeof values.price === 'number' ? values.price : (values.price ? Number(values.price) : undefined),
-      realPrice: typeof values.realPrice === 'number' ? values.realPrice : (values.realPrice ? Number(values.realPrice) : undefined),
+      price: priceStr,
+      realPrice: realPriceStr,
       status: ProductStatus.DRAFT,
       images: imageUrls.length > 0 ? JSON.stringify(imageUrls) : undefined,
     };
@@ -489,26 +611,103 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
   // 暂存功能（保存为草稿）
   const handleSaveDraft = async () => {
     try {
-      const formData = await buildFormData(true);
-      if (!formData) {
+      // 获取表单当前值，不进行验证（暂存允许部分字段为空）
+      const values = form.getFieldsValue();
+      
+      // 使用最新的 currentProduct 或 product 获取 id（确保使用最新的值）
+      const latestProductId = currentProduct?.id || product?.id;
+      
+      // 暂存时至少需要有一个标识，如果没有ID也没有name和category，则提示用户至少填写一些基本信息
+      if (!latestProductId && (!values.name || values.name.trim() === '') && !values.category1Id) {
+        message.warning('请至少填写商品名称或选择分类后再暂存');
         return;
       }
 
-      setSavingDraft(true);
-      const response = await productApi.saveProduct(formData);
-      
-      if (response.code === 0) {
-        message.success('暂存成功');
-        // 如果保存成功且有返回的ID，更新product的ID以便后续编辑
-        if (response.data?.id && !product?.id) {
-          // 这里可以触发父组件更新product数据
+      // 处理图片
+      const imageUrls: string[] = [];
+      if (mainImageFileList.length > 0 && mainImageFileList[0].url) {
+        imageUrls.push(mainImageFileList[0].url);
+      }
+      additionalImageFileList.forEach(file => {
+        if (file.url) {
+          imageUrls.push(file.url);
         }
+      });
+
+      // 将价格转换为字符串（后端API要求）
+      const priceStr = values.price !== undefined && values.price !== null 
+        ? (typeof values.price === 'number' ? values.price.toString() : String(values.price))
+        : undefined;
+      const realPriceStr = values.realPrice !== undefined && values.realPrice !== null
+        ? (typeof values.realPrice === 'number' ? values.realPrice.toString() : String(values.realPrice))
+        : undefined;
+
+      // 构建暂存请求数据，为必填字段提供默认值
+      // 使用最新的 currentProduct id，确保多次暂存时使用正确的 id
+      const draftData: SaveProductReq = {
+        id: latestProductId, // 使用最新的 id，如果有则进行更新，否则是新增
+        // 如果name为空，使用默认值（草稿状态下允许）
+        name: values.name?.trim() || '未命名商品',
+        // 如果category1Id为空，设置为0（后端需要，但可以后续修改）
+        category1Id: values.category1Id || 0,
+        category1Code: values.category1Code || '',
+        category2Id: values.category2Id,
+        category2Code: values.category2Code,
+        category3Id: values.category3Id,
+        category3Code: values.category3Code,
+        brand: values.brand,
+        description: values.description,
+        price: priceStr,
+        realPrice: realPriceStr,
+        status: ProductStatus.DRAFT,
+        images: imageUrls.length > 0 ? JSON.stringify(imageUrls) : undefined,
+      };
+
+      setSavingDraft(true);
+      console.log('暂存商品请求数据:', draftData);
+      
+      // 调用后端接口保存商品
+      const response = await productApi.saveProduct(draftData);
+      console.log('暂存商品响应:', response);
+      
+      if (response.code === 0 && response.data) {
+        message.success('暂存成功');
+        // 使用后端返回的完整SPU信息更新本地状态
+        const savedProduct: ProductSPU = response.data;
+        
+        // 更新本地保存的商品信息（包括ID、code等）
+        // 注意：暂存成功后只更新本地状态，不调用onSuccess，不会触发商品列表刷新
+        setCurrentProduct(savedProduct);
+        
+        // 同步更新表单中的分类编码等信息（如果后端返回了更新的数据）
+        // 确保下次暂存时使用最新的数据
+        if (savedProduct.category1Code && savedProduct.category1Code !== values.category1Code) {
+          form.setFieldsValue({
+            category1Code: savedProduct.category1Code,
+          });
+        }
+        
+        console.log('商品暂存成功，ID:', savedProduct.id, 'Code:', savedProduct.code, 'Name:', savedProduct.name);
+        
+        // 如果是从新增状态转为已保存状态，提示用户
+        if (!product?.id && savedProduct.id) {
+          message.info(`商品已保存，ID: ${savedProduct.id}，编码: ${savedProduct.code}`);
+        }
+        // 注意：暂存功能不会调用 onSuccess()，因此不会触发父组件的列表刷新
+        // 只有最终提交（handleSubmit）才会调用 onSuccess() 并刷新列表
       } else {
         message.error(response.message || '暂存失败');
       }
     } catch (error: any) {
       console.error('暂存商品失败:', error);
-      message.error('暂存失败');
+      // 提供更详细的错误信息
+      if (error?.response?.data?.message) {
+        message.error(`暂存失败: ${error.response.data.message}`);
+      } else if (error?.message) {
+        message.error(`暂存失败: ${error.message}`);
+      } else {
+        message.error('暂存失败，请检查网络连接或联系管理员');
+      }
     } finally {
       setSavingDraft(false);
     }
@@ -527,8 +726,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
       
       if (response.code === 0) {
         const savedProduct = response.data;
-        const productId = savedProduct?.id || product?.id;
-        const productCode = savedProduct?.code || product?.code || '';
+        // 使用后端返回的完整SPU信息
+        if (savedProduct) {
+          setCurrentProduct(savedProduct);
+        }
+        const productId = savedProduct?.id || currentProduct?.id || product?.id;
+        const productCode = savedProduct?.code || currentProduct?.code || product?.code || '';
         
         // 保存属性数据
         if (productId) {
@@ -549,10 +752,47 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
             }
 
             // 保存SKU数据
-            // TODO: 需要添加保存SKU列表的API
-            // if (skuList.length > 0) {
-            //   await productApi.saveProductSKUs(productId, productCode, skuList);
-            // }
+            if (skuList.length > 0) {
+              try {
+                // 先从服务器获取现有的SKU，以便保留已有的id
+                const existingSKUResponse = await productApi.getSKUList({
+                  productSpuId: productId,
+                  page: 1,
+                  pageSize: 100,
+                });
+                
+                const existingSKUs: ProductSKU[] = existingSKUResponse.code === 0 && existingSKUResponse.data?.list 
+                  ? existingSKUResponse.data.list 
+                  : [];
+                
+                // 构建SKU映射表，以indexs为key
+                const existingSKUMap = new Map<string, ProductSKU>();
+                existingSKUs.forEach(sku => {
+                  existingSKUMap.set(sku.indexs, sku);
+                });
+                
+                await productApi.batchSaveSKUs(
+                  productId,
+                  productCode,
+                  skuList.map(sku => {
+                    const existingSKU = existingSKUMap.get(sku.indexs);
+                    return {
+                      id: existingSKU?.id, // 如果有现有SKU，使用其id进行更新
+                      skuCode: sku.skuCode || existingSKU?.skuCode,
+                      price: typeof sku.price === 'number' ? sku.price : (sku.price ? parseFloat(String(sku.price)) : 0),
+                      stock: sku.stock || 0,
+                      status: 1, // 默认启用
+                      indexs: sku.indexs,
+                      title: sku.title || '',
+                      images: Array.isArray(sku.images) ? JSON.stringify(sku.images) : (sku.images || ''),
+                    };
+                  })
+                );
+              } catch (error) {
+                console.error('保存SKU失败:', error);
+                message.warning('SKU保存失败，请检查数据');
+              }
+            }
           } catch (error) {
             console.error('保存属性或SKU失败:', error);
             message.warning('商品保存成功，但部分数据保存失败');
@@ -628,28 +868,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
   };
 
   // 根据最大到达步骤生成步骤配置
+  // 使用 Ant Design Steps 的默认行为：通过 current 属性自动设置步骤状态
   const getStepItems = () => {
     return steps.map((step, index) => {
-      let status: 'wait' | 'process' | 'finish' | 'error' = 'wait';
-      
-      if (index <= maxReachedStep) {
-        // 最大到达步骤及之前的所有步骤标记为完成（显示连线）
-        status = 'finish';
-        // 如果当前步骤在最大到达步骤范围内，当前步骤显示为进行中
-        // CSS 中已经为 process 状态添加了连线样式，确保连线显示
-        if (index === currentStep) {
-          status = 'process';
-        }
-      } else {
-        // 最大到达步骤之后的步骤标记为等待
-        status = 'wait';
-      }
-      
       return {
         ...step,
-        status,
         // 最大到达步骤之后的步骤禁用点击
         disabled: index > maxReachedStep,
+        // 添加 className 用于 CSS 控制连线显示
+        className: index === maxReachedStep ? 'max-reached-step' : undefined,
       };
     });
   };
@@ -665,7 +892,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
             <div className={styles.formSection}>
               <h4 className={styles.sectionTitle}>SPU基础信息</h4>
               <Row gutter={16}>
-                <Col span={24}>
+                <Col span={24}> 
                   <Form.Item
                     label="商品名称"
                     name="name"

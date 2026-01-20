@@ -37,7 +37,7 @@ type (
         CategoryCodes string `json:"categoryCodes,optional"` // 分类编码，多个用逗号分隔
         ProductName   string `json:"productName,optional"`  // 商品名称（模糊搜索）
         ProductCode   string `json:"productCode,optional"`  // 商品编码（精确搜索）
-        Status        int    `json:"status,optional"`       // 商品状态：0=下架 1=上架 2=待审核 3=审核失败
+        Status        int    `json:"status,optional"`       // 商品状态：0=草稿 1=待审核 2=上架中 3=已下架
         ChainStatus   string `json:"chainStatus,optional"`  // 链上状态：未上链、同步中、已上链、同步失败
         TimeRange     string `json:"timeRange,optional"`    // 时间范围：today、yesterday、week、month、quarter
         Page          int    `json:"page"`                  // 页码，从1开始
@@ -66,11 +66,16 @@ type (
         Category2Code string `json:"category2Code,optional"` // 二级分类编码
         Category3Id   int64  `json:"category3Id,optional"` // 三级分类ID
         Category3Code string `json:"category3Code,optional"` // 三级分类编码
+        UserId        int64  `json:"userId,optional"`     // 用户ID（关联sys_user.id）
+        UserCode      string `json:"userCode,optional"`   // 用户编码（钱包地址，关联sys_user.user_code）
         Brand         string `json:"brand,optional"`      // 品牌
         Description   string `json:"description,optional"` // 描述
         Price         string `json:"price,optional"`      // 价格（SAP代币）
         RealPrice     string `json:"realPrice,optional"`  // 原价（USD）
-        Status        int    `json:"status"`              // 状态：0=下架 1=上架 2=待审核 3=审核失败
+        Status        int    `json:"status"`              // 状态：0=草稿 1=待审核 2=上架中 3=已下架
+        ChainStatus   string `json:"chainStatus,optional"` // 链上状态：未上链、同步中、已上链、同步失败
+        ChainId       int    `json:"chainId,optional"`    // 链ID（1:Ethereum, 56:BSC, 137:Polygon, 8453:Base等）
+        ChainTxHash   string `json:"chainTxHash,optional"` // 链上交易哈希
         Images        string `json:"images,optional"`     // 图片，JSON字符串或逗号分隔
     }
 
@@ -115,6 +120,181 @@ type (
         ChainStatus   string `json:"chainStatus,optional"`
         TimeRange     string `json:"timeRange,optional"`
     }
+
+    // 商品SKU信息
+    ProductSKUInfo {
+        Id            int64  `json:"id"`
+        ProductSpuId  int64  `json:"productSpuId"`
+        ProductSpuCode string `json:"productSpuCode"`
+        SkuCode       string `json:"skuCode"`
+        Price         string `json:"price"`
+        Stock         int    `json:"stock"`
+        SaleCount     int    `json:"saleCount"`
+        Status        int    `json:"status"`
+        Indexs        string `json:"indexs"`        // 规格索引
+        AttrParams    string `json:"attrParams,optional"`  // 属性参数json
+        OwnerParams   string `json:"ownerParams,optional"` // 所有者参数json
+        Images        string `json:"images,optional"`      // 图片
+        Title         string `json:"title,optional"`
+        SubTitle      string `json:"subTitle,optional"`
+        Description   string `json:"description,optional"`
+        CreatedAt     string `json:"createdAt,optional"`
+        UpdatedAt     string `json:"updatedAt,optional"`
+        Creator       string `json:"creator,optional"`
+        Updator       string `json:"updator,optional"`
+    }
+
+    // SPU属性参数信息
+    ProductAttrParamInfo {
+        Id            int64  `json:"id"`
+        ProductSpuId  int64  `json:"productSpuId"`
+        ProductSpuCode string `json:"productSpuCode"`
+        Code          string `json:"code"`
+        Name          string `json:"name"`
+        AttrType      int    `json:"attrType"`      // 类型：1-基本属性，2-销售属性，3-规格属性
+        ValueType     int    `json:"valueType"`     // 值类型：1-文本，2-图片，3-视频，4-音频，5-链接，6-其它
+        Value         string `json:"value"`
+        Sort          int    `json:"sort"`
+        Status        int    `json:"status"`
+        IsRequired    int    `json:"isRequired"`    // 是否必填
+        IsGeneric     int    `json:"isGeneric"`     // 是否通用
+        CreatedAt     string `json:"createdAt,optional"`
+        UpdatedAt     string `json:"updatedAt,optional"`
+        Creator       string `json:"creator,optional"`
+        Updator       string `json:"updator,optional"`
+    }
+
+    // SPU详情信息
+    ProductDetailInfo {
+        ProductSpuId  int64  `json:"productSpuId"`
+        ProductSpuCode string `json:"productSpuCode"`
+        Detail        string `json:"detail,optional"`        // 详情（HTML或文本）
+        PackingList   string `json:"packingList,optional"`   // 包装清单（HTML或文本）
+        AfterSale     string `json:"afterSale,optional"`     // 售后服务（HTML或文本）
+        CreatedAt     string `json:"createdAt,optional"`
+        UpdatedAt     string `json:"updatedAt,optional"`
+    }
+
+    // 商品完整详情（包含SKU、属性参数、详情等）
+    ProductFullDetailInfo {
+        SPUInfo      ProductSPUInfo        `json:"spuInfo"`
+        SKUList      []ProductSKUInfo      `json:"skuList,optional"`
+        AttrParams   []ProductAttrParamInfo `json:"attrParams,optional"`
+        Detail       ProductDetailInfo     `json:"detail,optional"`
+    }
+
+    // SKU列表查询请求
+    ListSKUReq {
+        ProductSpuId  int64  `json:"productSpuId,optional"`  // SPU ID
+        ProductSpuCode string `json:"productSpuCode,optional"` // SPU编码
+        SkuCode       string `json:"skuCode,optional"`       // SKU编码
+        Status        int    `json:"status,optional"`        // 状态
+        Page          int    `json:"page"`
+        PageSize      int    `json:"pageSize"`
+    }
+
+    // SKU列表响应
+    ListSKUResp {
+        List  []ProductSKUInfo `json:"list"`
+        Total int64            `json:"total"`
+    }
+
+    // 保存SKU请求
+    SaveSKUReq {
+        Id            int64  `json:"id,optional"`            // SKU ID，为0或空表示新增
+        ProductSpuId  int64  `json:"productSpuId"`           // SPU ID
+        ProductSpuCode string `json:"productSpuCode"`        // SPU编码
+        SkuCode       string `json:"skuCode,optional"`       // SKU编码（新增时自动生成）
+        Price         string `json:"price"`                  // 价格
+        Stock         int    `json:"stock"`                  // 库存
+        Status        int    `json:"status"`                 // 状态
+        Indexs        string `json:"indexs"`                 // 规格索引
+        AttrParams    string `json:"attrParams,optional"`    // 属性参数json
+        OwnerParams   string `json:"ownerParams,optional"`   // 所有者参数json
+        Images        string `json:"images,optional"`        // 图片
+        Title         string `json:"title,optional"`
+        SubTitle      string `json:"subTitle,optional"`
+        Description   string `json:"description,optional"`
+    }
+
+    // 获取SKU详情请求
+    GetSKUDetailReq {
+        Id int64 `path:"id"` // SKU ID
+    }
+
+    // 删除SKU请求
+    DeleteSKUReq {
+        Id int64 `path:"id"` // SKU ID
+    }
+
+    // 批量删除SKU请求
+    BatchDeleteSKUReq {
+        Ids []int64 `json:"ids"` // SKU ID数组
+    }
+
+    // 保存属性参数请求
+    SaveAttrParamReq {
+        Id            int64  `json:"id,optional"`            // 属性参数ID，为0或空表示新增
+        ProductSpuId  int64  `json:"productSpuId"`           // SPU ID
+        ProductSpuCode string `json:"productSpuCode"`        // SPU编码
+        Code          string `json:"code"`                   // 编码
+        Name          string `json:"name"`                   // 名称
+        AttrType      int    `json:"attrType"`               // 类型：1-基本属性，2-销售属性，3-规格属性
+        ValueType     int    `json:"valueType"`              // 值类型：1-文本，2-图片，3-视频，4-音频，5-链接，6-其它
+        Value         string `json:"value"`                  // 值
+        Sort          int    `json:"sort,optional"`          // 排序
+        Status        int    `json:"status,optional"`        // 状态
+        IsRequired    int    `json:"isRequired,optional"`    // 是否必填
+        IsGeneric     int    `json:"isGeneric,optional"`     // 是否通用
+    }
+
+    // 删除属性参数请求
+    DeleteAttrParamReq {
+        Id int64 `path:"id"` // 属性参数ID
+    }
+
+    // 批量删除属性参数请求
+    BatchDeleteAttrParamReq {
+        Ids []int64 `json:"ids"` // 属性参数ID数组
+    }
+
+    // 保存商品详情请求
+    SaveProductDetailReq {
+        ProductSpuId  int64  `json:"productSpuId"`           // SPU ID
+        ProductSpuCode string `json:"productSpuCode"`        // SPU编码
+        Detail        string `json:"detail,optional"`        // 详情（HTML或文本）
+        PackingList   string `json:"packingList,optional"`   // 包装清单（HTML或文本）
+        AfterSale     string `json:"afterSale,optional"`     // 售后服务（HTML或文本）
+    }
+
+    // 获取属性参数列表请求
+    ListAttrParamReq {
+        ProductSpuId  int64  `json:"productSpuId,optional"`  // SPU ID
+        ProductSpuCode string `json:"productSpuCode,optional"` // SPU编码
+        AttrType      int    `json:"attrType,optional"`      // 属性类型：1-基本属性，2-销售属性，3-规格属性
+        Status        int    `json:"status,optional"`        // 状态
+        Page          int    `json:"page"`
+        PageSize      int    `json:"pageSize"`
+    }
+
+    // 属性参数列表响应
+    ListAttrParamResp {
+        List  []ProductAttrParamInfo `json:"list"`
+        Total int64                  `json:"total"`
+    }
+
+    // 批量上架商品请求
+    BatchActivateProductReq {
+        Ids []int64 `json:"ids"` // 商品SPU ID数组
+    }
+
+    // 更新商品链上状态请求
+    UpdateChainStatusReq {
+        Id          int64  `json:"id"`          // 商品SPU ID
+        ChainStatus string `json:"chainStatus"` // 链上状态：未上链、同步中、已上链、同步失败
+        ChainId     int    `json:"chainId,optional"`      // 链ID
+        ChainTxHash string `json:"chainTxHash,optional"`  // 链上交易哈希
+    }
 )
 
 @server (
@@ -128,9 +308,13 @@ service sapmall {
     @handler ListProduct
     post /product/list (ListProductReq) returns (BaseResp)
 
-    @doc "获取商品详情"
+    @doc "获取商品详情（基本信息）"
     @handler GetProductDetail
     get /product/:id (GetProductDetailReq) returns (BaseResp)
+
+    @doc "获取商品完整详情（包含SKU、属性参数、详情等）"
+    @handler GetProductFullDetail
+    get /product/:id/full (GetProductDetailReq) returns (BaseResp)
 
     @doc "保存商品（新增/编辑）"
     @handler SaveProduct
@@ -155,5 +339,56 @@ service sapmall {
     @doc "导出商品数据"
     @handler ExportProduct
     post /product/export (ExportProductReq) returns (BaseResp)
+
+    @doc "批量上架商品"
+    @handler BatchActivateProduct
+    post /product/batch-activate (BatchActivateProductReq) returns (BaseResp)
+
+    @doc "更新商品链上状态"
+    @handler UpdateChainStatus
+    post /product/update-chain-status (UpdateChainStatusReq) returns (BaseResp)
+
+    // ========== SKU相关接口 ==========
+    @doc "获取SKU列表"
+    @handler ListSKU
+    post /product/sku/list (ListSKUReq) returns (BaseResp)
+
+    @doc "获取SKU详情"
+    @handler GetSKUDetail
+    get /product/sku/:id (GetSKUDetailReq) returns (BaseResp)
+
+    @doc "保存SKU（新增/编辑）"
+    @handler SaveSKU
+    post /product/sku (SaveSKUReq) returns (BaseResp)
+
+    @doc "删除SKU"
+    @handler DeleteSKU
+    delete /product/sku/:id (DeleteSKUReq) returns (BaseResp)
+
+    @doc "批量删除SKU"
+    @handler BatchDeleteSKU
+    post /product/sku/batch-delete (BatchDeleteSKUReq) returns (BaseResp)
+
+    // ========== 属性参数相关接口 ==========
+    @doc "获取属性参数列表"
+    @handler ListAttrParam
+    post /product/attr-param/list (ListAttrParamReq) returns (BaseResp)
+
+    @doc "保存属性参数（新增/编辑）"
+    @handler SaveAttrParam
+    post /product/attr-param (SaveAttrParamReq) returns (BaseResp)
+
+    @doc "删除属性参数"
+    @handler DeleteAttrParam
+    delete /product/attr-param/:id (DeleteAttrParamReq) returns (BaseResp)
+
+    @doc "批量删除属性参数"
+    @handler BatchDeleteAttrParam
+    post /product/attr-param/batch-delete (BatchDeleteAttrParamReq) returns (BaseResp)
+
+    // ========== 商品详情相关接口 ==========
+    @doc "保存商品详情（包含详情、包装清单、售后服务）"
+    @handler SaveProductDetail
+    post /product/detail (SaveProductDetailReq) returns (BaseResp)
 
 }
