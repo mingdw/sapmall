@@ -16,7 +16,6 @@ import (
 	"sapphire-mall/app/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
-	"gorm.io/gorm"
 )
 
 type ListProductLogic struct {
@@ -64,81 +63,32 @@ func (l *ListProductLogic) ListProduct(req *types.ListProductReq) (resp *types.B
 		}
 	}
 
-	// 构建查询条件
-	query := productSpuRepository.DB(l.ctx).Model(&model.ProductSpu{}).
-		Where("is_deleted = ?", 0).
-		Where("user_code = ?", userInfo.UserCode) // 只查询当前用户创建的商品
-
-	// 分类编码筛选（支持多个，用逗号分隔）
+	// 处理分类编码（支持多个，用逗号分隔）
+	var categoryCodes []string
 	if req.CategoryCodes != "" {
-		categoryCodes := strings.Split(req.CategoryCodes, ",")
-		// 去除空格
-		for i, code := range categoryCodes {
-			categoryCodes[i] = strings.TrimSpace(code)
-		}
-		// 过滤空字符串
-		validCodes := make([]string, 0)
-		for _, code := range categoryCodes {
-			if code != "" {
-				validCodes = append(validCodes, code)
+		codes := strings.Split(req.CategoryCodes, ",")
+		// 去除空格并过滤空字符串
+		for _, code := range codes {
+			trimmedCode := strings.TrimSpace(code)
+			if trimmedCode != "" {
+				categoryCodes = append(categoryCodes, trimmedCode)
 			}
 		}
-		if len(validCodes) > 0 {
-			query = query.Where("category1_code IN ? OR category2_code IN ? OR category3_code IN ?",
-				validCodes, validCodes, validCodes)
-		}
 	}
 
-	// 商品名称模糊搜索
-	if req.ProductName != "" {
-		query = query.Where("name LIKE ?", "%"+req.ProductName+"%")
-	}
-
-	// 商品编码精确搜索
-	if req.ProductCode != "" {
-		query = query.Where("code = ?", req.ProductCode)
-	}
-
-	// 商品状态筛选
-	// 状态定义：0=草稿 1=待审核 2=上架中 3=已下架
-	// 前端约定：当没有状态筛选时，传递 status: -1 表示查询所有状态
-	// Status = -1 或 < 0 或 > 3：不进行状态筛选（查询所有状态）
-	// Status 在 0-3 范围内：进行对应的状态筛选
-	if req.Status >= 0 && req.Status <= 3 {
-		query = query.Where("status = ?", req.Status)
-	}
-	// Status < 0 或 Status > 3 时，不进行状态筛选（查询所有状态）
-
-	// 链上状态筛选
-	if req.ChainStatus != "" {
-		query = query.Where("chain_status = ?", req.ChainStatus)
-	}
-
-	// 时间范围筛选
+	// 处理时间范围
+	var startTime, endTime interface{}
 	if req.TimeRange != "" {
-		startTime, endTime := l.getTimeRange(req.TimeRange)
-		if startTime != nil {
-			query = query.Where("created_at >= ?", startTime)
+		startTimePtr, endTimePtr := l.getTimeRange(req.TimeRange)
+		if startTimePtr != nil {
+			startTime = *startTimePtr
 		}
-		if endTime != nil {
-			query = query.Where("created_at <= ?", endTime)
+		if endTimePtr != nil {
+			endTime = *endTimePtr
 		}
 	}
 
-	// 获取总数
-	var total int64
-	err = query.Count(&total).Error
-	if err != nil {
-		logx.Errorf("查询商品总数失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询商品总数失败",
-			Data: nil,
-		}, nil
-	}
-
-	// 分页查询
-	var spus []*model.ProductSpu
+	// 分页参数处理
 	page := req.Page
 	if page < 1 {
 		page = 1
@@ -151,23 +101,22 @@ func (l *ListProductLogic) ListProduct(req *types.ListProductReq) (resp *types.B
 		pageSize = 100 // 限制最大每页数量
 	}
 
-	offset := (page - 1) * pageSize
-	err = query.Order("created_at DESC").
-		Offset(offset).
-		Limit(pageSize).
-		Find(&spus).Error
+	// 调用 repository 方法查询商品列表
+	spus, total, err := productSpuRepository.ListProducts(
+		l.ctx,
+		userInfo.UserCode,
+		categoryCodes,
+		req.ProductName,
+		req.ProductCode,
+		req.Status,
+		req.ChainStatus,
+		startTime,
+		endTime,
+		page,
+		pageSize,
+	)
 
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return &types.BaseResp{
-				Code: 0,
-				Msg:  "查询成功",
-				Data: &types.ListProductResp{
-					List:  []types.ProductSPUInfo{},
-					Total: 0,
-				},
-			}, nil
-		}
 		logx.Errorf("查询商品列表失败: %v", err)
 		return &types.BaseResp{
 			Code: 1,

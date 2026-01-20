@@ -88,15 +88,14 @@ export const productApi = {
   },
 
   /**
-   * 删除商品
+   * 删除商品（单条删除也使用批量删除接口，传入单个ID的数组）
    * @param id 商品SPU ID
    */
   deleteProduct: async (id: number): Promise<ApiResponse<null>> => {
     try {
       console.log('删除商品ID:', id);
-      const response = await baseClient.delete<null>(
-        `/api/admin/product/${id}`
-      );
+      // 单条删除也调用批量删除接口
+      const response = await productApi.batchDeleteProducts([id]);
       console.log('删除商品响应:', response);
       return response;
     } catch (error) {
@@ -112,7 +111,7 @@ export const productApi = {
   batchDeleteProducts: async (ids: number[]): Promise<ApiResponse<null>> => {
     try {
       const response = await baseClient.post<null>(
-        '/api/admin/product/batch-delete',
+        '/api/admin/product/spu/deletes',
         { ids }
       );
       return response;
