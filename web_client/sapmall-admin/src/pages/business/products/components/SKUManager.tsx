@@ -345,6 +345,9 @@ const SKUManager: React.FC<SKUManagerProps> = ({
           className={styles.skuTable}
           rowClassName={() => styles.skuTableRow}
           scroll={{ y: 500, x: 'max-content' }}
+          locale={{
+            emptyText: '暂无数据',
+          }}
         />
       </div>
     </div>

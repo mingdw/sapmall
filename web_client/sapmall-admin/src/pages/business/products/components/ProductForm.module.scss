@@ -243,6 +243,23 @@
       box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
       background-color: rgba(30, 41, 59, 0.95) !important;
     }
+
+    // 修复浏览器自动填充时的背景颜色变白问题
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px rgba(30, 41, 59, 0.8) inset !important;
+      -webkit-text-fill-color: #e2e8f0 !important;
+      background-color: rgba(30, 41, 59, 0.8) !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    // 当自动填充的输入框获得焦点时
+    &:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 30px rgba(30, 41, 59, 0.95) inset, 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+      background-color: rgba(30, 41, 59, 0.95) !important;
+    }
   }
 
   // 文本域（商品简介）- 简洁样式，与输入框背景颜色一致
@@ -272,6 +289,22 @@
       box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
       background-color: rgba(30, 41, 59, 0.95) !important;
       outline: none;
+    }
+
+    // 修复浏览器自动填充时的背景颜色变白问题
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px rgba(30, 41, 59, 0.8) inset !important;
+      -webkit-text-fill-color: #e2e8f0 !important;
+      background-color: rgba(30, 41, 59, 0.8) !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    &:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 30px rgba(30, 41, 59, 0.95) inset, 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+      background-color: rgba(30, 41, 59, 0.95) !important;
     }
   }
 
@@ -308,6 +341,22 @@
     &.ant-input-number-focused {
       border-color: #3b82f6 !important;
       box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+    }
+
+    // 修复浏览器自动填充时的背景颜色变白问题
+    .ant-input-number-input:-webkit-autofill,
+    .ant-input-number-input:-webkit-autofill:hover,
+    .ant-input-number-input:-webkit-autofill:focus,
+    .ant-input-number-input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px rgba(30, 41, 59, 0.8) inset !important;
+      -webkit-text-fill-color: #e2e8f0 !important;
+      background-color: rgba(30, 41, 59, 0.8) !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .ant-input-number-input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 30px rgba(30, 41, 59, 0.95) inset, 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+      background-color: rgba(30, 41, 59, 0.95) !important;
     }
 
     .ant-input-number-handler-wrap {
@@ -518,20 +567,22 @@
       background-color: #3b82f6 !important;
     }
 
-    // 为 process 状态的步骤也添加连线样式，确保当前步骤和下一个步骤之间的连线显示
-    // 使用更高的优先级确保样式生效
-    .ant-steps-item-process .ant-steps-item-tail::after,
-    .ant-steps-item.ant-steps-item-process .ant-steps-item-tail::after {
-      background-color: #3b82f6 !important;
+    // 使用 Ant Design 默认行为：process 状态的连线会自动显示
+    // 隐藏从 maxReachedStep 到下一个 wait 步骤的连线
+    // 使用 :has() 选择器（现代浏览器支持）
+    @supports selector(:has(*)) {
+      .ant-steps-item.max-reached-step:has(+ .ant-steps-item-wait) .ant-steps-item-tail::after {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+      }
     }
     
-    // 确保 process 状态的步骤的 tail 元素存在且可见
-    .ant-steps-item-process .ant-steps-item-tail {
-      &::after {
-        background-color: #3b82f6 !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-      }
+    // 备用方案：通过 JavaScript 动态添加 no-tail 类
+    .ant-steps-item.max-reached-step.no-tail .ant-steps-item-tail::after {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
     }
   }
 

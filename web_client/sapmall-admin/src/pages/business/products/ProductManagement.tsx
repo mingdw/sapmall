@@ -585,6 +585,9 @@ const ProductManagement: React.FC = () => {
                   }}
                   scroll={{ x: 1260 }}
                   className={styles.productTable}
+                  locale={{
+                    emptyText: '暂无数据',
+                  }}
                 />
               </div>
             )}

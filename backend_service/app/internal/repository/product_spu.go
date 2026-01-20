@@ -15,6 +15,8 @@ type ProductSpuRepository interface {
 	DeleteProductSpu(ctx context.Context, id int64) error
 	DB(ctx context.Context) *gorm.DB
 	ListProductsByCategoryCodes(ctx context.Context, categoryCodes []string, productName string, page, pageSize int) ([]*model.ProductSpu, int64, error)
+	GetMaxID(ctx context.Context) (int64, error)
+	GetProductSpuByCode(ctx context.Context, code string) (*model.ProductSpu, error)
 }
 
 func NewProductSpuRepository(
@@ -125,4 +127,30 @@ func (r *productSpuRepository) ListProductsByCategoryCodes(
 	}
 
 	return products, total, nil
+}
+
+// GetMaxID 获取最大ID，用于生成编码
+func (r *productSpuRepository) GetMaxID(ctx context.Context) (int64, error) {
+	var maxID *int64
+	err := r.DB(ctx).Model(&model.ProductSpu{}).Select("MAX(id)").Scan(&maxID).Error
+	if err != nil {
+		return 0, err
+	}
+	if maxID == nil {
+		return 0, nil
+	}
+	return *maxID, nil
+}
+
+// GetProductSpuByCode 根据编码获取商品
+func (r *productSpuRepository) GetProductSpuByCode(ctx context.Context, code string) (*model.ProductSpu, error) {
+	var spu model.ProductSpu
+	err := r.DB(ctx).Where("code = ? AND is_deleted = ?", code, 0).First(&spu).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &spu, nil
 }
