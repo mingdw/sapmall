@@ -33,6 +33,9 @@ export const useIframeParams = (iframeParams?: IframeParams) => {
       // 从iframe参数设置用户信息
       setUserFromIframe(iframeParams);
       console.log('从iframe设置用户信息:', iframeParams);
+      
+      // 注意：商品目录的初始化已在 App.tsx 中处理，这里不需要重复调用
+      // 如果 App.tsx 中的初始化失败，这里可以作为备用（但通常不需要）
     }
   }, [iframeParams, setUserFromIframe, getCurrentUser, clearCache]);
 

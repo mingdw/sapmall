@@ -39,7 +39,7 @@ func (r *productSkuRepository) GetProductSku(ctx context.Context, id int64) (*mo
 func (r *productSkuRepository) ListProductSkus(ctx context.Context, productId int64) ([]*model.ProductSku, error) {
 	var skus []*model.ProductSku
 	err := r.DB(ctx).
-		Where("product_id = ?", productId).
+		Where("product_spu_id = ? AND is_deleted = ?", productId, 0).
 		Find(&skus).Error
 	if err != nil {
 		return nil, err

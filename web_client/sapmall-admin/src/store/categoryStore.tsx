@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { CategoryTreeResp } from '../services/types/categoryTypes';
+import { commonApiService } from '../services/api/commonApiService';
 
 // 分页信息类型
 interface PaginationInfo {
@@ -19,7 +20,9 @@ interface FilterInfo {
 
 // 分类状态接口
 interface CategoryState {
-  // 分类数据
+  // 商品目录数据（menu_type=0，用于商品管理）
+  productCategories: CategoryTreeResp[];
+  // 后台菜单目录数据（menu_type=1，用于后台菜单，由useMenuData管理）
   categories: CategoryTreeResp[];
   categoryList: CategoryTreeResp[];
   
@@ -29,6 +32,10 @@ interface CategoryState {
   // 加载状态
   isLoading: boolean;
   isCategoryListLoading: boolean;
+  // 商品目录加载状态
+  isProductCategoriesLoading: boolean;
+  // 商品目录最后获取时间
+  productCategoriesLastFetchTime: number | null;
   lastFetchTime: number | null;
   
   // 缓存时间（5分钟）
@@ -84,17 +91,35 @@ interface CategoryState {
   
   // 构建分类树结构
   buildCategoryTree: (categories: CategoryTreeResp[]) => CategoryTreeResp[];
+  
+  // 从API获取商品目录树并缓存（menu_type=0，首次进入后台管理时调用）
+  fetchProductCategories: () => Promise<void>;
+  
+  // 刷新商品目录树（强制从API获取）
+  refreshProductCategories: () => Promise<void>;
+  
+  // 检查商品目录缓存是否有效
+  isProductCategoriesCacheValid: () => boolean;
+  
+  // 从API获取分类树并缓存（用于商品分类，categoryType=0，已废弃，使用fetchProductCategories）
+  fetchCategoryTree: (categoryType?: number) => Promise<void>;
+  
+  // 刷新分类树（强制从API获取，已废弃，使用refreshProductCategories）
+  refreshCategoryTree: (categoryType?: number) => Promise<void>;
 }
 
 export const useCategoryStore = create<CategoryState>()(
   persist(
     (set, get) => ({
       // 初始状态
-      categories: [],
+      productCategories: [], // 商品目录（menu_type=0）
+      categories: [], // 后台菜单目录（menu_type=1）
       categoryList: [],
       selectedCategory: null,
       isLoading: false,
       isCategoryListLoading: false,
+      isProductCategoriesLoading: false,
+      productCategoriesLastFetchTime: null,
       lastFetchTime: null,
       cacheExpiry: 5 * 60 * 1000, // 5分钟
       
@@ -315,12 +340,111 @@ export const useCategoryStore = create<CategoryState>()(
         });
         
         return rootCategories;
+      },
+      
+      // 从API获取商品目录树并缓存（menu_type=0，首次进入后台管理时调用）
+      fetchProductCategories: async () => {
+        const { isProductCategoriesCacheValid, productCategories, isProductCategoriesLoading } = get();
+        
+        // 如果缓存有效且有数据，直接返回
+        if (isProductCategoriesCacheValid() && productCategories.length > 0) {
+          console.log('使用缓存的商品目录数据');
+          return;
+        }
+        
+        // 如果正在加载，避免重复请求
+        if (isProductCategoriesLoading) {
+          console.log('商品目录数据正在加载中，跳过重复请求');
+          return;
+        }
+        
+        try {
+          set({ isProductCategoriesLoading: true });
+          console.log('从API获取商品目录数据（menu_type=0）');
+          const tree = await commonApiService.getCategoryTree(0);
+          const categoryList = Array.isArray(tree) ? tree : [tree];
+          
+          // 类型转换：将 commonApiService 返回的类型转换为 store 使用的类型
+          const convertedList: CategoryTreeResp[] = categoryList.map((cat: any) => ({
+            ...cat,
+            parent_id: cat.parentId || cat.parent_id || 0,
+            url: cat.code || cat.url || '',
+          }));
+          
+          set({ 
+            productCategories: convertedList,
+            productCategoriesLastFetchTime: Date.now(),
+            isProductCategoriesLoading: false
+          });
+          console.log('商品目录数据获取成功并已缓存');
+        } catch (error) {
+          console.error('获取商品目录数据失败:', error);
+          set({ isProductCategoriesLoading: false });
+          throw error;
+        }
+      },
+      
+      // 刷新商品目录树（强制从API获取）
+      refreshProductCategories: async () => {
+        try {
+          set({ isProductCategoriesLoading: true });
+          console.log('强制刷新商品目录数据（menu_type=0）');
+          const tree = await commonApiService.getCategoryTree(0);
+          const categoryList = Array.isArray(tree) ? tree : [tree];
+          
+          // 类型转换：将 commonApiService 返回的类型转换为 store 使用的类型
+          const convertedList: CategoryTreeResp[] = categoryList.map((cat: any) => ({
+            ...cat,
+            parent_id: cat.parentId || cat.parent_id || 0,
+            url: cat.code || cat.url || '',
+          }));
+          
+          set({ 
+            productCategories: convertedList,
+            productCategoriesLastFetchTime: Date.now(),
+            isProductCategoriesLoading: false
+          });
+          console.log('商品目录数据刷新成功并已缓存');
+        } catch (error) {
+          console.error('刷新商品目录数据失败:', error);
+          set({ isProductCategoriesLoading: false });
+          throw error;
+        }
+      },
+      
+      // 检查商品目录缓存是否有效
+      isProductCategoriesCacheValid: () => {
+        const { productCategoriesLastFetchTime, cacheExpiry } = get();
+        if (!productCategoriesLastFetchTime) return false;
+        return Date.now() - productCategoriesLastFetchTime < cacheExpiry;
+      },
+      
+      // 从API获取分类树并缓存（用于商品分类，categoryType=0，已废弃，使用fetchProductCategories）
+      fetchCategoryTree: async (categoryType = 0) => {
+        // 兼容旧代码，如果是商品目录（categoryType=0），使用新的方法
+        if (categoryType === 0) {
+          return get().fetchProductCategories();
+        }
+        // 其他类型暂不支持
+        console.warn('fetchCategoryTree已废弃，请使用fetchProductCategories');
+      },
+      
+      // 刷新分类树（强制从API获取，已废弃，使用refreshProductCategories）
+      refreshCategoryTree: async (categoryType = 0) => {
+        // 兼容旧代码，如果是商品目录（categoryType=0），使用新的方法
+        if (categoryType === 0) {
+          return get().refreshProductCategories();
+        }
+        // 其他类型暂不支持
+        console.warn('refreshCategoryTree已废弃，请使用refreshProductCategories');
       }
     }),
     {
       name: 'sapmall-admin-category-storage',
       // 只持久化必要的状态
       partialize: (state) => ({
+        productCategories: state.productCategories, // 持久化商品目录
+        productCategoriesLastFetchTime: state.productCategoriesLastFetchTime,
         categories: state.categories,
         categoryStats: state.categoryStats,
         lastFetchTime: state.lastFetchTime,
