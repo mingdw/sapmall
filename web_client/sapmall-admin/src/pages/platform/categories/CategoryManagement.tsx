@@ -4,12 +4,11 @@ import AdminCard from '../../../components/common/AdminCard';
 import CategoryTree from './components/CategoryTree';
 import CategoryDetail from './components/CategoryDetail';
 import {
-  commonApiService,
-  CategoryTreeResp,
   AttrGroupResp,
   AttrResp,
 } from '../../../services/api/commonApiService';
 import { categoryApi, SaveCategoryReq } from '../../../services/api/categoryApi';
+import { useCategoryStore } from '../../../store/categoryStore';
 import styles from './CategoryManagement.module.scss';
 import type { Category, AttributeGroup, Attribute } from './types';
 
@@ -17,28 +16,29 @@ const CategoryManagement: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  // 使用 store 中的商品目录数据和刷新方法（menu_type=0）
+  const { productCategories: categoryTree, refreshProductCategories, isProductCategoriesLoading: storeLoading } = useCategoryStore();
 
-  // 加载商品目录数据
+  // 加载商品目录数据（从 store 获取，如果缓存无效则从 API 获取）
   useEffect(() => {
-    loadCategories();
-  }, []);
-
-  const loadCategories = async () => {
-    setLoading(true);
-    try {
-      // 使用 categoryType=0 获取商品目录（menu_type=0）
-      const data = await commonApiService.getCategoryTree(0);
-      console.log('获取到的商品目录数据:', data);
-      const transformed = Array.isArray(data) ? transformCategoryTree(data) : [];
-      setCategories(transformed);
-      // 移除成功提示，避免频繁提示
-    } catch (error) {
+    refreshProductCategories().catch(error => {
       console.error('加载目录失败:', error);
       message.error('加载目录失败: ' + (error as Error).message);
-    } finally {
-      setLoading(false);
+    });
+  }, [refreshProductCategories]);
+
+  // 当 store 中的分类数据变化时，更新本地状态
+  useEffect(() => {
+    if (categoryTree.length > 0) {
+      const transformed = transformCategoryTree(categoryTree);
+      setCategories(transformed);
     }
-  };
+  }, [categoryTree]);
+
+  // 合并 store 的加载状态
+  useEffect(() => {
+    setLoading(storeLoading);
+  }, [storeLoading]);
 
   // 处理选择目录
   const handleSelectCategory = (category: Category) => {
@@ -87,8 +87,8 @@ const CategoryManagement: React.FC = () => {
       
       if (response.code === 0) {
         message.success(formData.id ? '编辑成功' : '创建成功');
-        // 重新加载目录树
-        await loadCategories();
+        // 刷新 store 中的商品目录缓存
+        await refreshProductCategories();
         return true;
       } else {
         message.error(response.message || '操作失败');
@@ -137,8 +137,8 @@ const CategoryManagement: React.FC = () => {
           
           if (response.code === 0) {
             message.success('删除成功');
-            // 重新加载目录树
-            await loadCategories();
+            // 刷新 store 中的商品目录缓存
+            await refreshProductCategories();
             // 如果删除的是当前选中的目录，清空选中状态
             if (selectedCategory?.id === category.id) {
               setSelectedCategory(null);
@@ -179,7 +179,7 @@ const CategoryManagement: React.FC = () => {
               <CategoryDetail
                 category={selectedCategory}
                 onEditCategory={handleEditCategory}
-                onRefresh={loadCategories}
+                onRefresh={() => refreshProductCategories()}
                 onAttrGroupsUpdate={handleAttrGroupsUpdate}
               />
             </div>
@@ -192,21 +192,29 @@ const CategoryManagement: React.FC = () => {
 
 export default CategoryManagement;
 
-function transformCategoryTree(nodes: CategoryTreeResp[]): Category[] {
-  return nodes.map((node) => ({
-    id: node.id,
-    name: node.name,
-    code: node.code,
-    level: node.level,
-    sort: node.sort,
-    parentId: node.parentId,
-    icon: node.icon,
-    children:
-      node.children && node.children.length > 0
-        ? transformCategoryTree(node.children)
-        : undefined,
-    attrGroups: node.attrGroups ? transformAttributeGroups(node.attrGroups) : undefined,
-  }));
+function transformCategoryTree(nodes: any[]): Category[] {
+  return nodes.map((node) => {
+    // 兼容两种类型定义：
+    // 1. commonApiService 中的类型：有 code 和 parentId
+    // 2. categoryTypes 中的类型：有 url 和 parent_id
+    const code = node.code || node.url || '';
+    const parentId = node.parentId || node.parent_id || 0;
+    
+    return {
+      id: node.id,
+      name: node.name,
+      code: code,
+      level: node.level,
+      sort: node.sort,
+      parentId: parentId,
+      icon: node.icon || '',
+      children:
+        node.children && node.children.length > 0
+          ? transformCategoryTree(node.children)
+          : undefined,
+      attrGroups: node.attrGroups ? transformAttributeGroups(node.attrGroups) : undefined,
+    };
+  });
 }
 
 function transformAttributeGroups(groups: AttrGroupResp[]): AttributeGroup[] {

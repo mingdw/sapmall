@@ -5,7 +5,6 @@ package admin
 
 import (
 	"context"
-	"fmt"
 
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
@@ -51,18 +50,18 @@ func (l *DeleteAttrLogic) DeleteAttr(req *types.DeleteAttrReq) (resp *types.Base
 		}, nil
 	}
 
-	// 2. 删除属性（逻辑删除，设置 is_deleted = 1）
+	// 2. 软删除属性（使用逻辑删除，设置 is_deleted = 1）
 	err = attrRepository.Delete(l.ctx, int64(req.ID))
 	if err != nil {
 		logx.Errorf("删除属性失败: %v", err)
 		return &types.BaseResp{
 			Code: 1,
-			Msg:  fmt.Sprintf("删除属性失败: %v", err),
+			Msg:  "删除属性失败",
 			Data: nil,
 		}, nil
 	}
 
-	logx.Infof("删除属性成功: ID=%d, Name=%s, Code=%s", req.ID, existingAttr.AttrName, existingAttr.AttrCode)
+	logx.Infof("删除属性成功: ID=%d, Name=%s", req.ID, existingAttr.AttrName)
 
 	return &types.BaseResp{
 		Code: 0,

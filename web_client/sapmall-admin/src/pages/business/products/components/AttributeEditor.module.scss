@@ -148,35 +148,133 @@
   }
 
   .emptyTip {
-    padding: 40px 24px;
+    padding: 48px 24px;
     text-align: center;
-    background-color: rgba(30, 41, 59, 0.2);
-    border: 1px dashed rgba(148, 163, 184, 0.2);
+    background-color: rgba(30, 41, 59, 0.3);
+    border: 1px dashed rgba(148, 163, 184, 0.25);
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 
     &:hover {
-      border-color: rgba(148, 163, 184, 0.3);
-      background-color: rgba(30, 41, 59, 0.3);
+      border-color: rgba(148, 163, 184, 0.4);
+      background-color: rgba(30, 41, 59, 0.4);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
 
     .emptyIcon {
-      font-size: 32px;
-      margin-bottom: 12px;
-      opacity: 0.6;
+      font-size: 36px;
+      margin-bottom: 16px;
+      opacity: 0.7;
+      filter: grayscale(0.3);
     }
 
     .emptyText {
       color: #94a3b8;
       font-size: 14px;
       font-weight: 500;
-      margin: 0 0 6px 0;
+      margin: 0 0 8px 0;
     }
 
     .emptyHint {
       color: #64748b;
       font-size: 12px;
       margin: 0;
+      line-height: 1.6;
+    }
+  }
+
+  // 表格容器
+  .tableContainer {
+    background-color: rgba(30, 41, 59, 0.4);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: rgba(148, 163, 184, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  // 表格单元格
+  .tableCell {
+    color: #e2e8f0;
+    font-size: 13px;
+  }
+
+  // 表格输入框
+  .tableInput {
+    background-color: rgba(30, 41, 59, 0.6) !important;
+    border-color: rgba(148, 163, 184, 0.2) !important;
+    color: #e2e8f0 !important;
+    border-radius: 4px;
+    font-size: 13px;
+
+    &::placeholder {
+      color: #64748b !important;
+    }
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.4) !important;
+      background-color: rgba(30, 41, 59, 0.7) !important;
+    }
+
+    &:focus {
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+      background-color: rgba(30, 41, 59, 0.8) !important;
+    }
+  }
+
+  // 操作按钮样式
+  .editBtn {
+    color: #3b82f6;
+    padding: 4px 8px;
+    height: auto;
+    font-size: 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #60a5fa;
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+  }
+
+  .saveBtn {
+    color: #10b981;
+    padding: 4px 8px;
+    height: auto;
+    font-size: 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+
+    &:hover {
+      color: #34d399;
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    &:disabled {
+      color: #64748b;
+      cursor: not-allowed;
+      background-color: transparent;
+    }
+  }
+
+  .cancelBtn {
+    color: #94a3b8;
+    padding: 4px 8px;
+    height: auto;
+    font-size: 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #cbd5e1;
+      background-color: rgba(148, 163, 184, 0.1);
     }
   }
 }
@@ -206,6 +304,172 @@
         background-color: rgba(30, 41, 59, 0.4) !important;
         color: #64748b !important;
         cursor: not-allowed;
+      }
+    }
+
+    // 表格样式覆盖
+    .attributeTable {
+      background-color: transparent !important;
+
+      :global(.ant-table) {
+        background-color: transparent !important;
+        color: #e2e8f0 !important;
+      }
+
+      :global(.ant-table-container) {
+        background-color: transparent !important;
+      }
+
+      :global(.ant-table-body) {
+        background-color: transparent !important;
+      }
+
+      :global(.ant-table-content) {
+        background-color: transparent !important;
+      }
+
+      :global(.ant-table-thead > tr > th) {
+        background-color: rgba(30, 41, 59, 0.6) !important;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.25) !important;
+        color: #e2e8f0 !important;
+        font-weight: 600 !important;
+        font-size: 13px !important;
+        padding: 14px 16px !important;
+        position: relative;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+        }
+      }
+
+      :global(.ant-table-tbody > tr > td) {
+        background-color: transparent !important;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.08) !important;
+        color: #e2e8f0 !important;
+        padding: 14px 16px !important;
+        transition: all 0.2s ease;
+      }
+
+      :global(.ant-table-tbody > tr) {
+        background-color: transparent !important;
+        transition: all 0.2s ease;
+      }
+
+      :global(.ant-table-tbody > tr:hover > td) {
+        background-color: rgba(30, 41, 59, 0.5) !important;
+        border-bottom-color: rgba(148, 163, 184, 0.15) !important;
+      }
+
+      :global(.ant-table-tbody > tr:last-child > td) {
+        border-bottom: none !important;
+      }
+
+      :global(.ant-empty) {
+        color: #94a3b8 !important;
+      }
+
+      :global(.ant-empty-description) {
+        color: #64748b !important;
+      }
+
+      // 确保表格整体背景是深色
+      :global {
+        .ant-table-wrapper {
+          background-color: transparent !important;
+        }
+        .ant-table {
+          background-color: transparent !important;
+          color: #e2e8f0 !important;
+        }
+        .ant-table-placeholder {
+          background-color: transparent !important;
+        }
+        .ant-table-wrapper .ant-table {
+          background: transparent !important;
+        }
+        .ant-table-wrapper .ant-table-container {
+          background: transparent !important;
+        }
+        .ant-table-wrapper .ant-table-content {
+          background: transparent !important;
+        }
+        .ant-table-wrapper .ant-table-body {
+          background: transparent !important;
+        }
+        // 表格行样式
+        .ant-table-tbody > tr.ant-table-row {
+          background-color: transparent !important;
+        }
+        .ant-table-tbody > tr.ant-table-row:hover {
+          background-color: rgba(30, 41, 59, 0.4) !important;
+        }
+        // 表格单元格背景
+        .ant-table-cell {
+          background-color: transparent !important;
+        }
+        .ant-table-tbody > tr > td.ant-table-cell {
+          background-color: transparent !important;
+        }
+      }
+
+      // 按钮样式
+      :global(.ant-btn-link) {
+        color: #3b82f6 !important;
+        padding: 4px 8px !important;
+        height: auto !important;
+        line-height: 1.5 !important;
+        border-radius: 4px !important;
+        transition: all 0.2s ease !important;
+        font-size: 12px !important;
+        
+        &:hover {
+          color: #60a5fa !important;
+          background-color: rgba(59, 130, 246, 0.1) !important;
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+
+      :global(.ant-btn-link.ant-btn-dangerous) {
+        color: #ef4444 !important;
+        
+        &:hover {
+          color: #f87171 !important;
+          background-color: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+
+      // 保存按钮特殊样式
+      :global(.ant-btn-link:has(.anticon-check)) {
+        color: #10b981 !important;
+        font-weight: 500 !important;
+        
+        &:hover {
+          color: #34d399 !important;
+          background-color: rgba(16, 185, 129, 0.1) !important;
+        }
+      }
+
+      // 取消按钮特殊样式
+      :global(.ant-btn-link:has(.anticon-close)) {
+        color: #94a3b8 !important;
+        
+        &:hover {
+          color: #cbd5e1 !important;
+          background-color: rgba(148, 163, 184, 0.1) !important;
+        }
       }
     }
   }

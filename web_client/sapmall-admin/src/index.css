@@ -674,6 +674,7 @@ code {
   box-shadow: 
     0 20px 60px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(59, 130, 246, 0.1) !important;
+  color: #e2e8f0 !important;
 }
 
 .ant-modal-header {
@@ -688,6 +689,7 @@ code {
 .ant-modal-body {
   background: transparent !important;
   color: #e2e8f0 !important;
+  padding: 24px !important;
 }
 
 .ant-modal-footer {
@@ -865,5 +867,72 @@ code {
     > div > small {
       color: #64748b !important;
     }
+  }
+
+  /* 表格深色主题样式 */
+  .ant-table {
+    background-color: transparent !important;
+    color: #e2e8f0 !important;
+  }
+
+  .ant-table-wrapper {
+    background-color: transparent !important;
+  }
+
+  .ant-table-container {
+    background-color: transparent !important;
+  }
+
+  .ant-table-content {
+    background-color: transparent !important;
+  }
+
+  .ant-table-body {
+    background-color: transparent !important;
+  }
+
+  .ant-table-thead > tr > th {
+    background-color: rgba(30, 41, 59, 0.5) !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2) !important;
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+  }
+
+  .ant-table-tbody > tr > td {
+    background-color: transparent !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1) !important;
+    color: #e2e8f0 !important;
+  }
+
+  .ant-table-tbody > tr {
+    background-color: transparent !important;
+  }
+
+  .ant-table-tbody > tr:hover > td {
+    background-color: rgba(30, 41, 59, 0.4) !important;
+  }
+
+  .ant-table-tbody > tr.ant-table-row {
+    background-color: transparent !important;
+  }
+
+  .ant-table-tbody > tr.ant-table-row:hover {
+    background-color: rgba(30, 41, 59, 0.4) !important;
+  }
+
+  .ant-table-cell {
+    background-color: transparent !important;
+  }
+
+  .ant-table-placeholder {
+    background-color: transparent !important;
+  }
+
+  .ant-empty {
+    color: #94a3b8 !important;
+  }
+
+  .ant-empty-description {
+    color: #64748b !important;
   }
 }

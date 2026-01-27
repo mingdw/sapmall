@@ -23,6 +23,7 @@ import AdminButton from '../../../../components/common/AdminButton';
 import AttributeEditor, { AttributeItem } from './AttributeEditor';
 import SpecificationEditor from './SpecificationEditor';
 import SKUManager, { SKUItem } from './SKUManager';
+import { useCategoryStore } from '../../../../store/categoryStore';
 import styles from './ProductForm.module.scss';
 
 const { TextArea } = Input;
@@ -43,7 +44,8 @@ interface CategoryOption {
 const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [categoryTree, setCategoryTree] = useState<CategoryTreeResp[]>([]);
+  // 使用 store 中的商品目录数据（menu_type=0）
+  const { productCategories: categoryTree, fetchProductCategories } = useCategoryStore();
   const [categoryOptions, setCategoryOptions] = useState<CategoryOption[]>([]);
   const [category2Options, setCategory2Options] = useState<CategoryOption[]>([]);
   const [category3Options, setCategory3Options] = useState<CategoryOption[]>([]);
@@ -59,6 +61,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
   const [maxReachedStep, setMaxReachedStep] = useState(0);
   // 保存当前商品的完整信息（用于暂存后更新）
   const [currentProduct, setCurrentProduct] = useState<ProductSPU | null>(product || null);
+  // 标记属性是否已加载（确保只加载一次）
+  const [attributesLoaded, setAttributesLoaded] = useState(false);
+  // 标记规格数据是否已加载（确保只加载一次）
+  const [specificationsLoaded, setSpecificationsLoaded] = useState(false);
 
   // 步骤配置
   const steps = [
@@ -84,10 +90,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
     },
   ];
 
-  // 加载分类树
+  // 加载商品目录树（从 store 获取，如果缓存无效则从 API 获取）
   useEffect(() => {
-    loadCategoryTree();
-  }, []);
+    fetchProductCategories(); // 获取商品目录（menu_type=0）
+  }, [fetchProductCategories]);
 
   // 当分类树加载完成且是编辑模式时，加载对应的二级和三级分类选项
   useEffect(() => {
@@ -211,10 +217,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
         setAdditionalImageFileList([]);
       }
 
-      // 加载属性数据（仅编辑模式才加载）
-      loadProductAttributes(product.id);
-      // 加载规格和SKU数据（仅编辑模式才加载）
-      loadProductSpecifications(product.id);
+      // 注意：属性数据和规格数据不在初始化时加载，而是在进入对应步骤时加载
     } else if (!product) {
       // 新增模式：清空表单数据
       form.resetFields();
@@ -224,19 +227,67 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
       setSaleAttributes({});
       setSpecifications({});
       setSkuList([]);
+      setAttributesLoaded(false); // 重置属性加载标志，以便下次进入属性设置步骤时重新加载
+      setSpecificationsLoaded(false); // 重置规格加载标志，以便下次进入规格步骤时重新加载
     }
   }, [product, form]); // 只监听 product prop，不监听 currentProduct
+
+  // 当切换到属性设置步骤时，加载属性数据（只加载一次，仅在编辑模式下）
+  useEffect(() => {
+    const step = steps[currentStep];
+    if (step?.key === 'attributes' && !attributesLoaded) {
+      const productId = currentProduct?.id || product?.id;
+      if (productId) {
+        // 编辑模式：加载已有属性
+        console.log('切换到属性设置步骤，加载属性数据，商品ID:', productId);
+        loadProductAttributes(productId);
+        setAttributesLoaded(true);
+      } else {
+        // 新增模式：标记为已加载（不需要调用接口）
+        setAttributesLoaded(true);
+      }
+    }
+  }, [currentStep, attributesLoaded, currentProduct?.id, product?.id]); // 监听 currentStep 和 attributesLoaded
+
+  // 当切换到规格与SKU步骤时，加载规格和SKU数据（只加载一次，仅在编辑模式下）
+  useEffect(() => {
+    const step = steps[currentStep];
+    if (step?.key === 'specifications' && !specificationsLoaded) {
+      const productId = currentProduct?.id || product?.id;
+      if (productId) {
+        // 编辑模式：加载规格和SKU数据
+        console.log('切换到规格与SKU步骤，加载规格数据，商品ID:', productId);
+        loadProductSpecifications(productId);
+        setSpecificationsLoaded(true);
+      } else {
+        // 新增模式：标记为已加载（不需要调用接口）
+        setSpecificationsLoaded(true);
+      }
+    }
+  }, [currentStep, specificationsLoaded, currentProduct?.id, product?.id]); // 监听 currentStep 和 specificationsLoaded
+
+  // 当 product 变化时，重置加载标志
+  useEffect(() => {
+    if (product) {
+      setAttributesLoaded(false); // 重置标志，以便下次进入属性设置步骤时重新加载
+      setSpecificationsLoaded(false); // 重置标志，以便下次进入规格步骤时重新加载
+    }
+  }, [product?.id]); // 只监听 product.id 的变化
 
   // 加载商品属性
   const loadProductAttributes = async (productId: number) => {
     try {
       const response = await productApi.getProductAttrParams(productId);
+      console.log('加载商品属性响应:', response);
       if (response.code === 0 && response.data) {
         const attrs = Array.isArray(response.data) ? response.data : [];
+        console.log('属性列表:', attrs);
         
         // 查找基础属性和销售属性
         const basicAttr = attrs.find((attr: any) => attr.code === 'BASIC_ATTRS' || attr.attrType === 1);
         const saleAttr = attrs.find((attr: any) => attr.code === 'SALE_ATTRS' || attr.attrType === 2);
+        console.log('基础属性:', basicAttr);
+        console.log('销售属性:', saleAttr);
         
         let hasAttributes = false;
         
@@ -358,24 +409,19 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
     }
   };
 
-  // 加载分类树
-  const loadCategoryTree = async () => {
-    try {
-      const tree = await commonApiService.getCategoryTree(0); // 0 表示商品分类
-      setCategoryTree(tree);
-      
+  // 当分类树数据变化时，更新分类选项
+  useEffect(() => {
+    if (categoryTree.length > 0) {
       // 转换为一级分类选项（只包含一级分类，不包含子级，子级通过联动加载）
-      const options = tree.map(cat => ({
+      // 注意：categoryTree 可能来自不同的类型定义，需要兼容处理
+      const options = categoryTree.map(cat => ({
         value: cat.id,
         label: cat.name,
-        code: cat.code,
+        code: (cat as any).code || (cat as any).url || '',
       }));
       setCategoryOptions(options);
-    } catch (error) {
-      console.error('加载分类树失败:', error);
-      message.error('加载分类失败');
     }
-  };
+  }, [categoryTree]);
 
   // 加载二级分类选项
   const loadCategory2Options = (category1Id: number) => {
@@ -384,11 +430,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
       const options = category1.children.map(child => ({
         value: child.id,
         label: child.name,
-        code: child.code,
+        code: (child as any).code || (child as any).url || '',
         children: child.children?.map(grandchild => ({
           value: grandchild.id,
           label: grandchild.name,
-          code: grandchild.code,
+          code: (grandchild as any).code || (grandchild as any).url || '',
         })),
       }));
       setCategory2Options(options);
@@ -408,7 +454,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
       const options = category2.children.map(child => ({
         value: child.id,
         label: child.name,
-        code: child.code,
+        code: (child as any).code || (child as any).url || '',
       }));
       setCategory3Options(options);
     } else {
@@ -671,22 +717,88 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
       console.log('暂存商品响应:', response);
       
       if (response.code === 0 && response.data) {
-        message.success('暂存成功');
         // 使用后端返回的完整SPU信息更新本地状态
         const savedProduct: ProductSPU = response.data;
+        const productId = savedProduct.id;
+        const productCode = savedProduct.code || '';
         
         // 更新本地保存的商品信息（包括ID、code等）
-        // 注意：暂存成功后只更新本地状态，不调用onSuccess，不会触发商品列表刷新
         setCurrentProduct(savedProduct);
         
         // 同步更新表单中的分类编码等信息（如果后端返回了更新的数据）
-        // 确保下次暂存时使用最新的数据
         if (savedProduct.category1Code && savedProduct.category1Code !== values.category1Code) {
           form.setFieldsValue({
             category1Code: savedProduct.category1Code,
           });
         }
         
+        // 保存属性数据（基础属性、销售属性、规格属性）
+        if (productId) {
+          try {
+            // 保存基础属性
+            if (Object.keys(basicAttributes).length > 0) {
+              await productApi.saveProductAttrParams(productId, productCode, 1, basicAttributes);
+            }
+            
+            // 保存销售属性
+            if (Object.keys(saleAttributes).length > 0) {
+              await productApi.saveProductAttrParams(productId, productCode, 2, saleAttributes);
+            }
+
+            // 保存规格属性
+            if (Object.keys(specifications).length > 0) {
+              await productApi.saveProductAttrParams(productId, productCode, 3, specifications);
+            }
+
+            // 保存SKU数据
+            if (skuList.length > 0) {
+              try {
+                // 先从服务器获取现有的SKU，以便保留已有的id
+                const existingSKUResponse = await productApi.getSKUList({
+                  productSpuId: productId,
+                  page: 1,
+                  pageSize: 100,
+                });
+                
+                const existingSKUs: ProductSKU[] = existingSKUResponse.code === 0 && existingSKUResponse.data?.list 
+                  ? existingSKUResponse.data.list 
+                  : [];
+                
+                // 构建SKU映射表，以indexs为key
+                const existingSKUMap = new Map<string, ProductSKU>();
+                existingSKUs.forEach(sku => {
+                  existingSKUMap.set(sku.indexs, sku);
+                });
+                
+                await productApi.batchSaveSKUs(
+                  productId,
+                  productCode,
+                  skuList.map(sku => {
+                    const existingSKU = existingSKUMap.get(sku.indexs);
+                    return {
+                      id: existingSKU?.id, // 如果有现有SKU，使用其id进行更新
+                      skuCode: sku.skuCode || existingSKU?.skuCode,
+                      price: typeof sku.price === 'number' ? sku.price : (sku.price ? parseFloat(String(sku.price)) : 0),
+                      stock: sku.stock || 0,
+                      status: 1, // 默认启用
+                      indexs: sku.indexs,
+                      title: sku.title || '',
+                      images: Array.isArray(sku.images) ? JSON.stringify(sku.images) : (sku.images || ''),
+                    };
+                  })
+                );
+              } catch (error) {
+                console.error('暂存SKU失败:', error);
+                // SKU保存失败不影响整体暂存，只记录错误
+              }
+            }
+          } catch (error) {
+            console.error('暂存属性或SKU失败:', error);
+            // 属性保存失败不影响整体暂存，只记录错误
+          }
+        }
+        
+        message.success('暂存成功');
         console.log('商品暂存成功，ID:', savedProduct.id, 'Code:', savedProduct.code, 'Name:', savedProduct.name);
         
         // 如果是从新增状态转为已保存状态，提示用户
@@ -1052,12 +1164,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess 
                 title="基础属性"
                 value={basicAttributes}
                 onChange={setBasicAttributes}
+                mode="table"
+                productId={currentProduct?.id || product?.id}
+                productCode={currentProduct?.code || product?.code}
+                attrType={1}
               />
               
               <AttributeEditor
                 title="销售属性"
                 value={saleAttributes}
                 onChange={setSaleAttributes}
+                mode="table"
+                productId={currentProduct?.id || product?.id}
+                productCode={currentProduct?.code || product?.code}
+                attrType={2}
               />
             </div>
           </div>

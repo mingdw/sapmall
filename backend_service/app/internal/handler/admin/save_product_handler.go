@@ -12,7 +12,7 @@ import (
 	"sapphire-mall/app/internal/types"
 )
 
-// 保存商品（新增/编辑）
+// 保存商品（新增/编辑，全量提交商品信息，返回完整的商品详情）
 func SaveProductHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.SaveProductReq

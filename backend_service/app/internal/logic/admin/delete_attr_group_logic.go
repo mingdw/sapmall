@@ -5,7 +5,6 @@ package admin
 
 import (
 	"context"
-	"fmt"
 
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
@@ -31,8 +30,6 @@ func NewDeleteAttrGroupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 
 func (l *DeleteAttrGroupLogic) DeleteAttrGroup(req *types.DeleteAttrGroupReq) (resp *types.BaseResp, err error) {
 	attrGroupRepository := repository.NewAttrGroupRepository(l.svcCtx.GormDB)
-	attrRepository := repository.NewAttrRepository(l.svcCtx.GormDB)
-	categoryAttrGroupRepository := repository.NewCategoryAttrGroupRepository(l.svcCtx.GormDB)
 
 	// 1. 查询属性组是否存在
 	existingAttrGroup, err := attrGroupRepository.GetAttrGroup(l.ctx, req.ID)
@@ -53,40 +50,18 @@ func (l *DeleteAttrGroupLogic) DeleteAttrGroup(req *types.DeleteAttrGroupReq) (r
 		}, nil
 	}
 
-	// 2. 删除属性组下的属性列表
-	err = attrRepository.DeleteByAttrGroupID(l.ctx, int64(req.ID))
-	if err != nil {
-		logx.Errorf("删除属性组下的属性列表失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  fmt.Sprintf("删除属性组下的属性列表失败: %v", err),
-			Data: nil,
-		}, nil
-	}
-
-	// 3. 删除目录-属性组关联
-	err = categoryAttrGroupRepository.DeleteByAttrGroupID(l.ctx, req.ID)
-	if err != nil {
-		logx.Errorf("删除目录-属性组关联失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  fmt.Sprintf("删除目录-属性组关联失败: %v", err),
-			Data: nil,
-		}, nil
-	}
-
-	// 4. 删除属性组（逻辑删除，设置 is_deleted = 1）
+	// 2. 软删除属性组（使用逻辑删除，设置 is_deleted = 1）
 	err = attrGroupRepository.Delete(l.ctx, int64(req.ID))
 	if err != nil {
 		logx.Errorf("删除属性组失败: %v", err)
 		return &types.BaseResp{
 			Code: 1,
-			Msg:  fmt.Sprintf("删除属性组失败: %v", err),
+			Msg:  "删除属性组失败",
 			Data: nil,
 		}, nil
 	}
 
-	logx.Infof("删除属性组成功: ID=%d, Name=%s, Code=%s", req.ID, existingAttrGroup.AttrGroupName, existingAttrGroup.AttrGroupCode)
+	logx.Infof("删除属性组成功: ID=%d, Name=%s", req.ID, existingAttrGroup.AttrGroupName)
 
 	return &types.BaseResp{
 		Code: 0,
