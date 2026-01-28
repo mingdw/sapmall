@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { IframeParams } from '../types';
 import { useIframeParams } from '../hooks/useIframeParams';
 import { useMenuData } from '../hooks/useMenuData';
+import { useCategoryStore } from '../store/categoryStore';
 import { CategoryTreeResp } from '../services/types/categoryTypes';
 import AdminContentComponent from '../components/AdminContentComponent';
 
@@ -35,6 +36,16 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
 
   // 处理iframe参数
   useIframeParams(iframeParams);
+
+  // 确保商品目录（menu_type=0）已加载并缓存（兜底：避免某些场景下初始化未触发）
+  const { hasHydrated, productCategories, fetchProductCategories } = useCategoryStore();
+  useEffect(() => {
+    if (!hasHydrated) return;
+    if (productCategories.length > 0) return;
+    fetchProductCategories().catch((error) => {
+      console.error('AdminLayout 初始化商品目录数据失败:', error);
+    });
+  }, [hasHydrated, productCategories.length, fetchProductCategories]);
   
   // 获取菜单数据
   const {
@@ -79,18 +90,6 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
       }
     }
   }, [hasMenus, iframeParams?.menu, menuTree, setActiveMenuByUrl]);
-
-  // 强制触发菜单获取（当检测到iframe参数但没有菜单时）
-  useEffect(() => {
-    if (iframeParams && !hasMenus && !isLoading) {
-      console.log('检测到iframe参数但没有菜单数据，强制触发菜单获取');
-      const timer = setTimeout(() => {
-        fetchUserMenus();
-      }, 500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [iframeParams, hasMenus, isLoading]);
 
   // 处理菜单点击
   const handleMenuClick = (menuItem: CategoryTreeResp) => {

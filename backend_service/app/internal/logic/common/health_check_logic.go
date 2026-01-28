@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"sapphire-mall/app/internal/errors"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
 
@@ -24,12 +25,12 @@ func NewHealthCheckLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Healt
 	}
 }
 
-func (l *HealthCheckLogic) HealthCheck(req *types.HealthCheckReq) (resp *types.HealthCheckResp, err error) {
-	// todo: add your logic here and delete this line
-
-	resp = &types.HealthCheckResp{
+func (l *HealthCheckLogic) HealthCheck(req *types.HealthCheckReq) (resp *types.BaseResp, err error) {
+	healthData := &types.HealthCheckResp{
 		Status: "ok",
 		Time:   time.Now().Unix(),
 	}
-	return resp, nil
+
+	// 使用统一的成功返回函数，将 HealthCheckResp 放入 BaseResp 的 Data 字段
+	return errors.SuccessResp(healthData), nil
 }

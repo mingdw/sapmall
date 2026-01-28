@@ -95,6 +95,10 @@ type GetProductDetailReq struct {
 	Id int64 `path:"id"` // 商品SPU ID
 }
 
+type GetProductStatsReq struct {
+	Period string `form:"period,optional"` // 统计周期：day、week、month
+}
+
 type HealthCheckReq struct {
 	Service string `json:"service"`
 }
@@ -155,6 +159,7 @@ type ProductAttrsInfo struct {
 }
 
 type ProductDetailInfo struct {
+	Id             int64  `json:"id"`
 	ProductSpuId   int64  `json:"productSpuId"`
 	ProductSpuCode string `json:"productSpuCode"`
 	Detail         string `json:"detail,optional"`      // 详情（HTML或文本）
@@ -244,6 +249,17 @@ type ProductSPUInfo struct {
 	UpdatedAt     string `json:"updatedAt,optional"`
 	Creator       string `json:"creator,optional"`
 	Updator       string `json:"updator,optional"`
+}
+
+type ProductStatsResp struct {
+	TotalProducts      int64  `json:"totalProducts"`               // 商品总数
+	TotalOrders        int64  `json:"totalOrders"`                 // 订单总数
+	TotalRevenue       string `json:"totalRevenue"`                // 总营收（SAP代币数量）
+	NewUsers           int64  `json:"newUsers"`                    // 新用户数
+	TotalProductsTrend string `json:"totalProductsTrend,optional"` // 商品总数趋势
+	TotalOrdersTrend   string `json:"totalOrdersTrend,optional"`   // 订单总数趋势
+	TotalRevenueTrend  string `json:"totalRevenueTrend,optional"`  // 总营收趋势
+	NewUsersTrend      string `json:"newUsersTrend,optional"`      // 新用户数趋势
 }
 
 type ReviewProductReq struct {

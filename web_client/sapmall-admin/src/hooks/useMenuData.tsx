@@ -14,12 +14,15 @@ export const useMenuData = () => {
     categoryList,
     selectedCategory,
     isLoading,
+    hasHydrated,
     setCategories,
     setCategoryList,
     setSelectedCategory,
     setLoading,
     buildCategoryTree,
-    getCategoryById
+    getCategoryById,
+    isCacheValid,
+    setLastFetchTime
   } = useCategoryStore();
 
   const { isUserLoggedIn, getCurrentUser } = useUserStore();
@@ -58,6 +61,19 @@ export const useMenuData = () => {
 
   // 核心：获取菜单数据
   const fetchUserMenus = useCallback(async () => {
+    // persist 回放完成前，不要发请求（避免"缓存其实有但还没回放"导致的额外请求）
+    if (!hasHydrated) {
+      console.log('后台菜单缓存尚未回放完成，跳过本次获取');
+      return;
+    }
+    
+    // 如果缓存有效且有数据，直接返回
+    if (isCacheValid() && categories.length > 0) {
+      console.log('使用缓存的后台菜单数据');
+      setHasInitialized(true);
+      return;
+    }
+    
     // 防止重复调用
     if (isLoading || isFetching) {
       console.log('菜单正在获取中，跳过重复调用');
@@ -73,7 +89,7 @@ export const useMenuData = () => {
     try {
       setIsFetching(true);
       setLoading(true);
-      console.log('开始获取用户菜单...');
+      console.log('从API获取后台菜单数据（menu_type=1）');
       
       // 检查 token 是否存在
       const token = localStorage.getItem('auth_token');
@@ -108,11 +124,12 @@ export const useMenuData = () => {
           flatList = menuData;
         }
         
-        // 更新状态
+        // 更新状态（包括缓存时间）
         setCategories(tree);
         setCategoryList(flatList);
+        setLastFetchTime(Date.now());
         
-        console.log('菜单数据获取成功:', { 
+        console.log('后台菜单数据获取成功并已缓存:', { 
           treeCount: tree.length, 
           itemCount: menuData.length 
         });
@@ -126,7 +143,7 @@ export const useMenuData = () => {
       setIsFetching(false);
       setHasInitialized(true);
     }
-  }, [isUserLoggedIn, isLoading, isFetching, setLoading, setCategories, setCategoryList, flattenMenuTree, buildCategoryTree]);
+  }, [isUserLoggedIn, isLoading, isFetching, hasHydrated, categories, isCacheValid, setLoading, setCategories, setCategoryList, setLastFetchTime, flattenMenuTree, buildCategoryTree]);
 
   // 刷新菜单数据
   const refreshMenus = useCallback(async () => {
@@ -150,12 +167,12 @@ export const useMenuData = () => {
     }
   }, [findCategoryById, setSelectedCategory]);
 
-  // 监听用户登录状态变化
+  // 监听用户登录状态变化和缓存回放状态
   useEffect(() => {
-    if (isUserLoggedIn() && !hasInitialized && !isLoading && !isFetching) {
+    if (hasHydrated && isUserLoggedIn() && !hasInitialized && !isLoading && !isFetching) {
       fetchUserMenus();
     }
-  }, [isUserLoggedIn, hasInitialized, isLoading, isFetching]);
+  }, [hasHydrated, isUserLoggedIn, hasInitialized, isLoading, isFetching, fetchUserMenus]);
 
   return {
     // 数据

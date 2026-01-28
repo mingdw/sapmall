@@ -138,16 +138,12 @@ func (l *GetProductDetailLogic) GetProductDetail(req *types.GetProductDetailReq)
 	// 转换为响应格式
 	spuInfo := l.convertToProductSPUInfo(spu)
 	detailInfo := l.convertToProductDetailInfo(detail)
-	
+
 	productDetailResp := &types.ProductDetailResp{
 		Spu:     *spuInfo,
 		Attrs:   l.convertToProductAttrsInfo(baseAttrs, saleAttrs),
 		Skus:    l.convertToProductSKUInfoList(skus),
-	}
-	
-	// 如果详情不为空，则设置
-	if detailInfo != nil {
-		productDetailResp.Details = *detailInfo
+		Details: *detailInfo,
 	}
 
 	return &types.BaseResp{
@@ -218,7 +214,7 @@ func (l *GetProductDetailLogic) convertToProductAttrParamInfo(param *model.Produ
 	}
 
 	return types.ProductAttrParamInfo{
-		Id:            param.ID,
+		Id:             param.ID,
 		ProductSpuId:   param.ProductSpuID,
 		ProductSpuCode: param.ProductSpuCode,
 		Code:           param.Code,
@@ -258,7 +254,7 @@ func (l *GetProductDetailLogic) convertToProductSKUInfo(sku *model.ProductSku) t
 	}
 
 	return types.ProductSKUInfo{
-		Id:            sku.ID,
+		Id:             sku.ID,
 		ProductSpuId:   sku.ProductSpuID,
 		ProductSpuCode: sku.ProductSpuCode,
 		SkuCode:        sku.SkuCode,

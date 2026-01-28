@@ -9,7 +9,6 @@ import AdminLayout from './layout/AdminLayout';
 import {  IframeParams } from './types';
 import { useUserStore } from './store/userStore';
 import { useCategoryStore } from './store/categoryStore';
-import { useMenuData } from './hooks/useMenuData';
 
 
 // 解析URL参数并创建用户对象的组件
@@ -18,19 +17,17 @@ const AppContent: React.FC = () => {
   const [iframeParams, setIframeParams] = useState<IframeParams>({});
   const [lastProcessedUrl, setLastProcessedUrl] = useState<string>('');
   
-  // 使用菜单数据hook（加载后台菜单目录 menu_type=1）
-  useMenuData();
-  
   // 初始化商品目录（menu_type=0，首次进入后台管理时加载）
-  const { fetchProductCategories } = useCategoryStore();
+  const { fetchProductCategories, hasHydrated } = useCategoryStore();
   
   // 在应用启动时初始化商品目录
   useEffect(() => {
+    if (!hasHydrated) return;
     console.log('应用启动，初始化商品目录数据（menu_type=0）');
     fetchProductCategories().catch(error => {
       console.error('初始化商品目录数据失败:', error);
     });
-  }, [fetchProductCategories]);
+  }, [hasHydrated, fetchProductCategories]);
 
   useEffect(() => {
     // 构建当前完整的URL标识

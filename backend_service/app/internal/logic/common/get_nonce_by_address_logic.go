@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"time"
 
-	appErrors "sapphire-mall/app/internal/errors"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
 
@@ -42,7 +41,7 @@ func (l *GetNonceByAddressLogic) GetNonceByAddress(req *types.GetNonceByAddressR
 		} else {
 			// 其他 Redis 错误（如连接失败等）
 			logx.Errorf("从Redis获取nonce失败: %v", err)
-			return nil, appErrors.DefaultError("Redis Server Error")
+			return nil, errors.New("从Redis获取nonce失败")
 		}
 	}
 
@@ -57,7 +56,7 @@ func (l *GetNonceByAddressLogic) GetNonceByAddress(req *types.GetNonceByAddressR
 		err = l.svcCtx.Redis.Set(context.TODO(), req.WalletAddress, nonce, time.Hour*24).Err()
 		if err != nil {
 			logx.Errorf("存储nonce到Redis失败: %v", err)
-			return nil, appErrors.DefaultError("Redis Server Error")
+			return nil, errors.New("Redis Server Error")
 		}
 		logx.Infof("为钱包地址 %s 生成新的6位数nonce: %s", req.WalletAddress, nonce)
 	}
@@ -75,7 +74,7 @@ func (l *GetNonceByAddressLogic) generateSixDigitNonce() (string, error) {
 	max := big.NewInt(900000)
 	randomNum, err := rand.Int(rand.Reader, max)
 	if err != nil {
-		return "", appErrors.DefaultError("生成随机数失败")
+		return "", errors.New("生成随机数失败")
 	}
 
 	// 将随机数转换为100000-999999范围
