@@ -7,6 +7,7 @@ import type {
   ProductSPU,
   ProductSKU,
   ProductStats,
+  ProductDetailResp,
 } from '../../pages/business/products/types';
 
 export const productApi = {
@@ -45,9 +46,9 @@ export const productApi = {
    * 获取商品详情
    * @param id 商品SPU ID
    */
-  getProductDetail: async (id: number): Promise<ApiResponse<ProductSPU>> => {
+  getProductDetail: async (id: number): Promise<ApiResponse<ProductDetailResp>> => {
     try {
-      const response = await baseClient.get<ProductSPU>(
+      const response = await baseClient.get<ProductDetailResp>(
         `/api/admin/product/${id}`
       );
       return response;
@@ -61,23 +62,12 @@ export const productApi = {
    * 保存商品（新增/编辑）
    * 通过id字段自动判断：id为0或空表示新增，有值表示编辑
    */
-  saveProduct: async (data: SaveProductReq): Promise<ApiResponse<ProductSPU>> => {
+  saveProduct: async (data: SaveProductReq): Promise<ApiResponse<ProductDetailResp>> => {
     try {
-      // 确保 price 和 realPrice 转换为字符串（后端API要求）
-      const requestData: any = {
-        ...data,
-        price: data.price !== undefined && data.price !== null
-          ? (typeof data.price === 'number' ? data.price.toString() : String(data.price))
-          : undefined,
-        realPrice: data.realPrice !== undefined && data.realPrice !== null
-          ? (typeof data.realPrice === 'number' ? data.realPrice.toString() : String(data.realPrice))
-          : undefined,
-      };
-
-      console.log('保存商品请求数据:', requestData);
-      const response = await baseClient.post<ProductSPU>(
-        '/api/admin/product',
-        requestData
+      console.log('保存商品请求数据:', data);
+      const response = await baseClient.post<ProductDetailResp>(
+        '/api/admin/product/modify',
+        data
       );
       console.log('保存商品响应:', response);
       return response;

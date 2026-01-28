@@ -3,6 +3,7 @@ package common
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"image"
 	"image/color"
@@ -11,7 +12,6 @@ import (
 	"time"
 
 	"sapphire-mall/app/internal/cos"
-	"sapphire-mall/app/internal/errors"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
@@ -47,7 +47,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	if err != nil {
 		// redis: nil 表示 key 不存在
 		if err.Error() == "redis: nil" {
-			return nil, errors.DefaultError("nonce not found")
+			return nil, errors.New("Nonce not found, please request nonce first")
 		}
 		logx.Errorf("redis get nonce error: %v", err)
 		return nil, err
@@ -217,7 +217,7 @@ func VerifyEthWallet(address, nonce, signature string) error {
 	recoverAddr := crypto.PubkeyToAddress(*pubKey)
 
 	if recoverAddr != addrKey {
-		return errors.DefaultError("Address mismatch")
+		return errors.New("签名验证失败：地址不匹配")
 	}
 	return nil
 }

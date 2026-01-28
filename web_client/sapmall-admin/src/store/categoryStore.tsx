@@ -20,6 +20,9 @@ interface FilterInfo {
 
 // 分类状态接口
 interface CategoryState {
+  // persist 是否已完成回放（避免回放前误判缓存为空，导致不必要的接口请求）
+  hasHydrated: boolean;
+
   // 商品目录数据（menu_type=0，用于商品管理）
   productCategories: CategoryTreeResp[];
   // 后台菜单目录数据（menu_type=1，用于后台菜单，由useMenuData管理）
@@ -57,6 +60,7 @@ interface CategoryState {
   } | null;
   
   // 操作函数
+  setHasHydrated: (hydrated: boolean) => void;
   setCategories: (categories: CategoryTreeResp[]) => void;
   setCategoryList: (categoryList: CategoryTreeResp[]) => void;
   setSelectedCategory: (category: CategoryTreeResp | null) => void;
@@ -112,6 +116,7 @@ export const useCategoryStore = create<CategoryState>()(
   persist(
     (set, get) => ({
       // 初始状态
+      hasHydrated: false,
       productCategories: [], // 商品目录（menu_type=0）
       categories: [], // 后台菜单目录（menu_type=1）
       categoryList: [],
@@ -138,6 +143,8 @@ export const useCategoryStore = create<CategoryState>()(
       
       categoryStats: null,
       
+      setHasHydrated: (hasHydrated) => set({ hasHydrated }),
+
       // 设置分类数据
       setCategories: (categories) => set({ categories }),
       
@@ -344,7 +351,13 @@ export const useCategoryStore = create<CategoryState>()(
       
       // 从API获取商品目录树并缓存（menu_type=0，首次进入后台管理时调用）
       fetchProductCategories: async () => {
-        const { isProductCategoriesCacheValid, productCategories, isProductCategoriesLoading } = get();
+        const { hasHydrated, isProductCategoriesCacheValid, productCategories, isProductCategoriesLoading } = get();
+
+        // persist 回放完成前，不要发请求（避免“缓存其实有但还没回放”导致的额外请求）
+        if (!hasHydrated) {
+          console.log('商品目录缓存尚未回放完成，跳过本次获取');
+          return;
+        }
         
         // 如果缓存有效且有数据，直接返回
         if (isProductCategoriesCacheValid() && productCategories.length > 0) {
@@ -450,7 +463,13 @@ export const useCategoryStore = create<CategoryState>()(
         lastFetchTime: state.lastFetchTime,
         pagination: state.pagination,
         filters: state.filters
-      })
+      }),
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error('categoryStore 回放失败:', error);
+        }
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

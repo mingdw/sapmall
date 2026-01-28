@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   Table, 
   Button, 
@@ -19,7 +19,7 @@ import {
 } from '@ant-design/icons';
 import AdminCard from '../../../components/common/AdminCard';
 import { productApi } from '../../../services/api/productApi';
-import type { ProductSPU, ProductListParams } from './types';
+import type { ProductSPU, ProductListParams, ProductDetailResp } from './types';
 import { ProductStatus, type ViewMode, type StatsPeriod, DEFAULT_PAGE_SIZE } from './constants';
 import { parseProductImages, formatDateTime, getBlockchainExplorerUrl } from './utils';
 import ProductStatusTag from './components/ProductStatusTag';
@@ -46,21 +46,38 @@ const ProductManagement: React.FC = () => {
   });
   const [total, setTotal] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState<ProductSPU | null>(null);
+  // 编辑弹窗需要后端聚合明细：{spu, attrs, skus, details}
+  const [currentProduct, setCurrentProduct] = useState<ProductDetailResp | null>(null);
+  // 模态框模式：'view' 查看模式，'edit' 编辑模式
+  const [modalMode, setModalMode] = useState<'view' | 'edit'>('edit');
   const [statsPeriod, setStatsPeriod] = useState<StatsPeriod>('day');
+  // 用于防止重复请求的 ref
+  const isLoadingProductsRef = useRef(false);
+  const isLoadingStatsRef = useRef(false);
+  // 记录上次请求的参数，避免相同参数重复请求
+  const lastSearchParamsRef = useRef<string>('');
+  const lastStatsPeriodRef = useRef<StatsPeriod | null>(null);
 
   // 加载商品列表
-  useEffect(() => {
-    loadProducts();
-  }, [searchParams]);
+  const loadProducts = useCallback(async (forceRefresh: boolean = false) => {
+    // 防止重复请求
+    if (isLoadingProductsRef.current) {
+      console.log('商品列表正在加载中，跳过重复请求');
+      return;
+    }
 
-  // 加载统计数据
-  useEffect(() => {
-    loadStats();
-  }, [statsPeriod]);
+    // 生成请求参数的唯一标识
+    const paramsKey = JSON.stringify(searchParams);
+    // 如果参数相同且不是强制刷新，跳过重复请求
+    if (!forceRefresh && lastSearchParamsRef.current === paramsKey) {
+      console.log('商品列表参数未变化，跳过重复请求');
+      return;
+    }
 
-  const loadProducts = async () => {
+    isLoadingProductsRef.current = true;
+    lastSearchParamsRef.current = paramsKey;
     setLoading(true);
+    
     try {
       const response = await productApi.getProductList(searchParams);
       if (response.code === 0 && response.data) {
@@ -70,12 +87,31 @@ const ProductManagement: React.FC = () => {
     } catch (error) {
       console.error('加载商品列表失败:', error);
       message.error('加载商品列表失败');
+      // 请求失败时重置标识，允许重试
+      lastSearchParamsRef.current = '';
     } finally {
       setLoading(false);
+      isLoadingProductsRef.current = false;
     }
-  };
+  }, [searchParams]);
 
-  const loadStats = async () => {
+  // 加载统计数据
+  const loadStats = useCallback(async () => {
+    // 防止重复请求
+    if (isLoadingStatsRef.current) {
+      console.log('统计数据正在加载中，跳过重复请求');
+      return;
+    }
+
+    // 如果周期相同，跳过重复请求
+    if (lastStatsPeriodRef.current === statsPeriod) {
+      console.log('统计周期未变化，跳过重复请求');
+      return;
+    }
+
+    isLoadingStatsRef.current = true;
+    lastStatsPeriodRef.current = statsPeriod;
+    
     try {
       const response = await productApi.getProductStats(statsPeriod);
       if (response.code === 0 && response.data) {
@@ -83,8 +119,22 @@ const ProductManagement: React.FC = () => {
       }
     } catch (error) {
       console.error('加载统计数据失败:', error);
+      // 请求失败时重置标识，允许重试
+      lastStatsPeriodRef.current = null;
+    } finally {
+      isLoadingStatsRef.current = false;
     }
-  };
+  }, [statsPeriod]);
+
+  // 监听 searchParams 变化，加载商品列表
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
+
+  // 监听 statsPeriod 变化，加载统计数据
+  useEffect(() => {
+    loadStats();
+  }, [loadStats]);
 
   // 处理搜索
   const handleSearch = (value: string) => {
@@ -117,9 +167,9 @@ const ProductManagement: React.FC = () => {
     });
   };
 
-  // 查询
+  // 查询（强制刷新）
   const handleQuery = () => {
-    loadProducts();
+    loadProducts(true);
   };
 
   // 处理分页
@@ -134,6 +184,7 @@ const ProductManagement: React.FC = () => {
   // 添加商品
   const handleAdd = () => {
     setCurrentProduct(null);
+    setModalMode('edit');
     setIsModalVisible(true);
   };
 
@@ -144,6 +195,7 @@ const ProductManagement: React.FC = () => {
       const response = await productApi.getProductDetail(record.id);
       if (response.code === 0 && response.data) {
         setCurrentProduct(response.data);
+        setModalMode('edit');
         setIsModalVisible(true);
       }
     } catch (error) {
@@ -160,7 +212,7 @@ const ProductManagement: React.FC = () => {
       const response = await productApi.deleteProduct(id);
       if (response.code === 0) {
         message.success('删除成功');
-        await loadProducts();
+        await loadProducts(true);
       } else {
         message.error(response.message || '删除失败');
       }
@@ -259,8 +311,20 @@ const ProductManagement: React.FC = () => {
   };
 
   // 查看商品详情
-  const handleViewDetail = (record: ProductSPU) => {
-    handleEdit(record);
+  const handleViewDetail = async (record: ProductSPU) => {
+    try {
+      setLoading(true);
+      const response = await productApi.getProductDetail(record.id);
+      if (response.code === 0 && response.data) {
+        setCurrentProduct(response.data);
+        setModalMode('view');
+        setIsModalVisible(true);
+      }
+    } catch (error) {
+      message.error('获取商品详情失败');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // 表格列定义
@@ -604,11 +668,12 @@ const ProductManagement: React.FC = () => {
 
       {/* 添加/编辑商品模态框 */}
       <Modal
-        title={currentProduct ? '编辑商品' : '添加商品'}
+        title={modalMode === 'view' ? '查看商品详情' : (currentProduct ? '编辑商品' : '添加商品')}
         open={isModalVisible}
         onCancel={() => {
           setIsModalVisible(false);
           setCurrentProduct(null);
+          setModalMode('edit');
         }}
         footer={null}
         width={1000}
@@ -618,13 +683,16 @@ const ProductManagement: React.FC = () => {
       >
         <ProductForm
           product={currentProduct}
+          mode={modalMode}
           onCancel={() => {
             setIsModalVisible(false);
             setCurrentProduct(null);
+            setModalMode('edit');
           }}
           onSuccess={() => {
             setIsModalVisible(false);
             setCurrentProduct(null);
+            setModalMode('edit');
             loadProducts();
           }}
         />

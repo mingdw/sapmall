@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 	"sapphire-mall/app/internal/model"
+
+	"gorm.io/gorm"
 )
 
 type ProductSpuDetailRepository interface {
@@ -26,6 +28,11 @@ func (r *productSpuDetailRepository) GetProductSpuDetail(ctx context.Context, sp
 		Where("product_spu_id = ? AND is_deleted = ?", spuId, 0).
 		First(&detail).Error
 	if err != nil {
+		// 如果记录不存在，返回空结构体而不是报错
+		if err == gorm.ErrRecordNotFound {
+			return &model.ProductSpuDetail{}, nil
+		}
+		// 其他错误正常返回
 		return nil, err
 	}
 	return &detail, nil

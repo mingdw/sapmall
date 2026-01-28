@@ -113,6 +113,7 @@ type (
 
     // SPU详情信息
     ProductDetailInfo {
+        Id            int64  `json:"id"`
         ProductSpuId  int64  `json:"productSpuId"`
         ProductSpuCode string `json:"productSpuCode"`
         Detail        string `json:"detail,optional"`        // 详情（HTML或文本）
@@ -143,6 +144,23 @@ type (
         BaseAttrs []ProductAttrParamInfo `json:"base_attrs,optional"`
         SaleAttrs []ProductAttrParamInfo `json:"sale_attrs,optional"`
     }
+
+    // 获取商品统计请求
+    GetProductStatsReq {
+        Period string `form:"period,optional"` // 统计周期：day、week、month
+    }
+
+    // 商品统计信息响应
+    ProductStatsResp {
+        TotalProducts      int64  `json:"totalProducts"`      // 商品总数
+        TotalOrders        int64  `json:"totalOrders"`         // 订单总数
+        TotalRevenue       string `json:"totalRevenue"`        // 总营收（SAP代币数量）
+        NewUsers           int64  `json:"newUsers"`            // 新用户数
+        TotalProductsTrend string `json:"totalProductsTrend,optional"` // 商品总数趋势
+        TotalOrdersTrend   string `json:"totalOrdersTrend,optional"`   // 订单总数趋势
+        TotalRevenueTrend  string `json:"totalRevenueTrend,optional"`   // 总营收趋势
+        NewUsersTrend      string `json:"newUsersTrend,optional"`       // 新用户数趋势
+    }
 )
 
 @server (
@@ -165,10 +183,14 @@ service sapmall {
 
     @doc "保存商品（新增/编辑，全量提交商品信息，返回完整的商品详情）"
     @handler SaveProduct
-    post /product (SaveProductReq) returns (BaseResp)
+    post /product/modify (SaveProductReq) returns (BaseResp)
 
     @doc "删除商品（单条删除也使用此接口，传入单个ID的数组）"
     @handler DeleteProductSpus
     post /product/spu/deletes (DeleteProductSpusReq) returns (BaseResp)
+
+    @doc "获取商品统计信息"
+    @handler GetProductStats
+    get /product/stats (GetProductStatsReq) returns (BaseResp)
 
 }

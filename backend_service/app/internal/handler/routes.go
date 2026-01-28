@@ -21,45 +21,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
-					// 保存商品（新增/编辑，全量提交商品信息，返回完整的商品详情）
-					Method:  http.MethodPost,
-					Path:    "/product",
-					Handler: admin.SaveProductHandler(serverCtx),
-				},
-				{
-					// 获取商品详情（聚合所有信息：SPU、属性、SKU、详情）
-					Method:  http.MethodGet,
-					Path:    "/product/:id",
-					Handler: admin.GetProductDetailHandler(serverCtx),
-				},
-				{
-					// 获取商品完整详情（包含SKU、属性参数、详情等）
-					Method:  http.MethodGet,
-					Path:    "/product/:id/full",
-					Handler: admin.GetProductFullDetailHandler(serverCtx),
-				},
-				{
-					// 获取商品列表（分页、搜索、筛选）
-					Method:  http.MethodPost,
-					Path:    "/product/list",
-					Handler: admin.ListProductHandler(serverCtx),
-				},
-				{
-					// 删除商品（单条删除也使用此接口，传入单个ID的数组）
-					Method:  http.MethodPost,
-					Path:    "/product/spu/deletes",
-					Handler: admin.DeleteProductSpusHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/admin"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
-			[]rest.Route{
-				{
 					// 保存属性（新增/编辑）
 					Method:  http.MethodPost,
 					Path:    "/attr",
@@ -94,6 +55,51 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodDelete,
 					Path:    "/category/:id",
 					Handler: admin.DeleteCategoryHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/admin"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Route{
+				{
+					// 获取商品详情（聚合所有信息：SPU、属性、SKU、详情）
+					Method:  http.MethodGet,
+					Path:    "/product/:id",
+					Handler: admin.GetProductDetailHandler(serverCtx),
+				},
+				{
+					// 获取商品完整详情（包含SKU、属性参数、详情等）
+					Method:  http.MethodGet,
+					Path:    "/product/:id/full",
+					Handler: admin.GetProductFullDetailHandler(serverCtx),
+				},
+				{
+					// 获取商品列表（分页、搜索、筛选）
+					Method:  http.MethodPost,
+					Path:    "/product/list",
+					Handler: admin.ListProductHandler(serverCtx),
+				},
+				{
+					// 保存商品（新增/编辑，全量提交商品信息，返回完整的商品详情）
+					Method:  http.MethodPost,
+					Path:    "/product/modify",
+					Handler: admin.SaveProductHandler(serverCtx),
+				},
+				{
+					// 删除商品（单条删除也使用此接口，传入单个ID的数组）
+					Method:  http.MethodPost,
+					Path:    "/product/spu/deletes",
+					Handler: admin.DeleteProductSpusHandler(serverCtx),
+				},
+				{
+					// 获取商品统计信息
+					Method:  http.MethodGet,
+					Path:    "/product/stats",
+					Handler: admin.GetProductStatsHandler(serverCtx),
 				},
 			}...,
 		),

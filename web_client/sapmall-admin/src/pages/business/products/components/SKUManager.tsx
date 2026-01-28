@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Input, InputNumber, Table, Space, Tag, Upload, Image, Popover } from 'antd';
+import { Input, InputNumber, Table, Space, Tag, Upload, Image, Popover, Button, Popconfirm } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { UploadFile } from 'antd';
 import { PlusOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
@@ -23,6 +23,7 @@ interface SKUManagerProps {
   onChange?: (skus: SKUItem[]) => void;
   disabled?: boolean;
   productName?: string; // SPU商品名称
+  onSkuListRef?: (getSkuList: () => SKUItem[]) => void; // 用于获取最新的SKU列表
 }
 
 // 生成笛卡尔积
@@ -60,6 +61,7 @@ const SKUManager: React.FC<SKUManagerProps> = ({
   onChange,
   disabled = false,
   productName = '',
+  onSkuListRef,
 }) => {
   // 根据规格生成SKU组合
   const generatedSKUs = useMemo(() => {
@@ -96,18 +98,57 @@ const SKUManager: React.FC<SKUManagerProps> = ({
     });
   }, [specifications, skus, productName]);
 
-  const [skuList, setSkuList] = useState<SKUItem[]>(generatedSKUs);
+  // 维护已删除的SKU索引集合（用于排除已删除的SKU）
+  const [deletedIndexs, setDeletedIndexs] = useState<Set<string>>(new Set());
 
-  // 当规格变化时，更新SKU列表并通知父组件
+  // 当规格变化时，清除已删除记录（因为规格变化会导致SKU索引重新生成）
   useEffect(() => {
-    setSkuList(generatedSKUs);
-    // 当规格变化导致SKU列表变化时，同步通知父组件
-    // 使用 setTimeout 确保在状态更新后通知，避免潜在的循环更新
+    setDeletedIndexs(new Set());
+  }, [specifications]);
+
+  // 根据规格生成SKU组合，排除已删除的SKU
+  const filteredGeneratedSKUs = useMemo(() => {
+    return generatedSKUs.filter(sku => !deletedIndexs.has(sku.indexs));
+  }, [generatedSKUs, deletedIndexs]);
+
+  // 决定使用哪个SKU列表：
+  // 1. 根据规格生成所有可能的SKU组合（这是基础）
+  // 2. 如果外部传入的skus有数据，用已有数据填充对应的SKU（保留价格、库存等信息）
+  // 3. 对于新规格组合，使用默认值
+  const finalSkuList = useMemo(() => {
+    // 总是根据规格生成SKU列表（这是基础）
+    // 然后用外部传入的skus数据填充已有SKU的信息
+    return filteredGeneratedSKUs.map(generatedSku => {
+      // 查找外部传入的skus中是否有对应的SKU（通过indexs匹配）
+      const existingSku = skus.find(s => s.indexs === generatedSku.indexs);
+      if (existingSku) {
+        // 如果找到已有SKU，使用已有数据，但保留生成的combination
+        return {
+          ...existingSku,
+          combination: generatedSku.combination, // 使用新生成的combination（因为规格可能变化了）
+        };
+      }
+      // 如果没有找到，使用生成的SKU（新规格组合）
+      return generatedSku;
+    });
+  }, [skus, filteredGeneratedSKUs]);
+
+  const [skuList, setSkuList] = useState<SKUItem[]>(finalSkuList);
+
+  // 当最终SKU列表变化时，更新本地状态并通知父组件
+  useEffect(() => {
+    setSkuList(finalSkuList);
     if (onChange) {
-      // 使用函数式更新，确保获取最新的 generatedSKUs
-      onChange(generatedSKUs);
+      onChange(finalSkuList);
     }
-  }, [generatedSKUs]); // 移除 onChange 依赖，避免循环更新
+  }, [finalSkuList]); // 移除 onChange 依赖，避免循环更新
+
+  // 提供获取最新SKU列表的方法给父组件
+  useEffect(() => {
+    if (onSkuListRef) {
+      onSkuListRef(() => skuList);
+    }
+  }, [skuList, onSkuListRef]);
 
   // 更新SKU字段
   const updateSKU = (indexs: string, field: keyof SKUItem, value: any) => {
@@ -155,6 +196,16 @@ const SKUManager: React.FC<SKUManagerProps> = ({
     reader.readAsDataURL(file);
     
     // TODO: 实际应该上传到服务器，获取服务器返回的URL
+  };
+
+  // 删除SKU
+  const handleDeleteSKU = (indexs: string) => {
+    // 将删除的SKU索引添加到已删除集合中
+    setDeletedIndexs(prev => new Set([...prev, indexs]));
+    // 从当前列表中移除
+    const newSkuList = skuList.filter(sku => sku.indexs !== indexs);
+    setSkuList(newSkuList);
+    onChange?.(newSkuList);
   };
 
   const columns: ColumnsType<SKUItem> = [
@@ -307,6 +358,35 @@ const SKUManager: React.FC<SKUManagerProps> = ({
           className={styles.stockInput}
           style={{ width: '100%' }}
         />
+      ),
+    },
+    {
+      title: '操作',
+      key: 'action',
+      width: 100,
+      fixed: 'right' as const,
+      render: (_: any, record: SKUItem) => (
+        <Space size="small">
+          <Popconfirm
+            title="确定要删除这个SKU吗？"
+            description="删除后无法恢复，请谨慎操作"
+            onConfirm={() => handleDeleteSKU(record.indexs)}
+            okText="确定"
+            cancelText="取消"
+            disabled={disabled}
+          >
+            <Button
+              type="link"
+              size="small"
+              danger
+              icon={<DeleteOutlined />}
+              disabled={disabled}
+              className={styles.deleteBtn}
+            >
+              删除
+            </Button>
+          </Popconfirm>
+        </Space>
       ),
     },
   ];
