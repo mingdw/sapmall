@@ -72,6 +72,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
   const [basicAttributes, setBasicAttributes] = useState<Record<string, string>>({});
   const [saleAttributes, setSaleAttributes] = useState<Record<string, string>>({});
   const [specifications, setSpecifications] = useState<Record<string, string[]>>({});
+  // 使用 ref 存储最新的规格数据，确保暂存/提交时使用最新值（避免 React 状态更新延迟问题）
+  const specificationsRef = useRef<Record<string, string[]>>({});
   const [skuList, setSkuList] = useState<SKUItem[]>([]);
   // 用于获取SKUManager组件中最新的SKU列表
   const getLatestSkuListRef = useRef<(() => SKUItem[]) | null>(null);
@@ -193,6 +195,19 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
       }
       
       // 从完整的明细数据中回显规格和SKU
+      if (product.attrs) {
+        try {
+          const specs = extractSpecifications(product.attrs);
+          if (Object.keys(specs).length > 0) {
+            setSpecifications(specs);
+            specificationsRef.current = specs; // 同步更新 ref
+            setSpecificationsLoaded(true);
+          }
+        } catch (e) {
+          console.error('从明细接口规格属性回显失败:', e);
+        }
+      }
+      
       if (product.skus && product.skus.length > 0) {
         try {
           setSkuList(extractSkus(product));
@@ -284,6 +299,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
       setBasicAttributes({});
       setSaleAttributes({});
       setSpecifications({});
+      specificationsRef.current = {}; // 同步更新 ref
       setSkuList([]);
       setAttributesLoaded(false); // 重置属性加载标志，以便下次进入属性设置步骤时重新加载
       setSpecificationsLoaded(false); // 重置规格加载标志，以便下次进入规格步骤时重新加载
@@ -410,7 +426,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
       if (currentDetail && isDetailResp(currentDetail)) {
         console.log('从 currentProduct 加载商品规格和SKU，商品ID:', productId);
         try {
-          setSpecifications(extractSpecifications(currentDetail.attrs));
+          const specs = extractSpecifications(currentDetail.attrs);
+          setSpecifications(specs);
+          specificationsRef.current = specs; // 同步更新 ref
           if (currentDetail.skus && currentDetail.skus.length > 0) {
             setSkuList(extractSkus(currentDetail));
           }
@@ -426,7 +444,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
       if (response.code === 0 && response.data) {
         const detailResp: ProductDetailResp = response.data;
         setCurrentProduct(detailResp);
-        setSpecifications(extractSpecifications(detailResp.attrs));
+        const specs = extractSpecifications(detailResp.attrs);
+        setSpecifications(specs);
+        specificationsRef.current = specs; // 同步更新 ref
         setSkuList(extractSkus(detailResp));
       }
     } catch (error) {
@@ -610,22 +630,56 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
 
       const spuFromProp = getSpuFromProp(product);
       const spuFromCurrent = getSpuFromCurrentProduct();
+      // 暂存时：优先使用表单值，如果表单值为空则使用 currentProduct 中的最新值
+      // 提交时：使用表单值（已通过验证）
       const formData: ProductSPU = {
         id: spuFromCurrent?.id || spuFromProp?.id || 0,
         code: spuFromCurrent?.code || spuFromProp?.code || '',
-        name: values.name || '',
-        category1Id: values.category1Id,
-        category1Code: values.category1Code || '',
-        category2Id: values.category2Id,
-        category2Code: values.category2Code,
-        category3Id: values.category3Id,
-        category3Code: values.category3Code,
-        brand: values.brand || '',
-        description: values.description || '',
-        price: priceStr || '0',
-        realPrice: realPriceStr,
+        name: isDraft 
+          ? (values.name?.trim() || spuFromCurrent?.name || '') 
+          : (values.name || ''),
+        category1Id: isDraft
+          ? (values.category1Id !== undefined && values.category1Id !== null 
+              ? values.category1Id 
+              : (spuFromCurrent?.category1Id || 0))
+          : values.category1Id,
+        category1Code: isDraft
+          ? (values.category1Code || spuFromCurrent?.category1Code || '')
+          : (values.category1Code || ''),
+        category2Id: isDraft
+          ? (values.category2Id !== undefined && values.category2Id !== null 
+              ? values.category2Id 
+              : (spuFromCurrent?.category2Id || undefined))
+          : values.category2Id,
+        category2Code: isDraft
+          ? (values.category2Code || spuFromCurrent?.category2Code || undefined)
+          : values.category2Code,
+        category3Id: isDraft
+          ? (values.category3Id !== undefined && values.category3Id !== null 
+              ? values.category3Id 
+              : (spuFromCurrent?.category3Id || undefined))
+          : values.category3Id,
+        category3Code: isDraft
+          ? (values.category3Code || spuFromCurrent?.category3Code || undefined)
+          : values.category3Code,
+        brand: isDraft
+          ? (values.brand || spuFromCurrent?.brand || '')
+          : (values.brand || ''),
+        description: isDraft
+          ? (values.description || spuFromCurrent?.description || '')
+          : (values.description || ''),
+        price: isDraft
+          ? (priceStr || (spuFromCurrent?.price ? String(spuFromCurrent.price) : '0'))
+          : (priceStr || '0'),
+        realPrice: isDraft
+          ? (realPriceStr || (spuFromCurrent?.realPrice ? String(spuFromCurrent.realPrice) : undefined))
+          : realPriceStr,
         status: isDraft ? ProductStatus.DRAFT : ProductStatus.PENDING,
-        images: imageUrls.length > 0 ? JSON.stringify(imageUrls) : undefined,
+        images: isDraft
+          ? (imageUrls.length > 0 
+              ? JSON.stringify(imageUrls) 
+              : (spuFromCurrent?.images || undefined))
+          : (imageUrls.length > 0 ? JSON.stringify(imageUrls) : undefined),
         totalSales: spuFromCurrent?.totalSales || spuFromProp?.totalSales || 0,
         totalStock: spuFromCurrent?.totalStock || spuFromProp?.totalStock || 0,
       };
@@ -643,6 +697,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
 
   // 从表单值构建数据（用于暂存）
   const buildFormDataFromValues = (values: any): ProductSPU => {
+    const spuFromCurrent = getSpuFromCurrentProduct();
+    const spuFromProp = getSpuFromProp(product);
+    
     const imageUrls: string[] = [];
     
     if (mainImageFileList.length > 0 && mainImageFileList[0].url) {
@@ -658,48 +715,74 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
     const priceStr = formatPriceToString(values.price);
     const realPriceStr = formatPriceToString(values.realPrice);
 
-    const spuFromProp = getSpuFromProp(product);
-    const spuFromCurrent = getSpuFromCurrentProduct();
+    // 优先使用表单值，如果表单值为空则使用 currentProduct 中的最新值
     return {
       id: spuFromCurrent?.id || spuFromProp?.id || 0,
       code: spuFromCurrent?.code || spuFromProp?.code || '',
-      name: values.name || '',
-      category1Id: values.category1Id,
-      category1Code: values.category1Code || '',
-      category2Id: values.category2Id,
-      category2Code: values.category2Code,
-      category3Id: values.category3Id,
-      category3Code: values.category3Code,
-      brand: values.brand || '',
-      description: values.description || '',
-      price: priceStr || '0',
-      realPrice: realPriceStr,
+      name: values.name?.trim() || spuFromCurrent?.name || '未命名商品',
+      category1Id: values.category1Id !== undefined && values.category1Id !== null 
+        ? values.category1Id 
+        : (spuFromCurrent?.category1Id || 0),
+      category1Code: values.category1Code || spuFromCurrent?.category1Code || '',
+      category2Id: values.category2Id !== undefined && values.category2Id !== null 
+        ? values.category2Id 
+        : (spuFromCurrent?.category2Id || undefined),
+      category2Code: values.category2Code || spuFromCurrent?.category2Code || undefined,
+      category3Id: values.category3Id !== undefined && values.category3Id !== null 
+        ? values.category3Id 
+        : (spuFromCurrent?.category3Id || undefined),
+      category3Code: values.category3Code || spuFromCurrent?.category3Code || undefined,
+      brand: values.brand || spuFromCurrent?.brand || '',
+      description: values.description || spuFromCurrent?.description || '',
+      price: priceStr || (spuFromCurrent?.price ? String(spuFromCurrent.price) : '0'),
+      realPrice: realPriceStr || (spuFromCurrent?.realPrice ? String(spuFromCurrent.realPrice) : undefined),
       status: ProductStatus.DRAFT,
-      images: imageUrls.length > 0 ? JSON.stringify(imageUrls) : undefined,
+      images: imageUrls.length > 0 
+        ? JSON.stringify(imageUrls) 
+        : (spuFromCurrent?.images || undefined),
       totalSales: spuFromCurrent?.totalSales || spuFromProp?.totalSales || 0,
       totalStock: spuFromCurrent?.totalStock || spuFromProp?.totalStock || 0,
     };
   };
 
   // 获取已有属性的ID（用于更新时保留id）
-  // attrType: 1-基础属性, 2-销售属性, 3-规格属性（规格属性也在base_attrs中）
+  // attrType: 1-基础属性, 2-销售属性, 3-规格属性
   const getExistingAttrId = (attrType: number, code: string): number => {
     if (!currentProduct || !isDetailResp(currentProduct) || !currentProduct.attrs) {
       return 0;
     }
     
-    // 规格属性（attrType=3）也在base_attrs中
-    if (attrType === 1 || attrType === 3) {
+    if (attrType === 1) {
+      // 基础属性
+      const attrs = currentProduct.attrs.base_attrs || [];
+      const existingAttr = attrs.find(
+        (a: ProductAttrParamInfo) => a.code === code && a.attrType === attrType
+      );
+      return existingAttr?.id || 0;
+    } else if (attrType === 2) {
+      // 销售属性
+      const attrs = currentProduct.attrs.sale_attrs || [];
+      const existingAttr = attrs.find(
+        (a: ProductAttrParamInfo) => a.code === code || a.attrType === attrType
+      );
+      return existingAttr?.id || 0;
+    } else if (attrType === 3) {
+      // 规格属性：优先从 spec_attrs 中查找，如果没有则从 base_attrs 中查找（兼容旧数据）
+      if (currentProduct.attrs.spec_attrs && currentProduct.attrs.spec_attrs.length > 0) {
+        const attrs = currentProduct.attrs.spec_attrs;
+        const existingAttr = attrs.find(
+          (a: ProductAttrParamInfo) => (a.code === code && a.attrType === attrType) || 
+                                       (a.attrType === attrType && (code === 'SPEC_ATTRS' || a.code === code))
+        );
+        if (existingAttr) {
+          return existingAttr.id;
+        }
+      }
+      // 兼容旧数据：从 base_attrs 中查找规格属性
       const attrs = currentProduct.attrs.base_attrs || [];
       const existingAttr = attrs.find(
         (a: ProductAttrParamInfo) => (a.code === code && a.attrType === attrType) || 
                                      (a.attrType === attrType && (code === 'SPEC_ATTRS' || a.code === code))
-      );
-      return existingAttr?.id || 0;
-    } else if (attrType === 2) {
-      const attrs = currentProduct.attrs.sale_attrs || [];
-      const existingAttr = attrs.find(
-        (a: ProductAttrParamInfo) => a.code === code || a.attrType === attrType
       );
       return existingAttr?.id || 0;
     }
@@ -768,33 +851,49 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
       const saleAttrId = getExistingAttrId(2, 'SALE_ATTRS');
       const specAttrId = getExistingAttrId(3, 'SPEC_ATTRS');
 
-      // 构建基础属性和销售属性数组
+      // 构建基础属性、销售属性和规格属性数组
       const baseAttrs: ProductAttrParamInfo[] = [];
       const basicAttr = buildBasicAttr(basicAttributes, latestProductId || 0, latestProductCode, basicAttrId);
       if (basicAttr) baseAttrs.push(basicAttr);
       
-      const specAttr = buildSpecAttr(specifications, latestProductId || 0, latestProductCode, specAttrId);
-      if (specAttr) baseAttrs.push(specAttr);
+      // 使用 ref 中存储的最新规格数据，确保获取到用户删除后的最新值
+      // 避免 React 状态更新延迟导致使用旧数据的问题
+      const currentSpecs = specificationsRef.current;
+      console.log('暂存时使用的规格数据（来自ref）:', currentSpecs);
+      const specAttr = buildSpecAttr(currentSpecs, latestProductId || 0, latestProductCode, specAttrId);
+      const specAttrs: ProductAttrParamInfo[] = specAttr ? [specAttr] : [];
 
       // 构建暂存请求数据，为必填字段提供默认值
       // 使用最新的 currentProduct id，确保多次暂存时使用正确的 id
+      // 优先使用表单值，如果表单值为空则使用 currentProduct 中的最新值
       const draftData: SaveProductReq = {
         spu: {
           id: latestProductId || 0,
           code: latestProductCode,
-          name: values.name?.trim() || '未命名商品',
-          category1Id: values.category1Id || 0,
-          category1Code: values.category1Code || '',
-          category2Id: values.category2Id,
-          category2Code: values.category2Code,
-          category3Id: values.category3Id,
-          category3Code: values.category3Code,
-          brand: values.brand,
-          description: values.description,
-          price: priceStr || '0',
-          realPrice: realPriceStr,
+          // 优先使用表单值，如果为空则使用 currentProduct 中的值
+          name: values.name?.trim() || spuFromCurrent?.name || '未命名商品',
+          category1Id: values.category1Id !== undefined && values.category1Id !== null 
+            ? values.category1Id 
+            : (spuFromCurrent?.category1Id || 0),
+          category1Code: values.category1Code || spuFromCurrent?.category1Code || '',
+          category2Id: values.category2Id !== undefined && values.category2Id !== null 
+            ? values.category2Id 
+            : (spuFromCurrent?.category2Id || undefined),
+          category2Code: values.category2Code || spuFromCurrent?.category2Code || undefined,
+          category3Id: values.category3Id !== undefined && values.category3Id !== null 
+            ? values.category3Id 
+            : (spuFromCurrent?.category3Id || undefined),
+          category3Code: values.category3Code || spuFromCurrent?.category3Code || undefined,
+          brand: values.brand || spuFromCurrent?.brand || '',
+          description: values.description || spuFromCurrent?.description || '',
+          // 价格：优先使用表单值，如果为空则使用 currentProduct 中的值
+          price: priceStr || (spuFromCurrent?.price ? String(spuFromCurrent.price) : '0'),
+          realPrice: realPriceStr || (spuFromCurrent?.realPrice ? String(spuFromCurrent.realPrice) : undefined),
           status: ProductStatus.DRAFT,
-          images: imageUrls.length > 0 ? JSON.stringify(imageUrls) : undefined,
+          // 图片：优先使用当前图片列表，如果为空则使用 currentProduct 中的值
+          images: imageUrls.length > 0 
+            ? JSON.stringify(imageUrls) 
+            : (spuFromCurrent?.images || undefined),
           totalSales: spuFromCurrent?.totalSales || 0,
           totalStock: spuFromCurrent?.totalStock || 0,
         },
@@ -805,13 +904,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
             const saleAttr = buildSaleAttr(saleAttributes, latestProductId || 0, latestProductCode, saleAttrId);
             return saleAttr ? [saleAttr] : [];
           })(),
+          spec_attrs: specAttrs,
         },
         skus: (() => {
           // 优先使用ref获取最新的SKU列表，如果没有则使用state
           const latestSkus = getLatestSkuListRef.current?.() || skuList;
+          console.log('暂存时使用的SKU列表:', latestSkus.map(s => ({ indexs: s.indexs, combination: s.combination })));
           return latestSkus.map(sku => {
             const existingSku = getExistingSku(sku.indexs);
-            return convertItemToSku(sku, latestProductId || 0, latestProductCode, existingSku || undefined);
+            const convertedSku = convertItemToSku(sku, latestProductId || 0, latestProductCode, existingSku || undefined);
+            // 验证 indexs 是否正确计算
+            if (!convertedSku.indexs || convertedSku.indexs === '') {
+              console.warn('SKU indexs 为空:', { combination: sku.combination, sku });
+            }
+            return convertedSku;
           });
         })(),
         // 暂存时不传递details，保持为空
@@ -845,12 +951,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
         try {
           setBasicAttributes(extractBasicAttributes(savedProductDetail.attrs));
           setSaleAttributes(extractSaleAttributes(savedProductDetail.attrs));
-          setSpecifications(extractSpecifications(savedProductDetail.attrs));
+          const specs = extractSpecifications(savedProductDetail.attrs);
+          setSpecifications(specs);
+          specificationsRef.current = specs; // 同步更新 ref
           // 使用后端返回的SKU数据更新列表（后端返回的是实际保存的SKU，可能少于根据规格生成的数量）
           if (savedProductDetail.skus && savedProductDetail.skus.length > 0) {
             const returnedSkus = extractSkus(savedProductDetail);
             console.log('暂存成功，更新SKU列表。返回数量:', returnedSkus.length, '当前数量:', skuList.length);
+            console.log('返回的SKU数据:', returnedSkus.map(s => ({ id: s.skuCode, indexs: s.indexs, combination: s.combination })));
             // 直接使用后端返回的SKU数据，因为这是实际保存的数据
+            // SKUManager 会根据规格重新生成 combination，所以这里传入的 combination 只是占位符
             setSkuList(returnedSkus);
           } else if (savedProductDetail.skus && savedProductDetail.skus.length === 0) {
             // 如果后端返回空数组，说明所有SKU都被删除了，清空列表
@@ -917,8 +1027,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
       const basicAttr = buildBasicAttr(basicAttributes, latestProductId || 0, latestProductCode, basicAttrId);
       if (basicAttr) baseAttrs.push(basicAttr);
       
-      const specAttr = buildSpecAttr(specifications, latestProductId || 0, latestProductCode, specAttrId);
-      if (specAttr) baseAttrs.push(specAttr);
+      // 使用 ref 中存储的最新规格数据，确保获取到用户删除后的最新值
+      // 避免 React 状态更新延迟导致使用旧数据的问题
+      const currentSpecs = specificationsRef.current;
+      console.log('提交时使用的规格数据（来自ref）:', currentSpecs);
+      const specAttr = buildSpecAttr(currentSpecs, latestProductId || 0, latestProductCode, specAttrId);
+      const specAttrs: ProductAttrParamInfo[] = specAttr ? [specAttr] : [];
       
       const saleAttr = buildSaleAttr(saleAttributes, latestProductId || 0, latestProductCode, saleAttrId);
       
@@ -927,13 +1041,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
         attrs: {
           base_attrs: baseAttrs,
           sale_attrs: saleAttr ? [saleAttr] : [],
+          spec_attrs: specAttrs,
         },
         skus: (() => {
           // 优先使用ref获取最新的SKU列表，如果没有则使用state
           const latestSkus = getLatestSkuListRef.current?.() || skuList;
+          console.log('提交时使用的SKU列表:', latestSkus.map(s => ({ indexs: s.indexs, combination: s.combination })));
           return latestSkus.map(sku => {
             const existingSku = getExistingSku(sku.indexs);
-            return convertItemToSku(sku, latestProductId || 0, latestProductCode, existingSku || undefined);
+            const convertedSku = convertItemToSku(sku, latestProductId || 0, latestProductCode, existingSku || undefined);
+            // 验证 indexs 是否正确计算
+            if (!convertedSku.indexs || convertedSku.indexs === '') {
+              console.warn('SKU indexs 为空:', { combination: sku.combination, sku });
+            }
+            return convertedSku;
           });
         })(),
         details: currentProduct && isDetailResp(currentProduct) && currentProduct.details 
@@ -1244,7 +1365,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
             <div className={styles.specAndSkuContainer}>
               <SpecificationEditor
                 value={specifications}
-                onChange={setSpecifications}
+                onChange={(newSpecs) => {
+                  // 同步更新 state 和 ref，确保 ref 中始终是最新值
+                  setSpecifications(newSpecs);
+                  specificationsRef.current = newSpecs;
+                  console.log('规格数据更新:', newSpecs);
+                }}
                 disabled={isViewMode}
                 categoryId={form.getFieldValue('category3Id') || form.getFieldValue('category2Id') || form.getFieldValue('category1Id')}
               />

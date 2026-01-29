@@ -139,10 +139,13 @@ type (
         Details ProductDetailInfo      `json:"details,optional"`
     }
 
-    // 商品属性信息（包含基础属性和销售属性）
+    // 商品属性信息（包含基础属性、销售属性和规格属性）
     ProductAttrsInfo {
         BaseAttrs []ProductAttrParamInfo `json:"base_attrs,optional"`
-        SaleAttrs []ProductAttrParamInfo `json:"sale_attrs,optional"`
+        // 销售属性：不要标记 optional，避免空数组时被 omitempty 省略导致前端"缺少字段"
+        SaleAttrs []ProductAttrParamInfo `json:"sale_attrs"`
+        // 规格属性：不要标记 optional，避免空数组时被 omitempty 省略导致前端"缺少字段"
+        SpecAttrs []ProductAttrParamInfo `json:"spec_attrs"`
     }
 
     // 获取商品统计请求

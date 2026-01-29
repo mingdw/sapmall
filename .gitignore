@@ -60,3 +60,4 @@ ehthumbs.db
 
 #docker mysql 本地数据
 /docker_mysql/mysql_data/
+backend_service/app/__debug_bin.exe

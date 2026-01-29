@@ -18,17 +18,18 @@ export const parseImageUrls = (images: string | string[] | undefined): string[] 
 };
 
 // 转换 ProductSKU 到 SKUItem
+// 注意：combination 字段会在 SKUManager 中根据规格重新生成，这里先使用 indexs 作为占位符
 export const convertSkuToItem = (sku: ProductSKU): SKUItem => {
   const price = typeof sku.price === 'string' ? parseFloat(sku.price) : sku.price;
   const images = parseImageUrls(sku.images);
   
   return {
     indexs: sku.indexs,
-    combination: sku.indexs,
+    combination: sku.indexs, // SKUManager 会根据规格重新生成正确的 combination
     price: price || 0,
     stock: sku.stock || 0,
     skuCode: sku.skuCode || '',
-    title: sku.title || '',
+    title: sku.title || '', // 使用 title 字段，与后端保持一致
     images: images,
   };
 };
@@ -72,28 +73,57 @@ export const extractSaleAttributes = (attrs: ProductAttrsInfo | undefined): Reco
 };
 
 // 从 ProductDetailResp 中提取规格属性
+// 优先从 spec_attrs 中提取，如果没有则从 base_attrs 中查找（兼容旧数据）
 export const extractSpecifications = (attrs: ProductAttrsInfo | undefined): Record<string, string[]> => {
-  if (!attrs?.base_attrs) return {};
+  if (!attrs) return {};
   
-  const specItem = attrs.base_attrs.find(
-    (a) => a.code === 'SPEC_ATTRS' || a.attrType === 3
-  );
-  
-  if (!specItem?.value) return {};
-  
-  try {
-    const specValue = typeof specItem.value === 'string' 
-      ? JSON.parse(specItem.value) 
-      : specItem.value;
+  // 优先从 spec_attrs 中提取规格属性
+  if (attrs.spec_attrs && attrs.spec_attrs.length > 0) {
+    const specItem = attrs.spec_attrs.find(
+      (a) => a.code === 'SPEC_ATTRS' || a.attrType === 3
+    );
     
-    const normalizedSpecs: Record<string, string[]> = {};
-    Object.entries(specValue || {}).forEach(([key, val]) => {
-      normalizedSpecs[key] = Array.isArray(val) ? val : [val as string];
-    });
-    return normalizedSpecs;
-  } catch {
-    return {};
+    if (specItem?.value) {
+      try {
+        const specValue = typeof specItem.value === 'string' 
+          ? JSON.parse(specItem.value) 
+          : specItem.value;
+        
+        const normalizedSpecs: Record<string, string[]> = {};
+        Object.entries(specValue || {}).forEach(([key, val]) => {
+          normalizedSpecs[key] = Array.isArray(val) ? val : [val as string];
+        });
+        return normalizedSpecs;
+      } catch {
+        // 解析失败，继续尝试从 base_attrs 中查找
+      }
+    }
   }
+  
+  // 兼容旧数据：从 base_attrs 中查找规格属性
+  if (attrs.base_attrs && attrs.base_attrs.length > 0) {
+    const specItem = attrs.base_attrs.find(
+      (a) => a.code === 'SPEC_ATTRS' || a.attrType === 3
+    );
+    
+    if (specItem?.value) {
+      try {
+        const specValue = typeof specItem.value === 'string' 
+          ? JSON.parse(specItem.value) 
+          : specItem.value;
+        
+        const normalizedSpecs: Record<string, string[]> = {};
+        Object.entries(specValue || {}).forEach(([key, val]) => {
+          normalizedSpecs[key] = Array.isArray(val) ? val : [val as string];
+        });
+        return normalizedSpecs;
+      } catch {
+        return {};
+      }
+    }
+  }
+  
+  return {};
 };
 
 // 从 ProductDetailResp 中提取所有SKU
@@ -184,6 +214,7 @@ export const buildSpecAttr = (
 };
 
 // 转换 SKUItem 到 ProductSKU（用于保存）
+// 前后端统一使用 title 字段
 export const convertItemToSku = (
   item: SKUItem,
   productId: number,
@@ -200,7 +231,7 @@ export const convertItemToSku = (
     saleCount: existingSku?.saleCount || 0,
     status: 1,
     indexs: item.indexs,
-    title: item.title || '',
+    title: item.title || existingSku?.title || '', // 使用 title 字段，与后端保持一致
     images: Array.isArray(item.images) ? JSON.stringify(item.images) : (item.images || ''),
   };
 };

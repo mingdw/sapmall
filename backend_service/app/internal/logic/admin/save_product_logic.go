@@ -72,7 +72,7 @@ func (l *SaveProductLogic) SaveProduct(req *types.SaveProductReq) (resp *types.B
 		}, nil
 	}
 
-	// 步骤2: 处理属性（基础属性和销售属性）
+	// 步骤2: 处理属性（基础属性、销售属性和规格属性）
 	if len(req.Attrs.BaseAttrs) > 0 {
 		err = l.modifyAttributes(l.ctx, attrParamRepository, spuId, spuCode, req.Attrs.BaseAttrs, 1, updator, now)
 		if err != nil {
@@ -85,6 +85,14 @@ func (l *SaveProductLogic) SaveProduct(req *types.SaveProductReq) (resp *types.B
 		err = l.modifyAttributes(l.ctx, attrParamRepository, spuId, spuCode, req.Attrs.SaleAttrs, 2, updator, now)
 		if err != nil {
 			logx.Errorf("保存销售属性失败: %v", err)
+			// 属性保存失败不影响主流程，只记录日志
+		}
+	}
+
+	if len(req.Attrs.SpecAttrs) > 0 {
+		err = l.modifyAttributes(l.ctx, attrParamRepository, spuId, spuCode, req.Attrs.SpecAttrs, 3, updator, now)
+		if err != nil {
+			logx.Errorf("保存规格属性失败: %v", err)
 			// 属性保存失败不影响主流程，只记录日志
 		}
 	}
@@ -370,7 +378,7 @@ func (l *SaveProductLogic) modifyAttributes(
 
 // modifySkus 处理SKU的新增、更新或删除
 // 根据 skuInfo.Id 判断是新增（Id == 0）还是更新（Id > 0）
-// 对于不在请求中的现有SKU，将被删除（软删除）
+// 对于不在请求中的现有SKU，将被物理删除（直接从数据库删除）
 func (l *SaveProductLogic) modifySkus(
 	ctx context.Context,
 	skuRepository repository.ProductSkuRepository,
@@ -417,7 +425,7 @@ func (l *SaveProductLogic) modifySkus(
 		}
 	}
 
-	// 步骤3: 删除不在请求中的现有SKU（软删除：设置is_deleted=1）
+	// 步骤3: 删除不在请求中的现有SKU（物理删除：直接从数据库删除）
 	for _, existingSku := range existingSkus {
 		shouldDelete := false
 
@@ -446,11 +454,8 @@ func (l *SaveProductLogic) modifySkus(
 
 		if shouldDelete {
 			logx.Infof("删除SKU: ID=%d, Indexs=%s (不在请求列表中或indexs已变更)", existingSku.ID, existingSku.Indexs)
-			// 使用软删除：更新is_deleted字段
-			existingSku.IsDeleted = 1
-			existingSku.UpdatedAt = now
-			existingSku.Updator = updator
-			err = skuRepository.UpdateProductSku(ctx, existingSku)
+			// 使用物理删除：直接从数据库删除记录
+			err = skuRepository.DeleteProductSku(ctx, existingSku.ID)
 			if err != nil {
 				logx.Errorf("删除SKU失败 (ID=%d): %v", existingSku.ID, err)
 				// 删除失败不影响主流程，只记录日志
@@ -555,13 +560,14 @@ func (l *SaveProductLogic) modifySkus(
 				logx.Infof("SKU编码为空，自动生成: %s", generatedSkuCode)
 			}
 
-			// 检查是否已存在相同skuCode的SKU（包括已删除的）
+			// 检查是否已存在相同skuCode的SKU
+			// 注意：由于使用物理删除，已删除的SKU不会出现在查询结果中
 			existingSkuByCode, err := skuRepository.GetProductSkuByCode(ctx, generatedSkuCode)
 			if err == nil && existingSkuByCode != nil {
 				// 如果找到相同skuCode的SKU，检查是否属于当前SPU
 				if existingSkuByCode.ProductSpuID == spuId {
-					// 属于当前SPU，恢复并更新（可能是之前被软删除的）
-					logx.Infof("发现已存在的SKU（可能被软删除），恢复并更新: SkuCode=%s, ID=%d", generatedSkuCode, existingSkuByCode.ID)
+					// 属于当前SPU，更新现有SKU
+					logx.Infof("发现已存在的SKU，更新: SkuCode=%s, ID=%d", generatedSkuCode, existingSkuByCode.ID)
 					existingSkuByCode.ProductSpuCode = spuCode
 					existingSkuByCode.Price = price
 					existingSkuByCode.Stock = skuInfo.Stock
@@ -573,16 +579,15 @@ func (l *SaveProductLogic) modifySkus(
 					existingSkuByCode.Title = skuInfo.Title
 					existingSkuByCode.SubTitle = skuInfo.SubTitle
 					existingSkuByCode.Description = skuInfo.Description
-					existingSkuByCode.IsDeleted = 0 // 恢复
 					existingSkuByCode.UpdatedAt = now
 					existingSkuByCode.Updator = updator
 
 					err = skuRepository.UpdateProductSku(ctx, existingSkuByCode)
 					if err != nil {
-						logx.Errorf("恢复并更新SKU失败: SkuCode=%s, Error=%v", generatedSkuCode, err)
-						return fmt.Errorf("恢复并更新SKU失败: %v", err)
+						logx.Errorf("更新SKU失败: SkuCode=%s, Error=%v", generatedSkuCode, err)
+						return fmt.Errorf("更新SKU失败: %v", err)
 					}
-					logx.Infof("恢复并更新SKU成功: ID=%d, Indexs=%s, SkuCode=%s", existingSkuByCode.ID, skuInfo.Indexs, generatedSkuCode)
+					logx.Infof("更新SKU成功: ID=%d, Indexs=%s, SkuCode=%s", existingSkuByCode.ID, skuInfo.Indexs, generatedSkuCode)
 					continue
 				} else {
 					// 不属于当前SPU，生成新的唯一编码（添加时间戳）
@@ -620,13 +625,14 @@ func (l *SaveProductLogic) modifySkus(
 
 			err = skuRepository.CreateProductSku(ctx, newSKU)
 			if err != nil {
-				// 如果创建失败且是唯一键冲突错误，尝试恢复已删除的记录
+				// 如果创建失败且是唯一键冲突错误，尝试更新现有记录
+				// 注意：由于使用物理删除，这种情况应该很少发生
 				if strings.Contains(err.Error(), "Duplicate entry") && strings.Contains(err.Error(), "uk_sku_code") {
-					logx.Infof("检测到唯一键冲突，尝试恢复已删除的SKU: SkuCode=%s", generatedSkuCode)
-					// 重新查询，这次应该能找到已删除的记录
+					logx.Infof("检测到唯一键冲突，尝试更新现有SKU: SkuCode=%s", generatedSkuCode)
+					// 重新查询现有记录
 					existingSkuByCode, queryErr := skuRepository.GetProductSkuByCode(ctx, generatedSkuCode)
 					if queryErr == nil && existingSkuByCode != nil && existingSkuByCode.ProductSpuID == spuId {
-						// 恢复并更新已删除的记录
+						// 更新现有记录
 						existingSkuByCode.ProductSpuCode = spuCode
 						existingSkuByCode.Price = price
 						existingSkuByCode.Stock = skuInfo.Stock
@@ -638,16 +644,15 @@ func (l *SaveProductLogic) modifySkus(
 						existingSkuByCode.Title = skuInfo.Title
 						existingSkuByCode.SubTitle = skuInfo.SubTitle
 						existingSkuByCode.Description = skuInfo.Description
-						existingSkuByCode.IsDeleted = 0 // 恢复
 						existingSkuByCode.UpdatedAt = now
 						existingSkuByCode.Updator = updator
 
 						updateErr := skuRepository.UpdateProductSku(ctx, existingSkuByCode)
 						if updateErr != nil {
-							logx.Errorf("恢复并更新SKU失败: SkuCode=%s, Error=%v", generatedSkuCode, updateErr)
-							return fmt.Errorf("恢复并更新SKU失败: %v", updateErr)
+							logx.Errorf("更新SKU失败: SkuCode=%s, Error=%v", generatedSkuCode, updateErr)
+							return fmt.Errorf("更新SKU失败: %v", updateErr)
 						}
-						logx.Infof("恢复并更新SKU成功: ID=%d, Indexs=%s, SkuCode=%s", existingSkuByCode.ID, skuInfo.Indexs, generatedSkuCode)
+						logx.Infof("更新SKU成功: ID=%d, Indexs=%s, SkuCode=%s", existingSkuByCode.ID, skuInfo.Indexs, generatedSkuCode)
 						continue
 					}
 				}

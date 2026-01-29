@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Input, InputNumber, Table, Space, Tag, Upload, Image, Popover, Button, Popconfirm } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { UploadFile } from 'antd';
-import { PlusOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, EyeOutlined, ReloadOutlined } from '@ant-design/icons';
 import AdminButton from '../../../../components/common/AdminButton';
 import styles from './SKUManager.module.scss';
 
@@ -11,9 +11,8 @@ export interface SKUItem {
   combination: string; // 规格组合显示文本，如 "4K + 标准版"
   price: number;
   stock: number;
-  name?: string; // SKU名称
   skuCode?: string;
-  title?: string;
+  title?: string; // SKU名称（与后端字段一致）
   images?: string[]; // 规格图片
 }
 
@@ -45,14 +44,25 @@ const generateCartesianProduct = (arrays: string[][]): string[][] => {
 };
 
 // 生成规格索引
-const generateIndexs = (combination: string[], specifications: Record<string, string[]>): string => {
-  const sortedKeys = Object.keys(specifications).sort();
-  const indexes = sortedKeys.map((key, idx) => {
+// 保持规格顺序与规格设置一致（不排序）
+// 计算逻辑：
+// - combination: 规格值数组，如 ["红色", "S"]
+// - specKeys: 规格键数组，按规格设置的顺序，如 ["颜色", "尺寸"]
+// - specifications: 规格对象，如 {"颜色": ["红色", "绿色"], "尺寸": ["S", "M"]}
+// 返回：索引字符串，如 "0_0" 表示红色(第0个) + S(第0个)
+// 对于单一属性，如只有 "颜色": ["红色", "绿色"]，组合 ["绿色"] 返回 "1"
+const generateIndexs = (combination: string[], specKeys: string[], specifications: Record<string, string[]>): string => {
+  const indexes = specKeys.map((key, idx) => {
     const values = specifications[key];
     const selectedValue = combination[idx];
-    return values.indexOf(selectedValue);
+    const index = values.indexOf(selectedValue);
+    if (index === -1) {
+      console.warn(`规格值 "${selectedValue}" 在规格 "${key}" 中未找到，可用值:`, values);
+    }
+    return index;
   });
-  return indexes.join('_');
+  const result = indexes.join('_');
+  return result;
 };
 
 const SKUManager: React.FC<SKUManagerProps> = ({
@@ -64,8 +74,10 @@ const SKUManager: React.FC<SKUManagerProps> = ({
   onSkuListRef,
 }) => {
   // 根据规格生成SKU组合
+  // 保持规格顺序与规格设置一致（不排序，使用对象插入顺序）
   const generatedSKUs = useMemo(() => {
-    const specKeys = Object.keys(specifications).sort();
+    // 保持规格的原始顺序（不排序），确保与规格设置中的顺序一致
+    const specKeys = Object.keys(specifications);
     const specValues = specKeys.map(key => specifications[key]);
     
     if (specKeys.length === 0 || specValues.some(v => v.length === 0)) {
@@ -75,24 +87,29 @@ const SKUManager: React.FC<SKUManagerProps> = ({
     const combinations = generateCartesianProduct(specValues);
     
     return combinations.map((combo, index) => {
-      const indexs = generateIndexs(combo, specifications);
+      // 传递 specKeys 以确保索引生成时使用相同的顺序
+      // indexs 计算：根据规格值在对应规格数组中的索引位置
+      // 例如：规格设置 {"颜色": ["红色", "绿色"], "尺寸": ["S", "M"]}
+      // 组合 ["红色", "S"] -> indexs = "0_0" (红色是第0个，S是第0个)
+      // 组合 ["绿色", "M"] -> indexs = "1_1" (绿色是第1个，M是第1个)
+      const indexs = generateIndexs(combo, specKeys, specifications);
+      // 按照规格设置的顺序组合显示
       const combination = combo.join(' + ');
       
       // 查找是否已有该SKU
       const existingSku = skus.find(sku => sku.indexs === indexs);
       
       // 生成默认名称：SPU名称 + 规格组合 + 001（递增）
-      const defaultName = existingSku?.name || 
+      const defaultTitle = existingSku?.title || 
         `${productName} ${combination} ${String(index + 1).padStart(3, '0')}`;
       
       return {
         indexs,
         combination,
-        name: defaultName,
+        title: defaultTitle,
         price: existingSku?.price || 0,
         stock: existingSku?.stock || 0,
         skuCode: existingSku?.skuCode || '',
-        title: existingSku?.title || '',
         images: existingSku?.images || [],
       };
     });
@@ -112,26 +129,39 @@ const SKUManager: React.FC<SKUManagerProps> = ({
   }, [generatedSKUs, deletedIndexs]);
 
   // 决定使用哪个SKU列表：
-  // 1. 根据规格生成所有可能的SKU组合（这是基础）
-  // 2. 如果外部传入的skus有数据，用已有数据填充对应的SKU（保留价格、库存等信息）
-  // 3. 对于新规格组合，使用默认值
+  // 1. 如果外部传入的skus有数据，优先使用外部数据（后端返回的实际保存的SKU）
+  // 2. 如果外部skus为空，则根据规格生成所有可能的SKU组合
+  // 3. 对于外部传入的SKU，需要根据规格重新生成combination显示文本
   const finalSkuList = useMemo(() => {
-    // 总是根据规格生成SKU列表（这是基础）
-    // 然后用外部传入的skus数据填充已有SKU的信息
-    return filteredGeneratedSKUs.map(generatedSku => {
-      // 查找外部传入的skus中是否有对应的SKU（通过indexs匹配）
-      const existingSku = skus.find(s => s.indexs === generatedSku.indexs);
-      if (existingSku) {
-        // 如果找到已有SKU，使用已有数据，但保留生成的combination
+    // 如果外部传入的skus有数据，优先使用外部数据（这是后端返回的实际保存的SKU）
+    if (skus && skus.length > 0) {
+      // 为每个外部SKU重新生成combination显示文本
+      return skus.map(existingSku => {
+        // 根据indexs找到对应的规格组合
+        const indexsArray = existingSku.indexs.split('_').map(idx => parseInt(idx, 10));
+        const specKeys = Object.keys(specifications);
+        const combinationParts: string[] = [];
+        
+        specKeys.forEach((key, idx) => {
+          const values = specifications[key];
+          const valueIndex = indexsArray[idx];
+          if (valueIndex >= 0 && valueIndex < values.length) {
+            combinationParts.push(values[valueIndex]);
+          }
+        });
+        
+        const combination = combinationParts.join(' + ');
+        
         return {
           ...existingSku,
-          combination: generatedSku.combination, // 使用新生成的combination（因为规格可能变化了）
+          combination: combination || existingSku.combination, // 使用重新生成的combination
         };
-      }
-      // 如果没有找到，使用生成的SKU（新规格组合）
-      return generatedSku;
-    });
-  }, [skus, filteredGeneratedSKUs]);
+      });
+    }
+    
+    // 如果外部skus为空，根据规格生成所有可能的SKU组合
+    return filteredGeneratedSKUs;
+  }, [skus, filteredGeneratedSKUs, specifications]);
 
   const [skuList, setSkuList] = useState<SKUItem[]>(finalSkuList);
 
@@ -142,6 +172,52 @@ const SKUManager: React.FC<SKUManagerProps> = ({
       onChange(finalSkuList);
     }
   }, [finalSkuList]); // 移除 onChange 依赖，避免循环更新
+
+  // 刷新SKU：根据规格重新生成SKU列表，但保留已存在的SKU数据
+  const handleRefreshSKUs = () => {
+    // 根据规格生成所有可能的SKU组合
+    const specKeys = Object.keys(specifications);
+    const specValues = specKeys.map(key => specifications[key]);
+    
+    if (specKeys.length === 0 || specValues.some(v => v.length === 0)) {
+      return;
+    }
+
+    const combinations = generateCartesianProduct(specValues);
+    const newGeneratedSKUs = combinations.map((combo, index) => {
+      const indexs = generateIndexs(combo, specKeys, specifications);
+      const combination = combo.join(' + ');
+      
+      // 查找当前SKU列表中是否已存在该SKU（通过indexs匹配）
+      const existingSku = skuList.find(sku => sku.indexs === indexs);
+      
+      if (existingSku) {
+        // 如果已存在，保留现有数据（价格、库存、名称等），但更新combination显示文本
+        return {
+          ...existingSku,
+          combination: combination, // 更新combination显示文本
+        };
+      }
+      
+      // 如果不存在，创建新的SKU
+      const defaultTitle = `${productName} ${combination} ${String(index + 1).padStart(3, '0')}`;
+      return {
+        indexs,
+        combination,
+        title: defaultTitle,
+        price: 0,
+        stock: 0,
+        skuCode: '',
+        images: [],
+      };
+    });
+
+    // 更新SKU列表
+    setSkuList(newGeneratedSKUs);
+    if (onChange) {
+      onChange(newGeneratedSKUs);
+    }
+  };
 
   // 提供获取最新SKU列表的方法给父组件
   useEffect(() => {
@@ -211,8 +287,8 @@ const SKUManager: React.FC<SKUManagerProps> = ({
   const columns: ColumnsType<SKUItem> = [
     {
       title: '名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'title',
+      key: 'title',
       width: 200,
       ellipsis: {
         showTitle: false,
@@ -220,8 +296,8 @@ const SKUManager: React.FC<SKUManagerProps> = ({
       render: (text: string, record: SKUItem) => (
         <div className={styles.nameCell}>
           <Input
-            value={text}
-            onChange={(e) => updateSKU(record.indexs, 'name', e.target.value)}
+            value={text || ''}
+            onChange={(e) => updateSKU(record.indexs, 'title', e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault();
@@ -409,10 +485,21 @@ const SKUManager: React.FC<SKUManagerProps> = ({
   return (
     <div className={styles.skuManager}>
       <div className={styles.header}>
-        <h4 className={styles.title}>SKU管理</h4>
-        <div className={styles.skuCount}>
-          共 {skuList.length} 个SKU
+        <div className={styles.headerLeft}>
+          <h4 className={styles.title}>SKU管理</h4>
+          <div className={styles.skuCount}>
+            共 {skuList.length} 个SKU
+          </div>
         </div>
+        {!disabled && (
+          <button 
+            className={styles.refreshButton}
+            onClick={handleRefreshSKUs}
+            title="根据规格设置重新生成SKU列表"
+          >
+            <ReloadOutlined /> 刷新SKU
+          </button>
+        )}
       </div>
 
       <div className={styles.tableWrapper}>
