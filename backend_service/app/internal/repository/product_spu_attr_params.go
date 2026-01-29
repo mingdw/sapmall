@@ -7,6 +7,7 @@ import (
 
 type ProductSpuAttrParamsRepository interface {
 	GetProductSpuAttrParams(ctx context.Context, spuId int64, attrType int) ([]*model.ProductSpuAttrParams, error)
+	GetAllProductSpuAttrParams(ctx context.Context, spuId int64) ([]*model.ProductSpuAttrParams, error) // 一次性查询所有属性（按 attr_type 分组）
 	GetProductSpuAttrParamByID(ctx context.Context, id int64) (*model.ProductSpuAttrParams, error)
 	GetProductSpuAttrParamByCode(ctx context.Context, spuId int64, code string, attrType int) (*model.ProductSpuAttrParams, error)
 	CreateProductSpuAttrParams(ctx context.Context, params *model.ProductSpuAttrParams) error
@@ -32,6 +33,20 @@ func (r *productSpuAttrParamsRepository) GetProductSpuAttrParams(ctx context.Con
 		query = query.Where("attr_type = ?", attrType)
 	}
 	err := query.Find(&params).Error
+	if err != nil {
+		return nil, err
+	}
+	return params, nil
+}
+
+// GetAllProductSpuAttrParams 一次性查询商品的所有属性（基础属性、销售属性、规格属性）
+// 返回结果按 attr_type 排序，便于后续分组处理
+func (r *productSpuAttrParamsRepository) GetAllProductSpuAttrParams(ctx context.Context, spuId int64) ([]*model.ProductSpuAttrParams, error) {
+	var params []*model.ProductSpuAttrParams
+	err := r.DB(ctx).
+		Where("product_spu_id = ? AND is_deleted = ? AND attr_type IN ?", spuId, 0, []int{1, 2, 3}).
+		Order("attr_type ASC, sort ASC, id ASC").
+		Find(&params).Error
 	if err != nil {
 		return nil, err
 	}

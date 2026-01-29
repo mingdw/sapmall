@@ -5,13 +5,14 @@ package admin
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
-	"sapphire-mall/app/internal/middleware"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
+	"sapphire-mall/app/internal/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
@@ -45,30 +46,10 @@ func (l *GetProductDetailLogic) GetProductDetail(req *types.GetProductDetailReq)
 	detailRepository := repository.NewProductSpuDetailRepository(
 		repository.NewRepository(l.svcCtx.GormDB),
 	)
-
 	// 从 context 获取用户信息
-	userInfo, ok := l.ctx.Value("userInfo").(*model.User)
-	if !ok || userInfo == nil {
-		// 如果没有用户信息，尝试从 context 获取 userId
-		userID, ok := l.ctx.Value(middleware.ComerUinContextKey).(int64)
-		if !ok {
-			logx.Errorf("无法获取用户信息")
-			return &types.BaseResp{
-				Code: 401,
-				Msg:  "用户未登录",
-				Data: nil,
-			}, nil
-		}
-		userRepository := repository.NewUserRepository(l.svcCtx.GormDB)
-		userInfo, err = userRepository.GetByID(l.ctx, userID)
-		if err != nil {
-			logx.Errorf("获取用户信息失败: %v", err)
-			return &types.BaseResp{
-				Code: 401,
-				Msg:  "获取用户信息失败",
-				Data: nil,
-			}, nil
-		}
+	_, err = user.AuthUserInfo(l.ctx, l.svcCtx.GormDB)
+	if err != nil {
+		return nil, errors.New("获取用户信息失败")
 	}
 
 	// 查询商品SPU信息
@@ -76,49 +57,38 @@ func (l *GetProductDetailLogic) GetProductDetail(req *types.GetProductDetailReq)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return &types.BaseResp{
-				Code: 1,
-				Msg:  "商品不存在",
+				Code: 0,
+				Msg:  "success",
 				Data: nil,
 			}, nil
 		}
 		logx.Errorf("查询商品详情失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询商品详情失败",
-			Data: nil,
-		}, nil
+		return nil, errors.New("查询商品详情失败")
 	}
 
-	// 检查商品是否属于当前用户
-	if spu.UserCode != userInfo.UserCode {
-		return &types.BaseResp{
-			Code: 403,
-			Msg:  "无权访问该商品",
-			Data: nil,
-		}, nil
-	}
-
-	// 检查商品是否已删除
-	if spu.IsDeleted != 0 {
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "商品已删除",
-			Data: nil,
-		}, nil
-	}
-
-	// 查询基础属性（attr_type=1）
-	baseAttrs, err := attrParamRepository.GetProductSpuAttrParams(l.ctx, req.Id, 1)
+	// 一次性查询所有属性（基础属性、销售属性、规格属性），然后按 attr_type 分组
+	allAttrs, err := attrParamRepository.GetAllProductSpuAttrParams(l.ctx, req.Id)
 	if err != nil {
-		logx.Errorf("查询基础属性失败: %v", err)
-		baseAttrs = []*model.ProductSpuAttrParams{} // 如果查询失败，返回空数组
+		logx.Errorf("查询商品属性失败: %v", err)
+		allAttrs = []*model.ProductSpuAttrParams{} // 如果查询失败，返回空数组
 	}
 
-	// 查询销售属性（attr_type=2）
-	saleAttrs, err := attrParamRepository.GetProductSpuAttrParams(l.ctx, req.Id, 2)
-	if err != nil {
-		logx.Errorf("查询销售属性失败: %v", err)
-		saleAttrs = []*model.ProductSpuAttrParams{} // 如果查询失败，返回空数组
+	// 按 attr_type 分组：1-基础属性，2-销售属性，3-规格属性
+	baseAttrs := make([]*model.ProductSpuAttrParams, 0)
+	saleAttrs := make([]*model.ProductSpuAttrParams, 0)
+	specAttrs := make([]*model.ProductSpuAttrParams, 0)
+	for _, attr := range allAttrs {
+		if attr == nil {
+			continue
+		}
+		switch attr.AttrType {
+		case 1:
+			baseAttrs = append(baseAttrs, attr)
+		case 2:
+			saleAttrs = append(saleAttrs, attr)
+		case 3:
+			specAttrs = append(specAttrs, attr)
+		}
 	}
 
 	// 查询SKU列表
@@ -141,7 +111,7 @@ func (l *GetProductDetailLogic) GetProductDetail(req *types.GetProductDetailReq)
 
 	productDetailResp := &types.ProductDetailResp{
 		Spu:     *spuInfo,
-		Attrs:   l.convertToProductAttrsInfo(baseAttrs, saleAttrs),
+		Attrs:   l.convertToProductAttrsInfo(baseAttrs, saleAttrs, specAttrs),
 		Skus:    l.convertToProductSKUInfoList(skus),
 		Details: *detailInfo,
 	}
@@ -190,20 +160,37 @@ func (l *GetProductDetailLogic) convertToProductSPUInfo(spu *model.ProductSpu) *
 }
 
 // convertToProductAttrsInfo 将属性列表转换为 types.ProductAttrsInfo
-func (l *GetProductDetailLogic) convertToProductAttrsInfo(baseAttrs, saleAttrs []*model.ProductSpuAttrParams) types.ProductAttrsInfo {
-	baseAttrsList := make([]types.ProductAttrParamInfo, 0, len(baseAttrs))
+func (l *GetProductDetailLogic) convertToProductAttrsInfo(baseAttrs, saleAttrs, specAttrs []*model.ProductSpuAttrParams) types.ProductAttrsInfo {
+	// 处理基础属性：使用 make 确保返回非nil的空切片
+	baseAttrsList := make([]types.ProductAttrParamInfo, 0)
 	for _, attr := range baseAttrs {
-		baseAttrsList = append(baseAttrsList, l.convertToProductAttrParamInfo(attr))
+		if attr != nil {
+			baseAttrsList = append(baseAttrsList, l.convertToProductAttrParamInfo(attr))
+		}
 	}
 
-	saleAttrsList := make([]types.ProductAttrParamInfo, 0, len(saleAttrs))
+	// 处理销售属性：使用 make 确保返回非nil的空切片，避免JSON序列化时字段被省略
+	// 即使 saleAttrs 为空或nil，也会返回一个非nil的空切片，确保 sale_attrs 字段始终存在于JSON响应中
+	saleAttrsList := make([]types.ProductAttrParamInfo, 0)
 	for _, attr := range saleAttrs {
-		saleAttrsList = append(saleAttrsList, l.convertToProductAttrParamInfo(attr))
+		if attr != nil {
+			saleAttrsList = append(saleAttrsList, l.convertToProductAttrParamInfo(attr))
+		}
+	}
+
+	// 处理规格属性：使用 make 确保返回非nil的空切片，避免JSON序列化时字段被省略
+	// 即使 specAttrs 为空或nil，也会返回一个非nil的空切片，确保 spec_attrs 字段始终存在于JSON响应中
+	specAttrsList := make([]types.ProductAttrParamInfo, 0)
+	for _, attr := range specAttrs {
+		if attr != nil {
+			specAttrsList = append(specAttrsList, l.convertToProductAttrParamInfo(attr))
+		}
 	}
 
 	return types.ProductAttrsInfo{
 		BaseAttrs: baseAttrsList,
-		SaleAttrs: saleAttrsList,
+		SaleAttrs: saleAttrsList, // 确保返回非nil的空切片，即使没有销售属性
+		SpecAttrs: specAttrsList, // 确保返回非nil的空切片，即使没有规格属性
 	}
 }
 

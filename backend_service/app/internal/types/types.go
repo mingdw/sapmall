@@ -155,7 +155,8 @@ type ProductAttrParamInfo struct {
 
 type ProductAttrsInfo struct {
 	BaseAttrs []ProductAttrParamInfo `json:"base_attrs,optional"`
-	SaleAttrs []ProductAttrParamInfo `json:"sale_attrs,optional"`
+	SaleAttrs []ProductAttrParamInfo `json:"sale_attrs"`
+	SpecAttrs []ProductAttrParamInfo `json:"spec_attrs"`
 }
 
 type ProductDetailInfo struct {

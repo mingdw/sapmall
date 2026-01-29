@@ -100,10 +100,11 @@ export interface ProductAttrParamInfo {
   updator?: string;
 }
 
-// 商品属性信息（包含基础属性和销售属性）
+// 商品属性信息（包含基础属性、销售属性和规格属性）
 export interface ProductAttrsInfo {
   base_attrs?: ProductAttrParamInfo[];
   sale_attrs?: ProductAttrParamInfo[];
+  spec_attrs?: ProductAttrParamInfo[]; // 规格属性
 }
 
 // SPU详情信息（与后端 ProductDetailInfo 对齐）
