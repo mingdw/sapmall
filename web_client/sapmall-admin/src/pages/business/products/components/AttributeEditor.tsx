@@ -14,7 +14,7 @@ interface AttributeEditorProps {
   value?: Record<string, string>; // JSON对象格式
   onChange?: (value: Record<string, string>) => void;
   disabled?: boolean;
-  mode?: 'table' | 'list'; // 新增：表格模式或列表模式
+  mode?: 'table' | 'list' | 'card'; // 表格模式、列表模式或卡片模式
   productId?: number; // 商品ID（保留用于未来扩展，当前不用于实时保存）
   productCode?: string; // 商品编码（保留用于未来扩展，当前不用于实时保存）
   attrType?: number; // 属性类型：1-基本属性，2-销售属性，3-规格属性
@@ -276,6 +276,171 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
 
   // 检查是否有有效属性
   const hasValidAttributes = attributes.some(attr => attr.key.trim() && attr.value.trim());
+
+  // 卡片模式（使用表格展示）
+  if (mode === 'card') {
+    // 表格列定义
+    const cardColumns = [
+      {
+        title: '属性名称',
+        dataIndex: 'key',
+        key: 'key',
+        width: '35%',
+        render: (_: any, record: AttributeItem, index: number) => {
+          const isEditing = editingKey === index;
+          if (isEditing && editingRow) {
+            return (
+              <Input
+                value={editingRow.key}
+                onChange={(e) => updateEditingRow('key', e.target.value)}
+                placeholder="请输入属性名称"
+                className={styles.tableInput}
+                autoFocus
+              />
+            );
+          }
+          return <span className={styles.tableCell}>{record.key || '-'}</span>;
+        },
+      },
+      {
+        title: '属性值',
+        dataIndex: 'value',
+        key: 'value',
+        width: '45%',
+        render: (_: any, record: AttributeItem, index: number) => {
+          const isEditing = editingKey === index;
+          if (isEditing && editingRow) {
+            return (
+              <Input
+                value={editingRow.value}
+                onChange={(e) => updateEditingRow('value', e.target.value)}
+                placeholder="请输入属性值"
+                className={styles.tableInput}
+                onPressEnter={() => saveEdit(index)}
+              />
+            );
+          }
+          return <span className={styles.tableCell}>{record.value || '-'}</span>;
+        },
+      },
+      {
+        title: '操作',
+        key: 'action',
+        width: '20%',
+        render: (_: any, record: AttributeItem, index: number) => {
+          const isEditing = editingKey === index;
+          
+          if (isEditing) {
+            return (
+              <Space size="small">
+                <Button
+                  type="link"
+                  size="small"
+                  icon={<CheckOutlined />}
+                  onClick={() => saveEdit(index)}
+                  className={styles.saveBtn}
+                  disabled={!editingRow?.key.trim() || !editingRow?.value.trim()}
+                >
+                  保存
+                </Button>
+                <Button
+                  type="link"
+                  size="small"
+                  icon={<CloseOutlined />}
+                  onClick={() => cancelEdit(index)}
+                  className={styles.cancelBtn}
+                >
+                  取消
+                </Button>
+              </Space>
+            );
+          }
+          
+          return (
+            <Space size="small">
+              <Button
+                type="link"
+                size="small"
+                icon={<EditOutlined />}
+                onClick={() => startEdit(index)}
+                className={styles.editBtn}
+                disabled={disabled}
+              >
+                编辑
+              </Button>
+              <Button
+                type="link"
+                size="small"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() => removeAttribute(index)}
+                className={styles.deleteBtn}
+                disabled={disabled}
+              >
+                删除
+              </Button>
+            </Space>
+          );
+        },
+      },
+    ];
+
+    // 构建表格数据源
+    const tableDataSource = attributes.map((attr, index) => ({ ...attr, index }));
+
+    return (
+      <div className={styles.attributeEditor}>
+        {attributes.length === 0 && !hasValidAttributes ? (
+          <div className={styles.emptyTip}>
+            <div className={styles.emptyIcon}>📝</div>
+            <p className={styles.emptyText}>暂无属性</p>
+            <p className={styles.emptyHint}>点击下方"添加属性"按钮开始添加</p>
+            {!disabled && (
+              <div className={styles.emptyAction}>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={addAttribute}
+                  className={styles.addButtonEmpty}
+                >
+                  添加属性
+                </Button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className={styles.tableWrapper}>
+            <div className={styles.tableContainer}>
+              <Table
+                columns={cardColumns}
+                dataSource={tableDataSource}
+                rowKey={(record, index) => `row-${index}`}
+                pagination={false}
+                size="small"
+                className={styles.attributeTable}
+                locale={{
+                  emptyText: '暂无数据',
+                }}
+              />
+            </div>
+            {!disabled && (
+              <div className={styles.actionBar}>
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<PlusOutlined />}
+                  onClick={addAttribute}
+                  className={styles.addButton}
+                >
+                  添加属性
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   // 表格模式
   if (mode === 'table') {
