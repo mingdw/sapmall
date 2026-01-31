@@ -1,0 +1,439 @@
+.productDetailEditor {
+  width: 100%;
+
+  .tabs {
+    :global(.ant-tabs-nav) {
+      margin-bottom: 24px;
+      padding: 0 4px;
+
+      &::before {
+        border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      }
+    }
+
+    :global(.ant-tabs-tab) {
+      padding: 12px 20px;
+      margin: 0 4px;
+      border-radius: 6px 6px 0 0;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: rgba(30, 41, 59, 0.3);
+      }
+
+      &.ant-tabs-tab-active {
+        background-color: rgba(30, 41, 59, 0.5);
+        border-bottom: 2px solid #3b82f6;
+      }
+    }
+
+    :global(.ant-tabs-tab-btn) {
+      color: #94a3b8;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    :global(.ant-tabs-tab-active .ant-tabs-tab-btn) {
+      color: #3b82f6;
+    }
+
+    :global(.ant-tabs-content-holder) {
+      padding: 0;
+    }
+
+    :global(.ant-tabs-content) {
+      padding: 0;
+    }
+
+    :global(.ant-tabs-tabpane) {
+      padding: 0;
+    }
+  }
+
+  .tabLabel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+
+    .tabTitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: inherit;
+    }
+
+    .tabDescription {
+      font-size: 11px;
+      color: rgba(148, 163, 184, 0.7);
+      font-weight: normal;
+    }
+  }
+
+  .tabContent {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    min-height: 500px;
+  }
+
+  .actionButton {
+    color: #94a3b8;
+    font-size: 12px;
+    padding: 6px 12px;
+    height: auto;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+
+    &:hover:not(:disabled) {
+      color: #3b82f6;
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    :global(.anticon) {
+      font-size: 12px;
+      margin-right: 4px;
+    }
+  }
+
+  .editorContainer {
+    background-color: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    
+    // ReactQuill 根容器样式
+    :global {
+      .quill {
+        display: flex !important;
+        flex-direction: column;
+        width: 100%;
+      }
+    }
+  }
+
+  .quillEditor {
+    width: 100%;
+    
+    :global {
+      .quill {
+        display: flex !important;
+        flex-direction: column;
+        width: 100%;
+      }
+    }
+
+    :global {
+      .ql-container {
+        background-color: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-top: none;
+        border-radius: 0 0 6px 6px;
+        color: #e2e8f0;
+        font-size: 14px;
+        min-height: 300px;
+        display: block;
+      }
+
+      .ql-editor {
+        color: #e2e8f0 !important;
+        min-height: 300px;
+        display: block;
+
+        &::before {
+          color: #cbd5e1 !important;
+          opacity: 0.9;
+          font-style: normal;
+        }
+
+        p, h1, h2, h3, h4, h5, h6, li, span, div {
+          color: #e2e8f0 !important;
+        }
+
+        // 确保输入的文字颜色清晰可见
+        &.ql-blank::before {
+          color: #cbd5e1 !important;
+          opacity: 0.9;
+          font-style: normal;
+        }
+        
+        // 确保所有文本元素都有清晰的颜色
+        * {
+          color: inherit;
+        }
+
+        a {
+          color: #60a5fa;
+        }
+
+        img {
+          max-width: 100%;
+          height: auto;
+          border-radius: 4px;
+        }
+      }
+    }
+
+    :global {
+      .ql-toolbar {
+        background-color: rgba(30, 41, 59, 0.8);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        border-radius: 6px 6px 0 0;
+        padding: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
+
+        .ql-stroke {
+          stroke: #e2e8f0;
+        }
+
+        .ql-fill {
+          fill: #e2e8f0;
+        }
+
+        .ql-picker-label {
+          color: #e2e8f0;
+          
+          &:hover {
+            color: #60a5fa;
+          }
+        }
+        
+        .ql-picker.ql-expanded .ql-picker-label {
+          color: #3b82f6;
+        }
+        
+        // 工具栏分隔线
+        .ql-stroke.ql-thin {
+          stroke: #64748b;
+        }
+
+        .ql-picker-options {
+          background-color: rgba(15, 23, 42, 0.98);
+          border: 1px solid rgba(51, 65, 85, 0.4);
+          border-radius: 6px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+          .ql-picker-item {
+            color: #e2e8f0;
+
+            &:hover {
+              background-color: rgba(59, 130, 246, 0.2);
+              color: #60a5fa;
+            }
+          }
+        }
+
+        button {
+          border-radius: 4px;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background-color: rgba(59, 130, 246, 0.15);
+            
+            .ql-stroke {
+              stroke: #60a5fa;
+            }
+
+            .ql-fill {
+              fill: #60a5fa;
+            }
+          }
+
+          &.ql-active {
+            background-color: rgba(59, 130, 246, 0.25);
+            
+            .ql-stroke {
+              stroke: #3b82f6;
+            }
+
+            .ql-fill {
+              fill: #3b82f6;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 操作按钮栏
+  .actionBar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: rgba(30, 41, 59, 0.5);
+    border-top: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 0 0 8px 8px;
+  }
+
+  .previewWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .previewContainer {
+    background-color: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 8px 8px 0 0;
+    padding: 24px;
+    min-height: 300px;
+    flex: 1;
+
+    .previewContent {
+      color: #e2e8f0;
+      font-size: 14px;
+      line-height: 1.8;
+
+      h1, h2, h3, h4, h5, h6 {
+        color: #e2e8f0;
+        margin-top: 20px;
+        margin-bottom: 12px;
+        font-weight: 600;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      h3 {
+        font-size: 18px;
+      }
+
+      h4 {
+        font-size: 16px;
+      }
+
+      p {
+        color: #cbd5e1;
+        margin-bottom: 12px;
+      }
+
+      ul, ol {
+        color: #cbd5e1;
+        margin-bottom: 12px;
+        padding-left: 24px;
+
+        li {
+          margin-bottom: 8px;
+        }
+      }
+
+      a {
+        color: #60a5fa;
+        text-decoration: underline;
+
+        &:hover {
+          color: #93c5fd;
+        }
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 4px;
+        margin: 12px 0;
+      }
+
+      blockquote {
+        border-left: 4px solid #3b82f6;
+        padding-left: 16px;
+        margin: 16px 0;
+        color: #94a3b8;
+        font-style: italic;
+      }
+
+      strong {
+        color: #e2e8f0;
+        font-weight: 600;
+      }
+
+      em {
+        font-style: italic;
+      }
+
+      code {
+        background-color: rgba(30, 41, 59, 0.6);
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        color: #86efac;
+      }
+    }
+  }
+}
+
+// 全局样式覆盖
+:global {
+  .productDetailEditor {
+    // 下拉菜单样式
+    .ant-dropdown-menu {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.95)) !important;
+      backdrop-filter: blur(20px) !important;
+      border: 1px solid rgba(51, 65, 85, 0.4) !important;
+      border-radius: 8px !important;
+      padding: 4px 0 !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .ant-dropdown-menu-item {
+      color: #e2e8f0 !important;
+      background: transparent !important;
+      transition: all 0.2s ease !important;
+      padding: 6px 12px !important;
+      margin: 2px 4px !important;
+      border-radius: 6px !important;
+      font-size: 12px !important;
+
+      &:hover:not(.ant-dropdown-menu-item-disabled) {
+        background-color: rgba(59, 130, 246, 0.2) !important;
+        color: #60a5fa !important;
+      }
+
+      &.ant-dropdown-menu-item-disabled {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+        color: #64748b !important;
+      }
+    }
+
+    // 确保 Quill 编辑器正确显示
+    .quill {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+    }
+
+    .ql-toolbar {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      align-items: center !important;
+    }
+
+    .ql-container {
+      display: block !important;
+      position: relative !important;
+    }
+
+    .ql-editor {
+      display: block !important;
+      min-height: 300px !important;
+    }
+  }
+}

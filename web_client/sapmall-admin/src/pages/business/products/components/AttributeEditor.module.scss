@@ -148,69 +148,280 @@
   }
 
   .emptyTip {
-    padding: 48px 24px;
+    padding: 64px 24px;
     text-align: center;
-    background-color: rgba(30, 41, 59, 0.3);
-    border: 1px dashed rgba(148, 163, 184, 0.25);
-    border-radius: 8px;
-    transition: all 0.3s ease;
+    background-color: rgba(30, 41, 59, 0.2);
+    border: 1px dashed rgba(148, 163, 184, 0.15);
+    border-radius: 12px;
+    transition: all 0.2s ease;
 
     &:hover {
-      border-color: rgba(148, 163, 184, 0.4);
-      background-color: rgba(30, 41, 59, 0.4);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      border-color: rgba(148, 163, 184, 0.25);
+      background-color: rgba(30, 41, 59, 0.3);
     }
 
     .emptyIcon {
-      font-size: 36px;
+      font-size: 40px;
       margin-bottom: 16px;
-      opacity: 0.7;
-      filter: grayscale(0.3);
+      opacity: 0.6;
+      filter: grayscale(0.2);
     }
 
     .emptyText {
-      color: #94a3b8;
-      font-size: 14px;
+      color: #cbd5e1;
+      font-size: 15px;
       font-weight: 500;
       margin: 0 0 8px 0;
     }
 
     .emptyHint {
-      color: #64748b;
-      font-size: 12px;
+      color: #94a3b8;
+      font-size: 13px;
       margin: 0;
       line-height: 1.6;
     }
   }
 
-  // 表格容器
+  // 表格包装器
+  .tableWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  // 表格容器 - shadcn风格
   .tableContainer {
-    background-color: rgba(30, 41, 59, 0.4);
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    border-radius: 8px;
+    background-color: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
 
     &:hover {
-      border-color: rgba(148, 163, 184, 0.3);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      border-color: rgba(148, 163, 184, 0.2);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
   }
 
   // 表格单元格
   .tableCell {
     color: #e2e8f0;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
   }
 
-  // 表格输入框
+  // 表格输入框 - shadcn风格
   .tableInput {
+    background-color: transparent !important;
+    border: 1px solid rgba(148, 163, 184, 0.2) !important;
+    color: #e2e8f0 !important;
+    border-radius: 6px;
+    font-size: 14px;
+    height: 32px;
+    padding: 6px 10px;
+    transition: all 0.15s ease;
+
+    &::placeholder {
+      color: #64748b !important;
+      font-weight: 400;
+    }
+
+    &:hover {
+      border-color: rgba(148, 163, 184, 0.35) !important;
+      background-color: rgba(30, 41, 59, 0.2) !important;
+    }
+
+    &:focus {
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+      background-color: rgba(30, 41, 59, 0.3) !important;
+      outline: none;
+    }
+  }
+
+  // 操作按钮样式 - shadcn风格
+  .editBtn {
+    color: #3b82f6;
+    padding: 4px 10px;
+    height: 28px;
+    font-size: 13px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+
+    &:hover {
+      color: #60a5fa;
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .saveBtn {
+    color: #10b981;
+    padding: 4px 10px;
+    height: 28px;
+    font-size: 13px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+
+    &:hover {
+      color: #34d399;
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    &:disabled {
+      color: #64748b;
+      cursor: not-allowed;
+      background-color: transparent;
+      opacity: 0.5;
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+  }
+
+  .cancelBtn {
+    color: #94a3b8;
+    padding: 4px 10px;
+    height: 28px;
+    font-size: 13px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+
+    &:hover {
+      color: #cbd5e1;
+      background-color: rgba(148, 163, 184, 0.1);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  .deleteBtn {
+    color: #ef4444;
+    padding: 4px 10px;
+    height: 28px;
+    font-size: 13px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+
+    &:hover {
+      color: #f87171;
+      background-color: rgba(239, 68, 68, 0.1);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  // 卡片模式样式
+  .cardContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .cardList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .attributeCard {
+    background-color: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.3);
+      background-color: rgba(30, 41, 59, 0.4);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &.editing {
+      border-color: rgba(59, 130, 246, 0.5);
+      background-color: rgba(30, 41, 59, 0.5);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+  }
+
+  .cardViewMode {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .cardContent {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .cardKey {
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .cardSeparator {
+    color: #64748b;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .cardValue {
+    color: #e2e8f0;
+    font-size: 13px;
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+  }
+
+  .cardEditMode {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cardInputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cardKeyInput {
+    flex: 0 0 200px;
     background-color: rgba(30, 41, 59, 0.6) !important;
     border-color: rgba(148, 163, 184, 0.2) !important;
     color: #e2e8f0 !important;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 13px;
+    height: 36px;
 
     &::placeholder {
       color: #64748b !important;
@@ -228,53 +439,116 @@
     }
   }
 
-  // 操作按钮样式
-  .editBtn {
-    color: #3b82f6;
-    padding: 4px 8px;
-    height: auto;
-    font-size: 12px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+  .cardValueInput {
+    flex: 1;
+    background-color: rgba(30, 41, 59, 0.6) !important;
+    border-color: rgba(148, 163, 184, 0.2) !important;
+    color: #e2e8f0 !important;
+    border-radius: 6px;
+    font-size: 13px;
+    height: 36px;
+
+    &::placeholder {
+      color: #64748b !important;
+    }
 
     &:hover {
-      color: #60a5fa;
-      background-color: rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.4) !important;
+      background-color: rgba(30, 41, 59, 0.7) !important;
+    }
+
+    &:focus {
+      border-color: #3b82f6 !important;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+      background-color: rgba(30, 41, 59, 0.8) !important;
     }
   }
 
-  .saveBtn {
-    color: #10b981;
-    padding: 4px 8px;
-    height: auto;
+  .cardActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .addButtonContainer {
+    margin-top: 8px;
+  }
+
+  .addButton {
+    height: 44px;
+    border: 1px dashed rgba(148, 163, 184, 0.3);
+    border-radius: 8px;
+    background-color: rgba(30, 41, 59, 0.2);
+    color: #94a3b8;
+    font-size: 13px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.5);
+      background-color: rgba(30, 41, 59, 0.3);
+      color: #3b82f6;
+    }
+
+    :global(.anticon) {
+      font-size: 14px;
+    }
+  }
+
+  // 操作按钮栏（参考ProductDetailEditor的样式）
+  .actionBar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0;
+  }
+
+  .addButton {
+    color: #94a3b8;
     font-size: 12px;
+    padding: 6px 12px;
+    height: auto;
     border-radius: 4px;
     transition: all 0.2s ease;
     font-weight: 500;
+    border: none;
+    background: transparent;
 
-    &:hover {
-      color: #34d399;
-      background-color: rgba(16, 185, 129, 0.1);
+    &:hover:not(:disabled) {
+      color: #3b82f6;
+      background-color: rgba(59, 130, 246, 0.1);
     }
 
     &:disabled {
-      color: #64748b;
+      opacity: 0.5;
       cursor: not-allowed;
-      background-color: transparent;
+    }
+
+    :global(.anticon) {
+      font-size: 12px;
+      margin-right: 4px;
     }
   }
 
-  .cancelBtn {
-    color: #94a3b8;
-    padding: 4px 8px;
-    height: auto;
-    font-size: 12px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+  .emptyAction {
+    margin-top: 20px;
+  }
+
+  .addButtonEmpty {
+    height: 40px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.15s ease;
 
     &:hover {
-      color: #cbd5e1;
-      background-color: rgba(148, 163, 184, 0.1);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 }
@@ -283,31 +557,41 @@
 :global {
   .attributeEditor {
     .ant-input {
-      background-color: rgba(30, 41, 59, 0.8) !important;
-      border-color: rgba(148, 163, 184, 0.2) !important;
+      background-color: transparent !important;
+      border: 1px solid rgba(148, 163, 184, 0.2) !important;
       color: #e2e8f0 !important;
+      border-radius: 6px !important;
+      font-size: 14px !important;
+      height: 32px !important;
+      padding: 6px 10px !important;
+      transition: all 0.15s ease !important;
 
       &::placeholder {
         color: #64748b !important;
+        font-weight: 400 !important;
       }
 
       &:hover {
-        border-color: rgba(59, 130, 246, 0.5) !important;
+        border-color: rgba(148, 163, 184, 0.35) !important;
+        background-color: rgba(30, 41, 59, 0.2) !important;
       }
 
       &:focus {
         border-color: #3b82f6 !important;
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        background-color: rgba(30, 41, 59, 0.3) !important;
+        outline: none !important;
       }
 
       &:disabled {
-        background-color: rgba(30, 41, 59, 0.4) !important;
+        background-color: rgba(30, 41, 59, 0.2) !important;
         color: #64748b !important;
         cursor: not-allowed;
+        opacity: 0.6;
       }
     }
 
-    // 表格样式覆盖
+    // 表格样式覆盖 - shadcn风格
     .attributeTable {
       background-color: transparent !important;
 
@@ -329,41 +613,32 @@
       }
 
       :global(.ant-table-thead > tr > th) {
-        background-color: rgba(30, 41, 59, 0.6) !important;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.25) !important;
-        color: #e2e8f0 !important;
-        font-weight: 600 !important;
-        font-size: 13px !important;
-        padding: 14px 16px !important;
+        background-color: rgba(30, 41, 59, 0.4) !important;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1) !important;
+        color: #cbd5e1 !important;
+        font-weight: 500 !important;
+        font-size: 12px !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 16px !important;
         position: relative;
-
-        &::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
-        }
       }
 
       :global(.ant-table-tbody > tr > td) {
         background-color: transparent !important;
-        border-bottom: 1px solid rgba(148, 163, 184, 0.08) !important;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.06) !important;
         color: #e2e8f0 !important;
         padding: 14px 16px !important;
-        transition: all 0.2s ease;
+        transition: all 0.15s ease;
       }
 
       :global(.ant-table-tbody > tr) {
         background-color: transparent !important;
-        transition: all 0.2s ease;
+        transition: all 0.15s ease;
       }
 
       :global(.ant-table-tbody > tr:hover > td) {
-        background-color: rgba(30, 41, 59, 0.5) !important;
-        border-bottom-color: rgba(148, 163, 184, 0.15) !important;
+        background-color: rgba(30, 41, 59, 0.3) !important;
       }
 
       :global(.ant-table-tbody > tr:last-child > td) {
@@ -418,15 +693,18 @@
         }
       }
 
-      // 按钮样式
+      // 按钮样式 - shadcn风格
       :global(.ant-btn-link) {
         color: #3b82f6 !important;
-        padding: 4px 8px !important;
-        height: auto !important;
+        padding: 4px 10px !important;
+        height: 28px !important;
         line-height: 1.5 !important;
-        border-radius: 4px !important;
-        transition: all 0.2s ease !important;
-        font-size: 12px !important;
+        border-radius: 6px !important;
+        transition: all 0.15s ease !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        border: none !important;
+        background: transparent !important;
         
         &:hover {
           color: #60a5fa !important;
@@ -434,7 +712,7 @@
         }
 
         &:active {
-          transform: scale(0.95);
+          transform: scale(0.98);
         }
       }
 
@@ -447,7 +725,7 @@
         }
 
         &:active {
-          transform: scale(0.95);
+          transform: scale(0.98);
         }
       }
 

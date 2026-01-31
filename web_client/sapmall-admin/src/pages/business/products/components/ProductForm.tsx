@@ -16,7 +16,7 @@ import {
 } from '@ant-design/icons';
 import type { UploadFile, UploadProps } from 'antd';
 import { productApi } from '../../../../services/api/productApi';
-import type { ProductSPU, ProductSKU, SaveProductReq, ProductDetailResp, ProductAttrsInfo, ProductAttrParamInfo } from '../types';
+import type { ProductSPU, ProductSKU, SaveProductReq, ProductDetailResp, ProductAttrsInfo, ProductAttrParamInfo, ProductDetailInfo } from '../types';
 import {
   parseImageUrls,
   convertSkuToItem,
@@ -33,8 +33,10 @@ import {
 import { ProductStatus } from '../constants';
 import AdminButton from '../../../../components/common/AdminButton';
 import AttributeEditor, { AttributeItem } from './AttributeEditor';
+import AttributesEditor from './AttributesEditor';
 import SpecificationEditor from './SpecificationEditor';
 import SKUManager, { SKUItem } from './SKUManager';
+import ProductDetailEditor from './ProductDetailEditor';
 import { useCategoryStore } from '../../../../store/categoryStore';
 import styles from './ProductForm.module.scss';
 
@@ -85,6 +87,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
   const [attributesLoaded, setAttributesLoaded] = useState(false);
   // 标记规格数据是否已加载（确保只加载一次）
   const [specificationsLoaded, setSpecificationsLoaded] = useState(false);
+  // 商品详情数据
+  const [productDetails, setProductDetails] = useState<ProductDetailInfo | undefined>(undefined);
 
   const isDetailResp = (p: any): p is ProductDetailResp => {
     return !!p && typeof p === 'object' && 'spu' in p;
@@ -216,6 +220,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
           console.error('从明细接口 skus 回显失败:', e);
         }
       }
+
+      // 从完整的明细数据中回显商品详情
+      if (product.details) {
+        try {
+          setProductDetails(product.details);
+        } catch (e) {
+          console.error('从明细接口 details 回显失败:', e);
+        }
+      }
     } else {
       // 如果只是 ProductSPU，只设置 spu
       const spu = getSpuFromProp(product);
@@ -301,6 +314,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
       setSpecifications({});
       specificationsRef.current = {}; // 同步更新 ref
       setSkuList([]);
+      setProductDetails(undefined);
       setAttributesLoaded(false); // 重置属性加载标志，以便下次进入属性设置步骤时重新加载
       setSpecificationsLoaded(false); // 重置规格加载标志，以便下次进入规格步骤时重新加载
     }
@@ -432,6 +446,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
           if (currentDetail.skus && currentDetail.skus.length > 0) {
             setSkuList(extractSkus(currentDetail));
           }
+          if (currentDetail.details) {
+            setProductDetails(currentDetail.details);
+          }
           return; // 成功从本地数据加载，直接返回
         } catch (error) {
           console.error('从 currentProduct 解析规格和SKU失败，将调用接口:', error);
@@ -448,6 +465,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
         setSpecifications(specs);
         specificationsRef.current = specs; // 同步更新 ref
         setSkuList(extractSkus(detailResp));
+        if (detailResp.details) {
+          setProductDetails(detailResp.details);
+        }
       }
     } catch (error) {
       console.error('加载商品规格和SKU失败:', error);
@@ -920,8 +940,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
             return convertedSku;
           });
         })(),
-        // 暂存时不传递details，保持为空
-        details: undefined,
+        // 暂存时传递详情数据
+        details: productDetails,
       };
 
       setSavingDraft(true);
@@ -966,6 +986,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
             // 如果后端返回空数组，说明所有SKU都被删除了，清空列表
             console.log('暂存成功，后端返回空SKU列表，清空当前列表');
             setSkuList([]);
+          }
+
+          // 更新商品详情
+          if (savedProductDetail.details) {
+            setProductDetails(savedProductDetail.details);
           }
         } catch (error) {
           console.error('从返回数据更新属性状态失败:', error);
@@ -1057,13 +1082,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
             return convertedSku;
           });
         })(),
-        details: currentProduct && isDetailResp(currentProduct) && currentProduct.details 
+        details: productDetails || (currentProduct && isDetailResp(currentProduct) && currentProduct.details 
           ? {
               ...currentProduct.details,
               productSpuId: latestProductId || 0,
               productSpuCode: latestProductCode,
             }
-          : undefined,
+          : undefined),
       };
       
       // 调用统一接口保存所有数据
@@ -1329,29 +1354,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
               设置商品的基础属性和销售属性，这些属性将用于商品展示和搜索
             </p>
             
-            <div className={styles.attributesContainer}>
-              <AttributeEditor
-                title="基础属性"
-                value={basicAttributes}
-                onChange={setBasicAttributes}
-                mode="table"
-                disabled={isViewMode}
-                productId={getSpuFromCurrentProduct()?.id || getSpuFromProp(product)?.id}
-                productCode={getSpuFromCurrentProduct()?.code || getSpuFromProp(product)?.code}
-                attrType={1}
-              />
-              
-              <AttributeEditor
-                title="销售属性"
-                value={saleAttributes}
-                onChange={setSaleAttributes}
-                mode="table"
-                disabled={isViewMode}
-                productId={getSpuFromCurrentProduct()?.id || getSpuFromProp(product)?.id}
-                productCode={getSpuFromCurrentProduct()?.code || getSpuFromProp(product)?.code}
-                attrType={2}
-              />
-            </div>
+            <AttributesEditor
+              basicAttributes={basicAttributes}
+              saleAttributes={saleAttributes}
+              onBasicAttributesChange={setBasicAttributes}
+              onSaleAttributesChange={setSaleAttributes}
+              disabled={isViewMode}
+              productId={getSpuFromCurrentProduct()?.id || getSpuFromProp(product)?.id}
+              productCode={getSpuFromCurrentProduct()?.code || getSpuFromProp(product)?.code}
+            />
           </div>
         );
       case 'specifications':
@@ -1386,6 +1397,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
                 }}
               />
             </div>
+          </div>
+        );
+      case 'product-details':
+        return (
+          <div className={styles.formSection}>
+            <ProductDetailEditor
+              value={productDetails}
+              onChange={(details) => {
+                setProductDetails(details);
+              }}
+              disabled={isViewMode}
+              productSpuId={getSpuFromCurrentProduct()?.id || getSpuFromProp(product)?.id || 0}
+              productSpuCode={getSpuFromCurrentProduct()?.code || getSpuFromProp(product)?.code || ''}
+            />
           </div>
         );
       default:
@@ -1461,7 +1486,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
                   loading={loading} 
                   onClick={handleSubmit}
                 >
-                  {product ? '保存商品' : '添加商品'}
+                  {product ? '发布商品' : '添加商品'}
                 </AdminButton>
               )}
             </>
