@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Input, InputNumber, Table, Space, Tag, Upload, Image, Popover, Button, Popconfirm } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { UploadFile } from 'antd';
-import { PlusOutlined, DeleteOutlined, EyeOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import AdminButton from '../../../../components/common/AdminButton';
 import styles from './SKUManager.module.scss';
 
@@ -23,6 +23,7 @@ interface SKUManagerProps {
   disabled?: boolean;
   productName?: string; // SPU商品名称
   onSkuListRef?: (getSkuList: () => SKUItem[]) => void; // 用于获取最新的SKU列表
+  autoGenerate?: boolean; // 是否根据规格自动生成所有SKU（默认true，从后端加载数据时应设为false）
 }
 
 // 生成笛卡尔积
@@ -72,6 +73,7 @@ const SKUManager: React.FC<SKUManagerProps> = ({
   disabled = false,
   productName = '',
   onSkuListRef,
+  autoGenerate = true, // 默认根据规格自动生成所有SKU
 }) => {
   // 根据规格生成SKU组合
   // 保持规格顺序与规格设置一致（不排序，使用对象插入顺序）
@@ -128,18 +130,16 @@ const SKUManager: React.FC<SKUManagerProps> = ({
     return generatedSKUs.filter(sku => !deletedIndexs.has(sku.indexs));
   }, [generatedSKUs, deletedIndexs]);
 
-  // 决定使用哪个SKU列表：
-  // 1. 如果外部传入的skus有数据，优先使用外部数据（后端返回的实际保存的SKU）
-  // 2. 如果外部skus为空，则根据规格生成所有可能的SKU组合
-  // 3. 对于外部传入的SKU，需要根据规格重新生成combination显示文本
+  // 根据最新规格生成SKU列表，并保留已存在的SKU数据
+  // 如果 autoGenerate 为 true：总是根据最新规格生成所有可能的SKU组合，并保留已存在的SKU数据
+  // 如果 autoGenerate 为 false：只显示外部传入的SKU数据（用于从后端加载数据时）
   const finalSkuList = useMemo(() => {
-    // 如果外部传入的skus有数据，优先使用外部数据（这是后端返回的实际保存的SKU）
-    if (skus && skus.length > 0) {
-      // 为每个外部SKU重新生成combination显示文本
+    // 如果不需要自动生成，直接返回外部传入的SKU数据（但需要更新combination显示文本）
+    if (!autoGenerate && skus && skus.length > 0) {
+      const specKeys = Object.keys(specifications);
       return skus.map(existingSku => {
-        // 根据indexs找到对应的规格组合
+        // 根据indexs找到对应的规格组合，更新combination显示文本
         const indexsArray = existingSku.indexs.split('_').map(idx => parseInt(idx, 10));
-        const specKeys = Object.keys(specifications);
         const combinationParts: string[] = [];
         
         specKeys.forEach((key, idx) => {
@@ -159,65 +159,42 @@ const SKUManager: React.FC<SKUManagerProps> = ({
       });
     }
     
-    // 如果外部skus为空，根据规格生成所有可能的SKU组合
-    return filteredGeneratedSKUs;
-  }, [skus, filteredGeneratedSKUs, specifications]);
+    // 如果需要自动生成，根据最新规格生成所有可能的SKU组合
+    // 创建一个映射，用于快速查找已存在的SKU数据
+    const existingSkuMap = new Map<string, SKUItem>();
+    if (skus && skus.length > 0) {
+      skus.forEach(sku => {
+        existingSkuMap.set(sku.indexs, sku);
+      });
+    }
+    
+    // 根据最新规格生成所有可能的SKU组合
+    // 对于每个生成的SKU，如果已存在则保留其数据，否则使用默认值
+    return filteredGeneratedSKUs.map(generatedSku => {
+      const existingSku = existingSkuMap.get(generatedSku.indexs);
+      if (existingSku) {
+        // 如果已存在，保留其数据，但更新combination显示文本（因为规格可能变化了）
+        return {
+          ...existingSku,
+          combination: generatedSku.combination, // 使用最新生成的combination
+        };
+      }
+      // 如果不存在，使用生成的默认SKU
+      return generatedSku;
+    });
+  }, [skus, filteredGeneratedSKUs, specifications, autoGenerate]);
 
   const [skuList, setSkuList] = useState<SKUItem[]>(finalSkuList);
 
-  // 当最终SKU列表变化时，更新本地状态并通知父组件
+  // ✅ 当最终SKU列表变化时，更新本地状态并通知父组件
+  // 这确保了当规格变化时（从模板添加、添加规格、删除规格），SKU列表会自动更新
   useEffect(() => {
     setSkuList(finalSkuList);
     if (onChange) {
       onChange(finalSkuList);
     }
-  }, [finalSkuList]); // 移除 onChange 依赖，避免循环更新
-
-  // 刷新SKU：根据规格重新生成SKU列表，但保留已存在的SKU数据
-  const handleRefreshSKUs = () => {
-    // 根据规格生成所有可能的SKU组合
-    const specKeys = Object.keys(specifications);
-    const specValues = specKeys.map(key => specifications[key]);
-    
-    if (specKeys.length === 0 || specValues.some(v => v.length === 0)) {
-      return;
-    }
-
-    const combinations = generateCartesianProduct(specValues);
-    const newGeneratedSKUs = combinations.map((combo, index) => {
-      const indexs = generateIndexs(combo, specKeys, specifications);
-      const combination = combo.join(' + ');
-      
-      // 查找当前SKU列表中是否已存在该SKU（通过indexs匹配）
-      const existingSku = skuList.find(sku => sku.indexs === indexs);
-      
-      if (existingSku) {
-        // 如果已存在，保留现有数据（价格、库存、名称等），但更新combination显示文本
-        return {
-          ...existingSku,
-          combination: combination, // 更新combination显示文本
-        };
-      }
-      
-      // 如果不存在，创建新的SKU
-      const defaultTitle = `${productName} ${combination} ${String(index + 1).padStart(3, '0')}`;
-      return {
-        indexs,
-        combination,
-        title: defaultTitle,
-        price: 0,
-        stock: 0,
-        skuCode: '',
-        images: [],
-      };
-    });
-
-    // 更新SKU列表
-    setSkuList(newGeneratedSKUs);
-    if (onChange) {
-      onChange(newGeneratedSKUs);
-    }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finalSkuList]); // 确保规格变化时自动更新SKU列表，不包含 onChange 避免循环更新
 
   // 提供获取最新SKU列表的方法给父组件
   useEffect(() => {
@@ -491,15 +468,6 @@ const SKUManager: React.FC<SKUManagerProps> = ({
             共 {skuList.length} 个SKU
           </div>
         </div>
-        {!disabled && (
-          <button 
-            className={styles.refreshButton}
-            onClick={handleRefreshSKUs}
-            title="根据规格设置重新生成SKU列表"
-          >
-            <ReloadOutlined /> 刷新SKU
-          </button>
-        )}
       </div>
 
       <div className={styles.tableWrapper}>
