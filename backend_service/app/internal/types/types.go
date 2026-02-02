@@ -165,7 +165,7 @@ type ProductDetailInfo struct {
 	ProductSpuCode string `json:"productSpuCode"`
 	Detail         string `json:"detail,optional"`      // 详情（HTML或文本）
 	PackingList    string `json:"packingList,optional"` // 包装清单（HTML或文本）
-	AfterSale      string `json:"afterSale,optional"`   // 售后服务（HTML或文本）
+	AfterSale      string `json:"afterSale,optional"`   // 售后服务（HTML或文本
 	CreatedAt      string `json:"createdAt,optional"`
 	UpdatedAt      string `json:"updatedAt,optional"`
 }
