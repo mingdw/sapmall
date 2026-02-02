@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Input, Button, Space, Dropdown, Tag, InputRef } from 'antd';
-import { PlusOutlined, DeleteOutlined, CloseOutlined, DownOutlined } from '@ant-design/icons';
+import { Input, Button, Space, Dropdown, Tag, InputRef, Table, message } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { PlusOutlined, DeleteOutlined, CloseOutlined, DownOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { 
   DEFAULT_SPECIFICATION_TEMPLATES, 
@@ -29,11 +30,15 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
 }) => {
   const [specifications, setSpecifications] = useState<SpecificationItem[]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingNameIndex, setEditingNameIndex] = useState<number | null>(null); // 正在编辑名称的规格索引
+  const [editingNameValue, setEditingNameValue] = useState<string>(''); // 编辑中的名称值
+  const [hoveredNameIndex, setHoveredNameIndex] = useState<number | null>(null); // 鼠标悬停的规格名称索引
   const [templates, setTemplates] = useState<SpecificationTemplate[]>([]);
   const isInternalUpdate = useRef(false); // 标记是否是内部更新
   const [addingValueIndex, setAddingValueIndex] = useState<number | null>(null); // 正在添加值的规格索引
   const [newValueInput, setNewValueInput] = useState<string>(''); // 新值的输入
   const inputRefs = useRef<{ [key: number]: InputRef | null }>({}); // 存储输入框引用
+  const nameInputRefs = useRef<{ [key: number]: InputRef | null }>({}); // 存储名称输入框引用
 
   // 加载规格模板
   useEffect(() => {
@@ -68,40 +73,63 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
     specsRef.current = items; // 同步更新 ref
   }, [value]);
 
-  // 更新规格名称（失焦时通知父组件）
-  const updateSpecName = (index: number, newName: string) => {
+  // 开始编辑规格名称（点击名称时触发）
+  const startEditName = (index: number) => {
+    if (disabled) return;
+    setEditingNameIndex(index);
+    setEditingNameValue(specifications[index].name);
+    setTimeout(() => {
+      nameInputRefs.current[index]?.focus();
+      nameInputRefs.current[index]?.select();
+    }, 100);
+  };
+
+  // 保存规格名称编辑
+  const saveNameEdit = (index: number) => {
+    if (!editingNameValue.trim()) {
+      message.warning('规格名称不能为空');
+      return;
+    }
+
+    // 检查名称是否重复（排除当前编辑的行）
+    const isDuplicate = specifications.some((spec, i) => 
+      i !== index && spec.name.trim() === editingNameValue.trim()
+    );
+    
+    if (isDuplicate) {
+      message.warning('规格名称已存在，请使用不同的名称');
+      return;
+    }
+
     setSpecifications((currentSpecs) => {
       const newSpecs = [...currentSpecs];
       newSpecs[index] = {
         ...newSpecs[index],
-        name: newName,
+        name: editingNameValue.trim(),
       };
+      specsRef.current = newSpecs;
+      notifyChange(newSpecs);
       return newSpecs;
     });
+    
+    setEditingNameIndex(null);
+    setEditingNameValue('');
   };
 
-  // 处理规格名称失焦
-  const handleSpecNameBlur = (index: number) => {
-    setTimeout(() => {
-      setSpecifications((currentSpecs) => {
-        const spec = currentSpecs[index];
-        if (!spec) return currentSpecs;
+  // 取消编辑规格名称
+  const cancelNameEdit = (index: number) => {
+    const spec = specifications[index];
+    // 如果规格名和值都为空，删除该规格
+    if (!spec.name.trim() && spec.values.length === 0) {
+      removeSpecification(index);
+    }
+    setEditingNameIndex(null);
+    setEditingNameValue('');
+  };
 
-        // 如果规格名和值都为空，删除该规格
-        if (!spec.name.trim() && spec.values.length === 0) {
-          const newSpecs = currentSpecs.filter((_, i) => i !== index);
-          specsRef.current = newSpecs;
-          notifyChange(newSpecs);
-          return newSpecs;
-        }
-
-        // 如果有变化，通知父组件
-        specsRef.current = currentSpecs;
-        notifyChange(currentSpecs);
-        return currentSpecs;
-      });
-      setEditingIndex(null);
-    }, 100);
+  // 更新规格名称（失焦时通知父组件）
+  const updateSpecName = (index: number, newName: string) => {
+    setEditingNameValue(newName);
   };
 
   // 开始添加规格值（显示输入框）
@@ -189,7 +217,12 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
   const addSpecification = () => {
     const newSpecs = [...specifications, { name: '', values: [] }];
     setSpecifications(newSpecs);
-    setEditingIndex(newSpecs.length - 1);
+    const newIndex = newSpecs.length - 1;
+    setEditingNameIndex(newIndex);
+    setEditingNameValue('');
+    setTimeout(() => {
+      nameInputRefs.current[newIndex]?.focus();
+    }, 100);
   };
 
   // 从模板添加规格
@@ -235,6 +268,8 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
       specsRef.current = newSpecs; // 同步更新 ref
       notifyChange(newSpecs);
       setEditingIndex(null);
+      setEditingNameIndex(null);
+      setEditingNameValue('');
       return newSpecs;
     });
   };
@@ -292,6 +327,169 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
     });
   }, [templates, specifications, disabled]);
 
+  // 表格列定义
+  const columns: ColumnsType<SpecificationItem & { index: number }> = [
+    {
+      title: '规格名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: 200,
+      render: (_: any, record: SpecificationItem & { index: number }, index: number) => {
+        const isEditing = editingNameIndex === index;
+        if (isEditing) {
+          return (
+            <Input
+              ref={(ref) => {
+                nameInputRefs.current[index] = ref;
+              }}
+              value={editingNameValue}
+              onChange={(e) => updateSpecName(index, e.target.value)}
+              onPressEnter={() => saveNameEdit(index)}
+              onBlur={() => {
+                setTimeout(() => {
+                  if (editingNameValue.trim()) {
+                    saveNameEdit(index);
+                  } else {
+                    cancelNameEdit(index);
+                  }
+                }, 200);
+              }}
+              placeholder="请输入规格名称"
+              className={styles.tableInput}
+              autoFocus
+            />
+          );
+        }
+        return (
+          <div 
+            className={styles.nameCell}
+            onClick={() => startEditName(index)}
+            onMouseEnter={() => setHoveredNameIndex(index)}
+            onMouseLeave={() => setHoveredNameIndex(null)}
+            style={{ 
+              cursor: disabled ? 'default' : 'pointer',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              transition: 'background-color 0.2s',
+              backgroundColor: hoveredNameIndex === index && !disabled ? 'rgba(59, 130, 246, 0.1)' : 'transparent'
+            }}
+          >
+            <span className={styles.nameText}>{record.name || '-'}</span>
+          </div>
+        );
+      },
+    },
+    {
+      title: '规格值',
+      dataIndex: 'values',
+      key: 'values',
+      render: (_: any, record: SpecificationItem & { index: number }, index: number) => {
+        return (
+          <div className={styles.valuesCell}>
+            <Space size={[6, 6]} wrap>
+              {/* 显示已有的规格值标签 */}
+              {record.values.map((value, valueIndex) => (
+                <Tag
+                  key={valueIndex}
+                  closable={!disabled}
+                  onClose={(e) => {
+                    e.preventDefault();
+                    removeSpecValue(index, valueIndex);
+                  }}
+                  className={styles.specValueTag}
+                  style={{
+                    backgroundColor: tagColorScheme.bg,
+                    borderColor: tagColorScheme.border,
+                    color: tagColorScheme.text,
+                    borderWidth: 1,
+                    borderStyle: 'solid',
+                  } as React.CSSProperties}
+                >
+                  {value}
+                </Tag>
+              ))}
+              
+              {/* 添加值的输入框 */}
+              {addingValueIndex === index && !disabled ? (
+                <Input
+                  ref={(ref) => {
+                    inputRefs.current[index] = ref;
+                  }}
+                  size="small"
+                  style={{ 
+                    width: 90,
+                    height: 22,
+                    fontSize: 11,
+                    padding: '2px 8px',
+                    borderRadius: 6
+                  }}
+                  value={newValueInput}
+                  onChange={(e) => setNewValueInput(e.target.value)}
+                  onBlur={() => {
+                    setTimeout(() => {
+                      if (newValueInput.trim()) {
+                        confirmAddSpecValue(index);
+                      } else {
+                        cancelAddSpecValue();
+                      }
+                    }, 200);
+                  }}
+                  onKeyDown={(e) => handleAddValueKeyDown(e, index)}
+                  placeholder="输入值"
+                  autoFocus
+                />
+              ) : (
+                !disabled && (
+                  <Tag
+                    onClick={() => startAddSpecValue(index)}
+                    className={styles.addValueTag}
+                    style={{
+                      backgroundColor: addValueTagColorScheme.bg,
+                      borderColor: addValueTagColorScheme.border,
+                      color: addValueTagColorScheme.text,
+                      borderStyle: 'dashed',
+                      borderWidth: 1,
+                      cursor: 'pointer',
+                      userSelect: 'none'
+                    } as React.CSSProperties}
+                  >
+                    <PlusOutlined /> 添加值
+                  </Tag>
+                )
+              )}
+            </Space>
+          </div>
+        );
+      },
+    },
+    {
+      title: '操作',
+      key: 'action',
+      width: 100,
+      render: (_: any, record: SpecificationItem & { index: number }, index: number) => {
+        return (
+          <Space size="small">
+            {!disabled && (
+              <Button
+                type="link"
+                size="small"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() => removeSpecification(index)}
+                className={styles.deleteBtn}
+              >
+                删除
+              </Button>
+            )}
+          </Space>
+        );
+      },
+    },
+  ];
+
+  // 构建表格数据源
+  const tableDataSource = specifications.map((spec, index) => ({ ...spec, index }));
+
   return (
     <div className={styles.specificationEditor}>
       <div className={styles.header}>
@@ -327,137 +525,18 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
           <p className={styles.emptyHint}>点击"添加规格"按钮开始设置商品规格</p>
         </div>
       ) : (
-        <div className={styles.specificationList}>
-          {specifications.map((spec, specIndex) => (
-            <div
-              key={specIndex}
-              className={`${styles.specificationItem} ${editingIndex === specIndex ? styles.editing : ''}`}
-            >
-              <div className={styles.specRow}>
-                {/* 规格名称输入框 */}
-                <div className={styles.specNameWrapper}>
-                  <Input
-                    placeholder="规格名称（如：颜色、尺寸）"
-                    value={spec.name}
-                    onChange={(e) => updateSpecName(specIndex, e.target.value)}
-                    onFocus={() => setEditingIndex(specIndex)}
-                    onBlur={() => handleSpecNameBlur(specIndex)}
-                    disabled={disabled}
-                    className={styles.specNameInput}
-                    size="small"
-                  />
-                  <span className={styles.colon}>：</span>
-                </div>
-
-                {/* 规格值标签区域 */}
-                <div className={styles.specValuesArea}>
-                  <Space size={[6, 6]} wrap>
-                    {/* 显示已有的规格值标签 */}
-                    {spec.values.map((value, valueIndex) => (
-                      <Tag
-                        key={valueIndex}
-                        closable={!disabled}
-                        onClose={(e) => {
-                          e.preventDefault();
-                          removeSpecValue(specIndex, valueIndex);
-                        }}
-                        className={styles.specValueTag}
-                        style={{
-                          '--tag-bg': tagColorScheme.bg,
-                          '--tag-border': tagColorScheme.border,
-                          '--tag-text': tagColorScheme.text,
-                          '--tag-hover-bg': tagColorScheme.hoverBg,
-                          backgroundColor: tagColorScheme.bg,
-                          borderColor: tagColorScheme.border,
-                          color: tagColorScheme.text,
-                          borderWidth: 1,
-                          borderStyle: 'solid',
-                        } as React.CSSProperties & {
-                          '--tag-bg': string;
-                          '--tag-border': string;
-                          '--tag-text': string;
-                          '--tag-hover-bg': string;
-                        }}
-                      >
-                        {value}
-                      </Tag>
-                    ))}
-                    
-                    {/* 添加值的输入框 */}
-                    {addingValueIndex === specIndex && !disabled ? (
-                      <Input
-                        ref={(ref) => {
-                          inputRefs.current[specIndex] = ref;
-                        }}
-                        size="small"
-                        style={{ 
-                          width: 90,
-                          height: 22,
-                          fontSize: 11,
-                          padding: '2px 8px',
-                          borderRadius: 6
-                        }}
-                        value={newValueInput}
-                        onChange={(e) => setNewValueInput(e.target.value)}
-                        onBlur={() => {
-                          setTimeout(() => {
-                            if (newValueInput.trim()) {
-                              confirmAddSpecValue(specIndex);
-                            } else {
-                              cancelAddSpecValue();
-                            }
-                          }, 200);
-                        }}
-                        onKeyDown={(e) => handleAddValueKeyDown(e, specIndex)}
-                        placeholder="输入值"
-                        autoFocus
-                      />
-                    ) : (
-                      !disabled && (
-                        <Tag
-                          onClick={() => startAddSpecValue(specIndex)}
-                          className={styles.addValueTag}
-                          style={{
-                            '--tag-bg': addValueTagColorScheme.bg,
-                            '--tag-border': addValueTagColorScheme.border,
-                            '--tag-text': addValueTagColorScheme.text,
-                            '--tag-hover-bg': addValueTagColorScheme.hoverBg,
-                            backgroundColor: addValueTagColorScheme.bg,
-                            borderColor: addValueTagColorScheme.border,
-                            color: addValueTagColorScheme.text,
-                            borderStyle: 'dashed',
-                            borderWidth: 1,
-                            cursor: 'pointer',
-                            userSelect: 'none'
-                          } as React.CSSProperties & {
-                            '--tag-bg': string;
-                            '--tag-border': string;
-                            '--tag-text': string;
-                            '--tag-hover-bg': string;
-                          }}
-                        >
-                          <PlusOutlined /> 添加值
-                        </Tag>
-                      )
-                    )}
-                  </Space>
-                </div>
-
-                {/* 删除规格按钮 */}
-                {!disabled && (
-                  <Button
-                    type="text"
-                    danger
-                    size="small"
-                    icon={<DeleteOutlined />}
-                    onClick={() => removeSpecification(specIndex)}
-                    className={styles.deleteSpecBtn}
-                    title="删除规格"
-                  />
-                )}
-              </div>
-            </div>
-          ))}
+        <div className={styles.tableWrapper}>
+          <Table
+            columns={columns}
+            dataSource={tableDataSource}
+            rowKey={(record) => `spec-${record.index}`}
+            pagination={false}
+            size="small"
+            className={styles.specificationTable}
+            locale={{
+              emptyText: '暂无数据',
+            }}
+          />
         </div>
       )}
     </div>

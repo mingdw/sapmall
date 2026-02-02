@@ -15,6 +15,7 @@ type ProductSpuAttrParamsRepository interface {
 	UpdateProductSpuAttrParams(ctx context.Context, params *model.ProductSpuAttrParams) error
 	DeleteProductSpuAttrParams(ctx context.Context, id int64) error
 	BatchDeleteProductSpuAttrParams(ctx context.Context, ids []int64) error
+	DeleteAllProductSpuAttrParamsBySpu(ctx context.Context, spuId int64, spuCode string) error // 物理删除指定SPU的所有属性（类型1,2,3）
 	ListProductSpuAttrParams(ctx context.Context, spuId int64, spuCode string, attrType int, status int, page, pageSize int) ([]*model.ProductSpuAttrParams, int64, error)
 }
 
@@ -114,6 +115,13 @@ func (r *productSpuAttrParamsRepository) BatchDeleteProductSpuAttrParams(ctx con
 		Model(&model.ProductSpuAttrParams{}).
 		Where("id IN ?", ids).
 		Update("is_deleted", 1).Error
+}
+
+// DeleteAllProductSpuAttrParamsBySpu 物理删除指定SPU的所有属性（类型1,2,3）
+func (r *productSpuAttrParamsRepository) DeleteAllProductSpuAttrParamsBySpu(ctx context.Context, spuId int64, spuCode string) error {
+	return r.DB(ctx).
+		Where("product_spu_id = ? AND product_spu_code = ? AND attr_type IN ?", spuId, spuCode, []int{1, 2, 3}).
+		Delete(&model.ProductSpuAttrParams{}).Error
 }
 
 func (r *productSpuAttrParamsRepository) ListProductSpuAttrParams(ctx context.Context, spuId int64, spuCode string, attrType int, status int, page, pageSize int) ([]*model.ProductSpuAttrParams, int64, error) {

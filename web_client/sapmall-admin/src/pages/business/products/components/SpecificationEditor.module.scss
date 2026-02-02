@@ -125,198 +125,187 @@
     }
   }
 
-  .specificationList {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .specificationItem {
-    padding: 16px;
-    background-color: rgba(30, 41, 59, 0.3);
+  // ✅ 表格样式
+  .tableWrapper {
+    background-color: rgba(30, 41, 59, 0.2);
     border: 1px solid rgba(148, 163, 184, 0.15);
     border-radius: 8px;
-    transition: all 0.2s ease;
+    overflow: hidden;
+  }
+
+  .specificationTable {
+    :global(.ant-table) {
+      background-color: transparent;
+    }
+
+    :global(.ant-table-thead > tr > th) {
+      background-color: rgba(30, 41, 59, 0.4);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      color: #e2e8f0;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    :global(.ant-table-tbody > tr > td) {
+      background-color: transparent;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+      color: #e2e8f0;
+    }
+
+    :global(.ant-table-tbody > tr:hover > td) {
+      background-color: rgba(30, 41, 59, 0.3);
+    }
+
+    :global(.ant-table-tbody > tr:last-child > td) {
+      border-bottom: none;
+    }
+  }
+
+  .tableInput {
+    background-color: rgba(30, 41, 59, 0.6);
+    border-color: rgba(148, 163, 184, 0.2);
+    color: #e2e8f0;
+    border-radius: 4px;
+    font-size: 13px;
+
+    &::placeholder {
+      color: #64748b;
+    }
 
     &:hover {
-      border-color: rgba(59, 130, 246, 0.3);
-      background-color: rgba(30, 41, 59, 0.4);
+      border-color: rgba(59, 130, 246, 0.4);
+      background-color: rgba(30, 41, 59, 0.7);
     }
 
-    &.editing {
-      border-color: rgba(59, 130, 246, 0.5);
-      background-color: rgba(30, 41, 59, 0.5);
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    &:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+      background-color: rgba(30, 41, 59, 0.8);
+    }
+  }
+
+  .nameCell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .nameText {
+      color: #e2e8f0;
+      font-size: 13px;
     }
 
-    .specRow {
-      display: flex;
+    .editNameBtn {
+      padding: 0;
+      height: auto;
+      font-size: 12px;
+      color: #60a5fa;
+      
+      &:hover {
+        color: #93c5fd;
+      }
+    }
+  }
+
+  .valuesCell {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 32px;
+    padding: 4px 0;
+
+    .specValueTag {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      height: 22px;
+      line-height: 18px;
+      border-radius: 6px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: default;
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 4px;
+      box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 0 0 0.5px rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
 
-      .specNameWrapper {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-shrink: 0;
-        min-width: 120px;
-
-        .specNameInput {
-          width: 140px;
-          background-color: rgba(30, 41, 59, 0.6);
-          border-color: rgba(148, 163, 184, 0.2);
-          color: #e2e8f0;
-          border-radius: 4px;
-          font-size: 13px;
-          height: 28px;
-
-          &::placeholder {
-            color: #64748b;
-          }
-
-          &:hover {
-            border-color: rgba(59, 130, 246, 0.4);
-            background-color: rgba(30, 41, 59, 0.7);
-          }
-
-          &:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
-            background-color: rgba(30, 41, 59, 0.8);
-          }
-        }
-
-        .colon {
-          color: #94a3b8;
-          font-size: 13px;
-          font-weight: 500;
-          flex-shrink: 0;
-          margin-right: 2px;
-        }
+      &:hover {
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 
+          0 2px 6px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1),
+          0 0 0 0.5px rgba(255, 255, 255, 0.06);
       }
 
-      .specValuesArea {
-        flex: 1;
-        min-width: 200px;
-        display: flex;
+      :global(.ant-tag-close-icon) {
+        margin-left: 0;
+        font-size: 10px;
+        width: 14px;
+        height: 14px;
+        display: inline-flex;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 6px;
-
-        .specValueTag {
-          margin: 0;
-          font-size: 11px;
-          font-weight: 500;
-          padding: 2px 8px;
-          height: 22px;
-          line-height: 18px;
-          border-radius: 6px;
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          cursor: default;
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          // Web3 深色主题风格：柔和的阴影和光效
-          box-shadow: 
-            0 1px 2px rgba(0, 0, 0, 0.25),
-            inset 0 1px 0 rgba(255, 255, 255, 0.06),
-            0 0 0 0.5px rgba(255, 255, 255, 0.03);
-          backdrop-filter: blur(4px);
-          -webkit-backdrop-filter: blur(4px);
-
-          &:hover {
-            transform: translateY(-1px) scale(1.02);
-            box-shadow: 
-              0 2px 6px rgba(0, 0, 0, 0.3),
-              inset 0 1px 0 rgba(255, 255, 255, 0.1),
-              0 0 0 0.5px rgba(255, 255, 255, 0.06);
-            // 使用 CSS 变量来动态改变背景色
-            background-color: var(--tag-hover-bg, rgba(59, 130, 246, 0.2)) !important;
-            border-color: var(--tag-border, rgba(59, 130, 246, 0.35)) !important;
-          }
-
-          :global(.ant-tag-close-icon) {
-            margin-left: 0;
-            font-size: 10px;
-            width: 14px;
-            height: 14px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-            opacity: 0.7;
-            color: inherit;
-            margin-left: 4px;
-
-            &:hover {
-              opacity: 1;
-              background-color: rgba(0, 0, 0, 0.2);
-              transform: scale(1.2);
-            }
-          }
-        }
-
-        .addValueTag {
-          margin: 0;
-          font-size: 11px;
-          font-weight: 500;
-          padding: 2px 8px;
-          height: 22px;
-          line-height: 18px;
-          border-radius: 6px;
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          // Web3 深色主题风格：柔和的阴影和光效（使用绿色配色）
-          box-shadow: 
-            0 1px 2px rgba(0, 0, 0, 0.25),
-            inset 0 1px 0 rgba(255, 255, 255, 0.06),
-            0 0 0 0.5px rgba(255, 255, 255, 0.03);
-          backdrop-filter: blur(4px);
-          -webkit-backdrop-filter: blur(4px);
-
-          &:hover {
-            transform: translateY(-1px) scale(1.02);
-            box-shadow: 
-              0 2px 6px rgba(0, 0, 0, 0.3),
-              inset 0 1px 0 rgba(255, 255, 255, 0.1),
-              0 0 0 0.5px rgba(255, 255, 255, 0.06);
-            // 使用 CSS 变量来动态改变背景色
-            background-color: var(--tag-hover-bg, rgba(34, 197, 94, 0.2)) !important;
-            border-color: var(--tag-border, rgba(34, 197, 94, 0.35)) !important;
-          }
-
-          :global(.anticon) {
-            margin-right: 0;
-            font-size: 10px;
-          }
-        }
-      }
-
-      .deleteSpecBtn {
-        flex-shrink: 0;
-        color: #ef4444;
-        padding: 4px 8px;
-        height: auto;
+        justify-content: center;
+        border-radius: 50%;
         transition: all 0.2s ease;
+        opacity: 0.7;
+        color: inherit;
+        margin-left: 4px;
 
         &:hover {
-          background-color: rgba(239, 68, 68, 0.1);
-          color: #f87171;
-          transform: scale(1.05);
-        }
-
-        &:active {
-          transform: scale(0.95);
-        }
-
-        :global(.anticon) {
-          font-size: 14px;
+          opacity: 1;
+          background-color: rgba(0, 0, 0, 0.2);
+          transform: scale(1.2);
         }
       }
+    }
+
+    .addValueTag {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      height: 22px;
+      line-height: 18px;
+      border-radius: 6px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 0 0 0.5px rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+
+      &:hover {
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 
+          0 2px 6px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1),
+          0 0 0 0.5px rgba(255, 255, 255, 0.06);
+      }
+
+      :global(.anticon) {
+        margin-right: 0;
+        font-size: 10px;
+      }
+    }
+  }
+
+  .deleteBtn {
+    padding: 0;
+    height: auto;
+    font-size: 12px;
+    color: #ef4444;
+    
+    &:hover {
+      color: #f87171;
     }
   }
 
