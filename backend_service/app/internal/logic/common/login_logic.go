@@ -242,8 +242,8 @@ func createUserAvatar(address string, svcCtx *svc.ServiceContext) (string, error
 	uniqueId := uuid.New().String()
 	key := "avatar/" + uniqueId + ".png"
 
-	// 3. 上传到COS
-	res, err := cos.UploadStreamToCOS(svcCtx.CosClient, key, buf, "image/png")
+	// 3. 上传到COS（头像永久有效）
+	res, err := cos.UploadStreamToCOS(svcCtx.CosClient, key, buf, "image/png", nil)
 	if err != nil {
 		return "", err
 	}

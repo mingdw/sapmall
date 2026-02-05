@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Input, InputNumber, Table, Space, Tag, Upload, Image, Popover, Button, Popconfirm } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { UploadFile } from 'antd';
@@ -79,22 +79,35 @@ const SKUManager: React.FC<SKUManagerProps> = ({
   // 保持规格顺序与规格设置一致（不排序，使用对象插入顺序）
   const generatedSKUs = useMemo(() => {
     // 保持规格的原始顺序（不排序），确保与规格设置中的顺序一致
+    // 只使用有值的规格来生成 SKU（过滤掉空数组的规格）
     const specKeys = Object.keys(specifications);
-    const specValues = specKeys.map(key => specifications[key]);
+    const validSpecs: { key: string; values: string[] }[] = specKeys
+      .map(key => ({ key, values: specifications[key] }))
+      .filter(({ values }) => Array.isArray(values) && values.length > 0);
     
-    if (specKeys.length === 0 || specValues.some(v => v.length === 0)) {
+    // 如果没有有效的规格（所有规格都没有值），返回空数组
+    if (validSpecs.length === 0) {
       return [];
     }
 
-    const combinations = generateCartesianProduct(specValues);
+    // 提取有效的规格键和值
+    const validSpecKeys = validSpecs.map(spec => spec.key);
+    const validSpecValues = validSpecs.map(spec => spec.values);
+
+    const combinations = generateCartesianProduct(validSpecValues);
     
     return combinations.map((combo, index) => {
-      // 传递 specKeys 以确保索引生成时使用相同的顺序
+      // 传递 validSpecKeys 以确保索引生成时使用相同的顺序
       // indexs 计算：根据规格值在对应规格数组中的索引位置
       // 例如：规格设置 {"颜色": ["红色", "绿色"], "尺寸": ["S", "M"]}
       // 组合 ["红色", "S"] -> indexs = "0_0" (红色是第0个，S是第0个)
       // 组合 ["绿色", "M"] -> indexs = "1_1" (绿色是第1个，M是第1个)
-      const indexs = generateIndexs(combo, specKeys, specifications);
+      // 注意：只使用有值的规格来生成索引
+      const validSpecsMap: Record<string, string[]> = {};
+      validSpecs.forEach(({ key, values }) => {
+        validSpecsMap[key] = values;
+      });
+      const indexs = generateIndexs(combo, validSpecKeys, validSpecsMap);
       // 按照规格设置的顺序组合显示
       const combination = combo.join(' + ');
       
@@ -119,10 +132,19 @@ const SKUManager: React.FC<SKUManagerProps> = ({
 
   // 维护已删除的SKU索引集合（用于排除已删除的SKU）
   const [deletedIndexs, setDeletedIndexs] = useState<Set<string>>(new Set());
+  
+  // 使用 ref 跟踪上一次的规格，只在规格键真正变化时清除已删除记录
+  const prevSpecKeysRef = useRef<string>('');
 
-  // 当规格变化时，清除已删除记录（因为规格变化会导致SKU索引重新生成）
+  // 当规格键变化时，清除已删除记录（因为规格键变化会导致SKU索引重新生成）
+  // 但规格值变化时不清除，避免删除操作被覆盖
   useEffect(() => {
-    setDeletedIndexs(new Set());
+    const currentSpecKeys = Object.keys(specifications).sort().join(',');
+    if (currentSpecKeys !== prevSpecKeysRef.current) {
+      // 规格键变化了（添加或删除规格），清除已删除记录
+      setDeletedIndexs(new Set());
+      prevSpecKeysRef.current = currentSpecKeys;
+    }
   }, [specifications]);
 
   // 根据规格生成SKU组合，排除已删除的SKU
@@ -137,64 +159,125 @@ const SKUManager: React.FC<SKUManagerProps> = ({
     // 如果不需要自动生成，直接返回外部传入的SKU数据（但需要更新combination显示文本）
     if (!autoGenerate && skus && skus.length > 0) {
       const specKeys = Object.keys(specifications);
-      return skus.map(existingSku => {
-        // 根据indexs找到对应的规格组合，更新combination显示文本
-        const indexsArray = existingSku.indexs.split('_').map(idx => parseInt(idx, 10));
-        const combinationParts: string[] = [];
-        
-        specKeys.forEach((key, idx) => {
-          const values = specifications[key];
-          const valueIndex = indexsArray[idx];
-          if (valueIndex >= 0 && valueIndex < values.length) {
-            combinationParts.push(values[valueIndex]);
-          }
+      // 排除已删除的 SKU
+      return skus
+        .filter(sku => !deletedIndexs.has(sku.indexs))
+        .map(existingSku => {
+          // 根据indexs找到对应的规格组合，更新combination显示文本
+          const indexsArray = existingSku.indexs.split('_').map(idx => parseInt(idx, 10));
+          const combinationParts: string[] = [];
+          
+          specKeys.forEach((key, idx) => {
+            const values = specifications[key];
+            const valueIndex = indexsArray[idx];
+            if (valueIndex >= 0 && valueIndex < values.length) {
+              combinationParts.push(values[valueIndex]);
+            }
+          });
+          
+          const combination = combinationParts.join(' + ');
+          
+          return {
+            ...existingSku,
+            combination: combination || existingSku.combination, // 使用重新生成的combination
+          };
         });
-        
-        const combination = combinationParts.join(' + ');
-        
-        return {
-          ...existingSku,
-          combination: combination || existingSku.combination, // 使用重新生成的combination
-        };
-      });
     }
     
     // 如果需要自动生成，根据最新规格生成所有可能的SKU组合
-    // 创建一个映射，用于快速查找已存在的SKU数据
+    // 创建一个映射，用于快速查找已存在的SKU数据（排除已删除的）
     const existingSkuMap = new Map<string, SKUItem>();
     if (skus && skus.length > 0) {
-      skus.forEach(sku => {
-        existingSkuMap.set(sku.indexs, sku);
+      skus
+        .filter(sku => !deletedIndexs.has(sku.indexs)) // 排除已删除的 SKU
+        .forEach(sku => {
+          existingSkuMap.set(sku.indexs, sku);
+        });
+    }
+    
+    // 如果生成了新的 SKU，使用生成的 SKU（合并已存在的 SKU 数据）
+    if (filteredGeneratedSKUs.length > 0) {
+      return filteredGeneratedSKUs.map(generatedSku => {
+        const existingSku = existingSkuMap.get(generatedSku.indexs);
+        if (existingSku) {
+          // 如果已存在，保留其数据，但更新combination显示文本（因为规格可能变化了）
+          return {
+            ...existingSku,
+            combination: generatedSku.combination, // 使用最新生成的combination
+          };
+        }
+        // 如果不存在，使用生成的默认SKU
+        return generatedSku;
       });
     }
     
-    // 根据最新规格生成所有可能的SKU组合
-    // 对于每个生成的SKU，如果已存在则保留其数据，否则使用默认值
-    return filteredGeneratedSKUs.map(generatedSku => {
-      const existingSku = existingSkuMap.get(generatedSku.indexs);
-      if (existingSku) {
-        // 如果已存在，保留其数据，但更新combination显示文本（因为规格可能变化了）
-        return {
-          ...existingSku,
-          combination: generatedSku.combination, // 使用最新生成的combination
-        };
-      }
-      // 如果不存在，使用生成的默认SKU
-      return generatedSku;
+    // 如果没有生成新的 SKU（例如所有规格都没有值），保留现有的 SKU
+    // 但需要更新 combination 显示文本（基于当前规格）
+    const specKeys = Object.keys(specifications);
+    return Array.from(existingSkuMap.values()).map(existingSku => {
+      // 根据 indexs 找到对应的规格组合，更新 combination 显示文本
+      const indexsArray = existingSku.indexs.split('_').map(idx => parseInt(idx, 10));
+      const combinationParts: string[] = [];
+      
+      specKeys.forEach((key, idx) => {
+        const values = specifications[key];
+        const valueIndex = indexsArray[idx];
+        if (valueIndex >= 0 && valueIndex < values.length) {
+          combinationParts.push(values[valueIndex]);
+        }
+      });
+      
+      const combination = combinationParts.join(' + ');
+      
+      return {
+        ...existingSku,
+        combination: combination || existingSku.combination, // 使用重新生成的 combination
+      };
     });
-  }, [skus, filteredGeneratedSKUs, specifications, autoGenerate]);
+  }, [skus, filteredGeneratedSKUs, specifications, autoGenerate, deletedIndexs]);
 
   const [skuList, setSkuList] = useState<SKUItem[]>(finalSkuList);
+  // 使用 ref 跟踪是否正在手动删除 SKU，避免 useEffect 覆盖删除操作
+  const isDeletingRef = useRef<boolean>(false);
 
   // ✅ 当最终SKU列表变化时，更新本地状态并通知父组件
   // 这确保了当规格变化时（从模板添加、添加规格、删除规格），SKU列表会自动更新
+  // 使用 useRef 存储上一次的值，避免无限循环
+  const prevFinalSkuListRef = useRef<SKUItem[]>([]);
+  
   useEffect(() => {
-    setSkuList(finalSkuList);
-    if (onChange) {
-      onChange(finalSkuList);
+    // 如果正在手动删除 SKU，不更新（避免覆盖删除操作）
+    if (isDeletingRef.current) {
+      isDeletingRef.current = false;
+      return;
+    }
+
+    // 确保 finalSkuList 中不包含已删除的 SKU（双重保险）
+    const filteredFinalSkuList = finalSkuList.filter(sku => !deletedIndexs.has(sku.indexs));
+
+    // 深度比较，避免相同内容但不同引用的对象触发更新
+    const prevList = prevFinalSkuListRef.current;
+    const isEqual = prevList.length === filteredFinalSkuList.length &&
+      prevList.every((prevSku, index) => {
+        const currentSku = filteredFinalSkuList[index];
+        return prevSku.indexs === currentSku.indexs &&
+          prevSku.price === currentSku.price &&
+          prevSku.stock === currentSku.stock &&
+          prevSku.title === currentSku.title &&
+          JSON.stringify(prevSku.images) === JSON.stringify(currentSku.images);
+      });
+    
+    if (!isEqual) {
+      setSkuList(filteredFinalSkuList);
+      prevFinalSkuListRef.current = filteredFinalSkuList;
+      
+      // 只在真正变化时才通知父组件（排除手动删除的情况）
+      if (onChange) {
+        onChange(filteredFinalSkuList);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [finalSkuList]); // 确保规格变化时自动更新SKU列表，不包含 onChange 避免循环更新
+  }, [finalSkuList, deletedIndexs]); // 确保规格变化时自动更新SKU列表，不包含 onChange 避免循环更新
 
   // 提供获取最新SKU列表的方法给父组件
   useEffect(() => {
@@ -253,11 +336,20 @@ const SKUManager: React.FC<SKUManagerProps> = ({
 
   // 删除SKU
   const handleDeleteSKU = (indexs: string) => {
+    // 标记正在删除，避免 useEffect 覆盖删除操作
+    isDeletingRef.current = true;
+    
     // 将删除的SKU索引添加到已删除集合中
     setDeletedIndexs(prev => new Set([...prev, indexs]));
+    
     // 从当前列表中移除
     const newSkuList = skuList.filter(sku => sku.indexs !== indexs);
     setSkuList(newSkuList);
+    
+    // 更新 prevFinalSkuListRef，避免 useEffect 认为列表变化了
+    prevFinalSkuListRef.current = newSkuList;
+    
+    // 通知父组件更新
     onChange?.(newSkuList);
   };
 

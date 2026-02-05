@@ -20,13 +20,14 @@ type RepositoryData struct {
 }
 
 type Field struct {
-	Name       string
-	Type       string
-	Tag        string
-	Comment    string
-	IsRequired bool
-	IsUnique   bool
-	IsPrimary  bool
+	Name         string // Go 字段名（驼峰命名，首字母大写）
+	OriginalName string // 原始字段名（用于 JSON 标签）
+	Type         string
+	Tag          string
+	Comment      string
+	IsRequired   bool
+	IsUnique     bool
+	IsPrimary    bool
 }
 
 // NewSapctlApp 创建主应用

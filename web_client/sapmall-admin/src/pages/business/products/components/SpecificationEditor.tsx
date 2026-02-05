@@ -29,12 +29,10 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
   categoryId,
 }) => {
   const [specifications, setSpecifications] = useState<SpecificationItem[]>([]);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editingNameIndex, setEditingNameIndex] = useState<number | null>(null); // 正在编辑名称的规格索引
   const [editingNameValue, setEditingNameValue] = useState<string>(''); // 编辑中的名称值
   const [hoveredNameIndex, setHoveredNameIndex] = useState<number | null>(null); // 鼠标悬停的规格名称索引
   const [templates, setTemplates] = useState<SpecificationTemplate[]>([]);
-  const isInternalUpdate = useRef(false); // 标记是否是内部更新
   const [addingValueIndex, setAddingValueIndex] = useState<number | null>(null); // 正在添加值的规格索引
   const [newValueInput, setNewValueInput] = useState<string>(''); // 新值的输入
   const inputRefs = useRef<{ [key: number]: InputRef | null }>({}); // 存储输入框引用
@@ -49,28 +47,26 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
     loadTemplates();
   }, [categoryId]);
 
-  // 使用 ref 存储最新的规格数据，确保 notifyChange 总是使用最新值
-  const specsRef = useRef<SpecificationItem[]>([]);
-  
-  // 初始化：将JSON对象转换为数组格式
-  // 只在value从外部真正变化时更新（避免编辑时频繁更新）
-  useEffect(() => {
-    // 如果是内部更新触发的，不重新设置
-    if (isInternalUpdate.current) {
-      isInternalUpdate.current = false;
-      return;
-    }
+  // 使用 ref 保存正在编辑的空名称规格，避免被 useEffect 过滤掉
+  const editingSpecRef = useRef<SpecificationItem | null>(null);
 
+  // 将父组件传递的 value 转换为数组格式并设置到 specifications
+  // 完全受控：父组件的 value 变化时，直接更新本地状态
+  useEffect(() => {
     // 将外部传入的 value 转换为数组格式
     const items: SpecificationItem[] = Object.entries(value || {})
-      .filter(([name, values]) => name.trim() && Array.isArray(values) && values.length > 0)
+      .filter(([name, values]) => name.trim() && Array.isArray(values))
       .map(([name, values]) => ({
         name,
         values: values.filter(v => v.trim()),
       }));
     
+    // 如果有正在编辑的空名称规格，保留它（避免用户正在添加新规格时被过滤掉）
+    if (editingSpecRef.current && !editingSpecRef.current.name.trim()) {
+      items.push(editingSpecRef.current);
+    }
+    
     setSpecifications(items);
-    specsRef.current = items; // 同步更新 ref
   }, [value]);
 
   // 开始编辑规格名称（点击名称时触发）
@@ -107,7 +103,7 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
         ...newSpecs[index],
         name: editingNameValue.trim(),
       };
-      specsRef.current = newSpecs;
+      editingSpecRef.current = null; // 清除正在编辑的规格引用
       notifyChange(newSpecs);
       return newSpecs;
     });
@@ -121,6 +117,7 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
     const spec = specifications[index];
     // 如果规格名和值都为空，删除该规格
     if (!spec.name.trim() && spec.values.length === 0) {
+      editingSpecRef.current = null; // 清除正在编辑的规格引用
       removeSpecification(index);
     }
     setEditingNameIndex(null);
@@ -136,7 +133,6 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
   const startAddSpecValue = (specIndex: number) => {
     setAddingValueIndex(specIndex);
     setNewValueInput('');
-    setEditingIndex(specIndex);
     // 聚焦到输入框
     setTimeout(() => {
       inputRefs.current[specIndex]?.focus();
@@ -156,7 +152,6 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
       // 检查值是否已存在
       if (!newSpecs[specIndex].values.includes(newValueInput.trim())) {
         newSpecs[specIndex].values.push(newValueInput.trim());
-        specsRef.current = newSpecs;
         notifyChange(newSpecs);
       }
       setAddingValueIndex(null);
@@ -202,24 +197,21 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
     setSpecifications((currentSpecs) => {
       const newSpecs = [...currentSpecs];
       newSpecs[specIndex].values = newSpecs[specIndex].values.filter((_, i) => i !== valueIndex);
-      specsRef.current = newSpecs; // 同步更新 ref
-      // 立即通知父组件更新，确保数据同步
       notifyChange(newSpecs);
-      // 如果删除后没有值了，取消编辑状态
-      if (newSpecs[specIndex].values.length === 0) {
-        setEditingIndex(null);
-      }
       return newSpecs;
     });
   };
 
   // 添加新规格
   const addSpecification = () => {
-    const newSpecs = [...specifications, { name: '', values: [] }];
+    const newSpec: SpecificationItem = { name: '', values: [] };
+    const newSpecs = [...specifications, newSpec];
     setSpecifications(newSpecs);
+    editingSpecRef.current = newSpec; // 保存正在编辑的规格引用
     const newIndex = newSpecs.length - 1;
     setEditingNameIndex(newIndex);
     setEditingNameValue('');
+    // 注意：不调用 notifyChange，因为新规格还没有名称和值，不应该通知父组件
     setTimeout(() => {
       nameInputRefs.current[newIndex]?.focus();
     }, 100);
@@ -252,10 +244,8 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
           name: template.label,
           values: [...template.values],
         }];
-        setEditingIndex(newSpecs.length - 1);
       }
       
-      specsRef.current = newSpecs;
       notifyChange(newSpecs);
       return newSpecs;
     });
@@ -265,38 +255,32 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
   const removeSpecification = (index: number) => {
     setSpecifications((currentSpecs) => {
       const newSpecs = currentSpecs.filter((_, i) => i !== index);
-      specsRef.current = newSpecs; // 同步更新 ref
       notifyChange(newSpecs);
-      setEditingIndex(null);
-      setEditingNameIndex(null);
-      setEditingNameValue('');
+      // 如果删除的是正在编辑的规格，清除编辑状态
+      if (editingNameIndex === index) {
+        setEditingNameIndex(null);
+        setEditingNameValue('');
+      }
       return newSpecs;
     });
   };
 
 
-  // 通知父组件变化
+  // 通知父组件变化：将 specifications 转换为 JSON 对象格式并调用 onChange
   const notifyChange = (specs: SpecificationItem[]) => {
     if (!onChange) return;
 
-    // 标记这是内部更新
-    isInternalUpdate.current = true;
-    
-    // 同步更新 ref，确保总是使用最新值
-    specsRef.current = specs;
-
-    // 转换为JSON对象格式
+    // 转换为JSON对象格式（包含有名称的规格，即使暂时没有值也包含，以便保存规格名称）
     const result: Record<string, string[]> = {};
     specs.forEach((spec) => {
       if (spec.name.trim()) {
         const values = spec.values.filter(v => v.trim());
-        if (values.length > 0) {
-          result[spec.name.trim()] = values;
-        }
+        // 即使没有值，也包含规格名称（允许用户先输入名称，再添加值）
+        result[spec.name.trim()] = values;
       }
     });
 
-    // 立即同步更新父组件，确保数据一致性
+    // 通知父组件更新
     onChange(result);
   };
 

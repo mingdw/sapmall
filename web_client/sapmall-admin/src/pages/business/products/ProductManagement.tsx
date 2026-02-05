@@ -27,7 +27,7 @@ import ChainStatusTag from './components/ChainStatusTag';
 import ProductToolbar from './components/ProductToolbar';
 import ProductActionBar from './components/ProductActionBar';
 import ProductStatsSection from './components/ProductStatsSection';
-import ProductForm from './components/ProductForm';
+import ProductFormnew from './components/ProductFormnew';
 import styles from './ProductManagement.module.scss';
 
 const ProductManagement: React.FC = () => {
@@ -681,7 +681,7 @@ const ProductManagement: React.FC = () => {
         centered
         maskClosable={false}
       >
-        <ProductForm
+        <ProductFormnew
           product={currentProduct}
           mode={modalMode}
           onCancel={() => {

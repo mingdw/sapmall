@@ -322,15 +322,74 @@ class BaseClient {
       formData.append('file', file);
     }
 
-    return this.request<T>(url, {
-      ...options,
-      method: 'POST',
-      body: formData,
-      headers: {
-        // 不设置Content-Type，让浏览器自动设置
+    try {
+      // 构建完整URL
+      const fullURL = this.buildURL(url);
+
+      // 构建请求头（不设置 Content-Type，让浏览器自动设置 multipart/form-data）
+      const headers: Record<string, string> = {};
+      
+      // 添加认证token（除非明确跳过）
+      const token = this.getAuthToken();
+      if (token && !options?.skipAuth) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      // 添加国际化头
+      const locale = options?.locale || this.getCurrentLocale();
+      headers['Accept-Language'] = locale;
+      headers['X-Locale'] = locale;
+
+      // 合并用户自定义的 headers
+      const finalHeaders = {
+        ...headers,
         ...options.headers,
-      },
-    });
+      };
+
+      // 创建请求配置
+      const requestConfig: RequestInit = {
+        method: 'POST',
+        headers: finalHeaders,
+        body: formData,
+        ...options,
+      };
+
+      // 创建超时Promise
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          reject(new ApiError('请求超时', 408, 408, null, true, false));
+        }, options.timeout || this.timeout);
+      });
+
+      // 执行请求
+      const response = await Promise.race([
+        fetch(fullURL, requestConfig),
+        timeoutPromise,
+      ]);
+
+      // 处理响应
+      return this.handleResponse<T>(response, options.silent);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        // 统一处理错误
+        this.handleError(error, options.silent);
+        throw error;
+      }
+
+      // 处理网络错误
+      const apiError = new ApiError(
+        error instanceof Error ? error.message : '网络请求失败',
+        0,
+        0,
+        error,
+        true,
+        false
+      );
+
+      // 统一处理错误
+      this.handleError(apiError, options.silent);
+      throw apiError;
+    }
   }
 
   // 设置语言

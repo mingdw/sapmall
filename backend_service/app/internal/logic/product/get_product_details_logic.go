@@ -1,12 +1,13 @@
+// Code scaffolded by goctl. Safe to edit.
+// goctl 1.9.2
+
 package product
 
 import (
 	"context"
 
-	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
-	"sapphire-mall/pkg/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,27 +28,7 @@ func NewGetProductDetailsLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *GetProductDetailsLogic) GetProductDetails(req *types.GetProductReq) (resp *types.GetProductResp, err error) {
-	// 获取单个商品信息
-	productRepository := repository.NewProductRepository(l.svcCtx.GormDB)
+	// todo: add your logic here and delete this line
 
-	product, err := productRepository.GetProduct(l.ctx, req.ProductId)
-	if err != nil {
-		return nil, err
-	}
-	// 使用PrettyJSON格式化JSON，避免转义符号
-	formattedJSON, err := utils.PrettyJSON(product)
-	if err != nil {
-		logx.Errorf("格式化JSON失败: %v", err)
-		return &types.GetProductResp{
-			Code: 1,
-			Msg:  "JSON格式化失败",
-			Data: "",
-		}, nil
-	}
-
-	return &types.GetProductResp{
-		Code: 0,
-		Msg:  "success",
-		Data: formattedJSON,
-	}, nil
+	return
 }

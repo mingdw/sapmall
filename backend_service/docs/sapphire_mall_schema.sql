@@ -1,4 +1,4 @@
-﻿/*
+/*
  Navicat Premium Data Transfer
 
  Source Server         : 本地连接
@@ -218,28 +218,52 @@ CREATE TABLE `sys_dict_item`  (
   INDEX `idx_sort`(`sort`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '字典明细表' ROW_FORMAT = DYNAMIC;
 
+
 -- ----------------------------
--- Table structure for sys_image
+-- Table structure for sys_file
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_image`;
-CREATE TABLE `sys_image`  (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '图片编码',
-  `original_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '图片原始名称',
-  `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '存储文件名称',
-  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '图片url',
-  `size` int NOT NULL DEFAULT 0 COMMENT '图片大小',
-  `content_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '图片类型',
-  `status` int NOT NULL DEFAULT 0 COMMENT '图片状态码',
-  `hash` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '图片hash',
+-- ----------------------------
+-- Table structure for sys_file
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_file`;
+CREATE TABLE `sys_file` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `hash` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件编码（唯一标识）',
+  `storage_url` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '远端存储实际路径',
+  `url` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件访问URL（永久URL或临时URL）',
+  `original_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '原始文件名',
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '存储文件名（不含路径）',
+  `extension` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件扩展名（不含点号，如：jpg、pdf、mp4）',
+  `type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件类型分类：image、document、video、audio、archive、other',
+  `size` bigint NOT NULL DEFAULT 0 COMMENT '文件大小（字节）',
+  `storage_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'cos' COMMENT '存储类型：cos、local等',
+  `business_type` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '业务类型：product、avatar、document、order、review等',
+  `business_id` bigint NOT NULL DEFAULT 0 COMMENT '关联业务记录ID',
+  `tags` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件标签（逗号分隔）',
+  `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文件描述',
+  `metadata` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '扩展元数据（JSON格式，如：图片宽高、视频时长、文档页数等）',
+  `access_type` int NOT NULL DEFAULT 1 COMMENT '访问类型：1=公开 2=私有 3=受限（需要权限）',
+  `access_url_expire` datetime NULL DEFAULT NULL COMMENT '访问URL过期时间（私有文件）',
+  `view_count` bigint NOT NULL DEFAULT 0 COMMENT '查看次数',
+  `download_count` bigint NOT NULL DEFAULT 0 COMMENT '下载次数',
+  `status` int NOT NULL DEFAULT 1 COMMENT '文件状态：0=待处理 1=正常 2=处理中 3=处理失败 4=已删除',
+  `status_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '状态描述',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
+  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除：0=未删除 1=已删除',
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
   `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
-
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_hash`(`hash`) USING BTREE,
+  INDEX `idx_type`(`type`) USING BTREE,
+  INDEX `idx_storage_type`(`storage_type`) USING BTREE,
+  INDEX `idx_business`(`business_type`, `business_id`) USING BTREE,
+  INDEX `idx_status`(`status`) USING BTREE,
+  INDEX `idx_access_type`(`access_type`) USING BTREE,
+  INDEX `idx_creator`(`creator`) USING BTREE,
+  INDEX `idx_created_at`(`created_at`) USING BTREE,
+  INDEX `idx_is_deleted`(`is_deleted`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统文件表（支持图片、文档、视频、音频等多种文件类型）' ROW_FORMAT = DYNAMIC;
 -- ----------------------------
 -- Table structure for sys_order
 -- ----------------------------

@@ -1,0 +1,68 @@
+// backend_service/app/api/admin/common.api
+syntax = "v1"
+
+type (
+	// 上传文件请求
+	// 注意：实际请求为multipart/form-data格式，文件字段名为"file"（必填）
+	// 请求参数可通过form-data的文本字段传递，或通过查询参数传递
+	UploadFileReq {
+		Category string `form:"category,optional"` // 文件分类，可选值：image、document、video、audio、archive、other，用于目录分类和文件类型标识
+		Folder   string `form:"folder,optional"`   // 存储文件夹路径，如：products、avatars、documents等，用于组织文件存储结构
+	}
+	// 文件信息
+	FileInfo {
+		Key         string `json:"key"`         // 文件在COS中的key
+		Url         string `json:"url"`         // 文件访问URL
+		Name        string `json:"name"`        // 原始文件名
+		Size        int64  `json:"size"`        // 文件大小（字节）
+		ContentType string `json:"contentType"` // 文件MIME类型
+		Category    string `json:"category"`    // 文件分类
+		Folder      string `json:"folder"`      // 存储文件夹
+		UploadTime  string `json:"uploadTime"`  // 上传时间
+	}
+	// 上传文件响应
+	UploadFileResp {
+		FileInfo FileInfo `json:"fileInfo"`
+	}
+	// 批量上传文件响应
+	BatchUploadFileResp {
+		FileList []FileInfo `json:"fileList"` // 上传成功的文件列表
+		Failed   []string   `json:"failed"`   // 上传失败的文件名列表
+	}
+	// 获取文件信息请求
+	GetFileInfoReq {
+		Key string `path:"key"` // 文件在COS中的key
+	}
+	// 获取文件信息响应
+	GetFileInfoResp {
+		FileInfo FileInfo `json:"fileInfo"`
+	}
+	// 批量删除文件请求
+	DeleteFilesReq {
+		Keys []string `json:"keys,optional"` // 文件hash数组（用于根据hash删除）
+		Urls []string `json:"urls,optional"` // 文件URL数组（用于根据URL删除）
+	}
+)
+
+@server (
+	group:      admin
+	prefix:     /api/admin
+	middleware: AuthMiddleware,RespMiddleware
+)
+service sapmall {
+	@doc "上传单个文件（支持图片、文档等，通过multipart/form-data上传）"
+	@handler UploadFile
+	post /file/upload (UploadFileReq) returns (UploadFileResp)
+
+	@doc "批量上传文件（支持图片、文档等，通过multipart/form-data上传多个文件）"
+	@handler BatchUploadFile
+	post /file/upload/batch (UploadFileReq) returns (BatchUploadFileResp)
+
+	@doc "获取文件信息"
+	@handler GetFileInfo
+	get /file/info/:key (GetFileInfoReq) returns (GetFileInfoResp)
+
+	@doc "批量删除文件"
+	@handler DeleteFiles
+	post /file/deletes (DeleteFilesReq) returns (BaseResp)
+}
