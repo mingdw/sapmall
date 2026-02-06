@@ -610,7 +610,16 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
       }
 
       try {
-        await commonApiService.deleteFiles({ urls: [file.url] });
+        // 如果商品ID存在，传入业务类型和业务ID
+        const deleteOptions: { urls: string[]; businessType?: string; businessId?: string } = {
+          urls: [file.url],
+        };
+        if (currentData.spu.id && currentData.spu.id > 0) {
+          deleteOptions.businessType = 'product';
+          deleteOptions.businessId = currentData.spu.id.toString();
+        }
+        
+        await commonApiService.deleteFiles(deleteOptions);
         const updatedImages = currentImages.filter(img => img !== file.url);
         const updatedImagesStr = updatedImages.length > 0 ? JSON.stringify(updatedImages) : undefined;
         
@@ -710,7 +719,16 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
       }
 
       try {
-        await commonApiService.deleteFiles({ urls: [file.url] });
+        // 如果商品ID存在，传入业务类型和业务ID
+        const deleteOptions: { urls: string[]; businessType?: string; businessId?: string } = {
+          urls: [file.url],
+        };
+        if (currentData.spu.id && currentData.spu.id > 0) {
+          deleteOptions.businessType = 'product';
+          deleteOptions.businessId = currentData.spu.id.toString();
+        }
+        
+        await commonApiService.deleteFiles(deleteOptions);
         const updatedImages = currentImages.filter(img => img !== file.url);
         const updatedImagesStr = updatedImages.length > 0 ? JSON.stringify(updatedImages) : undefined;
         

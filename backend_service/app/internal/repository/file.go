@@ -127,12 +127,12 @@ func (r *fileRepository) GetByStorageUrls(ctx context.Context, storageUrls []str
 	return files, nil
 }
 
-// DeleteByHashes 根据Hash集合批量软删除所有匹配的 File（更新 is_deleted 字段为 true）
+// DeleteByHashes 根据Hash集合批量物理删除所有匹配的 File
 func (r *fileRepository) DeleteByHashes(ctx context.Context, hashes []string) error {
 	if len(hashes) == 0 {
 		return nil
 	}
-	return r.db.WithContext(ctx).Model(&model.File{}).Where("hash IN ? AND is_deleted = ?", hashes, false).Update("is_deleted", true).Error
+	return r.db.WithContext(ctx).Where("hash IN ?", hashes).Delete(&model.File{}).Error
 }
 
 // List 获取 File 列表（排除已删除的记录）

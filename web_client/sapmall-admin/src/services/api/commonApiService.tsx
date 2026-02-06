@@ -116,19 +116,36 @@ export const commonApiService = {
 
   // 批量删除文件（使用 admin 接口，需要认证）
   // 支持两种方式：根据hash删除（keys）或根据URL删除（urls）
-  deleteFiles: async (options: { keys?: string[]; urls?: string[] }): Promise<void> => {
-    const { keys, urls } = options;
+  // 支持业务类型和业务ID参数，用于关联业务记录
+  deleteFiles: async (options: { 
+    keys?: string[]; 
+    urls?: string[]; 
+    businessType?: string; 
+    businessId?: string;
+  }): Promise<void> => {
+    const { keys, urls, businessType, businessId } = options;
     
     if ((!keys || keys.length === 0) && (!urls || urls.length === 0)) {
       return;
     }
 
-    const requestBody: { keys?: string[]; urls?: string[] } = {};
+    const requestBody: { 
+      keys?: string[]; 
+      urls?: string[]; 
+      businessType?: string; 
+      businessId?: string;
+    } = {};
     if (keys && keys.length > 0) {
       requestBody.keys = keys;
     }
     if (urls && urls.length > 0) {
       requestBody.urls = urls;
+    }
+    if (businessType) {
+      requestBody.businessType = businessType;
+    }
+    if (businessId) {
+      requestBody.businessId = businessId;
     }
 
     const response = await baseClient.post<{ code: number; msg: string }>(

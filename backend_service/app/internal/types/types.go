@@ -49,8 +49,10 @@ type DeleteFileReq struct {
 }
 
 type DeleteFilesReq struct {
-	Keys []string `json:"keys,optional"` // 文件hash数组（用于根据hash删除）
-	Urls []string `json:"urls,optional"` // 文件URL数组（用于根据URL删除）
+	Keys         []string `json:"keys,optional"`         // 文件hash数组（用于根据hash删除）
+	Urls         []string `json:"urls,optional"`         // 文件URL数组（用于根据URL删除）
+	BusinessType string   `json:"businessType,optional"` // 业务类型：product、avatar、document等（用于根据业务类型删除）
+	BusinessId   string   `json:"businessId,optional"`   // 关联业务记录ID（用于根据业务ID删除）
 }
 
 type DeleteProductSpusReq struct {

@@ -10,10 +10,12 @@ type ProductSkuRepository interface {
 	GetProductSkuByCode(ctx context.Context, skuCode string) (*model.ProductSku, error)
 	GetProductSkuByIndexs(ctx context.Context, spuId int64, indexs string) (*model.ProductSku, error) // 根据SPU ID和indexs查询SKU
 	ListProductSkus(ctx context.Context, productId int64) ([]*model.ProductSku, error)
+	ListProductSkusBySpuIds(ctx context.Context, spuIds []int64) ([]*model.ProductSku, error) // 批量查询多个SPU的所有SKU
 	CreateProductSku(ctx context.Context, sku *model.ProductSku) error
 	UpdateProductSku(ctx context.Context, sku *model.ProductSku) error
 	DeleteProductSku(ctx context.Context, id int64) error
 	DeleteAllProductSkusBySpu(ctx context.Context, spuId int64, spuCode string) error // 物理删除指定SPU的所有SKU
+	BatchDeleteProductSkusBySpuIds(ctx context.Context, spuIds []int64) error // 批量物理删除多个SPU的所有SKU
 }
 
 func NewProductSkuRepository(
@@ -73,6 +75,21 @@ func (r *productSkuRepository) ListProductSkus(ctx context.Context, productId in
 	return skus, nil
 }
 
+// ListProductSkusBySpuIds 批量查询多个SPU的所有SKU
+func (r *productSkuRepository) ListProductSkusBySpuIds(ctx context.Context, spuIds []int64) ([]*model.ProductSku, error) {
+	if len(spuIds) == 0 {
+		return []*model.ProductSku{}, nil
+	}
+	var skus []*model.ProductSku
+	err := r.DB(ctx).
+		Where("product_spu_id IN ? AND is_deleted = ?", spuIds, 0).
+		Find(&skus).Error
+	if err != nil {
+		return nil, err
+	}
+	return skus, nil
+}
+
 func (r *productSkuRepository) CreateProductSku(ctx context.Context, sku *model.ProductSku) error {
 	return r.DB(ctx).Create(sku).Error
 }
@@ -114,5 +131,15 @@ func (r *productSkuRepository) DeleteProductSku(ctx context.Context, id int64) e
 func (r *productSkuRepository) DeleteAllProductSkusBySpu(ctx context.Context, spuId int64, spuCode string) error {
 	return r.DB(ctx).
 		Where("product_spu_id = ? AND product_spu_code = ?", spuId, spuCode).
+		Delete(&model.ProductSku{}).Error
+}
+
+// BatchDeleteProductSkusBySpuIds 批量物理删除多个SPU的所有SKU
+func (r *productSkuRepository) BatchDeleteProductSkusBySpuIds(ctx context.Context, spuIds []int64) error {
+	if len(spuIds) == 0 {
+		return nil
+	}
+	return r.DB(ctx).
+		Where("product_spu_id IN ?", spuIds).
 		Delete(&model.ProductSku{}).Error
 }

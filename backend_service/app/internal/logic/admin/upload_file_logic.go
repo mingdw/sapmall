@@ -46,10 +46,7 @@ func (l *UploadFileLogic) UploadFile(req *types.UploadFileReq, fileHeader *multi
 		l.Errorf("获取当前用户信息失败: %v", err)
 		return nil, fmt.Errorf("获取当前用户信息失败: %w", err)
 	}
-	creator := ""
-	if currentUser != nil {
-		creator = currentUser.UserCode
-	}
+
 	// 检查 COS 客户端是否初始化
 	if l.svcCtx.CosClient == nil {
 		l.Errorf("COS客户端未初始化")
@@ -160,7 +157,7 @@ func (l *UploadFileLogic) UploadFile(req *types.UploadFileReq, fileHeader *multi
 
 	// 生成文件在COS中的key（路径）
 	// 格式: folder/category/timestamp_filename
-	filePath := l.generateFileKey(folder, category, fileName)
+	filePath := l.generateFileKey(folder, category, fileHash, fileName)
 
 	// 上传文件到COS
 	// 设置文件有效期为1年
@@ -172,9 +169,10 @@ func (l *UploadFileLogic) UploadFile(req *types.UploadFileReq, fileHeader *multi
 	}
 	bodyBytes, _ := io.ReadAll(uploadResp.Body)
 	l.Infof("上传文件到COS成功: key=%s, 响应信息: StatusCode=%d, Status=%s, Body=%s", filePath, uploadResp.StatusCode, uploadResp.Status, string(bodyBytes))
-	// 读取响应体（注意：读取后需要重新设置，因为Body是io.ReadCloser）
-	var storageURL string = uploadResp.Header.Get("Location")
-	// 从上传响应中获取文件存储URL（COS存储路径）
+
+	// 构建文件存储URL（COS存储路径）
+	// 优先从响应头的 Location 字段获取，如果没有则根据配置构建
+	storageURL := fmt.Sprintf("https://%s.cos.%s.myqcloud.com/%s", l.svcCtx.Config.Cos.BucketName, l.svcCtx.Config.Cos.Region, strings.TrimPrefix(filePath, "/"))
 
 	// 需要重新调用cos生成预签名的接口获取图片的长期预览链接地址
 	// 接口地址: https://cloud.tencent.com/document/product/436/57421
@@ -182,6 +180,7 @@ func (l *UploadFileLogic) UploadFile(req *types.UploadFileReq, fileHeader *multi
 	if err != nil {
 		l.Errorf("生成预签名URL失败: %v，使用存储URL作为预览URL", err)
 		// 如果生成预签名URL失败，使用存储URL作为预览URL
+		presignedURL = storageURL
 	}
 
 	// 提取文件扩展名（不含点号）
@@ -212,8 +211,8 @@ func (l *UploadFileLogic) UploadFile(req *types.UploadFileReq, fileHeader *multi
 		AccessType:      1,      // 默认公开访问
 		Status:          1,      // 默认正常状态
 		IsDeleted:       false,  // 显式设置软删除标记为 false
-		Creator:         creator,
-		Updator:         creator,
+		Creator:         currentUser.Creator,
+		Updator:         currentUser.Creator,
 	}
 
 	// 保存文件记录到数据库
@@ -313,7 +312,7 @@ func (l *UploadFileLogic) detectFileCategory(contentType, fileName string) strin
 }
 
 // generateFileKey 生成文件在COS中的key
-func (l *UploadFileLogic) generateFileKey(folder, category, fileName string) string {
+func (l *UploadFileLogic) generateFileKey(folder, category, hash, fileName string) string {
 	// 清理文件名，移除特殊字符
 	cleanFileName := l.sanitizeFileName(fileName)
 
@@ -329,7 +328,7 @@ func (l *UploadFileLogic) generateFileKey(folder, category, fileName string) str
 	}
 
 	// 构建key: folder/category/timestamp_filename
-	key := fmt.Sprintf("%s/%s/%s_%s", folder, category, timestamp, cleanFileName)
+	key := fmt.Sprintf("%s/%s/%s_%s_%s", folder, category, hash, timestamp, cleanFileName)
 
 	return key
 }
