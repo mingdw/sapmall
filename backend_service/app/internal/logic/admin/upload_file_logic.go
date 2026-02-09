@@ -90,7 +90,7 @@ func (l *UploadFileLogic) UploadFile(req *types.UploadFileReq, fileHeader *multi
 
 	// 如果没有指定 Content-Type，根据文件扩展名推断
 	if contentType == "" {
-		contentType = cos.GetContentType(fileName)
+		contentType = l.getContentTypeFromExtension(filepath.Ext(fileName))
 	}
 
 	// 确定文件分类

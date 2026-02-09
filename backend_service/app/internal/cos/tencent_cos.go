@@ -43,7 +43,7 @@ func UploadFileToCOS(client *cos.Client, key, filePath string) (*cos.Response, e
 }
 
 // UploadStreamToCOS 上传二进制流到COS
-func UploadStreamToCOS(client *cos.Client, key string, reader io.Reader, contentType string) (*cos.Response, error) {
+func UploadStreamToCOS(client *cos.Client, key string, reader io.Reader, contentType string, expireDuration *time.Duration) (*cos.Response, error) {
 	if client == nil {
 		return nil, errors.New("COS客户端未初始化")
 	}
