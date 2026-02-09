@@ -49,10 +49,7 @@ type DeleteFileReq struct {
 }
 
 type DeleteFilesReq struct {
-	Keys         []string `json:"keys,optional"`         // 文件hash数组（用于根据hash删除）
-	Urls         []string `json:"urls,optional"`         // 文件URL数组（用于根据URL删除）
-	BusinessType string   `json:"businessType,optional"` // 业务类型：product、avatar、document等（用于根据业务类型删除）
-	BusinessId   string   `json:"businessId,optional"`   // 关联业务记录ID（用于根据业务ID删除）
+	Keys []string `json:"keys"` // 文件key数组
 }
 
 type DeleteProductSpusReq struct {
@@ -64,32 +61,14 @@ type DownloadFileReq struct {
 }
 
 type FileInfo struct {
-	Id              int64  `json:"id"`                         // 主键ID
-	Hash            string `json:"hash"`                       // 文件编码（唯一标识）
-	StorageUrl      string `json:"storage_url"`                // 远端存储实际路径
-	Url             string `json:"url"`                        // 文件访问URL（永久URL或临时URL）
-	OriginalName    string `json:"original_name"`              // 原始文件名
-	Name            string `json:"name"`                       // 存储文件名（不含路径）
-	Extension       string `json:"extension"`                  // 文件扩展名（不含点号）
-	Type            string `json:"type"`                       // 文件类型分类：image、document、video、audio、archive、other
-	Size            int64  `json:"size"`                       // 文件大小（字节）
-	StorageType     string `json:"storage_type"`               // 存储类型：cos、local等
-	BusinessType    string `json:"business_type"`              // 业务类型：product、avatar、document等
-	BusinessId      int64  `json:"business_id"`                // 关联业务记录ID
-	Tags            string `json:"tags,optional"`              // 文件标签（逗号分隔）
-	Description     string `json:"description,optional"`       // 文件描述
-	Metadata        string `json:"metadata,optional"`          // 扩展元数据（JSON格式）
-	AccessType      int    `json:"access_type"`                // 访问类型：1=公开 2=私有 3=受限
-	AccessUrlExpire string `json:"access_url_expire,optional"` // 访问URL过期时间（私有文件）
-	ViewCount       int64  `json:"view_count"`                 // 查看次数
-	DownloadCount   int64  `json:"download_count"`             // 下载次数
-	Status          int    `json:"status"`                     // 文件状态：0=待处理 1=正常 2=处理中 3=处理失败 4=已删除
-	StatusDesc      string `json:"status_desc,optional"`       // 状态描述
-	CreatedAt       string `json:"created_at"`                 // 创建时间
-	UpdatedAt       string `json:"updated_at"`                 // 更新时间
-	Creator         string `json:"creator"`                    // 创建人
-	Updator         string `json:"updator"`                    // 更新人
-	ContentType     string `json:"contentType,optional"`       // 文件MIME类型（根据extension计算）
+	Key         string `json:"key"`         // 文件在COS中的key
+	Url         string `json:"url"`         // 文件访问URL
+	Name        string `json:"name"`        // 原始文件名
+	Size        int64  `json:"size"`        // 文件大小（字节）
+	ContentType string `json:"contentType"` // 文件MIME类型
+	Category    string `json:"category"`    // 文件分类
+	Folder      string `json:"folder"`      // 存储文件夹
+	UploadTime  string `json:"uploadTime"`  // 上传时间
 }
 
 type GetCategoryTreeReq struct {
@@ -116,29 +95,8 @@ type GetProductDetailReq struct {
 	Id int64 `path:"id"` // 商品SPU ID
 }
 
-type GetProductReq struct {
-	ProductId   int64  `json:"product_id"`
-	ProductCode string `json:"product_code"`
-}
-
-type GetProductResp struct {
-	Code        int         `json:"code"`
-	Msg         string      `json:"msg"`
-	ProductInfo ProductInfo `json:"product_info"`
-}
-
 type GetProductStatsReq struct {
 	Period string `form:"period,optional"` // 统计周期：day、week、month
-}
-
-type GetUserInfoReq struct {
-	UserId int64 `path:"user_id"`
-}
-
-type GetUserInfoResp struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
-	Data string `json:"data"`
 }
 
 type HealthCheckReq struct {
@@ -207,7 +165,7 @@ type ProductDetailInfo struct {
 	ProductSpuCode string `json:"productSpuCode"`
 	Detail         string `json:"detail,optional"`      // 详情（HTML或文本）
 	PackingList    string `json:"packingList,optional"` // 包装清单（HTML或文本）
-	AfterSale      string `json:"afterSale,optional"`   // 售后服务（HTML或文本）
+	AfterSale      string `json:"afterSale,optional"`   // 售后服务（HTML或文本
 	CreatedAt      string `json:"createdAt,optional"`
 	UpdatedAt      string `json:"updatedAt,optional"`
 }
@@ -360,8 +318,8 @@ type SaveProductReq struct {
 }
 
 type UploadFileReq struct {
-	Category string `form:"category,optional"` // 文件分类，可选值：image、document、video、audio、archive、other，用于目录分类和文件类型标识
-	Folder   string `form:"folder,optional"`   // 存储文件夹路径，如：products、avatars、documents等，用于组织文件存储结构
+	Category string `json:"category,optional"` // 文件分类，如：image、document、video等，用于目录分类
+	Folder   string `json:"folder,optional"`   // 存储文件夹路径，如：products、avatars等
 }
 
 type UploadFileResp struct {

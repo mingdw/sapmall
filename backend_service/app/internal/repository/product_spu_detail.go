@@ -12,7 +12,6 @@ type ProductSpuDetailRepository interface {
 	CreateProductSpuDetail(ctx context.Context, detail *model.ProductSpuDetail) error
 	UpdateProductSpuDetail(ctx context.Context, detail *model.ProductSpuDetail) error
 	DeleteProductSpuDetail(ctx context.Context, spuId int64) error
-	BatchDeleteProductSpuDetailsBySpuIds(ctx context.Context, spuIds []int64) error // 批量删除多个SPU的详情
 }
 
 func NewProductSpuDetailRepository(r *Repository) ProductSpuDetailRepository {
@@ -60,16 +59,5 @@ func (r *productSpuDetailRepository) DeleteProductSpuDetail(ctx context.Context,
 	return r.DB(ctx).
 		Model(&model.ProductSpuDetail{}).
 		Where("product_spu_id = ?", spuId).
-		Update("is_deleted", 1).Error
-}
-
-// BatchDeleteProductSpuDetailsBySpuIds 批量删除多个SPU的详情
-func (r *productSpuDetailRepository) BatchDeleteProductSpuDetailsBySpuIds(ctx context.Context, spuIds []int64) error {
-	if len(spuIds) == 0 {
-		return nil
-	}
-	return r.DB(ctx).
-		Model(&model.ProductSpuDetail{}).
-		Where("product_spu_id IN ?", spuIds).
 		Update("is_deleted", 1).Error
 }

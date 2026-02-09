@@ -43,8 +43,7 @@ func UploadFileToCOS(client *cos.Client, key, filePath string) (*cos.Response, e
 }
 
 // UploadStreamToCOS 上传二进制流到COS
-// expireDuration: 可选，文件有效期（如 24*time.Hour 表示24小时），nil 表示永久有效
-func UploadStreamToCOS(client *cos.Client, key string, reader io.Reader, contentType string, expireDuration *time.Duration) (*cos.Response, error) {
+func UploadStreamToCOS(client *cos.Client, key string, reader io.Reader, contentType string) (*cos.Response, error) {
 	if client == nil {
 		return nil, errors.New("COS客户端未初始化")
 	}
@@ -53,33 +52,16 @@ func UploadStreamToCOS(client *cos.Client, key string, reader io.Reader, content
 		contentType = "application/octet-stream"
 	}
 
-	// 准备头部选项
-	headerOptions := &cos.ObjectPutHeaderOptions{
-		ContentType: contentType,
-	}
-
-	// 如果设置了有效期，添加 Cache-Control 和 Expires 头
-	if expireDuration != nil && *expireDuration > 0 {
-		// 设置 Cache-Control: max-age=秒数
-		maxAge := int(expireDuration.Seconds())
-		headerOptions.CacheControl = fmt.Sprintf("max-age=%d", maxAge)
-
-		// 设置 Expires 头（RFC 1123 格式）
-		expiresTime := time.Now().Add(*expireDuration)
-		headerOptions.Expires = expiresTime.Format(time.RFC1123)
-	}
-
 	// 上传对象
 	resp, err := client.Object.Put(context.Background(), key, reader, &cos.ObjectPutOptions{
-		ObjectPutHeaderOptions: headerOptions,
+		ObjectPutHeaderOptions: &cos.ObjectPutHeaderOptions{
+			ContentType: contentType,
+		},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("上传流失败: %w", err)
 	}
-	//json格式打印resp的全部原始信息
-	if err != nil {
-		return nil, fmt.Errorf("json格式打印resp的全部原始信息失败: %w", err)
-	}
+
 	return resp, nil
 }
 
@@ -407,9 +389,4 @@ func getContentType(filename string) string {
 	}
 
 	return "application/octet-stream" // 默认二进制类型
-}
-
-// GetContentType 根据文件名获取MIME类型（公共函数）
-func GetContentType(filename string) string {
-	return getContentType(filename)
 }

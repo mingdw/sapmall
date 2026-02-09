@@ -6,65 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
-	"unicode"
 )
-
-// toCamelCase 将下划线命名转换为驼峰命名（首字母大写）
-func toCamelCase(s string) string {
-	if s == "" {
-		return s
-	}
-
-	parts := strings.Split(s, "_")
-	var result strings.Builder
-
-	for _, part := range parts {
-		if part == "" {
-			continue
-		}
-		// 首字母大写
-		runes := []rune(part)
-		if len(runes) > 0 {
-			runes[0] = unicode.ToUpper(runes[0])
-			result.WriteString(string(runes))
-		}
-	}
-
-	camelName := result.String()
-
-	// 处理 Go 关键字冲突（在转换后检查）
-	keywords := map[string]string{
-		"Type": "FileType", // type 关键字，转换为 FileType
-		"Var":  "Variable",
-		"Func": "Function",
-		"Map":  "Mapping",
-		"Int":  "Integer",
-	}
-	if replacement, ok := keywords[camelName]; ok {
-		return replacement
-	}
-
-	return camelName
-}
-
-// toSnakeCase 将驼峰命名转换为下划线命名（用于 JSON 标签）
-func toSnakeCase(s string) string {
-	if s == "" {
-		return s
-	}
-
-	var result strings.Builder
-	runes := []rune(s)
-
-	for i, r := range runes {
-		if i > 0 && unicode.IsUpper(r) {
-			result.WriteByte('_')
-		}
-		result.WriteRune(unicode.ToLower(r))
-	}
-
-	return result.String()
-}
 
 // parseFields 解析字段定义
 func parseFields(fieldDefs []string) ([]Field, error) {
@@ -72,12 +14,12 @@ func parseFields(fieldDefs []string) ([]Field, error) {
 
 	// 添加默认字段
 	defaultFields := []Field{
-		{Name: "ID", OriginalName: "id", Type: "int64", Tag: "primaryKey", Comment: "主键ID", IsPrimary: true},
-		{Name: "CreateAt", OriginalName: "created_at", Type: "time.Time", Tag: "autoCreateTime", Comment: "创建时间"},
-		{Name: "UpdateAt", OriginalName: "updated_at", Type: "time.Time", Tag: "autoUpdateTime", Comment: "更新时间"},
-		{Name: "IsDeleted", OriginalName: "is_deleted", Type: "bool", Tag: "default:false", Comment: "软删除标记"},
-		{Name: "Creator", OriginalName: "creator", Type: "string", Tag: "", Comment: "创建人"},
-		{Name: "Updator", OriginalName: "updator", Type: "string", Tag: "", Comment: "更新人"},
+		{Name: "ID", Type: "int64", Tag: "primaryKey", Comment: "主键ID", IsPrimary: true},
+		{Name: "CreateAt", Type: "time.Time", Tag: "autoCreateTime", Comment: "创建时间"},
+		{Name: "UpdateAt", Type: "time.Time", Tag: "autoUpdateTime", Comment: "更新时间"},
+		{Name: "IsDeleted", Type: "bool", Tag: "default:false", Comment: "软删除标记"},
+		{Name: "Creator", Type: "string", Tag: "", Comment: "创建人"},
+		{Name: "Updator", Type: "string", Tag: "", Comment: "更新人"},
 	}
 
 	// 先添加默认字段
@@ -94,14 +36,9 @@ func parseFields(fieldDefs []string) ([]Field, error) {
 			return nil, fmt.Errorf("字段定义格式错误: %s", def)
 		}
 
-		// 将字段名转换为驼峰命名（首字母大写）
-		fieldName := toCamelCase(parts[0])
-		originalName := parts[0] // 保存原始字段名用于 JSON 标签
-
 		field := Field{
-			Name:         fieldName,
-			OriginalName: originalName,
-			Type:         parts[1],
+			Name: parts[0],
+			Type: parts[1],
 		}
 
 		// 解析标签
@@ -118,7 +55,7 @@ func parseFields(fieldDefs []string) ([]Field, error) {
 		}
 
 		// 生成注释
-		field.Comment = fmt.Sprintf("%s 字段", parts[0])
+		field.Comment = fmt.Sprintf("%s 字段", field.Name)
 
 		fields = append(fields, field)
 	}
@@ -144,7 +81,7 @@ import (
 
 // {{.EntityName}} {{.EntityName}} 模型
 type {{.EntityName}} struct {
-{{range .Fields}}	{{.Name}} {{.Type}} ` + "`" + `json:"{{.OriginalName}}" gorm:"{{.Tag}}"` + "`" + ` // {{.Comment}}
+{{range .Fields}}	{{.Name}} {{.Type}} ` + "`" + `json:"{{.Name | lower}}" gorm:"{{.Tag}}"` + "`" + ` // {{.Comment}}
 {{end}}	DeletedAt gorm.DeletedAt ` + "`" + `json:"deleted_at" gorm:"index"` + "`" + `
 }
 
@@ -155,8 +92,7 @@ func ({{.EntityName}}) TableName() string {
 `
 
 	t, err := template.New("model").Funcs(template.FuncMap{
-		"lower":       strings.ToLower,
-		"toSnakeCase": toSnakeCase,
+		"lower": strings.ToLower,
 	}).Parse(tmpl)
 	if err != nil {
 		return err
@@ -192,7 +128,7 @@ import (
 type {{.EntityName}}Repository interface {
 	Create(ctx context.Context, {{.EntityNameLower}} *model.{{.EntityName}}) error
 	GetByID(ctx context.Context, id int64) (*model.{{.EntityName}}, error)
-{{range .Fields}}{{if .IsUnique}}	GetBy{{.Name}}(ctx context.Context, {{.Name | lower}} {{.Type}}) (*model.{{$.EntityName}}, error)
+{{range .Fields}}{{if .IsUnique}}	GetBy{{.Name}}(ctx context.Context, {{.Name | lower}} {{.Type}}) (*model.{{.EntityName}}, error)
 {{end}}{{end}}	Update(ctx context.Context, {{.EntityNameLower}} *model.{{.EntityName}}) error
 	Delete(ctx context.Context, id int64) error
 	List(ctx context.Context, offset, limit int) ([]*model.{{.EntityName}}, int64, error)
@@ -223,14 +159,14 @@ func (r *{{.EntityNameLower}}Repository) GetByID(ctx context.Context, id int64) 
 	return &{{.EntityNameLower}}, nil
 }
 
-{{range .Fields}}{{if .IsUnique}}// GetBy{{.Name}} 根据{{.Name}}获取 {{$.EntityName}}
-func (r *{{$.EntityNameLower}}Repository) GetBy{{.Name}}(ctx context.Context, {{.Name | lower}} {{.Type}}) (*model.{{$.EntityName}}, error) {
-	var {{$.EntityNameLower}} model.{{$.EntityName}}
-	err := r.db.WithContext(ctx).Where("{{.Name | lower}} = ?", {{.Name | lower}}).First(&{{$.EntityNameLower}}).Error
+{{range .Fields}}{{if .IsUnique}}// GetBy{{.Name}} 根据{{.Name}}获取 {{.EntityName}}
+func (r *{{.EntityNameLower}}Repository) GetBy{{.Name}}(ctx context.Context, {{.Name | lower}} {{.Type}}) (*model.{{.EntityName}}, error) {
+	var {{.EntityNameLower}} model.{{.EntityName}}
+	err := r.db.WithContext(ctx).Where("{{.Name | lower}} = ?", {{.Name | lower}}).First(&{{.EntityNameLower}}).Error
 	if err != nil {
 		return nil, err
 	}
-	return &{{$.EntityNameLower}}, nil
+	return &{{.EntityNameLower}}, nil
 }
 
 {{end}}{{end}}// Update 更新 {{.EntityName}}
@@ -263,8 +199,7 @@ func (r *{{.EntityNameLower}}Repository) List(ctx context.Context, offset, limit
 `
 
 	t, err := template.New("repository").Funcs(template.FuncMap{
-		"lower":       strings.ToLower,
-		"toSnakeCase": toSnakeCase,
+		"lower": strings.ToLower,
 	}).Parse(tmpl)
 	if err != nil {
 		return err
@@ -296,7 +231,7 @@ import (
 
 // {{.EntityName}} {{.EntityName}} 模型
 type {{.EntityName}} struct {
-{{range .Fields}}	{{.Name}} {{.Type}} ` + "`" + `json:"{{.OriginalName}}" gorm:"{{.Tag}}"` + "`" + ` // {{.Comment}}
+{{range .Fields}}	{{.Name}} {{.Type}} ` + "`" + `json:"{{.Name | lower}}" gorm:"{{.Tag}}"` + "`" + ` // {{.Comment}}
 {{end}}	DeletedAt gorm.DeletedAt ` + "`" + `json:"deleted_at" gorm:"index"` + "`" + `
 }
 
@@ -307,8 +242,7 @@ func ({{.EntityName}}) TableName() string {
 `
 
 	t, err := template.New("model").Funcs(template.FuncMap{
-		"lower":       strings.ToLower,
-		"toSnakeCase": toSnakeCase,
+		"lower": strings.ToLower,
 	}).Parse(tmpl)
 	if err != nil {
 		return err

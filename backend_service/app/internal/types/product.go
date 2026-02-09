@@ -5,6 +5,17 @@ package types
 
 import "time"
 
+type GetProductReq struct {
+	ProductId   int64  `json:"product_id"`
+	ProductCode string `json:"product_code"`
+}
+
+type GetProductResp struct {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+	Data string `json:"data"`
+}
+
 type ListProductsReq struct {
 	CategoryCodes string `json:"categoryCodes"` // 分类编码，多个用逗号分隔
 	ProductName   string `json:"productName"`   // 商品名称

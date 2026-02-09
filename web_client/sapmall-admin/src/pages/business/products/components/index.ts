@@ -4,4 +4,4 @@ export { default as ChainStatusTag } from './ChainStatusTag';
 export { default as ProductToolbar } from './ProductToolbar';
 export { default as ProductActionBar } from './ProductActionBar';
 export { default as ProductStatsSection } from './ProductStatsSection';
-export { default as ProductFormnew } from './ProductFormnew';
+export { default as ProductForm } from './ProductForm';
