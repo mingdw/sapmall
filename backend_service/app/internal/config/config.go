@@ -7,8 +7,11 @@ type Config struct {
 	Version string `json:"version"`
 
 	DB struct {
-		Driver     string
-		DataSource string
+		Host     string
+		Port     int
+		Username string
+		Password string
+		Dbname   string
 	}
 	Redis struct {
 		Host     string

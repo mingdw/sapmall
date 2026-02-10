@@ -27,7 +27,6 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	fmt.Printf("Config file: %s\n", *configFile)
-	fmt.Printf("DB DataSource: %s\n", c.DB.DataSource)
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
