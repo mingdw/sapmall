@@ -15,7 +15,8 @@
 - [4. 如何使用自定义 Agent](#4-如何使用自定义-agent)
 - [5. 当前目录下的 Agent 说明](#5-当前目录下的-agent-说明)
 - [6. 最佳实践与常见问题](#6-最佳实践与常见问题)
-- [7. 参考资料](#7-参考资料)
+- [7. 附录：Cursor 支持的模型完整列表](#7-附录cursor-支持的模型完整列表)
+- [8. 参考资料](#8-参考资料)
 
 ---
 
@@ -99,7 +100,8 @@ Cursor Agent 是 Cursor IDE 内置的 AI 智能助手，可以理解你的自然
 - **Shortcut（快捷键）**（可选）：设置一个快捷键来快速切换到这个 Agent
 
 - **Model（模型）**：选择底层 AI 模型
-  - 推荐选项：`GPT-4 Turbo`、`Claude 3.5 Sonnet`、`GPT-4` 等
+  - 推荐选项：`Claude 4 Sonnet`、`Claude 4.5 Sonnet`、`GPT-5`、`Gemini 2.5 Pro` 等
+  - 详见 [附录：Cursor 支持的模型完整列表](#附录cursor-支持的模型完整列表) 了解所有可用模型
   - 根据你的 Cursor 订阅计划选择可用的模型
   - 如果配置界面中没有 Model 选项，可能需要在 Settings → Models 中先启用模型
 
@@ -161,7 +163,7 @@ Cursor Agent 是 Cursor IDE 内置的 AI 智能助手，可以理解你的自然
 
 ```
 Name: PM Web3 Agent
-Model: GPT-4 Turbo
+Model: Gemini 2.5 Pro 或 Claude 4 Sonnet
 Temperature: 0.6
 System Prompt: [粘贴 PM_Web3_Agent_Prompt.md 的全部内容]
 Tools: ✅ Edit, ✅ Search, ❌ Terminal
@@ -264,7 +266,7 @@ Agent：[生成符合规范的 API 文档]
 - 产品迭代规划
 
 **推荐配置**：
-- Model: GPT-4 Turbo
+- Model: Gemini 2.5 Pro 或 Claude 4 Sonnet
 - Temperature: 0.6
 - Tools: ✅ Edit, ✅ Search
 
@@ -293,7 +295,7 @@ Agent：[生成符合规范的 API 文档]
 - 设计规范制定
 
 **推荐配置**：
-- Model: GPT-4 Turbo
+- Model: Claude 4 Sonnet 或 Claude 4.5 Sonnet
 - Temperature: 0.5
 - Tools: ✅ Edit, ✅ Search
 
@@ -322,7 +324,7 @@ Agent：[生成符合规范的 API 文档]
 - 跨链应用开发
 
 **推荐配置**：
-- Model: GPT-4 Turbo
+- Model: Claude 4 Sonnet 或 Claude 4.1 Opus
 - Temperature: 0.3
 - Tools: ✅ Edit, ✅ Search, ✅ Terminal
 
@@ -351,7 +353,7 @@ Agent：[生成符合规范的 API 文档]
 - 业务逻辑实现
 
 **推荐配置**：
-- Model: GPT-4 Turbo
+- Model: Claude 4 Sonnet 或 Claude 4.5 Sonnet
 - Temperature: 0.3
 - Tools: ✅ Edit, ✅ Search, ✅ Terminal
 
@@ -380,7 +382,7 @@ Agent：[生成符合规范的 API 文档]
 - 前后端联调
 
 **推荐配置**：
-- Model: GPT-4 Turbo
+- Model: Claude 4 Sonnet 或 Claude 4.5 Sonnet
 - Temperature: 0.3
 - Tools: ✅ Edit, ✅ Search, ✅ Terminal
 
@@ -438,7 +440,7 @@ Agent：[生成符合规范的 API 文档]
    - **Name**：填写 Agent 名称（如：PM Web3 Agent）
    - **Icon**（可选）：选择一个图标
    - **Shortcut**（可选）：设置快捷键
-   - **Model**：如果可用，选择底层 AI 模型（如：GPT-4 Turbo、Claude 3.5 Sonnet 等）
+   - **Model**：如果可用，选择底层 AI 模型（如：Claude 4 Sonnet、Gemini 2.5 Pro、GPT-5 等）
    - **Instructions / Custom Instructions**：**将复制的提示词内容粘贴到这里**（这是最关键的一步）
    - **Tools**：配置工具权限（Edit、Search、Terminal 等）
    - 点击 **Save**、**Create** 或 **Done** 保存
@@ -560,9 +562,72 @@ A:
 - 如果粘贴失败，尝试分段粘贴
 - 确保 Cursor 有足够的内存和性能
 
-## 7. 参考资料
+## 7. 附录：Cursor 支持的模型完整列表
 
-- [Cursor 官方文档](https://docs.cursor.so/)
+> 以下为截至 2026 年 2 月 Cursor IDE 可用的主要模型。Cursor 会持续更新支持列表，请以 [Cursor 官方文档](https://docs.cursor.com/models) 为准。
+
+### 7.1 Anthropic（Claude 系列）
+
+| 模型 | 上下文窗口 | 特点 | 适用场景 |
+|------|-----------|------|----------|
+| **Claude 4.5 Sonnet** | 200k（Max 模式 1M） | 最新旗舰，编码与推理能力极强 | 复杂代码生成、架构设计 |
+| **Claude 4.1 Opus** | 200k（仅 Max 模式） | 深度推理，适合高难度任务 | 智能合约审计、复杂逻辑 |
+| **Claude 4 Sonnet** | 200k | 性价比优，编码能力出色 | 日常开发首选 |
+| **Claude 3.7 Sonnet** | 200k | 稳定可靠，支持 Thinking 模式 | 通用开发 |
+| **Claude 3.5 Sonnet** | 200k | 经典全能选手 | 通用开发 |
+| **Claude 3.5 Haiku** | 60k | 快速高效，成本低 | 简单任务、快速迭代 |
+
+### 7.2 OpenAI（GPT / o 系列）
+
+| 模型 | 上下文窗口 | 特点 | 适用场景 |
+|------|-----------|------|----------|
+| **GPT-5** | 200k | 最新旗舰，全面能力提升 | 复杂代码生成 |
+| **GPT-5 Mini** | 200k | 轻量版，速度快成本低 | 快速迭代、简单任务 |
+| **GPT-4o** | 128k | 成熟稳定，多模态支持 | 通用开发、图像理解 |
+| **GPT-4o mini** | 128k | 免费可用（每日 500 次） | 入门使用、轻量任务 |
+| **o4-mini** | 200k | 推理优化模型 | 需要深度思考的编码任务 |
+| **o3-mini** | 200k | 推理优化模型 | 数学、逻辑密集型任务 |
+
+### 7.3 Google（Gemini 系列）
+
+| 模型 | 上下文窗口 | 特点 | 适用场景 |
+|------|-----------|------|----------|
+| **Gemini 2.5 Pro** | 200k（Max 模式 1M） | 超大上下文，多模态支持 | 大型项目分析、文档理解 |
+
+### 7.4 其他模型
+
+| 模型 | 提供商 | 特点 | 适用场景 |
+|------|--------|------|----------|
+| **DeepSeek-R1** | DeepSeek（Fireworks） | 开源推理模型 | 逻辑推理任务 |
+| **DeepSeek-V3** | DeepSeek（Fireworks） | 免费使用 | 预算有限时的选择 |
+| **Grok-2** | xAI | 实时信息获取能力 | 需要最新信息的场景 |
+| **Cursor-small** | Cursor 自有模型 | 快速补全，内置优化 | Tab 补全、快速编辑 |
+
+### 7.5 各 Agent 模型推荐总结
+
+| Agent | 首选模型 | 备选模型 | 说明 |
+|-------|---------|---------|------|
+| PM Web3 Agent | Gemini 2.5 Pro | Claude 4 Sonnet | 产品文档需要大上下文理解 |
+| UI/UX Designer Agent | Claude 4 Sonnet | Claude 4.5 Sonnet | 界面设计需要精确的代码生成 |
+| Smart Contract Agent | Claude 4 Sonnet | Claude 4.1 Opus | 合约安全性要求高推理能力 |
+| Backend Engineer Agent | Claude 4 Sonnet | Claude 4.5 Sonnet | 后端开发需要稳定的编码能力 |
+| Web Client Agent | Claude 4 Sonnet | Claude 4.5 Sonnet | 前端开发需要精确的 UI 还原 |
+
+### 7.6 自定义模型（高级）
+
+Cursor 还支持通过 **Settings → Models → Add Custom Model** 添加自定义模型，你可以：
+
+- 使用 **OpenAI 兼容 API** 接入第三方模型（如通义千问、文心一言等）
+- 通过 **OpenRouter** 代理接入更多模型
+- 使用 **Azure OpenAI** 企业版接口
+- 配置自部署的开源模型（如 LLaMA、Mistral 等）
+
+配置时需要提供：API Key、Base URL、模型名称和上下文长度。
+
+## 8. 参考资料
+
+- [Cursor 官方文档](https://docs.cursor.com/)
+- [Cursor 模型文档](https://docs.cursor.com/models)
 - [Cursor 社区论坛](https://forum.cursor.com/)
 - [Cursor Agent 最佳实践](https://forum.cursor.com/t/tips-for-agent-its-very-powerful/33111)
 
