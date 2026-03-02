@@ -239,6 +239,12 @@ class BaseClient {
       // 构建请求头
       const headers = this.buildHeaders(options);
 
+      // 如果是 FormData，删除 Content-Type，让浏览器自动设置
+      const isFormData = options.body instanceof FormData;
+      if (isFormData) {
+        delete headers['Content-Type'];
+      }
+
       // 创建请求配置
       const requestConfig: RequestInit = {
         method: options.method || 'GET',
@@ -248,6 +254,11 @@ class BaseClient {
         },
         ...options,
       };
+
+      // 如果 options.headers 中明确设置了 Content-Type 为 undefined，删除它
+      if (options.headers && 'Content-Type' in options.headers && (options.headers as any)['Content-Type'] === undefined) {
+        delete (requestConfig.headers as any)['Content-Type'];
+      }
 
       // 创建超时Promise
       const timeoutPromise = new Promise<never>((_, reject) => {
@@ -322,14 +333,21 @@ class BaseClient {
       formData.append('file', file);
     }
 
+    // 创建新的 headers，排除 Content-Type，让浏览器自动设置
+    const uploadHeaders: Record<string, string> = {};
+    if (options.headers) {
+      Object.keys(options.headers).forEach(key => {
+        if (key.toLowerCase() !== 'content-type') {
+          uploadHeaders[key] = (options.headers as any)[key];
+        }
+      });
+    }
+
     return this.request<T>(url, {
       ...options,
       method: 'POST',
       body: formData,
-      headers: {
-        // 不设置Content-Type，让浏览器自动设置
-        ...options.headers,
-      },
+      headers: uploadHeaders,
     });
   }
 

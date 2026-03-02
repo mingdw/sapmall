@@ -15,10 +15,12 @@ type FileRepository interface {
 	GetByStorageUrl(ctx context.Context, storageUrl string) (*model.File, error)
 	GetByHashes(ctx context.Context, hashes []string) ([]*model.File, error)
 	GetByStorageUrls(ctx context.Context, storageUrls []string) ([]*model.File, error)
+	GetByBusiness(ctx context.Context, businessType string, businessId int64) ([]*model.File, error)
 	Update(ctx context.Context, file *model.File) error
 	Delete(ctx context.Context, id int64) error
 	DeleteByHash(ctx context.Context, hash string) error
 	DeleteByHashes(ctx context.Context, hashes []string) error
+	DeleteByBusiness(ctx context.Context, businessType string, businessId int64) error
 	List(ctx context.Context, offset, limit int) ([]*model.File, int64, error)
 }
 
@@ -133,6 +135,39 @@ func (r *fileRepository) DeleteByHashes(ctx context.Context, hashes []string) er
 		return nil
 	}
 	return r.db.WithContext(ctx).Where("hash IN ?", hashes).Delete(&model.File{}).Error
+}
+
+// GetByBusiness 根据业务类型和业务ID获取 File 列表（排除已删除的记录）
+func (r *fileRepository) GetByBusiness(ctx context.Context, businessType string, businessId int64) ([]*model.File, error) {
+	var files []*model.File
+	query := r.db.WithContext(ctx).Where("is_deleted = ?", false)
+
+	if businessType != "" {
+		query = query.Where("business_type = ?", businessType)
+	}
+	if businessId > 0 {
+		query = query.Where("business_id = ?", businessId)
+	}
+
+	err := query.Find(&files).Error
+	if err != nil {
+		return nil, err
+	}
+	return files, nil
+}
+
+// DeleteByBusiness 根据业务类型和业务ID删除文件（物理删除）
+func (r *fileRepository) DeleteByBusiness(ctx context.Context, businessType string, businessId int64) error {
+	query := r.db.WithContext(ctx).Model(&model.File{})
+
+	if businessType != "" {
+		query = query.Where("business_type = ?", businessType)
+	}
+	if businessId > 0 {
+		query = query.Where("business_id = ?", businessId)
+	}
+
+	return query.Delete(&model.File{}).Error
 }
 
 // List 获取 File 列表（排除已删除的记录）

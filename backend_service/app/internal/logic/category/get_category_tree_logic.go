@@ -2,6 +2,8 @@ package category
 
 import (
 	"context"
+	"fmt"
+	"sapphire-mall/app/internal/customererrors"
 	model "sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/pkg/utils"
@@ -85,18 +87,10 @@ func (l *GetCategoryTreeLogic) GetCategoryTree(req *types.GetCategoryTreeReq) (r
 	formattedJSON, err := utils.PrettyJSON(categoryTree)
 	if err != nil {
 		logx.Errorf("格式化JSON失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "JSON格式化失败",
-			Data: "",
-		}, nil
+		return customererrors.FailMsg(fmt.Sprintf("格式化JSON失败: %v", err)), nil
 	}
 
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "success",
-		Data: formattedJSON,
-	}, nil
+	return customererrors.SuccessData(formattedJSON), nil
 
 }
 

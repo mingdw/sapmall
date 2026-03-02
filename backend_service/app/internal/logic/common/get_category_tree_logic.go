@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"sort"
 
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
@@ -89,11 +90,7 @@ func (l *GetCategoryTreeLogic) GetCategoryTree(req *types.GetCategoryTreeReq) (r
 	}
 
 	// 直接返回格式化的JSON字符串，而不是包装在BaseResp中
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "success",
-		Data: json.RawMessage(formattedJSON), // 使用json.RawMessage避免二次转义
-	}, nil
+	return customererrors.SuccessData(json.RawMessage(formattedJSON)), nil
 }
 
 // buildCategoryTree 构建目录树

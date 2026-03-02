@@ -11,9 +11,11 @@ import (
 	"io"
 	"mime/multipart"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
+	"sapphire-mall/app/internal/bussiness"
 	"sapphire-mall/app/internal/cos"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
@@ -118,6 +120,37 @@ func (l *UploadFileLogic) UploadFile(req *types.UploadFileReq, fileHeader *multi
 	// 如果文件已存在，返回已有记录（不重复上传）
 	if existingFile != nil {
 		l.Infof("文件已存在，返回已有记录: hash=%s, id=%d", fileHash, existingFile.ID)
+
+		// 解析业务ID（如果提供）
+		businessId := int64(0)
+		if req.BusinessId != "" {
+			if parsedId, err := strconv.ParseInt(req.BusinessId, 10, 64); err == nil {
+				businessId = parsedId
+			}
+		}
+
+		// 确定业务类型（优先使用请求参数，否则使用 folder）
+		businessType := req.BusinessType
+		if businessType == "" {
+			businessType = folder // 使用 folder 作为业务类型
+		}
+
+		// 如果提供了业务类型和业务ID，先更新文件记录的业务关联（入库操作）
+		if businessType != "" && businessId > 0 {
+			// 更新文件记录的业务关联（如果不同）
+			if existingFile.BusinessType != businessType || existingFile.BusinessId != businessId {
+				existingFile.BusinessType = businessType
+				existingFile.BusinessId = businessId
+				err = fileRepo.Update(l.ctx, existingFile)
+				if err != nil {
+					l.Errorf("更新文件业务关联失败: %v", err)
+				} else {
+					l.Infof("文件记录业务关联已更新: fileId=%d, businessType=%s, businessId=%d", existingFile.ID, businessType, businessId)
+				}
+			}
+		}
+
+		// 构建返回的 FileInfo（使用更新后的 existingFile）
 		accessExpireStr := ""
 		if existingFile.AccessUrlExpire != nil {
 			accessExpireStr = existingFile.AccessUrlExpire.Format("2006-01-02 15:04:05")
@@ -150,6 +183,19 @@ func (l *UploadFileLogic) UploadFile(req *types.UploadFileReq, fileHeader *multi
 			Updator:         existingFile.Updator,
 			ContentType:     l.getContentTypeFromExtension(existingFile.Extension),
 		}
+
+		// 在所有入库动作完成后，进行业务逻辑关联操作
+		if businessType != "" && businessId > 0 {
+			businessHandler := bussiness.NewBusinessHandler(l.svcCtx.GormDB)
+			err = businessHandler.AssociateFile(l.ctx, businessType, req.BusinessId, existingFile)
+			if err != nil {
+				// 关联失败不影响文件返回，只记录日志
+				l.Errorf("关联文件到业务失败: businessType=%s, businessId=%s, fileId=%d, error=%v", businessType, req.BusinessId, existingFile.ID, err)
+			} else {
+				l.Infof("文件已关联到业务: businessType=%s, businessId=%s, fileId=%d", businessType, req.BusinessId, existingFile.ID)
+			}
+		}
+
 		return &types.UploadFileResp{
 			FileInfo: fileInfo,
 		}, nil
@@ -194,6 +240,20 @@ func (l *UploadFileLogic) UploadFile(req *types.UploadFileReq, fileHeader *multi
 
 	accessExpireAt := time.Now().Add(expireDuration)
 
+	// 解析业务ID（如果提供）
+	businessId := int64(0)
+	if req.BusinessId != "" {
+		if parsedId, err := strconv.ParseInt(req.BusinessId, 10, 64); err == nil {
+			businessId = parsedId
+		}
+	}
+
+	// 确定业务类型（优先使用请求参数，否则使用 folder）
+	businessType := req.BusinessType
+	if businessType == "" {
+		businessType = folder // 使用 folder 作为业务类型
+	}
+
 	// 构建文件记录
 	fileRecord := &model.File{
 		Hash:            fileHash,
@@ -206,11 +266,11 @@ func (l *UploadFileLogic) UploadFile(req *types.UploadFileReq, fileHeader *multi
 		Size:            fileSize,
 		AccessUrlExpire: &accessExpireAt, // 与上传到COS时的expireDuration保持一致
 		StorageType:     "cos",
-		BusinessType:    folder, // 使用 folder 作为业务类型
-		BusinessId:      0,      // 如果需要关联业务ID，可以从请求参数中获取
-		AccessType:      1,      // 默认公开访问
-		Status:          1,      // 默认正常状态
-		IsDeleted:       false,  // 显式设置软删除标记为 false
+		BusinessType:    businessType, // 使用请求参数或 folder
+		BusinessId:      businessId,   // 使用请求参数中的业务ID
+		AccessType:      1,            // 默认公开访问
+		Status:          1,            // 默认正常状态
+		IsDeleted:       false,        // 显式设置软删除标记为 false
 		Creator:         currentUser.Creator,
 		Updator:         currentUser.Creator,
 	}
@@ -225,6 +285,18 @@ func (l *UploadFileLogic) UploadFile(req *types.UploadFileReq, fileHeader *multi
 	}
 
 	l.Infof("文件记录已保存到数据库: id=%d, hash=%s", fileRecord.ID, fileHash)
+
+	// 如果提供了业务类型和业务ID，建立文件与业务的关联
+	if businessType != "" && businessId > 0 {
+		businessHandler := bussiness.NewBusinessHandler(l.svcCtx.GormDB)
+		err = businessHandler.AssociateFile(l.ctx, businessType, req.BusinessId, fileRecord)
+		if err != nil {
+			// 关联失败不影响文件上传成功，只记录日志
+			l.Errorf("关联文件到业务失败: businessType=%s, businessId=%s, fileId=%d, error=%v", businessType, req.BusinessId, fileRecord.ID, err)
+		} else {
+			l.Infof("文件已关联到业务: businessType=%s, businessId=%s, fileId=%d", businessType, req.BusinessId, fileRecord.ID)
+		}
+	}
 
 	// 构建返回的 FileInfo
 	accessExpireStr := ""

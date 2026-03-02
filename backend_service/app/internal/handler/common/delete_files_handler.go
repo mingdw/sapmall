@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"sapphire-mall/app/internal/logic/common"
+	"sapphire-mall/app/internal/logic/admin"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
 )
@@ -21,7 +21,7 @@ func DeleteFilesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := common.NewDeleteFilesLogic(r.Context(), svcCtx)
+		l := admin.NewDeleteFilesLogic(r.Context(), svcCtx)
 		resp, err := l.DeleteFiles(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)

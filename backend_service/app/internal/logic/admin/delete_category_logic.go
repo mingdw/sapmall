@@ -2,6 +2,7 @@ package admin
 
 import (
 	"context"
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
@@ -31,19 +32,11 @@ func (l *DeleteCategoryLogic) DeleteCategory(req *types.DeleteCategoryReq) (resp
 	existingCategory, err := categoryRepository.GetCategory(l.ctx, int64(req.ID))
 	if err != nil {
 		logx.Errorf("查询目录失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询目录失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("查询目录失败"), nil
 	}
 
 	if existingCategory == nil || existingCategory.ID == 0 {
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "目录不存在",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("目录不存在"), nil
 	}
 
 	// 2. 软删除目录（使用逻辑删除，设置 is_deleted = 1）
@@ -51,18 +44,9 @@ func (l *DeleteCategoryLogic) DeleteCategory(req *types.DeleteCategoryReq) (resp
 	err = categoryRepository.Delete(l.ctx, int64(req.ID))
 	if err != nil {
 		logx.Errorf("删除目录失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "删除目录失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("删除目录失败"), nil
 	}
 
 	logx.Infof("删除目录成功: ID=%d, Name=%s", req.ID, existingCategory.Name)
-
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "删除成功",
-		Data: nil,
-	}, nil
+	return customererrors.SuccessMsg("删除成功"), nil
 }

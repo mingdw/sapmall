@@ -101,24 +101,8 @@ func (l *ProductsLogic) Products(req *types.ListProductsReq) (resp *types.ListPr
 				ChainStatus:   product.SPU.ChainStatus,
 				ChainId:       product.SPU.ChainID,
 				ChainTxHash:   product.SPU.ChainTxHash,
-				Images: func() []string {
-					if product.SPU.Images == "" {
-						return []string{}
-					}
-					images := strings.Split(product.SPU.Images, ",")
-					var result []string
-					for _, img := range images {
-						img = strings.TrimSpace(img)
-						if img == "" {
-							continue
-						}
-						if strings.HasPrefix(img, "http://") || strings.HasPrefix(img, "https://") || strings.HasPrefix(img, "/") {
-							result = append(result, img)
-						}
-					}
-					return result
-				}(),
-				Description: product.SPU.Description,
+				Images:        strings.Split(product.SPU.Images, ","), // 直接返回字符串，保持与API定义一致
+				Description:   product.SPU.Description,
 			})
 		}
 

@@ -1,9 +1,9 @@
 package response
 
 import (
-	"errors"
 	"net/http"
 	consts "sapphire-mall/app/internal/const"
+	"sapphire-mall/app/internal/customererrors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,11 +21,7 @@ func HandleSuccess(ctx *gin.Context, data interface{}) {
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    consts.SUCCESS,
-		Message: "success",
-		Data:    data,
-	}
+	resp := customererrors.SuccessData(data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -45,12 +41,8 @@ func HandleError(ctx *gin.Context, httpCode int, err error, data interface{}) {
 		errorMessage = consts.GetErrorMessage(errorCode)
 	}
 
-	resp := Response{
-		Code:    errorCode,
-		Message: errorMessage,
-		Data:    data,
-	}
-	ctx.JSON(httpCode, resp)
+	resp := customererrors.Fail(errorCode, errorMessage, data)
+	ctx.JSON(http.StatusOK, resp)
 }
 
 // HandleDefaultError 处理默认错误响应
@@ -67,11 +59,7 @@ func HandleParamError(ctx *gin.Context, message string, data interface{}) {
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    consts.PARAM_ERROR,
-		Message: message,
-		Data:    data,
-	}
+	resp := customererrors.Fail(consts.PARAM_ERROR, message, data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -84,11 +72,7 @@ func HandleAuthError(ctx *gin.Context, message string, data interface{}) {
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    consts.AUTH_FAILED,
-		Message: message,
-		Data:    data,
-	}
+	resp := customererrors.Fail(consts.AUTH_FAILED, message, data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -101,11 +85,7 @@ func HandlePermissionError(ctx *gin.Context, message string, data interface{}) {
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    consts.PERMISSION_DENIED,
-		Message: message,
-		Data:    data,
-	}
+	resp := customererrors.Fail(consts.PERMISSION_DENIED, message, data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -118,11 +98,7 @@ func HandleNotFoundError(ctx *gin.Context, message string, data interface{}) {
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    consts.RESOURCE_NOT_FOUND,
-		Message: message,
-		Data:    data,
-	}
+	resp := customererrors.Fail(consts.RESOURCE_NOT_FOUND, message, data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -135,11 +111,7 @@ func HandleSystemError(ctx *gin.Context, message string, data interface{}) {
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    consts.SYSTEM_ERROR,
-		Message: message,
-		Data:    data,
-	}
+	resp := customererrors.Fail(consts.SYSTEM_ERROR, message, data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -152,11 +124,7 @@ func HandleBusinessError(ctx *gin.Context, message string, data interface{}) {
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    consts.BUSINESS_LOGIC_ERROR,
-		Message: message,
-		Data:    data,
-	}
+	resp := customererrors.Fail(consts.BUSINESS_LOGIC_ERROR, message, data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -169,11 +137,7 @@ func HandleDatabaseError(ctx *gin.Context, message string, data interface{}) {
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    consts.DATABASE_ERROR,
-		Message: message,
-		Data:    data,
-	}
+	resp := customererrors.Fail(consts.DATABASE_ERROR, message, data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -186,11 +150,7 @@ func HandleUserError(ctx *gin.Context, code int, message string, data interface{
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    code,
-		Message: message,
-		Data:    data,
-	}
+	resp := customererrors.Fail(code, message, data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -203,11 +163,7 @@ func HandleMailError(ctx *gin.Context, code int, message string, data interface{
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    code,
-		Message: message,
-		Data:    data,
-	}
+	resp := customererrors.Fail(code, message, data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -220,11 +176,7 @@ func HandleFileError(ctx *gin.Context, code int, message string, data interface{
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    code,
-		Message: message,
-		Data:    data,
-	}
+	resp := customererrors.Fail(code, message, data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -237,11 +189,7 @@ func HandleDataError(ctx *gin.Context, code int, message string, data interface{
 		data = map[string]interface{}{}
 	}
 
-	resp := Response{
-		Code:    code,
-		Message: message,
-		Data:    data,
-	}
+	resp := customererrors.Fail(code, message, data)
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -260,7 +208,10 @@ var errorCodeMap = map[error]int{}
 
 // newError 创建新的错误
 func newError(code int, msg string) error {
-	err := errors.New(msg)
+	err := Error{
+		Code:    code,
+		Message: msg,
+	}
 	errorCodeMap[err] = code
 	return err
 }

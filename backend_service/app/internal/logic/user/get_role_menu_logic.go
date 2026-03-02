@@ -3,10 +3,12 @@ package user
 import (
 	"context"
 
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
+	"sapphire-mall/app/internal/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,15 +30,11 @@ func NewGetRoleMenuLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetRo
 
 func (l *GetRoleMenuLogic) GetRoleMenu() (resp *types.BaseResp, err error) {
 	// 1. 从上下文中获取用户信息
-	userInfo, ok := l.ctx.Value("userInfo").(*model.User)
-	if !ok {
-		logx.Error("无法从上下文中获取用户信息")
-		return &types.BaseResp{
-			Code: 401,
-			Msg:  "用户未登录",
-		}, nil
+	userInfo, err := user.AuthUserInfo(l.ctx, l.svcCtx.GormDB)
+	if err != nil {
+		logx.Errorf("获取用户信息失败: %v", err)
+		return customererrors.FailMsg("获取用户信息失败"), nil
 	}
-
 	logx.Infof("获取用户菜单，用户ID: %d, 用户昵称: %s", userInfo.ID, userInfo.Nickname)
 
 	// 2. 获取用户角色信息
@@ -44,10 +42,7 @@ func (l *GetRoleMenuLogic) GetRoleMenu() (resp *types.BaseResp, err error) {
 	userWithRoles, err := roleRepository.GetByID(l.ctx, userInfo.ID)
 	if err != nil {
 		logx.Errorf("获取用户角色信息失败: %v", err)
-		return &types.BaseResp{
-			Code: 500,
-			Msg:  "获取用户角色信息失败",
-		}, nil
+		return customererrors.FailMsg("获取用户角色信息失败"), nil
 	}
 
 	var allMenus []model.Category
@@ -66,11 +61,7 @@ func (l *GetRoleMenuLogic) GetRoleMenu() (resp *types.BaseResp, err error) {
 	menuTree := l.buildMenuTree(allMenus)
 
 	// 5. 返回菜单数据
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "获取菜单成功",
-		Data: menuTree,
-	}, nil
+	return customererrors.SuccessData(menuTree), nil
 }
 
 // MenuTreeNode 菜单树节点结构

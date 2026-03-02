@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
@@ -56,11 +57,7 @@ func (l *GetProductDetailLogic) GetProductDetail(req *types.GetProductDetailReq)
 	spu, err := productSpuRepository.GetProductSpu(l.ctx, req.Id)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return &types.BaseResp{
-				Code: 0,
-				Msg:  "success",
-				Data: nil,
-			}, nil
+			return customererrors.FailMsg("商品不存在"), nil
 		}
 		logx.Errorf("查询商品详情失败: %v", err)
 		return nil, errors.New("查询商品详情失败")
@@ -116,11 +113,7 @@ func (l *GetProductDetailLogic) GetProductDetail(req *types.GetProductDetailReq)
 		Details: *detailInfo,
 	}
 
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "查询成功",
-		Data: productDetailResp,
-	}, nil
+	return customererrors.SuccessData(productDetailResp), nil
 }
 
 // convertToProductSPUInfo 将 model.ProductSpu 转换为 types.ProductSPUInfo

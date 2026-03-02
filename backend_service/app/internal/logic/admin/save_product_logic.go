@@ -5,12 +5,14 @@ package admin
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
@@ -65,11 +67,7 @@ func (l *SaveProductLogic) SaveProduct(req *types.SaveProductReq) (resp *types.B
 	spuId, spuCode, err := l.modifySpu(l.ctx, productSpuRepository, &req.Spu, userInfo, updator, now)
 	if err != nil {
 		logx.Errorf("处理SPU失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  err.Error(),
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg(fmt.Sprintf("处理SPU失败: %v", err)), nil
 	}
 
 	// 步骤2: 处理属性（基础属性、销售属性和规格属性）
@@ -84,11 +82,7 @@ func (l *SaveProductLogic) SaveProduct(req *types.SaveProductReq) (resp *types.B
 		err = l.modifySkus(l.ctx, skuRepository, spuId, spuCode, req.Skus, updator, now)
 		if err != nil {
 			logx.Errorf("保存SKU失败: %v", err)
-			return &types.BaseResp{
-				Code: 1,
-				Msg:  fmt.Sprintf("保存SKU失败: %v", err),
-				Data: nil,
-			}, nil
+			return customererrors.FailMsg(fmt.Sprintf("保存SKU失败: %v", err)), nil
 		}
 		logx.Infof("SKU保存成功，共处理 %d 个SKU", len(req.Skus))
 	}
@@ -112,19 +106,38 @@ func (l *SaveProductLogic) SaveProduct(req *types.SaveProductReq) (resp *types.B
 	detailResp, err := getDetailLogic.GetProductDetail(detailReq)
 	if err != nil {
 		logx.Errorf("查询商品详情失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "保存成功，但查询详情失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg(fmt.Sprintf("查询商品详情失败: %v", err)), nil
 	}
 
-	// 修改返回消息为"保存成功"，表示这是保存操作的结果
-	if detailResp != nil {
-		detailResp.Msg = "保存成功"
+	return customererrors.SuccessData(detailResp), nil
+}
+
+// parseImagesString 解析图片字符串（JSON数组格式或逗号分隔格式）转换为逗号分隔的字符串
+// 输入格式：JSON数组字符串 "[\"url1\", \"url2\"]" 或逗号分隔字符串 "url1,url2"
+// 输出格式：逗号分隔字符串 "url1,url2"
+func (l *SaveProductLogic) parseImagesString(imagesStr string) string {
+	if imagesStr == "" {
+		return ""
 	}
 
-	return detailResp, nil
+	// 去除首尾空格
+	imagesStr = strings.TrimSpace(imagesStr)
+
+	// 如果字符串以 [ 开头，尝试解析为JSON数组
+	if strings.HasPrefix(imagesStr, "[") {
+		var imageUrls []string
+		err := json.Unmarshal([]byte(imagesStr), &imageUrls)
+		if err != nil {
+			// 如果解析失败，记录日志并返回原字符串
+			logx.Infof("解析图片JSON数组失败: %v, 原字符串: %s", err, imagesStr)
+			return imagesStr
+		}
+		// 将数组转换为逗号分隔的字符串
+		return strings.Join(imageUrls, ",")
+	}
+
+	// 如果不是JSON数组格式，直接返回（可能是逗号分隔格式或单个URL）
+	return imagesStr
 }
 
 // populateSpuFields 填充SPU的通用字段（从请求数据到SPU模型）
@@ -144,7 +157,7 @@ func (l *SaveProductLogic) populateSpuFields(spu *model.ProductSpu, req *types.P
 	spu.ChainStatus = req.ChainStatus
 	spu.ChainID = req.ChainId
 	spu.ChainTxHash = req.ChainTxHash
-	spu.Images = req.Images
+	spu.Images = l.parseImagesString(req.Images)
 	spu.UpdatedAt = now
 	spu.Updator = updator
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"sapphire-mall/app/internal/errors"
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
 
@@ -32,5 +32,5 @@ func (l *HealthCheckLogic) HealthCheck(req *types.HealthCheckReq) (resp *types.B
 	}
 
 	// 使用统一的成功返回函数，将 HealthCheckResp 放入 BaseResp 的 Data 字段
-	return errors.SuccessResp(healthData), nil
+	return customererrors.SuccessData(healthData), nil
 }

@@ -21,13 +21,14 @@ import AdminCard from '../../../components/common/AdminCard';
 import { productApi } from '../../../services/api/productApi';
 import type { ProductSPU, ProductListParams, ProductDetailResp } from './types';
 import { ProductStatus, type ViewMode, type StatsPeriod, DEFAULT_PAGE_SIZE } from './constants';
-import { parseProductImages, formatDateTime, getBlockchainExplorerUrl } from './utils';
+import { formatDateTime, getBlockchainExplorerUrl } from './utils';
+import { parseImageUrls } from './components/ProductForm.utils';
 import ProductStatusTag from './components/ProductStatusTag';
 import ChainStatusTag from './components/ChainStatusTag';
 import ProductToolbar from './components/ProductToolbar';
 import ProductActionBar from './components/ProductActionBar';
 import ProductStatsSection from './components/ProductStatsSection';
-import ProductForm from './components/ProductForm';
+import ProductForm from './components/ProductFormnew';
 import styles from './ProductManagement.module.scss';
 
 const ProductManagement: React.FC = () => {
@@ -337,8 +338,28 @@ const ProductManagement: React.FC = () => {
         showTitle: false,
       },
       render: (_: any, record: ProductSPU) => {
-        const imageList = parseProductImages(record.images);
-        const firstImage = imageList.length > 0 ? imageList[0] : '';
+        // 调试：打印原始数据
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Product images data:', {
+            id: record.id,
+            name: record.name,
+            images: record.images,
+            imagesType: typeof record.images,
+          });
+        }
+        
+        const imageList = parseImageUrls(record.images);
+        const firstImage = imageList.length > 0 ? imageList[0].trim() : '';
+        
+        // 调试：打印解析结果
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Parsed image list:', {
+            id: record.id,
+            imageList,
+            firstImage,
+          });
+        }
+        
         // 图片高度：需要容纳两行文字（名称+编码）
         const imageHeight = 44;
         const imageWidth = 44;
@@ -368,9 +389,32 @@ const ProductManagement: React.FC = () => {
                     objectFit: 'cover', 
                     borderRadius: 4, 
                     flexShrink: 0,
-                    display: 'block'
+                    display: 'block',
+                    backgroundColor: '#f0f0f0'
                   }}
                   preview={false}
+                  onError={(e) => {
+                    console.error('图片加载失败:', {
+                      url: firstImage,
+                      recordId: record.id,
+                      recordName: record.name,
+                      error: e
+                    });
+                    // 图片加载失败时，隐藏图片元素
+                    const target = e.target as HTMLImageElement;
+                    if (target && target.parentElement) {
+                      target.style.display = 'none';
+                    }
+                  }}
+                  onLoad={() => {
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log('图片加载成功:', {
+                        url: firstImage,
+                        recordId: record.id
+                      });
+                    }
+                  }}
+                  fallback="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHZpZXdCb3g9IjAgMCA0NCA0NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ0IiBoZWlnaHQ9IjQ0IiBmaWxsPSIjMzMzRjQ1IiBmaWxsLW9wYWNpdHk9IjAuMyIgcng9IjQiLz4KPHN2ZyB4PSIxMiIgeT0iMTIiIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTAgMTRMMTQgMTBMMTAgNkw2IDEwTDEwIDE0WiIgZmlsbD0iIzk0QTNCOCIvPgo8L3N2Zz4KPC9zdmc+"
                 />
               ) : (
                 <div style={{ 
@@ -688,6 +732,7 @@ const ProductManagement: React.FC = () => {
             setIsModalVisible(false);
             setCurrentProduct(null);
             setModalMode('edit');
+            loadProducts(); // 关闭模态框后自动刷新列表
           }}
           onSuccess={() => {
             setIsModalVisible(false);

@@ -6,6 +6,7 @@ package admin
 import (
 	"context"
 
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
@@ -35,37 +36,20 @@ func (l *DeleteAttrLogic) DeleteAttr(req *types.DeleteAttrReq) (resp *types.Base
 	existingAttr, err := attrRepository.GetAttr(l.ctx, req.ID)
 	if err != nil {
 		logx.Errorf("查询属性失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询属性失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("查询属性失败"), nil
 	}
 
 	if existingAttr == nil || existingAttr.ID == 0 {
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "属性不存在",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("属性不存在"), nil
 	}
 
 	// 2. 软删除属性（使用逻辑删除，设置 is_deleted = 1）
 	err = attrRepository.Delete(l.ctx, int64(req.ID))
 	if err != nil {
 		logx.Errorf("删除属性失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "删除属性失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("删除属性失败"), nil
 	}
 
 	logx.Infof("删除属性成功: ID=%d, Name=%s", req.ID, existingAttr.AttrName)
-
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "删除成功",
-		Data: nil,
-	}, nil
+	return customererrors.SuccessData(nil), nil
 }

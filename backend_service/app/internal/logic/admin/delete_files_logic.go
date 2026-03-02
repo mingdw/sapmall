@@ -6,11 +6,13 @@ package admin
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/url"
 	"strings"
 
 	"sapphire-mall/app/internal/bussiness"
 	"sapphire-mall/app/internal/cos"
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
@@ -36,15 +38,16 @@ func NewDeleteFilesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Delet
 func (l *DeleteFilesLogic) DeleteFiles(req *types.DeleteFilesReq) (resp *types.BaseResp, err error) {
 	// 检查 COS 客户端是否初始化
 	if l.svcCtx.CosClient == nil {
-		return nil, errors.New("COS 客户端未初始化")
-	}
-
-	// 检查是否提供了删除参数
-	if len(req.Keys) == 0 && len(req.Urls) == 0 {
-		return nil, errors.New("请提供要删除的文件keys（hash）或urls列表")
+		return customererrors.FailData(nil), errors.New("COS客户端未初始化")
 	}
 
 	fileRepo := repository.NewFileRepository(l.svcCtx.GormDB)
+
+	// 如果没有提供业务信息，则使用原有的删除逻辑（通过 keys 或 urls）
+	// 检查是否提供了删除参数
+	if len(req.Keys) == 0 && len(req.Urls) == 0 {
+		return nil, errors.New("请提供要删除的文件keys（hash）或urls列表，或提供businessType和businessId")
+	}
 
 	//初始化hash值的数组
 	hashs := make([]string, 0)
@@ -67,27 +70,23 @@ func (l *DeleteFilesLogic) DeleteFiles(req *types.DeleteFilesReq) (resp *types.B
 		l.Errorf("批量删除数据库记录失败: %v", err)
 	}
 
-	// 3. 批量删除cos中的文件
-	l.Infof("开始批量删除COS文件，keys: %d", keys)
+	// 批量删除cos中的文件
+	l.Infof("开始批量删除COS文件，keys数量: %d", len(keys))
 	deleteResult, err := cos.BatchDeleteFilesFromCOS(l.svcCtx.CosClient, keys)
 	if err != nil {
 		l.Errorf("批量删除COS文件失败: %v", err)
 	}
 	l.Infof("cos 删除文件结果: %+v", deleteResult)
-
-	// 4. 删除业务关联的文件（如果提供了业务类型和业务ID）
+	// 如果提供了 BusinessType 和 BusinessId，直接调用业务处理器的删除方法
 	if req.BusinessType != "" && req.BusinessId != "" {
 		businessHandler := bussiness.NewBusinessHandler(l.svcCtx.GormDB)
-		err = businessHandler.DeleteBusinessFiles(l.ctx, req.BusinessType, req.BusinessId)
+		err = businessHandler.DeleteBusinessFiles(l.ctx, req.BusinessType, req.BusinessId, req.Urls)
 		if err != nil {
 			l.Errorf("删除业务关联文件失败: %v", err)
+			return nil, fmt.Errorf("删除业务关联文件失败: %w", err)
 		}
 	}
-
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "success",
-	}, nil
+	return customererrors.SuccessMsg("删除成功"), nil
 }
 
 /*

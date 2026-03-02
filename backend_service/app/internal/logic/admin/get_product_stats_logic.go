@@ -6,6 +6,7 @@ package admin
 import (
 	"context"
 
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
 
@@ -88,9 +89,5 @@ func (l *GetProductStatsLogic) GetProductStats(req *types.GetProductStatsReq) (r
 
 	logx.Infof("获取商品统计信息成功: period=%s", period)
 
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "获取成功",
-		Data: statsResp,
-	}, nil
+	return customererrors.SuccessData(statsResp), nil
 }

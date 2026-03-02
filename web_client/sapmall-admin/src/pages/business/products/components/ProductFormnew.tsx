@@ -348,6 +348,11 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
     }
   };
 
+  // 处理取消操作
+  const handleCancel = async () => {
+    onCancel();
+  };
+
   // 上一步
   const handlePrev = () => {
     if (currentStep > 0) {
@@ -495,7 +500,7 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
 
   // 从 SPU images 转换为 UploadFile[]（主图）
   const getMainImageFileList = useCallback((): UploadFile[] => {
-    const spu = getProductData().spu;
+    const spu = productData.spu;
     const imageUrls = parseImageUrls(spu?.images || '');
     
     if (imageUrls.length > 0) {
@@ -512,11 +517,11 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
     }
     
     return [];
-  }, [getProductData, uploadingMainImage]);
+  }, [productData, uploadingMainImage]);
 
   // 从 SPU images 转换为 UploadFile[]（附加图片）
   const getAdditionalImageFileList = useCallback((): UploadFile[] => {
-    const spu = getProductData().spu;
+    const spu = productData.spu;
     const imageUrls = parseImageUrls(spu?.images || '');
     
     const additionalImages = imageUrls.slice(1).map((url: string, index: number) => ({
@@ -527,16 +532,25 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
     }));
     
     return [...additionalImages, ...uploadingAdditionalImages];
-  }, [getProductData, uploadingAdditionalImages]);
+  }, [productData, uploadingAdditionalImages]);
 
   // 主图上传处理
   const handleMainImageUpload = async (file: File): Promise<string> => {
     try {
       console.info("新处理模式图片上传: "+file.name)
-      const fileInfo = await commonApiService.uploadFile(file, {
+      const currentData = getProductData();
+      const uploadOptions: { category: string; folder: string; businessType?: string; businessId?: string } = {
         category: 'image',
         folder: 'products',
-      });
+      };
+      
+      // 编辑模式下，如果有SPU ID，传递业务信息
+      if (currentData.spu.id && currentData.spu.id > 0) {
+        uploadOptions.businessType = 'product';
+        uploadOptions.businessId = currentData.spu.id.toString();
+      }
+      
+      const fileInfo = await commonApiService.uploadFile(file, uploadOptions);
       return fileInfo.url;
     } catch (error: any) {
       console.error('主图上传失败:', error);
@@ -643,10 +657,19 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
   // 附加图片上传处理
   const handleAdditionalImageUpload = async (file: File): Promise<string> => {
     try {
-      const fileInfo = await commonApiService.uploadFile(file, {
+      const currentData = getProductData();
+      const uploadOptions: { category: string; folder: string; businessType?: string; businessId?: string } = {
         category: 'image',
         folder: 'products',
-      });
+      };
+      
+      // 编辑模式下，如果有SPU ID，传递业务信息
+      if (isEditMode && currentData.spu.id && currentData.spu.id > 0) {
+        uploadOptions.businessType = 'product';
+        uploadOptions.businessId = currentData.spu.id.toString();
+      }
+      
+      const fileInfo = await commonApiService.uploadFile(file, uploadOptions);
       return fileInfo.url;
     } catch (error: any) {
       console.error('附加图片上传失败:', error);
@@ -1049,7 +1072,7 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
       {/* 底部操作按钮 */}
       <div className={styles.formFooter}>
         <Space>
-          <AdminButton variant="cancel" onClick={onCancel}>
+          <AdminButton variant="cancel" onClick={handleCancel}>
             {isViewMode ? '关闭' : '取消'}
           </AdminButton>
           {isViewMode ? (

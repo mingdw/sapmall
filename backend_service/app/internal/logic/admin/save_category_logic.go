@@ -3,6 +3,7 @@ package admin
 import (
 	"context"
 	"fmt"
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
@@ -45,19 +46,11 @@ func (l *SaveCategoryLogic) createCategory(req *types.SaveCategoryReq, categoryR
 	existingCategory, err := categoryRepository.GetCategoryByCode(l.ctx, req.Code)
 	if err != nil {
 		logx.Errorf("查询目录编码失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询目录编码失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("查询目录编码失败"), nil
 	}
 
 	if existingCategory != nil {
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "目录编码已存在",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("目录编码已存在"), nil
 	}
 
 	// 2. 如果有父目录，验证父目录是否存在并自动设置层级
@@ -68,19 +61,11 @@ func (l *SaveCategoryLogic) createCategory(req *types.SaveCategoryReq, categoryR
 		parentCategory, err := categoryRepository.GetCategory(l.ctx, int64(req.ParentID))
 		if err != nil {
 			logx.Errorf("查询父目录失败: %v", err)
-			return &types.BaseResp{
-				Code: 1,
-				Msg:  "查询父目录失败",
-				Data: nil,
-			}, nil
+			return customererrors.FailMsg("查询父目录失败"), nil
 		}
 
 		if parentCategory == nil || parentCategory.ID == 0 {
-			return &types.BaseResp{
-				Code: 1,
-				Msg:  "父目录不存在",
-				Data: nil,
-			}, nil
+			return customererrors.FailMsg("父目录不存在"), nil
 		}
 
 		// 自动设置父目录编码和层级
@@ -108,20 +93,12 @@ func (l *SaveCategoryLogic) createCategory(req *types.SaveCategoryReq, categoryR
 	err = categoryRepository.Create(l.ctx, category)
 	if err != nil {
 		logx.Errorf("创建目录失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  fmt.Sprintf("创建目录失败: %v", err),
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg(fmt.Sprintf("创建目录失败: %v", err)), nil
 	}
 
 	logx.Infof("创建目录成功: ID=%d, Name=%s, Code=%s", category.ID, category.Name, category.Code)
 
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "创建成功",
-		Data: category,
-	}, nil
+	return customererrors.SuccessData(category), nil
 }
 
 // updateCategory 编辑目录
@@ -130,19 +107,11 @@ func (l *SaveCategoryLogic) updateCategory(req *types.SaveCategoryReq, categoryR
 	existingCategory, err := categoryRepository.GetCategory(l.ctx, int64(req.ID))
 	if err != nil {
 		logx.Errorf("查询目录失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询目录失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("查询目录失败"), nil
 	}
 
 	if existingCategory == nil || existingCategory.ID == 0 {
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "目录不存在",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("目录不存在"), nil
 	}
 
 	// 2. 如果更新编码，检查新编码是否已被其他目录使用
@@ -150,19 +119,11 @@ func (l *SaveCategoryLogic) updateCategory(req *types.SaveCategoryReq, categoryR
 		categoryByCode, err := categoryRepository.GetCategoryByCode(l.ctx, req.Code)
 		if err != nil {
 			logx.Errorf("查询目录编码失败: %v", err)
-			return &types.BaseResp{
-				Code: 1,
-				Msg:  "查询目录编码失败",
-				Data: nil,
-			}, nil
+			return customererrors.FailMsg("查询目录编码失败"), nil
 		}
 
 		if categoryByCode != nil && categoryByCode.ID != req.ID {
-			return &types.BaseResp{
-				Code: 1,
-				Msg:  "目录编码已被使用",
-				Data: nil,
-			}, nil
+			return customererrors.FailMsg("目录编码已被使用"), nil
 		}
 	}
 
@@ -190,28 +151,16 @@ func (l *SaveCategoryLogic) updateCategory(req *types.SaveCategoryReq, categoryR
 			parentCategory, err := categoryRepository.GetCategory(l.ctx, int64(req.ParentID))
 			if err != nil {
 				logx.Errorf("查询父目录失败: %v", err)
-				return &types.BaseResp{
-					Code: 1,
-					Msg:  "查询父目录失败",
-					Data: nil,
-				}, nil
+				return customererrors.FailMsg("查询父目录失败"), nil
 			}
 
 			if parentCategory == nil || parentCategory.ID == 0 {
-				return &types.BaseResp{
-					Code: 1,
-					Msg:  "父目录不存在",
-					Data: nil,
-				}, nil
+				return customererrors.FailMsg("父目录不存在"), nil
 			}
 
 			// 检查是否形成循环引用（不能将目录移动到自己的子目录下）
 			if parentCategory.ParentID == req.ID {
-				return &types.BaseResp{
-					Code: 1,
-					Msg:  "不能将目录移动到自己的子目录下",
-					Data: nil,
-				}, nil
+				return customererrors.FailMsg("不能将目录移动到自己的子目录下"), nil
 			}
 
 			updateCategory.ParentID = req.ParentID
@@ -229,18 +178,10 @@ func (l *SaveCategoryLogic) updateCategory(req *types.SaveCategoryReq, categoryR
 	err = categoryRepository.Update(l.ctx, updateCategory)
 	if err != nil {
 		logx.Errorf("更新目录失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  fmt.Sprintf("更新目录失败: %v", err),
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg(fmt.Sprintf("更新目录失败: %v", err)), nil
 	}
 
 	logx.Infof("更新目录成功: ID=%d, Name=%s", req.ID, req.Name)
 
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "更新成功",
-		Data: updateCategory,
-	}, nil
+	return customererrors.SuccessData(updateCategory), nil
 }

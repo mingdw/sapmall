@@ -3,6 +3,8 @@ package category
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/repository"
 
 	"sapphire-mall/app/internal/svc"
@@ -35,11 +37,7 @@ func (l *GetCategoryLogic) GetCategory(req *types.CategoryRequest) (resp *types.
 	}
 	categoryJson, err := json.Marshal(category)
 	if err != nil {
-		return nil, err
+		return customererrors.FailMsg(fmt.Sprintf("获取目录失败: %v", err)), nil
 	}
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "success",
-		Data: string(categoryJson),
-	}, nil
+	return customererrors.SuccessData(string(categoryJson)), nil
 }

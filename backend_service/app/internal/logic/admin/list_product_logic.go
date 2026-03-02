@@ -9,11 +9,12 @@ import (
 	"strings"
 	"time"
 
-	"sapphire-mall/app/internal/middleware"
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
+	"sapphire-mall/app/internal/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -39,28 +40,9 @@ func (l *ListProductLogic) ListProduct(req *types.ListProductReq) (resp *types.B
 	)
 
 	// 从 context 获取用户信息
-	userInfo, ok := l.ctx.Value("userInfo").(*model.User)
-	if !ok || userInfo == nil {
-		// 如果没有用户信息，尝试从 context 获取 userId
-		userID, ok := l.ctx.Value(middleware.ComerUinContextKey).(int64)
-		if !ok {
-			logx.Errorf("无法获取用户信息")
-			return &types.BaseResp{
-				Code: 401,
-				Msg:  "用户未登录",
-				Data: nil,
-			}, nil
-		}
-		userRepository := repository.NewUserRepository(l.svcCtx.GormDB)
-		userInfo, err = userRepository.GetByID(l.ctx, userID)
-		if err != nil {
-			logx.Errorf("获取用户信息失败: %v", err)
-			return &types.BaseResp{
-				Code: 401,
-				Msg:  "获取用户信息失败",
-				Data: nil,
-			}, nil
-		}
+	userInfo, err := user.AuthUserInfo(l.ctx, l.svcCtx.GormDB)
+	if err != nil {
+		return customererrors.FailMsg("获取用户信息失败"), nil
 	}
 
 	// 处理分类编码（支持多个，用逗号分隔）
@@ -118,11 +100,7 @@ func (l *ListProductLogic) ListProduct(req *types.ListProductReq) (resp *types.B
 
 	if err != nil {
 		logx.Errorf("查询商品列表失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询商品列表失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("查询商品列表失败"), nil
 	}
 
 	// 转换为响应格式
@@ -131,14 +109,10 @@ func (l *ListProductLogic) ListProduct(req *types.ListProductReq) (resp *types.B
 		list = append(list, *l.convertToProductSPUInfo(spu))
 	}
 
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "查询成功",
-		Data: &types.ListProductResp{
-			List:  list,
-			Total: total,
-		},
-	}, nil
+	return customererrors.SuccessData(&types.ListProductResp{
+		List:  list,
+		Total: total,
+	}), nil
 }
 
 // getTimeRange 根据时间范围字符串返回开始和结束时间

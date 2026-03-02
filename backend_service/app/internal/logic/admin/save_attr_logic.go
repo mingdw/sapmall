@@ -6,6 +6,7 @@ package admin
 import (
 	"context"
 	"fmt"
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
@@ -50,38 +51,22 @@ func (l *SaveAttrLogic) createAttr(req *types.SaveAttrReq, attrRepository reposi
 	existingAttrGroup, err := attrGroupRepository.GetAttrGroup(l.ctx, req.AttrGroupID)
 	if err != nil {
 		logx.Errorf("查询属性组失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询属性组失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("查询属性组失败"), nil
 	}
 
 	if existingAttrGroup == nil || existingAttrGroup.ID == 0 {
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "属性组不存在",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("属性组不存在"), nil
 	}
 
 	// 2. 校验属性编码是否已存在
 	existingAttr, err := attrRepository.GetAttrByCode(l.ctx, req.AttrCode)
 	if err != nil {
 		logx.Errorf("查询属性编码失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询属性编码失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("查询属性编码失败"), nil
 	}
 
 	if existingAttr != nil {
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "属性编码已存在",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("属性编码已存在"), nil
 	}
 
 	// 3. 设置默认值
@@ -110,20 +95,12 @@ func (l *SaveAttrLogic) createAttr(req *types.SaveAttrReq, attrRepository reposi
 	err = attrRepository.Create(l.ctx, attr)
 	if err != nil {
 		logx.Errorf("创建属性失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  fmt.Sprintf("创建属性失败: %v", err),
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg(fmt.Sprintf("创建属性失败: %v", err)), nil
 	}
 
 	logx.Infof("创建属性成功: ID=%d, Name=%s, Code=%s", attr.ID, attr.AttrName, attr.AttrCode)
 
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "创建成功",
-		Data: attr,
-	}, nil
+	return customererrors.SuccessData(attr), nil
 }
 
 // updateAttr 编辑属性
@@ -132,19 +109,11 @@ func (l *SaveAttrLogic) updateAttr(req *types.SaveAttrReq, attrRepository reposi
 	existingAttr, err := attrRepository.GetAttr(l.ctx, req.ID)
 	if err != nil {
 		logx.Errorf("查询属性失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询属性失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("查询属性失败"), nil
 	}
 
 	if existingAttr == nil || existingAttr.ID == 0 {
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "属性不存在",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("属性不存在"), nil
 	}
 
 	// 2. 准备更新数据
@@ -184,18 +153,10 @@ func (l *SaveAttrLogic) updateAttr(req *types.SaveAttrReq, attrRepository reposi
 	err = attrRepository.Update(l.ctx, updateAttr)
 	if err != nil {
 		logx.Errorf("更新属性失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  fmt.Sprintf("更新属性失败: %v", err),
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg(fmt.Sprintf("更新属性失败: %v", err)), nil
 	}
 
 	logx.Infof("更新属性成功: ID=%d, Name=%s", updateAttr.ID, updateAttr.AttrName)
 
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "更新成功",
-		Data: updateAttr,
-	}, nil
+	return customererrors.SuccessData(updateAttr), nil
 }

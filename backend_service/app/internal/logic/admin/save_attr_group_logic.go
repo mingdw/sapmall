@@ -6,6 +6,7 @@ package admin
 import (
 	"context"
 	"fmt"
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
@@ -49,19 +50,11 @@ func (l *SaveAttrGroupLogic) createAttrGroup(req *types.SaveAttrGroupReq, attrGr
 	existingAttrGroup, err := attrGroupRepository.GetAttrGroupByCode(l.ctx, req.AttrGroupCode)
 	if err != nil {
 		logx.Errorf("查询属性组编码失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询属性组编码失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("查询属性组编码失败"), nil
 	}
 
 	if existingAttrGroup != nil {
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "属性组编码已存在",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("属性组编码已存在"), nil
 	}
 
 	// 2. 设置默认值
@@ -91,11 +84,7 @@ func (l *SaveAttrGroupLogic) createAttrGroup(req *types.SaveAttrGroupReq, attrGr
 	attrGroupID, err := attrGroupRepository.Create(l.ctx, attrGroup)
 	if err != nil {
 		logx.Errorf("创建属性组失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  fmt.Sprintf("创建属性组失败: %v", err),
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg(fmt.Sprintf("创建属性组失败: %v", err)), nil
 	}
 
 	attrGroup.ID = attrGroupID
@@ -111,11 +100,7 @@ func (l *SaveAttrGroupLogic) createAttrGroup(req *types.SaveAttrGroupReq, attrGr
 		}
 	}
 
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "创建成功",
-		Data: attrGroup,
-	}, nil
+	return customererrors.SuccessData(attrGroup), nil
 }
 
 // updateAttrGroup 编辑属性组
@@ -124,19 +109,11 @@ func (l *SaveAttrGroupLogic) updateAttrGroup(req *types.SaveAttrGroupReq, attrGr
 	existingAttrGroup, err := attrGroupRepository.GetAttrGroup(l.ctx, req.ID)
 	if err != nil {
 		logx.Errorf("查询属性组失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "查询属性组失败",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("查询属性组失败"), nil
 	}
 
 	if existingAttrGroup == nil || existingAttrGroup.ID == 0 {
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  "属性组不存在",
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg("属性组不存在"), nil
 	}
 
 	// 2. 如果更新编码，检查新编码是否已被其他属性组使用
@@ -144,19 +121,11 @@ func (l *SaveAttrGroupLogic) updateAttrGroup(req *types.SaveAttrGroupReq, attrGr
 		attrGroupByCode, err := attrGroupRepository.GetAttrGroupByCode(l.ctx, req.AttrGroupCode)
 		if err != nil {
 			logx.Errorf("查询属性组编码失败: %v", err)
-			return &types.BaseResp{
-				Code: 1,
-				Msg:  "查询属性组编码失败",
-				Data: nil,
-			}, nil
+			return customererrors.FailMsg("查询属性组编码失败"), nil
 		}
 
 		if attrGroupByCode != nil && attrGroupByCode.ID != req.ID {
-			return &types.BaseResp{
-				Code: 1,
-				Msg:  "属性组编码已被使用",
-				Data: nil,
-			}, nil
+			return customererrors.FailMsg("属性组编码已被使用"), nil
 		}
 	}
 
@@ -207,11 +176,7 @@ func (l *SaveAttrGroupLogic) updateAttrGroup(req *types.SaveAttrGroupReq, attrGr
 	err = attrGroupRepository.Update(l.ctx, updateAttrGroup)
 	if err != nil {
 		logx.Errorf("更新属性组失败: %v", err)
-		return &types.BaseResp{
-			Code: 1,
-			Msg:  fmt.Sprintf("更新属性组失败: %v", err),
-			Data: nil,
-		}, nil
+		return customererrors.FailMsg(fmt.Sprintf("更新属性组失败: %v", err)), nil
 	}
 
 	logx.Infof("更新属性组成功: ID=%d, Name=%s", req.ID, req.AttrGroupName)
@@ -226,11 +191,7 @@ func (l *SaveAttrGroupLogic) updateAttrGroup(req *types.SaveAttrGroupReq, attrGr
 		}
 	}
 
-	return &types.BaseResp{
-		Code: 0,
-		Msg:  "更新成功",
-		Data: updateAttrGroup,
-	}, nil
+	return customererrors.SuccessData(updateAttrGroup), nil
 }
 
 // createCategoryAttrGroup 创建目录-属性组关联

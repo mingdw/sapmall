@@ -6,12 +6,23 @@ import { ProductStatus } from '../constants';
 // 解析图片字符串（支持JSON数组或逗号分隔）
 export const parseImageUrls = (images: string | string[] | undefined): string[] => {
   if (!images) return [];
-  if (Array.isArray(images)) return images;
+  if (Array.isArray(images)) return images.filter(Boolean);
   if (typeof images === 'string') {
+    // 去除首尾空格
+    const trimmed = images.trim();
+    if (!trimmed) return [];
+    
     try {
-      return images.includes('[') ? JSON.parse(images) : images.split(',').filter(Boolean);
+      // 如果是JSON数组格式，解析它
+      if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
+        const parsed = JSON.parse(trimmed);
+        return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+      }
+      // 否则按逗号分隔
+      return trimmed.split(',').map(url => url.trim()).filter(Boolean);
     } catch {
-      return images.split(',').filter(Boolean);
+      // JSON解析失败，按逗号分隔处理
+      return trimmed.split(',').map(url => url.trim()).filter(Boolean);
     }
   }
   return [];

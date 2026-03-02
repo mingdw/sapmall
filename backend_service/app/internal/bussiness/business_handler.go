@@ -29,9 +29,11 @@ type BusinessHandler interface {
 	// ValidateBusiness 验证业务是否存在
 	ValidateBusiness(ctx context.Context, businessType string, businessId string) (bool, error)
 	// DeleteBusinessFiles 删除业务关联的文件
-	DeleteBusinessFiles(ctx context.Context, businessType string, businessId string) error
+	DeleteBusinessFiles(ctx context.Context, businessType string, businessId string, urls []string) error
 	// GetBusinessOwner 获取业务所有者信息（用于权限验证）
 	GetBusinessOwner(ctx context.Context, businessType string, businessId string) (int64, string, error) // 返回 userID, userCode
+	// AssociateFile 关联文件到业务（上传文件时调用）
+	AssociateFile(ctx context.Context, businessType string, businessId string, file *model.File) error
 }
 
 // BusinessHandlerImpl 业务处理器实现
@@ -132,7 +134,8 @@ func (h *BusinessHandlerImpl) ValidateBusiness(ctx context.Context, businessType
 }
 
 // DeleteBusinessFiles 删除业务关联的文件
-func (h *BusinessHandlerImpl) DeleteBusinessFiles(ctx context.Context, businessType string, businessId string) error {
+// 如果spu的images中包含urls中的url，则将其替换成空（删除）
+func (h *BusinessHandlerImpl) DeleteBusinessFiles(ctx context.Context, businessType string, businessId string, urls []string) error {
 	id, err := parseBusinessId(businessId)
 	if err != nil {
 		return err
@@ -140,21 +143,55 @@ func (h *BusinessHandlerImpl) DeleteBusinessFiles(ctx context.Context, businessT
 
 	switch businessType {
 	case BusinessTypeProduct:
-		if id > 0 {
+		if id > 0 && len(urls) > 0 {
 			productSpuRepo := repository.NewProductSpuRepository(repository.NewRepository(h.db))
-			//根据businessId查询商品
+			// 根据businessId查询商品
 			productSpu, err := productSpuRepo.GetProductSpu(ctx, id)
 			if err != nil {
 				return fmt.Errorf("查询商品失败: %w", err)
 			}
-			if productSpu.Images != "" {
-				productSpu.Images = ""
-				err = productSpuRepo.UpdateProductSpu(ctx, productSpu)
-				if err != nil {
-					return fmt.Errorf("更新商品失败: %w", err)
+
+			// 如果spu的images为空，不需要处理
+			if productSpu.Images == "" {
+				return nil
+			}
+
+			// 解析现有的图片URL列表
+			imageParts := strings.Split(productSpu.Images, ",")
+			remainingImages := []string{}
+
+			// 遍历现有图片，如果不在urls中则保留
+			for _, img := range imageParts {
+				img = strings.TrimSpace(img)
+				if img == "" {
+					continue
+				}
+				// 检查该图片URL是否在要删除的urls列表中
+				shouldDelete := false
+				for _, deleteUrl := range urls {
+					if img == strings.TrimSpace(deleteUrl) {
+						shouldDelete = true
+						break
+					}
+				}
+				// 如果不在删除列表中，保留该图片
+				if !shouldDelete {
+					remainingImages = append(remainingImages, img)
 				}
 			}
 
+			// 更新商品表的 Images 字段
+			if len(remainingImages) > 0 {
+				productSpu.Images = strings.Join(remainingImages, ",")
+			} else {
+				// 如果所有图片都被删除，设置为空字符串
+				productSpu.Images = ""
+			}
+
+			err = productSpuRepo.UpdateProductSpu(ctx, productSpu)
+			if err != nil {
+				return fmt.Errorf("更新商品失败: %w", err)
+			}
 		}
 
 	case BusinessTypeAvatar, BusinessTypeDocument:
@@ -257,37 +294,76 @@ func BatchGetBusinessFiles(ctx context.Context, db *gorm.DB, businessType string
 	return files, nil
 }
 
-// UpdateBusinessFiles 更新业务关联的文件
-func UpdateBusinessFiles(ctx context.Context, db *gorm.DB, businessType string, businessId string, fileIds []int64) error {
+// AssociateFile 关联文件到业务（上传文件时调用）
+// 当上传文件时，如果提供了 businessType 和 businessId，调用此方法建立文件与业务的关联
+func (h *BusinessHandlerImpl) AssociateFile(ctx context.Context, businessType string, businessId string, file *model.File) error {
+	if file == nil {
+		return fmt.Errorf("文件对象不能为空")
+	}
+
 	id, err := parseBusinessId(businessId)
 	if err != nil {
 		return err
 	}
 
-	// 先取消当前业务的所有文件关联
-	err = db.WithContext(ctx).
-		Model(&model.File{}).
-		Where("business_type = ? AND business_id = ?", businessType, id).
-		Updates(map[string]interface{}{
-			"business_type": "",
-			"business_id":   0,
-		}).Error
-	if err != nil {
-		return fmt.Errorf("取消业务文件关联失败: %w", err)
+	if id <= 0 {
+		// 业务ID无效，不需要关联
+		return nil
 	}
 
-	// 更新新的文件关联
-	if len(fileIds) > 0 {
-		err = db.WithContext(ctx).
-			Model(&model.File{}).
-			Where("id IN ?", fileIds).
-			Updates(map[string]interface{}{
-				"business_type": businessType,
-				"business_id":   id,
-			}).Error
+	switch businessType {
+	case BusinessTypeProduct:
+		// 商品业务：更新商品表的 Images 字段
+		// SPU的images默认第一张图是主图，更新时将第一张图的位置替换成file的url
+		productSpuRepo := repository.NewProductSpuRepository(repository.NewRepository(h.db))
+		productSpu, err := productSpuRepo.GetProductSpu(ctx, id)
 		if err != nil {
-			return fmt.Errorf("更新业务文件关联失败: %w", err)
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				// 商品不存在，不进行关联（可能是新增商品，还未保存）
+				return nil
+			}
+			return fmt.Errorf("查询商品失败: %w", err)
 		}
+
+		// 如果spu的images为空，则直接存储file的url
+		if productSpu.Images == "" {
+			productSpu.Images = file.Url
+		} else {
+			// 如果不为空，则将images的第一张图的位置（逗号分隔的第一个位置）替换成file的url
+			imageParts := strings.Split(productSpu.Images, ",")
+			if len(imageParts) > 0 {
+				// 替换第一张图
+				imageParts[0] = file.Url
+				// 重新组合（保持其他图片不变）
+				productSpu.Images = strings.Join(imageParts, ",")
+			} else {
+				// 如果分割后为空数组，直接设置为file的url
+				productSpu.Images = file.Url
+			}
+		}
+
+		// 更新商品表的 Images 字段
+		err = productSpuRepo.UpdateProductSpu(ctx, productSpu)
+		if err != nil {
+			return fmt.Errorf("更新商品图片关联失败: %w", err)
+		}
+
+	case BusinessTypeAvatar:
+		// 头像业务：可以更新用户表的头像字段
+		// 这里可以根据实际需求实现
+		return nil
+
+	case BusinessTypeDocument:
+		// 文档业务：可以根据实际需求实现
+		return nil
+
+	case BusinessTypeCategory:
+		// 分类业务：可以根据实际需求实现
+		return nil
+
+	default:
+		// 其他业务类型，不处理
+		return nil
 	}
 
 	return nil

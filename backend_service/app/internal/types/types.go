@@ -4,9 +4,9 @@
 package types
 
 type BaseResp struct {
-	Code int         `json:"code"`
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data"`
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 type BatchUploadFileResp struct {
@@ -44,10 +44,6 @@ type DeleteCategoryReq struct {
 	ID uint `path:"id"` // 目录ID
 }
 
-type DeleteFileReq struct {
-	Key string `json:"key"` // 文件在COS中的key
-}
-
 type DeleteFilesReq struct {
 	Keys         []string `json:"keys,optional"`         // 文件hash数组（用于根据hash删除）
 	Urls         []string `json:"urls,optional"`         // 文件URL数组（用于根据URL删除）
@@ -59,37 +55,33 @@ type DeleteProductSpusReq struct {
 	Ids []int64 `json:"ids"` // 商品SPU ID数组
 }
 
-type DownloadFileReq struct {
-	Key string `path:"key"` // 文件在COS中的key，支持路径参数或查询参数
-}
-
 type FileInfo struct {
-	Id              int64  `json:"id"`                         // 主键ID
-	Hash            string `json:"hash"`                       // 文件编码（唯一标识）
-	StorageUrl      string `json:"storage_url"`                // 远端存储实际路径
-	Url             string `json:"url"`                        // 文件访问URL（永久URL或临时URL）
-	OriginalName    string `json:"original_name"`              // 原始文件名
-	Name            string `json:"name"`                       // 存储文件名（不含路径）
-	Extension       string `json:"extension"`                  // 文件扩展名（不含点号）
-	Type            string `json:"type"`                       // 文件类型分类：image、document、video、audio、archive、other
-	Size            int64  `json:"size"`                       // 文件大小（字节）
-	StorageType     string `json:"storage_type"`               // 存储类型：cos、local等
-	BusinessType    string `json:"business_type"`              // 业务类型：product、avatar、document等
-	BusinessId      int64  `json:"business_id"`                // 关联业务记录ID
-	Tags            string `json:"tags,optional"`              // 文件标签（逗号分隔）
-	Description     string `json:"description,optional"`       // 文件描述
-	Metadata        string `json:"metadata,optional"`          // 扩展元数据（JSON格式）
-	AccessType      int    `json:"access_type"`                // 访问类型：1=公开 2=私有 3=受限
-	AccessUrlExpire string `json:"access_url_expire,optional"` // 访问URL过期时间（私有文件）
-	ViewCount       int64  `json:"view_count"`                 // 查看次数
-	DownloadCount   int64  `json:"download_count"`             // 下载次数
-	Status          int    `json:"status"`                     // 文件状态：0=待处理 1=正常 2=处理中 3=处理失败 4=已删除
-	StatusDesc      string `json:"status_desc,optional"`       // 状态描述
-	CreatedAt       string `json:"created_at"`                 // 创建时间
-	UpdatedAt       string `json:"updated_at"`                 // 更新时间
-	Creator         string `json:"creator"`                    // 创建人
-	Updator         string `json:"updator"`                    // 更新人
-	ContentType     string `json:"contentType,optional"`       // 文件MIME类型（根据extension计算）
+	Id              int64  `json:"id"`              // 主键ID
+	Hash            string `json:"hash"`            // 文件编码（唯一标识）
+	StorageUrl      string `json:"storageUrl"`      // 远端存储实际路径
+	Url             string `json:"url"`             // 文件访问URL（永久URL或临时URL）
+	OriginalName    string `json:"originalName"`    // 原始文件名
+	Name            string `json:"name"`            // 存储文件名（不含路径）
+	Extension       string `json:"extension"`       // 文件扩展名（不含点号，如：jpg、pdf、mp4）
+	Type            string `json:"type"`            // 文件类型分类：image、document、video、audio、archive、other
+	Size            int64  `json:"size"`            // 文件大小（字节）
+	StorageType     string `json:"storageType"`     // 存储类型：cos、local等
+	BusinessType    string `json:"businessType"`    // 业务类型：product、avatar、document、order、review等
+	BusinessId      int64  `json:"businessId"`      // 关联业务记录ID
+	Tags            string `json:"tags"`            // 文件标签（逗号分隔）
+	Description     string `json:"description"`     // 文件描述
+	Metadata        string `json:"metadata"`        // 扩展元数据（JSON格式，如：图片宽高、视频时长、文档页数等）
+	AccessType      int    `json:"accessType"`      // 访问类型：1=公开 2=私有 3=受限（需要权限）
+	AccessUrlExpire string `json:"accessUrlExpire"` // 访问URL过期时间（私有文件，格式：2006-01-02 15:04:05）
+	ViewCount       int64  `json:"viewCount"`       // 查看次数
+	DownloadCount   int64  `json:"downloadCount"`   // 下载次数
+	Status          int    `json:"status"`          // 文件状态：0=待处理 1=正常 2=处理中 3=处理失败 4=已删除
+	StatusDesc      string `json:"statusDesc"`      // 状态描述
+	CreatedAt       string `json:"createdAt"`       // 创建时间（格式：2006-01-02 15:04:05）
+	UpdatedAt       string `json:"updatedAt"`       // 更新时间（格式：2006-01-02 15:04:05）
+	Creator         string `json:"creator"`         // 创建人
+	Updator         string `json:"updator"`         // 更新人
+	ContentType     string `json:"contentType"`     // 文件MIME类型（根据扩展名自动识别）
 }
 
 type GetCategoryTreeReq struct {
@@ -339,8 +331,10 @@ type SaveProductReq struct {
 }
 
 type UploadFileReq struct {
-	Category string `form:"category,optional"` // 文件分类，可选值：image、document、video、audio、archive、other，用于目录分类和文件类型标识
-	Folder   string `form:"folder,optional"`   // 存储文件夹路径，如：products、avatars、documents等，用于组织文件存储结构
+	Category     string `form:"category,optional"`     // 文件分类，可选值：image、document、video、audio、archive、other，用于目录分类和文件类型标识
+	Folder       string `form:"folder,optional"`       // 存储文件夹路径，如：products、avatars、documents等，用于组织文件存储结构
+	BusinessType string `form:"businessType,optional"` // 业务类型：product、avatar、document等（用于关联业务）
+	BusinessId   string `form:"businessId,optional"`   // 关联业务记录ID（用于关联业务）
 }
 
 type UploadFileResp struct {
