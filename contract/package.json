@@ -1,0 +1,32 @@
+{
+  "name": "contract",
+  "version": "1.0.0",
+  "description": "本目录用于管理 Sapphire Mall 项目的智能合约相关内容。",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^3.1.2",
+    "@nomicfoundation/hardhat-toolbox-viem": "^5.0.4",
+    "@types/node": "^22.19.17",
+    "forge-std": "github:foundry-rs/forge-std#v1.9.4",
+    "hardhat": "^3.4.0",
+    "typescript": "~5.8.0",
+    "viem": "^2.48.1"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22.10.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.1.0"
+  }
+}
