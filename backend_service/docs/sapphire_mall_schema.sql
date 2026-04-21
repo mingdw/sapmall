@@ -742,4 +742,104 @@ CREATE TABLE `sys_user_role`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
+
+
+-- =========================
+-- 1) 商品链上映射表（当前态）
+-- =========================
+DROP TABLE IF EXISTS `sys_product_onchain`;
+CREATE TABLE `sys_product_onchain` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `product_spu_id` bigint NOT NULL DEFAULT 0 COMMENT '商品SPU ID',
+  `product_spu_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品SPU编码',
+
+  `chain_id` int NOT NULL DEFAULT 0 COMMENT '链ID（1:Ethereum, 56:BSC, 137:Polygon, 8453:Base等）',
+  `contract_address` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '合约地址',
+  `onchain_item_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '链上对象ID（tokenId/registryId等）',
+
+  `metadata_uri` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '元数据URI（IPFS/HTTPS）',
+  `metadata_hash` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '元数据哈希（CID/keccak256）',
+  `version` int NOT NULL DEFAULT 1 COMMENT '元数据版本',
+
+  `onchain_status` int NOT NULL DEFAULT 0 COMMENT '链上状态：0待上链 1同步中 2已上链 3已下架 4失败',
+  `last_tx_hash` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '最后一次状态变更交易哈希',
+  `last_block_number` bigint NOT NULL DEFAULT 0 COMMENT '最后一次状态变更区块号',
+  `last_log_index` int NOT NULL DEFAULT 0 COMMENT '最后一次状态变更日志索引',
+  `confirmations` int NOT NULL DEFAULT 0 COMMENT '确认数',
+  `sync_time` datetime NULL DEFAULT NULL COMMENT '最近同步时间',
+
+  -- 公共字段（与现有规范保持一致）
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+
+  PRIMARY KEY (`id`) USING BTREE,
+
+  -- 一个商品在同一链同一合约上只保留一条“当前态”
+  UNIQUE INDEX `uk_product_chain_contract` (`product_spu_id`, `chain_id`, `contract_address`) USING BTREE,
+  -- 链上对象唯一（按你们业务若允许复用可去掉）
+  UNIQUE INDEX `uk_chain_contract_item` (`chain_id`, `contract_address`, `onchain_item_id`) USING BTREE,
+
+  INDEX `idx_product_spu_id` (`product_spu_id`) USING BTREE,
+  INDEX `idx_product_spu_code` (`product_spu_code`) USING BTREE,
+  INDEX `idx_chain_id` (`chain_id`) USING BTREE,
+  INDEX `idx_contract_address` (`contract_address`) USING BTREE,
+  INDEX `idx_onchain_status` (`onchain_status`) USING BTREE,
+  INDEX `idx_last_tx_hash` (`last_tx_hash`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+
+
+-- =========================
+-- 2) 通用链上事件流水表（公共事件表）
+-- =========================
+DROP TABLE IF EXISTS `sys_chain_event`;
+CREATE TABLE `sys_chain_event` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+
+  `business_type` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '业务类型：product/order/governance/reward/payment等',
+  `business_id` bigint NOT NULL DEFAULT 0 COMMENT '业务主键ID（如product_spu_id/order_id/proposal_id）',
+  `business_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '业务编码（可选）',
+
+  `chain_id` int NOT NULL DEFAULT 0 COMMENT '链ID',
+  `contract_address` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '合约地址',
+  `tx_hash` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '交易哈希',
+  `block_number` bigint NOT NULL DEFAULT 0 COMMENT '区块号',
+  `tx_index` int NOT NULL DEFAULT 0 COMMENT '交易索引',
+  `log_index` int NOT NULL DEFAULT 0 COMMENT '日志索引',
+
+  `event_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '事件名',
+  `event_sig` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '事件签名/Topic0',
+  `event_payload` json COMMENT '解析后的事件负载（JSON）',
+  `raw_log` json COMMENT '原始日志（JSON）',
+
+  `event_time` datetime NULL DEFAULT NULL COMMENT '链上事件时间（由区块时间换算）',
+  `confirmations` int NOT NULL DEFAULT 0 COMMENT '确认数',
+  `process_status` int NOT NULL DEFAULT 0 COMMENT '处理状态：0待处理 1已处理 2处理失败 3忽略',
+  `retry_count` int NOT NULL DEFAULT 0 COMMENT '重试次数',
+  `error_msg` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '处理错误信息',
+
+  -- 公共字段（与现有规范保持一致）
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+
+  PRIMARY KEY (`id`) USING BTREE,
+
+  -- 幂等关键：同一链上同一交易同一日志只能入库一次
+  UNIQUE INDEX `uk_chain_tx_log` (`chain_id`, `tx_hash`, `log_index`) USING BTREE,
+
+  INDEX `idx_business` (`business_type`, `business_id`) USING BTREE,
+  INDEX `idx_business_code` (`business_code`) USING BTREE,
+  INDEX `idx_chain_contract` (`chain_id`, `contract_address`) USING BTREE,
+  INDEX `idx_event_name` (`event_name`) USING BTREE,
+  INDEX `idx_process_status` (`process_status`) USING BTREE,
+  INDEX `idx_block_number` (`block_number`) USING BTREE,
+  INDEX `idx_event_time` (`event_time`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+
+
 SET FOREIGN_KEY_CHECKS = 1;

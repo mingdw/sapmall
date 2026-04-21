@@ -33,7 +33,6 @@ func (r *userRoleRepository) Create(ctx context.Context, userRole *model.UserRol
 func (r *userRoleRepository) GetByUserID(ctx context.Context, userID int64) ([]*model.UserRole, error) {
 	var userRoles []*model.UserRole
 	err := r.db.WithContext(ctx).
-		Preload("Roles").
 		Where("user_id = ? and is_deleted = ?", userID, 0).
 		Find(&userRoles).Error
 	if err != nil {

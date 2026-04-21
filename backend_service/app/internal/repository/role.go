@@ -58,10 +58,11 @@ func (r *roleRepository) GetByID(ctx context.Context, id int64) ([]*model.Role, 
 
 // GetRoleMenus 根据角色ID获取菜单权限
 func (r *roleRepository) GetRoleCategorys(ctx context.Context, roleID int64) ([]model.Category, error) {
-	var menus []model.Category
+	menus := make([]model.Category, 0)
 	err := r.db.WithContext(ctx).
 		Table("sys_category m").
-		Joins("INNER JOIN sys_role_category rm ON m.id = rm.category_id").
+		Select("m.*").
+		Joins("INNER JOIN sys_role_category rm ON m.code = rm.category_code").
 		Where("rm.role_id = ? AND m.status = ? AND m.menu_type = ? AND m.is_deleted = ?", roleID, 1, 1, 0).
 		Order("m.level ASC, m.sort ASC").
 		Find(&menus).Error

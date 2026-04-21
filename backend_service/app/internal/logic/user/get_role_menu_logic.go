@@ -38,20 +38,19 @@ func (l *GetRoleMenuLogic) GetRoleMenu() (resp *types.BaseResp, err error) {
 	logx.Infof("获取用户菜单，用户ID: %d, 用户昵称: %s", userInfo.ID, userInfo.Nickname)
 
 	// 2. 获取用户角色信息
-	roleRepository := repository.NewRoleRepository(l.svcCtx.GormDB)
-	userWithRoles, err := roleRepository.GetByID(l.ctx, userInfo.ID)
+	userRoleRepository := repository.NewUserRoleRepository(l.svcCtx.GormDB)
+	userWithRoles, err := userRoleRepository.GetByUserID(l.ctx, userInfo.ID)
 	if err != nil {
 		logx.Errorf("获取用户角色信息失败: %v", err)
 		return customererrors.FailMsg("获取用户角色信息失败"), nil
 	}
 
 	var allMenus []model.Category
-
+	roleRepository := repository.NewRoleRepository(l.svcCtx.GormDB)
 	for _, userRole := range userWithRoles {
 		// 获取角色对应的菜单权限
-		roleMenus, err := roleRepository.GetRoleCategorys(l.ctx, userRole.ID)
+		roleMenus, err := roleRepository.GetRoleCategorys(l.ctx, userRole.RoleID)
 		if err != nil {
-			logx.Errorf("获取角色 %d 菜单权限失败: %v", userRole.ID, err)
 			continue
 		}
 		allMenus = append(allMenus, roleMenus...)
