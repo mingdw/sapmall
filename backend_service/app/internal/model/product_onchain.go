@@ -2,35 +2,36 @@ package model
 
 import (
 	"time"
-	"gorm.io/gorm"
 )
 
-// Product_onchain Product_onchain 模型
-type Product_onchain struct {
-	ID int64 `json:"id" gorm:"primaryKey"` // 主键ID
-	CreateAt time.Time `json:"createat" gorm:"autoCreateTime"` // 创建时间
-	UpdateAt time.Time `json:"updateat" gorm:"autoUpdateTime"` // 更新时间
-	IsDeleted bool `json:"isdeleted" gorm:"default:false"` // 软删除标记
-	Creator string `json:"creator" gorm:""` // 创建人
-	Updator string `json:"updator" gorm:""` // 更新人
-	product_spu_id int64 `json:"product_spu_id" gorm:"required"` // product_spu_id 字段
-	product_spu_code string `json:"product_spu_code" gorm:"required"` // product_spu_code 字段
-	chain_id int `json:"chain_id" gorm:"required"` // chain_id 字段
-	contract_address string `json:"contract_address" gorm:"required"` // contract_address 字段
-	onchain_item_id string `json:"onchain_item_id" gorm:""` // onchain_item_id 字段
-	metadata_uri string `json:"metadata_uri" gorm:""` // metadata_uri 字段
-	metadata_hash string `json:"metadata_hash" gorm:""` // metadata_hash 字段
-	version int `json:"version" gorm:""` // version 字段
-	onchain_status int `json:"onchain_status" gorm:""` // onchain_status 字段
-	last_tx_hash string `json:"last_tx_hash" gorm:""` // last_tx_hash 字段
-	last_block_number int64 `json:"last_block_number" gorm:""` // last_block_number 字段
-	last_log_index int `json:"last_log_index" gorm:""` // last_log_index 字段
-	confirmations int `json:"confirmations" gorm:""` // confirmations 字段
-	sync_time time.Time `json:"sync_time" gorm:""` // sync_time 字段
-	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
+// ProductOnChain sys_product_onchain 模型（字段使用驼峰命名）
+type ProductOnChain struct {
+	ID              int64     `json:"id" gorm:"column:id;primaryKey;autoIncrement"`
+	CreatedAt       time.Time `json:"createdAt" gorm:"column:created_at;autoCreateTime"`
+	UpdatedAt       time.Time `json:"updatedAt" gorm:"column:updated_at;autoUpdateTime"`
+	IsDeleted       int       `json:"isDeleted" gorm:"column:is_deleted;default:0"`
+	Creator         string    `json:"creator" gorm:"column:creator"`
+	Updator         string    `json:"updator" gorm:"column:updator"`
+	ProductSpuID    int64     `json:"productSpuId" gorm:"column:product_spu_id;not null"`
+	ProductSpuCode  string    `json:"productSpuCode" gorm:"column:product_spu_code;not null"`
+	ChainID         int       `json:"chainId" gorm:"column:chain_id;not null"`
+	ContractAddress string    `json:"contractAddress" gorm:"column:contract_address;not null"`
+	OnchainItemID   string    `json:"onchainItemId" gorm:"column:onchain_item_id"`
+	MetadataURI     string    `json:"metadataUri" gorm:"column:metadata_uri"`
+	MetadataHash    string    `json:"metadataHash" gorm:"column:metadata_hash"`
+	Version         int       `json:"version" gorm:"column:version"`
+	OnchainStatus   int       `json:"onchainStatus" gorm:"column:onchain_status"`
+	LastTxHash      string    `json:"lastTxHash" gorm:"column:last_tx_hash"`
+	LastBlockNumber int64     `json:"lastBlockNumber" gorm:"column:last_block_number"`
+	LastLogIndex    int       `json:"lastLogIndex" gorm:"column:last_log_index"`
+	Confirmations   int       `json:"confirmations" gorm:"column:confirmations"`
+	SyncTime        time.Time `json:"syncTime" gorm:"column:sync_time"`
 }
 
+// 兼容现有引用（repository 等仍在使用 model.Product_onchain）
+type Product_onchain = ProductOnChain
+
 // TableName 指定表名
-func (Product_onchain) TableName() string {
+func (ProductOnChain) TableName() string {
 	return "sys_product_onchain"
 }
