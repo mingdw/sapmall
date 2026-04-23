@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"sapphire-mall/app/internal/types"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"sapphire-mall/app/internal/logic/category"
 	"sapphire-mall/app/internal/svc"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 // 获取商品目录

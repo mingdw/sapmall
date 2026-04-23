@@ -215,6 +215,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/menus",
 					Handler: user.GetRoleMenuHandler(serverCtx),
 				},
+				{
+					// 申请商家认证
+					Method:  http.MethodPost,
+					Path:    "/merchant/cert/apply",
+					Handler: user.ApplyMerchantCertHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/user"),

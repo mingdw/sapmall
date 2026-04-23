@@ -1,8 +1,10 @@
 /* AdminCard 组件样式 - 简洁无卡片效果 */
 
 .adminInfoCard {
-  width: 98%;
-  margin: 0 auto;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
   background: transparent;
   border: none;
   border-radius: 0;

@@ -1,0 +1,48 @@
+.radioGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.radioItem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid rgba(71, 85, 105, 0.42);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.42), rgba(15, 23, 42, 0.34));
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(4px);
+}
+
+.radioItem:hover {
+  border-color: rgba(96, 165, 250, 0.45);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.56), rgba(15, 23, 42, 0.45));
+  color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.radioItem i {
+  font-size: 12px;
+}
+
+.radioItem.active {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.58), rgba(30, 64, 175, 0.46));
+  border-color: rgba(96, 165, 250, 0.55);
+  color: #dbeafe;
+  box-shadow: 0 4px 14px rgba(30, 64, 175, 0.24);
+}
+
+.radioItem:disabled {
+  opacity: 0.86;
+  cursor: not-allowed;
+}

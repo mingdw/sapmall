@@ -1,4 +1,4 @@
-﻿/*
+/*
  Navicat Premium Data Transfer
 
  Source Server         : 本地连接
@@ -686,6 +686,8 @@ CREATE TABLE `sys_user`  (
   `status_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '状态描述',
   `type` int NOT NULL DEFAULT 0 COMMENT '类型',
   `type_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '类型描述',
+  `kyc_status` int NOT NULL DEFAULT 0 COMMENT 'KYC状态：0未认证 1待审核 2已通过 3已拒绝',
+  `merchant_deposit_status` int NOT NULL DEFAULT 0 COMMENT '保证金状态：0未缴纳 1待支付 2确认中 3已确认 4已退还 5异常',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
@@ -741,6 +743,82 @@ CREATE TABLE `sys_user_role`  (
   `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for sys_user_kyc
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_kyc`;
+CREATE TABLE `sys_user_kyc`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `kyc_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'KYC申请单号',
+  `user_id` bigint NOT NULL DEFAULT 0 COMMENT '用户id',
+  `user_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '用户编码',
+  `nationality` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '国籍/地区编码',
+  `document_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '证件类型：id_card/passport',
+  `document_number_masked` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '脱敏证件号码',
+  `document_front_file_id` bigint NOT NULL DEFAULT 0 COMMENT '证件正面文件ID',
+  `document_back_file_id` bigint NOT NULL DEFAULT 0 COMMENT '证件背面文件ID（护照可为空）',
+  `face_file_id` bigint NOT NULL DEFAULT 0 COMMENT '人脸文件ID',
+  `apply_status` int NOT NULL DEFAULT 0 COMMENT '申请状态：0草稿 1待审核 2审核通过 3审核拒绝 4失效',
+  `apply_status_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '申请状态描述',
+  `submit_time` datetime NULL DEFAULT NULL COMMENT '提交时间',
+  `audit_time` datetime NULL DEFAULT NULL COMMENT '审核时间',
+  `auditor` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '审核人',
+  `reject_reason` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '拒绝原因',
+  `extra_info` json NULL COMMENT '扩展信息',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_kyc_no`(`kyc_no`) USING BTREE,
+  INDEX `idx_user_id`(`user_id`) USING BTREE,
+  INDEX `idx_user_code`(`user_code`) USING BTREE,
+  INDEX `idx_apply_status`(`apply_status`) USING BTREE,
+  INDEX `idx_submit_time`(`submit_time`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for sys_user_deposit
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_deposit`;
+CREATE TABLE `sys_user_deposit`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `intent_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '保证金意图单ID',
+  `user_id` bigint NOT NULL DEFAULT 0 COMMENT '用户id',
+  `user_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '用户编码',
+  `business_type` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'merchant_deposit' COMMENT '业务类型',
+  `deposit_status` int NOT NULL DEFAULT 0 COMMENT '保证金状态：0初始化 1待支付 2链上确认中 3已确认 4已退还 5失败 6已过期',
+  `deposit_status_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '保证金状态描述',
+  `amount` decimal(36, 18) NOT NULL DEFAULT 0 COMMENT '保证金金额',
+  `token_symbol` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '代币符号',
+  `token_address` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '代币合约地址',
+  `chain_id` int NOT NULL DEFAULT 0 COMMENT '链ID',
+  `contract_address` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '保证金合约地址',
+  `tx_hash` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '缴纳交易哈希',
+  `block_number` bigint NOT NULL DEFAULT 0 COMMENT '区块高度',
+  `confirmations` int NOT NULL DEFAULT 0 COMMENT '确认数',
+  `refund_tx_hash` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '退还交易哈希',
+  `expire_at` datetime NULL DEFAULT NULL COMMENT '意图单过期时间',
+  `paid_at` datetime NULL DEFAULT NULL COMMENT '支付时间',
+  `confirmed_at` datetime NULL DEFAULT NULL COMMENT '链上确认时间',
+  `refunded_at` datetime NULL DEFAULT NULL COMMENT '保证金退还时间',
+  `fail_reason` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '失败原因',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '备注',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_intent_id`(`intent_id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id`) USING BTREE,
+  INDEX `idx_user_code`(`user_code`) USING BTREE,
+  INDEX `idx_deposit_status`(`deposit_status`) USING BTREE,
+  INDEX `idx_chain_tx`(`chain_id`, `tx_hash`) USING BTREE,
+  INDEX `idx_expire_at`(`expire_at`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 
 
@@ -840,6 +918,36 @@ CREATE TABLE `sys_chain_event` (
   INDEX `idx_block_number` (`block_number`) USING BTREE,
   INDEX `idx_event_time` (`event_time`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for sys_user_operation_log（用户侧操作日志：个人中心/安全/认证等可追溯行为）
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_operation_log`;
+CREATE TABLE `sys_user_operation_log` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL DEFAULT 0 COMMENT '被操作账户用户ID（主体）',
+  `operator_user_id` bigint NOT NULL DEFAULT 0 COMMENT '实际操作人用户ID；0表示本人或系统任务',
+  `biz_module` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '业务模块：profile=资料 security=安全 kyc=认证 merchant=商家 deposit=保证金 auth=登录等',
+  `action_type` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '动作编码：如 PROFILE_SAVE、MERCHANT_APPLY、OPEN_DAPP_DEPOSIT',
+  `action_summary` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '面向展示/审计的简短说明',
+  `detail_json` json NULL COMMENT '扩展字段（变更前后快照、请求ID、链上intentId等）',
+  `result_status` tinyint NOT NULL DEFAULT 1 COMMENT '结果：1成功 2失败 3部分成功',
+  `error_message` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '失败时的错误摘要',
+  `client_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '客户端：web_admin、dapp、api、system',
+  `request_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '请求链路ID，便于与网关日志关联',
+  `ip` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '来源IP',
+  `user_agent` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'UA摘要',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发生时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_time` (`user_id`, `created_at`) USING BTREE,
+  INDEX `idx_biz_action` (`biz_module`, `action_type`) USING BTREE,
+  INDEX `idx_operator` (`operator_user_id`) USING BTREE,
+  INDEX `idx_request_id` (`request_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC COMMENT = '用户操作日志';
 
 
 SET FOREIGN_KEY_CHECKS = 1;

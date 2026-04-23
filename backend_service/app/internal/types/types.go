@@ -3,6 +3,10 @@
 
 package types
 
+type ApplyMerchantCertReq struct {
+	TermsVersion string `json:"termsVersion,optional"` // 用户已同意的条款版本号或摘要，便于审计
+}
+
 type BaseResp struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
@@ -145,6 +149,17 @@ type LoginReq struct {
 type LoginResp struct {
 	Token    string   `json:"token"`
 	UserInfo UserInfo `json:"user_info"`
+}
+
+type MerchantDepositIntentResp struct {
+	IntentId        string `json:"intentId"`
+	Amount          string `json:"amount"`
+	Token           string `json:"token"`
+	ChainId         int64  `json:"chainId"`
+	ContractAddress string `json:"contractAddress"`
+	ExpireAt        string `json:"expireAt"` // 建议格式：2006-01-02 15:04:05 或 RFC3339
+	TokenAddress    string `json:"tokenAddress,optional"`
+	TxHash          string `json:"txHash,optional"`
 }
 
 type ProductAttrParamInfo struct {

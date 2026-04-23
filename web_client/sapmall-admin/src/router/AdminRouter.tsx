@@ -9,6 +9,7 @@ import MerchantManager from '../pages/platform/merchants/MerchantManager';
 import OrderManager from '../pages/platform/orders/OrderManager';
 import CategoryManagement from '../pages/platform/categories/CategoryManagement';
 import ProductManagement from '../pages/business/products/ProductManagement';
+import ProfileManager from '../pages/personal/profile/ProfileManager';
 
 interface AdminRouterProps {
   menuData?: any;
@@ -17,6 +18,10 @@ interface AdminRouterProps {
 const AdminRouter: React.FC<AdminRouterProps> = ({ menuData }) => {
   return (
     <Routes>
+
+      {/* 个人中心路由 */}
+      <Route path="/personal/profile" element={<ProfileManager />} />
+
       {/* 平台管理路由 */}
       <Route path="/platform/dashboard" element={<PlatformDashboard menuData={menuData} />} />
       

@@ -24,19 +24,24 @@ html, body {
 
 #root {
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   margin: 0;
   padding: 0;
   position: relative;
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: visible;
   height: auto;
+  box-sizing: border-box;
 }
 
 .App {
   width: 100%;
+  max-width: 100%;
   height: auto;
   min-height: 100vh;
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 code {
@@ -50,13 +55,15 @@ code {
   grid-template-columns: 280px 1fr;
   grid-template-rows: auto;
   width: 100%;
+  max-width: 100%;
   margin: 0;
   gap: 20px;
   padding: 20px 24px;
   background: transparent; /* 透明背景，使用body的深色背景 */
   min-height: auto;
   max-height: none !important;
-  overflow: visible !important;
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
   contain: none !important;
   box-sizing: border-box;
   position: relative;
@@ -69,19 +76,29 @@ code {
   grid-column: 2;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   padding: 0;
   margin: 0;
   max-width: none;
   min-width: 0;
   background: transparent;
   width: 100%;
+  max-width: 100%;
   height: auto;
-  overflow: visible !important;
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
   contain: none !important;
   position: relative;
   min-height: auto;
   align-self: start;
   grid-row: 1;
+  box-sizing: border-box;
+}
+
+.content-area > * {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* 移除重复的样式定义，使用 AdminContentComponent.css 中的样式 */
@@ -389,13 +406,15 @@ code {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(51, 65, 85, 0.6); /* 加深边框透明度 */
   border-radius: 16px;
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: visible;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* 加深阴影效果 */
   height: fit-content;
   min-height: 600px;
   max-height: none;
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .sidebar:hover {

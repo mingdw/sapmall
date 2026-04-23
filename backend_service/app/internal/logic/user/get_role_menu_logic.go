@@ -83,16 +83,28 @@ type MenuTreeNode struct {
 
 // buildMenuTree 构建菜单树结构
 func (l *GetRoleMenuLogic) buildMenuTree(menus []model.Category) []*MenuTreeNode {
-	// 创建菜单映射
-	menuMap := make(map[int64]*MenuTreeNode)
-	var rootMenus []*MenuTreeNode
-
-	// 第一遍遍历：创建所有菜单节点
+	// 先按菜单ID去重，避免用户拥有多个角色时同一菜单重复挂载
+	uniqueMenus := make([]model.Category, 0, len(menus))
+	seenMenuIDs := make(map[int64]struct{}, len(menus))
 	for _, menu := range menus {
 		if menu.Status != 1 { // 只处理启用状态的菜单
 			continue
 		}
 
+		menuID := int64(menu.ID)
+		if _, exists := seenMenuIDs[menuID]; exists {
+			continue
+		}
+		seenMenuIDs[menuID] = struct{}{}
+		uniqueMenus = append(uniqueMenus, menu)
+	}
+
+	// 创建菜单映射
+	menuMap := make(map[int64]*MenuTreeNode, len(uniqueMenus))
+	var rootMenus []*MenuTreeNode
+
+	// 第一遍遍历：创建所有菜单节点
+	for _, menu := range uniqueMenus {
 		node := &MenuTreeNode{
 			ID:          int64(menu.ID),
 			Name:        menu.Name,
@@ -113,11 +125,7 @@ func (l *GetRoleMenuLogic) buildMenuTree(menus []model.Category) []*MenuTreeNode
 	}
 
 	// 第二遍遍历：构建父子关系
-	for _, menu := range menus {
-		if menu.Status != 1 {
-			continue
-		}
-
+	for _, menu := range uniqueMenus {
 		node := menuMap[int64(menu.ID)]
 		if node == nil {
 			continue

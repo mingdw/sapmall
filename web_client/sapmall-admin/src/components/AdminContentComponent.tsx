@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Button } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import ComponentMapper from './ComponentMapper';
@@ -9,9 +9,17 @@ const { Title, Text } = Typography;
 
 interface AdminContentComponentProps {
   selectedMenu: CategoryTreeResp | null;
+  firstMenuName?: string;
+  onEnterDefaultMenu?: () => void;
 }
 
-const AdminContentComponent: React.FC<AdminContentComponentProps> = ({ selectedMenu }) => {
+const AdminContentComponent: React.FC<AdminContentComponentProps> = ({
+  selectedMenu,
+  firstMenuName,
+  onEnterDefaultMenu,
+}) => {
+  const [showWelcomeText, setShowWelcomeText] = useState(false);
+
   // 处理常见问题点击
   const handleHelpClick = () => {
     // 这里可以打开帮助弹窗或跳转到帮助页面
@@ -19,20 +27,67 @@ const AdminContentComponent: React.FC<AdminContentComponentProps> = ({ selectedM
     // 可以根据 selectedMenu 的 help_key 或相关字段来显示对应的帮助内容
   };
 
+  useEffect(() => {
+    if (selectedMenu) {
+      setShowWelcomeText(false);
+      return;
+    }
+
+    setShowWelcomeText(false);
+    const timer = window.setTimeout(() => {
+      setShowWelcomeText(true);
+    }, 5000);
+
+    return () => window.clearTimeout(timer);
+  }, [selectedMenu]);
+
   // 渲染内容
   const renderContent = () => {
     if (!selectedMenu) {
       return (
-        <div className="admin-content-welcome">
-          <div className="welcome-icon">
-            <i className="fas fa-mouse-pointer"></i>
+        <div className="admin-content-main default-welcome-main">
+          <div className="matrix-welcome-container">
+            <div className="matrix-center-content">
+              <div className="ai-matrix-loader">
+                <div className="digit">0</div>
+                <div className="digit">1</div>
+                <div className="digit">0</div>
+                <div className="digit">1</div>
+                <div className="digit">1</div>
+                <div className="digit">0</div>
+                <div className="digit">0</div>
+                <div className="digit">1</div>
+                <div className="digit">1</div>
+                <div className="digit">0</div>
+                <div className="digit">1</div>
+                <div className="digit">0</div>
+                <div className="digit">0</div>
+                <div className="digit">1</div>
+                <div className="digit">1</div>
+                <div className="digit">0</div>
+                <div className="glow" />
+              </div>
+
+              <div className={`matrix-welcome-text ${showWelcomeText ? 'show' : ''}`}>
+                <Title level={3} className="matrix-title">
+                  欢迎使用后台管理系统
+                </Title>
+                <Text className="matrix-subtitle">
+                  {firstMenuName ? `点击按钮进入「${firstMenuName}」` : '点击按钮进入平台概览'}
+                </Text>
+                <div className="matrix-welcome-actions">
+                  <Button
+                    type="primary"
+                    className="enter-overview-btn"
+                    onClick={onEnterDefaultMenu}
+                    disabled={!onEnterDefaultMenu}
+                  >
+                    点击平台概览
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
-          <Title level={3} type="secondary" className="welcome-title">
-            欢迎使用管理后台
-          </Title>
-          <Text type="secondary" className="welcome-subtitle">
-            请从左侧菜单选择要查看的内容
-          </Text>
         </div>
       );
     }

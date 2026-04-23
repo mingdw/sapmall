@@ -2,6 +2,9 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 
   // 区域一：商品概览
   .statsSection {
@@ -33,6 +36,9 @@
     border: 1px solid rgba(51, 65, 85, 0.2);
     border-radius: 8px;
     padding: 12px 16px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     backdrop-filter: blur(8px);
     transition: all 0.2s ease;
 
@@ -94,6 +100,11 @@
 
   // 表格容器：作为整体容器的一部分
   .tableWrapper {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    // 保证表格区域左右内边距一致，避免出现一侧贴边
+    padding-inline: 8px;
     overflow-x: auto;
     overflow-y: visible;
   }
@@ -108,6 +119,12 @@
       // 确保表格可以横向滚动，操作列可见
       .ant-table-container {
         overflow-x: auto;
+      }
+
+      // Ant Table 实际横向滚动容器，补齐左右内边距，避免右侧贴边
+      .ant-table-content {
+        padding-inline: 8px;
+        box-sizing: border-box;
       }
 
       // 移除固定列的白色背景和阴影效果

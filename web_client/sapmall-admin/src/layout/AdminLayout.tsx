@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Layout as AntLayout, Menu, Button, Typography, Spin } from 'antd';
 import { 
   MenuFoldOutlined,
@@ -106,6 +106,26 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
     }
   };
 
+  // 找到第一个可点击叶子菜单，供默认欢迎页跳转使用
+  const getFirstLeafMenu = useCallback((menus: CategoryTreeResp[]): CategoryTreeResp | null => {
+    for (const menu of menus) {
+      if (menu.children && menu.children.length > 0) {
+        const leaf = getFirstLeafMenu(menu.children);
+        if (leaf) return leaf;
+      } else {
+        return menu;
+      }
+    }
+    return null;
+  }, []);
+
+  const firstLeafMenu = useMemo(() => getFirstLeafMenu(menuTree), [menuTree, getFirstLeafMenu]);
+
+  const handleEnterDefaultMenu = useCallback(() => {
+    if (!firstLeafMenu) return;
+    handleMenuClick(firstLeafMenu);
+  }, [firstLeafMenu]);
+
   // 构建菜单项
   const buildMenuItems = (menus: CategoryTreeResp[]): any[] => {
     return menus.map(menu => ({
@@ -192,7 +212,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
       
       {/* 右侧内容区域 */}
       <main className="content-area">
-        <AdminContentComponent selectedMenu={selectedMenu} />
+        <AdminContentComponent
+          selectedMenu={selectedMenu}
+          firstMenuName={firstLeafMenu?.name}
+          onEnterDefaultMenu={handleEnterDefaultMenu}
+        />
       </main>
     </div>
   );
