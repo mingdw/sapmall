@@ -1,0 +1,62 @@
+// backend_service/app/api/common/types/common_types.api
+syntax = "v1"
+
+info(
+	title: "common types"
+	desc: "common api types"
+	author: "mingdw"
+	email: "mingdw11@163.com"
+	version: "v0.1"
+)
+
+type (
+	// 健康检查请求
+	HealthCheckReq {
+		Service string `json:"service"`
+	}
+	// 健康检查响应
+	HealthCheckResp {
+		Status string `json:"status"`
+		Time   int64  `json:"time"`
+	}
+	// 版本信息响应
+	VersionResp {
+		Version   string `json:"version"`
+		BuildTime string `json:"build_time"`
+		GitCommit string `json:"git_commit"`
+		GoVersion string `json:"go_version"`
+	}
+	// 获取随机数请求
+	GetNonceByAddressReq {
+		WalletAddress string `path:"wallet_address"`
+	}
+	// 获取随机数响应
+	GetNonceByAddressResp {
+		Nonce string `json:"nonce"`
+	}
+	// 登录请求
+	LoginReq {
+		WalletAddress string `json:"wallet_address"`
+		Signature     string `json:"signature"`
+	}
+	// 用户信息
+	UserInfo {
+		Id        int64    `json:"id"`
+		Address   string   `json:"address"`
+		Nickname  string   `json:"nickname"`
+		Avatar    string   `json:"avatar"`
+		Status    int      `json:"status"`
+		Roles     []string `json:"roles"`
+		CreatedAt string   `json:"created_at"`
+		UpdatedAt string   `json:"updated_at"`
+	}
+	// 登录响应
+	LoginResp {
+		Token    string   `json:"token"`
+		UserInfo UserInfo `json:"user_info"`
+	}
+	// 获取目录请求
+	GetCategoryTreeReq {
+		CategoryType int `path:"category_type"`
+	}
+)

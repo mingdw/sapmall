@@ -1,50 +1,23 @@
 // backend_service/app/api/user/user.api
 syntax = "v1"
 
-type (
-    GetUserInfoReq {
-        UserId int64 `path:"user_id"`
-    }
-    // 获取用户信息响应
-    GetUserInfoResp {
-        Code     int      `json:"code"`
-        Msg      string   `json:"msg"`
-        Data  string `json:"data"`
-    }
-    // 申请商家认证请求（生成保证金缴纳意图单）
-    ApplyMerchantCertReq {
-        TermsVersion string `json:"termsVersion,optional"` // 用户已同意的条款版本号或摘要，便于审计
-    }
-    // 保证金意图单（写入 BaseResp.Data，供前端与 DApp 使用）
-    MerchantDepositIntentResp {
-        IntentId        string `json:"intentId"`
-        Amount          string `json:"amount"`
-        Token           string `json:"token"`
-        ChainId         int64  `json:"chainId"`
-        ContractAddress string `json:"contractAddress"`
-        ExpireAt        string `json:"expireAt"` // 建议格式：2006-01-02 15:04:05 或 RFC3339
-        TokenAddress    string `json:"tokenAddress,optional"`
-        TxHash          string `json:"txHash,optional"`
-    }
-)
+import "types/user_types.api"
 
 @server (
-    group:      user
-    prefix:     /api/user
-    middleware: AuthMiddleware,RespMiddleware
+	group:      user
+	prefix:     /api/user
+	middleware: AuthMiddleware,RespMiddleware
 )
 service sapmall {
+	@doc "获取用户信息"
+	@handler GetUserInfo
+	get /info/:user_id (GetUserInfoReq) returns (GetUserInfoResp)
 
-    @doc "获取用户信息"
-    @handler GetUserInfo
-    get /info/:user_id (GetUserInfoReq) returns (GetUserInfoResp)
+	@doc "修改用户信息"
+	@handler ModifyUserInfo
+	post /modify (ModifyUserInfoReq) returns (BaseResp)
 
-    @doc "获取用户后台菜单"
-    @handler GetRoleMenu
-    get /menus returns (BaseResp)
-
-    @doc "申请商家认证"
-    @handler ApplyMerchantCert
-    post /merchant/cert/apply (ApplyMerchantCertReq) returns (BaseResp)
-
+	@doc "申请商家认证"
+	@handler ApplyMerchantCert
+	post /merchant/cert/apply (ApplyMerchantCertReq) returns (ApplyMerchantCertResp)
 }

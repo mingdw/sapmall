@@ -1,6 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import { DatePicker, Form, Input, Select } from 'antd';
+import { DatePicker, Form, Input, Radio } from 'antd';
+import MessageUtils from '../../../../utils/messageUtils';
 import type {
   KycStatus,
   MerchantDepositIntent,
@@ -16,7 +17,13 @@ const OPERATION_LOG_PAGE_SIZE = 5;
 
 interface ProfileSectionListProps {
   profile: ProfileData;
+  initialProfile: ProfileData;
   onProfileChange: (nextProfile: ProfileData) => void;
+  onSubmitProfileField: (payload: {
+    nickname?: string;
+    gender?: ProfileGender;
+    birthday?: string;
+  }) => Promise<boolean>;
   onOpenKyc: () => void;
   onOpenMerchantApplyModal: () => void;
   merchantIntent: MerchantDepositIntent | null;
@@ -92,6 +99,12 @@ const getGenderText = (gender: ProfileGender): string => {
   if (gender === 'male') return '男';
   if (gender === 'female') return '女';
   return '未设置';
+};
+
+const formatWalletAddress = (address?: string): string => {
+  if (!address) return '';
+  if (address.length <= 12) return address;
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
 const getKycText = (status: KycStatus): string => {
@@ -173,7 +186,9 @@ const getOperationResultMeta = (
 
 const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
   profile,
+  initialProfile,
   onProfileChange,
+  onSubmitProfileField,
   onOpenKyc,
   onOpenMerchantApplyModal,
   merchantIntent,
@@ -184,10 +199,25 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
   const [showKycDetail, setShowKycDetail] = React.useState(false);
   const [showMerchantDetail, setShowMerchantDetail] = React.useState(false);
   const [operationLogVisibleCount, setOperationLogVisibleCount] = React.useState(OPERATION_LOG_PAGE_SIZE);
+  const [lastSubmittedNickname, setLastSubmittedNickname] = React.useState(
+    (initialProfile.nickname || '').trim(),
+  );
+  const [lastSubmittedBirthday, setLastSubmittedBirthday] = React.useState(initialProfile.birthday || '');
+  const [submittingNickname, setSubmittingNickname] = React.useState(false);
+  const [submittingBirthday, setSubmittingBirthday] = React.useState(false);
+  const [submittingGender, setSubmittingGender] = React.useState(false);
 
   React.useEffect(() => {
     setOperationLogVisibleCount(OPERATION_LOG_PAGE_SIZE);
   }, [profile.operationLogs]);
+
+  React.useEffect(() => {
+    setLastSubmittedNickname((initialProfile.nickname || '').trim());
+  }, [initialProfile.nickname]);
+
+  React.useEffect(() => {
+    setLastSubmittedBirthday(initialProfile.birthday || '');
+  }, [initialProfile.birthday]);
 
   const operationLogsVisible = profile.operationLogs.slice(0, operationLogVisibleCount);
   const operationLogHasMore = profile.operationLogs.length > operationLogVisibleCount;
@@ -203,6 +233,55 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
       ...profile,
       [field]: value,
     });
+  };
+
+  const handleSubmitField = (fieldLabel: string) => {
+    MessageUtils.success(`${fieldLabel}修改成功`);
+  };
+
+  const handleSubmitNickname = async () => {
+    const trimmedNickname = profile.nickname.trim();
+    if (!trimmedNickname) {
+      MessageUtils.warning('昵称不能为空');
+      return;
+    }
+    setSubmittingNickname(true);
+    const success = await onSubmitProfileField({ nickname: trimmedNickname });
+    setSubmittingNickname(false);
+    if (success) {
+      setLastSubmittedNickname(trimmedNickname);
+      handleSubmitField('昵称');
+    }
+  };
+
+  const handleGenderChange = async (nextGender: ProfileGender) => {
+    const previousGender = profile.gender;
+    if (nextGender === previousGender || submittingGender) {
+      return;
+    }
+    updateProfileField('gender', nextGender);
+    setSubmittingGender(true);
+    const success = await onSubmitProfileField({ gender: nextGender });
+    setSubmittingGender(false);
+    if (success) {
+      MessageUtils.success(`性别已更新为${getGenderText(nextGender)}`);
+      return;
+    }
+    updateProfileField('gender', previousGender);
+  };
+
+  const handleSubmitBirthday = async () => {
+    if (!profile.birthday) {
+      MessageUtils.warning('请先选择生日');
+      return;
+    }
+    setSubmittingBirthday(true);
+    const success = await onSubmitProfileField({ birthday: profile.birthday });
+    setSubmittingBirthday(false);
+    if (success) {
+      setLastSubmittedBirthday(profile.birthday);
+      handleSubmitField('生日');
+    }
   };
 
   const isKycVerified = profile.kycStatus === 'verified';
@@ -227,6 +306,12 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
   const merchantMeta = getMerchantStatusMeta(profile.merchantDepositStatus);
   const merchantToggleText = profile.merchantDepositStatus === 'paid' ? '查看认证详情' : '去认证';
   const isMerchantNotApplied = profile.merchantDepositStatus === 'not_applied';
+  const nicknameChanged = profile.nickname.trim() !== (initialProfile.nickname || '').trim();
+  const nicknameSubmitted = profile.nickname.trim() === lastSubmittedNickname;
+  const showNicknameSubmit = nicknameChanged && profile.nickname.trim().length > 0;
+  const birthdayChanged = (profile.birthday || '') !== (initialProfile.birthday || '');
+  const birthdaySubmitted = (profile.birthday || '') === lastSubmittedBirthday;
+  const showBirthdaySubmit = birthdayChanged && Boolean(profile.birthday) && !birthdaySubmitted;
 
   return (
     <div className={styles.sectionList}>
@@ -442,66 +527,137 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
       <SectionCard icon="fa-user-circle" title="基础资料" subtitle="维护用户身份与展示信息">
         <SectionForm>
           <SectionFormItem title="用户ID" description="系统分配的唯一标识符">
-            <Input className={styles.inlineField} value={profile.userId} disabled bordered={false} />
+            <div className={styles.readonlyFieldRow}>
+              <Input className={styles.inlineField} value={profile.userId} disabled bordered={false} />
+              <span className={styles.fieldActionSlot}>
+                <span className={styles.readonlyFieldAction} title="禁止修改">
+                  <i className="fas fa-lock"></i>
+                </span>
+              </span>
+            </div>
           </SectionFormItem>
 
-          <SectionFormItem title="用户名" description="账户登录名称">
-            <Input
-              className={styles.inlineField}
-              value={profile.username}
-              onChange={(event) => updateProfileField('username', event.target.value)}
-              placeholder="请输入用户名"
-              bordered={false}
-            />
-          </SectionFormItem>
-
-          <SectionFormItem title="昵称" description="用户展示名称">
-            <Input
-              className={styles.inlineField}
-              value={profile.nickname}
-              onChange={(event) => updateProfileField('nickname', event.target.value)}
-              placeholder="请输入昵称"
-              bordered={false}
-            />
-          </SectionFormItem>
-
-          <SectionFormItem title="性别" description="用户性别信息">
-            <Select
-              className={styles.inlineField}
-              value={profile.gender}
-              onChange={(value) => updateProfileField('gender', value as ProfileGender)}
-              bordered={false}
-              options={[
-                { value: 'unknown', label: getGenderText('unknown') },
-                { value: 'male', label: getGenderText('male') },
-                { value: 'female', label: getGenderText('female') },
-              ]}
-            />
-          </SectionFormItem>
-
-          <SectionFormItem title="生日" description="用户出生日期">
-            <DatePicker
-              className={styles.inlineField}
-              value={profile.birthday ? dayjs(profile.birthday, 'YYYY-MM-DD') : null}
-              onChange={(value) =>
-                updateProfileField('birthday', value ? value.format('YYYY-MM-DD') : '')
-              }
-              format="YYYY-MM-DD"
-              placeholder="请选择生日"
-              allowClear
-              bordered={false}
-              inputReadOnly
-            />
+          <SectionFormItem title="用户名" description="登录账号即钱包地址">
+            <div className={styles.readonlyFieldRow}>
+              <Input
+                className={styles.inlineField}
+                value={formatWalletAddress(profile.walletAddress || profile.username)}
+                disabled
+                bordered={false}
+                placeholder="钱包地址"
+              />
+              <span className={styles.fieldActionSlot}>
+                <span className={styles.readonlyFieldAction} title="禁止修改">
+                  <i className="fas fa-lock"></i>
+                </span>
+              </span>
+            </div>
           </SectionFormItem>
 
           <SectionFormItem title="注册时间" description="账户创建时间">
-            <Input
-              className={styles.inlineField}
-              value={profile.registerTime}
-              disabled
-              bordered={false}
-            />
+            <div className={styles.readonlyFieldRow}>
+              <Input
+                className={styles.inlineField}
+                value={profile.registerTime}
+                disabled
+                bordered={false}
+              />
+              <span className={styles.fieldActionSlot}>
+                <span className={styles.readonlyFieldAction} title="禁止修改">
+                  <i className="fas fa-lock"></i>
+                </span>
+              </span>
+            </div>
           </SectionFormItem>
+
+          <SectionFormItem title="昵称" description="用户展示名称">
+            <div className={styles.readonlyFieldRow}>
+              <Input
+                className={styles.inlineField}
+                value={profile.nickname}
+                onChange={(event) => updateProfileField('nickname', event.target.value)}
+                placeholder="请输入昵称"
+                bordered={false}
+              />
+              <span className={styles.fieldActionSlot}>
+                {showNicknameSubmit && !nicknameSubmitted ? (
+                  <button
+                    type="button"
+                    className={styles.fieldSubmitIconBtn}
+                    title="提交昵称修改"
+                    aria-label="提交昵称修改"
+                    disabled={submittingNickname}
+                    onClick={handleSubmitNickname}
+                  >
+                    <i className={`fas ${submittingNickname ? 'fa-spinner fa-spin' : 'fa-check'}`}></i>
+                  </button>
+                ) : null}
+              </span>
+            </div>
+          </SectionFormItem>
+
+          <SectionFormItem title="性别" description="用户性别信息">
+            <div className={styles.readonlyFieldRow}>
+              <Radio.Group
+                className={styles.genderRadioGroup}
+                value={profile.gender === 'unknown' ? undefined : profile.gender}
+                disabled={submittingGender}
+                onChange={(event) => handleGenderChange(event.target.value as ProfileGender)}
+              >
+                <Radio value="male">{getGenderText('male')}</Radio>
+                <Radio value="female">{getGenderText('female')}</Radio>
+              </Radio.Group>
+              <span className={styles.fieldActionSlot}></span>
+            </div>
+          </SectionFormItem>
+
+          <SectionFormItem title="生日" description="用户出生日期">
+            <div className={styles.readonlyFieldRow}>
+              <DatePicker
+                className={styles.inlineField}
+                value={profile.birthday ? dayjs(profile.birthday, 'YYYY-MM-DD') : null}
+                onChange={(value) =>
+                  updateProfileField('birthday', value ? value.format('YYYY-MM-DD') : '')
+                }
+                format="YYYY-MM-DD"
+                placeholder="请选择生日"
+                allowClear
+                bordered={false}
+                inputReadOnly
+              />
+              <span className={styles.fieldActionSlot}>
+                {showBirthdaySubmit ? (
+                  <button
+                    type="button"
+                    className={styles.fieldSubmitIconBtn}
+                    title="提交生日修改"
+                    aria-label="提交生日修改"
+                    disabled={submittingBirthday}
+                    onClick={handleSubmitBirthday}
+                  >
+                    <i className={`fas ${submittingBirthday ? 'fa-spinner fa-spin' : 'fa-check'}`}></i>
+                  </button>
+                ) : null}
+              </span>
+            </div>
+          </SectionFormItem>
+
+          <SectionFormItem title="注册时间" description="账户创建时间">
+            <div className={styles.readonlyFieldRow}>
+              <Input
+                className={styles.inlineField}
+                value={profile.registerTime}
+                disabled
+                bordered={false}
+              />
+              <span className={styles.fieldActionSlot}>
+                <span className={styles.readonlyFieldAction} title="禁止修改">
+                  <i className="fas fa-lock"></i>
+                </span>
+              </span>
+            </div>
+          </SectionFormItem>
+
         </SectionForm>
       </SectionCard>
 

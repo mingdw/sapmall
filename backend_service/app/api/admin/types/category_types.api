@@ -1,0 +1,60 @@
+// backend_service/app/api/admin/types/category_types.api
+syntax = "v1"
+
+info(
+	title: "admin category types"
+	desc: "admin category / attr API types"
+	author: "mingdw"
+	email: "mingdw11@163.com"
+	version: "v0.1"
+)
+
+type (
+	// 保存目录请求（新增/编辑共用，通过id区分：id为0或空表示新增，有值表示编辑）
+	SaveCategoryReq {
+		ID         uint   `json:"id,optional"`         // 目录ID，为0或空表示新增，有值表示编辑
+		Name       string `json:"name"`                // 目录名称
+		Code       string `json:"code"`                // 目录编码
+		ParentID   uint   `json:"parentId,optional"`   // 父目录ID
+		ParentCode string `json:"parentCode,optional"` // 父目录编码
+		Level      int    `json:"level,optional"`      // 层级
+		Sort       int    `json:"sort"`                // 排序
+		Icon       string `json:"icon,optional"`       // 图标
+		MenuType   int    `json:"menuType"`            // 目录类型：0=商品目录 1=菜单目录
+	}
+	// 删除目录请求
+	DeleteCategoryReq {
+		ID uint `path:"id"` // 目录ID
+	}
+	// 保存属性组请求（新增/编辑共用，通过id区分：id为0或空表示新增，有值表示编辑）
+	SaveAttrGroupReq {
+		ID            uint   `json:"id,optional"`          // 属性组ID，为0或空表示新增，有值表示编辑
+		CategoryID    uint   `json:"categoryId,optional"` // 目录ID
+		AttrGroupName string `json:"attrGroupName"`       // 属性组名称
+		AttrGroupCode string `json:"attrGroupCode"`       // 属性组编码
+		Type          int    `json:"type,optional"`       // 类型：0=通用 1=目录专用
+		Status        int    `json:"status,optional"`     // 状态：0=启用 1=禁用
+		Sort          int    `json:"sort"`                // 排序
+		Description   string `json:"description,optional"` // 描述
+	}
+	// 删除属性组请求
+	DeleteAttrGroupReq {
+		ID uint `path:"id"` // 属性组ID
+	}
+	// 保存属性请求（新增/编辑共用，通过id区分：id为0或空表示新增，有值表示编辑）
+	SaveAttrReq {
+		ID            uint   `json:"id,optional"`          // 属性ID，为0或空表示新增，有值表示编辑
+		AttrGroupID   uint   `json:"attrGroupId"`         // 属性组ID
+		AttrGroupCode string `json:"attrGroupCode"`       // 属性组编码
+		AttrName      string `json:"attrName"`            // 属性名称
+		AttrCode      string `json:"attrCode"`            // 属性编码
+		AttrType      int    `json:"attrType,optional"`   // 属性类型：1=文本 2=数字
+		Status        int    `json:"status,optional"`     // 状态：0=启用 1=禁用
+		Sort          int    `json:"sort"`                // 排序
+		Description   string `json:"description,optional"` // 描述
+	}
+	// 删除属性请求
+	DeleteAttrReq {
+		ID uint `path:"id"` // 属性ID
+	}
+)

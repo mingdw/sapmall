@@ -14,6 +14,7 @@ type UserRepository interface {
 	GetByAddress(ctx context.Context, address string) (*model.User, error)
 	GetByAddressWithRoles(ctx context.Context, address string) (*model.User, error)
 	Update(ctx context.Context, user *model.User) error
+	UpdateColumnsByID(ctx context.Context, id int64, updates map[string]interface{}) error
 	Delete(ctx context.Context, id int64) error
 	List(ctx context.Context, offset, limit int) ([]*model.User, int64, error)
 	GetMaxID(ctx context.Context) (int64, error)
@@ -47,6 +48,17 @@ func (r *userRepository) GetByID(ctx context.Context, id int64) (*model.User, er
 // Update 更新 User
 func (r *userRepository) Update(ctx context.Context, user *model.User) error {
 	return r.db.WithContext(ctx).Save(user).Error
+}
+
+// UpdateColumnsByID 按需更新指定列
+func (r *userRepository) UpdateColumnsByID(ctx context.Context, id int64, updates map[string]interface{}) error {
+	if len(updates) == 0 {
+		return nil
+	}
+	return r.db.WithContext(ctx).
+		Model(&model.User{}).
+		Where("id = ?", id).
+		Updates(updates).Error
 }
 
 // Delete 删除 User

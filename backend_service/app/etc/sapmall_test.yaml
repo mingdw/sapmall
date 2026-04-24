@@ -1,3 +1,10 @@
 Name: sapmall
 Host: 0.0.0.0
 Port: 8888
+MerchantDeposit:
+  Amount: "100"
+  TokenSymbol: "USDT"
+  TokenAddress: ""
+  ChainID: 56
+  ContractAddress: "0x0000000000000000000000000000000000000000"
+  IntentExpireMins: 30

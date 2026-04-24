@@ -72,6 +72,28 @@
   border-radius: 999px !important;
 }
 
+.userStatusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.userStatusNormal {
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.45);
+  background: rgba(6, 78, 59, 0.25);
+}
+
+.userStatusDisabled {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.5);
+  background: rgba(127, 29, 29, 0.24);
+}
+
 .walletLine {
   margin-top: 8px;
   display: flex;
@@ -101,6 +123,127 @@
 
 .copyIconButton:hover {
   color: #93c5fd !important;
+}
+
+.readonlyFieldIcon {
+  color: #64748b;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.readonlyFieldRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fieldActionSlot {
+  width: 48px;
+  min-width: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.readonlyFieldAction {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: #64748b;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(100, 116, 139, 0.4);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.fieldSubmitBtn {
+  border: 1px solid rgba(96, 165, 250, 0.45);
+  background: rgba(30, 64, 175, 0.22);
+  color: #93c5fd;
+  height: 22px;
+  line-height: 20px;
+  padding: 0 8px;
+  font-size: 11px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.fieldSubmitBtn:hover {
+  color: #bfdbfe;
+  border-color: rgba(147, 197, 253, 0.6);
+  background: rgba(37, 99, 235, 0.28);
+}
+
+.fieldSubmitIconBtn {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  color: #22c55e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.fieldSubmitIconBtn:hover {
+  color: #4ade80;
+}
+
+.genderRadioGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 32px;
+  color: #cbd5e1;
+  padding: 2px 4px;
+}
+
+.genderRadioGroup :global(.ant-radio-wrapper) {
+  color: #cbd5e1;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.genderRadioGroup :global(.ant-radio-inner) {
+  width: 16px;
+  height: 16px;
+  border-color: rgba(100, 116, 139, 0.8);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.genderRadioGroup :global(.ant-radio-wrapper:hover .ant-radio-inner) {
+  border-color: #60a5fa;
+}
+
+.genderRadioGroup :global(.ant-radio-checked .ant-radio-inner) {
+  border-color: #3b82f6;
+  background: #3b82f6;
+}
+
+.genderRadioGroup :global(.ant-radio-inner::after) {
+  background-color: #f8fafc;
+}
+
+.genderRadioGroup :global(.ant-radio-wrapper-checked) {
+  color: #e2e8f0;
+}
+
+.inlineField :global(.ant-input),
+.inlineField :global(.ant-input-affix-wrapper),
+.inlineField :global(.ant-input-affix-wrapper-focused),
+.inlineField :global(.ant-select-selector),
+.inlineField :global(.ant-picker) {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
 }
 
 .overviewHint {

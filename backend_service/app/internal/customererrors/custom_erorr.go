@@ -1,6 +1,7 @@
 package customererrors
 
 import (
+	"reflect"
 	consts "sapphire-mall/app/internal/const"
 	"sapphire-mall/app/internal/types"
 )
@@ -20,22 +21,48 @@ func SuccessMsg(msg string) *types.BaseResp {
 		Code:    consts.SUCCESS,
 		Message: msg,
 		Data:    nil,
+		Total:   0,
 	}
 }
 
 func SuccessData(data interface{}) *types.BaseResp {
+	total := inferDataTotal(data)
+
 	return &types.BaseResp{
 		Code:    consts.SUCCESS,
 		Message: consts.GetErrorMessage(consts.SUCCESS),
 		Data:    data,
+		Total:   total,
 	}
 }
 
-func Success(code int, msg string, data interface{}) *types.BaseResp {
+func inferDataTotal(data interface{}) int {
+	if data == nil {
+		return 0
+	}
+
+	value := reflect.ValueOf(data)
+	for value.IsValid() && (value.Kind() == reflect.Interface || value.Kind() == reflect.Ptr) {
+		if value.IsNil() {
+			return 0
+		}
+		value = value.Elem()
+	}
+
+	switch value.Kind() {
+	case reflect.Array, reflect.Slice, reflect.Map, reflect.String, reflect.Chan:
+		return value.Len()
+	default:
+		return 0
+	}
+}
+
+func Success(code int, msg string, data interface{}, total int) *types.BaseResp {
 	return &types.BaseResp{
 		Code:    code,
 		Message: msg,
 		Data:    data,
+		Total:   total,
 	}
 }
 
@@ -44,6 +71,7 @@ func FailDefault() *types.BaseResp {
 		Code:    consts.SYSTEM_ERROR,
 		Message: consts.GetErrorMessage(consts.SYSTEM_ERROR),
 		Data:    nil,
+		Total:   0,
 	}
 }
 
@@ -52,6 +80,7 @@ func FailMsg(msg string) *types.BaseResp {
 		Code:    consts.SYSTEM_ERROR,
 		Message: msg,
 		Data:    nil,
+		Total:   0,
 	}
 }
 
@@ -60,6 +89,7 @@ func FailData(data interface{}) *types.BaseResp {
 		Code:    consts.SYSTEM_ERROR,
 		Message: consts.GetErrorMessage(consts.SYSTEM_ERROR),
 		Data:    data,
+		Total:   0,
 	}
 }
 
@@ -68,6 +98,7 @@ func Fail(code int, msg string, data interface{}) *types.BaseResp {
 		Code:    code,
 		Message: msg,
 		Data:    data,
+		Total:   0,
 	}
 }
 

@@ -1,36 +1,155 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Button, Tag, Tooltip } from 'antd';
 import MessageUtils from '../../../utils/messageUtils';
-import { profileMockData } from './mock';
 import type { KycSubmitPayload, MerchantDepositIntent, ProfileData } from './types';
 import ProfileSectionList from './components/ProfileSectionList';
 import KycModal from './components/KycModal';
 import MerchantDepositModal from './components/MerchantDepositModal';
+import { userApi } from '../../../services/api/userApi';
+import { useUserStore } from '../../../store/userStore';
 import styles from './ProfileManager.module.scss';
 
+const EMPTY_PROFILE: ProfileData = {
+  userId: '',
+  username: '',
+  nickname: '',
+  walletAddress: '',
+  userRole: '',
+  statusText: '',
+  brief: '',
+  gender: 'unknown',
+  birthday: '',
+  registerTime: '',
+  email: '',
+  phone: '',
+  emailVerified: false,
+  phoneVerified: false,
+  kycStatus: 'not_verified',
+  merchantDepositStatus: 'not_applied',
+  settings: {
+    profilePublic: true,
+    marketingEmails: false,
+    transactionNotifications: true,
+  },
+  operationLogs: [],
+};
+
+const mapGender = (gender?: number): ProfileData['gender'] => {
+  if (gender === 1) return 'male';
+  if (gender === 2) return 'female';
+  return 'unknown';
+};
+
+const mapKycStatus = (status?: number): ProfileData['kycStatus'] => {
+  if (status === 1) return 'pending';
+  if (status === 2) return 'verified';
+  return 'not_verified';
+};
+
+const mapMerchantDepositStatus = (status?: number): ProfileData['merchantDepositStatus'] => {
+  if (status === 1) return 'pending_payment';
+  if (status === 2) return 'confirming';
+  if (status === 3) return 'paid';
+  return 'not_applied';
+};
+
+const mapOperationResult = (status?: number): 'success' | 'failed' | 'partial' => {
+  if (status === 2) return 'failed';
+  if (status === 3) return 'partial';
+  return 'success';
+};
+
+const formatWalletAddress = (address?: string): string => {
+  if (!address) return '';
+  if (address.length <= 12) return address;
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
+const mapGenderToApi = (gender: ProfileData['gender']): number | undefined => {
+  if (gender === 'male') return 1;
+  if (gender === 'female') return 2;
+  return undefined;
+};
+
 const ProfileManager: React.FC = () => {
-  // TODO: 接入用户信息、KYC提交流程的真实后端 API（保留当前 mock 逻辑作为联调兜底）
-  const [savedProfile, setSavedProfile] = useState<ProfileData>(profileMockData);
-  const [draftProfile, setDraftProfile] = useState<ProfileData>(profileMockData);
-  const [saving, setSaving] = useState(false);
+  const [savedProfile, setSavedProfile] = useState<ProfileData>(EMPTY_PROFILE);
+  const [draftProfile, setDraftProfile] = useState<ProfileData>(EMPTY_PROFILE);
+  const [initializing, setInitializing] = useState(true);
   const [kycModalOpen, setKycModalOpen] = useState(false);
   const [merchantModalOpen, setMerchantModalOpen] = useState(false);
   const [merchantLoading, setMerchantLoading] = useState(false);
   const [merchantIntent, setMerchantIntent] = useState<MerchantDepositIntent | null>(null);
-  const hasChanges = useMemo(
-    () => JSON.stringify(draftProfile) !== JSON.stringify(savedProfile),
-    [draftProfile, savedProfile],
-  );
+  const [userStatusCode, setUserStatusCode] = useState<number>(0);
+
+  const loadProfile = useCallback(async (silent = false) => {
+    const currentUser = useUserStore.getState().getCurrentUser();
+    const userId = currentUser?.userId;
+    if (!userId) {
+      throw new Error('未获取到用户ID，请先登录');
+    }
+
+    const resp = await userApi.getUserInfo(userId);
+    const basicInfo = resp?.basicInfo;
+    const roles = Array.isArray(resp?.roles) ? resp.roles : [];
+    const operationLogs = Array.isArray(resp?.operationLogs) ? resp.operationLogs : [];
+
+    const profile: ProfileData = {
+      userId: String(basicInfo?.id ?? userId),
+      username: currentUser?.userAddress || basicInfo?.userCode || '',
+      nickname: basicInfo?.nickname || '',
+      walletAddress: currentUser?.userAddress || basicInfo?.userCode || '',
+      userRole: roles[0]?.roleName || '普通用户',
+      statusText: basicInfo?.status === 1 ? '账户已禁用' : '账户状态正常',
+      brief: basicInfo?.typeDesc || '',
+      gender: mapGender(basicInfo?.gender),
+      birthday: basicInfo?.birthday || '',
+      registerTime: basicInfo?.createdAt || '',
+      email: basicInfo?.email || '',
+      phone: basicInfo?.phone || '',
+      emailVerified: Boolean(basicInfo?.email),
+      phoneVerified: Boolean(basicInfo?.phone),
+      kycStatus: mapKycStatus(basicInfo?.kycStatus),
+      merchantDepositStatus: mapMerchantDepositStatus(basicInfo?.merchantDepositStatus),
+      settings: {
+        profilePublic: true,
+        marketingEmails: false,
+        transactionNotifications: true,
+      },
+      operationLogs: operationLogs.map((item: any) => ({
+        id: String(item.id ?? ''),
+        createdAt: item.createdAt || '',
+        bizModule: item.bizModule || '',
+        actionType: item.actionType || '',
+        summary: item.actionSummary || '',
+        resultStatus: mapOperationResult(item.resultStatus),
+      })),
+    };
+
+    setUserStatusCode(Number(basicInfo?.status ?? 0));
+    setSavedProfile(profile);
+    setDraftProfile(profile);
+    if (!silent) {
+      MessageUtils.success('用户信息已同步');
+    }
+  }, []);
 
   useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (!hasChanges) return;
-      event.preventDefault();
-      event.returnValue = '';
+    let cancelled = false;
+    const initProfile = async () => {
+      try {
+        setInitializing(true);
+        await loadProfile(true);
+      } catch {
+        if (!cancelled) MessageUtils.error('加载用户信息失败');
+      } finally {
+        if (!cancelled) setInitializing(false);
+      }
     };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [hasChanges]);
+    initProfile();
+    return () => {
+      cancelled = true;
+    };
+  }, [loadProfile]);
 
   const handleCopyAddress = async () => {
     try {
@@ -46,7 +165,7 @@ const ProfileManager: React.FC = () => {
         document.execCommand('copy');
         document.body.removeChild(textarea);
       }
-      MessageUtils.success('钱包地址已复制');
+      MessageUtils.success('钱包地址复制成功');
     } catch {
       MessageUtils.error('复制失败，请手动复制');
     }
@@ -56,44 +175,43 @@ const ProfileManager: React.FC = () => {
     setDraftProfile(nextProfile);
   };
 
-  const handleReset = () => {
-    setDraftProfile(savedProfile);
-    MessageUtils.info('已恢复到上次保存状态');
-  };
+  const handleSubmitProfileField = async (payload: {
+    nickname?: string;
+    gender?: ProfileData['gender'];
+    birthday?: string;
+  }): Promise<boolean> => {
+    try {
+      const apiPayload: Record<string, string | number> = {};
+      if (payload.nickname !== undefined) {
+        apiPayload.nickname = payload.nickname.trim();
+      }
+      if (payload.gender !== undefined) {
+        const genderValue = mapGenderToApi(payload.gender);
+        if (genderValue !== undefined) {
+          apiPayload.gender = genderValue;
+        }
+      }
+      if (payload.birthday !== undefined) {
+        apiPayload.birthday = payload.birthday;
+      }
+      if (Object.keys(apiPayload).length === 0) {
+        MessageUtils.warning('没有可提交的修改内容');
+        return false;
+      }
 
-  const handleSave = () => {
-    if (!hasChanges) return;
-    setSaving(true);
-    window.setTimeout(() => {
-      setSavedProfile(draftProfile);
-      setSaving(false);
-      MessageUtils.success('个人信息已保存');
-    }, 500);
+      await userApi.modifyUserInfo(apiPayload);
+      await loadProfile(true);
+      return true;
+    } catch {
+      MessageUtils.error('修改失败，请稍后重试');
+      return false;
+    }
   };
 
   const handleKycCompleted = (payload: KycSubmitPayload) => {
-    setSavedProfile((prev) => ({
-      ...prev,
-      kycStatus: 'pending',
-    }));
-    setDraftProfile((prev) => ({
-      ...prev,
-      kycStatus: 'pending',
-    }));
     setKycModalOpen(false);
     MessageUtils.success(`KYC申请已提交：${payload.basicInfo.realName}`);
-  };
-
-  const buildMockIntent = (): MerchantDepositIntent => {
-    const now = Date.now();
-    return {
-      intentId: `INTENT_${now}`,
-      amount: '100',
-      token: 'USDT',
-      chainId: 8453,
-      contractAddress: '0xAaBbCcDdEeFf00112233445566778899AaBbCcDd',
-      expireAt: new Date(now + 30 * 60 * 1000).toLocaleString(),
-    };
+    loadProfile(true).catch(() => undefined);
   };
 
   const openMerchantDepositPage = (intent: MerchantDepositIntent) => {
@@ -124,14 +242,21 @@ const ProfileManager: React.FC = () => {
 
   const handleMerchantSubmitApplication = () => {
     setMerchantLoading(true);
-    window.setTimeout(() => {
-      const nextIntent = buildMockIntent();
-      setMerchantIntent(nextIntent);
-      setSavedProfile((prev) => ({ ...prev, merchantDepositStatus: 'pending_payment' }));
-      setDraftProfile((prev) => ({ ...prev, merchantDepositStatus: 'pending_payment' }));
-      setMerchantLoading(false);
-      MessageUtils.success('商家申请已提交，请前往DApp缴纳保证金');
-    }, 500);
+    userApi
+      .applyMerchantCert()
+      .then((resp) => {
+        if (resp?.intent) {
+          setMerchantIntent(resp.intent as MerchantDepositIntent);
+        }
+        MessageUtils.success('商家申请已提交，请前往DApp缴纳保证金');
+        return loadProfile(true);
+      })
+      .catch(() => {
+        MessageUtils.error('提交商家申请失败');
+      })
+      .finally(() => {
+        setMerchantLoading(false);
+      });
   };
 
   const handleMerchantOpenDapp = () => {
@@ -140,39 +265,17 @@ const ProfileManager: React.FC = () => {
       return;
     }
     openMerchantDepositPage(merchantIntent);
-    setSavedProfile((prev) => ({ ...prev, merchantDepositStatus: 'confirming' }));
-    setDraftProfile((prev) => ({ ...prev, merchantDepositStatus: 'confirming' }));
+    loadProfile(true).catch(() => undefined);
   };
 
   const handleMerchantMarkPaid = () => {
-    setMerchantLoading(true);
-    window.setTimeout(() => {
-      setMerchantIntent((prev) =>
-        prev
-          ? {
-              ...prev,
-              txHash: `0x${Date.now().toString(16)}abcdef`,
-            }
-          : prev,
-      );
-      setSavedProfile((prev) => ({ ...prev, merchantDepositStatus: 'paid' }));
-      setDraftProfile((prev) => ({ ...prev, merchantDepositStatus: 'paid' }));
-      setMerchantLoading(false);
-      MessageUtils.success('保证金到账确认成功，商家功能已开通（模拟）');
-    }, 600);
+    MessageUtils.info('请等待链上回调，页面将以后端状态为准');
+    loadProfile(true).catch(() => undefined);
   };
 
   return (
     <div className={styles.profileManager}>
-      {hasChanges && (
-        <Alert
-          className={styles.unsavedAlert}
-          type="warning"
-          showIcon
-          message="你有未保存的个人信息修改"
-          description="可点击右上方“保存更改”提交，或点击“重置”放弃本次修改。"
-        />
-      )}
+      {initializing && <Alert className={styles.unsavedAlert} type="info" showIcon message="正在加载用户信息..." />}
 
       <section className={styles.overviewCard}>
         <div className={styles.overviewMain}>
@@ -181,13 +284,23 @@ const ProfileManager: React.FC = () => {
           </div>
           <div className={styles.overviewMeta}>
             <div className={styles.overviewTopRow}>
-              <h2 className={styles.overviewName}>{draftProfile.nickname || draftProfile.username}</h2>
+              <h2 className={styles.overviewName}>
+                {draftProfile.nickname?.trim() || formatWalletAddress(draftProfile.walletAddress)}
+              </h2>
               <Tag className={styles.roleTag}>{draftProfile.userRole}</Tag>
+              <span
+                className={`${styles.userStatusPill} ${
+                  userStatusCode === 1 ? styles.userStatusDisabled : styles.userStatusNormal
+                }`}
+              >
+                <i className={`fas ${userStatusCode === 1 ? 'fa-ban' : 'fa-check-circle'}`}></i>
+                {userStatusCode === 1 ? '禁用' : '正常'}
+              </span>
             </div>
             <div className={styles.walletLine}>
               <span className={styles.walletLabel}>钱包地址</span>
               <Tooltip title={draftProfile.walletAddress}>
-                <span className={styles.walletValue}>{draftProfile.walletAddress}</span>
+                <span className={styles.walletValue}>{formatWalletAddress(draftProfile.walletAddress)}</span>
               </Tooltip>
               <Button
                 type="text"
@@ -199,29 +312,18 @@ const ProfileManager: React.FC = () => {
             </div>
             <div className={styles.overviewHint}>
               <span>{draftProfile.statusText || '账户状态正常'}</span>
-              {hasChanges ? (
-                <span className={styles.unsavedBadge}>存在未保存更改</span>
-              ) : (
-                <span className={styles.savedBadge}>已同步最新数据</span>
-              )}
+              <span>用户编号：{draftProfile.userId || '--'}</span>
+              <span className={styles.savedBadge}>已同步最新数据</span>
             </div>
           </div>
         </div>
-        {(hasChanges || saving) && (
-          <div className={styles.overviewActions}>
-            <Button onClick={handleReset} disabled={saving}>
-              重置
-            </Button>
-            <Button type="primary" onClick={handleSave} loading={saving}>
-              保存更改
-            </Button>
-          </div>
-        )}
       </section>
 
       <ProfileSectionList
         profile={draftProfile}
+        initialProfile={savedProfile}
         onProfileChange={handleProfileChange}
+        onSubmitProfileField={handleSubmitProfileField}
         onOpenKyc={() => setKycModalOpen(true)}
         onOpenMerchantApplyModal={() => setMerchantModalOpen(true)}
         merchantIntent={merchantIntent}

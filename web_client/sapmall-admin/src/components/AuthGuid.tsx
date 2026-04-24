@@ -69,8 +69,12 @@ const AuthGuid: React.FC<AuthGuidProps> = ({
       // 3. 验证token有效性（可选，根据实际需求）
       if (isLoggedIn && userToken) {
         try {
+          const verifyUserId = currentUser?.userId || iframeParams?.userId;
+          if (!verifyUserId) {
+            throw new Error('缺少用户ID，无法校验用户信息');
+          }
           // 尝试获取用户信息来验证token
-          const userInfoResponse = await userApi.getUserInfo();
+          const userInfoResponse = await userApi.getUserInfo(verifyUserId);
           console.log('AuthGuid - 用户信息验证成功:', userInfoResponse);
         } catch (error) {
           console.warn('AuthGuid - Token验证失败，但继续使用本地状态:', error);

@@ -7,10 +7,15 @@ type ApplyMerchantCertReq struct {
 	TermsVersion string `json:"termsVersion,optional"` // 用户已同意的条款版本号或摘要，便于审计
 }
 
+type ApplyMerchantCertResp struct {
+	Intent MerchantDepositIntentResp `json:"intent,optional"` // 生成的保证金意图单
+}
+
 type BaseResp struct {
 	Code    int         `json:"code"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
+	Total   int         `json:"total"`
 }
 
 type BatchUploadFileResp struct {
@@ -112,8 +117,95 @@ type GetProductDetailReq struct {
 	Id int64 `path:"id"` // 商品SPU ID
 }
 
+type GetProductReq struct {
+	ProductId   int64  `json:"product_id"`
+	ProductCode string `json:"product_code"`
+}
+
+type GetProductResp struct {
+	Code        int         `json:"code"`
+	Msg         string      `json:"msg"`
+	ProductInfo ProductInfo `json:"product_info"`
+}
+
 type GetProductStatsReq struct {
 	Period string `form:"period,optional"` // 统计周期：day、week、month
+}
+
+type GetProfileInitReq struct {
+	LogPage     int64 `form:"logPage,optional"`     // 操作日志页码，默认1
+	LogPageSize int64 `form:"logPageSize,optional"` // 操作日志每页条数，默认10
+}
+
+type GetProfileInitResp struct {
+	User          ProfileUserInfo         `json:"user"`
+	Roles         []ProfileRoleInfo       `json:"roles"`
+	OperationLogs ProfileOperationLogPage `json:"operationLogs"`
+}
+
+type GetRoleMenuResp struct {
+	Menus []MenuTreeNode `json:"menus"`
+}
+
+type GetUserBasicInfo struct {
+	ID                    int64  `json:"id"`
+	UniqueID              string `json:"uniqueId"`
+	UserCode              string `json:"userCode"`
+	Nickname              string `json:"nickname"`
+	Avatar                string `json:"avatar"`
+	Gender                int64  `json:"gender"`
+	Birthday              string `json:"birthday,optional"`
+	Email                 string `json:"email"`
+	Phone                 string `json:"phone"`
+	Status                int64  `json:"status"`
+	StatusDesc            string `json:"statusDesc"`
+	Type                  int64  `json:"type"`
+	TypeDesc              string `json:"typeDesc"`
+	KycStatus             int64  `json:"kycStatus"`
+	MerchantDepositStatus int64  `json:"merchantDepositStatus"`
+	CreatedAt             string `json:"createdAt,optional"`
+	UpdatedAt             string `json:"updatedAt,optional"`
+}
+
+type GetUserInfoReq struct {
+	UserId int64 `path:"user_id"`
+}
+
+type GetUserInfoResp struct {
+	BasicInfo     GetUserBasicInfo          `json:"basicInfo"`              // 用户基础信息
+	Roles         []GetUserRoleInfo         `json:"roles"`                  // 用户角色列表
+	OperationLogs []GetUserOperationLogItem `json:"operationLogs,optional"` // 用户操作日志
+}
+
+type GetUserOperationLogItem struct {
+	ID            int64  `json:"id"`
+	UserID        int64  `json:"userId"`
+	Username      string `json:"username"`
+	BizModule     string `json:"bizModule"`
+	ActionType    string `json:"actionType"`
+	ActionSummary string `json:"actionSummary"`
+	Before        string `json:"before,optional"`
+	After         string `json:"after,optional"`
+	ObjectType    string `json:"objectType"`
+	ObjectID      string `json:"objectId"`
+	DetailJSON    string `json:"detailJson,optional"`
+	ResultStatus  int64  `json:"resultStatus"`
+	ErrorMessage  string `json:"errorMessage,optional"`
+	ClientType    string `json:"clientType,optional"`
+	RequestID     string `json:"requestId,optional"`
+	IP            string `json:"ip,optional"`
+	Item1         string `json:"item1,optional"`
+	Item2         string `json:"item2,optional"`
+	Item3         string `json:"item3,optional"`
+	CreatedAt     string `json:"createdAt,optional"`
+	UpdatedAt     string `json:"updatedAt,optional"`
+}
+
+type GetUserRoleInfo struct {
+	RoleID      int64  `json:"roleId"`
+	RoleCode    string `json:"roleCode"`
+	RoleName    string `json:"roleName"`
+	Description string `json:"description,optional"`
 }
 
 type HealthCheckReq struct {
@@ -141,6 +233,20 @@ type ListProductResp struct {
 	Total int64            `json:"total"`
 }
 
+type ListProductsReq struct {
+	CategoryCodes string `json:"categoryCodes"` // 分类编码，多个用逗号分隔
+	ProductName   string `json:"productName"`   // 商品名称
+	Page          int    `json:"page"`          // 页码
+	PageSize      int    `json:"pageSize"`      // 每页数量
+}
+
+type ListProductsResp struct {
+	Code     int           `json:"code"`
+	Msg      string        `json:"msg"`
+	Products []ProductInfo `json:"products"`
+	Total    int64         `json:"total"`
+}
+
 type LoginReq struct {
 	WalletAddress string `json:"wallet_address"`
 	Signature     string `json:"signature"`
@@ -149,6 +255,23 @@ type LoginReq struct {
 type LoginResp struct {
 	Token    string   `json:"token"`
 	UserInfo UserInfo `json:"user_info"`
+}
+
+type MenuTreeNode struct {
+	ID          int64          `json:"id"`
+	Name        string         `json:"name"`
+	Title       string         `json:"title"`
+	Icon        string         `json:"icon"`
+	URL         string         `json:"url"`
+	Sort        int            `json:"sort"`
+	Level       int            `json:"level"`
+	ParentID    int64          `json:"parent_id"`
+	Status      int            `json:"status"`
+	IsExternal  bool           `json:"is_external"`
+	ExternalURL string         `json:"external_url"`
+	Path        string         `json:"path"`
+	Component   string         `json:"component"`
+	Children    []MenuTreeNode `json:"children,optional"`
 }
 
 type MerchantDepositIntentResp struct {
@@ -160,6 +283,15 @@ type MerchantDepositIntentResp struct {
 	ExpireAt        string `json:"expireAt"` // 建议格式：2006-01-02 15:04:05 或 RFC3339
 	TokenAddress    string `json:"tokenAddress,optional"`
 	TxHash          string `json:"txHash,optional"`
+}
+
+type ModifyUserInfoReq struct {
+	Nickname string `json:"nickname,optional"` // 昵称
+	Gender   int64  `json:"gender,optional"`   // 性别：1=男，2=女
+	Birthday string `json:"birthday,optional"` // 生日：YYYY-MM-DD
+	Email    string `json:"email,optional"`    // 邮箱
+	Phone    string `json:"phone,optional"`    // 手机号
+	Avatar   string `json:"avatar,optional"`   // 头像URL
 }
 
 type ProductAttrParamInfo struct {
@@ -289,6 +421,45 @@ type ProductStatsResp struct {
 	TotalOrdersTrend   string `json:"totalOrdersTrend,optional"`   // 订单总数趋势
 	TotalRevenueTrend  string `json:"totalRevenueTrend,optional"`  // 总营收趋势
 	NewUsersTrend      string `json:"newUsersTrend,optional"`      // 新用户数趋势
+}
+
+type ProfileOperationLogItem struct {
+	ID           int64  `json:"id"`
+	CreatedAt    string `json:"createdAt"`
+	BizModule    string `json:"bizModule"`
+	ActionType   string `json:"actionType"`
+	Summary      string `json:"summary"`
+	ResultStatus string `json:"resultStatus"` // success/failed/partial
+}
+
+type ProfileOperationLogPage struct {
+	List     []ProfileOperationLogItem `json:"list"`
+	Total    int64                     `json:"total"`
+	Page     int64                     `json:"page"`
+	PageSize int64                     `json:"pageSize"`
+}
+
+type ProfileRoleInfo struct {
+	RoleCode string `json:"roleCode"`
+	RoleName string `json:"roleName"`
+}
+
+type ProfileUserInfo struct {
+	UserID                int64  `json:"userId"`
+	Username              string `json:"username"`
+	Nickname              string `json:"nickname"`
+	WalletAddress         string `json:"walletAddress"`
+	Brief                 string `json:"brief,optional"`
+	Gender                string `json:"gender,optional"` // unknown/male/female
+	Birthday              string `json:"birthday,optional"`
+	RegisterTime          string `json:"registerTime,optional"`
+	Email                 string `json:"email,optional"`
+	Phone                 string `json:"phone,optional"`
+	EmailVerified         bool   `json:"emailVerified"`
+	PhoneVerified         bool   `json:"phoneVerified"`
+	KycStatus             string `json:"kycStatus"`             // not_verified/pending/verified
+	MerchantDepositStatus string `json:"merchantDepositStatus"` // not_applied/pending_payment/confirming/paid
+	StatusText            string `json:"statusText,optional"`
 }
 
 type ReviewProductReq struct {

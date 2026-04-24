@@ -1,0 +1,21 @@
+syntax = "v1"
+
+info(
+    title: "main types"
+    desc: "main types api"
+    author: "mingdw"
+    email: "mingdw11@163.com"
+    version: "v0.1"
+)
+
+type (
+
+   // 通用响应结构
+	BaseResp {
+		Code int         `json:"code"`
+		Message  string      `json:"message"`
+		Data interface{} `json:"data"`
+        Total int          `json:"total"`
+	}
+
+)

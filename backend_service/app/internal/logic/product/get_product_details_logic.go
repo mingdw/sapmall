@@ -3,6 +3,7 @@ package product
 import (
 	"context"
 
+	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
@@ -26,7 +27,7 @@ func NewGetProductDetailsLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-func (l *GetProductDetailsLogic) GetProductDetails(req *types.GetProductReq) (resp *types.GetProductResp, err error) {
+func (l *GetProductDetailsLogic) GetProductDetails(req *types.GetProductReq) (resp *types.BaseResp, err error) {
 	// 获取单个商品信息
 	productRepository := repository.NewProductRepository(l.svcCtx.GormDB)
 
@@ -38,16 +39,13 @@ func (l *GetProductDetailsLogic) GetProductDetails(req *types.GetProductReq) (re
 	formattedJSON, err := utils.PrettyJSON(product)
 	if err != nil {
 		logx.Errorf("格式化JSON失败: %v", err)
-		return &types.GetProductResp{
-			Code: 1,
-			Msg:  "JSON格式化失败",
-			Data: "",
+		return &types.BaseResp{
+			Code:    1,
+			Message: "JSON格式化失败",
+			Data:    nil,
+			Total:   0,
 		}, nil
 	}
+	return customererrors.SuccessData(formattedJSON), nil
 
-	return &types.GetProductResp{
-		Code: 0,
-		Msg:  "success",
-		Data: formattedJSON,
-	}, nil
 }

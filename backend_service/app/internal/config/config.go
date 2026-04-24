@@ -30,4 +30,12 @@ type Config struct {
 		AccessExpire int64
 		StartAuth    bool
 	}
+	MerchantDeposit struct {
+		Amount           string
+		TokenSymbol      string
+		TokenAddress     string
+		ChainID          int64
+		ContractAddress  string
+		IntentExpireMins int64
+	}
 }

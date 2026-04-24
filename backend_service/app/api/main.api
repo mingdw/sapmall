@@ -1,5 +1,6 @@
 syntax = "v1"
 
+import "main_types.api"
 // 导入所有子模块API
 import "common/common.api"
 import "user/user.api"

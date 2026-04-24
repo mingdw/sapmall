@@ -13,9 +13,9 @@ import (
 service sapmall {
 	@doc "分页查询多个产品"
 	@handler products
-	post /products (ListProductsReq) returns (ListProductsResp)
+	post /products (ListProductsReq) returns (BaseResp)
 
 	@doc "查询产品详细信息"
 	@handler getProductDetails
-	post /getProductDetails (GetProductReq) returns (GetProductResp)
+	post /getProductDetails (GetProductReq) returns (BaseResp)
 }

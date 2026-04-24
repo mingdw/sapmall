@@ -20,6 +20,8 @@ type User struct {
 	StatusDesc string      `gorm:"column:status_desc;not null;default:'';comment:状态描述"`
 	Type       int         `gorm:"column:type;not null;default:0;comment:类型"`
 	TypeDesc   string      `gorm:"column:type_desc;not null;default:'';comment:类型描述"`
+	KycStatus  int         `gorm:"column:kyc_status;not null;default:0;comment:KYC状态：0未认证 1待审核 2已通过 3已拒绝"`
+	MerchantDepositStatus int `gorm:"column:merchant_deposit_status;not null;default:0;comment:保证金状态：0未缴纳 1待支付 2确认中 3已确认 4已退还 5异常"`
 	IsDeleted  int         `gorm:"column:is_deleted;default:0;comment:是否删除"`
 	CreatedAt  time.Time   `gorm:"column:created_at;default:CURRENT_TIMESTAMP;comment:创建时间"`
 	UpdatedAt  time.Time   `gorm:"column:updated_at;default:CURRENT_TIMESTAMP;comment:更新时间"`

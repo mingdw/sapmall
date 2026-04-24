@@ -28,7 +28,7 @@ func NewProductsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Products
 	}
 }
 
-func (l *ProductsLogic) Products(req *types.ListProductsReq) (resp *types.ListProductsResp, err error) {
+func (l *ProductsLogic) Products(req *types.ListProductsReq) (resp *types.BaseResp, err error) {
 	productRepository := repository.NewProductRepository(l.svcCtx.GormDB)
 
 	categoryRepository := repository.NewCategoryRepository(l.svcCtx.GormDB)
@@ -114,9 +114,10 @@ func (l *ProductsLogic) Products(req *types.ListProductsReq) (resp *types.ListPr
 			Products:     productSpus,
 		})
 	}
-	return &types.ListProductsResp{
-		Code: 0,
-		Msg:  "success",
-		Data: productCategories,
+	return &types.BaseResp{
+		Code:    0,
+		Message: "success",
+		Data:    productCategories,
+		Total:   len(productCategories),
 	}, nil
 }

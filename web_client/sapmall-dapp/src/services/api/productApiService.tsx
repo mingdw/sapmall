@@ -102,10 +102,35 @@ export const productApiService = {
       product_code: id,
     };
     
-    const response = await baseClient.post<{code: number, msg: string, product_info: Product}>('/api/product/getProductDetails', requestBody, {
+    const response = await baseClient.post<any>('/api/product/getProductDetails', requestBody, {
       skipAuth: true, // 商品详情不需要认证
     });
-    return response.data.product_info;
+    const rawData = response.data;
+
+    // 兼容新旧返回结构：
+    // 1) 新结构：BaseResp.Data = 商品对象 或 商品JSON字符串
+    // 2) 旧结构：{ product_info: {...} }
+    if (rawData && typeof rawData === 'object' && rawData.product_info) {
+      return rawData.product_info as Product;
+    }
+
+    if (typeof rawData === 'string') {
+      try {
+        const parsed = JSON.parse(rawData);
+        if (parsed?.product_info) {
+          return parsed.product_info as Product;
+        }
+        return parsed as Product;
+      } catch {
+        throw new Error('商品详情解析失败：后端返回的 data 不是有效 JSON');
+      }
+    }
+
+    if (rawData && typeof rawData === 'object') {
+      return rawData as Product;
+    }
+
+    throw new Error('商品详情解析失败：缺少有效的 data 字段');
   },
 
   // 获取商品分类
