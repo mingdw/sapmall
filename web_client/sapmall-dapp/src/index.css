@@ -17,3 +17,43 @@ code {
 }
 
 /* Admin iframe 样式已移至 dapp-common.css 中统一管理 */
+
+:root {
+  --foreground: #e8eaf6;
+  --muted-foreground: #7986cb;
+  --border: rgba(124, 77, 255, 0.2);
+}
+
+.text-foreground {
+  color: var(--foreground);
+}
+
+.text-muted-foreground {
+  color: var(--muted-foreground);
+}
+
+.border-border {
+  border-color: var(--border);
+}
+
+@keyframes particleMove {
+  0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
+  33% { transform: translateY(-30px) translateX(15px) scale(1.1); opacity: 1; }
+  66% { transform: translateY(-15px) translateX(-10px) scale(0.9); opacity: 0.8; }
+  100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
+}
+
+@keyframes orbitRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes floatUpDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}

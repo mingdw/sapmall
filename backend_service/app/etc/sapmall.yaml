@@ -1,6 +1,32 @@
 Name: sapmall
 Host: 0.0.0.0
 Port: 8888
+Version: "1.0.0"
+
+DB:
+  Host: yisuyun69897fbb3956803924.rds.ysydb1.com
+  Port: 3306
+  Username: "69897fbb3956803924:sapmall_root"
+  Password: "mdwmdw_11"
+  Dbname: saphire_mall
+
+Redis:
+  Host: 127.0.0.1
+  Port: 6379
+  Password: ""
+  DB: 0
+
+Cos:
+  secretId: AKIDNgswnbCexIvPjyd9Viokma8WihT2PbbP
+  secretKey: f6KK7dy87uWv67xc4JLCrLNFuNeomX9b
+  bucketName: sap01-1251895040
+  region: ap-guangzhou
+
+Auth:
+  AccessSecret: "sapmall-secret"
+  AccessExpire: 86400
+  StartAuth: true
+
 MerchantDeposit:
   Amount: "100"
   TokenSymbol: "USDT"
@@ -8,3 +34,13 @@ MerchantDeposit:
   ChainID: 56
   ContractAddress: "0x0000000000000000000000000000000000000000"
   IntentExpireMins: 30
+
+# Swagger 配置
+Swagger:
+  Enabled: true
+  Title: "Sapphire Mall API"
+  Description: "Sapphire Mall 后端服务 API 文档"
+  Version: "1.0.0"
+  Contact:
+    Name: "API Support"
+    Email: "support@sapphire-mall.com"

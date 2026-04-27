@@ -1,0 +1,183 @@
+.settingsPage {
+  .emptyWrap {
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed rgba(100, 116, 139, 0.35);
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.35);
+  }
+
+  .sectionList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .sectionItem {
+    border: 1px solid rgba(71, 85, 105, 0.4);
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.45);
+    margin-bottom: 10px;
+    padding: 14px 16px !important;
+    :global(.ant-list-item-action) {
+      margin-left: 0;
+    }
+  }
+
+  .itemMain {
+    width: 100%;
+  }
+
+  .singleLineRow {
+    display: grid;
+    grid-template-columns: 160px 120px 180px 70px 90px 28px;
+    align-items: center;
+    gap: 10px;
+    min-height: 36px;
+  }
+
+  .itemName {
+    color: #e2e8f0;
+    font-size: 15px;
+    font-weight: 700;
+    min-width: 150px;
+    cursor: pointer;
+  }
+
+  .itemName:hover {
+    color: #93c5fd;
+  }
+
+  .itemCode {
+    color: #93c5fd;
+    font-size: 13px;
+    min-width: 120px;
+  }
+
+  .itemValue {
+    width: 180px;
+    min-width: 180px;
+  }
+
+  .itemType {
+    color: #94a3b8;
+    font-size: 13px;
+    min-width: 0;
+  }
+
+  .valueInput:global(.ant-input),
+  .valueInputNumber:global(.ant-input-number) {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(71, 85, 105, 0.6);
+    color: #e2e8f0;
+  }
+
+  .valueInput:global(.ant-input::placeholder) {
+    color: #64748b;
+  }
+
+  .valueInputNumber:global(.ant-input-number .ant-input-number-input) {
+    color: #e2e8f0;
+  }
+
+  .valueTextArea:global(.ant-input) {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(71, 85, 105, 0.6);
+    color: #e2e8f0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .valueTextArea:global(.ant-input::placeholder) {
+    color: #64748b;
+  }
+
+  .deleteIconButton {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(239, 68, 68, 0.14);
+    color: #f87171;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .deleteIconButton:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.22);
+    transform: translateY(-1px);
+  }
+
+  .deleteIconButton:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
+  .statusSwitchWrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .statusTextEnabled {
+    color: #34d399;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 28px;
+  }
+
+  .statusTextDisabled {
+    color: #f59e0b;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 28px;
+  }
+
+  .categoryStatusSwitch:global(.ant-switch) {
+    min-width: 34px;
+    height: 18px;
+    line-height: 18px;
+    border: 1px solid transparent;
+  }
+
+  .categoryStatusSwitch:global(.ant-switch .ant-switch-handle) {
+    top: 1px;
+  }
+
+  .categoryStatusSwitch:global(.ant-switch .ant-switch-handle::before) {
+    box-shadow: 0 1px 4px rgba(2, 6, 23, 0.55);
+  }
+
+  .categoryStatusSwitchOn:global(.ant-switch.ant-switch-checked) {
+    background: rgba(16, 185, 129, 0.8);
+    border-color: rgba(16, 185, 129, 0.95);
+  }
+
+  .categoryStatusSwitchOff:global(.ant-switch) {
+    background: rgba(148, 163, 184, 0.42);
+    border-color: rgba(203, 213, 225, 0.75);
+  }
+
+  .form {
+    margin-top: 8px;
+  }
+
+  .switchField {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 1360px) {
+    .singleLineRow {
+      grid-template-columns: 140px 110px 150px 64px 90px 28px;
+      gap: 8px;
+    }
+
+    .itemValue {
+      width: 150px;
+      min-width: 150px;
+    }
+  }
+}

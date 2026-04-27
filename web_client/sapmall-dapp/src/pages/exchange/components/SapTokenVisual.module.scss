@@ -1,0 +1,85 @@
+.tokenCore {
+  background: linear-gradient(135deg, #7c4dff, #448aff, #00e5ff);
+  box-shadow: 0 0 40px rgba(124, 77, 255, 0.6), 0 0 80px rgba(124, 77, 255, 0.2);
+}
+
+.pricePanel {
+  backdrop-filter: blur(8px);
+}
+
+.gradientText {
+  background: linear-gradient(135deg, #7c4dff, #00e5ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.particlePurple {
+  background: #a78bfa;
+  box-shadow: 0 0 10px #8b5cf6;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+}
+
+.particleCyan {
+  background: #22d3ee;
+  box-shadow: 0 0 10px #22d3ee;
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+}
+
+.floatAnim {
+  animation: floatUpDown 4s ease-in-out infinite;
+}
+
+.orbitOuter {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  animation: plasmaOrbit 8s linear infinite;
+}
+
+.orbitOuter > div {
+  transform: translate(-50%, -50%) rotate(0deg) translateX(90px);
+}
+
+.orbitInner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  animation: plasmaOrbitReverse 6s linear infinite;
+}
+
+.orbitInner > div {
+  transform: translate(-50%, -50%) rotate(0deg) translateX(70px);
+}
+
+@keyframes plasmaOrbit {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes plasmaOrbitReverse {
+  from {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+
+@keyframes floatUpDown {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}

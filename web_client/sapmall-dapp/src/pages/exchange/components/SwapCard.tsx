@@ -1,0 +1,243 @@
+import { useState, useCallback } from 'react';
+import { ArrowUpDown, ChevronDown, Settings, RefreshCw, Info, Zap, Shield } from 'lucide-react';
+import TokenIcon from './TokenIcon';
+import styles from '../ExchangePageDetail.module.scss';
+
+const STABLE_COINS = ['USDT', 'USDC', 'BUSD', 'DAI'];
+const RATES: Record<string, number> = { USDT: 2.85, USDC: 2.84, BUSD: 2.83, DAI: 2.82 };
+
+interface SwapCardProps {
+  onSwapSuccess?: (amount: string) => void;
+}
+
+export default function SwapCard({ onSwapSuccess = () => {} }: SwapCardProps) {
+  const [fromToken, setFromToken] = useState('USDT');
+  const [fromAmount, setFromAmount] = useState('');
+  const [showFromDropdown, setShowFromDropdown] = useState(false);
+  const [slippage, setSlippage] = useState('0.5');
+  const [showSettings, setShowSettings] = useState(false);
+  const [isSwapping, setIsSwapping] = useState(false);
+  const [swapDone, setSwapDone] = useState(false);
+
+  const rate = RATES[fromToken] || 2.85;
+  const toAmount = fromAmount ? (parseFloat(fromAmount) * rate).toFixed(4) : '';
+  const priceImpact = fromAmount ? Math.min(parseFloat(fromAmount) * 0.0012, 2.5).toFixed(2) : '0.00';
+  const fee = fromAmount ? (parseFloat(fromAmount) * 0.003).toFixed(4) : '0.0000';
+
+  const handleSwap = useCallback(() => {
+    if (!fromAmount || parseFloat(fromAmount) <= 0) return;
+    setIsSwapping(true);
+    setTimeout(() => {
+      setIsSwapping(false);
+      setSwapDone(true);
+      onSwapSuccess(toAmount);
+      setTimeout(() => setSwapDone(false), 3000);
+    }, 2000);
+  }, [fromAmount, onSwapSuccess, toAmount]);
+
+  return (
+    <div data-cmp="SwapCard" className="relative w-full max-w-[520px]">
+      <div className={`absolute inset-0 rounded-3xl pointer-events-none ${styles.swapOuterGlow}`} />
+
+      <div className={`relative rounded-3xl p-6 ${styles.swapMainCard}`}>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-lg font-bold text-foreground">代币兑换</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">用稳定币兑换 SAP 代币</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{ background: 'rgba(124,77,255,0.15)', border: '1px solid rgba(124,77,255,0.2)' }}
+              onClick={() => { setFromAmount(''); setSwapDone(false); }}
+            >
+              <RefreshCw size={14} style={{ color: '#b39ddb' }} />
+            </button>
+            <button
+              className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{ background: showSettings ? 'rgba(124,77,255,0.3)' : 'rgba(124,77,255,0.15)' }}
+              onClick={() => setShowSettings(!showSettings)}
+            >
+              <Settings size={14} style={{ color: '#b39ddb' }} />
+            </button>
+          </div>
+        </div>
+
+        <div
+          className="rounded-2xl p-4 mb-4 overflow-hidden transition-all duration-300"
+          style={{
+            maxHeight: showSettings ? '120px' : '0px',
+            opacity: showSettings ? 1 : 0,
+            padding: showSettings ? '1rem' : '0',
+            background: 'rgba(124,77,255,0.08)',
+            border: showSettings ? '1px solid rgba(124,77,255,0.2)' : '1px solid transparent',
+            marginBottom: showSettings ? '1rem' : '0',
+          }}
+        >
+          <p className="text-xs text-muted-foreground mb-3">滑点容忍度</p>
+          <div className="flex items-center gap-2">
+            {['0.1', '0.5', '1.0'].map((val) => (
+              <button
+                key={val}
+                onClick={() => setSlippage(val)}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium"
+                style={{
+                  background: slippage === val ? 'linear-gradient(135deg, #7c4dff, #448aff)' : 'rgba(255,255,255,0.06)',
+                  color: slippage === val ? '#fff' : '#7986cb',
+                }}
+              >
+                {val}%
+              </button>
+            ))}
+            <div className="flex items-center gap-1 rounded-lg px-3 py-1.5" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(124,77,255,0.15)' }}>
+              <input
+                className="w-12 text-xs bg-transparent outline-none text-foreground"
+                value={slippage}
+                onChange={(e) => setSlippage(e.target.value)}
+                placeholder="自定义"
+              />
+              <span className="text-xs text-muted-foreground">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-2xl p-4 mb-1" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(124,77,255,0.15)' }}>
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs text-muted-foreground">支付</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">余额: <span style={{ color: '#b39ddb' }}>12,500.00</span></span>
+              <button className="text-xs px-2 py-0.5 rounded-md font-medium" style={{ background: 'rgba(124,77,255,0.2)', color: '#00e5ff' }} onClick={() => setFromAmount('12500')}>MAX</button>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <button
+                className="flex items-center gap-2 px-3 py-2 rounded-xl"
+                style={{ background: 'rgba(124,77,255,0.15)', border: '1px solid rgba(124,77,255,0.3)', minWidth: '120px' }}
+                onClick={() => setShowFromDropdown(!showFromDropdown)}
+              >
+                <TokenIcon symbol={fromToken} size={26} />
+                <span className="text-sm font-semibold text-foreground">{fromToken}</span>
+                <ChevronDown size={14} style={{ color: '#7986cb', transform: showFromDropdown ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+              </button>
+
+              <div
+                className="absolute top-12 left-0 w-48 rounded-2xl z-50 overflow-hidden"
+                style={{
+                  display: showFromDropdown ? 'block' : 'none',
+                  background: 'rgba(14,12,40,0.98)',
+                  border: '1px solid rgba(124,77,255,0.3)',
+                  backdropFilter: 'blur(20px)',
+                }}
+              >
+                <div className="p-2">
+                  <p className="text-xs text-muted-foreground px-3 py-2">选择稳定币</p>
+                  {STABLE_COINS.map((coin) => (
+                    <button
+                      key={coin}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl"
+                      style={{ background: fromToken === coin ? 'rgba(124,77,255,0.2)' : 'transparent' }}
+                      onClick={() => { setFromToken(coin); setShowFromDropdown(false); }}
+                    >
+                      <TokenIcon symbol={coin} size={28} />
+                      <div className="text-left">
+                        <p className="text-sm font-semibold text-foreground">{coin}</p>
+                        <p className="text-xs text-muted-foreground">稳定币</p>
+                      </div>
+                      <div className="ml-auto text-right">
+                        <p className="text-xs" style={{ color: '#69f0ae' }}>≈$1.00</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <input
+              type="number"
+              className="flex-1 bg-transparent outline-none text-right text-2xl font-bold text-foreground placeholder:text-gray-500"
+              placeholder="0.00"
+              value={fromAmount}
+              onChange={(e) => setFromAmount(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-center my-2 relative z-10">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(124,77,255,0.4), rgba(0,229,255,0.3))', border: '1px solid rgba(124,77,255,0.5)' }}>
+            <ArrowUpDown size={16} style={{ color: '#00e5ff' }} />
+          </div>
+        </div>
+
+        <div className="rounded-2xl p-4 mb-5" style={{ background: 'rgba(124,77,255,0.06)', border: '1px solid rgba(124,77,255,0.2)' }}>
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs text-muted-foreground">获得</span>
+            <span className="text-xs text-muted-foreground">余额: <span style={{ color: '#b39ddb' }}>8,432.50</span></span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: 'rgba(124,77,255,0.2)', border: '1px solid rgba(124,77,255,0.4)', minWidth: '120px' }}>
+              <TokenIcon symbol="SAP" size={26} />
+              <span className="text-sm font-bold" style={{ color: '#00e5ff' }}>SAP</span>
+            </div>
+            <div className="flex-1 text-right">
+              <p className="text-2xl font-bold" style={{ background: 'linear-gradient(135deg, #7c4dff, #00e5ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                {toAmount || '0.0000'}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center gap-1.5">
+              <Zap size={12} style={{ color: '#ffd740' }} />
+              <span className="text-xs" style={{ color: '#ffd740' }}>1 {fromToken} = {rate} SAP</span>
+            </div>
+            <span className="text-xs text-muted-foreground">≈ ${toAmount ? (parseFloat(toAmount) * 0.351).toFixed(2) : '0.00'}</span>
+          </div>
+        </div>
+
+        <div className="rounded-xl p-3 mb-5 space-y-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(124,77,255,0.1)' }}>
+          {[
+            { label: '价格影响', value: `${priceImpact}%`, color: parseFloat(priceImpact) > 1 ? '#ff4081' : '#69f0ae' },
+            { label: '手续费 (0.3%)', value: `${fee} ${fromToken}`, color: '#b39ddb' },
+            { label: '滑点容忍度', value: `${slippage}%`, color: '#b39ddb' },
+            { label: '预计到账时间', value: '~15 秒', color: '#b39ddb' },
+          ].map((row) => (
+            <div key={row.label} className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <Info size={11} style={{ color: '#7986cb' }} />
+                <span className="text-xs text-muted-foreground">{row.label}</span>
+              </div>
+              <span className="text-xs font-medium" style={{ color: row.color }}>{row.value}</span>
+            </div>
+          ))}
+        </div>
+
+        <button
+          className="w-full h-14 rounded-2xl font-bold text-base transition-all duration-300 relative overflow-hidden"
+          style={{
+            background: swapDone
+              ? 'linear-gradient(135deg, #69f0ae, #00e5ff)'
+              : isSwapping
+                ? 'rgba(124,77,255,0.4)'
+                : 'linear-gradient(135deg, #7c4dff 0%, #448aff 50%, #00e5ff 100%)',
+            color: '#fff',
+            cursor: !fromAmount || parseFloat(fromAmount) <= 0 ? 'not-allowed' : 'pointer',
+            opacity: !fromAmount || parseFloat(fromAmount) <= 0 ? 0.5 : 1,
+          }}
+          onClick={handleSwap}
+          disabled={!fromAmount || parseFloat(fromAmount) <= 0 || isSwapping}
+        >
+          <div className="relative flex items-center justify-center gap-2">
+            <span>
+              {swapDone ? '✓ 兑换成功！' : isSwapping ? '兑换中...' : !fromAmount || parseFloat(fromAmount) <= 0 ? '请输入金额' : '立即兑换'}
+            </span>
+          </div>
+        </button>
+
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <Shield size={12} style={{ color: '#7986cb' }} />
+          <span className="text-xs text-muted-foreground">智能合约已审计 · 资产安全有保障</span>
+        </div>
+      </div>
+    </div>
+  );
+}

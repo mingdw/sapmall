@@ -154,7 +154,7 @@ CREATE TABLE `sys_config`  (
   `is_encrypted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否加密 0:否 1:是',
   `is_editable` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否可编辑 0:否 1:是',
   `sort` int NOT NULL DEFAULT 0 COMMENT '排序',
-  `status` int NOT NULL DEFAULT 1 COMMENT '状态 0:禁用 1:启用',
+  `status` int NOT NULL DEFAULT 0 COMMENT '状态 0:启用 1:禁用',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除 0:未删除 1:已删除',
@@ -174,20 +174,20 @@ CREATE TABLE `sys_config`  (
 DROP TABLE IF EXISTS `sys_dict_category`;
 CREATE TABLE `sys_dict_category`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典类型',
+  `dict_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典归属类型：0系统字典/1用户自定义/2其它',
   `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '分类编码',
   `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '分类描述',
   `level` int NOT NULL DEFAULT 1 COMMENT '层级',
   `sort` int NOT NULL DEFAULT 0 COMMENT '排序',
-  `status` int NOT NULL DEFAULT 1 COMMENT '状态 0:禁用 1:启用',
+  `status` int NOT NULL DEFAULT 0 COMMENT '状态 0:启用 1:禁用',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除 0:未删除 1:已删除',
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
   `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_type_code`(`type`, `code`) USING BTREE,
-  INDEX `idx_type`(`type`) USING BTREE,
+  UNIQUE INDEX `uk_dict_type_code`(`dict_type`, `code`) USING BTREE,
+  INDEX `idx_dict_type`(`dict_type`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
   INDEX `idx_sort`(`sort`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '字典分类表' ROW_FORMAT = DYNAMIC;
@@ -198,11 +198,10 @@ CREATE TABLE `sys_dict_category`  (
 DROP TABLE IF EXISTS `sys_dict_item`;
 CREATE TABLE `sys_dict_item`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典类型',
-  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典编码',
+  `dict_category_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '所属字典类目编码（关联 sys_dict_category.code）',
+  `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典项编码',
   `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典值',
-  `label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典标签',
-  `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '字典描述',
+  `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '字典描述',
   `level` int NOT NULL DEFAULT 1 COMMENT '层级',
   `sort` int NOT NULL DEFAULT 0 COMMENT '排序',
   `status` int NOT NULL DEFAULT 1 COMMENT '状态 0:禁用 1:启用',
@@ -212,8 +211,8 @@ CREATE TABLE `sys_dict_item`  (
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
   `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_type_code`(`type`, `code`) USING BTREE,
-  INDEX `idx_type`(`type`) USING BTREE,
+  UNIQUE INDEX `uk_dict_category_code_code`(`dict_category_code`, `code`) USING BTREE,
+  INDEX `idx_dict_category_code`(`dict_category_code`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
   INDEX `idx_sort`(`sort`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '字典明细表' ROW_FORMAT = DYNAMIC;
@@ -955,31 +954,5 @@ CREATE TABLE `sys_operation_log` (
   INDEX `idx_object` (`object_type`, `object_id`) USING BTREE,
   INDEX `idx_request_id` (`request_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC COMMENT = '系统公用操作日志';
-
--- ----------------------------
--- Table structure for sys_properties
--- ----------------------------
-DROP TABLE IF EXISTS `sys_properties`;
-CREATE TABLE `sys_properties` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `param_key` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '参数键（全局唯一，如 merchant.deposit.amount）',
-  `param_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '参数名称',
-  `param_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT '参数值（字符串存储）',
-  `value_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'string' COMMENT '值类型：string/number/bool/json',
-  `param_group` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'default' COMMENT '参数分组，如 merchant/auth/system',
-  `is_encrypted` tinyint NOT NULL DEFAULT 0 COMMENT '是否加密：0否 1是',
-  `is_readonly` tinyint NOT NULL DEFAULT 0 COMMENT '是否只读：0否 1是',
-  `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态：0禁用 1启用',
-  `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '参数说明',
-  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
-  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
-  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_param_key` (`param_key`) USING BTREE,
-  INDEX `idx_param_group` (`param_group`) USING BTREE,
-  INDEX `idx_status` (`status`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC COMMENT = '系统参数表';
 
 SET FOREIGN_KEY_CHECKS = 1;

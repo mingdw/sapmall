@@ -21,6 +21,51 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
+					// 保存属性（新增/编辑）
+					Method:  http.MethodPost,
+					Path:    "/attr",
+					Handler: admin.SaveAttrHandler(serverCtx),
+				},
+				{
+					// 删除属性
+					Method:  http.MethodDelete,
+					Path:    "/attr/:id",
+					Handler: admin.DeleteAttrHandler(serverCtx),
+				},
+				{
+					// 保存属性组（新增/编辑）
+					Method:  http.MethodPost,
+					Path:    "/attrGroup",
+					Handler: admin.SaveAttrGroupHandler(serverCtx),
+				},
+				{
+					// 删除属性组
+					Method:  http.MethodDelete,
+					Path:    "/attrGroup/:id",
+					Handler: admin.DeleteAttrGroupHandler(serverCtx),
+				},
+				{
+					// 保存目录（新增/编辑）
+					Method:  http.MethodPost,
+					Path:    "/category",
+					Handler: admin.SaveCategoryHandler(serverCtx),
+				},
+				{
+					// 删除目录
+					Method:  http.MethodDelete,
+					Path:    "/category/:id",
+					Handler: admin.DeleteCategoryHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/admin"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Route{
+				{
 					// 获取商品详情（聚合所有信息：SPU、属性、SKU、详情）
 					Method:  http.MethodGet,
 					Path:    "/product/:id",
@@ -66,6 +111,54 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
+					// 新增/修改系统参数
+					Method:  http.MethodPost,
+					Path:    "/config",
+					Handler: admin.SaveSystemConfigHandler(serverCtx),
+				},
+				{
+					// 删除系统参数
+					Method:  http.MethodDelete,
+					Path:    "/config/:id",
+					Handler: admin.DeleteSystemConfigHandler(serverCtx),
+				},
+				{
+					// 获取系统参数列表
+					Method:  http.MethodPost,
+					Path:    "/config/list",
+					Handler: admin.ListSystemConfigHandler(serverCtx),
+				},
+				{
+					// 新增/修改系统字典类目
+					Method:  http.MethodPost,
+					Path:    "/dict/category",
+					Handler: admin.SaveDictCategoryHandler(serverCtx),
+				},
+				{
+					// 查询系统字典类目
+					Method:  http.MethodPost,
+					Path:    "/dict/category/list",
+					Handler: admin.ListDictCategoryHandler(serverCtx),
+				},
+				{
+					// 新增/修改字典项
+					Method:  http.MethodPost,
+					Path:    "/dict/item",
+					Handler: admin.SaveDictItemHandler(serverCtx),
+				},
+				{
+					// 删除字典项
+					Method:  http.MethodDelete,
+					Path:    "/dict/item/:id",
+					Handler: admin.DeleteDictItemHandler(serverCtx),
+				},
+				{
+					// 根据字典类目code查询字典列表
+					Method:  http.MethodGet,
+					Path:    "/dict/item/:dict_type",
+					Handler: admin.ListDictItemByTypeHandler(serverCtx),
+				},
+				{
 					// 批量删除文件
 					Method:  http.MethodPost,
 					Path:    "/file/deletes",
@@ -88,51 +181,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/file/upload/batch",
 					Handler: admin.BatchUploadFileHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/admin"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
-			[]rest.Route{
-				{
-					// 保存属性（新增/编辑）
-					Method:  http.MethodPost,
-					Path:    "/attr",
-					Handler: admin.SaveAttrHandler(serverCtx),
-				},
-				{
-					// 删除属性
-					Method:  http.MethodDelete,
-					Path:    "/attr/:id",
-					Handler: admin.DeleteAttrHandler(serverCtx),
-				},
-				{
-					// 保存属性组（新增/编辑）
-					Method:  http.MethodPost,
-					Path:    "/attrGroup",
-					Handler: admin.SaveAttrGroupHandler(serverCtx),
-				},
-				{
-					// 删除属性组
-					Method:  http.MethodDelete,
-					Path:    "/attrGroup/:id",
-					Handler: admin.DeleteAttrGroupHandler(serverCtx),
-				},
-				{
-					// 保存目录（新增/编辑）
-					Method:  http.MethodPost,
-					Path:    "/category",
-					Handler: admin.SaveCategoryHandler(serverCtx),
-				},
-				{
-					// 删除目录
-					Method:  http.MethodDelete,
-					Path:    "/category/:id",
-					Handler: admin.DeleteCategoryHandler(serverCtx),
 				},
 			}...,
 		),
@@ -208,6 +256,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/info/:user_id",
 					Handler: user.GetUserInfoHandler(serverCtx),
+				},
+				{
+					// 获取用户后台菜单
+					Method:  http.MethodGet,
+					Path:    "/menus",
+					Handler: user.GetRoleMenuHandler(serverCtx),
 				},
 				{
 					// 申请商家认证

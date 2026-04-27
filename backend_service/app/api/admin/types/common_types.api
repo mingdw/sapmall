@@ -1,0 +1,147 @@
+// backend_service/app/api/admin/types/common_types.api
+syntax = "v1"
+
+info(
+	title: "admin common types"
+	desc: "admin system config / dict API types"
+	author: "mingdw"
+	email: "mingdw11@163.com"
+	version: "v0.1"
+)
+
+type (
+	// 系统参数信息
+	SystemConfigInfo {
+		ID          int64  `json:"id"`
+		ConfigKey   string `json:"configKey"`
+		ConfigName  string `json:"configName"`
+		ConfigValue string `json:"configValue,optional"`
+		ConfigType  string `json:"configType"`  // string/number/boolean/json/array
+		ConfigGroup string `json:"configGroup"` // 分组
+		Description string `json:"description,optional"`
+		IsSystem    int64  `json:"isSystem"`    // 0否 1是
+		IsEncrypted int64  `json:"isEncrypted"` // 0否 1是
+		IsEditable  int64  `json:"isEditable"`  // 0否 1是
+		Sort        int64  `json:"sort"`
+		Status      int64  `json:"status"` // 0禁用 1启用
+		CreatedAt   string `json:"createdAt,optional"`
+		UpdatedAt   string `json:"updatedAt,optional"`
+		Creator     string `json:"creator,optional"`
+		Updator     string `json:"updator,optional"`
+	}
+	// 获取系统参数列表请求
+	ListSystemConfigReq {
+		ConfigKey   string `json:"configKey,optional"`   // 配置键（模糊）
+		ConfigName  string `json:"configName,optional"`  // 配置名称（模糊）
+		ConfigType  string `json:"configType,optional"`  // 配置类型
+		ConfigGroup string `json:"configGroup,optional"` // 配置分组
+		Status      int64  `json:"status,optional"`      // 状态：0禁用 1启用
+		Page        int64  `json:"page"`                 // 页码，从1开始
+		PageSize    int64  `json:"pageSize"`             // 每页条数
+	}
+	// 获取系统参数列表响应
+	ListSystemConfigResp {
+		List  []SystemConfigInfo `json:"list"`
+		Total int64              `json:"total"`
+	}
+	// 新增/修改系统参数请求（通过ID区分新增和修改）
+	SaveSystemConfigReq {
+		ID          int64  `json:"id,optional"`          // 主键ID，空或0表示新增
+		ConfigKey   string `json:"configKey"`            // 配置键（全局唯一）
+		ConfigName  string `json:"configName"`           // 配置名称
+		ConfigValue string `json:"configValue,optional"` // 配置值
+		ConfigType  string `json:"configType"`           // string/number/boolean/json/array
+		ConfigGroup string `json:"configGroup,optional"` // 配置分组
+		Description string `json:"description,optional"` // 配置描述
+		IsSystem    int64  `json:"isSystem,optional"`    // 0否 1是
+		IsEncrypted int64  `json:"isEncrypted,optional"` // 0否 1是
+		IsEditable  int64  `json:"isEditable,optional"`  // 0否 1是
+		Sort        int64  `json:"sort,optional"`        // 排序
+		Status      int64  `json:"status,optional"`      // 状态：0禁用 1启用
+	}
+	// 删除系统参数请求
+	DeleteSystemConfigReq {
+		ID int64 `path:"id"` // 主键ID
+	}
+
+	// 字典类目信息
+	DictCategoryInfo {
+		ID        int64  `json:"id"`
+		DictType  string `json:"dictType"` // 字典归属类型：0系统字典/1用户自定义/2其它
+		Code      string `json:"code"`
+		Desc      string `json:"desc,optional"`
+		Level     int64  `json:"level"`
+		Sort      int64  `json:"sort"`
+		Status    int64  `json:"status"` // 0启用 1禁用
+		CreatedAt string `json:"createdAt,optional"`
+		UpdatedAt string `json:"updatedAt,optional"`
+		Creator   string `json:"creator,optional"`
+		Updator   string `json:"updator,optional"`
+	}
+	// 查询系统字典类目请求
+	ListDictCategoryReq {
+		DictType string `json:"dictType,optional"` // 字典归属类型：0系统字典/1用户自定义/2其它
+		Code     string `json:"code,optional"`   // 分类编码（模糊）
+		Status   int64  `json:"status,optional"` // 状态：0启用 1禁用
+		Page     int64  `json:"page"`
+		PageSize int64  `json:"pageSize"`
+	}
+	// 查询系统字典类目响应
+	ListDictCategoryResp {
+		List  []DictCategoryInfo `json:"list"`
+		Total int64              `json:"total"`
+	}
+	// 新增/修改系统字典类目请求
+	SaveDictCategoryReq {
+		ID       int64  `json:"id,optional"`       // 主键ID，空或0表示新增
+		DictType string `json:"dictType"`          // 字典归属类型：0系统字典/1用户自定义/2其它
+		Code     string `json:"code"`              // 分类编码
+		Desc     string `json:"desc,optional"`     // 分类描述
+		Level    int64  `json:"level,optional"`    // 层级
+		Sort     int64  `json:"sort,optional"`     // 排序
+		Status   int64  `json:"status,optional"`   // 状态：0启用 1禁用
+	}
+
+	// 字典项信息
+	DictItemInfo {
+		ID        int64  `json:"id"`
+		DictCategoryCode string `json:"dictCategoryCode"` // 所属字典类目编码（关联字典类目code）
+		Code      string `json:"code"` // 字典项编码
+		Value     string `json:"value"`
+		Desc      string `json:"desc,optional"`
+		Level     int64  `json:"level"`
+		Sort      int64  `json:"sort"`
+		Status    int64  `json:"status"` // 0禁用 1启用
+		CreatedAt string `json:"createdAt,optional"`
+		UpdatedAt string `json:"updatedAt,optional"`
+		Creator   string `json:"creator,optional"`
+		Updator   string `json:"updator,optional"`
+	}
+	// 根据字典类目code查询字典列表请求
+	ListDictItemByTypeReq {
+		DictType string `path:"dict_type"`         // 字典类目code
+		Status   int64  `form:"status,optional"`   // 状态：0禁用 1启用
+		Page     int64  `form:"page,optional"`     // 页码，不传默认1
+		PageSize int64  `form:"pageSize,optional"` // 每页条数，不传默认20
+	}
+	// 根据字典类目code查询字典列表响应
+	ListDictItemByTypeResp {
+		List  []DictItemInfo `json:"list"`
+		Total int64          `json:"total"`
+	}
+	// 新增/修改字典项请求
+	SaveDictItemReq {
+		ID       int64  `json:"id,optional"`       // 主键ID，空或0表示新增
+		DictCategoryCode string `json:"dictCategoryCode"` // 所属字典类目编码（关联字典类目code）
+		Code     string `json:"code"`              // 字典项编码
+		Value    string `json:"value"`             // 字典值
+		Desc     string `json:"desc,optional"`     // 字典描述
+		Level    int64  `json:"level,optional"`    // 层级
+		Sort     int64  `json:"sort,optional"`     // 排序
+		Status   int64  `json:"status,optional"`   // 状态：0禁用 1启用
+	}
+	// 删除字典项请求
+	DeleteDictItemReq {
+		ID int64 `path:"id"` // 主键ID
+	}
+)

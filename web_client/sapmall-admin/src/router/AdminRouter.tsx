@@ -8,6 +8,8 @@ import UserManagement from '../pages/platform/users/UserManage';
 import MerchantManager from '../pages/platform/merchants/MerchantManager';
 import OrderManager from '../pages/platform/orders/OrderManager';
 import CategoryManagement from '../pages/platform/categories/CategoryManagement';
+import DictionariesManager from '../pages/system/dictionaries/DictionariesManager';
+import SystemSettingsPage from '../pages/system/settings/SystemSettingsPage';
 import ProductManagement from '../pages/business/products/ProductManagement';
 import ProfileManager from '../pages/personal/profile/ProfileManager';
 
@@ -36,6 +38,12 @@ const AdminRouter: React.FC<AdminRouterProps> = ({ menuData }) => {
       
       {/* 商品目录设置路由 */}
       <Route path="/platform/categories" element={<CategoryManagement />} />
+
+      {/* 字典管理路由 */}
+      <Route path="/system/dictionaries" element={<DictionariesManager />} />
+
+      {/* 系统参数设置路由 */}
+      <Route path="/system/settings" element={<SystemSettingsPage />} />
       
       {/* 商品管理路由 */}
       <Route path="/business/products" element={<ProductManagement />} />

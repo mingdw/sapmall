@@ -64,6 +64,39 @@ type DeleteProductSpusReq struct {
 	Ids []int64 `json:"ids"` // 商品SPU ID数组
 }
 
+type DeleteSystemConfigReq struct {
+	ID int64 `path:"id"` // 主键ID
+}
+
+type DictCategoryInfo struct {
+	ID        int64  `json:"id"`
+	DictType  string `json:"dictType"`
+	Code      string `json:"code"`
+	Desc      string `json:"desc,optional"`
+	Level     int64  `json:"level"`
+	Sort      int64  `json:"sort"`
+	Status    int64  `json:"status"` // 0禁用 1启用
+	CreatedAt string `json:"createdAt,optional"`
+	UpdatedAt string `json:"updatedAt,optional"`
+	Creator   string `json:"creator,optional"`
+	Updator   string `json:"updator,optional"`
+}
+
+type DictItemInfo struct {
+	ID               int64  `json:"id"`
+	DictCategoryCode string `json:"dictCategoryCode"` // 所属字典类目编码（关联字典类目code）
+	Code             string `json:"code"`             // 字典项编码
+	Value            string `json:"value"`
+	Desc             string `json:"desc,optional"`
+	Level            int64  `json:"level"`
+	Sort             int64  `json:"sort"`
+	Status           int64  `json:"status"` // 0禁用 1启用
+	CreatedAt        string `json:"createdAt,optional"`
+	UpdatedAt        string `json:"updatedAt,optional"`
+	Creator          string `json:"creator,optional"`
+	Updator          string `json:"updator,optional"`
+}
+
 type FileInfo struct {
 	Id              int64  `json:"id"`              // 主键ID
 	Hash            string `json:"hash"`            // 文件编码（唯一标识）
@@ -217,6 +250,31 @@ type HealthCheckResp struct {
 	Time   int64  `json:"time"`
 }
 
+type ListDictCategoryReq struct {
+	DictType string `json:"dictType,optional"` // 字典类型（模糊）
+	Code     string `json:"code,optional"`     // 分类编码（模糊）
+	Status   int64  `json:"status,optional"`   // 状态：0禁用 1启用
+	Page     int64  `json:"page"`
+	PageSize int64  `json:"pageSize"`
+}
+
+type ListDictCategoryResp struct {
+	List  []DictCategoryInfo `json:"list"`
+	Total int64              `json:"total"`
+}
+
+type ListDictItemByTypeReq struct {
+	DictCategoryCode string `path:"dict_type"`         // 字典类目code
+	Status           int64  `form:"status,optional"`   // 状态：0禁用 1启用
+	Page             int64  `form:"page,optional"`     // 页码，不传默认1
+	PageSize         int64  `form:"pageSize,optional"` // 每页条数，不传默认20
+}
+
+type ListDictItemByTypeResp struct {
+	List  []DictItemInfo `json:"list"`
+	Total int64          `json:"total"`
+}
+
 type ListProductReq struct {
 	CategoryCodes string `json:"categoryCodes,optional"` // 分类编码，多个用逗号分隔
 	ProductName   string `json:"productName,optional"`   // 商品名称（模糊搜索）
@@ -245,6 +303,21 @@ type ListProductsResp struct {
 	Msg      string        `json:"msg"`
 	Products []ProductInfo `json:"products"`
 	Total    int64         `json:"total"`
+}
+
+type ListSystemConfigReq struct {
+	ConfigKey   string `json:"configKey,optional"`   // 配置键（模糊）
+	ConfigName  string `json:"configName,optional"`  // 配置名称（模糊）
+	ConfigType  string `json:"configType,optional"`  // 配置类型
+	ConfigGroup string `json:"configGroup,optional"` // 配置分组
+	Status      int64  `json:"status,optional"`      // 状态：0禁用 1启用
+	Page        int64  `json:"page"`                 // 页码，从1开始
+	PageSize    int64  `json:"pageSize"`             // 每页条数
+}
+
+type ListSystemConfigResp struct {
+	List  []SystemConfigInfo `json:"list"`
+	Total int64              `json:"total"`
 }
 
 type LoginReq struct {
@@ -509,11 +582,70 @@ type SaveCategoryReq struct {
 	MenuType   int    `json:"menuType"`            // 目录类型：0=商品目录 1=菜单目录
 }
 
+type SaveDictCategoryReq struct {
+	ID       int64  `json:"id,optional"`     // 主键ID，空或0表示新增
+	DictType string `json:"dictType"`        // 字典类型
+	Code     string `json:"code"`            // 分类编码
+	Desc     string `json:"desc,optional"`   // 分类描述
+	Level    int64  `json:"level,optional"`  // 层级
+	Sort     int64  `json:"sort,optional"`   // 排序
+	Status   int64  `json:"status,optional"` // 状态：0禁用 1启用
+}
+
+type SaveDictItemReq struct {
+	ID               int64  `json:"id,optional"`      // 主键ID，空或0表示新增
+	DictCategoryCode string `json:"dictCategoryCode"` // 所属字典类目编码（关联字典类目code）
+	Code             string `json:"code"`             // 字典项编码
+	Value            string `json:"value"`            // 字典值
+	Desc             string `json:"desc,optional"`    // 字典描述
+	Level            int64  `json:"level,optional"`   // 层级
+	Sort             int64  `json:"sort,optional"`    // 排序
+	Status           int64  `json:"status,optional"`  // 状态：0禁用 1启用
+}
+
+type DeleteDictItemReq struct {
+	ID int64 `path:"id"` // 主键ID
+}
+
 type SaveProductReq struct {
 	Spu     ProductSPUInfo    `json:"spu"`              // SPU信息
 	Attrs   ProductAttrsInfo  `json:"attrs,optional"`   // 属性信息（基础属性和销售属性）
 	Skus    []ProductSKUInfo  `json:"skus,optional"`    // SKU列表
 	Details ProductDetailInfo `json:"details,optional"` // 商品详情
+}
+
+type SaveSystemConfigReq struct {
+	ID          int64  `json:"id,optional"`          // 主键ID，空或0表示新增
+	ConfigKey   string `json:"configKey"`            // 配置键（全局唯一）
+	ConfigName  string `json:"configName"`           // 配置名称
+	ConfigValue string `json:"configValue,optional"` // 配置值
+	ConfigType  string `json:"configType"`           // string/number/boolean/json/array
+	ConfigGroup string `json:"configGroup,optional"` // 配置分组
+	Description string `json:"description,optional"` // 配置描述
+	IsSystem    int64  `json:"isSystem,optional"`    // 0否 1是
+	IsEncrypted int64  `json:"isEncrypted,optional"` // 0否 1是
+	IsEditable  int64  `json:"isEditable,optional"`  // 0否 1是
+	Sort        int64  `json:"sort,optional"`        // 排序
+	Status      int64  `json:"status,optional"`      // 状态：0禁用 1启用
+}
+
+type SystemConfigInfo struct {
+	ID          int64  `json:"id"`
+	ConfigKey   string `json:"configKey"`
+	ConfigName  string `json:"configName"`
+	ConfigValue string `json:"configValue,optional"`
+	ConfigType  string `json:"configType"`  // string/number/boolean/json/array
+	ConfigGroup string `json:"configGroup"` // 分组
+	Description string `json:"description,optional"`
+	IsSystem    int64  `json:"isSystem"`    // 0否 1是
+	IsEncrypted int64  `json:"isEncrypted"` // 0否 1是
+	IsEditable  int64  `json:"isEditable"`  // 0否 1是
+	Sort        int64  `json:"sort"`
+	Status      int64  `json:"status"` // 0禁用 1启用
+	CreatedAt   string `json:"createdAt,optional"`
+	UpdatedAt   string `json:"updatedAt,optional"`
+	Creator     string `json:"creator,optional"`
+	Updator     string `json:"updator,optional"`
 }
 
 type UploadFileReq struct {

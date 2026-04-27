@@ -16,6 +16,7 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 	gormmysql "gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	gormlogger "gorm.io/gorm/logger"
 )
 
 type ServiceContext struct {
@@ -66,7 +67,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	sqlDB := sql.OpenDB(connector)
 
-	db, err := gorm.Open(gormmysql.New(gormmysql.Config{Conn: sqlDB}), &gorm.Config{})
+	gormCfg := &gorm.Config{}
+	// dev 环境打印全部 SQL，方便联调排查
+	if strings.EqualFold(strings.TrimSpace(c.Mode), "dev") {
+		gormCfg.Logger = gormlogger.Default.LogMode(gormlogger.Info)
+	}
+
+	db, err := gorm.Open(gormmysql.New(gormmysql.Config{Conn: sqlDB}), gormCfg)
 	if err != nil {
 		// 提供更详细的错误信息，帮助排查问题
 		panic(fmt.Sprintf("failed to connect database: %v", err))

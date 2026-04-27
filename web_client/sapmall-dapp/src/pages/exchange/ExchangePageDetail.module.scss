@@ -1,0 +1,170 @@
+.pageRoot {
+  background: #080b18;
+}
+
+.heroTag {
+  background: rgba(124, 77, 255, 0.12);
+  border: 1px solid rgba(124, 77, 255, 0.25);
+}
+
+.heroDot {
+  background: #69f0ae;
+  box-shadow: 0 0 6px #69f0ae;
+  animation: glowPulse 1.5s infinite;
+}
+
+.heroTagText {
+  color: #b39ddb;
+}
+
+.heroTitle {
+  background: linear-gradient(135deg, #ffffff 0%, #b39ddb 50%, #00e5ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.featureBadge {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.panelCard {
+  background: linear-gradient(145deg, rgba(20, 16, 48, 0.9), rgba(12, 20, 44, 0.9));
+  border: 1px solid rgba(124, 77, 255, 0.25);
+  backdrop-filter: blur(20px);
+}
+
+.walletBtnDisconnected {
+  background: linear-gradient(135deg, #7c4dff, #00e5ff);
+  color: #fff;
+}
+
+.walletBtnConnected {
+  background: rgba(124, 77, 255, 0.15);
+  border: 1px solid rgba(124, 77, 255, 0.4);
+  color: #fff;
+}
+
+.stableCoinPanel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(124, 77, 255, 0.15);
+}
+
+.coinIcon {
+  color: #fff;
+}
+
+.coinUsdt {
+  background: linear-gradient(135deg, #26a17b, #1a7a5e);
+}
+
+.coinUsdc {
+  background: linear-gradient(135deg, #2775ca, #1a5a9a);
+}
+
+.coinBusd {
+  background: linear-gradient(135deg, #f0b90b, #d4a208);
+}
+
+.coinDai {
+  background: linear-gradient(135deg, #f5ac37, #d4922a);
+}
+
+.statsItem {
+  background: linear-gradient(135deg, rgba(20, 16, 48, 0.8), rgba(12, 20, 44, 0.8));
+  border: 1px solid rgba(124, 77, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.statsIconWrap {
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+}
+
+.changePositive {
+  background: rgba(105, 240, 174, 0.1);
+  border: 1px solid rgba(105, 240, 174, 0.2);
+  color: #69f0ae;
+}
+
+.changeNegative {
+  background: rgba(255, 64, 129, 0.1);
+  border: 1px solid rgba(255, 64, 129, 0.2);
+  color: #ff4081;
+}
+
+.particleGradientBg {
+  background: radial-gradient(ellipse at 20% 50%, rgba(124, 77, 255, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 229, 255, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(105, 240, 174, 0.04) 0%, transparent 50%),
+    #080b18;
+}
+
+.particleGridBg {
+  background-image: linear-gradient(rgba(124, 77, 255, 1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 77, 255, 1) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+.chartTooltip {
+  background: rgba(14, 12, 40, 0.95);
+  border: 1px solid rgba(124, 77, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.accentCyan {
+  color: #00e5ff;
+}
+
+.accentGreen {
+  color: #69f0ae;
+}
+
+.periodBtn {
+  background: rgba(255, 255, 255, 0.05);
+  color: #7986cb;
+}
+
+.periodBtnActive {
+  background: linear-gradient(135deg, #7c4dff, #448aff);
+  color: #fff;
+}
+
+.linkPurple {
+  color: #7c4dff;
+}
+
+.txCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(124, 77, 255, 0.1);
+}
+
+.statusDot {
+  background: #69f0ae;
+}
+
+.iconMuted {
+  color: #7986cb;
+}
+
+.tokenIconBase {
+  width: var(--token-size);
+  height: var(--token-size);
+  font-size: var(--token-font-size);
+  color: #fff;
+  background: linear-gradient(135deg, var(--token-from), var(--token-to));
+  box-shadow: 0 0 var(--token-shadow-1) var(--token-glow), 0 0 var(--token-shadow-2) var(--token-glow-soft);
+}
+
+.swapOuterGlow {
+  background: linear-gradient(135deg, rgba(124, 77, 255, 0.3), rgba(0, 229, 255, 0.2));
+  filter: blur(20px);
+  transform: scale(1.02);
+}
+
+.swapMainCard {
+  background: linear-gradient(145deg, rgba(20, 16, 48, 0.95) 0%, rgba(12, 20, 44, 0.95) 100%);
+  border: 1px solid rgba(124, 77, 255, 0.3);
+  backdrop-filter: blur(30px);
+}
