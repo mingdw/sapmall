@@ -4,10 +4,10 @@ Port: 8888
 Version: "1.0.0"
 
 DB:
-  Host: yisuyun69897fbb3956803924.rds.ysydb1.com
+  Host: localhost
   Port: 3306
-  Username: "69897fbb3956803924:sapmall_root"
-  Password: "mdwmdw_11"
+  Username: "xxxxx:sapmall_root"
+  Password: "xxxx"
   Dbname: saphire_mall
 
 Redis:
@@ -17,13 +17,13 @@ Redis:
   DB: 0
 
 Cos:
-  secretId: AKIDNgswnbCexIvPjyd9Viokma8WihT2PbbP
-  secretKey: f6KK7dy87uWv67xc4JLCrLNFuNeomX9b
-  bucketName: sap01-1251895040
-  region: ap-guangzhou
+  secretId: xxx
+  secretKey: xx
+  bucketName: xxx
+  region: xxx
 
 Auth:
-  AccessSecret: "sapmall-secret"
+  AccessSecret: "sapmall-secretxxx"
   AccessExpire: 86400
   StartAuth: true
 
@@ -32,7 +32,7 @@ MerchantDeposit:
   TokenSymbol: "USDT"
   TokenAddress: ""
   ChainID: 56
-  ContractAddress: "0x0000000000000000000000000000000000000000"
+  ContractAddress: "sapmall-secretxxx"
   IntentExpireMins: 30
 
 Swagger:
