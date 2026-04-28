@@ -18,12 +18,75 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/zeromicro/go-zero/core/logx"
+	"gorm.io/gorm"
 )
 
 type ApplyMerchantCertLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
+}
+
+func formatTimeValue(t time.Time) string {
+	if t.IsZero() {
+		return ""
+	}
+	return t.Format(time.DateTime)
+}
+
+func merchantDepositStatusDesc(status int) string {
+	switch status {
+	case 0:
+		return "初始化"
+	case 1:
+		return "待支付"
+	case 2:
+		return "链上确认中"
+	case 3:
+		return "已确认"
+	case 4:
+		return "已退还"
+	case 5:
+		return "失败"
+	case 6:
+		return "已过期"
+	default:
+		return "未知状态"
+	}
+}
+
+func buildMerchantDepositIntentResp(deposit *model.UserDeposit) types.MerchantDepositIntentResp {
+	if deposit == nil {
+		return types.MerchantDepositIntentResp{}
+	}
+	statusDesc := deposit.DepositStatusDesc
+	if statusDesc == "" {
+		statusDesc = merchantDepositStatusDesc(deposit.DepositStatus)
+	}
+	return types.MerchantDepositIntentResp{
+		ID:                deposit.ID,
+		IntentId:          deposit.IntentId,
+		BusinessType:      deposit.BusinessType,
+		DepositStatus:     int64(deposit.DepositStatus),
+		DepositStatusDesc: statusDesc,
+		Amount:            deposit.Amount,
+		Token:             deposit.TokenSymbol,
+		ChainId:           int64(deposit.ChainId),
+		ContractAddress:   deposit.ContractAddress,
+		ExpireAt:          formatTimeValue(deposit.ExpireAt),
+		TokenAddress:      deposit.TokenAddress,
+		TxHash:            deposit.TxHash,
+		RefundTxHash:      deposit.RefundTxHash,
+		BlockNumber:       deposit.BlockNumber,
+		Confirmations:     int64(deposit.Confirmations),
+		FailReason:        deposit.FailReason,
+		Remark:            deposit.Remark,
+		PaidAt:            formatTimeValue(deposit.PaidAt),
+		ConfirmedAt:       formatTimeValue(deposit.ConfirmedAt),
+		RefundedAt:        formatTimeValue(deposit.RefundedAt),
+		CreatedAt:         formatTimeValue(deposit.CreateAt),
+		UpdatedAt:         formatTimeValue(deposit.UpdateAt),
+	}
 }
 
 func (l *ApplyMerchantCertLogic) merchantDepositConfig() (amount, tokenSymbol, tokenAddress string, chainID int64, contractAddress string, expireMins int64) {
@@ -78,84 +141,54 @@ func (l *ApplyMerchantCertLogic) ApplyMerchantCert(req *types.ApplyMerchantCertR
 	}
 
 	// 0未缴纳 1待支付 2确认中 3已确认
-	if dbUser.MerchantDepositStatus == 3 {
-		return customererrors.SuccessMsg("当前用户已完成商家认证"), nil
+	if dbUser.MerchantDepositStatus != 0 {
+		return customererrors.SuccessMsg("当前用户正在申请成为商家，请勿重复申请"), nil
 	}
 
-	type userDepositRecord struct {
-		ID              int64      `gorm:"column:id"`
-		IntentID        string     `gorm:"column:intent_id"`
-		UserID          int64      `gorm:"column:user_id"`
-		UserCode        string     `gorm:"column:user_code"`
-		BusinessType    string     `gorm:"column:business_type"`
-		DepositStatus   int        `gorm:"column:deposit_status"`
-		Amount          string     `gorm:"column:amount"`
-		TokenSymbol     string     `gorm:"column:token_symbol"`
-		TokenAddress    string     `gorm:"column:token_address"`
-		ChainID         int64      `gorm:"column:chain_id"`
-		ContractAddress string     `gorm:"column:contract_address"`
-		TxHash          string     `gorm:"column:tx_hash"`
-		ExpireAt        *time.Time `gorm:"column:expire_at"`
-		IsDeleted       int        `gorm:"column:is_deleted"`
-		Creator         string     `gorm:"column:creator"`
-		Updator         string     `gorm:"column:updator"`
-	}
-
-	var latestDeposit userDepositRecord
-	queryLatestErr := l.svcCtx.GormDB.WithContext(l.ctx).
-		Table("sys_user_deposit").
-		Where("user_id = ? AND is_deleted = 0", dbUser.ID).
-		Order("id DESC").
-		First(&latestDeposit).Error
-
-	if queryLatestErr == nil && (latestDeposit.DepositStatus == 1 || latestDeposit.DepositStatus == 2) {
-		expireAt := ""
-		if latestDeposit.ExpireAt != nil {
-			expireAt = latestDeposit.ExpireAt.Format(time.DateTime)
-		}
+	userDepositRepo := repository.NewUserDepositRepository(l.svcCtx.GormDB)
+	latestDeposit, queryLatestErr := userDepositRepo.GetLatestByUserID(l.ctx, dbUser.ID)
+	if queryLatestErr == nil && latestDeposit != nil && (latestDeposit.DepositStatus == 1 || latestDeposit.DepositStatus == 2) {
 		return customererrors.SuccessData(types.ApplyMerchantCertResp{
-			Intent: types.MerchantDepositIntentResp{
-				IntentId:        latestDeposit.IntentID,
-				Amount:          latestDeposit.Amount,
-				Token:           latestDeposit.TokenSymbol,
-				ChainId:         latestDeposit.ChainID,
-				ContractAddress: latestDeposit.ContractAddress,
-				ExpireAt:        expireAt,
-				TokenAddress:    latestDeposit.TokenAddress,
-				TxHash:          latestDeposit.TxHash,
-			},
+			Intent: buildMerchantDepositIntentResp(latestDeposit),
 		}), nil
+	}
+	if queryLatestErr != nil && queryLatestErr != gorm.ErrRecordNotFound {
+		logx.Errorf("查询最新保证金意图单失败，userID=%d, err=%v", dbUser.ID, queryLatestErr)
+		return customererrors.DatabaseErrorResp("查询保证金意图单失败"), nil
 	}
 
 	intentID := fmt.Sprintf("mdi_%s", uuid.NewString())
 	amount, tokenSymbol, tokenAddress, chainID, contractAddress, expireMins := l.merchantDepositConfig()
 	expireAt := time.Now().Add(time.Duration(expireMins) * time.Minute)
 	intentResp := types.MerchantDepositIntentResp{
-		IntentId:        intentID,
-		Amount:          amount,
-		Token:           tokenSymbol,
-		ChainId:         chainID,
-		ContractAddress: contractAddress,
-		ExpireAt:        expireAt.Format(time.DateTime),
-		TokenAddress:    tokenAddress,
+		IntentId:          intentID,
+		BusinessType:      "merchant_deposit",
+		DepositStatus:     1,
+		DepositStatusDesc: merchantDepositStatusDesc(1),
+		Amount:            amount,
+		Token:             tokenSymbol,
+		ChainId:           chainID,
+		ContractAddress:   contractAddress,
+		ExpireAt:          expireAt.Format(time.DateTime),
+		TokenAddress:      tokenAddress,
 	}
 
-	newDeposit := userDepositRecord{
-		IntentID:        intentID,
-		UserID:          dbUser.ID,
+	newDeposit := model.UserDeposit{
+		IntentId:        intentID,
+		UserId:          dbUser.ID,
 		UserCode:        dbUser.UserCode,
 		BusinessType:    "merchant_deposit",
 		DepositStatus:   1,
 		Amount:          intentResp.Amount,
 		TokenSymbol:     intentResp.Token,
 		TokenAddress:    intentResp.TokenAddress,
-		ChainID:         intentResp.ChainId,
+		ChainId:         int(intentResp.ChainId),
 		ContractAddress: intentResp.ContractAddress,
-		ExpireAt:        &expireAt,
+		ExpireAt:        expireAt,
 		Creator:         dbUser.UserCode,
 		Updator:         dbUser.UserCode,
 	}
-	if createDepositErr := l.svcCtx.GormDB.WithContext(l.ctx).Table("sys_user_deposit").Create(&newDeposit).Error; createDepositErr != nil {
+	if createDepositErr := userDepositRepo.Create(l.ctx, &newDeposit); createDepositErr != nil {
 		logx.Errorf("创建保证金意图单失败，userID=%d, err=%v", dbUser.ID, createDepositErr)
 		return customererrors.DatabaseErrorResp("创建保证金意图单失败"), nil
 	}

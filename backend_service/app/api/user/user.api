@@ -24,4 +24,8 @@ service sapmall {
 	@doc "申请商家认证"
 	@handler ApplyMerchantCert
 	post /merchant/cert/apply (ApplyMerchantCertReq) returns (ApplyMerchantCertResp)
+
+	@doc "查询用户的申请单"
+	@handler GetUserDepositLatest
+	get /deposit/info/latest returns (GetUserDepositLatestResp)
 }

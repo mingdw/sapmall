@@ -261,22 +261,30 @@
 
 .categoryRow {
   display: grid;
-  grid-template-columns: 1.1fr 1.3fr auto;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-height: 24px;
 }
 
+.categoryCodeNameGroup {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
 .categoryCodeInline {
-  color: #e2e8f0;
+  color: #dbe7fb;
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .categoryNameInline {
-  color: #94a3b8;
-  font-size: 12px;
+  color: #8ea2bd;
+  font-size: 11px;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -336,13 +344,66 @@
 }
 
 .dictTypeTag {
-  color: #60a5fa;
-  background: rgba(37, 99, 235, 0.2);
-  border: 1px solid rgba(96, 165, 250, 0.35);
   border-radius: 999px;
-  padding: 2px 10px;
-  font-size: 12px;
+  padding: 1px 8px;
+  font-size: 11px;
   font-weight: 600;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+
+.dictTypeTagSystem {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.16);
+  border: 1px solid rgba(37, 99, 235, 0.35);
+}
+
+.dictTypeTagCustom {
+  color: #0891b2;
+  background: rgba(8, 145, 178, 0.16);
+  border: 1px solid rgba(8, 145, 178, 0.35);
+}
+
+.dictTypeTagOther {
+  color: #9333ea;
+  background: rgba(147, 51, 234, 0.16);
+  border: 1px solid rgba(147, 51, 234, 0.35);
+}
+
+.categoryDeleteIconButton {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.2s ease;
+}
+
+.categoryDeleteIconButton:hover {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.detailStatusSwitch:global(.ant-switch) {
+  min-width: 28px;
+  height: 16px;
+  line-height: 16px;
+}
+
+.detailStatusSwitch:global(.ant-switch .ant-switch-handle) {
+  width: 12px;
+  height: 12px;
+  top: 1px;
+}
+
+.detailStatusSwitch:global(.ant-switch.ant-switch-checked .ant-switch-handle) {
+  inset-inline-start: calc(100% - 13px);
 }
 
 .statusTagEnabled {
@@ -361,6 +422,12 @@
   border-radius: 999px;
   padding: 2px 8px;
   font-size: 12px;
+}
+
+.itemStatusCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .section {

@@ -71,6 +71,36 @@ const mapGenderToApi = (gender: ProfileData['gender']): number | undefined => {
   return undefined;
 };
 
+const mapDepositToIntent = (deposit?: any): MerchantDepositIntent | null => {
+  if (!deposit || !deposit.intentId) {
+    return null;
+  }
+  return {
+    id: deposit.id,
+    intentId: deposit.intentId,
+    businessType: deposit.businessType,
+    depositStatus: Number(deposit.depositStatus ?? 0),
+    depositStatusDesc: deposit.depositStatusDesc || '',
+    amount: String(deposit.amount ?? ''),
+    token: deposit.token || deposit.tokenSymbol || '',
+    chainId: Number(deposit.chainId ?? 0),
+    contractAddress: deposit.contractAddress || '',
+    expireAt: deposit.expireAt || '',
+    tokenAddress: deposit.tokenAddress || '',
+    txHash: deposit.txHash || '',
+    refundTxHash: deposit.refundTxHash || '',
+    blockNumber: deposit.blockNumber !== undefined ? Number(deposit.blockNumber) : undefined,
+    confirmations: deposit.confirmations !== undefined ? Number(deposit.confirmations) : undefined,
+    failReason: deposit.failReason || '',
+    remark: deposit.remark || '',
+    paidAt: deposit.paidAt || '',
+    confirmedAt: deposit.confirmedAt || '',
+    refundedAt: deposit.refundedAt || '',
+    createdAt: deposit.createdAt || '',
+    updatedAt: deposit.updatedAt || '',
+  };
+};
+
 const ProfileManager: React.FC = () => {
   const [savedProfile, setSavedProfile] = useState<ProfileData>(EMPTY_PROFILE);
   const [draftProfile, setDraftProfile] = useState<ProfileData>(EMPTY_PROFILE);
@@ -78,6 +108,7 @@ const ProfileManager: React.FC = () => {
   const [kycModalOpen, setKycModalOpen] = useState(false);
   const [merchantModalOpen, setMerchantModalOpen] = useState(false);
   const [merchantLoading, setMerchantLoading] = useState(false);
+  const [merchantDetailLoading, setMerchantDetailLoading] = useState(false);
   const [merchantIntent, setMerchantIntent] = useState<MerchantDepositIntent | null>(null);
   const [userStatusCode, setUserStatusCode] = useState<number>(0);
 
@@ -223,6 +254,8 @@ const ProfileManager: React.FC = () => {
         token: intent.token,
         chainId: intent.chainId,
         contractAddress: intent.contractAddress,
+        tokenAddress: intent.tokenAddress,
+        depositStatus: intent.depositStatus,
         returnPath: '/admin?menu=profile',
       },
     };
@@ -244,10 +277,7 @@ const ProfileManager: React.FC = () => {
     setMerchantLoading(true);
     userApi
       .applyMerchantCert()
-      .then((resp) => {
-        if (resp?.intent) {
-          setMerchantIntent(resp.intent as MerchantDepositIntent);
-        }
+      .then(() => {
         MessageUtils.success('商家申请已提交，请前往DApp缴纳保证金');
         return loadProfile(true);
       })
@@ -259,9 +289,36 @@ const ProfileManager: React.FC = () => {
       });
   };
 
+  const handleLoadMerchantDepositLatest = async (showFailedMessage = true): Promise<boolean> => {
+    setMerchantDetailLoading(true);
+    try {
+      const resp = await userApi.getUserDepositLatest();
+      if (!resp?.exists || !resp?.deposit) {
+        setMerchantIntent(null);
+        if (showFailedMessage) {
+          MessageUtils.warning('暂未查询到申请单，请稍后重试');
+        }
+        return false;
+      }
+      setMerchantIntent(mapDepositToIntent(resp.deposit));
+      return true;
+    } catch {
+      if (showFailedMessage) {
+        MessageUtils.error('查询申请单失败，请稍后重试');
+      }
+      return false;
+    } finally {
+      setMerchantDetailLoading(false);
+    }
+  };
+
+  const handleOpenMerchantDetailModal = async (): Promise<boolean> => {
+    return handleLoadMerchantDepositLatest(true);
+  };
+
   const handleMerchantOpenDapp = () => {
     if (!merchantIntent) {
-      MessageUtils.warning('保证金意图单不存在，请重新提交申请');
+      MessageUtils.warning('申请单信息缺失，请先刷新申请单');
       return;
     }
     openMerchantDepositPage(merchantIntent);
@@ -326,8 +383,10 @@ const ProfileManager: React.FC = () => {
         onSubmitProfileField={handleSubmitProfileField}
         onOpenKyc={() => setKycModalOpen(true)}
         onOpenMerchantApplyModal={() => setMerchantModalOpen(true)}
+        onOpenMerchantDetailModal={handleOpenMerchantDetailModal}
         merchantIntent={merchantIntent}
         merchantLoading={merchantLoading}
+        merchantDetailLoading={merchantDetailLoading}
         onMerchantOpenDapp={handleMerchantOpenDapp}
         onMerchantMarkPaid={handleMerchantMarkPaid}
       />

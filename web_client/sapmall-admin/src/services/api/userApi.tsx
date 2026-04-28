@@ -82,6 +82,19 @@ export const userApi = {
   },
 
   /**
+   * 查询当前用户最新保证金申请单
+   */
+  getUserDepositLatest: async (): Promise<any> => {
+    try {
+      const response = await baseClient.get<any>(`/api/user/deposit/info/latest`);
+      return response.data;
+    } catch (error) {
+      console.error('查询用户申请单失败:', error);
+      throw error;
+    }
+  },
+
+  /**
    * 刷新用户菜单缓存
    */
   refreshUserMenus: async (): Promise<ApiResponse<CategoryTreeResp[]>> => {

@@ -36,8 +36,10 @@ func NewSaveDictCategoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 func (l *SaveDictCategoryLogic) SaveDictCategory(req *types.SaveDictCategoryReq) (resp *types.BaseResp, err error) {
 	dictType := strings.TrimSpace(req.DictType)
 	code := strings.TrimSpace(req.Code)
-	if dictType == "" || code == "" {
-		return customererrors.ParamErrorResp("字典类型和分类编码不能为空"), nil
+	dictName := strings.TrimSpace(req.DictName)
+	desc := strings.TrimSpace(req.Desc)
+	if dictType == "" || code == "" || dictName == "" {
+		return customererrors.ParamErrorResp("字典类型、分类编码、字典名称不能为空"), nil
 	}
 	allowedDictTypes := map[string]struct{}{
 		"0": {},
@@ -73,7 +75,8 @@ func (l *SaveDictCategoryLogic) SaveDictCategory(req *types.SaveDictCategoryReq)
 		updates := map[string]interface{}{
 			"dict_type": dictType,
 			"code":      code,
-			"desc":      req.Desc,
+			"name":      dictName,
+			"desc":      desc,
 			"level":     req.Level,
 			"sort":      req.Sort,
 			"status":    req.Status,
@@ -89,7 +92,8 @@ func (l *SaveDictCategoryLogic) SaveDictCategory(req *types.SaveDictCategoryReq)
 	createModel := &model.DictCategory{
 		DictType: dictType,
 		Code:     code,
-		Desc:     req.Desc,
+		Name:     dictName,
+		Desc:     desc,
 		Level:    int(req.Level),
 		Sort:     int(req.Sort),
 		Status:   int(req.Status),

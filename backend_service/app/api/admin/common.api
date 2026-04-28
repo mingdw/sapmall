@@ -46,6 +46,10 @@ service sapmall {
 	@handler SaveDictCategory
 	post /dict/category (SaveDictCategoryReq) returns (BaseResp)
 
+	@doc "删除字典类目（级联删除该类目下所有字典项）"
+	@handler DeleteDictCategory
+	delete /dict/category/:id (DeleteDictCategoryReq) returns (BaseResp)
+
 	@doc "根据字典类目code查询字典列表"
 	@handler ListDictItemByType
 	get /dict/item/:dict_type (ListDictItemByTypeReq) returns (BaseResp)

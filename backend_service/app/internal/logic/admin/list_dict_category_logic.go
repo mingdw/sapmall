@@ -70,6 +70,7 @@ func (l *ListDictCategoryLogic) ListDictCategory(req *types.ListDictCategoryReq)
 			ID:        item.ID,
 			DictType:  item.DictType,
 			Code:      item.Code,
+			DictName:  item.Name,
 			Desc:      item.Desc,
 			Level:     int64(item.Level),
 			Sort:      int64(item.Sort),

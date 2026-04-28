@@ -38,17 +38,25 @@ const DictItemListPanel: React.FC<DictItemListPanelProps> = ({
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 90,
-      render: (value: number) => (
-        <span className={value === 1 ? styles.statusTagEnabled : styles.statusTagDisabled}>
-          {value === 1 ? '启用' : '禁用'}
-        </span>
+      width: 170,
+      render: (value: number, record) => (
+        <div className={styles.itemStatusCell}>
+          <span className={value === 1 ? styles.statusTagEnabled : styles.statusTagDisabled}>
+            {value === 1 ? '启用' : '禁用'}
+          </span>
+          <Switch
+            size="small"
+            checked={record.status === 1}
+            loading={togglingItemId === record.id}
+            onChange={() => onToggleStatus(record)}
+          />
+        </div>
       ),
     },
     {
       title: '操作',
       key: 'actions',
-      width: 170,
+      width: 130,
       render: (_, record) => (
         <div className={styles.inlineActions}>
           <AdminButton variant="outline" size="xs" icon="fas fa-pen" onClick={() => onEdit(record)}>
@@ -64,15 +72,6 @@ const DictItemListPanel: React.FC<DictItemListPanelProps> = ({
               删除
             </AdminButton>
           </Popconfirm>
-          <Switch
-            size="small"
-            checked={record.status === 1}
-            loading={togglingItemId === record.id}
-            onChange={() => onToggleStatus(record)}
-          />
-          <span className={record.status === 1 ? styles.statusTextEnabled : styles.statusTextDisabled}>
-            {record.status === 1 ? '启用' : '禁用'}
-          </span>
         </div>
       ),
     },

@@ -1,6 +1,6 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import { DatePicker, Form, Input, Radio } from 'antd';
+import { DatePicker, Form, Input, Modal, Radio, Spin } from 'antd';
 import MessageUtils from '../../../../utils/messageUtils';
 import type {
   KycStatus,
@@ -26,8 +26,10 @@ interface ProfileSectionListProps {
   }) => Promise<boolean>;
   onOpenKyc: () => void;
   onOpenMerchantApplyModal: () => void;
+  onOpenMerchantDetailModal: () => Promise<boolean>;
   merchantIntent: MerchantDepositIntent | null;
   merchantLoading: boolean;
+  merchantDetailLoading: boolean;
   onMerchantOpenDapp: () => void;
   onMerchantMarkPaid: () => void;
 }
@@ -160,6 +162,70 @@ const getMerchantStatusText = (status: MerchantDepositStatus): string => {
   return '未认证';
 };
 
+const getIntentStatusMeta = (
+  depositStatus?: number,
+): {
+  title: string;
+  description: string;
+  icon: string;
+  tone: 'info' | 'warning' | 'success' | 'danger';
+} => {
+  if (depositStatus === 1) {
+    return {
+      title: '待支付保证金',
+      description: '请在有效期内前往 DApp 完成保证金支付，超时后申请单将失效。',
+      icon: 'fas fa-wallet',
+      tone: 'warning',
+    };
+  }
+  if (depositStatus === 2) {
+    return {
+      title: '链上确认中',
+      description: '系统正在等待区块确认，确认完成后将自动更新商家认证状态。',
+      icon: 'fas fa-spinner',
+      tone: 'info',
+    };
+  }
+  if (depositStatus === 3) {
+    return {
+      title: '申请完成',
+      description: '保证金已确认到账，当前账户已具备商家认证资格。',
+      icon: 'fas fa-check-circle',
+      tone: 'success',
+    };
+  }
+  if (depositStatus === 4) {
+    return {
+      title: '保证金已退还',
+      description: '当前申请单已完成退款流程，请关注退还交易哈希。',
+      icon: 'fas fa-rotate-left',
+      tone: 'info',
+    };
+  }
+  if (depositStatus === 5) {
+    return {
+      title: '申请失败',
+      description: '申请流程执行失败，请查看失败原因并重新发起申请。',
+      icon: 'fas fa-circle-xmark',
+      tone: 'danger',
+    };
+  }
+  if (depositStatus === 6) {
+    return {
+      title: '申请已过期',
+      description: '申请单已过有效期，请重新发起申请并及时完成支付。',
+      icon: 'fas fa-hourglass-end',
+      tone: 'danger',
+    };
+  }
+  return {
+    title: '申请处理中',
+    description: '系统正在处理申请单信息，请稍后刷新查看最新状态。',
+    icon: 'fas fa-file-lines',
+    tone: 'info',
+  };
+};
+
 const getOperationBizLabel = (module: string): string => {
   const map: Record<string, string> = {
     profile: '资料',
@@ -191,13 +257,15 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
   onSubmitProfileField,
   onOpenKyc,
   onOpenMerchantApplyModal,
+  onOpenMerchantDetailModal,
   merchantIntent,
   merchantLoading,
+  merchantDetailLoading,
   onMerchantOpenDapp,
   onMerchantMarkPaid,
 }) => {
   const [showKycDetail, setShowKycDetail] = React.useState(false);
-  const [showMerchantDetail, setShowMerchantDetail] = React.useState(false);
+  const [showMerchantDetailModal, setShowMerchantDetailModal] = React.useState(false);
   const [operationLogVisibleCount, setOperationLogVisibleCount] = React.useState(OPERATION_LOG_PAGE_SIZE);
   const [lastSubmittedNickname, setLastSubmittedNickname] = React.useState(
     (initialProfile.nickname || '').trim(),
@@ -304,8 +372,29 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
   const securityStatusIcon = securityEnabled ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle';
 
   const merchantMeta = getMerchantStatusMeta(profile.merchantDepositStatus);
-  const merchantToggleText = profile.merchantDepositStatus === 'paid' ? '查看认证详情' : '去认证';
   const isMerchantNotApplied = profile.merchantDepositStatus === 'not_applied';
+  const merchantActionText = isMerchantNotApplied ? '申请成为商家' : '查看申请单';
+  const intentStatusMeta = getIntentStatusMeta(merchantIntent?.depositStatus);
+  const intentTimelineSteps = [
+    {
+      key: 'apply',
+      title: '提交申请',
+      time: merchantIntent?.createdAt || '--',
+      state: merchantIntent ? 'done' : 'pending',
+    },
+    {
+      key: 'pay',
+      title: '支付保证金',
+      time: merchantIntent?.paidAt || '--',
+      state: merchantIntent?.depositStatus && merchantIntent.depositStatus >= 2 ? 'done' : 'active',
+    },
+    {
+      key: 'confirm',
+      title: '链上确认',
+      time: merchantIntent?.confirmedAt || '--',
+      state: merchantIntent?.depositStatus === 3 ? 'done' : 'pending',
+    },
+  ] as const;
   const nicknameChanged = profile.nickname.trim() !== (initialProfile.nickname || '').trim();
   const nicknameSubmitted = profile.nickname.trim() === lastSubmittedNickname;
   const showNicknameSubmit = nicknameChanged && profile.nickname.trim().length > 0;
@@ -419,108 +508,24 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
               <AdminButton
                 variant={profile.merchantDepositStatus === 'paid' ? 'view' : 'submit'}
                 size="xs"
-                icon={
-                  isMerchantNotApplied
-                    ? 'fas fa-file-signature'
-                    : showMerchantDetail
-                    ? 'fas fa-chevron-up'
-                    : 'fas fa-chevron-down'
-                }
+                icon={isMerchantNotApplied ? 'fas fa-file-signature' : 'fas fa-file-lines'}
                 className={styles.authActionUnifiedBtn}
-                onClick={() => {
+                onClick={async () => {
                   if (isMerchantNotApplied) {
                     onOpenMerchantApplyModal();
                     return;
                   }
-                  setShowMerchantDetail((prev) => !prev);
+                  const loaded = await onOpenMerchantDetailModal();
+                  if (loaded) {
+                    setShowMerchantDetailModal(true);
+                  }
                 }}
               >
-                {merchantToggleText}
+                {merchantActionText}
               </AdminButton>
             </div>
           </SectionFormItem>
 
-          {showMerchantDetail && (
-            <div className={styles.merchantDetailPanel}>
-              <div className={styles.merchantStatusCard}>
-                <span className={styles.merchantStatusLabel}>当前状态</span>
-                <span className={styles.merchantStatusValue}>
-                  {getMerchantStatusText(profile.merchantDepositStatus)}
-                </span>
-              </div>
-
-              {profile.merchantDepositStatus === 'not_applied' && (
-                <div className={styles.merchantHintBlock}>
-                  <p>请先阅读并同意平台商家入驻相关法律条款，再提交商家认证申请。</p>
-                  <p>点击上方“去认证”按钮后，将在模态框中完成条款确认流程。</p>
-                </div>
-              )}
-
-              {(profile.merchantDepositStatus === 'pending_payment' ||
-                profile.merchantDepositStatus === 'confirming' ||
-                profile.merchantDepositStatus === 'paid') &&
-                merchantIntent && (
-                  <div className={styles.merchantIntentPanel}>
-                    <div className={styles.merchantIntentRow}>
-                      <span>意图单ID</span>
-                      <span>{merchantIntent.intentId}</span>
-                    </div>
-                    <div className={styles.merchantIntentRow}>
-                      <span>保证金金额</span>
-                      <span>
-                        {merchantIntent.amount} {merchantIntent.token}
-                      </span>
-                    </div>
-                    <div className={styles.merchantIntentRow}>
-                      <span>链ID</span>
-                      <span>{merchantIntent.chainId}</span>
-                    </div>
-                    <div className={styles.merchantIntentRow}>
-                      <span>合约地址</span>
-                      <span>{merchantIntent.contractAddress}</span>
-                    </div>
-                    <div className={styles.merchantIntentRow}>
-                      <span>有效期至</span>
-                      <span>{merchantIntent.expireAt}</span>
-                    </div>
-                    {merchantIntent.txHash && (
-                      <div className={styles.merchantIntentRow}>
-                        <span>交易哈希</span>
-                        <span>{merchantIntent.txHash}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-              {profile.merchantDepositStatus === 'pending_payment' && (
-                <div className={styles.merchantActionGroup}>
-                  <AdminButton
-                    variant="submit"
-                    size="xs"
-                    icon="fas fa-wallet"
-                    loading={merchantLoading}
-                    onClick={onMerchantOpenDapp}
-                  >
-                    前往DApp缴纳保证金
-                  </AdminButton>
-                </div>
-              )}
-
-              {profile.merchantDepositStatus === 'confirming' && (
-                <div className={styles.merchantActionGroup}>
-                  <AdminButton
-                    variant="confirm"
-                    size="xs"
-                    icon="fas fa-check-circle"
-                    loading={merchantLoading}
-                    onClick={onMerchantMarkPaid}
-                  >
-                    我已完成支付
-                  </AdminButton>
-                </div>
-              )}
-            </div>
-          )}
         </SectionForm>
       </SectionCard>
 
@@ -746,6 +751,156 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
           )}
         </div>
       </SectionCard>
+
+      <Modal
+        title="商家申请单详情"
+        open={showMerchantDetailModal}
+        onCancel={() => setShowMerchantDetailModal(false)}
+        footer={null}
+        width={760}
+        destroyOnClose
+      >
+        <div className={styles.merchantDetailPanel}>
+          {merchantDetailLoading && (
+            <div className={styles.merchantDetailLoadingWrap}>
+              <Spin size="large" />
+              <span>正在加载申请单详情...</span>
+            </div>
+          )}
+
+          {!merchantDetailLoading && merchantIntent && (
+            <>
+              <div className={`${styles.merchantStatusHero} ${styles[`merchantStatusHero${intentStatusMeta.tone}`]}`}>
+                <div className={styles.merchantStatusHeroMain}>
+                  <span className={styles.merchantStatusHeroIcon}>
+                    <i className={intentStatusMeta.icon}></i>
+                  </span>
+                  <div>
+                    <div className={styles.merchantStatusHeroTitle}>{intentStatusMeta.title}</div>
+                    <div className={styles.merchantStatusHeroDesc}>{intentStatusMeta.description}</div>
+                  </div>
+                </div>
+                <span className={styles.merchantStatusChip}>
+                  {merchantIntent.depositStatusDesc || `状态码 ${merchantIntent.depositStatus}`}
+                </span>
+              </div>
+
+              <div className={styles.merchantTimeline}>
+                {intentTimelineSteps.map((step) => (
+                  <div key={step.key} className={styles.merchantTimelineItem}>
+                    <span
+                      className={`${styles.merchantTimelineDot} ${
+                        step.state === 'done'
+                          ? styles.merchantTimelineDotDone
+                          : step.state === 'active'
+                          ? styles.merchantTimelineDotActive
+                          : styles.merchantTimelineDotPending
+                      }`}
+                    />
+                    <div className={styles.merchantTimelineContent}>
+                      <div className={styles.merchantTimelineTitle}>{step.title}</div>
+                      <div className={styles.merchantTimelineTime}>{step.time}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.merchantInfoGrid}>
+                <div className={styles.merchantIntentPanel}>
+                  <div className={styles.merchantPanelTitle}>申请单信息</div>
+                  <div className={styles.merchantIntentRow}>
+                    <span>意图单ID</span>
+                    <span>{merchantIntent.intentId || '--'}</span>
+                  </div>
+                  <div className={styles.merchantIntentRow}>
+                    <span>保证金金额</span>
+                    <span>
+                      {merchantIntent.amount || '--'} {merchantIntent.token || ''}
+                    </span>
+                  </div>
+                  <div className={styles.merchantIntentRow}>
+                    <span>有效期至</span>
+                    <span>{merchantIntent.expireAt || '--'}</span>
+                  </div>
+                  <div className={styles.merchantIntentRow}>
+                    <span>创建时间</span>
+                    <span>{merchantIntent.createdAt || '--'}</span>
+                  </div>
+                  <div className={styles.merchantIntentRow}>
+                    <span>更新时间</span>
+                    <span>{merchantIntent.updatedAt || '--'}</span>
+                  </div>
+                </div>
+
+                <div className={styles.merchantIntentPanel}>
+                  <div className={styles.merchantPanelTitle}>链上与交易信息</div>
+                  <div className={styles.merchantIntentRow}>
+                    <span>链ID</span>
+                    <span>{merchantIntent.chainId || '--'}</span>
+                  </div>
+                  <div className={styles.merchantIntentRow}>
+                    <span>合约地址</span>
+                    <span>{merchantIntent.contractAddress || '--'}</span>
+                  </div>
+                  <div className={styles.merchantIntentRow}>
+                    <span>代币地址</span>
+                    <span>{merchantIntent.tokenAddress || '--'}</span>
+                  </div>
+                  <div className={styles.merchantIntentRow}>
+                    <span>交易哈希</span>
+                    <span>{merchantIntent.txHash || '--'}</span>
+                  </div>
+                  <div className={styles.merchantIntentRow}>
+                    <span>确认数</span>
+                    <span>{merchantIntent.confirmations ?? '--'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {(merchantIntent.failReason || merchantIntent.refundTxHash) && (
+                <div className={styles.merchantHintBlock}>
+                  {merchantIntent.failReason ? <p>失败原因：{merchantIntent.failReason}</p> : null}
+                  {merchantIntent.refundTxHash ? <p>退还哈希：{merchantIntent.refundTxHash}</p> : null}
+                </div>
+              )}
+            </>
+          )}
+
+          {!merchantDetailLoading && !merchantIntent && (
+            <div className={styles.merchantHintBlock}>
+              <p>当前未查询到申请单详情，请稍后刷新页面重试。</p>
+            </div>
+          )}
+
+          {!merchantDetailLoading && merchantIntent && profile.merchantDepositStatus === 'pending_payment' && (
+            <div className={styles.merchantActionGroup}>
+              <AdminButton
+                variant="submit"
+                size="xs"
+                icon="fas fa-wallet"
+                loading={merchantLoading}
+                onClick={onMerchantOpenDapp}
+              >
+                前往DApp缴纳保证金
+              </AdminButton>
+            </div>
+          )}
+
+          {!merchantDetailLoading && merchantIntent && profile.merchantDepositStatus === 'confirming' && (
+            <div className={styles.merchantActionGroup}>
+              <AdminButton
+                variant="confirm"
+                size="xs"
+                icon="fas fa-check-circle"
+                loading={merchantLoading}
+                onClick={onMerchantMarkPaid}
+              >
+                我已完成支付
+              </AdminButton>
+            </div>
+          )}
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -176,6 +176,7 @@ CREATE TABLE `sys_dict_category`  (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `dict_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '字典归属类型：0系统字典/1用户自定义/2其它',
   `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '分类编码',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '分类名称',
   `desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '分类描述',
   `level` int NOT NULL DEFAULT 1 COMMENT '层级',
   `sort` int NOT NULL DEFAULT 0 COMMENT '排序',
@@ -188,6 +189,7 @@ CREATE TABLE `sys_dict_category`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_dict_type_code`(`dict_type`, `code`) USING BTREE,
   INDEX `idx_dict_type`(`dict_type`) USING BTREE,
+  INDEX `idx_name`(`name`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
   INDEX `idx_sort`(`sort`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '字典分类表' ROW_FORMAT = DYNAMIC;

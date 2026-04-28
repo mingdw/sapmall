@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"text/template"
 )
@@ -14,12 +15,12 @@ func parseFields(fieldDefs []string) ([]Field, error) {
 
 	// 添加默认字段
 	defaultFields := []Field{
-		{Name: "ID", Type: "int64", Tag: "primaryKey", Comment: "主键ID", IsPrimary: true},
-		{Name: "CreateAt", Type: "time.Time", Tag: "autoCreateTime", Comment: "创建时间"},
-		{Name: "UpdateAt", Type: "time.Time", Tag: "autoUpdateTime", Comment: "更新时间"},
-		{Name: "IsDeleted", Type: "bool", Tag: "default:false", Comment: "软删除标记"},
-		{Name: "Creator", Type: "string", Tag: "", Comment: "创建人"},
-		{Name: "Updator", Type: "string", Tag: "", Comment: "更新人"},
+		{Name: "ID", Type: "int64", Tag: "primaryKey", JSONName: "id", ColumnName: "id", ParamName: "id", Comment: "主键ID", IsPrimary: true},
+		{Name: "CreateAt", Type: "time.Time", Tag: "autoCreateTime", JSONName: "createAt", ColumnName: "create_at", ParamName: "createAt", Comment: "创建时间"},
+		{Name: "UpdateAt", Type: "time.Time", Tag: "autoUpdateTime", JSONName: "updateAt", ColumnName: "update_at", ParamName: "updateAt", Comment: "更新时间"},
+		{Name: "IsDeleted", Type: "bool", Tag: "default:false", JSONName: "isDeleted", ColumnName: "is_deleted", ParamName: "isDeleted", Comment: "软删除标记"},
+		{Name: "Creator", Type: "string", Tag: "", JSONName: "creator", ColumnName: "creator", ParamName: "creator", Comment: "创建人"},
+		{Name: "Updator", Type: "string", Tag: "", JSONName: "updator", ColumnName: "updator", ParamName: "updator", Comment: "更新人"},
 	}
 
 	// 先添加默认字段
@@ -36,9 +37,13 @@ func parseFields(fieldDefs []string) ([]Field, error) {
 			return nil, fmt.Errorf("字段定义格式错误: %s", def)
 		}
 
+		rawName := strings.TrimSpace(parts[0])
 		field := Field{
-			Name: parts[0],
-			Type: parts[1],
+			Name:       toPascalCase(rawName),
+			Type:       strings.TrimSpace(parts[1]),
+			JSONName:   toLowerCamelCase(rawName),
+			ColumnName: toSnakeCase(rawName),
+			ParamName:  toLowerCamelCase(rawName),
 		}
 
 		// 解析标签
@@ -70,7 +75,7 @@ func generateModel(data RepositoryData, outputDir string) error {
 		return err
 	}
 
-	modelFile := filepath.Join(modelDir, fmt.Sprintf("%s.go", data.EntityNameLower))
+	modelFile := filepath.Join(modelDir, fmt.Sprintf("%s.go", toSnakeCase(data.EntityName)))
 
 	tmpl := `package model
 
@@ -81,7 +86,7 @@ import (
 
 // {{.EntityName}} {{.EntityName}} 模型
 type {{.EntityName}} struct {
-{{range .Fields}}	{{.Name}} {{.Type}} ` + "`" + `json:"{{.Name | lower}}" gorm:"{{.Tag}}"` + "`" + ` // {{.Comment}}
+{{range .Fields}}	{{.Name}} {{.Type}} ` + "`" + `json:"{{.JSONName}}" gorm:"{{gormTag .}}"` + "`" + ` // {{.Comment}}
 {{end}}	DeletedAt gorm.DeletedAt ` + "`" + `json:"deleted_at" gorm:"index"` + "`" + `
 }
 
@@ -92,7 +97,7 @@ func ({{.EntityName}}) TableName() string {
 `
 
 	t, err := template.New("model").Funcs(template.FuncMap{
-		"lower": strings.ToLower,
+		"gormTag": buildGormTag,
 	}).Parse(tmpl)
 	if err != nil {
 		return err
@@ -114,7 +119,7 @@ func generateRepositoryFile(data RepositoryData, outputDir string) error {
 		return err
 	}
 
-	repoFile := filepath.Join(repoDir, fmt.Sprintf("%s.go", data.EntityNameLower))
+	repoFile := filepath.Join(repoDir, fmt.Sprintf("%s.go", toSnakeCase(data.EntityName)))
 
 	tmpl := `package repository
 
@@ -128,7 +133,7 @@ import (
 type {{.EntityName}}Repository interface {
 	Create(ctx context.Context, {{.EntityNameLower}} *model.{{.EntityName}}) error
 	GetByID(ctx context.Context, id int64) (*model.{{.EntityName}}, error)
-{{range .Fields}}{{if .IsUnique}}	GetBy{{.Name}}(ctx context.Context, {{.Name | lower}} {{.Type}}) (*model.{{.EntityName}}, error)
+{{range .Fields}}{{if .IsUnique}}	GetBy{{.Name}}(ctx context.Context, {{.ParamName}} {{.Type}}) (*model.{{$.EntityName}}, error)
 {{end}}{{end}}	Update(ctx context.Context, {{.EntityNameLower}} *model.{{.EntityName}}) error
 	Delete(ctx context.Context, id int64) error
 	List(ctx context.Context, offset, limit int) ([]*model.{{.EntityName}}, int64, error)
@@ -159,14 +164,14 @@ func (r *{{.EntityNameLower}}Repository) GetByID(ctx context.Context, id int64) 
 	return &{{.EntityNameLower}}, nil
 }
 
-{{range .Fields}}{{if .IsUnique}}// GetBy{{.Name}} 根据{{.Name}}获取 {{.EntityName}}
-func (r *{{.EntityNameLower}}Repository) GetBy{{.Name}}(ctx context.Context, {{.Name | lower}} {{.Type}}) (*model.{{.EntityName}}, error) {
-	var {{.EntityNameLower}} model.{{.EntityName}}
-	err := r.db.WithContext(ctx).Where("{{.Name | lower}} = ?", {{.Name | lower}}).First(&{{.EntityNameLower}}).Error
+{{range .Fields}}{{if .IsUnique}}// GetBy{{.Name}} 根据{{.Name}}获取 {{$.EntityName}}
+func (r *{{$.EntityNameLower}}Repository) GetBy{{.Name}}(ctx context.Context, {{.ParamName}} {{.Type}}) (*model.{{$.EntityName}}, error) {
+	var {{$.EntityNameLower}} model.{{$.EntityName}}
+	err := r.db.WithContext(ctx).Where("{{.ColumnName}} = ?", {{.ParamName}}).First(&{{$.EntityNameLower}}).Error
 	if err != nil {
 		return nil, err
 	}
-	return &{{.EntityNameLower}}, nil
+	return &{{$.EntityNameLower}}, nil
 }
 
 {{end}}{{end}}// Update 更新 {{.EntityName}}
@@ -220,7 +225,7 @@ func generateModelOnly(data RepositoryData, outputDir string) error {
 		return err
 	}
 
-	modelFile := filepath.Join(outputDir, fmt.Sprintf("%s.go", data.EntityNameLower))
+	modelFile := filepath.Join(outputDir, fmt.Sprintf("%s.go", toSnakeCase(data.EntityName)))
 
 	tmpl := `package model
 
@@ -231,7 +236,7 @@ import (
 
 // {{.EntityName}} {{.EntityName}} 模型
 type {{.EntityName}} struct {
-{{range .Fields}}	{{.Name}} {{.Type}} ` + "`" + `json:"{{.Name | lower}}" gorm:"{{.Tag}}"` + "`" + ` // {{.Comment}}
+{{range .Fields}}	{{.Name}} {{.Type}} ` + "`" + `json:"{{.JSONName}}" gorm:"{{gormTag .}}"` + "`" + ` // {{.Comment}}
 {{end}}	DeletedAt gorm.DeletedAt ` + "`" + `json:"deleted_at" gorm:"index"` + "`" + `
 }
 
@@ -242,7 +247,7 @@ func ({{.EntityName}}) TableName() string {
 `
 
 	t, err := template.New("model").Funcs(template.FuncMap{
-		"lower": strings.ToLower,
+		"gormTag": buildGormTag,
 	}).Parse(tmpl)
 	if err != nil {
 		return err
@@ -260,4 +265,60 @@ func ({{.EntityName}}) TableName() string {
 
 	fmt.Printf("✅ 成功生成 %s 模型到 %s\n", data.EntityName, modelFile)
 	return nil
+}
+
+var (
+	snakeCaseFirstCapRe = regexp.MustCompile("(.)([A-Z][a-z]+)")
+	snakeCaseAllCapRe   = regexp.MustCompile("([a-z0-9])([A-Z])")
+)
+
+func toSnakeCase(s string) string {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return s
+	}
+	converted := snakeCaseFirstCapRe.ReplaceAllString(s, "${1}_${2}")
+	converted = snakeCaseAllCapRe.ReplaceAllString(converted, "${1}_${2}")
+	return strings.ToLower(converted)
+}
+
+func toPascalCase(s string) string {
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return s
+	}
+	if strings.Contains(s, "_") {
+		parts := strings.Split(s, "_")
+		var result strings.Builder
+		for _, p := range parts {
+			if p == "" {
+				continue
+			}
+			result.WriteString(strings.ToUpper(p[:1]))
+			if len(p) > 1 {
+				result.WriteString(strings.ToLower(p[1:]))
+			}
+		}
+		return result.String()
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
+}
+
+func toLowerCamelCase(s string) string {
+	pascal := toPascalCase(s)
+	if pascal == "" {
+		return pascal
+	}
+	return strings.ToLower(pascal[:1]) + pascal[1:]
+}
+
+func buildGormTag(field Field) string {
+	tags := []string{}
+	if field.ColumnName != "" {
+		tags = append(tags, "column:"+field.ColumnName)
+	}
+	if field.Tag != "" {
+		tags = append(tags, field.Tag)
+	}
+	return strings.Join(tags, ";")
 }

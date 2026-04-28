@@ -143,7 +143,8 @@ func (r *dictCategoryRepository) ListByCondition(
 		db = db.Where("dict_type LIKE ?", "%"+dictType+"%")
 	}
 	if code != "" {
-		db = db.Where("code LIKE ?", "%"+code+"%")
+		likeCode := "%" + code + "%"
+		db = db.Where("code LIKE ? OR name LIKE ?", likeCode, likeCode)
 	}
 	if status != nil {
 		db = db.Where("status = ?", *status)

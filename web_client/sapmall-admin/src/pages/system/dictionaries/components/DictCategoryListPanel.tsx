@@ -1,6 +1,6 @@
 import React from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import { Empty, Input, Spin, Switch } from 'antd';
+import { Empty, Input, Spin, Tooltip } from 'antd';
 import AdminButton from '../../../../components/common/AdminButton';
 import { getDictCategoryTypeLabel, type DictCategoryInfo } from '../../../../services/api/dictionaryApi';
 import styles from '../DictionariesManager.module.scss';
@@ -13,8 +13,7 @@ interface DictCategoryListPanelProps {
   onKeywordChange: (value: string) => void;
   onSearch: () => void;
   onSelect: (category: DictCategoryInfo) => void;
-  onToggleStatus: (category: DictCategoryInfo) => void;
-  togglingCategoryId?: number;
+  onDelete: (category: DictCategoryInfo) => void;
   onAdd: () => void;
 }
 
@@ -26,10 +25,15 @@ const DictCategoryListPanel: React.FC<DictCategoryListPanelProps> = ({
   onKeywordChange,
   onSearch,
   onSelect,
-  onToggleStatus,
-  togglingCategoryId,
+  onDelete,
   onAdd,
 }) => {
+  const getDictTypeTagClassName = (dictType: string) => {
+    if (dictType === '0') return styles.dictTypeTagSystem;
+    if (dictType === '1') return styles.dictTypeTagCustom;
+    return styles.dictTypeTagOther;
+  };
+
   return (
     <div className={styles.panelCard}>
       <div className={styles.panelHead}>
@@ -77,25 +81,26 @@ const DictCategoryListPanel: React.FC<DictCategoryListPanelProps> = ({
                   tabIndex={0}
                 >
                   <div className={styles.categoryRow}>
-                    <span className={styles.categoryCodeInline}>{item.code}</span>
-                    <span className={styles.categoryNameInline}>{item.desc || '-'}</span>
+                    <span className={`${styles.dictTypeTag} ${getDictTypeTagClassName(item.dictType)}`}>
+                      {getDictCategoryTypeLabel(item.dictType)}
+                    </span>
+                    <div className={styles.categoryCodeNameGroup}>
+                      <span className={styles.categoryCodeInline}>{item.code}</span>
+                      <span className={styles.categoryNameInline}>{item.dictName || '-'}</span>
+                    </div>
                     <span className={styles.inlineActions}>
-                      <Switch
-                        size="small"
-                        checked={item.status === 0}
-                        className={`${styles.categoryStatusSwitch} ${
-                          item.status === 0 ? styles.categoryStatusSwitchOn : styles.categoryStatusSwitchOff
-                        }`}
-                        loading={togglingCategoryId === item.id}
-                        onClick={(checked, event) => {
-                          event?.stopPropagation();
-                          onToggleStatus(item);
-                        }}
-                      />
-                      <span className={item.status === 0 ? styles.statusTextEnabled : styles.statusTextDisabled}>
-                        {item.status === 0 ? '启用' : '禁用'}
-                      </span>
-                      <span className={styles.dictTypeTag}>{getDictCategoryTypeLabel(item.dictType)}</span>
+                      <Tooltip title="删除类目">
+                        <button
+                          type="button"
+                          className={styles.categoryDeleteIconButton}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onDelete(item);
+                          }}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      </Tooltip>
                     </span>
                   </div>
                 </div>

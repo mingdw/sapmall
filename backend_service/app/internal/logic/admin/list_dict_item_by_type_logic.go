@@ -31,7 +31,7 @@ func NewListDictItemByTypeLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *ListDictItemByTypeLogic) ListDictItemByType(req *types.ListDictItemByTypeReq) (resp *types.BaseResp, err error) {
-	if req.DictCategoryCode == "" {
+	if req.Code == "" {
 		return customererrors.ParamErrorResp("字典类目编码不能为空"), nil
 	}
 
@@ -55,9 +55,9 @@ func (l *ListDictItemByTypeLogic) ListDictItemByType(req *types.ListDictItemByTy
 	}
 
 	repo := repository.NewDictItemRepository(l.svcCtx.GormDB)
-	list, total, listErr := repo.ListByCategoryCode(l.ctx, req.DictCategoryCode, statusPtr, offset, int(pageSize))
+	list, total, listErr := repo.ListByCategoryCode(l.ctx, req.Code, statusPtr, offset, int(pageSize))
 	if listErr != nil {
-		l.Errorf("list dict item by type failed, dictCategoryCode=%s, err=%v", req.DictCategoryCode, listErr)
+		l.Errorf("list dict item by type failed, dictCategoryCode=%s, err=%v", req.Code, listErr)
 		return customererrors.DatabaseErrorResp("查询字典项失败"), nil
 	}
 

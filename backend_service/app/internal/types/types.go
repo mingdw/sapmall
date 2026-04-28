@@ -18,6 +18,11 @@ type BaseResp struct {
 	Total   int         `json:"total"`
 }
 
+// Error implements [error].
+func (b *BaseResp) Error() string {
+	panic("unimplemented")
+}
+
 type BatchUploadFileResp struct {
 	FileList []FileInfo `json:"fileList"` // 上传成功的文件列表
 	Failed   []string   `json:"failed"`   // 上传失败的文件名列表
@@ -53,6 +58,14 @@ type DeleteCategoryReq struct {
 	ID uint `path:"id"` // 目录ID
 }
 
+type DeleteDictCategoryReq struct {
+	ID int64 `path:"id"` // 主键ID
+}
+
+type DeleteDictItemReq struct {
+	ID int64 `path:"id"` // 主键ID
+}
+
 type DeleteFilesReq struct {
 	Keys         []string `json:"keys,optional"`         // 文件hash数组（用于根据hash删除）
 	Urls         []string `json:"urls,optional"`         // 文件URL数组（用于根据URL删除）
@@ -70,12 +83,13 @@ type DeleteSystemConfigReq struct {
 
 type DictCategoryInfo struct {
 	ID        int64  `json:"id"`
-	DictType  string `json:"dictType"`
+	DictType  string `json:"dictType"` // 字典归属类型：0系统字典/1用户自定义/2其它
 	Code      string `json:"code"`
+	DictName  string `json:"dictName,optional"` // 字典名称（对前端展示友好）
 	Desc      string `json:"desc,optional"`
 	Level     int64  `json:"level"`
 	Sort      int64  `json:"sort"`
-	Status    int64  `json:"status"` // 0禁用 1启用
+	Status    int64  `json:"status"` // 0启用 1禁用
 	CreatedAt string `json:"createdAt,optional"`
 	UpdatedAt string `json:"updatedAt,optional"`
 	Creator   string `json:"creator,optional"`
@@ -200,6 +214,11 @@ type GetUserBasicInfo struct {
 	UpdatedAt             string `json:"updatedAt,optional"`
 }
 
+type GetUserDepositLatestResp struct {
+	Exists  bool            `json:"exists"`           // 是否存在申请单
+	Deposit UserDepositInfo `json:"deposit,optional"` // 最新申请单
+}
+
 type GetUserInfoReq struct {
 	UserId int64 `path:"user_id"`
 }
@@ -251,9 +270,9 @@ type HealthCheckResp struct {
 }
 
 type ListDictCategoryReq struct {
-	DictType string `json:"dictType,optional"` // 字典类型（模糊）
+	DictType string `json:"dictType,optional"` // 字典归属类型：0系统字典/1用户自定义/2其它
 	Code     string `json:"code,optional"`     // 分类编码（模糊）
-	Status   int64  `json:"status,optional"`   // 状态：0禁用 1启用
+	Status   int64  `json:"status,optional"`   // 状态：0启用 1禁用
 	Page     int64  `json:"page"`
 	PageSize int64  `json:"pageSize"`
 }
@@ -264,10 +283,10 @@ type ListDictCategoryResp struct {
 }
 
 type ListDictItemByTypeReq struct {
-	DictCategoryCode string `path:"dict_type"`         // 字典类目code
-	Status           int64  `form:"status,optional"`   // 状态：0禁用 1启用
-	Page             int64  `form:"page,optional"`     // 页码，不传默认1
-	PageSize         int64  `form:"pageSize,optional"` // 每页条数，不传默认20
+	Code     string `path:"dict_type"`         // 字典类目编码
+	Status   int64  `form:"status,optional"`   // 状态：0禁用 1启用；其它值不按状态过滤
+	Page     int64  `form:"page,optional"`     // 页码，不传默认1
+	PageSize int64  `form:"pageSize,optional"` // 每页条数，不传默认20
 }
 
 type ListDictItemByTypeResp struct {
@@ -348,14 +367,28 @@ type MenuTreeNode struct {
 }
 
 type MerchantDepositIntentResp struct {
-	IntentId        string `json:"intentId"`
-	Amount          string `json:"amount"`
-	Token           string `json:"token"`
-	ChainId         int64  `json:"chainId"`
-	ContractAddress string `json:"contractAddress"`
-	ExpireAt        string `json:"expireAt"` // 建议格式：2006-01-02 15:04:05 或 RFC3339
-	TokenAddress    string `json:"tokenAddress,optional"`
-	TxHash          string `json:"txHash,optional"`
+	ID                int64  `json:"id,optional"` // 申请单主键ID
+	IntentId          string `json:"intentId"`
+	BusinessType      string `json:"businessType,optional"`      // 业务类型，默认 merchant_deposit
+	DepositStatus     int64  `json:"depositStatus"`              // 0初始化 1待支付 2确认中 3已确认 4已退还 5失败 6已过期
+	DepositStatusDesc string `json:"depositStatusDesc,optional"` // 保证金状态描述
+	Amount            string `json:"amount"`
+	Token             string `json:"token"`
+	ChainId           int64  `json:"chainId"`
+	ContractAddress   string `json:"contractAddress"`
+	ExpireAt          string `json:"expireAt"` // 建议格式：2006-01-02 15:04:05 或 RFC3339
+	TokenAddress      string `json:"tokenAddress,optional"`
+	TxHash            string `json:"txHash,optional"`
+	RefundTxHash      string `json:"refundTxHash,optional"`  // 退还交易哈希
+	BlockNumber       int64  `json:"blockNumber,optional"`   // 区块高度
+	Confirmations     int64  `json:"confirmations,optional"` // 链上确认数
+	FailReason        string `json:"failReason,optional"`    // 失败原因
+	Remark            string `json:"remark,optional"`        // 备注
+	PaidAt            string `json:"paidAt,optional"`        // 支付时间
+	ConfirmedAt       string `json:"confirmedAt,optional"`   // 链上确认时间
+	RefundedAt        string `json:"refundedAt,optional"`    // 退还时间
+	CreatedAt         string `json:"createdAt,optional"`     // 创建时间
+	UpdatedAt         string `json:"updatedAt,optional"`     // 更新时间
 }
 
 type ModifyUserInfoReq struct {
@@ -584,12 +617,13 @@ type SaveCategoryReq struct {
 
 type SaveDictCategoryReq struct {
 	ID       int64  `json:"id,optional"`     // 主键ID，空或0表示新增
-	DictType string `json:"dictType"`        // 字典类型
+	DictType string `json:"dictType"`        // 字典归属类型：0系统字典/1用户自定义/2其它
 	Code     string `json:"code"`            // 分类编码
+	DictName string `json:"dictName"`        // 字典名称
 	Desc     string `json:"desc,optional"`   // 分类描述
 	Level    int64  `json:"level,optional"`  // 层级
 	Sort     int64  `json:"sort,optional"`   // 排序
-	Status   int64  `json:"status,optional"` // 状态：0禁用 1启用
+	Status   int64  `json:"status,optional"` // 状态：0启用 1禁用
 }
 
 type SaveDictItemReq struct {
@@ -601,10 +635,6 @@ type SaveDictItemReq struct {
 	Level            int64  `json:"level,optional"`   // 层级
 	Sort             int64  `json:"sort,optional"`    // 排序
 	Status           int64  `json:"status,optional"`  // 状态：0禁用 1启用
-}
-
-type DeleteDictItemReq struct {
-	ID int64 `path:"id"` // 主键ID
 }
 
 type SaveProductReq struct {
@@ -657,6 +687,33 @@ type UploadFileReq struct {
 
 type UploadFileResp struct {
 	FileInfo FileInfo `json:"fileInfo"`
+}
+
+type UserDepositInfo struct {
+	ID                int64  `json:"id"`                         // 主键ID
+	IntentId          string `json:"intentId"`                   // 保证金意图单ID
+	UserId            int64  `json:"userId"`                     // 用户ID
+	UserCode          string `json:"userCode"`                   // 用户编码
+	BusinessType      string `json:"businessType"`               // 业务类型
+	DepositStatus     int64  `json:"depositStatus"`              // 0初始化 1待支付 2链上确认中 3已确认 4已退还 5失败 6已过期
+	DepositStatusDesc string `json:"depositStatusDesc,optional"` // 保证金状态描述
+	Amount            string `json:"amount"`                     // 保证金金额
+	TokenSymbol       string `json:"tokenSymbol"`                // 代币符号
+	TokenAddress      string `json:"tokenAddress,optional"`      // 代币合约地址
+	ChainId           int64  `json:"chainId"`                    // 链ID
+	ContractAddress   string `json:"contractAddress,optional"`   // 保证金合约地址
+	TxHash            string `json:"txHash,optional"`            // 缴纳交易哈希
+	BlockNumber       int64  `json:"blockNumber,optional"`       // 区块高度
+	Confirmations     int64  `json:"confirmations,optional"`     // 确认数
+	RefundTxHash      string `json:"refundTxHash,optional"`      // 退还交易哈希
+	ExpireAt          string `json:"expireAt,optional"`          // 意图单过期时间
+	PaidAt            string `json:"paidAt,optional"`            // 支付时间
+	ConfirmedAt       string `json:"confirmedAt,optional"`       // 链上确认时间
+	RefundedAt        string `json:"refundedAt,optional"`        // 保证金退还时间
+	FailReason        string `json:"failReason,optional"`        // 失败原因
+	Remark            string `json:"remark,optional"`            // 备注
+	CreatedAt         string `json:"createdAt,optional"`         // 创建时间
+	UpdatedAt         string `json:"updatedAt,optional"`         // 更新时间
 }
 
 type UserInfo struct {

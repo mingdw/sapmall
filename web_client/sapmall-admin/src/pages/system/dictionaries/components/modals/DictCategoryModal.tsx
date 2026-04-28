@@ -28,6 +28,7 @@ const DictCategoryModal: React.FC<DictCategoryModalProps> = ({
     form.setFieldsValue({
       dictType: editingCategory?.dictType || '',
       code: editingCategory?.code || '',
+      dictName: editingCategory?.dictName || '',
       desc: editingCategory?.desc || '',
       level: editingCategory?.level ?? 1,
       sort: editingCategory?.sort ?? 0,
@@ -46,6 +47,7 @@ const DictCategoryModal: React.FC<DictCategoryModalProps> = ({
           id: editingCategory?.id,
           dictType: values.dictType.trim(),
           code: values.code.trim(),
+          dictName: values.dictName?.trim() || '',
           desc: values.desc?.trim() || '',
           level: values.level ?? 1,
           sort: values.sort ?? 0,
@@ -61,7 +63,10 @@ const DictCategoryModal: React.FC<DictCategoryModalProps> = ({
         <Form.Item name="code" label="类目编码" rules={[{ required: true, message: '请输入类目编码' }]}>
           <Input placeholder="如：order_status" />
         </Form.Item>
-        <Form.Item name="desc" label="描述">
+        <Form.Item name="dictName" label="字典名称" rules={[{ required: true, message: '请输入字典名称' }]}>
+          <Input placeholder="如：订单状态" />
+        </Form.Item>
+        <Form.Item name="desc" label="备注描述">
           <Input.TextArea rows={3} placeholder="请输入描述" />
         </Form.Item>
         <Space style={{ display: 'flex' }} size={12}>

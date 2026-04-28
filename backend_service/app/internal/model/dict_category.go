@@ -14,6 +14,7 @@ type DictCategory struct {
 	Updator   string    `json:"updator" gorm:"column:updator"`                    // 更新人
 	DictType  string    `json:"dictType" gorm:"column:dict_type"`                 // 字典类型
 	Code      string    `json:"code" gorm:"column:code"`                          // 分类编码
+	Name      string    `json:"name" gorm:"column:name"`                          // 分类名称
 	Desc      string    `json:"desc" gorm:"column:desc"`                          // 分类描述
 	Level     int       `json:"level" gorm:"column:level"`                        // 层级
 	Sort      int       `json:"sort" gorm:"column:sort"`                          // 排序

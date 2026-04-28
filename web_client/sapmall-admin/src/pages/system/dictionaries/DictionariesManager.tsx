@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Empty, Spin } from 'antd';
+import { Empty, Modal, Spin } from 'antd';
 import AdminCard from '../../../components/common/AdminCard';
 import MessageUtils from '../../../utils/messageUtils';
 import dictionaryApi, {
@@ -110,6 +110,7 @@ const DictionariesManager: React.FC = () => {
         id: category.id,
         dictType: category.dictType,
         code: category.code,
+        dictName: category.dictName || '',
         desc: category.desc || '',
         level: category.level,
         sort: category.sort,
@@ -136,6 +137,28 @@ const DictionariesManager: React.FC = () => {
     } finally {
       setCategorySubmitting(false);
     }
+  };
+
+  const handleDeleteCategory = (category: DictCategoryInfo) => {
+    Modal.confirm({
+      title: '确认删除该字典类目？',
+      content: `删除后将同时删除类目「${category.dictName || category.code}」下的所有字典项，且不可恢复。`,
+      okText: '确认删除',
+      cancelText: '取消',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        try {
+          await dictionaryApi.deleteDictCategory(category.id);
+          MessageUtils.success('字典类目删除成功');
+          await loadCategories(categoryKeyword);
+          if (selectedCategory?.id === category.id) {
+            setItemList([]);
+          }
+        } catch {
+          MessageUtils.error('删除字典类目失败，请稍后重试');
+        }
+      },
+    });
   };
 
   const handleCreateItem = () => {
@@ -210,8 +233,7 @@ const DictionariesManager: React.FC = () => {
                 onKeywordChange={setCategorySearchValue}
                 onSearch={handleCategorySearch}
                 onSelect={setSelectedCategory}
-                onToggleStatus={handleToggleCategoryStatus}
-                togglingCategoryId={togglingCategoryId}
+                onDelete={handleDeleteCategory}
                 onAdd={handleCreateCategory}
               />
             </div>

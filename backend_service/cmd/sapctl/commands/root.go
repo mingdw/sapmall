@@ -24,6 +24,9 @@ type Field struct {
 	Type       string
 	Tag        string
 	Comment    string
+	JSONName   string
+	ColumnName string
+	ParamName  string
 	IsRequired bool
 	IsUnique   bool
 	IsPrimary  bool

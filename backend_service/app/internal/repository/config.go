@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"sapphire-mall/app/internal/model"
+
 	"gorm.io/gorm"
 )
 
@@ -22,7 +23,7 @@ type ConfigRepository interface {
 		status *int64,
 		offset, limit int,
 	) ([]*model.Config, int64, error)
-	ExistsByConfigKey(ctx context.Context, configKey string, excludeID int64) (bool, error)
+	ExistsByConfigKey(ctx context.Context, configKey string) (bool, error)
 }
 
 // configRepository Config 数据访问实现
@@ -98,12 +99,12 @@ func (r *configRepository) SoftDelete(ctx context.Context, id int64, updator str
 func (r *configRepository) List(ctx context.Context, offset, limit int) ([]*model.Config, int64, error) {
 	var configs []*model.Config
 	var total int64
-	
+
 	// 获取总数
 	if err := r.db.WithContext(ctx).Model(&model.Config{}).Where("is_deleted = ?", 0).Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
-	
+
 	// 获取列表
 	if err := r.db.WithContext(ctx).
 		Where("is_deleted = ?", 0).
@@ -113,7 +114,7 @@ func (r *configRepository) List(ctx context.Context, offset, limit int) ([]*mode
 		Find(&configs).Error; err != nil {
 		return nil, 0, err
 	}
-	
+
 	return configs, total, nil
 }
 
@@ -156,14 +157,10 @@ func (r *configRepository) ListByCondition(
 }
 
 // ExistsByConfigKey 判断配置键是否已存在
-func (r *configRepository) ExistsByConfigKey(ctx context.Context, configKey string, excludeID int64) (bool, error) {
+func (r *configRepository) ExistsByConfigKey(ctx context.Context, configKey string) (bool, error) {
 	var count int64
-	db := r.db.WithContext(ctx).Model(&model.Config{}).Where("is_deleted = ?", 0)
-	if excludeID > 0 {
-		db = db.Where("id = ?", excludeID)
-	} else {
-		db = db.Where("config_key = ?", configKey)
-	}
+	db := r.db.WithContext(ctx).Model(&model.Config{}).
+		Where("config_key = ? AND is_deleted = ?", configKey, 0)
 	if err := db.Count(&count).Error; err != nil {
 		return false, err
 	}

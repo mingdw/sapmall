@@ -201,15 +201,18 @@ const SystemSettingsPage: React.FC = () => {
       );
     }
     if (record.configType === 'boolean') {
+      const checked = parseBooleanValue(currentValue);
       return (
         <div onClick={(event) => event.stopPropagation()}>
           <Switch
-            checked={parseBooleanValue(currentValue)}
+            checked={checked}
             loading={isSaving}
-            checkedChildren="真"
-            unCheckedChildren="假"
-            onChange={(checked) => {
-              const nextValue = checked ? 'true' : 'false';
+            size="small"
+            className={`${styles.booleanValueSwitch} ${
+              checked ? styles.booleanValueSwitchOn : styles.booleanValueSwitchOff
+            }`}
+            onChange={(nextChecked) => {
+              const nextValue = nextChecked ? 'true' : 'false';
               handleValueChange(record, nextValue);
               saveValue(record, nextValue).catch(() => undefined);
             }}

@@ -16,6 +16,7 @@ export interface DictCategoryInfo {
   id: number;
   dictType: string;
   code: string;
+  dictName?: string;
   desc?: string;
   level: number;
   sort: number;
@@ -54,6 +55,7 @@ export interface SaveDictCategoryReq {
   id?: number;
   dictType: string;
   code: string;
+  dictName?: string;
   desc?: string;
   level?: number;
   sort?: number;
@@ -109,6 +111,10 @@ export const dictionaryApi = {
 
   deleteDictItem: async (id: number): Promise<ApiResponse<null>> => {
     return baseClient.delete<null>(`/api/admin/dict/item/${id}`);
+  },
+
+  deleteDictCategory: async (id: number): Promise<ApiResponse<null>> => {
+    return baseClient.delete<null>(`/api/admin/dict/category/${id}`);
   },
 };
 

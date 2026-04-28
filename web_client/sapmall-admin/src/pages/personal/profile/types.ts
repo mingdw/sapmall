@@ -43,13 +43,28 @@ export interface ProfileData {
 }
 
 export interface MerchantDepositIntent {
+  id?: number;
   intentId: string;
+  businessType?: string;
+  depositStatus: number;
+  depositStatusDesc?: string;
   amount: string;
   token: string;
   chainId: number;
   contractAddress: string;
   expireAt: string;
+  tokenAddress?: string;
   txHash?: string;
+  refundTxHash?: string;
+  blockNumber?: number;
+  confirmations?: number;
+  failReason?: string;
+  remark?: string;
+  paidAt?: string;
+  confirmedAt?: string;
+  refundedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface KycBasicForm {
