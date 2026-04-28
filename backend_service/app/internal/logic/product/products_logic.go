@@ -4,6 +4,7 @@ import (
 	"context"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
+	"sync"
 
 	"strings"
 
@@ -63,56 +64,89 @@ func (l *ProductsLogic) Products(req *types.ListProductsReq) (resp *types.BaseRe
 	}
 
 	// 构造返回结果
-	var productCategories = make([]*types.CategoryProducts, 0)
+	var productCategories = make([]*types.CategoryProducts, 0, len(categoryCodes))
 
-	for _, categoryCode := range categoryCodes {
+	type queryResult struct {
+		index int
+		data  *types.CategoryProducts
+		err   error
+	}
+
+	results := make([]*queryResult, len(categoryCodes))
+	var wg sync.WaitGroup
+	sem := make(chan struct{}, 4) // 控制并发，避免数据库瞬时压力过大
+
+	for idx, categoryCode := range categoryCodes {
 		category := categoryMap[categoryCode]
 		if category == nil {
 			continue
 		}
 
-		// 获取该分类下的商品
-		products, total, err := productRepository.GetProductsBycategoryCode(l.ctx, categoryCode, req.ProductName, req.Page, req.PageSize)
-		if err != nil {
-			return nil, err
-		}
+		wg.Add(1)
+		go func(i int, code string, c *model.Category) {
+			defer wg.Done()
+			sem <- struct{}{}
+			defer func() { <-sem }()
 
-		// 构造商品列表
-		var productSpus []*types.Product
-		for _, product := range products {
-			productSpus = append(productSpus, &types.Product{
-				Id:            product.SPU.ID,
-				Code:          product.SPU.Code,
-				Name:          product.SPU.Name,
-				Category1Id:   product.SPU.Category1ID,
-				Category1Code: product.SPU.Category1Code,
-				Category2Id:   product.SPU.Category2ID,
-				Category2Code: product.SPU.Category2Code,
-				Category3Id:   product.SPU.Category3ID,
-				Category3Code: product.SPU.Category3Code,
-				UserId:        product.SPU.UserID,
-				UserCode:      product.SPU.UserCode,
-				TotalSales:    product.SPU.TotalSales,
-				TotalStock:    product.SPU.TotalStock,
-				Brand:         product.SPU.Brand,
-				Price:         product.SPU.Price,
-				RealPrice:     product.SPU.RealPrice,
-				Status:        product.SPU.Status,
-				ChainStatus:   product.SPU.ChainStatus,
-				ChainId:       product.SPU.ChainID,
-				ChainTxHash:   product.SPU.ChainTxHash,
-				Images:        strings.Split(product.SPU.Images, ","), // 直接返回字符串，保持与API定义一致
-				Description:   product.SPU.Description,
-			})
-		}
+			// 获取该分类下的商品
+			products, total, queryErr := productRepository.GetProductsBycategoryCode(l.ctx, code, req.ProductName, req.Page, req.PageSize)
+			if queryErr != nil {
+				results[i] = &queryResult{index: i, err: queryErr}
+				return
+			}
 
-		productCategories = append(productCategories, &types.CategoryProducts{
-			CategoryId:   int64(category.ID),
-			CategoryCode: category.Code,
-			CategoryName: category.Name,
-			ProductCount: total,
-			Products:     productSpus,
-		})
+			// 构造商品列表
+			var productSpus []*types.Product
+			for _, product := range products {
+				productSpus = append(productSpus, &types.Product{
+					Id:            product.SPU.ID,
+					Code:          product.SPU.Code,
+					Name:          product.SPU.Name,
+					Category1Id:   product.SPU.Category1ID,
+					Category1Code: product.SPU.Category1Code,
+					Category2Id:   product.SPU.Category2ID,
+					Category2Code: product.SPU.Category2Code,
+					Category3Id:   product.SPU.Category3ID,
+					Category3Code: product.SPU.Category3Code,
+					UserId:        product.SPU.UserID,
+					UserCode:      product.SPU.UserCode,
+					TotalSales:    product.SPU.TotalSales,
+					TotalStock:    product.SPU.TotalStock,
+					Brand:         product.SPU.Brand,
+					Price:         product.SPU.Price,
+					RealPrice:     product.SPU.RealPrice,
+					Status:        product.SPU.Status,
+					ChainStatus:   product.SPU.ChainStatus,
+					ChainId:       product.SPU.ChainID,
+					ChainTxHash:   product.SPU.ChainTxHash,
+					Images:        strings.Split(product.SPU.Images, ","), // 直接返回字符串，保持与API定义一致
+					Description:   product.SPU.Description,
+				})
+			}
+
+			results[i] = &queryResult{
+				index: i,
+				data: &types.CategoryProducts{
+					CategoryId:   int64(c.ID),
+					CategoryCode: c.Code,
+					CategoryName: c.Name,
+					ProductCount: total,
+					Products:     productSpus,
+				},
+			}
+		}(idx, categoryCode, category)
+	}
+
+	wg.Wait()
+
+	for _, result := range results {
+		if result == nil {
+			continue
+		}
+		if result.err != nil {
+			return nil, result.err
+		}
+		productCategories = append(productCategories, result.data)
 	}
 	return &types.BaseResp{
 		Code:    0,

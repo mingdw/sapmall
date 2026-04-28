@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import styles from './MarketPlacePageDetail.module.scss';
 import { commonApiService } from '../../services/api/commonApiService';
 import { productApiService } from '../../services/api/productApiService';
@@ -13,6 +13,8 @@ import { useCategoryStore } from '../../store/categoryStore';
 import { transformProductForDisplay } from '../../utils/productUtils';
 
 const MarketPlacePageDetail: React.FC = () => {
+  const INITIAL_CATEGORY_PAGE_SIZE = 30;
+  const requestIdRef = useRef(0);
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null); // 改为单选
   const [selectedFilters, setSelectedFilters] = useState<FilterOptions>({
@@ -141,6 +143,7 @@ const MarketPlacePageDetail: React.FC = () => {
 
   // 使用 useCallback 缓存商品获取函数
   const fetchProductsWithQuery = useCallback(async (query: string, page: number = currentPage, resetPage: boolean = false) => {
+    const currentRequestId = ++requestIdRef.current;
     try {
       setIsLoadingProducts(true);
       
@@ -172,18 +175,26 @@ const MarketPlacePageDetail: React.FC = () => {
       console.log('当前状态 - selectedCategory:', selectedCategory, 'searchQuery:', query);
 
       const response = await productApiService.getProducts(queryParams);
+      if (currentRequestId !== requestIdRef.current) {
+        return;
+      }
       const processedProducts = response.products.map(transformProductForDisplay);
       
       setProducts(processedProducts);
       setTotalItems(response.total || 0);
     } catch (error) {
+      if (currentRequestId !== requestIdRef.current) {
+        return;
+      }
       console.error('获取商品失败:', error);
       setProducts([]);
       setTotalItems(0);
     } finally {
-      setIsLoadingProducts(false);
+      if (currentRequestId === requestIdRef.current) {
+        setIsLoadingProducts(false);
+      }
     }
-  }, [selectedCategory, currentPage, pageSize, selectedCategoryData]);
+  }, [selectedCategory, pageSize, selectedCategoryData]);
 
   const fetchProducts = useCallback(async (page: number = currentPage, resetPage: boolean = false) => {
     // 调用fetchProductsWithQuery，使用当前的searchQuery
@@ -197,7 +208,9 @@ const MarketPlacePageDetail: React.FC = () => {
     if (selectedCategory === null || selectedCategory === 0) {
       // 全部商品：获取前几个分类的商品数据
       const fetchInitialProducts = async () => {
+        const currentRequestId = ++requestIdRef.current;
         try {
+          setIsLoadingProducts(true);
           const categoriesToFetch = firstLevelCategories.slice(0, displayedCategoriesCount);
           
           if (categoriesToFetch.length > 0) {
@@ -206,7 +219,7 @@ const MarketPlacePageDetail: React.FC = () => {
             const queryParams: ProductQueryParams = {
               categoryCodes: categoryCodes,
               page: 1,
-              pageSize: 100, // 获取每个分类的前100个商品用于展示
+              pageSize: INITIAL_CATEGORY_PAGE_SIZE,
             };
 
             if (searchQuery) {
@@ -220,14 +233,24 @@ const MarketPlacePageDetail: React.FC = () => {
             });
 
             const response = await productApiService.getProducts(queryParams);
+            if (currentRequestId !== requestIdRef.current) {
+              return;
+            }
             const processedProducts = response.products.map(transformProductForDisplay);
             setProducts(processedProducts);
             setTotalItems(response.total || 0);
           }
         } catch (error) {
+          if (currentRequestId !== requestIdRef.current) {
+            return;
+          }
           console.error('获取初始商品失败:', error);
           setProducts([]);
           setTotalItems(0);
+        } finally {
+          if (currentRequestId === requestIdRef.current) {
+            setIsLoadingProducts(false);
+          }
         }
       };
 
@@ -299,13 +322,9 @@ const MarketPlacePageDetail: React.FC = () => {
 
   // 处理搜索
   const handleSearch = () => {
-    // 将输入框的值设置为搜索查询词
+    // 将输入框的值设置为搜索查询词，并回到第一页
+    setCurrentPage(1);
     setSearchQuery(searchInput);
-    // 搜索时重置到第一页，并立即触发搜索
-    // 使用searchInput而不是searchQuery，因为状态更新是异步的
-    setTimeout(() => {
-      fetchProductsWithQuery(searchInput, 1, true);
-    }, 0);
   };
 
   // 处理分页变化
@@ -326,7 +345,9 @@ const MarketPlacePageDetail: React.FC = () => {
     
     // 获取新显示的分类的商品数据
     const fetchNewCategoriesProducts = async () => {
+      const currentRequestId = ++requestIdRef.current;
       try {
+        setIsLoadingProducts(true);
         // 获取新显示的分类（从当前显示数量到新的显示数量）
         const newCategories = firstLevelCategories.slice(displayedCategoriesCount, newDisplayedCount);
         
@@ -336,7 +357,7 @@ const MarketPlacePageDetail: React.FC = () => {
           const queryParams: ProductQueryParams = {
             categoryCodes: categoryCodes,
             page: 1,
-            pageSize: 100, // 获取每个分类的前100个商品用于展示
+            pageSize: INITIAL_CATEGORY_PAGE_SIZE,
           };
 
           if (searchQuery) {
@@ -350,6 +371,9 @@ const MarketPlacePageDetail: React.FC = () => {
           });
 
           const response = await productApiService.getProducts(queryParams);
+          if (currentRequestId !== requestIdRef.current) {
+            return;
+          }
           const newProcessedProducts = response.products.map(transformProductForDisplay);
           
           // 将新商品数据添加到现有数据中
@@ -362,6 +386,10 @@ const MarketPlacePageDetail: React.FC = () => {
         }
       } catch (error) {
         console.error('获取更多分类商品失败:', error);
+      } finally {
+        if (currentRequestId === requestIdRef.current) {
+          setIsLoadingProducts(false);
+        }
       }
     };
 

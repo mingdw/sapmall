@@ -25,8 +25,7 @@ func NewProductRepository(db *gorm.DB) ProductRepository {
 func (r *productRepository) GetProduct(ctx context.Context, id int64) (*model.Product, error) {
 	var product model.Product
 
-	// 打印 SQL 语句以便调试
-	db := r.db.WithContext(ctx).Debug()
+	db := r.db.WithContext(ctx)
 
 	err := db.Model(&product.SPU).
 		Where("id = ? AND is_deleted = ?", id, 0).
@@ -68,7 +67,7 @@ func (r *productRepository) ListProductsByCategoryCodes(
 	var total int64
 
 	// 基础查询
-	query := r.db.WithContext(ctx).Debug().Model(&model.ProductSpu{}).
+	query := r.db.WithContext(ctx).Model(&model.ProductSpu{}).
 		Where("is_deleted = ?", 0)
 
 	if len(categoryCodes) > 0 {
@@ -171,7 +170,7 @@ func (r *productRepository) GetProductsBycategoryCode(ctx context.Context, categ
 	var total int64
 
 	// 基础查询
-	query := r.db.WithContext(ctx).Debug().Model(&model.ProductSpu{}).
+	query := r.db.WithContext(ctx).Model(&model.ProductSpu{}).
 		Where("is_deleted = ?", 0)
 
 	if categoryCode != "" {

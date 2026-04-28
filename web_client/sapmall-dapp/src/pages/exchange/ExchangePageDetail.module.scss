@@ -168,3 +168,214 @@
   border: 1px solid rgba(124, 77, 255, 0.3);
   backdrop-filter: blur(30px);
 }
+
+.merchantTickerWrap {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.merchantTickerTrack {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-width: max-content;
+  padding: 8px 12px;
+  animation: merchantTickerScroll 26s linear infinite;
+}
+
+.merchantTickerItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 6px 12px;
+  border: 1px solid rgba(124, 77, 255, 0.18);
+  background: rgba(124, 77, 255, 0.06);
+}
+
+.merchantTickerTag {
+  font-size: 11px;
+  color: #00e5ff;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.merchantTickerText {
+  font-size: 12px;
+  color: #b8c6f5;
+  white-space: nowrap;
+}
+
+.merchantTickerText b {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.merchantTickerText em {
+  color: #ffd740;
+  font-style: normal;
+  margin-left: 2px;
+  white-space: nowrap;
+}
+
+@keyframes merchantTickerScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.exchangeTabWrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid rgba(124, 77, 255, 0.25);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.exchangeTabBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #a7b0d5;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.exchangeTabBtn:hover {
+  color: #e5e9ff;
+  background: rgba(124, 77, 255, 0.12);
+}
+
+.exchangeTabBtnActive {
+  color: #fff;
+  border-color: rgba(124, 77, 255, 0.45);
+  background: linear-gradient(135deg, rgba(124, 77, 255, 0.55), rgba(68, 138, 255, 0.45));
+  box-shadow: 0 8px 20px rgba(124, 77, 255, 0.25);
+}
+
+.depositPanel {
+  border: 1px solid rgba(255, 198, 40, 0.25);
+  background: linear-gradient(145deg, rgba(20, 16, 48, 0.96), rgba(20, 24, 42, 0.96));
+}
+
+.depositHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.depositHeaderIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffca28;
+  background: rgba(255, 202, 40, 0.12);
+  border: 1px solid rgba(255, 202, 40, 0.25);
+}
+
+.depositTitle {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #f4f7ff;
+}
+
+.depositSubTitle {
+  margin: 0;
+  color: #9aa5cc;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.depositInfoList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.depositInfoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.depositInfoItem span {
+  color: #9aa5cc;
+  font-size: 12px;
+}
+
+.depositInfoItem strong {
+  color: #f8faff;
+  font-size: 13px;
+  max-width: 58%;
+  text-align: right;
+  word-break: break-all;
+}
+
+.depositActions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.depositPrimaryBtn,
+.depositGhostBtn {
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.depositPrimaryBtn {
+  color: #171a2a;
+  font-weight: 600;
+  background: linear-gradient(135deg, #ffd740, #ffca28);
+}
+
+.depositPrimaryBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(255, 202, 40, 0.25);
+}
+
+.depositGhostBtn {
+  color: #d8defa;
+  border-color: rgba(124, 77, 255, 0.35);
+  background: rgba(124, 77, 255, 0.1);
+}
+
+.depositGhostBtn:hover {
+  background: rgba(124, 77, 255, 0.18);
+}
+
+.depositHint {
+  margin: 0;
+  color: #8c96be;
+  font-size: 12px;
+  line-height: 1.6;
+}

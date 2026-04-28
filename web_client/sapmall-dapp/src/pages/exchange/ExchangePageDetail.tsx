@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Toaster, toast } from 'sonner';
-import { CheckCircle, Award, Layers } from 'lucide-react';
+import { CheckCircle, Award, Layers, Wallet, ArrowRightLeft, Landmark } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import ParticleBackground from './components/ParticleBackground';
 import SwapCard from './components/SwapCard';
 import MarketStats from './components/MarketStats';
@@ -8,6 +9,8 @@ import PriceChart from './components/PriceChart';
 import RecentTransactions from './components/RecentTransactions';
 import SapTokenVisual from './components/SapTokenVisual';
 import styles from './ExchangePageDetail.module.scss';
+
+type ExchangeTab = 'swap' | 'merchantDeposit';
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -32,6 +35,37 @@ class ErrorBoundary extends React.Component<
 }
 
 const ExchangePageDetail: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState<ExchangeTab>('swap');
+  const merchantTickerItems = useMemo(
+    () => [
+      '0x12A9...3cF8',
+      '0x9B3e...A71d',
+      '0x4d77...8E2a',
+      '0xAA90...1b5C',
+      '0x73f1...D0E9',
+      '0xE812...6a44',
+    ],
+    []
+  );
+
+  const merchantIntentInfo = useMemo(() => {
+    const amount = searchParams.get('amount') || '--';
+    const token = searchParams.get('token') || 'USDT';
+    const intentId = searchParams.get('intentId') || '--';
+    const expireAt = searchParams.get('expireAt') || '--';
+    return { amount, token, intentId, expireAt };
+  }, [searchParams]);
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'merchantDeposit') {
+      setActiveTab('merchantDeposit');
+      return;
+    }
+    setActiveTab('swap');
+  }, [searchParams]);
+
   const handleSwapSuccess = (amount: string) => {
     toast.success('兑换成功！', {
       description: `您已获得 ${amount} SAP 代币`,
@@ -53,7 +87,7 @@ const ExchangePageDetail: React.FC = () => {
             兑换 SAP 代币
           </h1>
           <p className="text-base text-muted-foreground max-w-lg mx-auto">
-            使用主流稳定币即可轻松兑换 SAP，进入 SAPMall 区块链电商生态
+            使用主流稳定币兑换 SAP，购物可享更低手续费、商家专属折扣与生态活动优先权益
           </p>
 
           <div className="flex items-center justify-center gap-4 mt-5 flex-wrap">
@@ -65,6 +99,19 @@ const ExchangePageDetail: React.FC = () => {
               <div key={label} className={`flex items-center gap-2 px-3 py-1.5 rounded-xl ${styles.featureBadge}`}>
                 <Icon size={13} style={{ color }} />
                 <span className="text-xs text-muted-foreground">{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className={`${styles.merchantTickerWrap} mb-6`}>
+          <div className={styles.merchantTickerTrack}>
+            {[...merchantTickerItems, ...merchantTickerItems].map((address, idx) => (
+              <div key={`${address}-${idx}`} className={styles.merchantTickerItem}>
+                <span className={styles.merchantTickerTag}>商家入驻</span>
+                <span className={styles.merchantTickerText}>
+                  恭喜 <b>{address}</b> <em>入驻成为商家</em>
+                </span>
               </div>
             ))}
           </div>
@@ -82,9 +129,78 @@ const ExchangePageDetail: React.FC = () => {
           </div>
 
           <div className="flex-1 w-full flex flex-col items-center gap-5">
-            <ErrorBoundary>
-              <SwapCard onSwapSuccess={handleSwapSuccess} />
-            </ErrorBoundary>
+            <div className={`w-full max-w-[520px] ${styles.exchangeTabWrap}`}>
+              <button
+                type="button"
+                className={`${styles.exchangeTabBtn} ${activeTab === 'swap' ? styles.exchangeTabBtnActive : ''}`}
+                onClick={() => setActiveTab('swap')}
+              >
+                <ArrowRightLeft size={15} />
+                稳定币兑换 SAP
+              </button>
+              <button
+                type="button"
+                className={`${styles.exchangeTabBtn} ${activeTab === 'merchantDeposit' ? styles.exchangeTabBtnActive : ''}`}
+                onClick={() => setActiveTab('merchantDeposit')}
+              >
+                <Landmark size={15} />
+                缴纳商家保证金
+              </button>
+            </div>
+
+            {activeTab === 'swap' ? (
+              <ErrorBoundary>
+                <SwapCard onSwapSuccess={handleSwapSuccess} />
+              </ErrorBoundary>
+            ) : (
+              <div className={`w-full max-w-[520px] rounded-3xl p-6 ${styles.depositPanel}`}>
+                <div className={styles.depositHeader}>
+                  <div className={styles.depositHeaderIcon}>
+                    <Wallet size={18} />
+                  </div>
+                  <div>
+                    <h3 className={styles.depositTitle}>商家保证金缴纳</h3>
+                    <p className={styles.depositSubTitle}>请在有效期内完成支付，逾期后申请单会失效。</p>
+                  </div>
+                </div>
+
+                <div className={styles.depositInfoList}>
+                  <div className={styles.depositInfoItem}>
+                    <span>应缴金额</span>
+                    <strong>{merchantIntentInfo.amount} {merchantIntentInfo.token}</strong>
+                  </div>
+                  <div className={styles.depositInfoItem}>
+                    <span>意图单ID</span>
+                    <strong>{merchantIntentInfo.intentId}</strong>
+                  </div>
+                  <div className={styles.depositInfoItem}>
+                    <span>截止时间</span>
+                    <strong>{merchantIntentInfo.expireAt}</strong>
+                  </div>
+                </div>
+
+                <div className={styles.depositActions}>
+                  <button
+                    type="button"
+                    className={styles.depositPrimaryBtn}
+                    onClick={() => toast.info('保证金支付流程即将接入，请稍后重试')}
+                  >
+                    使用钱包立即支付
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.depositGhostBtn}
+                    onClick={() => setActiveTab('swap')}
+                  >
+                    返回兑换 SAP
+                  </button>
+                </div>
+
+                <p className={styles.depositHint}>
+                  说明：当前为商家保证金缴纳区域预留版本。后续将按申请单状态接入链上支付与确认流程。
+                </p>
+              </div>
+            )}
 
             <div className={`w-full max-w-[520px] rounded-2xl p-4 ${styles.stableCoinPanel}`}>
               <p className="text-xs text-muted-foreground mb-3 text-center">支持的稳定币</p>
