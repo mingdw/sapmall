@@ -3,14 +3,27 @@ import { ArrowUpDown, ChevronDown, Settings, RefreshCw, Info, Zap, Shield } from
 import TokenIcon from './TokenIcon';
 import styles from '../ExchangePageDetail.module.scss';
 
-const STABLE_COINS = ['USDT', 'USDC', 'BUSD', 'DAI'];
-const RATES: Record<string, number> = { USDT: 2.85, USDC: 2.84, BUSD: 2.83, DAI: 2.82 };
+const SUPPORTED_TOKENS = ['USDT', 'USDC', 'BUSD', 'DAI', 'BNB', 'SOL'];
+const RATES: Record<string, number> = {
+  USDT: 2.85,
+  USDC: 2.84,
+  BUSD: 2.83,
+  DAI: 2.82,
+  BNB: 1680,
+  SOL: 420,
+};
 
 interface SwapCardProps {
   onSwapSuccess?: (amount: string) => void;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
-export default function SwapCard({ onSwapSuccess = () => {} }: SwapCardProps) {
+export default function SwapCard({
+  onSwapSuccess = () => {},
+  disabled = false,
+  disabledReason = '请先连接钱包后再操作兑换',
+}: SwapCardProps) {
   const [fromToken, setFromToken] = useState('USDT');
   const [fromAmount, setFromAmount] = useState('');
   const [showFromDropdown, setShowFromDropdown] = useState(false);
@@ -25,6 +38,7 @@ export default function SwapCard({ onSwapSuccess = () => {} }: SwapCardProps) {
   const fee = fromAmount ? (parseFloat(fromAmount) * 0.003).toFixed(4) : '0.0000';
 
   const handleSwap = useCallback(() => {
+    if (disabled) return;
     if (!fromAmount || parseFloat(fromAmount) <= 0) return;
     setIsSwapping(true);
     setTimeout(() => {
@@ -33,7 +47,7 @@ export default function SwapCard({ onSwapSuccess = () => {} }: SwapCardProps) {
       onSwapSuccess(toAmount);
       setTimeout(() => setSwapDone(false), 3000);
     }, 2000);
-  }, [fromAmount, onSwapSuccess, toAmount]);
+  }, [disabled, fromAmount, onSwapSuccess, toAmount]);
 
   return (
     <div data-cmp="SwapCard" className="relative w-full max-w-[520px]">
@@ -43,7 +57,7 @@ export default function SwapCard({ onSwapSuccess = () => {} }: SwapCardProps) {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-lg font-bold text-foreground">代币兑换</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">用稳定币兑换 SAP 代币</p>
+            <p className="text-xs text-muted-foreground mt-0.5">用主流币兑换 SAP 代币</p>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -106,7 +120,7 @@ export default function SwapCard({ onSwapSuccess = () => {} }: SwapCardProps) {
             <span className="text-xs text-muted-foreground">支付</span>
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">余额: <span style={{ color: '#b39ddb' }}>12,500.00</span></span>
-              <button className="text-xs px-2 py-0.5 rounded-md font-medium" style={{ background: 'rgba(124,77,255,0.2)', color: '#00e5ff' }} onClick={() => setFromAmount('12500')}>MAX</button>
+              <button className="text-xs px-2 py-0.5 rounded-md font-medium" style={{ background: 'rgba(124,77,255,0.2)', color: '#00e5ff' }} onClick={() => setFromAmount('12500')} disabled={disabled}>MAX</button>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -115,6 +129,7 @@ export default function SwapCard({ onSwapSuccess = () => {} }: SwapCardProps) {
                 className="flex items-center gap-2 px-3 py-2 rounded-xl"
                 style={{ background: 'rgba(124,77,255,0.15)', border: '1px solid rgba(124,77,255,0.3)', minWidth: '120px' }}
                 onClick={() => setShowFromDropdown(!showFromDropdown)}
+                disabled={disabled}
               >
                 <TokenIcon symbol={fromToken} size={26} />
                 <span className="text-sm font-semibold text-foreground">{fromToken}</span>
@@ -131,8 +146,8 @@ export default function SwapCard({ onSwapSuccess = () => {} }: SwapCardProps) {
                 }}
               >
                 <div className="p-2">
-                  <p className="text-xs text-muted-foreground px-3 py-2">选择稳定币</p>
-                  {STABLE_COINS.map((coin) => (
+                  <p className="text-xs text-muted-foreground px-3 py-2">选择支付币种</p>
+                  {SUPPORTED_TOKENS.map((coin) => (
                     <button
                       key={coin}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl"
@@ -142,7 +157,7 @@ export default function SwapCard({ onSwapSuccess = () => {} }: SwapCardProps) {
                       <TokenIcon symbol={coin} size={28} />
                       <div className="text-left">
                         <p className="text-sm font-semibold text-foreground">{coin}</p>
-                        <p className="text-xs text-muted-foreground">稳定币</p>
+                        <p className="text-xs text-muted-foreground">{coin === 'BNB' || coin === 'SOL' ? '主流币' : '稳定币'}</p>
                       </div>
                       <div className="ml-auto text-right">
                         <p className="text-xs" style={{ color: '#69f0ae' }}>≈$1.00</p>
@@ -159,6 +174,7 @@ export default function SwapCard({ onSwapSuccess = () => {} }: SwapCardProps) {
               placeholder="0.00"
               value={fromAmount}
               onChange={(e) => setFromAmount(e.target.value)}
+              disabled={disabled}
             />
           </div>
         </div>
@@ -220,18 +236,32 @@ export default function SwapCard({ onSwapSuccess = () => {} }: SwapCardProps) {
                 ? 'rgba(124,77,255,0.4)'
                 : 'linear-gradient(135deg, #7c4dff 0%, #448aff 50%, #00e5ff 100%)',
             color: '#fff',
-            cursor: !fromAmount || parseFloat(fromAmount) <= 0 ? 'not-allowed' : 'pointer',
-            opacity: !fromAmount || parseFloat(fromAmount) <= 0 ? 0.5 : 1,
+            cursor: disabled || !fromAmount || parseFloat(fromAmount) <= 0 ? 'not-allowed' : 'pointer',
+            opacity: disabled || !fromAmount || parseFloat(fromAmount) <= 0 ? 0.5 : 1,
           }}
           onClick={handleSwap}
-          disabled={!fromAmount || parseFloat(fromAmount) <= 0 || isSwapping}
+          disabled={disabled || !fromAmount || parseFloat(fromAmount) <= 0 || isSwapping}
         >
           <div className="relative flex items-center justify-center gap-2">
             <span>
-              {swapDone ? '✓ 兑换成功！' : isSwapping ? '兑换中...' : !fromAmount || parseFloat(fromAmount) <= 0 ? '请输入金额' : '立即兑换'}
+              {disabled
+                ? '请先连接钱包'
+                : swapDone
+                  ? '✓ 兑换成功！'
+                  : isSwapping
+                    ? '兑换中...'
+                    : !fromAmount || parseFloat(fromAmount) <= 0
+                      ? '请输入金额'
+                      : '立即兑换'}
             </span>
           </div>
         </button>
+
+        {disabled ? (
+          <p className="text-xs text-center mt-3" style={{ color: '#ffb74d' }}>
+            {disabledReason}
+          </p>
+        ) : null}
 
         <div className="flex items-center justify-center gap-2 mt-4">
           <Shield size={12} style={{ color: '#7986cb' }} />

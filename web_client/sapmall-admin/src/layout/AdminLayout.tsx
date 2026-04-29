@@ -62,22 +62,60 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
     if (hasMenus && iframeParams?.menu && menuTree.length > 0) {
       const targetMenu = iframeParams.menu;
       console.log('根据iframe参数设置菜单选中状态:', targetMenu);
+
+      const normalizeMenuValue = (value?: string): string => {
+        if (!value) return '';
+        return decodeURIComponent(value)
+          .trim()
+          .toLowerCase()
+          .replace(/^#\/?/, '')
+          .replace(/^\//, '')
+          .replace(/\?.*$/, '');
+      };
+
+      const targetAliasMap: Record<string, string[]> = {
+        profile: ['profile', 'personal/profile'],
+        dashboard: ['dashboard', 'platform/dashboard'],
+      };
+      const normalizedTarget = normalizeMenuValue(targetMenu);
+      const candidates = new Set<string>([
+        normalizedTarget,
+        ...(targetAliasMap[normalizedTarget] || []),
+      ]);
       
       // 查找对应的菜单项
-      const findMenuByUrl = (menus: CategoryTreeResp[], url: string): CategoryTreeResp | null => {
+      const findMenuByTarget = (menus: CategoryTreeResp[]): CategoryTreeResp | null => {
         for (const menu of menus) {
-          if (menu.url === url) {
+          const normalizedUrl = normalizeMenuValue(menu.url || '');
+          const normalizedComponent = normalizeMenuValue(menu.component || '');
+          const normalizedName = normalizeMenuValue(menu.name || '');
+
+          const matchByExact =
+            candidates.has(normalizedUrl) ||
+            candidates.has(normalizedComponent) ||
+            candidates.has(normalizedName);
+
+          const matchByContains = [...candidates].some((candidate) => {
+            if (!candidate) return false;
+            return (
+              normalizedUrl.includes(candidate) ||
+              normalizedComponent.includes(candidate) ||
+              normalizedName.includes(candidate)
+            );
+          });
+
+          if (matchByExact || matchByContains) {
             return menu;
           }
           if (menu.children) {
-            const found = findMenuByUrl(menu.children, url);
+            const found = findMenuByTarget(menu.children);
             if (found) return found;
           }
         }
         return null;
       };
 
-      const foundMenu = findMenuByUrl(menuTree, targetMenu);
+      const foundMenu = findMenuByTarget(menuTree);
       if (foundMenu) {
         console.log('找到匹配的菜单项:', foundMenu);
         setSelectedMenuId(foundMenu.id);

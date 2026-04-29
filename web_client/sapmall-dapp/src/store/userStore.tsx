@@ -148,6 +148,8 @@ export const useUserStore = create<UserState>()(
       // 登录
       login: (user, token) => {
         console.log('用户登录，设置状态:', { user, token, address: user.address });
+        // 与 baseClient 保持一致：请求认证头从 localStorage 的 auth_token 读取
+        localStorage.setItem('auth_token', token);
         set({
           user,
           authToken: token,

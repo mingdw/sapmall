@@ -38,4 +38,11 @@ type Config struct {
 		ContractAddress  string
 		IntentExpireMins int64
 	}
+	ChainMonitor struct {
+		Enabled          bool
+		RPCURL           string
+		StartBlock       uint64
+		PollIntervalSec  int64
+		ConfirmationsReq int64
+	}
 }

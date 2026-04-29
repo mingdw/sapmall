@@ -43,7 +43,8 @@ func (l *GetUserDepositLatestLogic) GetUserDepositLatest() (resp *types.GetUserD
 	if queryErr != nil {
 		if queryErr == gorm.ErrRecordNotFound {
 			return &types.GetUserDepositLatestResp{
-				Exists: false,
+				Exists:  false,
+				Deposit: types.UserDepositInfo{},
 			}, nil
 		}
 		logx.Errorf("查询用户最新申请单失败，userID=%d, err=%v", currentUser.ID, queryErr)

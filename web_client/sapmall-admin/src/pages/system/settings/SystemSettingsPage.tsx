@@ -11,6 +11,10 @@ import systemConfigApi, {
 } from '../../../services/api/systemConfigApi';
 import styles from './SystemSettingsPage.module.scss';
 
+type SystemConfigListItem = SystemConfigInfo & {
+  syncToContract?: number;
+};
+
 interface SystemConfigFormValues {
   configName: string;
   configKey: string;
@@ -19,12 +23,12 @@ interface SystemConfigFormValues {
   status: boolean;
 }
 
-const mapToFormValues = (record?: SystemConfigInfo | null): SystemConfigFormValues => ({
+const mapToFormValues = (record?: SystemConfigListItem | null): SystemConfigFormValues => ({
   configName: record?.configName || '',
   configKey: record?.configKey || '',
   configValue: record?.configValue || '',
   configType: record?.configType || SYSTEM_CONFIG_TYPE_OPTIONS[0]?.value || 'string',
-  status: record ? record.status === 1 : true,
+  status: record ? record.status === 0 : true,
 });
 
 const getTypeLabel = (value: string): string => {
@@ -46,8 +50,8 @@ const SystemSettingsPage: React.FC = () => {
   const [savingValueId, setSavingValueId] = useState<number>();
   const [draftValues, setDraftValues] = useState<Record<number, string>>({});
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<SystemConfigInfo | null>(null);
-  const [configList, setConfigList] = useState<SystemConfigInfo[]>([]);
+  const [editingRecord, setEditingRecord] = useState<SystemConfigListItem | null>(null);
+  const [configList, setConfigList] = useState<SystemConfigListItem[]>([]);
   const [form] = Form.useForm<SystemConfigFormValues>();
 
   const loadConfigList = async () => {
@@ -87,7 +91,7 @@ const SystemSettingsPage: React.FC = () => {
     setModalOpen(true);
   };
 
-  const openEditModal = (record: SystemConfigInfo) => {
+  const openEditModal = (record: SystemConfigListItem) => {
     setEditingRecord(record);
     form.setFieldsValue(mapToFormValues(record));
     setModalOpen(true);
@@ -102,7 +106,12 @@ const SystemSettingsPage: React.FC = () => {
         configKey: values.configKey.trim(),
         configValue: values.configValue,
         configType: values.configType,
-        status: values.status ? 1 : 0,
+        // 按业务约定固定值，不在前端开放选择
+        isSystem: 0,
+        isEncrypted: 0,
+        isEditable: 0,
+        status: values.status ? 0 : 1,
+        syncToContract: editingRecord?.syncToContract ?? 0,
       };
       setSubmitting(true);
       await systemConfigApi.save(payload);
@@ -117,7 +126,7 @@ const SystemSettingsPage: React.FC = () => {
     }
   };
 
-  const handleToggleStatus = async (record: SystemConfigInfo, checked: boolean) => {
+  const handleToggleStatus = async (record: SystemConfigListItem, checked: boolean) => {
     setTogglingId(record.id);
     try {
       await systemConfigApi.save({
@@ -126,7 +135,8 @@ const SystemSettingsPage: React.FC = () => {
         configKey: record.configKey,
         configValue: record.configValue,
         configType: record.configType,
-        status: checked ? 1 : 0,
+        status: checked ? 0 : 1,
+        syncToContract: record.syncToContract ?? 0,
       });
       MessageUtils.success(`已${checked ? '启用' : '禁用'}系统参数`);
       await loadConfigList();
@@ -137,7 +147,28 @@ const SystemSettingsPage: React.FC = () => {
     }
   };
 
-  const handleDelete = async (record: SystemConfigInfo) => {
+  const handleToggleSyncToContract = async (record: SystemConfigListItem, checked: boolean) => {
+    setTogglingId(record.id);
+    try {
+      await systemConfigApi.save({
+        id: record.id,
+        configName: record.configName,
+        configKey: record.configKey,
+        configValue: record.configValue,
+        configType: record.configType,
+        status: record.status,
+        syncToContract: checked ? 1 : 0,
+      });
+      MessageUtils.success(`已${checked ? '开启' : '关闭'}同步区块链`);
+      await loadConfigList();
+    } catch {
+      MessageUtils.error('更新同步区块链开关失败，请稍后重试');
+    } finally {
+      setTogglingId(undefined);
+    }
+  };
+
+  const handleDelete = async (record: SystemConfigListItem) => {
     setDeletingId(record.id);
     try {
       await systemConfigApi.delete(record.id);
@@ -150,14 +181,14 @@ const SystemSettingsPage: React.FC = () => {
     }
   };
 
-  const handleValueChange = (record: SystemConfigInfo, value: string) => {
+  const handleValueChange = (record: SystemConfigListItem, value: string) => {
     setDraftValues((prev) => ({
       ...prev,
       [record.id]: value,
     }));
   };
 
-  const saveValue = async (record: SystemConfigInfo, nextValue: string) => {
+  const saveValue = async (record: SystemConfigListItem, nextValue: string) => {
     if ((record.configValue || '') === nextValue) return;
     setSavingValueId(record.id);
     try {
@@ -183,7 +214,7 @@ const SystemSettingsPage: React.FC = () => {
     }
   };
 
-  const renderValueControl = (record: SystemConfigInfo) => {
+  const renderValueControl = (record: SystemConfigListItem) => {
     const currentValue = getDraftValue(record);
     const isSaving = savingValueId === record.id;
     if (record.configType === 'number') {
@@ -296,15 +327,31 @@ const SystemSettingsPage: React.FC = () => {
                       <div className={styles.statusSwitchWrap} onClick={(event) => event.stopPropagation()}>
                         <Switch
                           size="small"
-                          checked={item.status === 1}
+                          checked={item.status === 0}
                           className={`${styles.categoryStatusSwitch} ${
-                            item.status === 1 ? styles.categoryStatusSwitchOn : styles.categoryStatusSwitchOff
+                            item.status === 0 ? styles.categoryStatusSwitchOn : styles.categoryStatusSwitchOff
                           }`}
                           loading={togglingId === item.id}
                           onChange={(checked) => handleToggleStatus(item, checked)}
                         />
-                        <span className={item.status === 1 ? styles.statusTextEnabled : styles.statusTextDisabled}>
-                          {item.status === 1 ? '启用' : '禁用'}
+                        <span className={item.status === 0 ? styles.statusTextEnabled : styles.statusTextDisabled}>
+                          {item.status === 0 ? '启用' : '禁用'}
+                        </span>
+                      </div>
+                      <div className={styles.statusSwitchWrap} onClick={(event) => event.stopPropagation()}>
+                        <Switch
+                          size="small"
+                          checked={(item.syncToContract ?? 0) === 1}
+                          className={`${styles.categoryStatusSwitch} ${
+                            (item.syncToContract ?? 0) === 1 ? styles.categoryStatusSwitchOn : styles.categoryStatusSwitchOff
+                          }`}
+                          loading={togglingId === item.id}
+                          onChange={(checked) => handleToggleSyncToContract(item, checked)}
+                        />
+                        <span
+                          className={(item.syncToContract ?? 0) === 1 ? styles.statusTextEnabled : styles.statusTextDisabled}
+                        >
+                          {(item.syncToContract ?? 0) === 1 ? '同步区块链:开' : '同步区块链:关'}
                         </span>
                       </div>
                       <Tooltip title="删除">

@@ -25,6 +25,21 @@ interface ComponentStatus {
   iframeUrl?: string;
 }
 
+interface OpenMerchantDepositMessage {
+  type: 'OPEN_MERCHANT_DEPOSIT';
+  payload?: {
+    intentId?: string;
+    amount?: string;
+    token?: string;
+    chainId?: number | string;
+    contractAddress?: string;
+    tokenAddress?: string;
+    depositStatus?: number;
+    returnPath?: string;
+    expireAt?: string;
+  };
+}
+
 const AdminIframeEmbedded: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -115,6 +130,31 @@ const AdminIframeEmbedded: React.FC = () => {
     // 如果用户已连接，加载管理界面
     loadAdminInterface();
   }, [user, address, targetMenu, loadAdminInterface, navigate]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent<OpenMerchantDepositMessage>) => {
+      if (!event?.data || event.data.type !== 'OPEN_MERCHANT_DEPOSIT') {
+        return;
+      }
+      const payload = event.data.payload || {};
+      const params = new URLSearchParams({
+        tab: 'merchantDeposit',
+        intentId: payload.intentId || '',
+        amount: payload.amount || '',
+        token: payload.token || 'USDT',
+        chainId: String(payload.chainId || ''),
+        contractAddress: payload.contractAddress || '',
+        tokenAddress: payload.tokenAddress || '',
+        depositStatus: String(payload.depositStatus ?? ''),
+        returnPath: payload.returnPath || '/admin?menu=profile',
+        expireAt: payload.expireAt || '',
+      });
+      navigate(`/exchange?${params.toString()}`);
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [navigate]);
 
   // 简化的渲染逻辑
   const renderContent = () => {

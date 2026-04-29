@@ -18,11 +18,6 @@ type BaseResp struct {
 	Total   int         `json:"total"`
 }
 
-// Error implements [error].
-func (b *BaseResp) Error() string {
-	panic("unimplemented")
-}
-
 type BatchUploadFileResp struct {
 	FileList []FileInfo `json:"fileList"` // 上传成功的文件列表
 	Failed   []string   `json:"failed"`   // 上传失败的文件名列表
@@ -329,7 +324,7 @@ type ListSystemConfigReq struct {
 	ConfigName  string `json:"configName,optional"`  // 配置名称（模糊）
 	ConfigType  string `json:"configType,optional"`  // 配置类型
 	ConfigGroup string `json:"configGroup,optional"` // 配置分组
-	Status      int64  `json:"status,optional"`      // 状态：0禁用 1启用
+	Status      int64  `json:"status,optional"`      // 状态：0启用 1禁用
 	Page        int64  `json:"page"`                 // 页码，从1开始
 	PageSize    int64  `json:"pageSize"`             // 每页条数
 }
@@ -652,11 +647,11 @@ type SaveSystemConfigReq struct {
 	ConfigType  string `json:"configType"`           // string/number/boolean/json/array
 	ConfigGroup string `json:"configGroup,optional"` // 配置分组
 	Description string `json:"description,optional"` // 配置描述
-	IsSystem    int64  `json:"isSystem,optional"`    // 0否 1是
-	IsEncrypted int64  `json:"isEncrypted,optional"` // 0否 1是
-	IsEditable  int64  `json:"isEditable,optional"`  // 0否 1是
+	IsSystem    int64  `json:"isSystem,optional"`    // 0是 1否
+	IsEncrypted int64  `json:"isEncrypted,optional"` // 0是 1否
+	IsEditable  int64  `json:"isEditable,optional"`  // 0是 1否
 	Sort        int64  `json:"sort,optional"`        // 排序
-	Status      int64  `json:"status,optional"`      // 状态：0禁用 1启用
+	Status      int64  `json:"status,optional"`      // 状态：0启用 1禁用
 }
 
 type SystemConfigInfo struct {
@@ -667,11 +662,11 @@ type SystemConfigInfo struct {
 	ConfigType  string `json:"configType"`  // string/number/boolean/json/array
 	ConfigGroup string `json:"configGroup"` // 分组
 	Description string `json:"description,optional"`
-	IsSystem    int64  `json:"isSystem"`    // 0否 1是
-	IsEncrypted int64  `json:"isEncrypted"` // 0否 1是
-	IsEditable  int64  `json:"isEditable"`  // 0否 1是
+	IsSystem    int64  `json:"isSystem"`    // 0是 1否
+	IsEncrypted int64  `json:"isEncrypted"` // 0是 1否
+	IsEditable  int64  `json:"isEditable"`  // 0是 1否
 	Sort        int64  `json:"sort"`
-	Status      int64  `json:"status"` // 0禁用 1启用
+	Status      int64  `json:"status"` // 0启用 1禁用
 	CreatedAt   string `json:"createdAt,optional"`
 	UpdatedAt   string `json:"updatedAt,optional"`
 	Creator     string `json:"creator,optional"`

@@ -32,7 +32,7 @@
 
   .singleLineRow {
     display: grid;
-    grid-template-columns: 160px 120px 180px 70px 90px 28px;
+    grid-template-columns: 160px 120px 180px 70px 90px 130px 28px;
     align-items: center;
     gap: 10px;
     min-height: 36px;
@@ -154,6 +154,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    white-space: nowrap;
   }
 
   .statusTextEnabled {
@@ -205,7 +206,7 @@
 
   @media (max-width: 1360px) {
     .singleLineRow {
-      grid-template-columns: 140px 110px 150px 64px 90px 28px;
+      grid-template-columns: 140px 110px 150px 64px 90px 120px 28px;
       gap: 8px;
     }
 

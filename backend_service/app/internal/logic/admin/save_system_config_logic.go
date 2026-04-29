@@ -6,6 +6,7 @@ package admin
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 
 	"sapphire-mall/app/internal/customererrors"
@@ -47,6 +48,25 @@ func (l *SaveSystemConfigLogic) SaveSystemConfig(req *types.SaveSystemConfigReq)
 	}
 
 	configRepo := repository.NewConfigRepository(l.svcCtx.GormDB)
+
+	validateBinaryFlag := func(name string, value int64) error {
+		if value != 0 && value != 1 {
+			return fmt.Errorf("%s仅支持0或1", name)
+		}
+		return nil
+	}
+	if err := validateBinaryFlag("isSystem", req.IsSystem); err != nil {
+		return customererrors.ParamErrorResp(err.Error()), nil
+	}
+	if err := validateBinaryFlag("isEncrypted", req.IsEncrypted); err != nil {
+		return customererrors.ParamErrorResp(err.Error()), nil
+	}
+	if err := validateBinaryFlag("isEditable", req.IsEditable); err != nil {
+		return customererrors.ParamErrorResp(err.Error()), nil
+	}
+	if err := validateBinaryFlag("status", req.Status); err != nil {
+		return customererrors.ParamErrorResp(err.Error()), nil
+	}
 	//系统参数更新和报错的逻辑如下:
 	//先根据请求的key检查数据库中是否存在相同的key，如果存在则返回前端配置键已经存在
 	//再根据请求的id是否为0判断新增还是保存
@@ -72,21 +92,11 @@ func (l *SaveSystemConfigLogic) SaveSystemConfig(req *types.SaveSystemConfigReq)
 		if req.Description != "" {
 			updates["description"] = req.Description
 		}
-		if req.IsSystem != 0 {
-			updates["is_system"] = req.IsSystem
-		}
-		if req.IsEncrypted != 0 {
-			updates["is_encrypted"] = req.IsEncrypted
-		}
-		if req.IsEditable != 0 {
-			updates["is_editable"] = req.IsEditable
-		}
-		if req.Sort != 0 {
-			updates["sort"] = req.Sort
-		}
-		if req.Status != 0 {
-			updates["status"] = req.Status
-		}
+		updates["is_system"] = req.IsSystem
+		updates["is_encrypted"] = req.IsEncrypted
+		updates["is_editable"] = req.IsEditable
+		updates["sort"] = req.Sort
+		updates["status"] = req.Status
 		if updateErr := configRepo.UpdateColumnsByID(l.ctx, req.ID, updates); updateErr != nil {
 			l.Errorf("update config failed, id=%d, err=%v", req.ID, updateErr)
 			return customererrors.DatabaseErrorResp("更新系统参数失败"), nil

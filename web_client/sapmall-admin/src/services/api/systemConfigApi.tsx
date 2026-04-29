@@ -14,6 +14,7 @@ export interface SystemConfigInfo {
   isEditable: number;
   sort: number;
   status: number;
+  syncToContract?: number; // 0否 1是
   createdAt?: string;
   updatedAt?: string;
   creator?: string;
@@ -48,6 +49,7 @@ export interface SaveSystemConfigReq {
   isEditable?: number;
   sort?: number;
   status?: number;
+  syncToContract?: number; // 0否 1是
 }
 
 export const SYSTEM_CONFIG_TYPE_OPTIONS = [

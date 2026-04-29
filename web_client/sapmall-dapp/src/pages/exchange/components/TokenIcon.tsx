@@ -12,6 +12,8 @@ const TOKEN_COLORS: Record<string, { from: string; to: string; glow: string; emo
   USDC: { from: '#2775ca', to: '#1a5a9a', glow: 'rgba(39,117,202,0.6)', emoji: '◎' },
   BUSD: { from: '#f0b90b', to: '#d4a208', glow: 'rgba(240,185,11,0.6)', emoji: '◈' },
   DAI: { from: '#f5ac37', to: '#d4922a', glow: 'rgba(245,172,55,0.6)', emoji: '◇' },
+  BNB: { from: '#f3ba2f', to: '#c69315', glow: 'rgba(243,186,47,0.6)', emoji: '◆' },
+  SOL: { from: '#14f195', to: '#9945ff', glow: 'rgba(153,69,255,0.6)', emoji: '✦' },
 };
 
 export default function TokenIcon({ symbol = 'SAP', size = 40, glowColor = '' }: TokenIconProps) {

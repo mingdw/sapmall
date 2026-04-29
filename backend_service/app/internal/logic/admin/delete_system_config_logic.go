@@ -41,7 +41,8 @@ func (l *DeleteSystemConfigLogic) DeleteSystemConfig(req *types.DeleteSystemConf
 		l.Errorf("get config by id failed, id=%d, err=%v", req.ID, getErr)
 		return customererrors.DatabaseErrorResp("查询系统参数失败"), nil
 	}
-	if existing.IsSystem == 1 {
+	// 按DDL语义：0=是(系统内置), 1=否
+	if existing.IsSystem == 0 {
 		return customererrors.PermissionDeniedResp("系统内置参数不允许删除"), nil
 	}
 	if deleteErr := configRepo.SoftDelete(l.ctx, req.ID, "system"); deleteErr != nil {

@@ -1,5 +1,6 @@
 import { ApiResponse } from '../types/baseTypes';
 import MessageUtils from '../../utils/messageUtils';
+import { useUserStore } from '../../store/userStore';
 
 // 请求配置
 interface RequestConfig {
@@ -45,6 +46,12 @@ class BaseClient {
 
   // 获取认证token
   private getAuthToken(): string | null {
+    // 优先从全局状态获取，保证与 dapp 登录态一致
+    const storeToken = useUserStore.getState().authToken;
+    if (storeToken) {
+      return storeToken;
+    }
+    // 兜底读取本地存储（页面刷新后状态恢复场景）
     return localStorage.getItem('auth_token');
   }
 

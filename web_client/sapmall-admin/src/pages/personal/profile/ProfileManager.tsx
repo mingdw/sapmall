@@ -71,6 +71,13 @@ const mapGenderToApi = (gender: ProfileData['gender']): number | undefined => {
   return undefined;
 };
 
+const formatAmountTo2 = (value: unknown): string => {
+  if (value === null || value === undefined || value === '') return '';
+  const num = Number(value);
+  if (Number.isNaN(num)) return String(value);
+  return num.toFixed(2);
+};
+
 const mapDepositToIntent = (deposit?: any): MerchantDepositIntent | null => {
   if (!deposit || !deposit.intentId) {
     return null;
@@ -81,7 +88,7 @@ const mapDepositToIntent = (deposit?: any): MerchantDepositIntent | null => {
     businessType: deposit.businessType,
     depositStatus: Number(deposit.depositStatus ?? 0),
     depositStatusDesc: deposit.depositStatusDesc || '',
-    amount: String(deposit.amount ?? ''),
+    amount: formatAmountTo2(deposit.amount),
     token: deposit.token || deposit.tokenSymbol || '',
     chainId: Number(deposit.chainId ?? 0),
     contractAddress: deposit.contractAddress || '',
@@ -266,9 +273,18 @@ const ProfileManager: React.FC = () => {
       return;
     }
 
-    const depositUrl = `/merchant/deposit?intentId=${encodeURIComponent(intent.intentId)}&returnPath=${encodeURIComponent(
-      '/admin?menu=profile',
-    )}`;
+    const dappBaseUrl = window.location.origin.includes(':7101')
+      ? window.location.origin.replace(':7101', ':7100')
+      : 'http://localhost:7100';
+    const depositUrl = `${dappBaseUrl}/exchange?tab=merchantDeposit&intentId=${encodeURIComponent(
+      intent.intentId,
+    )}&amount=${encodeURIComponent(intent.amount || '')}&token=${encodeURIComponent(
+      intent.token || 'USDT',
+    )}&chainId=${encodeURIComponent(String(intent.chainId || ''))}&contractAddress=${encodeURIComponent(
+      intent.contractAddress || '',
+    )}&tokenAddress=${encodeURIComponent(intent.tokenAddress || '')}&expireAt=${encodeURIComponent(
+      intent.expireAt || '',
+    )}&returnPath=${encodeURIComponent('/admin?menu=profile')}`;
     window.open(depositUrl, '_blank');
     MessageUtils.info('已在新页面打开保证金缴纳入口');
   };
