@@ -21,6 +21,7 @@ type Config struct {
 	IsSystem    int       `json:"isSystem" gorm:"column:is_system"`                       // 是否系统配置
 	IsEncrypted int       `json:"isEncrypted" gorm:"column:is_encrypted"`                 // 是否加密
 	IsEditable  int       `json:"isEditable" gorm:"column:is_editable"`                   // 是否可编辑
+	SyncChainStatus int   `json:"syncChainStatus" gorm:"column:sync_chain_status"`        // 是否同步区块链
 	Sort        int       `json:"sort" gorm:"column:sort"`                                // 排序
 	Status      int       `json:"status" gorm:"column:status"`                            // 状态
 }

@@ -55,9 +55,25 @@ func NewSapctlApp() *cobra.Command {
 	// 添加子命令
 	rootCmd.AddCommand(
 		newCreateCommand(),
+		newContractCommand(),
 	)
 
 	return rootCmd
+}
+
+func newContractCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "contract",
+		Short: "合约相关工具",
+		Long: `合约相关工具，支持以下类型：
+- gen-go: 从 hardhat artifact 生成 Go 合约绑定代码`,
+	}
+
+	cmd.AddCommand(
+		newContractGenGoCommand(),
+	)
+
+	return cmd
 }
 
 // newCreateCommand 创建 create 命令

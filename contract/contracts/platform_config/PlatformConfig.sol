@@ -64,7 +64,6 @@ contract PlatformConfig is Initializable, UUPSUpgradeable, AccessControlUpgradea
     function initialize(address admin) external initializer {
         if (admin == address(0)) revert ZeroAddress();
 
-        __UUPSUpgradeable_init();
         __AccessControl_init();
         __Pausable_init();
 
@@ -78,35 +77,35 @@ contract PlatformConfig is Initializable, UUPSUpgradeable, AccessControlUpgradea
             "500000000000000000000000000", // 500,000,000 * 1e18
             500_000_000 ether,
             "sap_token",
-            "SAP 社区激励桶上限（50%）"
+            unicode"SAP 社区激励桶上限（50%）"
         );
         _createDefaultUintConfig(
             CFG_BUCKET_ECOSYSTEM_CAP,
             "200000000000000000000000000", // 200,000,000 * 1e18
             200_000_000 ether,
             "sap_token",
-            "SAP 生态基金桶上限（20%）"
+            unicode"SAP 生态基金桶上限（20%）"
         );
         _createDefaultUintConfig(
             CFG_BUCKET_TEAM_CAP,
             "150000000000000000000000000", // 150,000,000 * 1e18
             150_000_000 ether,
             "sap_token",
-            "SAP 团队桶上限（15%）"
+            unicode"SAP 团队桶上限（15%）"
         );
         _createDefaultUintConfig(
             CFG_BUCKET_INVESTORS_CAP,
             "150000000000000000000000000", // 150,000,000 * 1e18
             150_000_000 ether,
             "sap_token",
-            "SAP 投资者桶上限（15%）"
+            unicode"SAP 投资者桶上限（15%）"
         );
         _createDefaultUintConfig(
             CFG_BUCKET_TREASURY_CAP,
             "0",
             0,
             "sap_token",
-            "SAP 金库桶上限（当前默认0）"
+            unicode"SAP 金库桶上限（当前默认0）"
         );
     }
 

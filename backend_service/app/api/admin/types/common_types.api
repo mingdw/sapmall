@@ -22,6 +22,7 @@ type (
 		IsSystem    int64  `json:"isSystem"`    // 0是 1否
 		IsEncrypted int64  `json:"isEncrypted"` // 0是 1否
 		IsEditable  int64  `json:"isEditable"`  // 0是 1否
+		SyncChainStatus int64 `json:"syncChainStatus"` // 链同步状态 0未同步 1同步中 2已同步 3已删除
 		Sort        int64  `json:"sort"`
 		Status      int64  `json:"status"` // 0启用 1禁用
 		CreatedAt   string `json:"createdAt,optional"`
@@ -56,6 +57,7 @@ type (
 		IsSystem    int64  `json:"isSystem,optional"`    // 0是 1否
 		IsEncrypted int64  `json:"isEncrypted,optional"` // 0是 1否
 		IsEditable  int64  `json:"isEditable,optional"`  // 0是 1否
+		SyncChainStatus int64 `json:"syncChainStatus,optional"` // 链同步状态 0未同步 1同步中 2已同步 3已删除
 		Sort        int64  `json:"sort,optional"`        // 排序
 		Status      int64  `json:"status,optional"`      // 状态：0启用 1禁用
 	}

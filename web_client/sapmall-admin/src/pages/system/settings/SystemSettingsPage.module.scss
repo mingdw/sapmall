@@ -1,4 +1,109 @@
 .settingsPage {
+  .filterToolbar {
+    background: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(51, 65, 85, 0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    backdrop-filter: blur(8px);
+    margin-bottom: 12px;
+  }
+
+  .listContainer {
+    background: rgba(30, 41, 59, 0.3);
+    border: 1px solid rgba(51, 65, 85, 0.2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    backdrop-filter: blur(8px);
+  }
+
+  .filterRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .filterInput {
+    width: 220px;
+  }
+
+  .searchIcon {
+    color: #94a3b8;
+    font-size: 12px;
+  }
+
+  .filterSelect {
+    width: 110px;
+  }
+
+  .filterInput:global(.ant-input-affix-wrapper) {
+    height: 28px;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(51, 65, 85, 0.3);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .filterInput:global(.ant-input-affix-wrapper:hover) {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: rgba(15, 23, 42, 0.7);
+  }
+
+  .filterInput:global(.ant-input-affix-wrapper-focused) {
+    border-color: #3b82f6;
+    background: rgba(15, 23, 42, 0.7);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+
+  .filterInput:global(.ant-input-affix-wrapper .ant-input) {
+    color: #e2e8f0;
+    background: transparent;
+    font-size: 12px;
+    height: 28px;
+  }
+
+  .filterInput:global(.ant-input-affix-wrapper .ant-input::placeholder) {
+    color: #94a3b8;
+  }
+
+  .filterSelect:global(.ant-select) {
+    .ant-select-selector {
+      height: 28px !important;
+      background: rgba(15, 23, 42, 0.5) !important;
+      border: 1px solid rgba(51, 65, 85, 0.3) !important;
+      border-radius: 4px !important;
+      transition: all 0.2s ease;
+    }
+
+    .ant-select-selection-placeholder {
+      color: #94a3b8 !important;
+      font-size: 12px;
+    }
+
+    .ant-select-selection-item {
+      color: #e2e8f0 !important;
+      font-size: 12px;
+    }
+
+    &:hover .ant-select-selector {
+      border-color: rgba(59, 130, 246, 0.3) !important;
+      background: rgba(15, 23, 42, 0.7) !important;
+    }
+  }
+
+  .filterActionBtn {
+    height: 28px !important;
+    padding: 0 10px !important;
+    font-size: 11px !important;
+    border-radius: 4px !important;
+  }
+
+  .filterSelect:global(.ant-select-focused .ant-select-selector) {
+    border-color: #3b82f6 !important;
+    background: rgba(15, 23, 42, 0.7) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+  }
+
   .emptyWrap {
     min-height: 260px;
     display: flex;
@@ -13,6 +118,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin-top: 0;
   }
 
   .sectionItem {
@@ -32,7 +138,7 @@
 
   .singleLineRow {
     display: grid;
-    grid-template-columns: 160px 120px 180px 70px 90px 130px 28px;
+    grid-template-columns: 160px 180px 180px 70px 90px 130px 28px;
     align-items: center;
     gap: 10px;
     min-height: 36px;
@@ -53,7 +159,7 @@
   .itemCode {
     color: #93c5fd;
     font-size: 13px;
-    min-width: 120px;
+    min-width: 180px;
   }
 
   .itemValue {
@@ -205,8 +311,12 @@
   }
 
   @media (max-width: 1360px) {
+    .filterInput {
+      width: 180px;
+    }
+
     .singleLineRow {
-      grid-template-columns: 140px 110px 150px 64px 90px 120px 28px;
+      grid-template-columns: 140px 150px 150px 64px 90px 120px 28px;
       gap: 8px;
     }
 

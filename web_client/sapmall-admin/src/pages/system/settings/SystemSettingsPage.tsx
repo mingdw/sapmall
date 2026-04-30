@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Empty, Form, Input, InputNumber, List, Popconfirm, Select, Spin, Switch, Tooltip } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import AdminCard from '../../../components/common/AdminCard';
 import AdminButton from '../../../components/common/AdminButton';
 import AdminModal from '../../../components/common/AdminModal';
@@ -12,7 +13,7 @@ import systemConfigApi, {
 import styles from './SystemSettingsPage.module.scss';
 
 type SystemConfigListItem = SystemConfigInfo & {
-  syncToContract?: number;
+  syncChainStatus?: number;
 };
 
 interface SystemConfigFormValues {
@@ -21,6 +22,11 @@ interface SystemConfigFormValues {
   configValue: string;
   configType: string;
   status: boolean;
+}
+
+interface SystemConfigFilters {
+  keyword: string;
+  status?: number;
 }
 
 const mapToFormValues = (record?: SystemConfigListItem | null): SystemConfigFormValues => ({
@@ -45,19 +51,25 @@ const parseBooleanValue = (value?: string): boolean => {
 const SystemSettingsPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [togglingId, setTogglingId] = useState<number>();
+  const [statusTogglingId, setStatusTogglingId] = useState<number>();
+  const [syncTogglingId, setSyncTogglingId] = useState<number>();
   const [deletingId, setDeletingId] = useState<number>();
   const [savingValueId, setSavingValueId] = useState<number>();
   const [draftValues, setDraftValues] = useState<Record<number, string>>({});
   const [modalOpen, setModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<SystemConfigListItem | null>(null);
   const [configList, setConfigList] = useState<SystemConfigListItem[]>([]);
+  const [filters, setFilters] = useState<SystemConfigFilters>({
+    keyword: '',
+    status: undefined,
+  });
   const [form] = Form.useForm<SystemConfigFormValues>();
 
   const loadConfigList = async () => {
     setLoading(true);
     try {
       const resp = await systemConfigApi.list({
+        status: filters.status,
         page: 1,
         pageSize: 500,
       });
@@ -71,11 +83,21 @@ const SystemSettingsPage: React.FC = () => {
 
   useEffect(() => {
     loadConfigList().catch(() => undefined);
-  }, []);
+  }, [filters]);
 
   const sortedConfigList = useMemo(
-    () => [...configList].sort((a, b) => (a.sort || 0) - (b.sort || 0) || a.id - b.id),
-    [configList],
+    () => {
+      const keyword = filters.keyword.trim().toLowerCase();
+      const filtered = keyword
+        ? configList.filter((item) => {
+            const key = (item.configKey || '').toLowerCase();
+            const name = (item.configName || '').toLowerCase();
+            return key.includes(keyword) || name.includes(keyword);
+          })
+        : configList;
+      return [...filtered].sort((a, b) => (a.sort || 0) - (b.sort || 0) || a.id - b.id);
+    },
+    [configList, filters.keyword],
   );
 
   const getDraftValue = (record: SystemConfigInfo): string => {
@@ -89,6 +111,24 @@ const SystemSettingsPage: React.FC = () => {
     setEditingRecord(null);
     form.setFieldsValue(mapToFormValues(null));
     setModalOpen(true);
+  };
+
+  const handleFilterChange = (patch: Partial<SystemConfigFilters>) => {
+    setFilters((prev) => ({
+      ...prev,
+      ...patch,
+    }));
+  };
+
+  const handleResetFilters = () => {
+    setFilters({
+      keyword: '',
+      status: undefined,
+    });
+  };
+
+  const handleQuery = () => {
+    loadConfigList().catch(() => undefined);
   };
 
   const openEditModal = (record: SystemConfigListItem) => {
@@ -111,7 +151,7 @@ const SystemSettingsPage: React.FC = () => {
         isEncrypted: 0,
         isEditable: 0,
         status: values.status ? 0 : 1,
-        syncToContract: editingRecord?.syncToContract ?? 0,
+        syncChainStatus: editingRecord?.syncChainStatus ?? 0,
       };
       setSubmitting(true);
       await systemConfigApi.save(payload);
@@ -127,7 +167,7 @@ const SystemSettingsPage: React.FC = () => {
   };
 
   const handleToggleStatus = async (record: SystemConfigListItem, checked: boolean) => {
-    setTogglingId(record.id);
+    setStatusTogglingId(record.id);
     try {
       await systemConfigApi.save({
         id: record.id,
@@ -136,19 +176,19 @@ const SystemSettingsPage: React.FC = () => {
         configValue: record.configValue,
         configType: record.configType,
         status: checked ? 0 : 1,
-        syncToContract: record.syncToContract ?? 0,
+        syncChainStatus: record.syncChainStatus ?? 0,
       });
       MessageUtils.success(`已${checked ? '启用' : '禁用'}系统参数`);
       await loadConfigList();
     } catch {
       MessageUtils.error('更新参数状态失败，请稍后重试');
     } finally {
-      setTogglingId(undefined);
+      setStatusTogglingId(undefined);
     }
   };
 
-  const handleToggleSyncToContract = async (record: SystemConfigListItem, checked: boolean) => {
-    setTogglingId(record.id);
+  const handleToggleSyncChain = async (record: SystemConfigListItem, checked: boolean) => {
+    setSyncTogglingId(record.id);
     try {
       await systemConfigApi.save({
         id: record.id,
@@ -157,14 +197,14 @@ const SystemSettingsPage: React.FC = () => {
         configValue: record.configValue,
         configType: record.configType,
         status: record.status,
-        syncToContract: checked ? 1 : 0,
+        syncChainStatus: checked ? 1 : 0,
       });
-      MessageUtils.success(`已${checked ? '开启' : '关闭'}同步区块链`);
+      MessageUtils.success(`已${checked ? '发起' : '取消'}链上同步`);
       await loadConfigList();
     } catch {
       MessageUtils.error('更新同步区块链开关失败，请稍后重试');
     } finally {
-      setTogglingId(undefined);
+      setSyncTogglingId(undefined);
     }
   };
 
@@ -199,6 +239,7 @@ const SystemSettingsPage: React.FC = () => {
         configValue: nextValue,
         configType: record.configType,
         status: record.status,
+        syncChainStatus: record.syncChainStatus ?? 0,
       });
       MessageUtils.success('参数值已更新');
       await loadConfigList();
@@ -284,29 +325,78 @@ const SystemSettingsPage: React.FC = () => {
       <AdminCard
         title="系统参数维护"
         icon="fas fa-sliders-h"
-        actions={
-          <AdminButton variant="add" size="sm" icon="fas fa-plus" onClick={openCreateModal}>
-            新增参数
-          </AdminButton>
-        }
       >
-        <Spin spinning={loading}>
-          {sortedConfigList.length === 0 ? (
-            <div className={styles.emptyWrap}>
-              <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description="暂无系统参数，请点击右上角新增参数"
-              />
-            </div>
-          ) : (
-            <List
-              className={styles.sectionList}
-              dataSource={sortedConfigList}
-              rowKey="id"
-              renderItem={(item) => (
-                <List.Item className={styles.sectionItem}>
-                  <div className={styles.itemMain}>
-                    <div className={styles.singleLineRow}>
+        <div className={styles.filterToolbar}>
+          <div className={styles.filterRow}>
+            <Input
+              allowClear
+              size="small"
+              className={styles.filterInput}
+              prefix={<SearchOutlined className={styles.searchIcon} />}
+              placeholder="输入 config_key 或 config_name 搜索"
+              value={filters.keyword}
+              onChange={(event) => handleFilterChange({ keyword: event.target.value })}
+            />
+            <Select
+              allowClear
+              size="small"
+              className={styles.filterSelect}
+              placeholder="状态"
+              value={filters.status}
+              options={[
+                { label: '启用', value: 0 },
+                { label: '禁用', value: 1 },
+              ]}
+              onChange={(value) => handleFilterChange({ status: value })}
+            />
+            <AdminButton
+              variant="query"
+              size="sm"
+              icon="fas fa-search"
+              className={styles.filterActionBtn}
+              onClick={handleQuery}
+            >
+              搜索
+            </AdminButton>
+            <AdminButton
+              variant="reset"
+              size="sm"
+              icon="fas fa-undo"
+              className={styles.filterActionBtn}
+              onClick={handleResetFilters}
+            >
+              重置
+            </AdminButton>
+            <AdminButton
+              variant="add"
+              size="sm"
+              icon="fas fa-plus"
+              className={styles.filterActionBtn}
+              onClick={openCreateModal}
+            >
+              新增参数
+            </AdminButton>
+          </div>
+        </div>
+
+        <div className={styles.listContainer}>
+          <Spin spinning={loading}>
+            {sortedConfigList.length === 0 ? (
+              <div className={styles.emptyWrap}>
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="暂无系统参数，请点击右上角新增参数"
+                />
+              </div>
+            ) : (
+              <List
+                className={styles.sectionList}
+                dataSource={sortedConfigList}
+                rowKey="id"
+                renderItem={(item) => (
+                  <List.Item className={styles.sectionItem}>
+                    <div className={styles.itemMain}>
+                      <div className={styles.singleLineRow}>
                       <span
                         className={styles.itemName}
                         onClick={() => openEditModal(item)}
@@ -331,7 +421,7 @@ const SystemSettingsPage: React.FC = () => {
                           className={`${styles.categoryStatusSwitch} ${
                             item.status === 0 ? styles.categoryStatusSwitchOn : styles.categoryStatusSwitchOff
                           }`}
-                          loading={togglingId === item.id}
+                          loading={statusTogglingId === item.id}
                           onChange={(checked) => handleToggleStatus(item, checked)}
                         />
                         <span className={item.status === 0 ? styles.statusTextEnabled : styles.statusTextDisabled}>
@@ -341,17 +431,17 @@ const SystemSettingsPage: React.FC = () => {
                       <div className={styles.statusSwitchWrap} onClick={(event) => event.stopPropagation()}>
                         <Switch
                           size="small"
-                          checked={(item.syncToContract ?? 0) === 1}
+                          checked={[1, 2].includes(item.syncChainStatus ?? 0)}
                           className={`${styles.categoryStatusSwitch} ${
-                            (item.syncToContract ?? 0) === 1 ? styles.categoryStatusSwitchOn : styles.categoryStatusSwitchOff
+                            [1, 2].includes(item.syncChainStatus ?? 0) ? styles.categoryStatusSwitchOn : styles.categoryStatusSwitchOff
                           }`}
-                          loading={togglingId === item.id}
-                          onChange={(checked) => handleToggleSyncToContract(item, checked)}
+                          loading={syncTogglingId === item.id}
+                          onChange={(checked) => handleToggleSyncChain(item, checked)}
                         />
                         <span
-                          className={(item.syncToContract ?? 0) === 1 ? styles.statusTextEnabled : styles.statusTextDisabled}
+                          className={[1, 2].includes(item.syncChainStatus ?? 0) ? styles.statusTextEnabled : styles.statusTextDisabled}
                         >
-                          {(item.syncToContract ?? 0) === 1 ? '同步区块链:开' : '同步区块链:关'}
+                          是否同步区块链
                         </span>
                       </div>
                       <Tooltip title="删除">
@@ -371,13 +461,14 @@ const SystemSettingsPage: React.FC = () => {
                           </button>
                         </Popconfirm>
                       </Tooltip>
+                      </div>
                     </div>
-                  </div>
-                </List.Item>
-              )}
-            />
-          )}
-        </Spin>
+                  </List.Item>
+                )}
+              />
+            )}
+          </Spin>
+        </div>
       </AdminCard>
 
       <AdminModal

@@ -45,4 +45,8 @@ type Config struct {
 		PollIntervalSec  int64
 		ConfirmationsReq int64
 	}
+	PlatformConfig struct {
+		ContractAddress  string
+		SignerPrivateKey string
+	}
 }

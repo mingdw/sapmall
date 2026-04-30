@@ -14,7 +14,7 @@ import (
 
 	"sapphire-mall/app/internal/config"
 	"sapphire-mall/app/internal/handler"
-	"sapphire-mall/app/internal/listener"
+	_ "sapphire-mall/app/internal/listener"
 	"sapphire-mall/app/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -36,7 +36,7 @@ func main() {
 	handler.RegisterHandlers(server, ctx)
 	listenerCtx, cancelListener := context.WithCancel(context.Background())
 	defer cancelListener()
-	go listener.StartMerchantDepositListener(listenerCtx, ctx)
+	ctx.StartListeners(listenerCtx)
 
 	// 设置 Swagger 路由
 	setupSwaggerRoutes(server)

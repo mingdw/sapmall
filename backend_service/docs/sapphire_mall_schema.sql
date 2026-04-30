@@ -153,6 +153,7 @@ CREATE TABLE `sys_config`  (
   `is_system` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否系统配置 0:是 1:否',
   `is_encrypted` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否加密 0:是 1:否',
   `is_editable` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否可编辑 0:是 1:否',
+  `sync_chain_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '链同步状态 0:未同步 1:同步中 2:已同步 3:已删除',
   `sort` int NOT NULL DEFAULT 0 COMMENT '排序',
   `status` int NOT NULL DEFAULT 0 COMMENT '状态 0:启用 1:禁用',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

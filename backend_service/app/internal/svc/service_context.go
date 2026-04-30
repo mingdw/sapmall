@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
@@ -18,6 +19,18 @@ import (
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"
 )
+
+type ListenerStarter func(ctx context.Context, svcCtx *ServiceContext)
+
+var listenerStarters []ListenerStarter
+
+// RegisterListener 注册监听器启动函数（由 listener 包在 init 中调用）
+func RegisterListener(starter ListenerStarter) {
+	if starter == nil {
+		return
+	}
+	listenerStarters = append(listenerStarters, starter)
+}
 
 type ServiceContext struct {
 	Config         config.Config
@@ -123,5 +136,12 @@ func buildServiceContext(c config.Config, redisClient *redis.Client, db *gorm.DB
 		AuthMiddleware: middleware.NewAuthMiddleware(db, &c).Handle,
 		RespMiddleware: middleware.NewUnifiedResponseMiddleware().Handle,
 		CosClient:      cosClient,
+	}
+}
+
+// StartListeners 统一启动所有已注册监听器
+func (sc *ServiceContext) StartListeners(ctx context.Context) {
+	for _, starter := range listenerStarters {
+		go starter(ctx, sc)
 	}
 }

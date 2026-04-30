@@ -73,6 +73,7 @@ func (l *ListSystemConfigLogic) ListSystemConfig(req *types.ListSystemConfigReq)
 			IsSystem:    int64(item.IsSystem),
 			IsEncrypted: int64(item.IsEncrypted),
 			IsEditable:  int64(item.IsEditable),
+			SyncChainStatus: int64(item.SyncChainStatus),
 			Sort:        int64(item.Sort),
 			Status:      int64(item.Status),
 			CreatedAt:   item.CreateAt.Format(time.DateTime),

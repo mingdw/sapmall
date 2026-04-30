@@ -640,37 +640,39 @@ type SaveProductReq struct {
 }
 
 type SaveSystemConfigReq struct {
-	ID          int64  `json:"id,optional"`          // 主键ID，空或0表示新增
-	ConfigKey   string `json:"configKey"`            // 配置键（全局唯一）
-	ConfigName  string `json:"configName"`           // 配置名称
-	ConfigValue string `json:"configValue,optional"` // 配置值
-	ConfigType  string `json:"configType"`           // string/number/boolean/json/array
-	ConfigGroup string `json:"configGroup,optional"` // 配置分组
-	Description string `json:"description,optional"` // 配置描述
-	IsSystem    int64  `json:"isSystem,optional"`    // 0是 1否
-	IsEncrypted int64  `json:"isEncrypted,optional"` // 0是 1否
-	IsEditable  int64  `json:"isEditable,optional"`  // 0是 1否
-	Sort        int64  `json:"sort,optional"`        // 排序
-	Status      int64  `json:"status,optional"`      // 状态：0启用 1禁用
+	ID              int64  `json:"id,optional"`              // 主键ID，空或0表示新增
+	ConfigKey       string `json:"configKey"`                // 配置键（全局唯一）
+	ConfigName      string `json:"configName"`               // 配置名称
+	ConfigValue     string `json:"configValue,optional"`     // 配置值
+	ConfigType      string `json:"configType"`               // string/number/boolean/json/array
+	ConfigGroup     string `json:"configGroup,optional"`     // 配置分组
+	Description     string `json:"description,optional"`     // 配置描述
+	IsSystem        int64  `json:"isSystem,optional"`        // 0是 1否
+	IsEncrypted     int64  `json:"isEncrypted,optional"`     // 0是 1否
+	IsEditable      int64  `json:"isEditable,optional"`      // 0是 1否
+	SyncChainStatus int64  `json:"syncChainStatus,optional"` // 链同步状态 0未同步 1同步中 2已同步 3已删除
+	Sort            int64  `json:"sort,optional"`            // 排序
+	Status          int64  `json:"status,optional"`          // 状态：0启用 1禁用
 }
 
 type SystemConfigInfo struct {
-	ID          int64  `json:"id"`
-	ConfigKey   string `json:"configKey"`
-	ConfigName  string `json:"configName"`
-	ConfigValue string `json:"configValue,optional"`
-	ConfigType  string `json:"configType"`  // string/number/boolean/json/array
-	ConfigGroup string `json:"configGroup"` // 分组
-	Description string `json:"description,optional"`
-	IsSystem    int64  `json:"isSystem"`    // 0是 1否
-	IsEncrypted int64  `json:"isEncrypted"` // 0是 1否
-	IsEditable  int64  `json:"isEditable"`  // 0是 1否
-	Sort        int64  `json:"sort"`
-	Status      int64  `json:"status"` // 0启用 1禁用
-	CreatedAt   string `json:"createdAt,optional"`
-	UpdatedAt   string `json:"updatedAt,optional"`
-	Creator     string `json:"creator,optional"`
-	Updator     string `json:"updator,optional"`
+	ID              int64  `json:"id"`
+	ConfigKey       string `json:"configKey"`
+	ConfigName      string `json:"configName"`
+	ConfigValue     string `json:"configValue,optional"`
+	ConfigType      string `json:"configType"`  // string/number/boolean/json/array
+	ConfigGroup     string `json:"configGroup"` // 分组
+	Description     string `json:"description,optional"`
+	IsSystem        int64  `json:"isSystem"`        // 0是 1否
+	IsEncrypted     int64  `json:"isEncrypted"`     // 0是 1否
+	IsEditable      int64  `json:"isEditable"`      // 0是 1否
+	SyncChainStatus int64  `json:"syncChainStatus"` // 链同步状态 0未同步 1同步中 2已同步 3已删除
+	Sort            int64  `json:"sort"`
+	Status          int64  `json:"status"` // 0启用 1禁用
+	CreatedAt       string `json:"createdAt,optional"`
+	UpdatedAt       string `json:"updatedAt,optional"`
+	Creator         string `json:"creator,optional"`
+	Updator         string `json:"updator,optional"`
 }
 
 type UploadFileReq struct {

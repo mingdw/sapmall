@@ -132,7 +132,6 @@ contract SAPToken is
         __ERC20Burnable_init();
         __AccessControl_init();
         __Pausable_init();
-        __UUPSUpgradeable_init();
 
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
         _grantRole(PAUSER_ROLE, admin);
