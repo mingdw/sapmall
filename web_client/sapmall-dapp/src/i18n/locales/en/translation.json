@@ -18,13 +18,16 @@
     "reward": "Reward",
     "participate": "Participate"
   },
+  "header": {
+    "tagline": "Web3 decentralized marketplace for virtual goods"
+  },
   "navigation": {
     "home": "Home",
     "marketplace": "Marketplace",
     "wallet": "Wallet",
-    "rewards": "Rewards",
+    "rewards": "Ecosystem",
     "exchange": "Exchange",
-    "dao": "DAO",
+    "dao": "Community",
     "help": "Help Center"
   },
   "user": {
@@ -36,6 +39,31 @@
     "settings": "Settings",
     "disconnect": "Disconnect"
   },
+  "walletConnect": {
+    "unknownAddress": "Unknown address",
+    "balanceDisplay": "Balance: {{amount}}",
+    "connectWallet": "Connect wallet",
+    "retryConnect": "Retry",
+    "connecting": "Connecting...",
+    "networkSwitchSuccess": "Network switched",
+    "networkSwitchFail": "Network switch failed: {{message}}",
+    "addressCopied": "Address copied",
+    "walletConnectSuccess": "Wallet connected",
+    "connectionFailed": "Connection failed",
+    "loginFailedRetry": "Sign-in failed. Please try again.",
+    "modalTitle": "Account",
+    "copyAddress": "Copy address",
+    "noNickname": "No nickname",
+    "walletBalance": "Wallet balance",
+    "accountInfo": "Account details",
+    "userId": "User ID",
+    "userType": "Role",
+    "accountStatus": "Status",
+    "statusActive": "Active",
+    "registeredAt": "Registered",
+    "unknown": "Unknown",
+    "defaultRole": "Standard user"
+  },
   "homepage": {
     "title": "SapMall DApp",
     "subtitle": "Decentralized E-commerce Platform",
@@ -46,9 +74,244 @@
     "marketplaceDesc": "Browse and purchase decentralized products",
     "wallet": "Wallet",
     "walletDesc": "Manage your digital assets",
-    "rewards": "Rewards Center",
-    "rewardsDesc": "Complete community tasks and claim incentives",
-    "dao": "DAO Governance",
-    "daoDesc": "Participate in community decisions and governance"
+    "rewards": "Ecosystem",
+    "rewardsDesc": "Campaigns & rewards; Bags participation uses Solana on their site",
+    "dao": "Community",
+    "daoDesc": "Join governance, discussions, and community initiatives"
+  },
+  "rewards": {
+    "title": "Ecosystem",
+    "intro": "Campaigns, rewards, and Bags links are aggregated here. Use your connected EVM wallet for shopping and checkout; more features will ship iteratively.",
+    "walletExplainer": "Shopping-only users only need an EVM wallet. If you join on-chain activities on Bags, you will connect a Solana wallet on bags.fm and approve prompts there—it is separate from the EVM login and cannot replace it. Skip Solana if you skip these activities.",
+    "plannedHint": "Task claims and reward summaries are on the roadmap; keep contributing via DAO and community programs—we will surface benefits here when ready.",
+    "badgeHub": "Rewards Hub",
+    "heroSubtitle": "Official campaigns, Bags partnerships, and community rewards—earn contribution points, limited NFTs, and platform perks.",
+    "walletNoticeTitle": "Before you participate",
+    "walletNoticeLine1": "1. Shopping and checkout on Sapphire Mall only require an EVM wallet (e.g. MetaMask).",
+    "walletNoticeLine2": "2. For on-chain programs on Bags, connect a Solana wallet on bags.fm and approve prompts there.",
+    "walletNoticeLine3": "3. EVM and Solana sessions are independent and cannot replace each other. Skip Solana if you skip Bags-only activities.",
+    "tabListAria": "Filter campaigns by status",
+    "tabs": {
+      "ongoing": "Live ({{count}})",
+      "upcoming": "Upcoming ({{count}})",
+      "ended": "Ended ({{count}})"
+    },
+    "sortLabel": "Sort",
+    "sortLatest": "Newest",
+    "sortReward": "Participants",
+    "sortDeadline": "Deadline",
+    "empty": "No campaigns in this tab",
+    "categories": {
+      "bags": "Bags",
+      "dao": "DAO",
+      "task": "Tasks",
+      "newbie": "New users",
+      "referral": "Referral"
+    },
+    "status": {
+      "ongoing": "Live",
+      "upcoming": "Soon",
+      "ended": "Ended"
+    },
+    "participants": "{{count}} joined",
+    "longTerm": "Ongoing",
+    "endedCountdown": "Ended",
+    "hot": "HOT",
+    "cta": {
+      "goBags": "Open on Bags",
+      "join": "Join now",
+      "viewTasks": "View tasks",
+      "claim": "Claim",
+      "invite": "Invite",
+      "creator": "Creator program"
+    },
+    "campaigns": {
+      "bags-blindbox": {
+        "title": "Bags collab mystery box on Solana",
+        "desc": "Connect a Solana wallet on Bags to claim your Web3 blind box—badges and shop vouchers inside."
+      },
+      "dao-may": {
+        "title": "May governance vote",
+        "desc": "Vote on next-quarter virtual goods categories. Participants share a 5,000 SAP reward pool."
+      },
+      "node-mining": {
+        "title": "Contribution mining",
+        "desc": "Complete daily sharing and review tasks to grow contribution tiers and unlock fee discounts."
+      },
+      "newbie-wallet": {
+        "title": "First wallet connection perk",
+        "desc": "New users who connect an EVM wallet and pass verification receive a 10 USDT first-order voucher."
+      },
+      "referral": {
+        "title": "Sapphire referral partner",
+        "desc": "Invite friends to complete their first trade—earn 20% of their lifetime trading fees."
+      },
+      "bags-creator": {
+        "title": "Bags creator week: NFT mint",
+        "desc": "Launch your art project on Bags with traffic support and secondary liquidity narratives from Sapphire Mall."
+      },
+      "summer-preview": {
+        "title": "Summer ecosystem teaser",
+        "desc": "Multi-chain creators meet Bags Launch—details drop before go-live."
+      },
+      "staking-preview": {
+        "title": "Exchange & staking preview week",
+        "desc": "Preview exchange flows and task systems—complete the survey for an early badge raffle."
+      },
+      "spring-ended": {
+        "title": "Spring Bags airdrop (closed)",
+        "desc": "Thanks for participating—watch this page for the next season."
+      }
+    },
+    "futureTitle": "Roadmap",
+    "futureDesc": "Automated task claims and reward summaries are in development. Keep contributing via DAO votes and community quests—points will reconcile when the modules launch.",
+    "featureTodo": "Smart tasks",
+    "featureTodoDesc": "Automated tracking and payouts",
+    "featureLeaderboard": "Leaderboards",
+    "featureLeaderboardDesc": "Highlight top contributors with bonus drops",
+    "subscribeTitle": "Get alerts",
+    "subscribeDesc": "Leave your email for campaign and airdrop alerts (demo).",
+    "subscribePlaceholder": "youremail@web3.com",
+    "subscribeButton": "Subscribe",
+    "subscribeToast": "Subscriptions are coming soon—thanks for your interest.",
+    "scrollTopAria": "Scroll to top"
+  },
+  "exchange": {
+    "errors": {
+      "pageErrorToast": "Something went wrong. Please refresh and try again.",
+      "pageErrorFallback": "Something went wrong. Please refresh and try again."
+    },
+    "toasts": {
+      "swapSuccess": "Swap successful!",
+      "swapSuccessDesc": "You received {{amount}} SAP",
+      "connectWallet": "Connect your wallet first",
+      "noPendingDeposit": "No pending deposit request",
+      "missingIntent": "Missing request details. Please reopen from Admin.",
+      "depositSuccess": "Deposit submitted",
+      "depositTxHash": "Tx hash: {{prefix}}...{{suffix}}",
+      "swapTabWallet": "Connect your wallet before swapping",
+      "depositTabNoPending": "No pending deposit request"
+    },
+    "hero": {
+      "tagline": "Decentralized swap · Secure · Fast · Low fees",
+      "title": "Swap for SAP",
+      "subtitle": "Swap mainstream stablecoins for SAP—lower fees when you shop, merchant perks, and early access to ecosystem campaigns."
+    },
+    "badges": {
+      "audited": "Audited contracts",
+      "bestRate": "Best rates",
+      "multiChain": "Multi-chain"
+    },
+    "ticker": {
+      "tag": "Merchant onboard",
+      "congrats": "Congrats",
+      "joinedSuffix": "—now a merchant"
+    },
+    "tabs": {
+      "swap": "Swap to SAP",
+      "deposit": "Merchant deposit"
+    },
+    "hints": {
+      "walletRequired": "Wallet not connected. Connect to swap or pay a deposit.",
+      "depositLocked": "No pending deposit—the deposit tab stays locked.",
+      "syncingDeposit": "Syncing request status..."
+    },
+    "deposit": {
+      "title": "Merchant security deposit",
+      "subtitle": "Pay before the deadline or the request expires.",
+      "amountDue": "Amount due",
+      "intentId": "Intent ID",
+      "deadline": "Deadline",
+      "payProcessing": "Processing...",
+      "paySubmitted": "Transaction submitted",
+      "payNow": "Pay with wallet",
+      "txSubmitted": "Submitted: {{hash}}",
+      "backAdmin": "Done—back to Admin for status",
+      "footnote": "This flow links from Admin. On-chain confirmation follows backend callbacks."
+    },
+    "supportedCoins": "Supported assets",
+    "swap": {
+      "title": "Token swap",
+      "subtitle": "Swap mainstream tokens for SAP",
+      "slippage": "Slippage tolerance",
+      "customSlippage": "Custom",
+      "pay": "Pay",
+      "balance": "Balance",
+      "max": "MAX",
+      "selectPayToken": "Choose pay token",
+      "tokenTypeStable": "Stablecoin",
+      "tokenTypeMajor": "Major asset",
+      "receive": "Receive",
+      "priceImpact": "Price impact",
+      "feeLabel": "Fee ({{percent}}%)",
+      "slippageTolerance": "Slippage tolerance",
+      "eta": "Est. arrival",
+      "etaValue": "~15s",
+      "connectWalletBtn": "Connect wallet",
+      "swapSuccessBtn": "✓ Swap complete!",
+      "swapping": "Swapping...",
+      "enterAmount": "Enter amount",
+      "swapNow": "Swap now",
+      "securityNote": "Audited contracts · Funds protected",
+      "rateLine": "1 {{from}} = {{rate}} SAP",
+      "disabledReason": "Connect your wallet to swap"
+    },
+    "marketStats": {
+      "title": "Market data",
+      "sapPrice": "SAP price",
+      "vol24h": "24h volume",
+      "tvl": "TVL",
+      "holders": "Holders"
+    },
+    "chart": {
+      "pair": "SAP / USD",
+      "period24H": "24H",
+      "period7D": "7D",
+      "period30D": "30D"
+    },
+    "recentTx": {
+      "title": "Recent swaps",
+      "viewAll": "View all",
+      "success": "Success",
+      "time2m": "2m ago",
+      "time8m": "8m ago",
+      "time15m": "15m ago",
+      "time23m": "23m ago"
+    },
+    "sapVisual": {
+      "name": "SAP Token",
+      "tagline": "Core token of the SAPMall ecosystem",
+      "currentPrice": "Price",
+      "changeLabel": "▲ 5.82% (24h)"
+    }
+  },
+  "footer": {
+    "brand": "Sapphire Mall",
+    "brandDesc": "We are committed to redefining virtual goods trading—real value and transparency for global users through Web3.",
+    "colMall": "Mall services",
+    "colEco": "Ecosystem",
+    "colDev": "Developers",
+    "mall": {
+      "digitalRights": "Digital rights",
+      "nftRedeem": "NFT redemption",
+      "virtualItems": "Virtual goods",
+      "recharge": "Top-up service"
+    },
+    "eco": {
+      "dao": "DAO governance",
+      "whitepaper": "Whitepaper",
+      "tokenomics": "Token model",
+      "audit": "Audit reports"
+    },
+    "dev": {
+      "api": "API docs",
+      "bounty": "Bug bounty",
+      "guide": "Developer guide",
+      "opensource": "Open source"
+    },
+    "copyright": "© 2026 Sapphire Mall Ecosystem. All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms of service",
+    "cookie": "Cookie policy"
   }
 }

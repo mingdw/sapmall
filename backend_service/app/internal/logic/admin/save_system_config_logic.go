@@ -232,14 +232,17 @@ func (l *SaveSystemConfigLogic) syncConfigToChain(req *types.SaveSystemConfigReq
 	desc := strings.TrimSpace(req.Description)
 	status := uint8(req.Status)
 
-	_, err = contract.UpdateConfig(auth, key, req.ConfigValue, valueType, group, desc, status)
+	existsOnChain, err := contract.Exists(&bind.CallOpts{Context: chainCtx}, key)
 	if err != nil {
-		if !isConfigNotFoundErr(err) {
-			return fmt.Errorf("update config on chain failed: %w", err)
-		}
-		if _, err = contract.CreateConfig(auth, key, req.ConfigValue, valueType, group, desc, status); err != nil {
-			return fmt.Errorf("create config on chain failed after ConfigNotFound: %w", err)
-		}
+		return fmt.Errorf("check config exists on chain failed: %w", err)
+	}
+	if existsOnChain {
+		_, err = contract.UpdateConfig(auth, key, req.ConfigValue, valueType, group, desc, status)
+	} else {
+		_, err = contract.CreateConfig(auth, key, req.ConfigValue, valueType, group, desc, status)
+	}
+	if err != nil {
+		return fmt.Errorf("upsert config on chain failed: %w", err)
 	}
 
 	if strings.EqualFold(valueType, "number") {
@@ -275,12 +278,4 @@ func parseConfigUintValue(raw string) (*big.Int, error) {
 		return nil, fmt.Errorf("invalid number config value: %s", raw)
 	}
 	return parsed, nil
-}
-
-func isConfigNotFoundErr(err error) bool {
-	if err == nil {
-		return false
-	}
-	msg := strings.ToLower(err.Error())
-	return strings.Contains(msg, "confignotfound") || strings.Contains(msg, "0x0eabffe7")
 }

@@ -1,0 +1,107 @@
+/**
+ * 页脚 — 与 ecosystem_activity 原型对齐：深紫渐变、顶部分割、底栏弱对比文字
+ */
+
+.footerRoot {
+  color: #f8fafc;
+  background: linear-gradient(180deg, rgb(30 27 75 / 0.92) 0%, rgb(15 23 42 / 0.98) 45%, rgb(8 11 24 / 1) 100%);
+  border-top: 1px solid rgba(71, 85, 105, 0.4);
+}
+
+.footerInner {
+  width: 100%;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 3rem;
+  padding-bottom: 1.5rem;
+
+  @media (min-width: 1024px) {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/** 品牌区 Logo 容器：圆角方底 + 紫底（原型） */
+.brandMarkWrap {
+  display: flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: #4f46e5;
+}
+
+.footerColTitle {
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.socialLink {
+  color: rgb(148 163 184);
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.footerLink {
+  display: inline-block;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgb(148 163 184);
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: rgb(165 180 252);
+  }
+}
+
+.bottomBar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 2rem;
+  margin-top: 3rem;
+  border-top: 1px solid rgba(51, 65, 85, 0.55);
+  font-size: 0.75rem;
+  color: rgb(100 116 139);
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.bottomBarLink {
+  color: inherit;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: rgb(203 213 225);
+  }
+}
+
+.bottomBarLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    justify-content: flex-end;
+  }
+}

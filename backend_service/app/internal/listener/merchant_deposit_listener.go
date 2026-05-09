@@ -83,6 +83,8 @@ func StartMerchantDepositListener(ctx context.Context, svcCtx *svc.ServiceContex
 	}
 	defer client.Close()
 
+	startBlock := resolveChainMonitorStartBlock(ctx, svcCtx.GormDB, cfg.StartBlock)
+
 	pollSec := cfg.PollIntervalSec
 	if pollSec <= 0 {
 		pollSec = 8
@@ -98,7 +100,7 @@ func StartMerchantDepositListener(ctx context.Context, svcCtx *svc.ServiceContex
 	logx.Infof("[chain-listener] merchant deposit listener started, contract=%s", contractAddress)
 
 	// 立即执行一次，再按周期轮询
-	if err := syncMerchantDepositLogs(ctx, svcCtx, client, parsedABI, eventDef, common.HexToAddress(contractAddress), confirmReq, cfg.StartBlock); err != nil {
+	if err := syncMerchantDepositLogs(ctx, svcCtx, client, parsedABI, eventDef, common.HexToAddress(contractAddress), confirmReq, startBlock); err != nil {
 		logx.Errorf("[chain-listener] initial sync failed: %v", err)
 	}
 
@@ -108,7 +110,7 @@ func StartMerchantDepositListener(ctx context.Context, svcCtx *svc.ServiceContex
 			logx.Infof("[chain-listener] merchant deposit listener stopped")
 			return
 		case <-ticker.C:
-			if err := syncMerchantDepositLogs(ctx, svcCtx, client, parsedABI, eventDef, common.HexToAddress(contractAddress), confirmReq, cfg.StartBlock); err != nil {
+			if err := syncMerchantDepositLogs(ctx, svcCtx, client, parsedABI, eventDef, common.HexToAddress(contractAddress), confirmReq, startBlock); err != nil {
 				logx.Errorf("[chain-listener] sync failed: %v", err)
 			}
 		}

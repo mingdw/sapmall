@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import HeaderPageDetail from '../pages/header/HeaderPageDetail';
 import ContentLayout from './ContentLayout';
+import FooterPageDetail from '../pages/footer/FooterPageDetail';
 
 const Layout: React.FC = () => {
   const location = useLocation();
@@ -10,19 +11,32 @@ const Layout: React.FC = () => {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
-    <div 
-      className={`${isAdminRoute ? 'min-h-screen' : 'h-screen'} bg-gray-900 text-white flex flex-col`}
+    <div
+      className={`flex flex-col bg-gray-900 text-white ${
+        isAdminRoute ? 'h-screen min-h-0' : 'min-h-screen'
+      }`}
     >
-      {/* Header 区域 - 始终显示 */}
-      <HeaderPageDetail />
-      
-      {/* 主内容区域 - 由ContentLayout管理路由，占据剩余空间 */}
-      <div className={`${isAdminRoute ? 'flex-1' : 'flex-1 min-h-0'}`}>
-        <ContentLayout />
+      {/* Header */}
+      <div className="shrink-0">
+        <HeaderPageDetail />
       </div>
-      
-      {/* Footer 区域 - 自适应内容高度 */}
-      {/* <Footer /> */}
+
+      {isAdminRoute ? (
+        /* Admin：固定视口高度，内层单独滚动（iframe） */
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <ContentLayout />
+        </div>
+      ) : (
+        <>
+          {/* 普通页：整页一条滚动条，页脚紧跟主内容末尾 */}
+          <div className="w-full min-w-0 flex-1">
+            <ContentLayout />
+          </div>
+          <div className="shrink-0">
+            <FooterPageDetail />
+          </div>
+        </>
+      )}
     </div>
   );
 };

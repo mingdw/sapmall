@@ -13,5 +13,10 @@ const (
 	SYS_CONFIG_KEY_MERCHANT_DEPOSIT_CHAIN_ID         = "merchant.deposit.chain_id"          // 保证金链ID
 	SYS_CONFIG_KEY_MERCHANT_DEPOSIT_CONTRACT_ADDRESS = "merchant.deposit.contract_address"  // 保证金合约地址
 	SYS_CONFIG_KEY_MERCHANT_DEPOSIT_EXPIRE_MINS      = "merchant.deposit.intent_expire_min" // 意图单过期分钟数
+
+	// 链事件监听（platform_config / merchant_deposit 等共用 ChainMonitor 起始块）
+	// 在 sys_config 中配置十进制区块号；仅当存在且可解析时覆盖 yaml 的 ChainMonitor.StartBlock。
+	// Redis 断点仍优先生效；修改后需重启服务进程方重新读取本值。
+	SYS_CONFIG_KEY_CHAIN_LISTENER_START_BLOCK = "chain.listener.start_block"
 )
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
+import logoMarkSrc from '../../assets/logo-mark.svg';
 import WalletConnect from './components/WalletConnect';
 
 const HeaderPageDetail: React.FC = () => {
@@ -32,8 +33,8 @@ const HeaderPageDetail: React.FC = () => {
             {/* 第一部分：Logo区域 - 占1/3 */}
             <div className="flex-1 flex items-center">
               <div className="flex-shrink-0 flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-gem text-white text-lg"></i>
+                <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10 ring-1 ring-white/15">
+                  <img src={logoMarkSrc} alt="" className="w-full h-full object-contain p-0.5" />
                 </div>
                 <span className="ml-2 text-xl font-bold text-white">Sapphire Mall</span>
               </div>
@@ -93,12 +94,12 @@ const HeaderPageDetail: React.FC = () => {
         <div className="flex items-center justify-between py-4 w-full px-6">
           {/* Logo区域 */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <i className="fas fa-gem text-white text-lg"></i>
+            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10 ring-1 ring-white/15">
+              <img src={logoMarkSrc} alt="" className="w-full h-full object-contain p-0.5" />
             </div>
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
-              <p className="text-xs font-semibold text-gray-400">Web3去中心化虚拟商品交易平台</p>
+              <p className="text-xs font-semibold text-gray-400">{t('header.tagline')}</p>
             </div>
           </div>
 
@@ -185,8 +186,8 @@ const HeaderPageDetail: React.FC = () => {
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                      <i className="fas fa-gem text-white text-sm"></i>
+                    <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10 ring-1 ring-white/15">
+                      <img src={logoMarkSrc} alt="" className="w-full h-full object-contain p-0.5" />
                     </div>
                     <span className="text-lg font-bold text-white">Sapphire Mall</span>
                   </div>

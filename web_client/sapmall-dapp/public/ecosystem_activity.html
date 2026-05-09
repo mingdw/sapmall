@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>生态活动 | Sapphire Mall - Web3去中心化虚拟商品交易平台</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/echarts.min.js"></script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617;
+            color: #f8fafc;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gradient-bg {
+            background: radial-gradient(circle at top right, #312e81, transparent),
+                        radial-gradient(circle at bottom left, #1e1b4b, transparent);
+        }
+
+        .nav-item-active {
+            color: #818cf8;
+            position: relative;
+        }
+        .nav-item-active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #818cf8;
+            border-radius: 2px;
+        }
+
+        .hover-glow:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+        
+        .tab-active {
+            background: #4f46e5;
+            color: white;
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+<!-- 导航栏 -->
+<nav class="sticky top-0 z-50 glass-card border-b border-slate-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<!-- Logo 区 -->
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+<iconify-icon class="text-white text-2xl" icon="lucide:gem"></iconify-icon>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight">Sapphire Mall</h1>
+<p class="text-[10px] text-slate-400 leading-none">Web3去中心化虚拟商品交易平台</p>
+</div>
+</div>
+<!-- 主菜单 -->
+<div class="hidden md:flex space-x-8 text-sm font-medium text-slate-300">
+<a class="hover:text-white transition-colors" href="#">商城</a>
+<a class="nav-item-active" href="#">生态活动</a>
+<a class="hover:text-white transition-colors" href="#">兑换</a>
+<a class="hover:text-white transition-colors" href="#">社区参与</a>
+<a class="hover:text-white transition-colors" href="#">帮助中心</a>
+</div>
+<!-- 工具栏 -->
+<div class="flex items-center space-x-4 text-sm">
+<button class="flex items-center space-x-1 px-3 py-1.5 rounded-md hover:bg-slate-800 transition-colors">
+<iconify-icon class="text-lg" icon="lucide:languages"></iconify-icon>
+<span>中文</span>
+</button>
+<div class="h-4 w-[1px] bg-slate-700"></div>
+<div class="flex items-center space-x-2 px-3 py-1.5 bg-slate-800/50 rounded-full border border-slate-700">
+<div class="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+<span class="font-mono text-xs">BSC</span>
+</div>
+<button class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg font-medium transition-all flex items-center space-x-2">
+<iconify-icon class="text-lg" icon="lucide:wallet"></iconify-icon>
+<span class="font-mono">0x6700...abC2</span>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<!-- 主体内容 -->
+<main class="max-w-7xl mx-auto px-4 py-12">
+<!-- 核心标题区 -->
+<section class="mb-12">
+<div class="flex items-center space-x-4 mb-4">
+<h2 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">生态活动</h2>
+<span class="px-3 py-1 bg-indigo-500/20 text-indigo-400 text-xs rounded-full border border-indigo-500/30">Rewards Hub</span>
+</div>
+<p class="text-slate-400 max-w-2xl text-lg">
+                本页聚合平台官方活动、外部 Bags 营销合作及社区贡献奖励。通过参与活动积累贡献值，赢取限量版 NFT 及平台权益。
+            </p>
+</section>
+<!-- 钱包说明指引 (基于附件2) -->
+<section class="mb-10">
+<div class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-6 flex items-start space-x-4">
+<div class="p-2 bg-yellow-500/20 rounded-lg">
+<iconify-icon class="text-yellow-500 text-2xl" icon="lucide:info"></iconify-icon>
+</div>
+<div class="flex-1">
+<h4 class="text-yellow-500 font-semibold mb-1">参与活动特别说明</h4>
+<p class="text-sm text-slate-300 leading-relaxed">
+                        1. 仅使用商城与主站支付的用户仅需连接 <span class="text-white font-medium">EVM 钱包</span> (如 MetaMask)。<br/>
+                        2. 若您前往 <span class="text-indigo-400 font-medium">Bags 平台</span> 参与链上专属活动，需在 Bags 网站连接 <span class="text-white font-medium">Solana 钱包</span> 并按提示授权。<br/>
+                        3. 请注意：EVM 登录与 Solana 登录相互独立，无法互相替代。不参与特定 Bags 活动无需 Solana 钱包。
+                    </p>
+</div>
+</div>
+</section>
+<!-- 过滤器 & Tabs -->
+<div class="flex flex-col md:flex-row md:items-center justify-between mb-8 space-y-4 md:space-y-0">
+<div class="flex p-1 bg-slate-900 rounded-xl border border-slate-800">
+<button class="px-6 py-2 rounded-lg text-sm font-medium transition-all tab-active">正在进行 (6)</button>
+<button class="px-6 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white transition-all">即将开始 (2)</button>
+<button class="px-6 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white transition-all">已结束</button>
+</div>
+<div class="flex items-center space-x-3 text-sm">
+<span class="text-slate-400">排序:</span>
+<select class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+<option>最新发布</option>
+<option>奖励最高</option>
+<option>截止日期</option>
+</select>
+</div>
+</div>
+<!-- 活动卡片瀑布流 -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Bags 专属卡片 1 -->
+<div class="glass-card rounded-2xl overflow-hidden hover-glow transition-all flex flex-col group">
+<div class="relative h-48 overflow-hidden">
+<img alt="Bags Mystery Box Event" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://modao.cc/agent-py/media/generated_images/2026-05-09/299c27ee258140278018ae63f502b98b.jpg#desc=Bags%20Mystery%20Box%20Event"/>
+<div class="absolute top-4 left-4 flex space-x-2">
+<span class="bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Bags 合作</span>
+<span class="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">进行中</span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<h3 class="text-xl font-bold mb-2 group-hover:text-indigo-400 transition-colors">Bags 联名盲盒：探索 Solana 虚拟资产</h3>
+<p class="text-slate-400 text-sm mb-6 line-clamp-2">
+                        在 Bags 平台连接 Solana 钱包，领取属于您的 Web3 专属盲盒。包含稀有勋章及商城代金券。
+                    </p>
+<div class="mt-auto space-y-4">
+<div class="flex justify-between items-center text-xs">
+<span class="text-slate-500 flex items-center"><iconify-icon class="mr-1" icon="lucide:users"></iconify-icon> 1,280 参与</span>
+<span class="text-indigo-400 flex items-center font-mono"><iconify-icon class="mr-1" icon="lucide:clock"></iconify-icon> 02d 14h 22m</span>
+</div>
+<button class="w-full bg-slate-800 hover:bg-indigo-600 py-3 rounded-xl font-semibold transition-all flex items-center justify-center space-x-2 border border-slate-700 hover:border-indigo-500">
+<span>前往 Bags 参与</span>
+<iconify-icon icon="lucide:external-link"></iconify-icon>
+</button>
+</div>
+</div>
+</div>
+<!-- 活动卡片 2 -->
+<div class="glass-card rounded-2xl overflow-hidden hover-glow transition-all flex flex-col group">
+<div class="relative h-48 overflow-hidden">
+<img alt="DAO Governance Reward" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="/agent-py/static/source/images/placeholder.svg"/>
+<div class="absolute top-4 left-4 flex space-x-2">
+<span class="bg-purple-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">DAO 治理</span>
+<span class="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">进行中</span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors">五月社区治理提案投票</h3>
+<p class="text-slate-400 text-sm mb-6 line-clamp-2">
+                        通过投票决定下季度新增的虚拟商品品类。每位参与投票的用户将平分 5,000 SAP 代币奖励。
+                    </p>
+<div class="mt-auto space-y-4">
+<div class="flex justify-between items-center text-xs">
+<span class="text-slate-500 flex items-center"><iconify-icon class="mr-1" icon="lucide:users"></iconify-icon> 8,500 参与</span>
+<span class="text-indigo-400 flex items-center font-mono"><iconify-icon class="mr-1" icon="lucide:clock"></iconify-icon> 15h 08m 45s</span>
+</div>
+<button class="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-semibold transition-all">立即参与</button>
+</div>
+</div>
+</div>
+<!-- 活动卡片 3 -->
+<div class="glass-card rounded-2xl overflow-hidden hover-glow transition-all flex flex-col group">
+<div class="relative h-48 overflow-hidden">
+<img alt="Contribution Mining" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="/agent-py/static/source/images/placeholder.svg"/>
+<div class="absolute top-4 left-4 flex space-x-2">
+<span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">节点任务</span>
+<span class="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">进行中</span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<h3 class="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">生态节点贡献值挖矿</h3>
+<p class="text-slate-400 text-sm mb-6 line-clamp-2">
+                        完成日常分享与购物点评任务，积累个人贡献值。等级越高，交易手续费折扣越大。
+                    </p>
+<div class="mt-auto space-y-4">
+<div class="flex justify-between items-center text-xs">
+<span class="text-slate-500 flex items-center"><iconify-icon class="mr-1" icon="lucide:users"></iconify-icon> 24,000 参与</span>
+<span class="text-slate-500 flex items-center font-mono">长期活动</span>
+</div>
+<button class="w-full bg-slate-800 hover:bg-slate-700 py-3 rounded-xl font-semibold transition-all border border-slate-700">查看任务</button>
+</div>
+</div>
+</div>
+<!-- 活动卡片 4 -->
+<div class="glass-card rounded-2xl overflow-hidden hover-glow transition-all flex flex-col group opacity-90 hover:opacity-100">
+<div class="relative h-48 overflow-hidden">
+<img alt="Newbie Reward" class="w-full h-full object-cover grayscale transition-all group-hover:grayscale-0" src="https://modao.cc/agent-py/media/generated_images/2026-05-09/2211d15ce4734865af16a4dc788f3249.jpg#desc=Newbie%20Reward"/>
+<div class="absolute top-4 left-4 flex space-x-2">
+<span class="bg-orange-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">新用户</span>
+<span class="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">进行中</span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<h3 class="text-xl font-bold mb-2 group-hover:text-orange-400 transition-colors">首次连接钱包有礼</h3>
+<p class="text-slate-400 text-sm mb-6 line-clamp-2">
+                        新用户首次连接 EVM 钱包并完成账户实人验证，即可获得 10 USDT 的首单抵扣券。
+                    </p>
+<div class="mt-auto space-y-4">
+<button class="w-full bg-slate-800 hover:bg-slate-700 py-3 rounded-xl font-semibold transition-all border border-slate-700">去领取</button>
+</div>
+</div>
+</div>
+<!-- 活动卡片 5 -->
+<div class="glass-card rounded-2xl overflow-hidden hover-glow transition-all flex flex-col group">
+<div class="relative h-48 overflow-hidden">
+<img alt="Referral Program" class="w-full h-full object-cover" src="/agent-py/static/source/images/placeholder.svg"/>
+<div class="absolute top-4 left-4 flex space-x-2">
+<span class="bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">邀请制</span>
+<span class="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">进行中</span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<h3 class="text-xl font-bold mb-2 group-hover:text-red-400 transition-colors">Sapphire 推荐合伙人计划</h3>
+<p class="text-slate-400 text-sm mb-6 line-clamp-2">
+                        邀请好友在 Sapphire Mall 完成首笔交易，您将获得其终身手续费 20% 的返佣。
+                    </p>
+<div class="mt-auto space-y-4">
+<button class="w-full bg-slate-800 hover:bg-slate-700 py-3 rounded-xl font-semibold transition-all border border-slate-700">立即邀请</button>
+</div>
+</div>
+</div>
+<!-- 活动卡片 6 - 外部 Bags 营销 -->
+<div class="glass-card rounded-2xl overflow-hidden hover-glow transition-all flex flex-col group relative">
+<div class="absolute top-0 right-0 px-3 py-1 bg-yellow-500 text-black text-[10px] font-bold rounded-bl-lg z-10">HOT</div>
+<div class="relative h-48 overflow-hidden">
+<img alt="Bags x Sapphire Collab" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://modao.cc/agent-py/media/generated_images/2026-05-09/9119ab2330b84802b84349d3614ed74d.jpg#desc=Bags%20x%20Sapphire%20Collab"/>
+<div class="absolute top-4 left-4 flex space-x-2">
+<span class="bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Bags 专属</span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<h3 class="text-xl font-bold mb-2 group-hover:text-indigo-400 transition-colors">Bags 创作者扶持：NFT 铸造周</h3>
+<p class="text-slate-400 text-sm mb-6 line-clamp-2">
+                        在 Bags 发起您的艺术项目，Sapphire Mall 将提供全方位的流量扶持与二级市场流动性支持。
+                    </p>
+<div class="mt-auto space-y-4">
+<button class="w-full bg-slate-800 hover:bg-indigo-600 py-3 rounded-xl font-semibold transition-all flex items-center justify-center space-x-2 border border-slate-700 hover:border-indigo-500">
+<span>参与创作者计划</span>
+<iconify-icon icon="lucide:arrow-right"></iconify-icon>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 社区参与与未来规划 (基于附件2底部信息) -->
+<section class="mt-24 mb-12">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="space-y-6">
+<h3 class="text-3xl font-bold">未来功能规划</h3>
+<p class="text-slate-400 leading-relaxed">
+                        我们正在全力开发任务领取、激励自动汇总等模块。目前您仍可以通过参与 DAO 投票、完成社区任务等方式积累贡献。所有积分与贡献将在功能正式上线后统一呈现并支持兑换。
+                    </p>
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-card p-4 rounded-xl">
+<iconify-icon class="text-2xl text-indigo-400 mb-2" icon="lucide:list-todo"></iconify-icon>
+<h5 class="font-bold">智能任务系统</h5>
+<p class="text-xs text-slate-500 mt-1">自动化任务追踪与奖励发放</p>
+</div>
+<div class="glass-card p-4 rounded-xl">
+<iconify-icon class="text-2xl text-yellow-400 mb-2" icon="lucide:trophy"></iconify-icon>
+<h5 class="font-bold">激励排行榜</h5>
+<p class="text-xs text-slate-500 mt-1">展示顶尖贡献者并给予额外空投</p>
+</div>
+</div>
+</div>
+<div class="glass-card p-8 rounded-2xl border-indigo-500/20 bg-indigo-500/5">
+<h4 class="text-xl font-bold mb-6 flex items-center">
+<iconify-icon class="mr-2 text-indigo-400" icon="lucide:mail"></iconify-icon>
+                        订阅活动提醒
+                    </h4>
+<p class="text-sm text-slate-400 mb-6">输入您的邮箱或连接 Telegram，第一时间获取新活动及空投通知。</p>
+<div class="flex space-x-2">
+<input class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="youremail@web3.com" type="email"/>
+<button class="bg-indigo-600 px-6 py-3 rounded-xl font-bold hover:bg-indigo-500 transition-all">订阅</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- 页脚 -->
+<footer class="glass-card border-t border-slate-800 pt-16 pb-8">
+<div class="max-w-7xl mx-auto px-4">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
+<div class="col-span-2">
+<div class="flex items-center space-x-3 mb-6">
+<div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+<iconify-icon class="text-white text-xl" icon="lucide:gem"></iconify-icon>
+</div>
+<h2 class="text-xl font-bold">Sapphire Mall</h2>
+</div>
+<p class="text-slate-400 text-sm max-w-xs leading-relaxed">
+                        我们致力于重新定义虚拟商品交易，通过 Web3 技术为全球用户创造真正的价值和透明度。
+                    </p>
+<div class="flex space-x-4 mt-6">
+<a class="text-slate-500 hover:text-white text-xl transition-colors" href="#"><iconify-icon icon="lucide:twitter"></iconify-icon></a>
+<a class="text-slate-500 hover:text-white text-xl transition-colors" href="#"><iconify-icon icon="lucide:github"></iconify-icon></a>
+<a class="text-slate-500 hover:text-white text-xl transition-colors" href="#"><iconify-icon icon="lucide:send"></iconify-icon></a>
+<a class="text-slate-500 hover:text-white text-xl transition-colors" href="#"><iconify-icon icon="lucide:youtube"></iconify-icon></a>
+</div>
+</div>
+<div>
+<h4 class="font-bold mb-6">商城服务</h4>
+<ul class="space-y-3 text-sm text-slate-400">
+<li><a class="hover:text-indigo-400" href="#">数字权益购买</a></li>
+<li><a class="hover:text-indigo-400" href="#">NFT 兑换码</a></li>
+<li><a class="hover:text-indigo-400" href="#">虚拟道具交易</a></li>
+<li><a class="hover:text-indigo-400" href="#">代充服务</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6">关于生态</h4>
+<ul class="space-y-3 text-sm text-slate-400">
+<li><a class="hover:text-indigo-400" href="#">DAO 治理</a></li>
+<li><a class="hover:text-indigo-400" href="#">白皮书</a></li>
+<li><a class="hover:text-indigo-400" href="#">代币模型</a></li>
+<li><a class="hover:text-indigo-400" href="#">审计报告</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-6">开发者</h4>
+<ul class="space-y-3 text-sm text-slate-400">
+<li><a class="hover:text-indigo-400" href="#">API 文档</a></li>
+<li><a class="hover:text-indigo-400" href="#">Bug 赏金</a></li>
+<li><a class="hover:text-indigo-400" href="#">开发者指南</a></li>
+<li><a class="hover:text-indigo-400" href="#">开源仓库</a></li>
+</ul>
+</div>
+</div>
+<div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 space-y-4 md:space-y-0">
+<p>© 2026 Sapphire Mall Ecosystem. All rights reserved.</p>
+<div class="flex space-x-6">
+<a class="hover:text-slate-300" href="#">隐私政策</a>
+<a class="hover:text-slate-300" href="#">服务条款</a>
+<a class="hover:text-slate-300" href="#">Cookie设置</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- 右下角浮动组件 (基于附件1) -->
+<div class="fixed bottom-8 right-8 flex flex-col space-y-3 z-40">
+<button class="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+<iconify-icon class="text-xl" icon="lucide:message-square"></iconify-icon>
+</button>
+<button class="w-12 h-12 bg-slate-800 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform border border-slate-700">
+<iconify-icon class="text-xl" icon="lucide:arrow-up" onclick="window.scrollTo({top: 0, behavior: 'smooth'})"></iconify-icon>
+</button>
+</div>
+</body>
+</html>

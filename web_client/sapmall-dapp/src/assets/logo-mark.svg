@@ -11,17 +11,23 @@
     </linearGradient>
   </defs>
 
+  <!-- React-style orbital strokes (thin ellipses, nucleus = gem) -->
   <g transform="translate(32 32)" fill="none" stroke="#61DAFB" stroke-width="1.35" stroke-linecap="round" opacity="0.28">
     <ellipse rx="26" ry="11"/>
     <ellipse rx="26" ry="11" transform="rotate(60)"/>
     <ellipse rx="26" ry="11" transform="rotate(120)"/>
   </g>
 
+  <!-- Faceted gem: line-only, geometric (crown + pavilion) -->
   <g fill="none" stroke="url(#react-gem-stroke)" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Outer silhouette -->
     <path d="M32 11 L48.5 21.5 V36.5 L32 49 L15.5 36.5 V21.5 Z"/>
+    <!-- Crown facets -->
     <path d="M32 11 L48.5 21.5 L32 27 L15.5 21.5 Z" stroke="url(#react-gem-inner)" stroke-width="1.5" opacity="0.9"/>
+    <!-- Pavilion + table lines -->
     <path d="M15.5 21.5 L32 27 L15.5 36.5 M48.5 21.5 L32 27 L48.5 36.5 M32 27 L32 49" stroke-width="1.65" opacity="0.88"/>
   </g>
 
+  <!-- Core glint (React nucleus dot, minimal) -->
   <circle cx="32" cy="27" r="2.25" fill="#61DAFB" opacity="0.9"/>
 </svg>

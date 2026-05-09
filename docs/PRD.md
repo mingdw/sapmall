@@ -20,6 +20,7 @@
 - 用户故事地图: `docs/User_Story_Map.md`
 - 指标框架: `docs/Metrics_Framework.md`
 - 产品白皮书: `docs/White_Paper.md`
+- **Bags 活动与营销集成（子域 PRD）**: `docs/Bags_Activity_Marketing_PRD.md`
 
 ## 2. 产品概述
 

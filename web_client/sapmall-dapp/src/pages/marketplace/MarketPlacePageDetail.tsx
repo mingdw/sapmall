@@ -7,8 +7,6 @@ import { Product, FilterOptions, FILTER_OPTIONS, ProductQueryParams } from '../.
 import CategoryButton from './components/CategoryButton';
 import AttrGroupFilter from './components/AttrGroupFilter';
 import ProductCategoryComponent from '../../components/ProductCategoryCard';
-import ProductDetailComponent from '../../components/ProductCard';  
-import Pagination from '../../components/Pagination';
 import { useCategoryStore } from '../../store/categoryStore';
 import { transformProductForDisplay } from '../../utils/productUtils';
 

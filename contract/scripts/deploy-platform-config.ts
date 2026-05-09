@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { network } from "hardhat";
 import { encodeFunctionData } from "viem";
 

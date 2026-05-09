@@ -10,6 +10,18 @@ import { userApiService } from '../../../services/api/userApiService';
 import styles from './WalletConnect.module.scss';
 import { UserStatus } from '../../../services/types/userTypes';
 
+/** 与语言无关的错误码，供静默处理分支识别 */
+const WALLET_ERR_USER_REJECTED_SIGN = 'WALLET_ERR_USER_REJECTED_SIGN';
+const WALLET_ERR_AUTH_REVOKED = 'WALLET_ERR_AUTH_REVOKED';
+
+function isSilentWalletAuthMessage(message: string | undefined): boolean {
+  if (!message) return false;
+  return (
+    message === WALLET_ERR_USER_REJECTED_SIGN ||
+    message === WALLET_ERR_AUTH_REVOKED
+  );
+}
+
 interface WalletConnectProps {
   onConnect?: (address: string) => void;
   onDisconnect?: () => void;
@@ -145,9 +157,9 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       }
       
       // 其他错误正常处理
-      setConnectionError(error.message || '连接失败');
+      setConnectionError(error.message || t('walletConnect.connectionFailed'));
     }
-  }, [error]);
+  }, [error, t]);
 
   // 点击外部关闭下拉菜单
   useEffect(() => {
@@ -197,13 +209,13 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
         if (signError.message?.includes('User rejected') || 
             signError.message?.includes('rejected') ||
             signError.name === 'UserRejectedRequestError') {
-          throw new Error('用户取消了签名');
+          throw new Error(WALLET_ERR_USER_REJECTED_SIGN);
         }
         
         // 检查是否是授权错误
         if (signError.message?.includes('not authorized') ||
             signError.message?.includes('The requested account and/or method has not been authorized')) {
-          throw new Error('钱包授权已撤销，请重新连接钱包');
+          throw new Error(WALLET_ERR_AUTH_REVOKED);
         }
         
         throw signError;
@@ -241,16 +253,16 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       // 6. 通知父组件
       onConnect?.(walletAddress);
       
-      MessageUtils.success('钱包连接成功！');
+      MessageUtils.success(t('walletConnect.walletConnectSuccess'));
       
     } catch (error: any) {
       console.error('签名或登录失败:', error);
       
       // 检查是否是授权相关错误
-      const isAuthError = error.message?.includes('not authorized') ||
-                         error.message?.includes('The requested account and/or method has not been authorized') ||
-                         error.message?.includes('钱包授权已撤销') ||
-                         error.message?.includes('用户取消了签名');
+      const isAuthError =
+        error.message?.includes('not authorized') ||
+        error.message?.includes('The requested account and/or method has not been authorized') ||
+        isSilentWalletAuthMessage(error.message);
       
       if (isAuthError) {
         console.log('检测到授权错误，静默处理...');
@@ -263,7 +275,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       }
       
       // 其他错误正常处理
-      const errorMessage = error.message || '登录失败，请重试';
+      const errorMessage = error.message || t('walletConnect.loginFailedRetry');
       setConnectionError(errorMessage);
       MessageUtils.error(errorMessage);
     } finally {
@@ -331,7 +343,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   const copyAddress = () => {
     if (address) {
       navigator.clipboard.writeText(address);
-      MessageUtils.success('地址已复制到剪贴板');
+      MessageUtils.success(t('walletConnect.addressCopied'));
     }
   };
 
@@ -356,10 +368,10 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     try {
       await switchChain({ chainId: targetChainId });
       setShowNetworkMenu(false);
-      MessageUtils.success('网络切换成功');
+      MessageUtils.success(t('walletConnect.networkSwitchSuccess'));
     } catch (error: any) {
       console.error('网络切换失败:', error);
-      MessageUtils.error(`网络切换失败: ${error.message}`);
+      MessageUtils.error(t('walletConnect.networkSwitchFail', { message: error?.message ?? '' }));
     }
   };
 
@@ -405,7 +417,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     return (
       <Button loading>
         <i className="fas fa-wallet mr-2"></i>
-        加载中...
+        {t('common.loading')}
       </Button>
     );
   }
@@ -434,7 +446,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
                 onClick={openConnectModal}
                 loading={isPending || isConnecting}
               >
-                连接钱包
+                {t('walletConnect.connectWallet')}
               </Button>
             </div>
           );
@@ -454,14 +466,14 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
             type="primary"
             icon={<i className="fas fa-redo"></i>}
           >
-            重试连接
+            {t('walletConnect.retryConnect')}
           </Button>
           <Button 
             onClick={() => handleDisconnect()} 
             type="default"
             icon={<i className="fas fa-times"></i>}
           >
-            取消
+            {t('common.cancel')}
           </Button>
         </div>
       );
@@ -472,7 +484,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       return (
         <Button loading>
           <i className="fas fa-wallet mr-2"></i>
-          连接中...
+          {t('walletConnect.connecting')}
         </Button>
       );
     }
@@ -500,7 +512,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
                 onClick={openConnectModal}
                 loading={isPending || isConnecting}
               >
-                连接钱包
+                {t('walletConnect.connectWallet')}
               </Button>
             </div>
           );
@@ -508,6 +520,11 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       </ConnectButton.Custom>
     );
   }
+
+  const nativeBalanceAmount =
+    balance != null
+      ? `${parseFloat(balance.formatted).toFixed(4)} ${balance.symbol ?? 'ETH'}`
+      : `0.0000 ETH`;
 
   // 如果已连接，显示用户信息区域（完全按照原型页面布局）
   return (
@@ -556,14 +573,14 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
         >
           <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-blue-500 rounded-full"></div>
           <span className="text-sm">
-            {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '未知地址'}
+            {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : t('walletConnect.unknownAddress')}
           </span>
           <i className="fas fa-chevron-down text-xs"></i>
         </button>
         <div className={`${styles.dropdown} ${showUserDropdown ? styles.show : ''} absolute right-0 top-full mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl min-w-[200px] z-50`}>
           <div className="py-2">
             <div className="px-4 py-2 text-sm text-gray-400 border-b border-gray-600">
-              余额: {balance ? `${parseFloat(balance.formatted).toFixed(4)} ETH` : '0.0000 ETH'}
+              {t('walletConnect.balanceDisplay', { amount: nativeBalanceAmount })}
             </div>
             
             <button 
@@ -574,7 +591,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
             >
               <i className="fas fa-user"></i>
-              <span>个人资料</span>
+              <span>{t('user.profile')}</span>
             </button>
             
             <button 
@@ -586,7 +603,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
             >
               <div className="flex items-center space-x-2">
                 <i className="fas fa-shopping-cart"></i>
-                <span>我的购物车</span>
+                <span>{t('user.cart')}</span>
               </div>
               <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">3</span>
             </button>
@@ -600,7 +617,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
             >
               <div className="flex items-center space-x-2">
                 <i className="fas fa-heart"></i>
-                <span>我的收藏</span>
+                <span>{t('user.favorites')}</span>
               </div>
               <span className="bg-pink-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">8</span>
             </button>
@@ -615,7 +632,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
             >
               <i className="fas fa-box"></i>
-              <span>我的订单</span>
+              <span>{t('user.orders')}</span>
             </button>
             
             <button 
@@ -626,7 +643,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
             >
               <i className="fas fa-history"></i>
-              <span>交易历史</span>
+              <span>{t('user.history')}</span>
             </button>
             
             <div className="border-t border-gray-600 my-1"></div>
@@ -639,7 +656,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
             >
               <i className="fas fa-cog"></i>
-              <span>设置</span>
+              <span>{t('user.settings')}</span>
             </button>
             
             <button 
@@ -650,7 +667,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300"
             >
               <i className="fas fa-sign-out-alt"></i>
-              <span>断开连接</span>
+              <span>{t('user.disconnect')}</span>
             </button>
           </div>
         </div>
@@ -663,7 +680,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
             <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center">
               <i className="fas fa-user text-white text-sm"></i>
             </div>
-            <span className="text-lg font-semibold text-gray-900">用户信息</span>
+            <span className="text-lg font-semibold text-gray-900">{t('walletConnect.modalTitle')}</span>
           </div>
         }
         open={showUserModal}
@@ -671,11 +688,11 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
         footer={[
           <Button key="copy" onClick={copyAddress} className="mr-2">
             <i className="fas fa-copy mr-2"></i>
-            复制地址
+            {t('walletConnect.copyAddress')}
           </Button>,
           <Button key="disconnect" type="primary" danger onClick={handleDisconnect}>
             <i className="fas fa-sign-out-alt mr-2"></i>
-            断开连接
+            {t('user.disconnect')}
           </Button>,
         ]}
         width={500}
@@ -689,7 +706,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-900">
-                {user?.nickname || '未设置昵称'}
+                {user?.nickname || t('walletConnect.noNickname')}
               </h3>
               <p className="text-sm text-gray-500 font-mono">
                 {address}
@@ -699,11 +716,11 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
 
           {/* 钱包余额 */}
           <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">钱包余额</h4>
+            <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('walletConnect.walletBalance')}</h4>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">ETH</span>
+              <span className="text-sm text-gray-600">{balance?.symbol ?? 'ETH'}</span>
               <span className="font-mono text-sm">
-                {balance ? `${parseFloat(balance.formatted).toFixed(4)} ETH` : '0.0000 ETH'}
+                {nativeBalanceAmount}
               </span>
             </div>
           </div>
@@ -711,25 +728,25 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
           {/* 用户统计信息 */}
           {user && (
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2">账户信息</h4>
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('walletConnect.accountInfo')}</h4>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">用户ID:</span>
+                  <span className="text-gray-600">{t('walletConnect.userId')}</span>
                   <span className="font-mono">{user.id}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">用户类型:</span>
-                  <span>{user.roles ? user.roles.join(', ') : '普通用户'}</span>
+                  <span className="text-gray-600">{t('walletConnect.userType')}</span>
+                  <span>{user.roles ? user.roles.join(', ') : t('walletConnect.defaultRole')}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">状态:</span>
+                  <span className="text-gray-600">{t('walletConnect.accountStatus')}</span>
                   <span className={user.status === 1 ? 'text-green-600' : 'text-red-600'}>
-                    正常
+                    {t('walletConnect.statusActive')}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">注册时间:</span>
-                  <span>{user.created_at ? new Date(user.created_at).toLocaleDateString() : '未知'}</span>
+                  <span className="text-gray-600">{t('walletConnect.registeredAt')}</span>
+                  <span>{user.created_at ? new Date(user.created_at).toLocaleDateString() : t('walletConnect.unknown')}</span>
                 </div>
               </div>
             </div>

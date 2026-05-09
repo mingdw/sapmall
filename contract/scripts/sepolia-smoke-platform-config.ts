@@ -1,11 +1,6 @@
 import "dotenv/config";
 import { network } from "hardhat";
 
-function isConfigNotFoundError(error: unknown): boolean {
-  const text = String(error ?? "").toLowerCase();
-  return text.includes("confignotfound") || text.includes("0x0eabffe7");
-}
-
 async function printTx(
   label: string,
   hash: `0x${string}`,
@@ -50,8 +45,13 @@ async function main() {
   const key = `smoke.platform.config.${suffix}`;
   const value = `v-${suffix}`;
 
-  // 先尝试 update，若不存在则 create（与后端策略一致）
-  try {
+  const exists = await publicClient.readContract({
+    address: config.address,
+    abi: config.abi,
+    functionName: "exists",
+    args: [key],
+  });
+  if (exists) {
     const updateTx = await admin.writeContract({
       address: config.address,
       abi: config.abi,
@@ -59,10 +59,7 @@ async function main() {
       args: [key, value, "string", "smoke", "sepolia smoke update", 0],
     });
     await printTx("updateConfig", updateTx, publicClient);
-  } catch (error) {
-    if (!isConfigNotFoundError(error)) {
-      throw error;
-    }
+  } else {
     const createTx = await admin.writeContract({
       address: config.address,
       abi: config.abi,

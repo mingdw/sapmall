@@ -3,6 +3,7 @@ import { Layout, Menu, Button, Drawer, Dropdown } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRocket, faGlobe, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import logoMarkSrc from '../assets/logo-mark.svg';
 
 const { Header: AntHeader } = Layout;
 
@@ -57,8 +58,8 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white text-lg">💎</span>
+            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10 ring-1 ring-white/15 bg-gray-900/60">
+              <img src={logoMarkSrc} alt="" className="w-full h-full object-contain p-0.5" />
             </div>
             <div>
               <Link to="/" className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">

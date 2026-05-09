@@ -28,6 +28,17 @@ code {
   background: #1f2937;
   border-radius: 14px;
   padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* 与 #features 网格配合：同行卡片等高，底栏与高文案卡片对齐 */
+.feature-card.gradient-border {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .feature-card {

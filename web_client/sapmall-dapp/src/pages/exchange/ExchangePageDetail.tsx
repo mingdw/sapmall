@@ -2,8 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Toaster, toast } from 'sonner';
 import { CheckCircle, Award, Layers, Wallet, ArrowRightLeft, Landmark } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
 import { baseClient } from '../../services/api/baseClient';
+import i18n from '../../i18n';
 import ParticleBackground from './components/ParticleBackground';
 import SwapCard from './components/SwapCard';
 import MarketStats from './components/MarketStats';
@@ -33,17 +35,18 @@ class ErrorBoundary extends React.Component<
 
   componentDidCatch(error: Error) {
     console.log('[ExchangePageDetail] ErrorBoundary caught:', error);
-    toast.error('页面出现错误，请刷新重试');
+    toast.error(i18n.t('exchange.errors.pageErrorToast'));
   }
 
   render() {
     return this.state.hasError
-      ? <div className="p-8 text-center text-muted-foreground">页面出现错误，请刷新重试</div>
+      ? <div className="p-8 text-center text-muted-foreground">{i18n.t('exchange.errors.pageErrorFallback')}</div>
       : this.props.children;
   }
 }
 
 const ExchangePageDetail: React.FC = () => {
+  const { t, ready } = useTranslation();
   const [searchParams] = useSearchParams();
   const { isConnected } = useAccount();
   const [activeTab, setActiveTab] = useState<ExchangeTab>('swap');
@@ -134,18 +137,18 @@ const ExchangePageDetail: React.FC = () => {
   }, [canOperateDeposit, searchParams]);
 
   const handleSwapSuccess = (amount: string) => {
-    toast.success('兑换成功！', {
-      description: `您已获得 ${amount} SAP 代币`,
+    toast.success(t('exchange.toasts.swapSuccess'), {
+      description: t('exchange.toasts.swapSuccessDesc', { amount }),
     });
   };
 
   const handleDepositPay = async () => {
     if (!canOperateDeposit) {
-      toast.warning(!isConnected ? '请先连接钱包' : '当前无待缴纳保证金申请单');
+      toast.warning(!isConnected ? t('exchange.toasts.connectWallet') : t('exchange.toasts.noPendingDeposit'));
       return;
     }
     if (!merchantIntentInfo.intentId || merchantIntentInfo.intentId === '--') {
-      toast.error('缺少申请单信息，请从 Admin 重新进入');
+      toast.error(t('exchange.toasts.missingIntent'));
       return;
     }
     setDepositProcessing(true);
@@ -158,8 +161,11 @@ const ExchangePageDetail: React.FC = () => {
       setDepositProcessing(false);
       setDepositPaid(true);
       setDepositTxHash(mockTxHash);
-      toast.success('保证金支付提交成功', {
-        description: `交易哈希：${mockTxHash.slice(0, 12)}...${mockTxHash.slice(-8)}`,
+      toast.success(t('exchange.toasts.depositSuccess'), {
+        description: t('exchange.toasts.depositTxHash', {
+          prefix: mockTxHash.slice(0, 12),
+          suffix: mockTxHash.slice(-8),
+        }),
       });
     }, 1800);
   };
@@ -182,8 +188,18 @@ const ExchangePageDetail: React.FC = () => {
     window.location.href = returnPath.startsWith('/') ? returnPath : `/${returnPath}`;
   };
 
+  if (!ready) {
+    return (
+      <div className={`relative ${styles.pageRoot}`}>
+        <div className="relative z-10 px-4 py-8 text-sm text-gray-400" aria-busy="true">
+          {t('common.loading')}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div data-cmp="ExchangePageDetail" className={`min-h-full relative ${styles.pageRoot}`}>
+    <div data-cmp="ExchangePageDetail" className={`relative ${styles.pageRoot}`}>
       <ParticleBackground />
       <Toaster position="top-right" theme="dark" />
 
@@ -191,24 +207,24 @@ const ExchangePageDetail: React.FC = () => {
         <div className="text-center mb-10">
           <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4 ${styles.heroTag}`}>
             <div className={`w-2 h-2 rounded-full ${styles.heroDot}`} />
-            <span className={`text-xs ${styles.heroTagText}`}>去中心化兑换 · 安全 · 快速 · 低手续费</span>
+            <span className={`text-xs ${styles.heroTagText}`}>{t('exchange.hero.tagline')}</span>
           </div>
           <h1 className={`text-4xl lg:text-5xl font-bold mb-3 ${styles.heroTitle}`}>
-            兑换 SAP 代币
+            {t('exchange.hero.title')}
           </h1>
           <p className="text-base text-muted-foreground max-w-lg mx-auto">
-            使用主流稳定币兑换 SAP，购物可享更低手续费、商家专属折扣与生态活动优先权益
+            {t('exchange.hero.subtitle')}
           </p>
 
           <div className="flex items-center justify-center gap-4 mt-5 flex-wrap">
             {[
-              { icon: CheckCircle, label: '合约已审计', color: '#69f0ae' },
-              { icon: Award, label: '最优汇率', color: '#ffd740' },
-              { icon: Layers, label: '多链支持', color: '#00e5ff' },
-            ].map(({ icon: Icon, label, color }) => (
-              <div key={label} className={`flex items-center gap-2 px-3 py-1.5 rounded-xl ${styles.featureBadge}`}>
+              { icon: CheckCircle, labelKey: 'exchange.badges.audited', color: '#69f0ae' },
+              { icon: Award, labelKey: 'exchange.badges.bestRate', color: '#ffd740' },
+              { icon: Layers, labelKey: 'exchange.badges.multiChain', color: '#00e5ff' },
+            ].map(({ icon: Icon, labelKey, color }) => (
+              <div key={labelKey} className={`flex items-center gap-2 px-3 py-1.5 rounded-xl ${styles.featureBadge}`}>
                 <Icon size={13} style={{ color }} />
-                <span className="text-xs text-muted-foreground">{label}</span>
+                <span className="text-xs text-muted-foreground">{t(labelKey)}</span>
               </div>
             ))}
           </div>
@@ -218,9 +234,9 @@ const ExchangePageDetail: React.FC = () => {
           <div className={styles.merchantTickerTrack}>
             {[...merchantTickerItems, ...merchantTickerItems].map((address, idx) => (
               <div key={`${address}-${idx}`} className={styles.merchantTickerItem}>
-                <span className={styles.merchantTickerTag}>商家入驻</span>
+                <span className={styles.merchantTickerTag}>{t('exchange.ticker.tag')}</span>
                 <span className={styles.merchantTickerText}>
-                  恭喜 <b>{address}</b> <em>入驻成为商家</em>
+                  {t('exchange.ticker.congrats')} <b>{address}</b> <em>{t('exchange.ticker.joinedSuffix')}</em>
                 </span>
               </div>
             ))}
@@ -245,43 +261,43 @@ const ExchangePageDetail: React.FC = () => {
                 className={`${styles.exchangeTabBtn} ${activeTab === 'swap' ? styles.exchangeTabBtnActive : ''}`}
                 onClick={() => {
                   if (!canOperateSwap) {
-                    toast.warning('请先连接钱包后再操作兑换');
+                    toast.warning(t('exchange.toasts.swapTabWallet'));
                     return;
                   }
                   setActiveTab('swap');
                 }}
               >
                 <ArrowRightLeft size={15} />
-                主流币兑换 SAP
+                {t('exchange.tabs.swap')}
               </button>
               <button
                 type="button"
                 className={`${styles.exchangeTabBtn} ${activeTab === 'merchantDeposit' ? styles.exchangeTabBtnActive : ''}`}
                 onClick={() => {
                   if (!canOperateDeposit) {
-                    toast.warning(!isConnected ? '请先连接钱包' : '当前没有待缴纳保证金申请单');
+                    toast.warning(!isConnected ? t('exchange.toasts.connectWallet') : t('exchange.toasts.depositTabNoPending'));
                     return;
                   }
                   setActiveTab('merchantDeposit');
                 }}
               >
                 <Landmark size={15} />
-                缴纳商家保证金
+                {t('exchange.tabs.deposit')}
               </button>
             </div>
 
             {!isConnected ? (
               <p className="text-xs text-amber-400 text-center">
-                当前钱包未连接，请先连接钱包后再进行兑换或保证金操作
+                {t('exchange.hints.walletRequired')}
               </p>
             ) : null}
             {isConnected && !checkingAccess && !canOperateDeposit ? (
               <p className="text-xs text-muted-foreground text-center">
-                暂无待缴纳保证金申请单，缴纳保证金入口已锁定
+                {t('exchange.hints.depositLocked')}
               </p>
             ) : null}
             {checkingAccess ? (
-              <p className="text-xs text-muted-foreground text-center">正在同步申请单状态...</p>
+              <p className="text-xs text-muted-foreground text-center">{t('exchange.hints.syncingDeposit')}</p>
             ) : null}
 
             {activeTab === 'swap' ? (
@@ -289,7 +305,7 @@ const ExchangePageDetail: React.FC = () => {
                 <SwapCard
                   onSwapSuccess={handleSwapSuccess}
                   disabled={!canOperateSwap}
-                  disabledReason="请先连接钱包后再进行代币兑换"
+                  disabledReason={t('exchange.swap.disabledReason')}
                 />
               </ErrorBoundary>
             ) : (
@@ -299,22 +315,22 @@ const ExchangePageDetail: React.FC = () => {
                     <Wallet size={18} />
                   </div>
                   <div>
-                    <h3 className={styles.depositTitle}>商家保证金缴纳</h3>
-                    <p className={styles.depositSubTitle}>请在有效期内完成支付，逾期后申请单会失效。</p>
+                    <h3 className={styles.depositTitle}>{t('exchange.deposit.title')}</h3>
+                    <p className={styles.depositSubTitle}>{t('exchange.deposit.subtitle')}</p>
                   </div>
                 </div>
 
                 <div className={styles.depositInfoList}>
                   <div className={styles.depositInfoItem}>
-                    <span>应缴金额</span>
+                    <span>{t('exchange.deposit.amountDue')}</span>
                     <strong>{merchantIntentInfo.amount} {merchantIntentInfo.token}</strong>
                   </div>
                   <div className={styles.depositInfoItem}>
-                    <span>意图单ID</span>
+                    <span>{t('exchange.deposit.intentId')}</span>
                     <strong>{merchantIntentInfo.intentId}</strong>
                   </div>
                   <div className={styles.depositInfoItem}>
-                    <span>截止时间</span>
+                    <span>{t('exchange.deposit.deadline')}</span>
                     <strong>{merchantIntentInfo.expireAt}</strong>
                   </div>
                 </div>
@@ -326,33 +342,37 @@ const ExchangePageDetail: React.FC = () => {
                     onClick={handleDepositPay}
                     disabled={depositProcessing || !canOperateDeposit}
                   >
-                    {depositProcessing ? '支付处理中...' : depositPaid ? '已提交链上交易' : '使用钱包立即支付'}
+                    {depositProcessing
+                      ? t('exchange.deposit.payProcessing')
+                      : depositPaid
+                        ? t('exchange.deposit.paySubmitted')
+                        : t('exchange.deposit.payNow')}
                   </button>
                 </div>
 
                 {depositPaid && depositTxHash ? (
                   <>
-                    <p className={styles.depositHint}>已提交交易：{depositTxHash}</p>
+                    <p className={styles.depositHint}>{t('exchange.deposit.txSubmitted', { hash: depositTxHash })}</p>
                     <div className={styles.depositActions}>
                       <button
                         type="button"
                         className={styles.depositGhostBtn}
                         onClick={handleBackToAdmin}
                       >
-                        已完成支付，返回 Admin 查看状态
+                        {t('exchange.deposit.backAdmin')}
                       </button>
                     </div>
                   </>
                 ) : null}
 
                 <p className={styles.depositHint}>
-                  说明：当前页面已接入 Admin 跳转与支付提交流程，链上确认状态以后端回调结果为准。
+                  {t('exchange.deposit.footnote')}
                 </p>
               </div>
             )}
 
             <div className={`w-full max-w-[520px] rounded-2xl p-4 ${styles.stableCoinPanel}`}>
-              <p className="text-xs text-muted-foreground mb-3 text-center">支持的兑换币种</p>
+              <p className="text-xs text-muted-foreground mb-3 text-center">{t('exchange.supportedCoins')}</p>
               <div className="flex items-center justify-center gap-6">
                 {['USDT', 'USDC', 'BUSD', 'DAI', 'BNB', 'SOL'].map((coin) => (
                   <div key={coin} className="flex flex-col items-center gap-1.5">

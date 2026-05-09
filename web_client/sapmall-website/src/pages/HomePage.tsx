@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SEO from '../components/SEO';
+import logoMarkSrc from '../assets/logo-mark.svg';
 import { 
   faRocket, 
   faBook, 
@@ -22,7 +23,6 @@ import {
   faEnvelope, 
   faHeadset,
   faBars,
-  faGem,
   faBullseye
 } from '@fortawesome/free-solid-svg-icons';
 import { faTelegram, faDiscord, faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -78,7 +78,7 @@ const HomePage: React.FC = () => {
 
   const launchDApp = () => {
     console.log('Launching DApp...');
-    window.open('https://localhost:7102', '_blank');
+    window.open('http://localhost:7102', '_blank');
   };
 
   const toggleLanguageDropdown = () => {
@@ -101,8 +101,8 @@ const HomePage: React.FC = () => {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faGem} className="text-white text-lg" />
+              <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10 ring-1 ring-white/15 bg-gray-900/60">
+                <img src={logoMarkSrc} alt="" className="w-full h-full object-contain p-0.5" />
               </div>
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
@@ -359,7 +359,7 @@ const HomePage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
             {/* Feature 1: Contribution Rewards */}
             <div className="feature-card gradient-border">
               <div className="gradient-border-content">
@@ -367,7 +367,7 @@ const HomePage: React.FC = () => {
                   <FontAwesomeIcon icon={faCoins} className="text-white text-2xl" />
                 </div>
                 <h3 className="text-xl font-bold mb-4">{t('features.contributionRewards.title')}</h3>
-                <p className="text-gray-400 mb-4">
+                <p className="text-gray-400 mb-4 grow">
                   {t('features.contributionRewards.desc')}
                 </p>
                 <div className="text-sapphire-400 font-semibold">{t('features.contributionRewards.highlight')}</div>
@@ -381,7 +381,7 @@ const HomePage: React.FC = () => {
                   <FontAwesomeIcon icon={faVoteYea} className="text-white text-2xl" />
                 </div>
                 <h3 className="text-xl font-bold mb-4">{t('features.daoGovernance.title')}</h3>
-                <p className="text-gray-400 mb-4">
+                <p className="text-gray-400 mb-4 grow">
                   {t('features.daoGovernance.desc')}
                 </p>
                 <div className="text-purple-400 font-semibold">{t('features.daoGovernance.highlight')}</div>
@@ -395,7 +395,7 @@ const HomePage: React.FC = () => {
                   <FontAwesomeIcon icon={faGlobe} className="text-white text-2xl" />
                 </div>
                 <h3 className="text-xl font-bold mb-4">{t('features.globalMarketplace.title')}</h3>
-                <p className="text-gray-400 mb-4">
+                <p className="text-gray-400 mb-4 grow">
                   {t('features.globalMarketplace.desc')}
                 </p>
                 <div className="text-green-400 font-semibold">{t('features.globalMarketplace.highlight')}</div>
@@ -409,7 +409,7 @@ const HomePage: React.FC = () => {
                   <FontAwesomeIcon icon={faShieldAlt} className="text-white text-2xl" />
                 </div>
                 <h3 className="text-xl font-bold mb-4">{t('features.secureTrading.title')}</h3>
-                <p className="text-gray-400 mb-4">
+                <p className="text-gray-400 mb-4 grow">
                   {t('features.secureTrading.desc')}
                 </p>
                 <div className="text-yellow-400 font-semibold">{t('features.secureTrading.highlight')}</div>
@@ -423,7 +423,7 @@ const HomePage: React.FC = () => {
                   <FontAwesomeIcon icon={faLayerGroup} className="text-white text-2xl" />
                 </div>
                 <h3 className="text-xl font-bold mb-4">{t('features.multiAsset.title')}</h3>
-                <p className="text-gray-400 mb-4">
+                <p className="text-gray-400 mb-4 grow">
                   {t('features.multiAsset.desc')}
                 </p>
                 <div className="text-red-400 font-semibold">{t('features.multiAsset.highlight')}</div>
@@ -437,7 +437,7 @@ const HomePage: React.FC = () => {
                   <FontAwesomeIcon icon={faChartLine} className="text-white text-2xl" />
                 </div>
                 <h3 className="text-xl font-bold mb-4">{t('features.analytics.title')}</h3>
-                <p className="text-gray-400 mb-4">
+                <p className="text-gray-400 mb-4 grow">
                   {t('features.analytics.desc')}
                 </p>
                 <div className="text-indigo-400 font-semibold">{t('features.analytics.highlight')}</div>
@@ -602,8 +602,8 @@ const HomePage: React.FC = () => {
         <div className="mx-auto px-6" style={{ width: '90%' }}>
           <div className="text-center">
             <div className="flex items-center justify-center space-x-3 mb-6">
-              <div className="w-8 h-8 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <FontAwesomeIcon icon={faGem} className="text-white" />
+              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10 ring-1 ring-white/15 bg-gray-900/60">
+                <img src={logoMarkSrc} alt="" className="w-full h-full object-contain p-0.5" />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</span>
             </div>

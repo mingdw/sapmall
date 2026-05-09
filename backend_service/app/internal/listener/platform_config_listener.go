@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math/big"
 	"strings"
 	"time"
 
@@ -21,6 +22,61 @@ import (
 )
 
 const platformConfigBusinessType = "platform_config"
+
+// Infura 等对 eth_getLogs 有严格 QPS；单轮同步内限制批次数 + 批次间 sleep，避免 429。
+const (
+	platformLogBatchBlocks     uint64 = 1000
+	platformMaxBatchesPerTick        = 25
+	platformBetweenBatchSleep        = 200 * time.Millisecond
+)
+
+func isRateLimitRPCError(err error) bool {
+	if err == nil {
+		return false
+	}
+	s := strings.ToLower(err.Error())
+	return strings.Contains(s, "429") ||
+		strings.Contains(s, "too many requests") ||
+		strings.Contains(s, "-32005")
+}
+
+// resolveListenerChainID 优先用 yaml ChainMonitor.ChainId，避免启动时 eth_chainId 被 Infura 限流；未配置时再带退重重试 RPC。
+func resolveListenerChainID(ctx context.Context, client *ethclient.Client, configured int64) (*big.Int, error) {
+	if configured > 0 {
+		logx.Infof("[chain-listener] using ChainMonitor.ChainID=%d from config (skip eth_chainId)", configured)
+		return big.NewInt(configured), nil
+	}
+	const maxAttempts = 10
+	backoff := 3 * time.Second
+	var lastErr error
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		id, err := client.ChainID(ctx)
+		if err == nil {
+			if attempt > 1 {
+				logx.Infof("[chain-listener] eth_chainId succeeded after %d attempts, chainId=%s", attempt, id.String())
+			}
+			return id, nil
+		}
+		lastErr = err
+		if isRateLimitRPCError(err) {
+			logx.Errorf("[chain-listener] eth_chainId rate limited (attempt %d/%d): %v", attempt, maxAttempts, err)
+		} else {
+			logx.Errorf("[chain-listener] eth_chainId failed (attempt %d/%d): %v", attempt, maxAttempts, err)
+		}
+		if attempt == maxAttempts {
+			break
+		}
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		case <-time.After(backoff):
+		}
+		if backoff < 45*time.Second {
+			backoff += 5 * time.Second
+		}
+	}
+	return nil, lastErr
+}
 
 func StartPlatformConfigListener(ctx context.Context, svcCtx *svc.ServiceContext) {
 	cfg := svcCtx.Config.ChainMonitor
@@ -52,6 +108,14 @@ func StartPlatformConfigListener(ctx context.Context, svcCtx *svc.ServiceContext
 		return
 	}
 
+	chainID, err := resolveListenerChainID(ctx, client, cfg.ChainID)
+	if err != nil {
+		logx.Errorf("[chain-listener] platform config listener resolve chain id failed: %v", err)
+		return
+	}
+
+	startBlock := resolveChainMonitorStartBlock(ctx, svcCtx.GormDB, cfg.StartBlock)
+
 	pollSec := cfg.PollIntervalSec
 	if pollSec <= 0 {
 		pollSec = 8
@@ -59,9 +123,12 @@ func StartPlatformConfigListener(ctx context.Context, svcCtx *svc.ServiceContext
 	ticker := time.NewTicker(time.Duration(pollSec) * time.Second)
 	defer ticker.Stop()
 
-	logx.Infof("[chain-listener] platform config listener started, contract=%s", contractAddress)
-	if err := syncPlatformConfigLogs(ctx, svcCtx, client, filterer, common.HexToAddress(contractAddress), cfg.StartBlock); err != nil {
+	logx.Infof("[chain-listener] platform config listener started, contract=%s chainId=%s", contractAddress, chainID.String())
+	if err := syncPlatformConfigLogs(ctx, svcCtx, client, filterer, common.HexToAddress(contractAddress), startBlock, chainID); err != nil {
 		logx.Errorf("[chain-listener] platform config initial sync failed: %v", err)
+		if isRateLimitRPCError(err) {
+			time.Sleep(30 * time.Second)
+		}
 	}
 
 	for {
@@ -70,8 +137,11 @@ func StartPlatformConfigListener(ctx context.Context, svcCtx *svc.ServiceContext
 			logx.Infof("[chain-listener] platform config listener stopped")
 			return
 		case <-ticker.C:
-			if err := syncPlatformConfigLogs(ctx, svcCtx, client, filterer, common.HexToAddress(contractAddress), cfg.StartBlock); err != nil {
+			if err := syncPlatformConfigLogs(ctx, svcCtx, client, filterer, common.HexToAddress(contractAddress), startBlock, chainID); err != nil {
 				logx.Errorf("[chain-listener] platform config sync failed: %v", err)
+				if isRateLimitRPCError(err) {
+					time.Sleep(30 * time.Second)
+				}
 			}
 		}
 	}
@@ -84,11 +154,8 @@ func syncPlatformConfigLogs(
 	filterer *platformconfig.PlatformConfigFilterer,
 	contract common.Address,
 	startBlockCfg uint64,
+	chainID *big.Int,
 ) error {
-	chainID, err := client.ChainID(ctx)
-	if err != nil {
-		return err
-	}
 	checkpointKey := fmt.Sprintf("chain:listener:platform_config:last_block:%s:%s", chainID.String(), strings.ToLower(contract.Hex()))
 	fromBlock, err := getStartBlock(ctx, svcCtx.Redis, checkpointKey, startBlockCfg)
 	if err != nil {
@@ -103,11 +170,19 @@ func syncPlatformConfigLogs(
 		return nil
 	}
 
-	const batchSize uint64 = 2000
+	batchSize := platformLogBatchBlocks
 	configRepo := repository.NewConfigRepository(svcCtx.GormDB)
 	chainEventRepo := repository.NewChain_eventRepository(svcCtx.GormDB)
 
+	batchesThisTick := 0
 	for begin := fromBlock; begin <= latest; {
+		if batchesThisTick >= platformMaxBatchesPerTick {
+			logx.Infof("[chain-listener] platform config: reached max batches (%d) this tick, resume from block %d next poll",
+				platformMaxBatchesPerTick, begin)
+			return nil
+		}
+		batchesThisTick++
+
 		end := begin + batchSize - 1
 		if end > latest {
 			end = latest
@@ -128,6 +203,13 @@ func syncPlatformConfigLogs(
 			logx.Errorf("[chain-listener] save platform checkpoint failed: %v", serr)
 		}
 		begin = end + 1
+		if begin <= latest {
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			case <-time.After(platformBetweenBatchSleep):
+			}
+		}
 	}
 	return nil
 }

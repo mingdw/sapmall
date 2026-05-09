@@ -18,13 +18,16 @@
     "reward": "奖励",
     "participate": "参与"
   },
+  "header": {
+    "tagline": "Web3去中心化虚拟商品交易平台"
+  },
   "navigation": {
     "home": "首页",
-    "marketplace": "市场",
+    "marketplace": "商城",
     "wallet": "钱包",
-    "rewards": "奖励中心",
+    "rewards": "生态活动",
     "exchange": "兑换",
-    "dao": "商城治理",
+    "dao": "社区参与",
     "help": "帮助中心"
   },
   "user": {
@@ -36,6 +39,31 @@
     "settings": "设置",
     "disconnect": "断开连接"
   },
+  "walletConnect": {
+    "unknownAddress": "未知地址",
+    "balanceDisplay": "余额: {{amount}}",
+    "connectWallet": "连接钱包",
+    "retryConnect": "重试连接",
+    "connecting": "连接中...",
+    "networkSwitchSuccess": "网络切换成功",
+    "networkSwitchFail": "网络切换失败：{{message}}",
+    "addressCopied": "地址已复制到剪贴板",
+    "walletConnectSuccess": "钱包连接成功！",
+    "connectionFailed": "连接失败",
+    "loginFailedRetry": "登录失败，请重试",
+    "modalTitle": "用户信息",
+    "copyAddress": "复制地址",
+    "noNickname": "未设置昵称",
+    "walletBalance": "钱包余额",
+    "accountInfo": "账户信息",
+    "userId": "用户 ID",
+    "userType": "用户类型",
+    "accountStatus": "状态",
+    "statusActive": "正常",
+    "registeredAt": "注册时间",
+    "unknown": "未知",
+    "defaultRole": "普通用户"
+  },
   "homepage": {
     "title": "SapMall DApp",
     "subtitle": "去中心化电商平台",
@@ -46,9 +74,244 @@
     "marketplaceDesc": "浏览和购买去中心化商品",
     "wallet": "钱包",
     "walletDesc": "管理您的数字资产",
-    "rewards": "奖励中心",
-    "rewardsDesc": "完成社区任务并领取激励",
+    "rewards": "生态活动",
+    "rewardsDesc": "活动与奖励入口；参与 Bags 需在对方站点使用 Solana",
     "dao": "DAO治理",
     "daoDesc": "参与社区决策和治理"
+  },
+  "rewards": {
+    "title": "生态活动",
+    "intro": "本页聚合平台活动、奖励说明及 Bags 相关外链。购物与下单请使用顶部连接的 EVM 钱包；下方能力将持续迭代。",
+    "walletExplainer": "仅使用商城与主站支付的用户只需 EVM 钱包。若您前往 Bags 参与链上活动，需在 Bags 网站连接 Solana 钱包并按页面提示授权（与主站 EVM 登录相互独立，无法互相替代）。不参与活动无需 Solana。",
+    "plannedHint": "任务领取、激励汇总等功能规划中；您仍可通过 DAO、社区任务等积累贡献，上线后将统一呈现。",
+    "badgeHub": "Rewards Hub",
+    "heroSubtitle": "本页聚合平台官方活动、外部 Bags 营销合作及社区贡献奖励。通过参与活动积累贡献值，赢取限量版 NFT 及平台权益。",
+    "walletNoticeTitle": "参与活动特别说明",
+    "walletNoticeLine1": "1. 仅使用商城与主站支付的用户仅需连接 EVM 钱包（如 MetaMask）。",
+    "walletNoticeLine2": "2. 若您前往 Bags 平台参与链上专属活动，需在 Bags 网站连接 Solana 钱包并按提示授权。",
+    "walletNoticeLine3": "3. EVM 登录与 Solana 登录相互独立，无法互相替代。不参与特定 Bags 活动无需 Solana 钱包。",
+    "tabListAria": "活动状态筛选",
+    "tabs": {
+      "ongoing": "正在进行 ({{count}})",
+      "upcoming": "即将开始 ({{count}})",
+      "ended": "已结束 ({{count}})"
+    },
+    "sortLabel": "排序",
+    "sortLatest": "最新发布",
+    "sortReward": "参与人数",
+    "sortDeadline": "截止日期",
+    "empty": "该分类下暂无活动",
+    "categories": {
+      "bags": "Bags 合作",
+      "dao": "DAO 治理",
+      "task": "节点任务",
+      "newbie": "新用户",
+      "referral": "邀请制"
+    },
+    "status": {
+      "ongoing": "进行中",
+      "upcoming": "即将开始",
+      "ended": "已结束"
+    },
+    "participants": "{{count}} 参与",
+    "longTerm": "长期活动",
+    "endedCountdown": "已结束",
+    "hot": "HOT",
+    "cta": {
+      "goBags": "前往 Bags 参与",
+      "join": "立即参与",
+      "viewTasks": "查看任务",
+      "claim": "去领取",
+      "invite": "立即邀请",
+      "creator": "参与创作者计划"
+    },
+    "campaigns": {
+      "bags-blindbox": {
+        "title": "Bags 联名盲盒：探索 Solana 虚拟资产",
+        "desc": "在 Bags 平台连接 Solana 钱包，领取属于您的 Web3 专属盲盒。包含稀有勋章及商城代金券。"
+      },
+      "dao-may": {
+        "title": "五月社区治理提案投票",
+        "desc": "通过投票决定下季度新增的虚拟商品品类。每位参与投票的用户将平分 5,000 SAP 代币奖励。"
+      },
+      "node-mining": {
+        "title": "生态节点贡献值挖矿",
+        "desc": "完成日常分享与购物点评任务，积累个人贡献值。等级越高，交易手续费折扣越大。"
+      },
+      "newbie-wallet": {
+        "title": "首次连接钱包有礼",
+        "desc": "新用户首次连接 EVM 钱包并完成账户实人验证，即可获得 10 USDT 的首单抵扣券。"
+      },
+      "referral": {
+        "title": "Sapphire 推荐合伙人计划",
+        "desc": "邀请好友在 Sapphire Mall 完成首笔交易，您将获得其终身手续费 20% 的返佣。"
+      },
+      "bags-creator": {
+        "title": "Bags 创作者扶持：NFT 铸造周",
+        "desc": "在 Bags 发起您的艺术项目，Sapphire Mall 将提供全方位的流量扶持与二级市场流动性支持。"
+      },
+      "summer-preview": {
+        "title": "夏季生态联合活动（预告）",
+        "desc": "多链创作者与 Bags Launch 联动，详情将于活动开启前公布。"
+      },
+      "staking-preview": {
+        "title": "兑换与质押体验周（预告）",
+        "desc": "提前体验兑换模块与任务体系，完成问卷即有机会获得早期徽章。"
+      },
+      "spring-ended": {
+        "title": "春季 Bags 联合空投（已收官）",
+        "desc": "感谢社区参与。关注本页获取下一季活动通知。"
+      }
+    },
+    "futureTitle": "未来功能规划",
+    "futureDesc": "我们正在全力开发任务领取、激励自动汇总等模块。目前您仍可以通过参与 DAO 投票、完成社区任务等方式积累贡献。所有积分与贡献将在功能正式上线后统一呈现并支持兑换。",
+    "featureTodo": "智能任务系统",
+    "featureTodoDesc": "自动化任务追踪与奖励发放",
+    "featureLeaderboard": "激励排行榜",
+    "featureLeaderboardDesc": "展示顶尖贡献者并给予额外空投",
+    "subscribeTitle": "订阅活动提醒",
+    "subscribeDesc": "输入您的邮箱，第一时间获取新活动及空投通知（演示功能）。",
+    "subscribePlaceholder": "youremail@web3.com",
+    "subscribeButton": "订阅",
+    "subscribeToast": "订阅功能即将上线，感谢关注。",
+    "scrollTopAria": "回到顶部"
+  },
+  "exchange": {
+    "errors": {
+      "pageErrorToast": "页面出现错误，请刷新重试",
+      "pageErrorFallback": "页面出现错误，请刷新重试"
+    },
+    "toasts": {
+      "swapSuccess": "兑换成功！",
+      "swapSuccessDesc": "您已获得 {{amount}} SAP 代币",
+      "connectWallet": "请先连接钱包",
+      "noPendingDeposit": "当前无待缴纳保证金申请单",
+      "missingIntent": "缺少申请单信息，请从 Admin 重新进入",
+      "depositSuccess": "保证金支付提交成功",
+      "depositTxHash": "交易哈希：{{prefix}}...{{suffix}}",
+      "swapTabWallet": "请先连接钱包后再操作兑换",
+      "depositTabNoPending": "当前没有待缴纳保证金申请单"
+    },
+    "hero": {
+      "tagline": "去中心化兑换 · 安全 · 快速 · 低手续费",
+      "title": "兑换 SAP 代币",
+      "subtitle": "使用主流稳定币兑换 SAP，购物可享更低手续费、商家专属折扣与生态活动优先权益"
+    },
+    "badges": {
+      "audited": "合约已审计",
+      "bestRate": "最优汇率",
+      "multiChain": "多链支持"
+    },
+    "ticker": {
+      "tag": "商家入驻",
+      "congrats": "恭喜",
+      "joinedSuffix": "入驻成为商家"
+    },
+    "tabs": {
+      "swap": "主流币兑换 SAP",
+      "deposit": "缴纳商家保证金"
+    },
+    "hints": {
+      "walletRequired": "当前钱包未连接，请先连接钱包后再进行兑换或保证金操作",
+      "depositLocked": "暂无待缴纳保证金申请单，缴纳保证金入口已锁定",
+      "syncingDeposit": "正在同步申请单状态..."
+    },
+    "deposit": {
+      "title": "商家保证金缴纳",
+      "subtitle": "请在有效期内完成支付，逾期后申请单会失效。",
+      "amountDue": "应缴金额",
+      "intentId": "意图单 ID",
+      "deadline": "截止时间",
+      "payProcessing": "支付处理中...",
+      "paySubmitted": "已提交链上交易",
+      "payNow": "使用钱包立即支付",
+      "txSubmitted": "已提交交易：{{hash}}",
+      "backAdmin": "已完成支付，返回 Admin 查看状态",
+      "footnote": "说明：当前页面已接入 Admin 跳转与支付提交流程，链上确认状态以后端回调结果为准。"
+    },
+    "supportedCoins": "支持的兑换币种",
+    "swap": {
+      "title": "代币兑换",
+      "subtitle": "用主流币兑换 SAP 代币",
+      "slippage": "滑点容忍度",
+      "customSlippage": "自定义",
+      "pay": "支付",
+      "balance": "余额",
+      "max": "MAX",
+      "selectPayToken": "选择支付币种",
+      "tokenTypeStable": "稳定币",
+      "tokenTypeMajor": "主流币",
+      "receive": "获得",
+      "priceImpact": "价格影响",
+      "feeLabel": "手续费 ({{percent}}%)",
+      "slippageTolerance": "滑点容忍度",
+      "eta": "预计到账时间",
+      "etaValue": "~15 秒",
+      "connectWalletBtn": "请先连接钱包",
+      "swapSuccessBtn": "✓ 兑换成功！",
+      "swapping": "兑换中...",
+      "enterAmount": "请输入金额",
+      "swapNow": "立即兑换",
+      "securityNote": "智能合约已审计 · 资产安全有保障",
+      "rateLine": "1 {{from}} = {{rate}} SAP",
+      "disabledReason": "请先连接钱包后再进行代币兑换"
+    },
+    "marketStats": {
+      "title": "市场数据",
+      "sapPrice": "SAP 当前价格",
+      "vol24h": "24h 交易量",
+      "tvl": "总锁仓量 (TVL)",
+      "holders": "持币地址数"
+    },
+    "chart": {
+      "pair": "SAP / USD",
+      "period24H": "24H",
+      "period7D": "7D",
+      "period30D": "30D"
+    },
+    "recentTx": {
+      "title": "近期兑换记录",
+      "viewAll": "查看全部",
+      "success": "成功",
+      "time2m": "2 分钟前",
+      "time8m": "8 分钟前",
+      "time15m": "15 分钟前",
+      "time23m": "23 分钟前"
+    },
+    "sapVisual": {
+      "name": "SAP Token",
+      "tagline": "SAPMall 生态核心代币",
+      "currentPrice": "当前价格",
+      "changeLabel": "▲ 5.82% (24h)"
+    }
+  },
+  "footer": {
+    "brand": "Sapphire Mall",
+    "brandDesc": "我们致力于重新定义虚拟商品交易，通过 Web3 技术为全球用户创造真正的价值和透明度。",
+    "colMall": "商城服务",
+    "colEco": "关于生态",
+    "colDev": "开发者",
+    "mall": {
+      "digitalRights": "数字权益购买",
+      "nftRedeem": "NFT 兑换码",
+      "virtualItems": "虚拟道具交易",
+      "recharge": "代充服务"
+    },
+    "eco": {
+      "dao": "DAO 治理",
+      "whitepaper": "白皮书",
+      "tokenomics": "代币模型",
+      "audit": "审计报告"
+    },
+    "dev": {
+      "api": "API 文档",
+      "bounty": "Bug 赏金",
+      "guide": "开发者指南",
+      "opensource": "开源仓库"
+    },
+    "copyright": "© 2026 Sapphire Mall Ecosystem. 保留所有权利。",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "cookie": "Cookie 政策"
   }
 }

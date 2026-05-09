@@ -1,5 +1,6 @@
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from '../ExchangePageDetail.module.scss';
 
 const DATA_7D = [
@@ -14,7 +15,15 @@ const DATA_30D = [
   { time: '6/26', price: 0.298 }, { time: '6/30', price: 0.338 }, { time: '7/2', price: 0.351 },
 ];
 
-const PERIODS = ['24H', '7D', '30D'];
+const PERIODS = ['24H', '7D', '30D'] as const;
+
+type PeriodKey = (typeof PERIODS)[number];
+
+const PERIOD_I18N: Record<PeriodKey, string> = {
+  '24H': 'exchange.chart.period24H',
+  '7D': 'exchange.chart.period7D',
+  '30D': 'exchange.chart.period30D',
+};
 
 const CustomTooltip = ({ active = false, payload = [] as any[], label = '' }) => {
   if (active && payload && payload.length) {
@@ -29,14 +38,19 @@ const CustomTooltip = ({ active = false, payload = [] as any[], label = '' }) =>
 };
 
 export default function PriceChart() {
-  const [period, setPeriod] = useState('7D');
+  const { t, ready } = useTranslation();
+  const [period, setPeriod] = useState<PeriodKey>('7D');
   const data = period === '30D' ? DATA_30D : DATA_7D;
+
+  if (!ready) {
+    return <div className="w-full h-52 rounded-3xl bg-white/5 animate-pulse" aria-busy="true" />;
+  }
 
   return (
     <div data-cmp="PriceChart" className="w-full">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <p className="text-xs text-muted-foreground mb-1">SAP / USD</p>
+          <p className="text-xs text-muted-foreground mb-1">{t('exchange.chart.pair')}</p>
           <div className="flex items-end gap-2">
             <span className="text-2xl font-bold text-foreground">$0.3510</span>
             <span className={`text-sm font-semibold pb-0.5 ${styles.accentGreen}`}>+5.82%</span>
@@ -49,7 +63,7 @@ export default function PriceChart() {
               onClick={() => setPeriod(p)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium ${period === p ? styles.periodBtnActive : styles.periodBtn}`}
             >
-              {p}
+              {t(PERIOD_I18N[p])}
             </button>
           ))}
         </div>

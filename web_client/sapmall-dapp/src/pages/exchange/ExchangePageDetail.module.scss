@@ -1,5 +1,7 @@
+/* 与 Layout bg-gray-900 一致，避免 w-[95%] 两侧留白出现色差硬边 */
 .pageRoot {
-  background: #080b18;
+  position: relative;
+  background-color: #111827;
 }
 
 .heroTag {
@@ -94,11 +96,16 @@
   color: #ff4081;
 }
 
+/**
+ * 背景光晕：自画面水平中心向两侧对称扩散，大椭圆 + 长透明过渡，弱化左右「边框感」
+ */
 .particleGradientBg {
-  background: radial-gradient(ellipse at 20% 50%, rgba(124, 77, 255, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(0, 229, 255, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(105, 240, 174, 0.04) 0%, transparent 50%),
-    #080b18;
+  background:
+    radial-gradient(ellipse 125% 95% at 50% 38%, rgba(124, 77, 255, 0.14) 0%, rgba(124, 77, 255, 0.04) 38%, transparent 72%),
+    radial-gradient(ellipse 110% 75% at 50% 52%, rgba(0, 229, 255, 0.09) 0%, rgba(0, 229, 255, 0.02) 40%, transparent 68%),
+    radial-gradient(ellipse 140% 100% at 50% 88%, rgba(105, 240, 174, 0.07) 0%, transparent 58%),
+    radial-gradient(ellipse 160% 120% at 50% 50%, rgba(17, 24, 39, 0) 0%, rgba(17, 24, 39, 0.35) 78%, #111827 100%),
+    #111827;
 }
 
 .particleGridBg {

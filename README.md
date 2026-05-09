@@ -17,17 +17,26 @@
 
 ## 📋 项目概述
 
-**Sapphire Mall** 是一个去中心化社区自驱动的虚拟商品交易平台。平台基于区块链技术构建，以社区治理为核心，通过DAO机制实现完全去中心化的决策体系。平台采用自发行的ERC20代币SAP作为生态通证，通过社区任务和治理激励回馈贡献者，打造一个由社区成员共同治理、共同受益的Web3虚拟商品交易生态。
+**Sapphire Mall** 是一个去中心化社区自驱动的虚拟商品交易平台。平台基于区块链技术构建，以社区治理为核心，通过 DAO 机制组织决策；采用 **ERC-20 代币 SAP** 作为生态通证，结合社区任务与治理激励，形成可审计、可参与的 Web3 虚拟商品交易与共治叙事。
+
+平台 **[深度集成 Bags](https://bags.fm/)（Solana）**，依托其 **项目 launch、Launch Intent 转化链路与开放 API / SDK**，使 **活动、营销与治理协作** 与 **主支付链路** **职权分离**：链上活动 **上线快、易传播**，主站 **EVM 订单与 SAP 经济** 保持稳定边界。活动规则以官方披露为准。
+
+**入口约定**：DApp 内 **所有活动、奖励及 Bags 相关说明与外链** 统一在 **`/rewards`（`rewards` 模块，顶栏「生态活动」）** 聚合；**`/marketplace` 商城** 仅承载 **选品与下单**，**不作为** 活动/奖励主入口（与 `docs/Bags_Activity_Marketing_PRD.md` 一致）。
+
+**钱包与活动（用户成本）**：**只逛商城、下单与使用 SAP 主链路**的用户 **仅需 EVM 钱包**。**参与 Bags 生态活动**时，链上环节在 **Bags（Solana）** 完成，用户需在 Bags 页面 **连接 Solana 钱包并按提示授权**（无法用顶栏 EVM 登录替代）；**不参与活动则不受影响**，也 **不要求**人人持有双钱包。自愿 **EVM ↔ Solana 绑定**（二期）仅用于站内权益与画像，详见 PRD **§3.2**。
+
+**Bags 开发者资源**：[文档](https://docs.bags.fm/) · [开发者门户](https://dev.bags.fm/login) · [TypeScript SDK（npm）](https://www.npmjs.com/package/@bagsfm/bags-sdk)
 
 ### 🌟 核心特色
 
-- **🏛️ 去中心化治理**: 基于DAO机制的完全去中心化社区治理体系
-- **👥 社区自驱动**: 由社区成员共同决策、共同建设、共同受益
-- **🎯 虚拟商品专精**: 专注于数字内容、软件工具、在线服务等虚拟商品交易
-- **💎 贡献激励**: 通过任务、仲裁、治理激励社区参与
-- **💰 收益共享机制**: 平台收益通过智能合约自动分配给社区贡献者
-- **🌍 全球化社区**: 支持多语言，构建全球化的去中心化社区
-- **🔐 透明链上治理**: 所有治理决策和收益分配完全透明，链上可查
+- **🏛️ 去中心化治理**: 基于 DAO 的社区决策与参数讨论（主叙事与 SAP 绑定）
+- **👥 社区自驱动**: 成员参与审核、仲裁与共建，贡献可激励
+- **🎯 虚拟商品专精**: 数字内容、软件工具、在线服务等虚拟商品交易场景
+- **💎 贡献激励**: 任务、仲裁、治理等多通道参与与回馈设计
+- **💰 收益共享机制**: 平台价值与贡献者、金库与治理目标对齐（详见代币与 PRD 文档）
+- **🌍 全球化与多语言**: 中英文界面与文档，面向更广泛用户与开发者
+- **🔐 透明链上治理**: 关键决策与分配逻辑链上可审计、链下流程可对照文档
+- **🧩 集成 Bags 增长层**: 对接 **Bags（Solana）** 的 **launch、Launch Intent 与开放 API**，可 **快速搭建** 营销、拉新及后续可扩展场景，助力 **冷启动期用户与社区体量快速增长**；**产品入口** 统一在 **`/rewards`**，与 **EVM 商城结账** 分离；主站 **SAP** 仍为经济底座，活动与主支付 **边界清晰**
 
 ## 🏗️ 项目结构
 
@@ -49,7 +58,8 @@ sapmall/
 │   ├── 📄 Tokenomics_Detailed.md     # 代币经济模型
 │   ├── 📄 Roadmap.md                 # 项目路线图
 │   ├── 📄 User_Story_Map.md          # 用户故事地图
-│   └── 📄 Metrics_Framework.md       # 指标框架
+│   ├── 📄 Metrics_Framework.md       # 指标框架
+│   └── 📄 Bags_Activity_Marketing_PRD.md  # Bags 活动与营销集成（子域 PRD）
 ├── 📁 promit/                        # AI Agent提示词
 ├── 📁 pic/                           # 图片资源
 ├── 📄 docker-compose.yml             # Docker编排文件
@@ -57,28 +67,50 @@ sapmall/
 └── 📄 README.md                      # 项目说明
 ```
 
-## 🎨 设计原型
+## 🎨 设计与原型
 
-项目包含完整的Web3虚拟商品交易平台界面原型，采用现代化的设计风格：
+仓库同时包含 **可运行的 React 前端**（`web_client/`）与 **高保真 HTML 原型**（`design/prototypes/`）：前者为工程主线，后者用于早期交互验证与视觉对齐。
 
 ### 🎯 设计特色
-- **响应式设计**: 完美适配桌面端、平板端和移动端
-- **暗色主题**: 符合Web3应用的视觉风格
-- **交互动效**: 流畅的用户交互体验
-- **组件化**: 可复用的UI组件系统
-- **多语言**: 完整的中英文双语支持
-- **细粒度的管理控制**: 完善的细粒度的管理控制
-- **代币解锁分配**: 精确的代币分配解锁方案
 
-### 📱 主要页面
+- **响应式布局**: 适配桌面与移动端，关键交易路径一屏内可完成主要操作  
+- **暗色 Web3 视觉**: 高对比、低眩光，突出资产与状态信息  
+- **组件化与可维护性**: React 侧按页面与业务域拆分；原型侧便于快速迭代演示  
+- **国际化（i18n）**: DApp 等应用内置中英文文案，与文档双语策略一致  
+- **链上状态可读**: 钱包、网络、余额与关键操作反馈清晰，降低误操作成本  
+- **主路径与活动路径分流**: **商城（`/marketplace`）、兑换、DAO** 与 **`/rewards` 生态活动** 分区呈现；**活动/奖励/Bags 说明仅挂在 rewards**，商城首页 **不承担** 活动主入口，降低「参加活动」与「下单支付」混淆  
 
-| 页面 | 功能描述 | 文件路径 |
+### 📱 主要页面与代码入口（按当前仓库结构）
+
+#### `sapmall-dapp`（用户端 DApp · React + Web3）
+
+| 路由 | 功能说明 | 源码路径 |
 |------|----------|----------|
-| 🏠 **官网首页** | 平台介绍、数据展示、快速入口 | `design/prototypes/index.html` |
-| 🛒 **DApp主界面** | 商品浏览、代币兑换、治理与激励中心 | `design/prototypes/dapp.html` |
-| ⚙️ **管理后台** | 用户管理、商品审核、系统配置 | `design/prototypes/admin.html` |
-| 📊 **数据展示** | 实时数据、统计图表、平台概览 | `design/prototypes/homepage.html` |
-| 👤 **用户管理** | KYC审核、权限分配、数据分析 | `design/prototypes/admin/user-management.html` |
+| `/marketplace` | 代币化商品商城：分类、筛选、浏览与购物动线（**不含** 活动/奖励主入口） | `web_client/sapmall-dapp/src/pages/marketplace/` |
+| `/exchange` | 兑换与资产相关能力展示 | `web_client/sapmall-dapp/src/pages/exchange/` |
+| `/rewards` | **生态活动**：活动、奖励、**Bags** 相关说明与外链的 **唯一聚合入口**（顶栏「生态活动」） | `web_client/sapmall-dapp/src/pages/rewards/` |
+| `/dao` | 社区参与 / DAO 相关界面 | `web_client/sapmall-dapp/src/pages/dao/` |
+| `/help` | 帮助中心 | `web_client/sapmall-dapp/src/pages/help/` |
+| `/admin` | 内嵌 **管理后台**（iframe，同源或配置后的 Admin 地址） | `web_client/sapmall-dapp/src/components/AdminIframeEmbedded.tsx` |
+| 全局布局 | 顶栏导航、钱包连接、多语言切换 | `web_client/sapmall-dapp/src/pages/header/`、`src/i18n/` |
+
+路由配置见：`web_client/sapmall-dapp/src/layout/ContentLayout.tsx`。活动与 Bags 集成的产品约定见：`docs/Bags_Activity_Marketing_PRD.md`。
+
+#### `sapmall-admin` / `sapmall-website`
+
+| 应用 | 说明 | 路径 |
+|------|------|------|
+| **sapmall-admin** | 平台与商家侧运营管理（React + TS） | `web_client/sapmall-admin/` |
+| **sapmall-website** | 项目官网（React） | `web_client/sapmall-website/` |
+
+#### `design/prototypes`（HTML 原型 · 设计与演示）
+
+| 区域 | 说明 | 代表路径 |
+|------|------|----------|
+| 官网入口 | 品牌与落地介绍 | `design/prototypes/index.html`、`design/prototypes/homepage.html` |
+| DApp 原型套件 | 商城、兑换、DAO、帮助等子页（工程上以 **`/rewards`** 承载活动聚合；原型若有独立活动页可与实现对齐） | `design/prototypes/dapp.html`；子页见 `design/prototypes/dapp/`（如 `marketplace.html`、`exchange.html`、`dao.html`、`help.html`） |
+| 管理后台原型 | 仪表盘、订单、用户与商家等大量运营页 | `design/prototypes/admin.html`；子页见 `design/prototypes/admin/` |
+| 品牌与图标 | Logo / favicon 矢量 | `design/prototypes/favicon.svg`（与 DApp 内 `src/assets/logo-mark.svg` 同源演进） |
 
 ## 🚀 快速开始
 
@@ -446,9 +478,9 @@ open design/prototypes/admin.html
 
 ## 📞 联系我们
 
-- **项目地址**: [https://github.com/your-username/sapmall](https://github.com/your-username/sapmall)
-- **问题反馈**: [Issues](https://github.com/your-username/sapmall/issues)
-- **讨论交流**: [Discussions](https://github.com/your-username/sapmall/discussions)
+- **项目地址**: [https://github.com/mingdw/sapmall.git](https://github.com/mingdw/sapmall.git)
+- **问题反馈**: [Issues](https://github.com/mingdw/sapmall/issues)
+- **讨论交流**: [Discussions](https://discord.com/channels/1502219033611862026/1502223675334856704)
 
 ---
 
