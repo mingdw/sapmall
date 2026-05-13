@@ -14,7 +14,7 @@ import (
 
 	"sapphire-mall/app/internal/config"
 	"sapphire-mall/app/internal/handler"
-	_ "sapphire-mall/app/internal/listener"
+	"sapphire-mall/app/internal/listener"
 	"sapphire-mall/app/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -34,9 +34,12 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
-	listenerCtx, cancelListener := context.WithCancel(context.Background())
-	defer cancelListener()
-	ctx.StartListeners(listenerCtx)
+
+	listenerCtx, listenerCancel := context.WithCancel(context.Background())
+	defer listenerCancel()
+	if c.ChainListener.Enable {
+		go listener.RunPlatformConfigListener(listenerCtx, ctx)
+	}
 
 	// 设置 Swagger 路由
 	setupSwaggerRoutes(server)
@@ -54,7 +57,7 @@ func main() {
 	// 等待中断信号
 	<-sigChan
 	log.Println("收到停止信号，正在关闭服务器...")
-	cancelListener()
+	listenerCancel()
 	server.Stop()
 	log.Println("服务器已关闭")
 }

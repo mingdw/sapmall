@@ -2,329 +2,401 @@ package listener
 
 import (
 	"context"
-	"encoding/json"
+	"errors"
 	"fmt"
 	"math/big"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 
+	consts "sapphire-mall/app/internal/const"
 	platformconfig "sapphire-mall/app/internal/contract/abi/bin"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
+	gethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/zeromicro/go-zero/core/logx"
+	"gorm.io/gorm"
 )
 
-const platformConfigBusinessType = "platform_config"
-
-// Infura 等对 eth_getLogs 有严格 QPS；单轮同步内限制批次数 + 批次间 sleep，避免 429。
 const (
-	platformLogBatchBlocks     uint64 = 1000
-	platformMaxBatchesPerTick        = 25
-	platformBetweenBatchSleep        = 200 * time.Millisecond
+	syncChainStatusSynced = 2
+	listenerActor         = "platform_config_listener"
 )
 
-func isRateLimitRPCError(err error) bool {
-	if err == nil {
-		return false
+// RunPlatformConfigListener 在独立 goroutine 中轮询 PlatformConfig 合约日志并回写 sys_config。
+// 游标存 sys_config.chain.listener.last_processed_block（无/空/无效时首次按 BootstrapLookbackBlocks 回溯扫描，见 scanPlatformConfigOnce）；起始块见 chain.listener.start_block。
+// ctx 取消时退出（与 HTTP 服务同生命周期）。
+func RunPlatformConfigListener(ctx context.Context, svc *svc.ServiceContext) {
+	interval := time.Duration(svc.Config.ChainListener.PollIntervalSec) * time.Second
+	if interval <= 0 {
+		interval = 12 * time.Second
 	}
-	s := strings.ToLower(err.Error())
-	return strings.Contains(s, "429") ||
-		strings.Contains(s, "too many requests") ||
-		strings.Contains(s, "-32005")
-}
-
-// resolveListenerChainID 优先用 yaml ChainMonitor.ChainId，避免启动时 eth_chainId 被 Infura 限流；未配置时再带退重重试 RPC。
-func resolveListenerChainID(ctx context.Context, client *ethclient.Client, configured int64) (*big.Int, error) {
-	if configured > 0 {
-		logx.Infof("[chain-listener] using ChainMonitor.ChainID=%d from config (skip eth_chainId)", configured)
-		return big.NewInt(configured), nil
-	}
-	const maxAttempts = 10
-	backoff := 3 * time.Second
-	var lastErr error
-	for attempt := 1; attempt <= maxAttempts; attempt++ {
-		id, err := client.ChainID(ctx)
-		if err == nil {
-			if attempt > 1 {
-				logx.Infof("[chain-listener] eth_chainId succeeded after %d attempts, chainId=%s", attempt, id.String())
-			}
-			return id, nil
-		}
-		lastErr = err
-		if isRateLimitRPCError(err) {
-			logx.Errorf("[chain-listener] eth_chainId rate limited (attempt %d/%d): %v", attempt, maxAttempts, err)
-		} else {
-			logx.Errorf("[chain-listener] eth_chainId failed (attempt %d/%d): %v", attempt, maxAttempts, err)
-		}
-		if attempt == maxAttempts {
-			break
-		}
-		select {
-		case <-ctx.Done():
-			return nil, ctx.Err()
-		case <-time.After(backoff):
-		}
-		if backoff < 45*time.Second {
-			backoff += 5 * time.Second
-		}
-	}
-	return nil, lastErr
-}
-
-func StartPlatformConfigListener(ctx context.Context, svcCtx *svc.ServiceContext) {
-	cfg := svcCtx.Config.ChainMonitor
-	if !cfg.Enabled {
-		logx.Infof("[chain-listener] platform config listener disabled")
-		return
-	}
-	if strings.TrimSpace(cfg.RPCURL) == "" {
-		logx.Errorf("[chain-listener] platform config listener RPCURL is empty")
-		return
+	chunk := svc.Config.ChainListener.MaxBlocksChunk
+	if chunk <= 0 {
+		chunk = 3000
 	}
 
-	contractAddress := strings.TrimSpace(svcCtx.Config.PlatformConfig.ContractAddress)
-	if contractAddress == "" || !common.IsHexAddress(contractAddress) {
-		logx.Errorf("[chain-listener] invalid platform config contract address: %s", contractAddress)
-		return
-	}
-
-	client, err := ethclient.DialContext(ctx, cfg.RPCURL)
-	if err != nil {
-		logx.Errorf("[chain-listener] connect rpc failed: %v", err)
-		return
-	}
-	defer client.Close()
-
-	filterer, err := platformconfig.NewPlatformConfigFilterer(common.HexToAddress(contractAddress), client)
-	if err != nil {
-		logx.Errorf("[chain-listener] bind platform config filterer failed: %v", err)
-		return
-	}
-
-	chainID, err := resolveListenerChainID(ctx, client, cfg.ChainID)
-	if err != nil {
-		logx.Errorf("[chain-listener] platform config listener resolve chain id failed: %v", err)
-		return
-	}
-
-	startBlock := resolveChainMonitorStartBlock(ctx, svcCtx.GormDB, cfg.StartBlock)
-
-	pollSec := cfg.PollIntervalSec
-	if pollSec <= 0 {
-		pollSec = 8
-	}
-	ticker := time.NewTicker(time.Duration(pollSec) * time.Second)
+	logx.Infof("platform_config_listener started poll=%s chunk=%d", interval, chunk)
+	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
-
-	logx.Infof("[chain-listener] platform config listener started, contract=%s chainId=%s", contractAddress, chainID.String())
-	if err := syncPlatformConfigLogs(ctx, svcCtx, client, filterer, common.HexToAddress(contractAddress), startBlock, chainID); err != nil {
-		logx.Errorf("[chain-listener] platform config initial sync failed: %v", err)
-		if isRateLimitRPCError(err) {
-			time.Sleep(30 * time.Second)
-		}
-	}
 
 	for {
 		select {
 		case <-ctx.Done():
-			logx.Infof("[chain-listener] platform config listener stopped")
+			logx.Infof("platform_config_listener stopped")
 			return
 		case <-ticker.C:
-			if err := syncPlatformConfigLogs(ctx, svcCtx, client, filterer, common.HexToAddress(contractAddress), startBlock, chainID); err != nil {
-				logx.Errorf("[chain-listener] platform config sync failed: %v", err)
-				if isRateLimitRPCError(err) {
-					time.Sleep(30 * time.Second)
-				}
+			if err := scanPlatformConfigOnce(ctx, svc, chunk); err != nil {
+				logx.Errorf("platform_config_listener scan: %v", err)
 			}
 		}
 	}
 }
 
-func syncPlatformConfigLogs(
-	ctx context.Context,
-	svcCtx *svc.ServiceContext,
-	client *ethclient.Client,
-	filterer *platformconfig.PlatformConfigFilterer,
-	contract common.Address,
-	startBlockCfg uint64,
-	chainID *big.Int,
-) error {
-	checkpointKey := fmt.Sprintf("chain:listener:platform_config:last_block:%s:%s", chainID.String(), strings.ToLower(contract.Hex()))
-	fromBlock, err := getStartBlock(ctx, svcCtx.Redis, checkpointKey, startBlockCfg)
-	if err != nil {
-		return err
+func scanPlatformConfigOnce(ctx context.Context, svc *svc.ServiceContext, maxChunk int) error {
+	scanCtx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
+	defer cancel()
+
+	rpcURL := strings.TrimSpace(svc.Config.ChainMonitor.RPCURL)
+	addrHex := strings.TrimSpace(svc.Config.PlatformConfig.ContractAddress)
+	if rpcURL == "" || addrHex == "" || !common.IsHexAddress(addrHex) {
+		return fmt.Errorf("chain listener: rpc or contract address not configured")
 	}
 
-	latest, err := client.BlockNumber(ctx)
+	client, err := ethclient.DialContext(scanCtx, rpcURL)
+	if err != nil {
+		return fmt.Errorf("dial rpc: %w", err)
+	}
+	defer client.Close()
+
+	cfgRepo := repository.NewConfigRepository(svc.GormDB)
+	startBlock, err := loadStartBlockFromDB(scanCtx, cfgRepo)
 	if err != nil {
 		return err
 	}
-	if latest < fromBlock {
+	if startBlock == 0 {
 		return nil
 	}
 
-	batchSize := platformLogBatchBlocks
-	configRepo := repository.NewConfigRepository(svcCtx.GormDB)
-	chainEventRepo := repository.NewChain_eventRepository(svcCtx.GormDB)
+	latest, err := client.BlockNumber(scanCtx)
+	if err != nil {
+		return fmt.Errorf("block number: %w", err)
+	}
 
-	batchesThisTick := 0
-	for begin := fromBlock; begin <= latest; {
-		if batchesThisTick >= platformMaxBatchesPerTick {
-			logx.Infof("[chain-listener] platform config: reached max batches (%d) this tick, resume from block %d next poll",
-				platformMaxBatchesPerTick, begin)
-			return nil
-		}
-		batchesThisTick++
+	lastProcessed, fromDB, err := loadLastProcessedBlock(scanCtx, cfgRepo, startBlock)
+	if err != nil {
+		return err
+	}
 
-		end := begin + batchSize - 1
-		if end > latest {
-			end = latest
-		}
-		opts := &bind.FilterOpts{Start: begin, End: &end, Context: ctx}
+	bootstrapLookback := svc.Config.ChainListener.BootstrapLookbackBlocks
+	if bootstrapLookback <= 0 {
+		bootstrapLookback = 128
+	}
+	lb := uint64(bootstrapLookback)
 
-		if err := consumePlatformConfigCreated(ctx, opts, filterer, configRepo, chainEventRepo, chainID.Int64(), contract.Hex()); err != nil {
-			return err
-		}
-		if err := consumePlatformConfigUpdated(ctx, opts, filterer, configRepo, chainEventRepo, chainID.Int64(), contract.Hex()); err != nil {
-			return err
-		}
-		if err := consumePlatformConfigDeleted(ctx, opts, filterer, configRepo, chainEventRepo, chainID.Int64(), contract.Hex()); err != nil {
-			return err
-		}
-
-		if serr := setLastBlock(ctx, svcCtx.Redis, checkpointKey, end+1); serr != nil {
-			logx.Errorf("[chain-listener] save platform checkpoint failed: %v", serr)
-		}
-		begin = end + 1
-		if begin <= latest {
-			select {
-			case <-ctx.Done():
-				return ctx.Err()
-			case <-time.After(platformBetweenBatchSleep):
+	if !fromDB {
+		// 首次：从 max(startBlock, latest-lookback+1) 起扫，避免「只扫 latest」在链头前进后漏掉上一块内的日志
+		if latest > 0 {
+			var minFrom uint64
+			if latest >= lb {
+				minFrom = latest - lb + 1
+			} else {
+				minFrom = 1
 			}
+			if minFrom < startBlock {
+				minFrom = startBlock
+			}
+			if minFrom > latest {
+				lastProcessed = startBlock - 1
+			} else {
+				lastProcessed = minFrom - 1
+			}
+			logx.Infof("platform_config_listener last_processed unset/invalid, bootstrap first_scan_from=%d last_processed=%d (latest=%d start_block=%d lookback_blocks=%d)",
+				lastProcessed+1, lastProcessed, latest, startBlock, bootstrapLookback)
 		}
+	} else if lastProcessed < startBlock-1 {
+		lastProcessed = startBlock - 1
+	}
+
+	contractAddr := common.HexToAddress(addrHex)
+
+	from := lastProcessed + 1
+	if from > latest {
+		return nil
+	}
+	to := from + uint64(maxChunk) - 1
+	if to > latest {
+		to = latest
+	}
+
+	logs, err := client.FilterLogs(scanCtx, ethereum.FilterQuery{
+		FromBlock: new(big.Int).SetUint64(from),
+		ToBlock:   new(big.Int).SetUint64(to),
+		Addresses: []common.Address{contractAddr},
+	})
+	if err != nil {
+		return fmt.Errorf("filter logs %d-%d: %w", from, to, err)
+	}
+
+	logx.Infof("platform_config_listener filter contract=%s from=%d to=%d latest=%d logs=%d",
+		contractAddr.Hex(), from, to, latest, len(logs))
+
+	platformContract, err := platformconfig.NewPlatformConfig(contractAddr, client)
+	if err != nil {
+		return fmt.Errorf("bind platform config: %w", err)
+	}
+
+	keyHashToKey, err := buildIndexedKeyMap(scanCtx, cfgRepo)
+	if err != nil {
+		return err
+	}
+
+	sort.SliceStable(logs, func(i, j int) bool {
+		if logs[i].BlockNumber != logs[j].BlockNumber {
+			return logs[i].BlockNumber < logs[j].BlockNumber
+		}
+		if logs[i].TxIndex != logs[j].TxIndex {
+			return logs[i].TxIndex < logs[j].TxIndex
+		}
+		return logs[i].Index < logs[j].Index
+	})
+
+	for _, lg := range logs {
+		if err := dispatchPlatformConfigLog(scanCtx, cfgRepo, platformContract, keyHashToKey, lg); err != nil {
+			logx.Errorf("platform_config_listener handle log block=%d txIndex=%d index=%d: %v", lg.BlockNumber, lg.TxIndex, lg.Index, err)
+		}
+	}
+
+	if err := saveLastProcessedBlock(scanCtx, cfgRepo, to); err != nil {
+		return fmt.Errorf("save last block: %w", err)
+	}
+	logx.Infof("platform_config_listener advanced last_block=%d (scanned %d-%d, logs=%d)", to, from, to, len(logs))
+	return nil
+}
+
+func loadStartBlockFromDB(ctx context.Context, cfgRepo repository.ConfigRepository) (uint64, error) {
+	row, err := cfgRepo.GetByConfigKey(ctx, consts.SYS_CONFIG_KEY_CHAIN_LISTENER_START_BLOCK)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			logx.Infof("platform_config_listener skip: sys_config %q not found", consts.SYS_CONFIG_KEY_CHAIN_LISTENER_START_BLOCK)
+			return 0, nil
+		}
+		return 0, fmt.Errorf("get start block config: %w", err)
+	}
+	v := strings.TrimSpace(row.ConfigValue)
+	if v == "" {
+		logx.Infof("platform_config_listener skip: %q empty", consts.SYS_CONFIG_KEY_CHAIN_LISTENER_START_BLOCK)
+		return 0, nil
+	}
+	n, err := strconv.ParseUint(v, 10, 64)
+	if err != nil || n == 0 {
+		return 0, fmt.Errorf("invalid start block %q: %w", v, err)
+	}
+	return n, nil
+}
+
+// loadLastProcessedBlock 读取链监听游标。第二个返回值表示是否从 DB 读到了合法非空数字；
+// 若为 false，调用方应使用链上最新高度做兜底（见 scanPlatformConfigOnce）。
+func loadLastProcessedBlock(ctx context.Context, cfgRepo repository.ConfigRepository, startBlock uint64) (uint64, bool, error) {
+	row, err := cfgRepo.GetByConfigKey(ctx, consts.SYS_CONFIG_KEY_CHAIN_LISTENER_LAST_PROCESSED_BLOCK)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return 0, false, nil
+		}
+		return 0, false, fmt.Errorf("get last processed block: %w", err)
+	}
+	v := strings.TrimSpace(row.ConfigValue)
+	if v == "" {
+		return 0, false, nil
+	}
+	n, perr := strconv.ParseUint(v, 10, 64)
+	if perr != nil {
+		logx.Infof("platform_config_listener invalid last_processed %q, will bootstrap from tip: %v", v, perr)
+		return 0, false, nil
+	}
+	if n < startBlock-1 {
+		n = startBlock - 1
+	}
+	return n, true, nil
+}
+
+func saveLastProcessedBlock(ctx context.Context, cfgRepo repository.ConfigRepository, last uint64) error {
+	val := strconv.FormatUint(last, 10)
+	row, err := cfgRepo.GetByConfigKey(ctx, consts.SYS_CONFIG_KEY_CHAIN_LISTENER_LAST_PROCESSED_BLOCK)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return cfgRepo.Create(ctx, &model.Config{
+				ConfigKey:       consts.SYS_CONFIG_KEY_CHAIN_LISTENER_LAST_PROCESSED_BLOCK,
+				ConfigName:      "链监听已处理区块(系统)",
+				ConfigValue:     val,
+				ConfigType:      "number",
+				ConfigGroup:     "chain",
+				Description:     "PlatformConfig 日志扫描游标，由 listener 自动维护",
+				IsSystem:        1,
+				IsEncrypted:     0,
+				IsEditable:      0,
+				SyncChainStatus: 0,
+				Sort:            999999,
+				Status:          1,
+				Creator:         listenerActor,
+				Updator:         listenerActor,
+			})
+		}
+		return err
+	}
+	return cfgRepo.UpdateColumnsByID(ctx, row.ID, map[string]interface{}{
+		"config_value": val,
+		"updator":      listenerActor,
+	})
+}
+func buildIndexedKeyMap(ctx context.Context, cfgRepo repository.ConfigRepository) (map[common.Hash]string, error) {
+	const maxKeys = 5000
+	list, _, err := cfgRepo.List(ctx, 0, maxKeys)
+	if err != nil {
+		return nil, fmt.Errorf("list configs for key map: %w", err)
+	}
+	m := make(map[common.Hash]string, len(list))
+	for _, c := range list {
+		k := strings.TrimSpace(c.ConfigKey)
+		if k == "" {
+			continue
+		}
+		m[crypto.Keccak256Hash([]byte(k))] = k
+	}
+	return m, nil
+}
+
+func dispatchPlatformConfigLog(
+	ctx context.Context,
+	cfgRepo repository.ConfigRepository,
+	pc *platformconfig.PlatformConfig,
+	keyMap map[common.Hash]string,
+	lg gethtypes.Log,
+) error {
+	if ev, err := pc.ParseConfigUpdated(lg); err == nil {
+		return applyConfigUpdated(ctx, cfgRepo, keyMap, ev)
+	}
+	if ev, err := pc.ParseConfigCreated(lg); err == nil {
+		return applyConfigCreated(ctx, cfgRepo, keyMap, ev)
+	}
+	if ev, err := pc.ParseConfigDeleted(lg); err == nil {
+		return applyConfigDeleted(ctx, cfgRepo, keyMap, ev)
+	}
+	if ev, err := pc.ParseConfigStatusChanged(lg); err == nil {
+		return applyConfigStatusChanged(ctx, cfgRepo, keyMap, ev)
+	}
+	if ev, err := pc.ParseConfigUintValueUpdated(lg); err == nil {
+		return applyConfigUintValueUpdated(ctx, cfgRepo, keyMap, ev)
 	}
 	return nil
 }
 
-func consumePlatformConfigCreated(ctx context.Context, opts *bind.FilterOpts, filterer *platformconfig.PlatformConfigFilterer, configRepo repository.ConfigRepository, chainEventRepo repository.Chain_eventRepository, chainID int64, contractAddress string) error {
-	iter, err := filterer.FilterConfigCreated(opts, nil)
-	if err != nil {
-		return err
+func resolveKey(h common.Hash, keyMap map[common.Hash]string) (string, bool) {
+	k, ok := keyMap[h]
+	return k, ok && k != ""
+}
+
+func applyConfigUpdated(ctx context.Context, cfgRepo repository.ConfigRepository, keyMap map[common.Hash]string, ev *platformconfig.PlatformConfigConfigUpdated) error {
+	keyStr, ok := resolveKey(ev.Key, keyMap)
+	if !ok {
+		return nil
 	}
-	defer iter.Close()
-	for iter.Next() {
-		ev := iter.Event
-		payload := map[string]interface{}{
-			"keyHash":   ev.Key.Hex(),
-			"value":     ev.Value,
-			"valueType": ev.ValueType,
-			"group":     ev.Group,
-			"status":    ev.Status,
+	row, err := cfgRepo.GetByConfigKey(ctx, keyStr)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
 		}
-		_ = persistPlatformConfigEvent(ctx, configRepo, chainEventRepo, chainID, contractAddress, "ConfigCreated", ev.Key.Hex(), 2, payload, ev.Raw)
-	}
-	return iter.Error()
-}
-
-func consumePlatformConfigUpdated(ctx context.Context, opts *bind.FilterOpts, filterer *platformconfig.PlatformConfigFilterer, configRepo repository.ConfigRepository, chainEventRepo repository.Chain_eventRepository, chainID int64, contractAddress string) error {
-	iter, err := filterer.FilterConfigUpdated(opts, nil)
-	if err != nil {
 		return err
 	}
-	defer iter.Close()
-	for iter.Next() {
-		ev := iter.Event
-		payload := map[string]interface{}{
-			"keyHash":   ev.Key.Hex(),
-			"oldValue":  ev.OldValue,
-			"newValue":  ev.NewValue,
-			"newStatus": ev.Status,
-		}
-		_ = persistPlatformConfigEvent(ctx, configRepo, chainEventRepo, chainID, contractAddress, "ConfigUpdated", ev.Key.Hex(), 2, payload, ev.Raw)
-	}
-	return iter.Error()
-}
-
-func consumePlatformConfigDeleted(ctx context.Context, opts *bind.FilterOpts, filterer *platformconfig.PlatformConfigFilterer, configRepo repository.ConfigRepository, chainEventRepo repository.Chain_eventRepository, chainID int64, contractAddress string) error {
-	iter, err := filterer.FilterConfigDeleted(opts, nil)
-	if err != nil {
-		return err
-	}
-	defer iter.Close()
-	for iter.Next() {
-		ev := iter.Event
-		payload := map[string]interface{}{"keyHash": ev.Key.Hex()}
-		_ = persistPlatformConfigEvent(ctx, configRepo, chainEventRepo, chainID, contractAddress, "ConfigDeleted", ev.Key.Hex(), 3, payload, ev.Raw)
-	}
-	return iter.Error()
-}
-
-func persistPlatformConfigEvent(
-	ctx context.Context,
-	configRepo repository.ConfigRepository,
-	chainEventRepo repository.Chain_eventRepository,
-	chainID int64,
-	contractAddress string,
-	eventName string,
-	keyHash string,
-	syncStatus int,
-	payload map[string]interface{},
-	raw types.Log,
-) error {
-	payloadJSON, _ := json.Marshal(payload)
-	rawJSON, _ := json.Marshal(raw)
-	_ = chainEventRepo.Create(ctx, &model.Chain_event{
-		BusinessType:    platformConfigBusinessType,
-		BusinessID:      0,
-		BusinessCode:    strings.ToLower(keyHash),
-		ChainID:         int(chainID),
-		ContractAddress: strings.ToLower(contractAddress),
-		TxHash:          raw.TxHash.Hex(),
-		BlockNumber:     int64(raw.BlockNumber),
-		TxIndex:         int(raw.TxIndex),
-		LogIndex:        int(raw.Index),
-		EventName:       eventName,
-		EventSig:        raw.Topics[0].Hex(),
-		EventPayload:    string(payloadJSON),
-		RawLog:          string(rawJSON),
-		EventTime:       time.Now(),
-		Confirmations:   1,
-		ProcessStatus:   1,
-		RetryCount:      0,
-		ErrorMsg:        "",
-		Creator:         "chain-listener",
-		Updator:         "chain-listener",
-	})
-
-	configID, err := findConfigIDByHash(ctx, configRepo, keyHash)
-	if err != nil || configID == 0 {
-		return err
-	}
-	return configRepo.UpdateColumnsByID(ctx, configID, map[string]interface{}{
-		"sync_chain_status": syncStatus,
-		"updator":           "chain-listener",
+	return cfgRepo.UpdateColumnsByID(ctx, row.ID, map[string]interface{}{
+		"config_value":      ev.NewValue,
+		"status":            int(ev.Status),
+		"sync_chain_status": syncChainStatusSynced,
+		"updator":           listenerActor,
 	})
 }
 
-func findConfigIDByHash(ctx context.Context, configRepo repository.ConfigRepository, keyHash string) (int64, error) {
-	list, _, err := configRepo.List(ctx, 0, 10000)
+func applyConfigCreated(ctx context.Context, cfgRepo repository.ConfigRepository, keyMap map[common.Hash]string, ev *platformconfig.PlatformConfigConfigCreated) error {
+	keyStr, ok := resolveKey(ev.Key, keyMap)
+	if !ok {
+		return nil
+	}
+	row, err := cfgRepo.GetByConfigKey(ctx, keyStr)
 	if err != nil {
-		return 0, err
-	}
-	target := strings.TrimPrefix(strings.ToLower(keyHash), "0x")
-	for _, item := range list {
-		hashed := strings.TrimPrefix(strings.ToLower(crypto.Keccak256Hash([]byte(item.ConfigKey)).Hex()), "0x")
-		if hashed == target {
-			return item.ID, nil
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
 		}
+		return err
 	}
-	return 0, nil
+	return cfgRepo.UpdateColumnsByID(ctx, row.ID, map[string]interface{}{
+		"config_value":      ev.Value,
+		"config_type":       ev.ValueType,
+		"status":            int(ev.Status),
+		"sync_chain_status": syncChainStatusSynced,
+		"updator":           listenerActor,
+	})
+}
+
+func applyConfigDeleted(ctx context.Context, cfgRepo repository.ConfigRepository, keyMap map[common.Hash]string, ev *platformconfig.PlatformConfigConfigDeleted) error {
+	keyStr, ok := resolveKey(ev.Key, keyMap)
+	if !ok {
+		return nil
+	}
+	row, err := cfgRepo.GetByConfigKey(ctx, keyStr)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		}
+		return err
+	}
+	return cfgRepo.SoftDelete(ctx, row.ID, listenerActor)
+}
+
+func applyConfigStatusChanged(ctx context.Context, cfgRepo repository.ConfigRepository, keyMap map[common.Hash]string, ev *platformconfig.PlatformConfigConfigStatusChanged) error {
+	keyStr, ok := resolveKey(ev.Key, keyMap)
+	if !ok {
+		return nil
+	}
+	row, err := cfgRepo.GetByConfigKey(ctx, keyStr)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		}
+		return err
+	}
+	return cfgRepo.UpdateColumnsByID(ctx, row.ID, map[string]interface{}{
+		"status":            int(ev.NewStatus),
+		"sync_chain_status": syncChainStatusSynced,
+		"updator":           listenerActor,
+	})
+}
+
+func applyConfigUintValueUpdated(ctx context.Context, cfgRepo repository.ConfigRepository, keyMap map[common.Hash]string, ev *platformconfig.PlatformConfigConfigUintValueUpdated) error {
+	keyStr, ok := resolveKey(ev.Key, keyMap)
+	if !ok {
+		return nil
+	}
+	row, err := cfgRepo.GetByConfigKey(ctx, keyStr)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil
+		}
+		return err
+	}
+	val := ""
+	if ev.NewValue != nil {
+		val = ev.NewValue.String()
+	}
+	return cfgRepo.UpdateColumnsByID(ctx, row.ID, map[string]interface{}{
+		"config_value":      val,
+		"sync_chain_status": syncChainStatusSynced,
+		"updator":           listenerActor,
+	})
 }

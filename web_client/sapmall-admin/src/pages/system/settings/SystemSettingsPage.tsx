@@ -48,6 +48,18 @@ const parseBooleanValue = (value?: string): boolean => {
   return normalized === '1' || normalized === 'true' || normalized === 'yes' || normalized === 'on';
 };
 
+/** 与后端一致：0 未同步 1 同步中 2 已同步 3 链上已删除 */
+const SYNC_CHAIN_STATUS = {
+  UNSYNCED: 0,
+  SYNCING: 1,
+  SYNCED: 2,
+  DELETED_ON_CHAIN: 3,
+} as const;
+
+/** 链同步中：行内参数值、操作列、编辑弹窗内全部只读 */
+const isChainSyncing = (syncChainStatus?: number): boolean =>
+  syncChainStatus === SYNC_CHAIN_STATUS.SYNCING;
+
 const SystemSettingsPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -138,6 +150,7 @@ const SystemSettingsPage: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    if (editingRecord && isChainSyncing(editingRecord.syncChainStatus)) return;
     try {
       const values = await form.validateFields();
       const payload: SaveSystemConfigReq = {
@@ -187,7 +200,10 @@ const SystemSettingsPage: React.FC = () => {
     }
   };
 
-  const handleToggleSyncChain = async (record: SystemConfigListItem, checked: boolean) => {
+  /** 未同步 → 同步中：由后端在同一请求内完成上链并回写 2 或失败回 0 */
+  const handleRequestChainSync = async (record: SystemConfigListItem) => {
+    if (record.status !== 0) return;
+    if ((record.syncChainStatus ?? SYNC_CHAIN_STATUS.UNSYNCED) !== SYNC_CHAIN_STATUS.UNSYNCED) return;
     setSyncTogglingId(record.id);
     try {
       await systemConfigApi.save({
@@ -197,12 +213,35 @@ const SystemSettingsPage: React.FC = () => {
         configValue: record.configValue,
         configType: record.configType,
         status: record.status,
-        syncChainStatus: checked ? 1 : 0,
+        syncChainStatus: SYNC_CHAIN_STATUS.SYNCING,
       });
-      MessageUtils.success(`已${checked ? '发起' : '取消'}链上同步`);
+      MessageUtils.success('已发起链上同步');
       await loadConfigList();
     } catch {
-      MessageUtils.error('更新同步区块链开关失败，请稍后重试');
+      MessageUtils.error('发起链上同步失败，请稍后重试');
+    } finally {
+      setSyncTogglingId(undefined);
+    }
+  };
+
+  /** 已同步 → 未同步：便于再次点击「发起链上同步」 */
+  const handleMarkChainUnsynced = async (record: SystemConfigListItem) => {
+    if ((record.syncChainStatus ?? 0) !== SYNC_CHAIN_STATUS.SYNCED) return;
+    setSyncTogglingId(record.id);
+    try {
+      await systemConfigApi.save({
+        id: record.id,
+        configName: record.configName,
+        configKey: record.configKey,
+        configValue: record.configValue,
+        configType: record.configType,
+        status: record.status,
+        syncChainStatus: SYNC_CHAIN_STATUS.UNSYNCED,
+      });
+      MessageUtils.success('已标记为未同步');
+      await loadConfigList();
+    } catch {
+      MessageUtils.error('更新链同步状态失败，请稍后重试');
     } finally {
       setSyncTogglingId(undefined);
     }
@@ -229,6 +268,7 @@ const SystemSettingsPage: React.FC = () => {
   };
 
   const saveValue = async (record: SystemConfigListItem, nextValue: string) => {
+    if (isChainSyncing(record.syncChainStatus)) return;
     if ((record.configValue || '') === nextValue) return;
     setSavingValueId(record.id);
     try {
@@ -258,27 +298,40 @@ const SystemSettingsPage: React.FC = () => {
   const renderValueControl = (record: SystemConfigListItem) => {
     const currentValue = getDraftValue(record);
     const isSaving = savingValueId === record.id;
+    const valueLocked = isChainSyncing(record.syncChainStatus);
+    const lockTip = '链上同步中，暂不可修改参数值';
+
+    const wrapLocked = (node: React.ReactNode) =>
+      valueLocked ? (
+        <Tooltip title={lockTip}>
+          <span className={styles.valueLockedWrap}>{node}</span>
+        </Tooltip>
+      ) : (
+        node
+      );
+
     if (record.configType === 'number') {
       const numberValue = currentValue === '' ? undefined : Number(currentValue);
-      return (
+      return wrapLocked(
         <InputNumber
           className={styles.valueInputNumber}
           value={Number.isNaN(numberValue) ? undefined : numberValue}
-          disabled={isSaving}
+          disabled={isSaving || valueLocked}
           placeholder="请输入数字"
           onChange={(value) => handleValueChange(record, value === null || value === undefined ? '' : String(value))}
           onBlur={() => saveValue(record, getDraftValue(record))}
           onClick={(event) => event.stopPropagation()}
-        />
+        />,
       );
     }
     if (record.configType === 'boolean') {
       const checked = parseBooleanValue(currentValue);
-      return (
+      return wrapLocked(
         <div onClick={(event) => event.stopPropagation()}>
           <Switch
             checked={checked}
             loading={isSaving}
+            disabled={valueLocked}
             size="small"
             className={`${styles.booleanValueSwitch} ${
               checked ? styles.booleanValueSwitchOn : styles.booleanValueSwitchOff
@@ -289,36 +342,65 @@ const SystemSettingsPage: React.FC = () => {
               saveValue(record, nextValue).catch(() => undefined);
             }}
           />
-        </div>
+        </div>,
       );
     }
     if (record.configType === 'json') {
-      return (
+      return wrapLocked(
         <Input.TextArea
           className={styles.valueTextArea}
           value={currentValue}
           autoSize={{ minRows: 1, maxRows: 3 }}
-          disabled={isSaving}
+          disabled={isSaving || valueLocked}
           placeholder='请输入 JSON，如 {"a":1}'
           onChange={(event) => handleValueChange(record, event.target.value)}
           onBlur={() => saveValue(record, getDraftValue(record))}
           onClick={(event) => event.stopPropagation()}
-        />
+        />,
       );
     }
-    return (
+    return wrapLocked(
       <Input
         className={styles.valueInput}
         value={currentValue}
-        disabled={isSaving}
+        disabled={isSaving || valueLocked}
         placeholder="请输入文本"
         onChange={(event) => handleValueChange(record, event.target.value)}
         onBlur={() => saveValue(record, getDraftValue(record))}
         onPressEnter={() => saveValue(record, getDraftValue(record))}
         onClick={(event) => event.stopPropagation()}
-      />
+      />,
     );
   };
+
+  /** 链状态：胶囊 pill（深底 + 亮色描边 + 同色字），参考启用按钮样式 */
+  const renderChainSyncBadge = (record: SystemConfigListItem) => {
+    const s = record.syncChainStatus ?? SYNC_CHAIN_STATUS.UNSYNCED;
+    const pillClass =
+      s === SYNC_CHAIN_STATUS.UNSYNCED
+        ? styles.chainSyncPillUnsynced
+        : s === SYNC_CHAIN_STATUS.SYNCING
+          ? styles.chainSyncPillSyncing
+          : s === SYNC_CHAIN_STATUS.SYNCED
+            ? styles.chainSyncPillSynced
+            : styles.chainSyncPillDeleted;
+    const label =
+      s === SYNC_CHAIN_STATUS.UNSYNCED
+        ? '未同步'
+        : s === SYNC_CHAIN_STATUS.SYNCING
+          ? '同步中'
+          : s === SYNC_CHAIN_STATUS.SYNCED
+            ? '已同步'
+            : '链上已删除';
+
+    return (
+      <div className={styles.chainSyncCell} onClick={(event) => event.stopPropagation()}>
+        <span className={`${styles.chainSyncPill} ${pillClass}`}>{label}</span>
+      </div>
+    );
+  };
+
+  const modalLockedByChainSync = Boolean(editingRecord && isChainSyncing(editingRecord.syncChainStatus));
 
   return (
     <div className={styles.settingsPage}>
@@ -414,53 +496,127 @@ const SystemSettingsPage: React.FC = () => {
                       <span className={styles.itemCode}>{item.configKey}</span>
                       <div className={styles.itemValue}>{renderValueControl(item)}</div>
                       <span className={styles.itemType}>{getTypeLabel(item.configType)}</span>
-                      <div className={styles.statusSwitchWrap} onClick={(event) => event.stopPropagation()}>
-                        <Switch
-                          size="small"
-                          checked={item.status === 0}
-                          className={`${styles.categoryStatusSwitch} ${
-                            item.status === 0 ? styles.categoryStatusSwitchOn : styles.categoryStatusSwitchOff
-                          }`}
-                          loading={statusTogglingId === item.id}
-                          onChange={(checked) => handleToggleStatus(item, checked)}
-                        />
-                        <span className={item.status === 0 ? styles.statusTextEnabled : styles.statusTextDisabled}>
-                          {item.status === 0 ? '启用' : '禁用'}
-                        </span>
-                      </div>
-                      <div className={styles.statusSwitchWrap} onClick={(event) => event.stopPropagation()}>
-                        <Switch
-                          size="small"
-                          checked={[1, 2].includes(item.syncChainStatus ?? 0)}
-                          className={`${styles.categoryStatusSwitch} ${
-                            [1, 2].includes(item.syncChainStatus ?? 0) ? styles.categoryStatusSwitchOn : styles.categoryStatusSwitchOff
-                          }`}
-                          loading={syncTogglingId === item.id}
-                          onChange={(checked) => handleToggleSyncChain(item, checked)}
-                        />
-                        <span
-                          className={[1, 2].includes(item.syncChainStatus ?? 0) ? styles.statusTextEnabled : styles.statusTextDisabled}
-                        >
-                          是否同步区块链
-                        </span>
-                      </div>
-                      <Tooltip title="删除">
-                        <Popconfirm
-                          title="确认删除该系统参数？"
-                          okText="确认"
-                          cancelText="取消"
-                          onConfirm={() => handleDelete(item)}
-                        >
-                          <button
-                            type="button"
-                            className={styles.deleteIconButton}
-                            disabled={deletingId === item.id}
-                            onClick={(event) => event.stopPropagation()}
+                      {renderChainSyncBadge(item)}
+                      <div
+                        className={`${styles.rowActions} ${
+                          isChainSyncing(item.syncChainStatus) ? styles.rowActionsLocked : ''
+                        }`}
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        <div className={styles.statusSwitchWrap}>
+                          <Switch
+                            size="small"
+                            checked={item.status === 0}
+                            disabled={isChainSyncing(item.syncChainStatus)}
+                            className={`${styles.categoryStatusSwitch} ${
+                              item.status === 0 ? styles.categoryStatusSwitchOn : styles.categoryStatusSwitchOff
+                            }`}
+                            loading={statusTogglingId === item.id}
+                            onChange={(checked) => handleToggleStatus(item, checked)}
+                          />
+                          <span
+                            className={
+                              isChainSyncing(item.syncChainStatus)
+                                ? styles.statusTextMuted
+                                : item.status === 0
+                                  ? styles.statusTextEnabled
+                                  : styles.statusTextDisabled
+                            }
                           >
-                            <i className={deletingId === item.id ? 'fas fa-spinner fa-spin' : 'fas fa-trash'}></i>
-                          </button>
-                        </Popconfirm>
-                      </Tooltip>
+                            {item.status === 0 ? '启用' : '禁用'}
+                          </span>
+                        </div>
+                        <div className={styles.rowActionIconGroup}>
+                          {item.status === 0 &&
+                            (item.syncChainStatus ?? SYNC_CHAIN_STATUS.UNSYNCED) === SYNC_CHAIN_STATUS.UNSYNCED && (
+                            <Tooltip title="同步到链上">
+                              <button
+                                type="button"
+                                className={styles.chainSyncIconButton}
+                                disabled={syncTogglingId === item.id}
+                                aria-label="同步到链上"
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  handleRequestChainSync(item);
+                                }}
+                              >
+                                <i
+                                  className={
+                                    syncTogglingId === item.id ? 'fas fa-spinner fa-spin' : 'fas fa-link'
+                                  }
+                                />
+                              </button>
+                            </Tooltip>
+                          )}
+                          {(item.syncChainStatus ?? 0) === SYNC_CHAIN_STATUS.SYNCING && (
+                            <Tooltip title="链上同步中，请稍候">
+                              <span
+                                className={styles.chainSyncIconPlaceholder}
+                                role="img"
+                                aria-label="链上同步中"
+                              >
+                                <i className="fas fa-link" aria-hidden />
+                              </span>
+                            </Tooltip>
+                          )}
+                          {(item.syncChainStatus ?? 0) === SYNC_CHAIN_STATUS.SYNCED && (
+                            <Popconfirm
+                              title="取消链上同步？"
+                              description="将标记为未同步，之后可再次点击链图标发起同步。"
+                              okText="确认"
+                              cancelText="取消"
+                              onConfirm={() => handleMarkChainUnsynced(item)}
+                            >
+                              <span
+                                className={styles.chainSyncConfirmWrap}
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                <button
+                                  type="button"
+                                  className={styles.cancelChainSyncIconButton}
+                                  disabled={syncTogglingId === item.id}
+                                  aria-label="取消链上同步"
+                                  title="取消链上同步"
+                                >
+                                  <i
+                                    className={
+                                      syncTogglingId === item.id ? 'fas fa-spinner fa-spin' : 'fas fa-unlink'
+                                    }
+                                  />
+                                </button>
+                              </span>
+                            </Popconfirm>
+                          )}
+                          {(item.syncChainStatus ?? 0) === SYNC_CHAIN_STATUS.DELETED_ON_CHAIN && (
+                            <Tooltip title="链上已删除">
+                              <span
+                                className={styles.chainSyncIconPlaceholder}
+                                role="img"
+                                aria-label="链上已删除"
+                              >
+                                <i className="fas fa-link" aria-hidden />
+                              </span>
+                            </Tooltip>
+                          )}
+                          <Tooltip title="删除">
+                            <Popconfirm
+                              title="确认删除该系统参数？"
+                              okText="确认"
+                              cancelText="取消"
+                              onConfirm={() => handleDelete(item)}
+                            >
+                              <button
+                                type="button"
+                                className={styles.deleteIconButton}
+                                disabled={deletingId === item.id || isChainSyncing(item.syncChainStatus)}
+                                onClick={(event) => event.stopPropagation()}
+                              >
+                                <i className={deletingId === item.id ? 'fas fa-spinner fa-spin' : 'fas fa-trash'}></i>
+                              </button>
+                            </Popconfirm>
+                          </Tooltip>
+                        </div>
+                      </div>
                       </div>
                     </div>
                   </List.Item>
@@ -480,6 +636,7 @@ const SystemSettingsPage: React.FC = () => {
         okText="保存"
         cancelText="取消"
         size="small"
+        okButtonProps={{ disabled: modalLockedByChainSync }}
       >
         <Form
           form={form}
@@ -495,7 +652,7 @@ const SystemSettingsPage: React.FC = () => {
               { max: 64, message: '名称长度不能超过 64 个字符' },
             ]}
           >
-            <Input placeholder="请输入参数名称" />
+            <Input placeholder="请输入参数名称" disabled={modalLockedByChainSync} />
           </Form.Item>
           <Form.Item
             label="Code"
@@ -505,17 +662,26 @@ const SystemSettingsPage: React.FC = () => {
               { max: 64, message: 'Code 长度不能超过 64 个字符' },
             ]}
           >
-            <Input placeholder="例如：site_name" />
+            <Input placeholder="例如：site_name" disabled={modalLockedByChainSync} />
           </Form.Item>
           <Form.Item
             label="值"
             name="configValue"
             rules={[{ max: 500, message: '参数值长度不能超过 500 个字符' }]}
+            extra={
+              modalLockedByChainSync
+                ? '链上同步中，暂不可编辑；请稍候刷新列表后再试'
+                : undefined
+            }
           >
-            <Input placeholder="请输入参数值" />
+            <Input placeholder="请输入参数值" disabled={modalLockedByChainSync} />
           </Form.Item>
           <Form.Item label="类型" name="configType" rules={[{ required: true, message: '请选择参数类型' }]}>
-            <Select options={SYSTEM_CONFIG_TYPE_OPTIONS} placeholder="请选择参数类型" />
+            <Select
+              options={SYSTEM_CONFIG_TYPE_OPTIONS}
+              placeholder="请选择参数类型"
+              disabled={modalLockedByChainSync}
+            />
           </Form.Item>
           <Form.Item
             label="是否启用"
@@ -523,7 +689,7 @@ const SystemSettingsPage: React.FC = () => {
             valuePropName="checked"
             className={styles.switchField}
           >
-            <Switch checkedChildren="启用" unCheckedChildren="禁用" />
+            <Switch checkedChildren="启用" unCheckedChildren="禁用" disabled={modalLockedByChainSync} />
           </Form.Item>
         </Form>
       </AdminModal>

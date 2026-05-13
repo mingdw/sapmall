@@ -10,7 +10,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy:platform-config:sepolia": "hardhat run scripts/deploy-platform-config.ts --network sepolia",
-    "smoke:platform-config:sepolia": "hardhat run scripts/sepolia-smoke-platform-config.ts --network sepolia"
+    "smoke:platform-config:sepolia": "hardhat run scripts/sepolia-smoke-platform-config.ts --network sepolia",
+    "deploy:platform-config:linea-sepolia": "hardhat run scripts/deploy-platform-config.ts --network lineaSepolia",
+    "smoke:platform-config:linea-sepolia": "hardhat run scripts/sepolia-smoke-platform-config.ts --network lineaSepolia",
+    "deploy:platform-config:lineaSepolia": "hardhat run scripts/deploy-platform-config.ts --network lineaSepolia",
+    "smoke:platform-config:lineaSepolia": "hardhat run scripts/sepolia-smoke-platform-config.ts --network lineaSepolia",
+    "inspect:platform-config:lineaSepolia": "hardhat run scripts/inspect-platform-config.ts --network lineaSepolia",
+    "inspect:platform-config:sepolia": "hardhat run scripts/inspect-platform-config.ts --network sepolia"
   },
   "keywords": [],
   "author": "",

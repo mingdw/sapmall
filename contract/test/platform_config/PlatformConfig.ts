@@ -52,7 +52,7 @@ describe("PlatformConfig", async function () {
       address: config.address,
       abi: config.abi,
       functionName: "createConfig",
-      args: [key, "true", "boolean", "system", "alpha feature switch", 0],
+      args: [key, "true", "boolean", "alpha feature switch", 0],
     });
     await waitForTx(createTx, "createConfig");
 
@@ -61,7 +61,6 @@ describe("PlatformConfig", async function () {
     assert.equal(item.value, "true");
     assert.equal(item.valueType, "boolean");
     assert.equal(item.status, 0);
-    assert.equal(item.exists, true);
   });
 
   it("updates existing config and rejects missing key update", async function () {
@@ -72,7 +71,7 @@ describe("PlatformConfig", async function () {
       address: config.address,
       abi: config.abi,
       functionName: "createConfig",
-      args: [key, "v1", "string", "system", "beta value", 0],
+      args: [key, "v1", "string", "beta value", 0],
     });
     await waitForTx(createTx, "createConfig");
 
@@ -80,7 +79,7 @@ describe("PlatformConfig", async function () {
       address: config.address,
       abi: config.abi,
       functionName: "updateConfig",
-      args: [key, "v2", "string", "system", "beta value updated", 0],
+      args: [key, "v2", "string", "beta value updated", 0],
     });
     await waitForTx(updateTx, "updateConfig");
 
@@ -92,7 +91,7 @@ describe("PlatformConfig", async function () {
         address: config.address,
         abi: config.abi,
         functionName: "updateConfig",
-        args: ["missing.key", "x", "string", "system", "missing", 0],
+        args: ["missing.key", "x", "string", "missing", 0],
       });
     });
   });
@@ -105,7 +104,7 @@ describe("PlatformConfig", async function () {
       address: config.address,
       abi: config.abi,
       functionName: "createConfig",
-      args: [key, "100", "number", "system", "number config", 0],
+      args: [key, "100", "number", "number config", 0],
     });
     await waitForTx(createTx, "createConfig");
 
@@ -119,5 +118,48 @@ describe("PlatformConfig", async function () {
 
     const uintValue = await config.read.getConfigUintValue([key]);
     assert.equal(uintValue, 12345n);
+    const item = await config.read.getConfig([key]);
+    assert.equal(item.value, "12345");
+  });
+
+  it("lists all keys and full config details via getAllKeys + listConfigs", async function () {
+    const config = await deployAndInit();
+    const total = await config.read.totalConfigs();
+    assert.equal(total, 5n);
+
+    const allKeys = await config.read.getAllKeys();
+    assert.equal(allKeys.length, Number(total));
+
+    const [items, totalListed] = await config.read.listConfigs([0n, total]);
+    assert.equal(totalListed, total);
+    assert.equal(items.length, Number(total));
+
+    console.log("\n========== PlatformConfig：全量 key 与详情 ==========");
+    console.log(`totalConfigs / listConfigs.total: ${total} / ${totalListed}`);
+    console.log("getAllKeys:", allKeys.join(", "));
+    for (let i = 0; i < items.length; i++) {
+      const row = items[i];
+      console.log(`\n[${i}] key:          ${row.key}`);
+      console.log(`    value:        ${row.value}`);
+      console.log(`    valueType:    ${row.valueType}`);
+      console.log(`    description:  ${row.description}`);
+      console.log(`    status:       ${row.status}`);
+      console.log(`    updatedAt:    ${row.updatedAt.toString()}`);
+      console.log(`    updatedBy:    ${row.updatedBy}`);
+    }
+    console.log("====================================================\n");
+
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      assert.equal(item.key, allKeys[i]);
+      const single = await config.read.getConfig([item.key]);
+      assert.equal(single.key, item.key);
+      assert.equal(single.value, item.value);
+      assert.equal(single.valueType, item.valueType);
+      assert.equal(single.description, item.description);
+      assert.equal(single.status, item.status);
+      assert.equal(single.updatedAt, item.updatedAt);
+      assert.equal(single.updatedBy.toLowerCase(), item.updatedBy.toLowerCase());
+    }
   });
 });

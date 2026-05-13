@@ -37,18 +37,19 @@ type Config struct {
 		Amount           string
 		TokenSymbol      string
 		TokenAddress     string
-		ChainID          int64
 		ContractAddress  string
 		IntentExpireMins int64
 	}
+	// ChainMonitor 仅保留管理端等场景写链所需的 JSON-RPC 地址（如同步平台配置到合约）。
 	ChainMonitor struct {
-		Enabled          bool
-		RPCURL           string
-		// ChainID 可选；>0 时链监听跳过 eth_chainId，仅用 RPC 拉块与日志（减轻 Infura 429）。须与 RPC 网络一致，如 Sepolia=11155111。
-		ChainID          int64
-		StartBlock       uint64
-		PollIntervalSec  int64
-		ConfirmationsReq int64
+		RPCURL string
+	}
+	// ChainListener 异步轮询 PlatformConfig 合约日志并回写 sys_config（与 HTTP 请求解耦）。
+	ChainListener struct {
+		Enable                   bool `json:",optional"`
+		PollIntervalSec          int  `json:",optional"` // 默认 12
+		MaxBlocksChunk           int  `json:",optional"` // 单次 FilterLogs 最大块跨度，默认 3000
+		BootstrapLookbackBlocks  int  `json:",optional"` // 游标未配置/无效时首次回溯块数（含当前链头），避免只扫 latest 漏掉前一区块内的日志，默认 128
 	}
 	PlatformConfig struct {
 		ContractAddress  string

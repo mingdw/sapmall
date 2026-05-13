@@ -1,0 +1,8 @@
+{
+  "name": "sapphire-mall-intro-ppt",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "pptxgenjs": "^3.12.0"
+  }
+}

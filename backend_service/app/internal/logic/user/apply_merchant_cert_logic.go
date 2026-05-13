@@ -100,10 +100,6 @@ func (l *ApplyMerchantCertLogic) merchantDepositConfig() (amount, tokenSymbol, t
 		tokenSymbol = "USDT"
 	}
 	tokenAddress = cfg.TokenAddress
-	chainID = cfg.ChainID
-	if chainID <= 0 {
-		chainID = 56
-	}
 	contractAddress = cfg.ContractAddress
 	if contractAddress == "" {
 		contractAddress = "0x0000000000000000000000000000000000000000"

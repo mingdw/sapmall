@@ -40,8 +40,17 @@ export default defineConfig({
     sepolia: {
       type: "http",
       chainType: "l1",
+      chainId: 11_155_111,
       url: configVariable("SEPOLIA_RPC_URL"),
       accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+    },
+    /** Linea Sepolia：与 Infura `linea-sepolia` 等 RPC 对齐，勿与以太坊 Sepolia 混用 */
+    lineaSepolia: {
+      type: "http",
+      chainType: "generic",
+      chainId: 59_141,
+      url: configVariable("LINEA_SEPOLIA_RPC_URL"),
+      accounts: [configVariable("LINEA_SEPOLIA_PRIVATE_KEY")],
     },
   },
 });
