@@ -95,42 +95,73 @@ export const productApiService = {
     };
   },
 
-  // 获取商品详情
-  getProductById: async (id: string): Promise<Product> => {
+  /** 获取详情原始 data（SPU/SKU/详情/属性） */
+  getProductDetailRaw: async (params: { productCode: string }): Promise<unknown> => {
     const requestBody = {
-      product_id: parseInt(id),
-      product_code: id,
+      product_id: 0,
+      product_code: params.productCode ?? '',
     };
-    
-    const response = await baseClient.post<any>('/api/product/getProductDetails', requestBody, {
-      skipAuth: true, // 商品详情不需要认证
-    });
-    const rawData = response.data;
 
-    // 兼容新旧返回结构：
-    // 1) 新结构：BaseResp.Data = 商品对象 或 商品JSON字符串
-    // 2) 旧结构：{ product_info: {...} }
-    if (rawData && typeof rawData === 'object' && rawData.product_info) {
-      return rawData.product_info as Product;
+    const response = await baseClient.post<any>('/api/product/getProductDetails', requestBody, {
+      skipAuth: true,
+    });
+
+    let rawData = response.data;
+    if (response.code !== 0) {
+      throw new Error(response.message || '获取商品详情失败');
     }
 
     if (typeof rawData === 'string') {
       try {
-        const parsed = JSON.parse(rawData);
-        if (parsed?.product_info) {
-          return parsed.product_info as Product;
-        }
-        return parsed as Product;
+        rawData = JSON.parse(rawData);
       } catch {
         throw new Error('商品详情解析失败：后端返回的 data 不是有效 JSON');
       }
     }
 
-    if (rawData && typeof rawData === 'object') {
-      return rawData as Product;
+    if (rawData && typeof rawData === 'object' && (rawData as any).product_info) {
+      return (rawData as any).product_info;
     }
 
-    throw new Error('商品详情解析失败：缺少有效的 data 字段');
+    return rawData;
+  },
+
+  // 获取商品详情（列表卡片兼容）
+  getProductById: async (id: string): Promise<Product> => {
+    const raw = await productApiService.getProductDetailRaw({
+      productCode: id,
+    });
+    const spu = (raw as any)?.SPU ?? (raw as any)?.spu;
+    if (!spu) {
+      throw new Error('商品详情解析失败');
+    }
+    const images =
+      typeof spu.images === 'string'
+        ? spu.images.split(',').filter(Boolean)
+        : Array.isArray(spu.images)
+          ? spu.images
+          : [];
+    return {
+      id: spu.id,
+      code: spu.code,
+      name: spu.name,
+      category1Id: spu.category1Id,
+      category1Code: spu.category1Code,
+      category2Id: spu.category2Id,
+      category2Code: spu.category2Code,
+      category3Id: spu.category3Id,
+      category3Code: spu.category3Code,
+      brand: spu.brand,
+      price: spu.price,
+      realPrice: spu.realPrice,
+      totalSales: spu.totalSales,
+      totalStock: spu.totalStock,
+      status: spu.status,
+      images,
+      description: spu.description,
+      attributes: null,
+      skuList: (raw as any).SKUs ?? (raw as any).skus,
+    } as Product;
   },
 
   // 获取商品分类

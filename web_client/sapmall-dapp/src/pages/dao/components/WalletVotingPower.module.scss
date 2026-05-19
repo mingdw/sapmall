@@ -1,0 +1,74 @@
+.wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(71, 85, 105, 0.4);
+  background: rgba(2, 6, 23, 0.4);
+  transition: border-color 0.2s ease;
+}
+
+.compact {
+  padding: 0.75rem 0.875rem;
+}
+
+.connected {
+  border-color: rgba(245, 158, 11, 0.28);
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.06) 0%,
+    rgba(2, 6, 23, 0.5) 100%
+  );
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.22);
+}
+
+.icon {
+  font-size: 1.125rem;
+  color: #fbbf24;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.hint {
+  font-size: 0.8125rem;
+  color: #cbd5e1;
+  line-height: 1.45;
+}
+
+.power {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #fef3c7;
+  letter-spacing: -0.02em;
+}
+
+.address {
+  font-size: 0.6875rem;
+  color: #64748b;
+  font-family: ui-monospace, monospace;
+}

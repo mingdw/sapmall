@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"sapphire-mall/app/internal/customererrors"
+	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
@@ -31,7 +32,19 @@ func (l *GetProductDetailsLogic) GetProductDetails(req *types.GetProductReq) (re
 	// 获取单个商品信息
 	productRepository := repository.NewProductRepository(l.svcCtx.GormDB)
 
-	product, err := productRepository.GetProduct(l.ctx, req.ProductId)
+	var product *model.Product
+	if req.ProductId > 0 {
+		product, err = productRepository.GetProduct(l.ctx, req.ProductId)
+	} else if req.ProductCode != "" {
+		product, err = productRepository.GetProductByCode(l.ctx, req.ProductCode)
+	} else {
+		return &types.BaseResp{
+			Code:    1,
+			Message: "product_id or product_code is required",
+			Data:    nil,
+			Total:   0,
+		}, nil
+	}
 	if err != nil {
 		return nil, err
 	}

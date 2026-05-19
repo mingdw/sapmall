@@ -1,0 +1,64 @@
+.shell {
+  position: relative;
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2.5%;
+  padding-right: 2.5%;
+  overflow: hidden;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  padding-top: 0.5rem;
+  padding-bottom: 2rem;
+}
+
+.ambientTop {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(900px, 100%);
+  height: 280px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(245, 158, 11, 0.14) 0%,
+    rgba(234, 88, 12, 0.06) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambientSide {
+  position: absolute;
+  right: -80px;
+  top: 200px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(251, 146, 60, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gridOverlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, transparent 85%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambientTop,
+  .ambientSide {
+    opacity: 0.6;
+  }
+}

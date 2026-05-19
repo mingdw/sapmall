@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './MarketPlacePageDetail.module.scss';
 import { commonApiService } from '../../services/api/commonApiService';
 import { productApiService } from '../../services/api/productApiService';
@@ -9,8 +10,13 @@ import AttrGroupFilter from './components/AttrGroupFilter';
 import ProductCategoryComponent from '../../components/ProductCategoryCard';
 import { useCategoryStore } from '../../store/categoryStore';
 import { transformProductForDisplay } from '../../utils/productUtils';
+import { navigateToProductDetail } from './product/paths';
+import { MarketplaceLocationState } from './paths';
+import { findCategoryById } from './utils/categoryUtils';
 
 const MarketPlacePageDetail: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const INITIAL_CATEGORY_PAGE_SIZE = 30;
   const requestIdRef = useRef(0);
   const [showMoreFilters, setShowMoreFilters] = useState(false);
@@ -75,26 +81,22 @@ const MarketPlacePageDetail: React.FC = () => {
     fetchCategories();
   }, [isCacheValid, categories.length, setCategories, setLoading, setLastFetchTime]);
 
+  // 面包屑等入口通过 location.state 预选分类
+  useEffect(() => {
+    const state = location.state as MarketplaceLocationState | undefined;
+    if (!state || !('selectedCategoryId' in state)) return;
+
+    const categoryId = state.selectedCategoryId;
+    setSelectedCategory(categoryId == null || categoryId === 0 ? null : categoryId);
+    setSearchQuery('');
+    setSearchInput('');
+    setCurrentPage(1);
+  }, [location.key, location.state]);
+
   // 使用 useMemo 缓存分类相关的计算
   const firstLevelCategories = useMemo(() => {
     return categories.filter(cat => cat.level === 1);
   }, [categories]);
-
-  // 递归查找分类数据（包括子分类）
-  const findCategoryById = useCallback((categories: CategoryTreeResp[], targetId: number): CategoryTreeResp | null => {
-    for (const category of categories) {
-      if (category.id === targetId) {
-        return category;
-      }
-      if (category.children && category.children.length > 0) {
-        const found = findCategoryById(category.children, targetId);
-        if (found) {
-          return found;
-        }
-      }
-    }
-    return null;
-  }, []);
 
   const selectedCategoryData = useMemo(() => {
     if (selectedCategory === null || selectedCategory === 0) return null;
@@ -404,16 +406,14 @@ const MarketPlacePageDetail: React.FC = () => {
     setSearchInput(''); // 清空搜索输入框
   };
 
-  // 处理商品点击
   const handleProductClick = (product: Product) => {
-    console.log('点击商品:', product);
-    // TODO: 跳转到商品详情页面
+    if (!product.code) return;
+    navigateToProductDetail(navigate, product.code);
   };
 
-  // 处理商品购买
   const handleProductBuy = (product: Product) => {
-    console.log('购买商品:', product);
-    // TODO: 实现购买逻辑
+    if (!product.code) return;
+    navigateToProductDetail(navigate, product.code, { buyIntent: true });
   };
 
   // 按分类分组商品和商品总数

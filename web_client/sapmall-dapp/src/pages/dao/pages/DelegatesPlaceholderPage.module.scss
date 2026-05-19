@@ -1,0 +1,28 @@
+.card {
+  max-width: 520px;
+  margin: 2rem auto;
+  padding: 2.5rem 2rem !important;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.iconRing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  box-shadow: 0 0 32px rgba(245, 158, 11, 0.15);
+}
+
+.icon {
+  font-size: 2rem;
+  color: #fbbf24;
+}

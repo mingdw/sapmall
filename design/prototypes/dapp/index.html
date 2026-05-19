@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sapphire Mall - DApp</title>
+    <!-- 无尾部斜杠访问 /dapp 时，相对路径会解析到站点根目录；统一以 /dapp/ 为基准 -->
+    <base href="/dapp/">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -157,7 +159,7 @@
     <!-- 主内容区域 -->
     <main id="mainContent" class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <!-- 默认显示代币商城内容 -->
-        <iframe src="marketplace.html" class="w-full min-h-screen border-0" id="contentFrame"></iframe>
+        <iframe src="/dapp/marketplace.html" class="w-full border-0" id="contentFrame" style="min-height: calc(100vh - 5rem); height: calc(100vh - 5rem);"></iframe>
     </main>
 
     <script>
@@ -200,7 +202,7 @@
                 console.log('开始加载管理后台');
                 mainContent.innerHTML = `
                     <iframe 
-                        src="../admin/index.html" 
+                        src="/admin/index.html" 
                         class="w-full min-h-screen border-0" 
                         id="adminFrame"
                         onload="console.log('iframe加载完成')"
@@ -246,7 +248,10 @@
                     e.preventDefault();
                     
                     // 更新内容框架的源
-                    document.getElementById('contentFrame').src = link.href;
+                    const frame = document.getElementById('contentFrame');
+                    if (frame) {
+                        frame.src = link.getAttribute('href');
+                    }
                     
                     // 更新导航项的激活状态
                     document.querySelectorAll('nav a').forEach(a => {

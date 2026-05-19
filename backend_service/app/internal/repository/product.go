@@ -2,12 +2,16 @@ package repository
 
 import (
 	"context"
+	"errors"
+	"strings"
+
 	"gorm.io/gorm"
 	"sapphire-mall/app/internal/model"
 )
 
 type ProductRepository interface {
 	GetProduct(ctx context.Context, id int64) (*model.Product, error)
+	GetProductByCode(ctx context.Context, code string) (*model.Product, error)
 	ListProductsByCategoryCodes(ctx context.Context, categoryCodes []string, productName string, page, pageSize int) ([]*model.Product, int64, error)
 	GetCategories(ctx context.Context, categoryCodes []string) ([]*model.Category, error)
 	//GetProductSpuRepository() ProductSpuRepository
@@ -22,34 +26,88 @@ func NewProductRepository(db *gorm.DB) ProductRepository {
 	return &productRepository{db: db}
 }
 
+func (r *productRepository) loadProductRelations(
+	ctx context.Context,
+	db *gorm.DB,
+	spuID int64,
+	product *model.Product,
+) error {
+	product.SKUs = nil
+	product.SPUDetail = nil
+	product.SPUAttrParams = nil
+
+	var skus []*model.ProductSku
+	if err := db.Model(&model.ProductSku{}).
+		Where("product_spu_id = ?", spuID).
+		Find(&skus).Error; err != nil {
+		return err
+	}
+	if len(skus) > 0 {
+		product.SKUs = skus
+	}
+
+	var detail model.ProductSpuDetail
+	err := db.Model(&model.ProductSpuDetail{}).
+		Where("product_spu_id = ?", spuID).
+		First(&detail).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
+		}
+	} else {
+		product.SPUDetail = &detail
+	}
+
+	var attrs []*model.ProductSpuAttrParams
+	if err := db.Model(&model.ProductSpuAttrParams{}).
+		Where("product_spu_id = ?", spuID).
+		Find(&attrs).Error; err != nil {
+		return err
+	}
+	if len(attrs) > 0 {
+		product.SPUAttrParams = attrs
+	}
+
+	return nil
+}
+
 func (r *productRepository) GetProduct(ctx context.Context, id int64) (*model.Product, error) {
 	var product model.Product
+	var spu model.ProductSpu
 
 	db := r.db.WithContext(ctx)
 
-	err := db.Model(&product.SPU).
+	err := db.Model(&model.ProductSpu{}).
 		Where("id = ? AND is_deleted = ?", id, 0).
-		First(&product.SPU).Error
+		First(&spu).Error
 	if err != nil {
 		return nil, err
 	}
+	product.SPU = &spu
 
-	// 分别查询关联数据
-	if err := db.Model(&product.SKUs).
-		Where("product_spu_id = ?", id).
-		Find(&product.SKUs).Error; err != nil {
+	if err := r.loadProductRelations(ctx, db, spu.ID, &product); err != nil {
 		return nil, err
 	}
 
-	if err := db.Model(&product.SPUDetail).
-		Where("product_spu_id = ?", id).
-		First(&product.SPUDetail).Error; err != nil {
+	return &product, nil
+}
+
+func (r *productRepository) GetProductByCode(ctx context.Context, code string) (*model.Product, error) {
+	var product model.Product
+	var spu model.ProductSpu
+
+	db := r.db.WithContext(ctx)
+	code = strings.TrimSpace(code)
+
+	err := db.Model(&model.ProductSpu{}).
+		Where("code = ? AND is_deleted = ?", code, 0).
+		First(&spu).Error
+	if err != nil {
 		return nil, err
 	}
+	product.SPU = &spu
 
-	if err := db.Model(&product.SPUAttrParams).
-		Where("product_spu_id = ?", id).
-		Find(&product.SPUAttrParams).Error; err != nil {
+	if err := r.loadProductRelations(ctx, db, spu.ID, &product); err != nil {
 		return nil, err
 	}
 
