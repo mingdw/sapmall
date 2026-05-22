@@ -331,184 +331,428 @@
     "reviewsSummary": "{{count}} reviews"
   },
   "dao": {
-    "breadcrumb": {
-      "home": "DAO Home",
-      "proposals": "Proposals"
-    },
-    "nav": {
-      "aria": "DAO section navigation",
-      "home": "Home",
+    "title": "DAO Governance",
+    "tabs": {
       "proposals": "Proposals",
-      "new": "New",
-      "delegates": "Delegate"
+      "discussions": "Hot discussions",
+      "events": "Events"
     },
-    "home": {
-      "badge": "Community governance",
-      "title": "Sapmall DAO",
-      "subtitle": "Discuss and vote in one loop—discover proposals, join threads, cast votes, track execution.",
-      "createProposal": "New Proposal",
-      "activeVotes": "Active Votes",
-      "hotDiscussion": "Hot Discussions",
-      "latestProposals": "Latest Proposals",
-      "viewAll": "View all",
-      "replies": "replies",
-      "myGovernance": "My Governance",
-      "pendingVotes": "Pending votes",
-      "votedCount": "Voted",
-      "votingPower": "Voting power",
-      "delegatedTo": "Delegated to {{address}}",
-      "setupDelegate": "Set up delegation",
-      "endingSoon": "Ending soon",
-      "rules": "Governance rules"
-    },
-    "kpi": {
-      "members": "Members",
-      "active": "Active proposals",
-      "participation": "30d participation",
-      "treasury": "Treasury"
-    },
-    "list": {
-      "badge": "All proposals",
-      "title": "Proposals",
-      "subtitle": "Filter, sort, and open a proposal to discuss and vote",
-      "resultCount": "{{count}} proposals",
-      "filtersAria": "Proposal filters",
-      "tabAll": "All proposals",
-      "tabDiscussion": "Discussion only",
-      "searchPlaceholder": "Search ID, title, or summary",
-      "statusAll": "All statuses",
-      "typeAll": "All types",
-      "sortLatest": "Latest",
-      "sortEnding": "Ending soon",
-      "sortParticipation": "Most participation",
-      "sortControversy": "Most contested",
-      "participation": "{{percent}}% participation"
-    },
-    "detail": {
-      "backToList": "Back to proposals",
-      "proposer": "Proposer",
-      "created": "Created",
-      "deadline": "Voting ends",
-      "executed": "Executed",
-      "tabOverview": "Overview",
-      "tabDiscussion": "Discussion",
-      "tabVotes": "Vote log",
-      "summary": "Summary",
-      "body": "Body",
-      "impact": "Impact",
-      "onChain": "On-chain info",
-      "execution": "Execution",
-      "noVotes": "No on-chain votes yet",
-      "voter": "Voter",
-      "option": "Option",
-      "weight": "Weight",
-      "verify": "Verify",
-      "delegated": "delegated",
-      "viewTx": "View tx"
-    },
-    "vote": {
-      "panelTitle": "Vote",
-      "for": "For",
-      "against": "Against",
-      "abstain": "Abstain",
-      "quorum": "Quorum",
-      "confirm": "Confirm vote",
-      "submitSuccess": "Vote submitted (demo)",
-      "youVoted": "You voted: {{option}}",
-      "powerHint": "Using {{power}} SAP voting power",
-      "changeRule": "You may change your vote once before the deadline (on-chain rules apply)",
-      "chooseOption": "Choose an option",
-      "endsIn": "Ends in",
-      "discussionEnds": "Discussion ends",
-      "statusHint": {
-        "draft": "Draft — not published",
-        "discussion": "Discussion — voting not started",
-        "active": "Voting in progress",
-        "passed": "Passed",
-        "rejected": "Rejected",
-        "executed": "Executed"
+    "hero": {
+      "slidePrev": "Previous slide",
+      "slideNext": "Next slide",
+      "dimensionNavAria": "Governance dimension",
+      "dimensions": {
+        "discussions": "Hot discussions",
+        "proposals": "Community proposals",
+        "events": "Major events"
+      },
+      "slides": {
+        "discussions": {
+          "title": "Hear the community",
+          "subtitle": "Discord is where we talk",
+          "description": "Share ideas on product, governance, and the ecosystem in channels. Discussion builds consensus; on-chain votes make decisions."
+        },
+        "proposals": {
+          "title": "On-chain proposals",
+          "subtitle": "Vote to shape Sapphire Mall",
+          "description": "Browse active and past proposals. Connect your wallet to vote—every yes or no writes the rules of the ecosystem."
+        },
+        "events": {
+          "title": "Governance milestones",
+          "subtitle": "AMAs, grants, and milestones",
+          "description": "Follow community AMAs, grant rounds, and key milestones so you never miss a critical moment.",
+          "highlight": "Next community AMA · May 28, 20:00 UTC+8"
+        }
+      },
+      "aside": {
+        "discussions": {
+          "kicker": "Community pulse"
+        },
+        "proposals": {
+          "kicker": "On-chain governance",
+          "activeVotes": "Active votes",
+          "quorum": "Current quorum",
+          "voteWindow": "Voting window",
+          "hint": "Connect wallet to vote on-chain"
+        },
+        "events": {
+          "liveTag": "Live governance",
+          "footnote": "Grants and milestones sync to the governance board",
+          "grantOpen": "Grant open",
+          "milestone": "Latest milestone"
+        }
       }
     },
-    "discussion": {
-      "sortLatest": "Latest",
-      "sortHot": "Hot",
-      "count": "{{count}} comments",
-      "reply": "Reply",
-      "placeholder": "Share your perspective…",
-      "connectToReply": "Connect wallet to comment",
-      "post": "Post",
-      "empty": "No comments yet — start the conversation",
-      "like": "Like",
-      "holdersOnly": "Only token holders may comment during voting (demo)",
-      "you": "You"
+    "metrics": {
+      "proposals": {
+        "total": "Total proposals",
+        "active": "Active",
+        "passed": "Completed",
+        "pending": "Pending"
+      },
+      "discussions": {
+        "hot": "Hot topics",
+        "marketplace": "Marketplace",
+        "community": "Community growth",
+        "members": "Members"
+      },
+      "events": {
+        "upcoming": "Upcoming",
+        "ama": "AMAs this month",
+        "grant": "Grant rounds",
+        "milestones": "Milestones"
+      }
     },
-    "wallet": {
-      "connectPrompt": "Connect wallet to vote",
-      "connectHint": "View voting power and participate in governance",
-      "votingPower": "My voting power"
+    "actions": {
+      "createProposal": "Create proposal",
+      "startDiscussion": "Start discussion"
+    },
+    "filters": {
+      "proposalsAria": "Filter proposals",
+      "discussionsAria": "Filter discussions",
+      "proposals": {
+        "all": "All",
+        "active": "Active",
+        "passed": "Completed",
+        "pending": "Pending"
+      },
+      "discussions": {
+        "all": "All"
+      },
+      "eventsAria": "Filter events",
+      "events": {
+        "all": "All",
+        "ama": "AMA",
+        "grant": "Grant",
+        "milestone": "Milestone",
+        "announcement": "Announcement"
+      }
+    },
+    "list": {
+      "tabListAria": "List type",
+      "filterLabel": "Filter",
+      "searchPlaceholder": "Search…",
+      "empty": "No items match your filter",
+      "votesSummary": "{{for}} for / {{against}} against · {{pct}}% for",
+      "voteFor": "{{count}} for",
+      "voteAgainst": "{{count}} against",
+      "voteForPct": "{{pct}}% for",
+      "proposerLabel": "Proposer: ",
+      "startsAt": "Start {{date}}",
+      "endsAt": "End {{date}}",
+      "startsAtLabel": "Start",
+      "endsAtLabel": "Ends",
+      "discussionMeta": "{{replies}} replies · {{activity}}",
+      "discussionReplies": "{{count}} replies",
+      "discussionViews": "{{views}} views",
+      "eventMeta": "{{views}} views",
+      "events": {
+        "categories": {
+          "ama": "AMA",
+          "grant": "Grant",
+          "milestone": "Milestone",
+          "announcement": "Announcement"
+        },
+        "e1": {
+          "title": "May community AMA: roadmap & Q2 milestones",
+          "excerpt": "Core team covers tokenomics, marketplace fee buybacks, and Grant season 2 timing, with live Q&A.",
+          "publishedAt": "May 18, 2026"
+        },
+        "e2": {
+          "title": "Grant season 2 opens · 50,000 USDT pool",
+          "excerpt": "Applications open for dev tools, community ops, and integrations. First cohort announced early June.",
+          "publishedAt": "May 15, 2026"
+        },
+        "e3": {
+          "title": "Milestone: DAO governance live on mainnet",
+          "excerpt": "On-chain proposals, voting, and delegation are live—connect your wallet to participate.",
+          "publishedAt": "May 10, 2026"
+        },
+        "e4": {
+          "title": "Notice: voting window rules updated",
+          "excerpt": "Active proposal voting extended from 5 to 7 days; quorum changes posted on the forum.",
+          "publishedAt": "May 8, 2026"
+        },
+        "e5": {
+          "title": "Recap: April ecosystem AMA highlights",
+          "excerpt": "NFT review SLA, multilingual docs, and Bags partnership—replay and transcript on the forum.",
+          "publishedAt": "May 2, 2026"
+        },
+        "e6": {
+          "title": "Grant season 1 wrap-up: 12 projects funded",
+          "excerpt": "Wallet integrations, dashboards, and community bots—season 2 applications are open.",
+          "publishedAt": "Apr 28, 2026"
+        },
+        "e7": {
+          "title": "Ecosystem weekly: governance participation above 65%",
+          "excerpt": "On-chain votes, delegation, and forum stats with next month's governance calendar.",
+          "publishedAt": "Apr 22, 2026"
+        },
+        "e8": {
+          "title": "Notice: marketplace fee allocation details",
+          "excerpt": "Buyback, treasury, and community incentive ratios and execution schedule.",
+          "publishedAt": "Apr 18, 2026"
+        },
+        "e9": {
+          "title": "June AMA: multichain rollout & wallet roadmap",
+          "excerpt": "Tech lead on EVM-compatible chains and testnet milestones.",
+          "publishedAt": "Apr 12, 2026"
+        },
+        "e10": {
+          "title": "Grant focus: developer tooling track",
+          "excerpt": "Fast-track reviews for SDKs, indexers, and monitoring tools.",
+          "publishedAt": "Apr 8, 2026"
+        },
+        "e11": {
+          "title": "Notice: governance maintenance window",
+          "excerpt": "Contract parameter upgrade on Jun 2; voting briefly paused.",
+          "publishedAt": "Apr 2, 2026"
+        }
+      },
+      "proposals": {
+        "tags": {
+          "governance": "Governance",
+          "treasury": "Treasury",
+          "marketplace": "Marketplace",
+          "staking": "Staking",
+          "grant": "Grant",
+          "multisig": "Multisig",
+          "security": "Security"
+        },
+        "p1": {
+          "title": "Adjust SAP staking rewards",
+          "summary": "Propose an 8%–12% APR range and a 30-day unlock period.",
+          "startAt": "May 12, 2026",
+          "endAt": "May 19, 2026"
+        },
+        "p2": {
+          "title": "Marketplace fee buyback plan",
+          "summary": "Allocate 20% of marketplace fees to SAP buybacks and the treasury.",
+          "startAt": "May 10, 2026",
+          "endAt": "May 17, 2026"
+        },
+        "p3": {
+          "title": "Grant Season 2 budget notice",
+          "summary": "Allocate 50,000 USDT for dev tools and community ops grants.",
+          "startAt": "May 22, 2026",
+          "endAt": "May 29, 2026"
+        },
+        "p4": {
+          "title": "Governance multisig rotation",
+          "summary": "Nominate the next multisig roster with a 7-day review period.",
+          "startAt": "Apr 20, 2026",
+          "endAt": "Apr 27, 2026"
+        },
+        "p5": {
+          "title": "Digital rights listing standards",
+          "summary": "Define review flow and disclosure templates for NFTs and virtual goods.",
+          "startAt": "May 8, 2026",
+          "endAt": "May 15, 2026"
+        },
+        "p6": {
+          "title": "SAP token burn mechanism",
+          "summary": "Burn 50% of quarterly buybacks permanently; rest to treasury.",
+          "startAt": "Apr 5, 2026",
+          "endAt": "Apr 12, 2026"
+        },
+        "p7": {
+          "title": "Merchant deposit tier adjustment",
+          "summary": "Tiered deposit requirements to lower barriers for small merchants.",
+          "startAt": "May 25, 2026",
+          "endAt": "Jun 1, 2026"
+        },
+        "p8": {
+          "title": "Cross-chain bridge audit report",
+          "summary": "Publish third-party audit results and upcoming bug bounty scope.",
+          "startAt": "May 14, 2026",
+          "endAt": "May 21, 2026"
+        },
+        "p9": {
+          "title": "Treasury quarterly disclosure template",
+          "summary": "Standard format for on-chain flows, grants, and buybacks.",
+          "startAt": "Apr 28, 2026",
+          "endAt": "May 5, 2026"
+        },
+        "p10": {
+          "title": "Delegated voting defaults refresh",
+          "summary": "Per-proposal-type delegation rules for token holders.",
+          "startAt": "May 20, 2026",
+          "endAt": "May 27, 2026"
+        },
+        "p11": {
+          "title": "Merchant KYC tier standards revision",
+          "summary": "Tiered KYC by volume to simplify onboarding for small merchants.",
+          "startAt": "Jun 2, 2026",
+          "endAt": "Jun 9, 2026"
+        }
+      },
+      "discussions": {
+        "d1": {
+          "title": "Wallet signing UX improvements",
+          "channel": "#hot-discussions",
+          "excerpt": "Feedback on mobile voting prompts and gas estimates—86 comments.",
+          "activity": "Active today"
+        },
+        "d2": {
+          "title": "Are marketplace fees fair by category?",
+          "channel": "#marketplace-gov",
+          "excerpt": "Discuss differentiated fees and transparency requirements.",
+          "activity": "Pinned"
+        },
+        "d3": {
+          "title": "Q3 community event ideas",
+          "channel": "#community-growth",
+          "excerpt": "Collect themes for meetups and AMAs—submit your ideas.",
+          "activity": "Top this week"
+        },
+        "d4": {
+          "title": "Multilingual governance docs",
+          "channel": "#hot-discussions",
+          "excerpt": "Auto-translate proposal summaries to EN/ZH/JA.",
+          "activity": "128 messages"
+        },
+        "d5": {
+          "title": "NFT listing review SLA",
+          "channel": "#marketplace-gov",
+          "excerpt": "Merchants want faster reviews—discuss SLA and expedited paths.",
+          "activity": "Active yesterday"
+        },
+        "d6": {
+          "title": "New member onboarding refresh",
+          "channel": "#community-growth",
+          "excerpt": "Volunteer guide: connect wallet, vote, delegate in three steps.",
+          "activity": "54 replies"
+        },
+        "d7": {
+          "title": "Vote notification channels",
+          "channel": "#hot-discussions",
+          "excerpt": "Email or Discord bot alerts when voting opens on new proposals.",
+          "activity": "In progress"
+        },
+        "d8": {
+          "title": "Virtual goods copyright disputes",
+          "channel": "#marketplace-gov",
+          "excerpt": "Standard flow for buyer appeals and merchant evidence deadlines.",
+          "activity": "New thread"
+        },
+        "d9": {
+          "title": "Forum spam filtering rules",
+          "channel": "#community-growth",
+          "excerpt": "Auto-detection and manual review for low-quality posts.",
+          "activity": "15 replies"
+        },
+        "d10": {
+          "title": "Staking yield calculator request",
+          "channel": "#hot-discussions",
+          "excerpt": "Show estimated returns and unlock timelines by lock period.",
+          "activity": "Trending"
+        },
+        "d11": {
+          "title": "DAO page mobile layout feedback",
+          "channel": "#marketplace-gov",
+          "excerpt": "Usability issues on small screens for lists and vote actions.",
+          "activity": "9 replies"
+        }
+      }
     },
     "status": {
-      "draft": "Draft",
-      "discussion": "Discussion",
       "active": "Active",
-      "passed": "Passed",
-      "rejected": "Rejected",
-      "executed": "Executed"
-    },
-    "type": {
-      "parameter": "Parameter",
-      "treasury": "Treasury",
-      "grants": "Grants",
-      "protocol": "Protocol",
-      "community": "Community"
-    },
-    "rules": {
-      "quorumTitle": "Quorum",
-      "quorumBody": "Proposals require 60% quorum to pass (MVP demo value).",
-      "periodTitle": "Voting period",
-      "periodBody": "Standard voting lasts 7 days; emergency proposals may be 48 hours.",
-      "proposerTitle": "Who can propose",
-      "proposerBody": "Addresses with ≥ 10,000 SAP or equivalent delegated power may submit proposals."
-    },
-    "execution": {
-      "statusLabel": "Status",
-      "timelockEnds": "Timelock ends",
-      "tx": "Transaction",
       "pending": "Pending",
-      "timelock": "Timelock",
-      "executed": "Executed",
-      "failed": "Failed"
+      "passed": "Completed"
     },
-    "empty": {
-      "proposals": "No proposals match your filters",
-      "wallet": "Connect your wallet first",
-      "power": "No voting power",
-      "detail": "Proposal not found",
-      "comments": "No comments"
+    "topicTags": {
+      "pinned": "Pinned",
+      "hot": "Hot",
+      "urgent": "Urgent",
+      "trendingWeek": "Trending",
+      "official": "Official",
+      "featured": "Featured",
+      "governance": "Governance",
+      "new": "New",
+      "poll": "Poll",
+      "bounty": "Bounty",
+      "qa": "Q&A",
+      "feedback": "Feedback",
+      "resolved": "Resolved"
     },
-    "new": {
-      "badge": "New proposal",
-      "title": "New proposal",
-      "subtitle": "Wizard: type → content → params → preview",
-      "back": "Back",
-      "stepType": "Template",
-      "stepContent": "Content",
-      "stepParams": "Voting params",
-      "stepPreview": "Preview",
-      "fieldTitle": "Title",
-      "fieldSummary": "Summary",
-      "fieldBody": "Body (Markdown)",
-      "discussionFirst": "Discussion before vote",
-      "discussionFirstHint": "7-day discussion period before on-chain voting.",
-      "next": "Next",
-      "publish": "Publish",
-      "publishSuccess": "Proposal submitted (demo, not on-chain)"
+    "topicTagFilter": {
+      "title": "Topic tags",
+      "hint": "Filter the discussion list on the left. Works with the toolbar filter.",
+      "all": "All tags",
+      "groupAria": "Filter by topic tag"
     },
-    "delegates": {
-      "badge": "Coming soon",
-      "title": "Delegation",
-      "subtitle": "Delegate voting power to trusted representatives",
-      "comingSoon": "Delegation, revoke, and delegate leaderboard ship in phase 2. Treasury and on-chain delegation in progress."
+    "overview": {
+      "proposals": {
+        "title": "Proposal overview",
+        "subtitle": "Live governance proposal stats",
+        "highlight": "Total proposals",
+        "participation": "Avg. participation",
+        "footnote": "Demo data for the current governance cycle"
+      },
+      "discussions": {
+        "title": "Discussion overview",
+        "subtitle": "Channel activity and engagement",
+        "highlight": "Total replies",
+        "threads": "Active threads",
+        "totalViews": "Total views",
+        "footnote": "Member count synced from Discord"
+      },
+      "trending": {
+        "title": "Trending now",
+        "refresh": "Refresh",
+        "hotTag": "Hot",
+        "footnote": "Ranked by reply count (demo)"
+      },
+      "events": {
+        "title": "Events overview",
+        "subtitle": "Ecosystem updates and milestones",
+        "highlight": "Total views",
+        "published": "Published",
+        "itemMeta": "{{count}} posts · {{views}} views",
+        "footnote": "AMAs, grants, milestones, and announcements"
+      },
+      "milestones": {
+        "title": "Milestones",
+        "subtitle": "Timeline of key ecosystem moments",
+        "footnote": "Sorted by publish date, newest first (demo)"
+      }
+    },
+    "proposalRules": {
+      "title": "Proposal rules",
+      "intro": "On-chain governance follows an open, verifiable process. Summary of Sapphire Mall community proposal rules.",
+      "footnote": "Thresholds and parameters are defined per proposal and on-chain contracts.",
+      "items": {
+        "submit": {
+          "title": "Who can submit",
+          "desc": "Wallets holding SAP or meeting published community thresholds may submit proposals with title, summary, and executable actions."
+        },
+        "window": {
+          "title": "Voting window",
+          "desc": "Standard proposals typically run 3–7 days; major treasury or protocol changes may use extended windows with prior notice."
+        },
+        "quorum": {
+          "title": "Quorum",
+          "desc": "A minimum participation rate must be met for a result to count; otherwise the proposal fails automatically."
+        },
+        "vote": {
+          "title": "How to vote",
+          "desc": "One address, one vote. Connect your wallet and submit an on-chain transaction during the voting period (for, against, or abstain as listed)."
+        },
+        "execute": {
+          "title": "Passage & execution",
+          "desc": "Passed proposals enter a timelock before execution; outcomes and transaction hashes are visible on the governance dashboard."
+        }
+      }
+    },
+    "sidebar": {
+      "title": "My participation",
+      "connectHint": "Connect your wallet to view your governance activity.",
+      "connectWallet": "Connect wallet",
+      "connectedStat": "You voted on 3 proposals (demo data)",
+      "voteAction": "Vote"
+    },
+    "toast": {
+      "comingSoon": "Detail pages are coming soon."
     }
   },
   "checkout": {

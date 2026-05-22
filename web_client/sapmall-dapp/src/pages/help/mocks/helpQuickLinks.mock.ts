@@ -1,0 +1,61 @@
+import type { HelpQuickLink } from '../types';
+
+export const HELP_QUICK_LINKS: HelpQuickLink[] = [
+  {
+    id: 'wallet',
+    category: 'wallet-security',
+    icon: 'wallet',
+    titleKey: 'help.quickLinks.wallet.title',
+    descKey: 'help.quickLinks.wallet.desc',
+    href: '#',
+    searchHint: 'wallet',
+  },
+  {
+    id: 'exchange',
+    category: 'exchange-payment',
+    icon: 'exchange',
+    titleKey: 'help.quickLinks.exchange.title',
+    descKey: 'help.quickLinks.exchange.desc',
+    href: '/exchange',
+  },
+  {
+    id: 'marketplace',
+    category: 'marketplace',
+    icon: 'store',
+    titleKey: 'help.quickLinks.marketplace.title',
+    descKey: 'help.quickLinks.marketplace.desc',
+    href: '/marketplace',
+  },
+  {
+    id: 'rewards',
+    category: 'getting-started',
+    icon: 'gift',
+    titleKey: 'help.quickLinks.rewards.title',
+    descKey: 'help.quickLinks.rewards.desc',
+    href: '/rewards',
+  },
+  {
+    id: 'dao',
+    category: 'dao-community',
+    icon: 'users',
+    titleKey: 'help.quickLinks.dao.title',
+    descKey: 'help.quickLinks.dao.desc',
+    href: '/dao',
+  },
+  {
+    id: 'security',
+    category: 'wallet-security',
+    icon: 'shield',
+    titleKey: 'help.quickLinks.security.title',
+    descKey: 'help.quickLinks.security.desc',
+    href: '/help/a/protect-private-key',
+  },
+  {
+    id: 'merchant',
+    category: 'merchant',
+    icon: 'building',
+    titleKey: 'help.quickLinks.merchant.title',
+    descKey: 'help.quickLinks.merchant.desc',
+    href: '/admin',
+  },
+];

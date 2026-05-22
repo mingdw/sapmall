@@ -331,184 +331,428 @@
     "reviewsSummary": "共 {{count}} 条评价"
   },
   "dao": {
-    "breadcrumb": {
-      "home": "DAO 首页",
-      "proposals": "提案列表"
-    },
-    "nav": {
-      "aria": "DAO 模块导航",
-      "home": "首页",
+    "title": "DAO 治理",
+    "tabs": {
       "proposals": "提案",
-      "new": "发起",
-      "delegates": "委托"
+      "discussions": "热门讨论",
+      "events": "大事件"
     },
-    "home": {
-      "badge": "社区治理",
-      "title": "Sapmall DAO",
-      "subtitle": "讨论与投票在同一治理闭环内完成——发现提案、参与讨论、完成投票、追踪执行。",
-      "createProposal": "发起提案",
-      "activeVotes": "进行中投票",
-      "hotDiscussion": "热门讨论",
-      "latestProposals": "最新提案",
-      "viewAll": "查看全部",
-      "replies": "条回复",
-      "myGovernance": "我的治理",
-      "pendingVotes": "待投票",
-      "votedCount": "已投票",
-      "votingPower": "投票权",
-      "delegatedTo": "已委托给 {{address}}",
-      "setupDelegate": "设置委托",
-      "endingSoon": "即将截止",
-      "rules": "治理规则"
-    },
-    "kpi": {
-      "members": "成员数",
-      "active": "进行中提案",
-      "participation": "30 日参与率",
-      "treasury": "金库余额"
-    },
-    "list": {
-      "badge": "全部提案",
-      "title": "提案列表",
-      "subtitle": "筛选、排序并进入详情参与讨论与投票",
-      "resultCount": "共 {{count}} 条提案",
-      "filtersAria": "提案筛选",
-      "tabAll": "全部提案",
-      "tabDiscussion": "讨论中 · 未开投票",
-      "searchPlaceholder": "搜索编号、标题或摘要",
-      "statusAll": "全部状态",
-      "typeAll": "全部类型",
-      "sortLatest": "最新",
-      "sortEnding": "即将截止",
-      "sortParticipation": "参与最多",
-      "sortControversy": "争议度",
-      "participation": "参与率 {{percent}}%"
-    },
-    "detail": {
-      "backToList": "返回提案列表",
-      "proposer": "发起人",
-      "created": "创建时间",
-      "deadline": "投票截止",
-      "executed": "执行时间",
-      "tabOverview": "概览",
-      "tabDiscussion": "讨论",
-      "tabVotes": "投票记录",
-      "summary": "摘要",
-      "body": "正文",
-      "impact": "影响说明",
-      "onChain": "链上信息",
-      "execution": "执行状态",
-      "noVotes": "暂无链上投票记录",
-      "voter": "地址",
-      "option": "选项",
-      "weight": "权重",
-      "verify": "验证",
-      "delegated": "委托票",
-      "viewTx": "查看交易"
-    },
-    "vote": {
-      "panelTitle": "投票",
-      "for": "赞成",
-      "against": "反对",
-      "abstain": "弃权",
-      "quorum": "Quorum",
-      "confirm": "确认投票",
-      "submitSuccess": "投票已提交（演示）",
-      "youVoted": "您已投票：{{option}}",
-      "powerHint": "将使用 {{power}} SAP 投票权",
-      "changeRule": "投票结束前可改票一次（链上规则以合约为准）",
-      "chooseOption": "选择投票选项",
-      "endsIn": "距截止",
-      "discussionEnds": "讨论结束",
-      "statusHint": {
-        "draft": "草稿尚未发布",
-        "discussion": "讨论中，投票尚未开始",
-        "active": "投票进行中",
-        "passed": "投票已通过",
-        "rejected": "投票未通过",
-        "executed": "已执行"
+    "hero": {
+      "slidePrev": "上一屏",
+      "slideNext": "下一屏",
+      "dimensionNavAria": "治理维度切换",
+      "dimensions": {
+        "discussions": "热门讨论",
+        "proposals": "社区提案",
+        "events": "大事件"
+      },
+      "slides": {
+        "discussions": {
+          "title": "倾听社区声音",
+          "subtitle": "Discord 是讨论主阵地",
+          "description": "在频道里交流产品、治理与生态想法；讨论用于凝聚共识，链上投票才是最终决策。"
+        },
+        "proposals": {
+          "title": "链上提案，共同决策",
+          "subtitle": "用投票塑造 Sapphire Mall",
+          "description": "浏览进行中与历史提案，连接钱包即可参与投票。每一笔赞成或反对，都在书写生态规则。"
+        },
+        "events": {
+          "title": "治理大事件一览",
+          "subtitle": "AMA、Grant 与里程碑",
+          "description": "关注社区 AMA、资助计划与重要里程碑，第一时间参与关键节点。",
+          "highlight": "下一场社区 AMA · 5 月 28 日 20:00 UTC+8"
+        }
+      },
+      "aside": {
+        "discussions": {
+          "kicker": "社区脉搏"
+        },
+        "proposals": {
+          "kicker": "链上治理",
+          "activeVotes": "投票进行中",
+          "quorum": "当前 Quorum",
+          "voteWindow": "投票窗口",
+          "hint": "连接钱包后即可参与链上投票"
+        },
+        "events": {
+          "liveTag": "治理现场",
+          "footnote": "Grant 与里程碑同步更新至治理看板",
+          "grantOpen": "Grant 开放",
+          "milestone": "最新里程碑"
+        }
       }
     },
-    "discussion": {
-      "sortLatest": "最新",
-      "sortHot": "最热",
-      "count": "{{count}} 条讨论",
-      "reply": "回复",
-      "placeholder": "分享您的观点…",
-      "connectToReply": "连接钱包后参与讨论",
-      "post": "发布",
-      "empty": "暂无讨论，成为第一个发言的人",
-      "like": "点赞",
-      "holdersOnly": "投票期间仅持票权地址可评论（演示提示）",
-      "you": "我"
+    "metrics": {
+      "proposals": {
+        "total": "总提案数",
+        "active": "进行中",
+        "passed": "已完成",
+        "pending": "待开始"
+      },
+      "discussions": {
+        "hot": "热门讨论",
+        "marketplace": "商城治理",
+        "community": "社区发展",
+        "members": "社区成员"
+      },
+      "events": {
+        "upcoming": "即将开始",
+        "ama": "本月 AMA",
+        "grant": "Grant 轮次",
+        "milestones": "里程碑"
+      }
     },
-    "wallet": {
-      "connectPrompt": "连接钱包以投票",
-      "connectHint": "连接后可查看投票权并参与治理",
-      "votingPower": "我的投票权"
+    "actions": {
+      "createProposal": "发起提案",
+      "startDiscussion": "发起讨论"
+    },
+    "filters": {
+      "proposalsAria": "提案筛选",
+      "discussionsAria": "讨论筛选",
+      "proposals": {
+        "all": "全部",
+        "active": "进行中",
+        "passed": "已完成",
+        "pending": "待开始"
+      },
+      "discussions": {
+        "all": "全部"
+      },
+      "eventsAria": "大事件筛选",
+      "events": {
+        "all": "全部",
+        "ama": "AMA",
+        "grant": "Grant",
+        "milestone": "里程碑",
+        "announcement": "公告"
+      }
+    },
+    "list": {
+      "tabListAria": "列表类型切换",
+      "filterLabel": "筛选",
+      "searchPlaceholder": "搜索…",
+      "empty": "暂无符合条件的内容",
+      "votesSummary": "{{for}} 赞成 / {{against}} 反对 · {{pct}}% 赞成",
+      "voteFor": "{{count}} 赞成",
+      "voteAgainst": "{{count}} 反对",
+      "voteForPct": "{{pct}}% 赞成",
+      "proposerLabel": "提案者：",
+      "startsAt": "开始 {{date}}",
+      "endsAt": "结束 {{date}}",
+      "startsAtLabel": "开始",
+      "endsAtLabel": "结束",
+      "discussionMeta": "{{replies}} 条回复 · {{activity}}",
+      "discussionReplies": "{{count}} 条回复",
+      "discussionViews": "{{views}} 次浏览",
+      "eventMeta": "{{views}} 次浏览",
+      "events": {
+        "categories": {
+          "ama": "AMA",
+          "grant": "Grant",
+          "milestone": "里程碑",
+          "announcement": "公告"
+        },
+        "e1": {
+          "title": "五月社区 AMA：治理路线图与 Q2 里程碑",
+          "excerpt": "核心团队解读 Sapphire Mall 治理代币经济、商城手续费回购与 Grant 第二季开放节奏，并现场答疑。",
+          "publishedAt": "2026-05-18"
+        },
+        "e2": {
+          "title": "Grant 第二季正式启动 · 50,000 USDT 池",
+          "excerpt": "面向开发者工具、社区运营与生态集成三类项目开放申请，评审委员会将于 6 月上旬公布首轮名单。",
+          "publishedAt": "2026-05-15"
+        },
+        "e3": {
+          "title": "里程碑：DAO 治理模块主网上线",
+          "excerpt": "链上提案、投票与委托功能已接入主网环境，社区可通过连接钱包直接参与治理决策。",
+          "publishedAt": "2026-05-10"
+        },
+        "e4": {
+          "title": "公告：治理投票窗口规则更新",
+          "excerpt": "为提升参与率，活跃提案投票期由 5 天延长至 7 天，Quorum 阈值同步在社区论坛公示。",
+          "publishedAt": "2026-05-08"
+        },
+        "e5": {
+          "title": "回顾：四月生态 AMA 精华纪要",
+          "excerpt": "汇总 NFT 上架审核、多语言文档与 Bags 合作进展，完整回放与文字实录已发布至论坛。",
+          "publishedAt": "2026-05-02"
+        },
+        "e6": {
+          "title": "Grant 第一季收官：12 个项目获资助",
+          "excerpt": "涵盖钱包集成、数据看板与社区 Bot 等方向，第二季申请通道现已开放。",
+          "publishedAt": "2026-04-28"
+        },
+        "e7": {
+          "title": "生态周报：治理参与率突破 65%",
+          "excerpt": "链上投票、委托与论坛讨论数据汇总，附下月治理日历。",
+          "publishedAt": "2026-04-22"
+        },
+        "e8": {
+          "title": "公告：商城手续费分配细则公示",
+          "excerpt": "明确回购、金库注入与社区激励的分配比例与执行节奏。",
+          "publishedAt": "2026-04-18"
+        },
+        "e9": {
+          "title": "六月 AMA：多链部署与钱包支持路线",
+          "excerpt": "技术负责人解读 EVM 兼容链接入计划与测试网时间表。",
+          "publishedAt": "2026-04-12"
+        },
+        "e10": {
+          "title": "Grant 定向扶持：开发者工具专项",
+          "excerpt": "面向 SDK、索引器与监控工具开放快速评审通道。",
+          "publishedAt": "2026-04-08"
+        },
+        "e11": {
+          "title": "公告：治理模块维护窗口通知",
+          "excerpt": "计划 6 月 2 日凌晨进行合约参数升级，投票功能短暂暂停。",
+          "publishedAt": "2026-04-02"
+        }
+      },
+      "proposals": {
+        "tags": {
+          "governance": "治理",
+          "treasury": "金库",
+          "marketplace": "商城",
+          "staking": "质押",
+          "grant": "Grant",
+          "multisig": "多签",
+          "security": "安全"
+        },
+        "p1": {
+          "title": "SAP 质押奖励参数调整",
+          "summary": "提议将社区质押年化区间调整为 8%–12%，并引入 30 天解锁期。",
+          "startAt": "2026-05-12",
+          "endAt": "2026-05-19"
+        },
+        "p2": {
+          "title": "市场手续费回购计划",
+          "summary": "将商城交易手续费的 20% 用于回购 SAP 并注入社区金库。",
+          "startAt": "2026-05-10",
+          "endAt": "2026-05-17"
+        },
+        "p3": {
+          "title": "Grant 第二季预算公示",
+          "summary": "拨款 50,000 USDT 支持开发者工具与社区运营 Grant。",
+          "startAt": "2026-05-22",
+          "endAt": "2026-05-29"
+        },
+        "p4": {
+          "title": "治理多签成员换届",
+          "summary": "提名新一届多签成员名单，公示 7 天后链上确认。",
+          "startAt": "2026-04-20",
+          "endAt": "2026-04-27"
+        },
+        "p5": {
+          "title": "数字权益类目审核标准",
+          "summary": "明确 NFT 与虚拟道具的上架审核流程与披露模板。",
+          "startAt": "2026-05-08",
+          "endAt": "2026-05-15"
+        },
+        "p6": {
+          "title": "SAP 代币销毁机制",
+          "summary": "每季度将回购代币的 50% 永久销毁，其余注入金库。",
+          "startAt": "2026-04-05",
+          "endAt": "2026-04-12"
+        },
+        "p7": {
+          "title": "商户保证金调整方案",
+          "summary": "分级调整商户入驻保证金，降低中小商户门槛。",
+          "startAt": "2026-05-25",
+          "endAt": "2026-06-01"
+        },
+        "p8": {
+          "title": "跨链桥安全审计公示",
+          "summary": "公布第三方审计结论与后续漏洞赏金计划。",
+          "startAt": "2026-05-14",
+          "endAt": "2026-05-21"
+        },
+        "p9": {
+          "title": "社区金库季度披露模板",
+          "summary": "统一链上收支、Grant 拨付与回购数据的披露格式。",
+          "startAt": "2026-04-28",
+          "endAt": "2026-05-05"
+        },
+        "p10": {
+          "title": "委托投票默认策略优化",
+          "summary": "允许持有人为不同提案类型设置差异化委托规则。",
+          "startAt": "2026-05-20",
+          "endAt": "2026-05-27"
+        },
+        "p11": {
+          "title": "商户 KYC 分级标准修订",
+          "summary": "按交易规模划分 KYC 等级，简化小额商户入驻流程。",
+          "startAt": "2026-06-02",
+          "endAt": "2026-06-09"
+        }
+      },
+      "discussions": {
+        "d1": {
+          "title": "钱包签名体验优化建议",
+          "channel": "#热门讨论",
+          "excerpt": "移动端投票时的签名弹窗与 Gas 预估展示，已收集 86 条反馈。",
+          "activity": "今日活跃"
+        },
+        "d2": {
+          "title": "商城类目费率是否合理",
+          "channel": "#商城治理",
+          "excerpt": "讨论不同类目差异化费率与透明披露方式。",
+          "activity": "置顶话题"
+        },
+        "d3": {
+          "title": "Q3 社区活动提案征集",
+          "channel": "#社区发展",
+          "excerpt": "征集线下 Meetup 与线上 AMA 主题，欢迎提交想法。",
+          "activity": "本周最热"
+        },
+        "d4": {
+          "title": "多语言治理文档计划",
+          "channel": "#热门讨论",
+          "excerpt": "如何将提案摘要自动翻译为英/中/日，降低参与门槛。",
+          "activity": "128 条消息"
+        },
+        "d5": {
+          "title": "NFT 上架审核时长讨论",
+          "channel": "#商城治理",
+          "excerpt": "商户反馈审核周期过长，讨论 SLA 与加急通道。",
+          "activity": "昨日活跃"
+        },
+        "d6": {
+          "title": "新成员 onboarding 改进",
+          "channel": "#社区发展",
+          "excerpt": "志愿者整理新手引导：连接钱包、投票、委托三步走。",
+          "activity": "54 条回复"
+        },
+        "d7": {
+          "title": "治理投票通知渠道",
+          "channel": "#热门讨论",
+          "excerpt": "是否增加邮件 / Discord 机器人提醒新提案开放投票。",
+          "activity": "讨论中"
+        },
+        "d8": {
+          "title": "虚拟道具版权争议流程",
+          "channel": "#商城治理",
+          "excerpt": "梳理买家申诉与商户举证的标准流程与时限。",
+          "activity": "新帖"
+        },
+        "d9": {
+          "title": "治理论坛 spam 过滤规则",
+          "channel": "#社区发展",
+          "excerpt": "讨论低质量提案与灌水帖的自动识别与人工复核机制。",
+          "activity": "15 条回复"
+        },
+        "d10": {
+          "title": "质押收益计算器需求",
+          "channel": "#热门讨论",
+          "excerpt": "希望在前端展示不同锁仓期的预估收益与解锁时间线。",
+          "activity": "热议中"
+        },
+        "d11": {
+          "title": "DAO 页面移动端布局反馈",
+          "channel": "#商城治理",
+          "excerpt": "收集小屏下列表与投票按钮的可用性问题与改进建议。",
+          "activity": "9 条回复"
+        }
+      }
     },
     "status": {
-      "draft": "草稿",
-      "discussion": "讨论中",
       "active": "投票中",
-      "passed": "已通过",
-      "rejected": "未通过",
-      "executed": "已执行"
+      "pending": "待开始",
+      "passed": "已完成"
     },
-    "type": {
-      "parameter": "参数调整",
-      "treasury": "金库",
-      "grants": "拨款",
-      "protocol": "协议",
-      "community": "社区"
+    "topicTags": {
+      "pinned": "置顶",
+      "hot": "热",
+      "urgent": "紧急",
+      "trendingWeek": "本周热门",
+      "official": "官方",
+      "featured": "精",
+      "governance": "治理",
+      "new": "新话题",
+      "poll": "投票",
+      "bounty": "悬赏",
+      "qa": "问答",
+      "feedback": "反馈",
+      "resolved": "已解决"
     },
-    "rules": {
-      "quorumTitle": "法定 Quorum",
-      "quorumBody": "提案需达到 60% 法定参与率方可生效（MVP 演示值）。",
-      "periodTitle": "投票期",
-      "periodBody": "标准投票期 7 天；紧急提案可缩短至 48 小时。",
-      "proposerTitle": "谁可发起",
-      "proposerBody": "持有 ≥ 10,000 SAP 或获委托等效票权的地址可发起提案。"
+    "topicTagFilter": {
+      "title": "话题标签",
+      "hint": "点击标签筛选左侧讨论列表，可与顶部筛选联动。",
+      "all": "全部标签",
+      "groupAria": "按话题标签筛选"
     },
-    "execution": {
-      "statusLabel": "状态",
-      "timelockEnds": "Timelock 解锁",
-      "tx": "交易哈希",
-      "pending": "待执行",
-      "timelock": "Timelock 中",
-      "executed": "已执行",
-      "failed": "执行失败"
+    "overview": {
+      "proposals": {
+        "title": "提案概览",
+        "subtitle": "社区治理提案实时统计",
+        "highlight": "总提案数",
+        "participation": "平均参与率",
+        "footnote": "数据基于当前链上治理周期（演示）"
+      },
+      "discussions": {
+        "title": "讨论概览",
+        "subtitle": "社区频道热度与互动",
+        "highlight": "总回复数",
+        "threads": "活跃话题",
+        "totalViews": "累计浏览",
+        "footnote": "成员数据同步自 Discord 社区"
+      },
+      "trending": {
+        "title": "大家都在讨论",
+        "refresh": "换一换",
+        "hotTag": "热",
+        "footnote": "按回复热度排序（演示）"
+      },
+      "events": {
+        "title": "大事件概览",
+        "subtitle": "生态动态与重要节点",
+        "highlight": "累计浏览",
+        "published": "已发布",
+        "itemMeta": "{{count}} 条 · {{views}} 浏览",
+        "footnote": "含 AMA、Grant、里程碑与公告"
+      },
+      "milestones": {
+        "title": "里程碑",
+        "subtitle": "生态重要节点时间轴",
+        "footnote": "按发布时间倒序展示（演示）"
+      }
     },
-    "empty": {
-      "proposals": "暂无符合条件的提案",
-      "wallet": "请先连接钱包",
-      "power": "暂无投票权",
-      "detail": "未找到该提案",
-      "comments": "暂无讨论"
+    "proposalRules": {
+      "title": "提案规则",
+      "intro": "链上治理遵循公开、可验证流程；以下为 Sapphire Mall 社区提案的通用规则摘要。",
+      "footnote": "具体门槛与参数以各提案详情及链上合约为准。",
+      "items": {
+        "submit": {
+          "title": "发起资格",
+          "desc": "持有 SAP 或达到社区公示门槛的钱包地址可提交提案；需包含标题、说明与可执行项。"
+        },
+        "window": {
+          "title": "投票周期",
+          "desc": "常规提案投票期一般为 3–7 天；涉及资金或协议升级的重大提案可延长并提前公告。"
+        },
+        "quorum": {
+          "title": "法定人数",
+          "desc": "提案须达到最低投票参与率（Quorum）方可生效；未达门槛将自动视为未通过。"
+        },
+        "vote": {
+          "title": "表决方式",
+          "desc": "一地址一票，连接钱包后在投票期内提交链上交易；赞成、反对或弃权以提案页选项为准。"
+        },
+        "execute": {
+          "title": "通过与执行",
+          "desc": "表决通过后进入时间锁公示，执行结果与交易哈希可在治理看板中查询。"
+        }
+      }
     },
-    "new": {
-      "badge": "新建提案",
-      "title": "发起提案",
-      "subtitle": "向导式创建：类型 → 内容 → 参数 → 预览发布",
-      "back": "上一步",
-      "stepType": "类型模板",
-      "stepContent": "标题与正文",
-      "stepParams": "投票参数",
-      "stepPreview": "预览发布",
-      "fieldTitle": "标题",
-      "fieldSummary": "摘要",
-      "fieldBody": "正文（支持 Markdown）",
-      "discussionFirst": "先讨论后投票",
-      "discussionFirstHint": "开启后将有 7 天讨论期，再进入链上投票。",
-      "next": "下一步",
-      "publish": "发布提案",
-      "publishSuccess": "提案已提交（演示，未上链）"
+    "sidebar": {
+      "title": "我的参与",
+      "connectHint": "请连接钱包以查看您的治理参与情况。",
+      "connectWallet": "Connect wallet",
+      "connectedStat": "您已参与 3 项提案投票（演示数据）",
+      "voteAction": "参与投票"
     },
-    "delegates": {
-      "badge": "即将上线",
-      "title": "委托中心",
-      "subtitle": "将投票权委托给可信代表",
-      "comingSoon": "委托、撤销与代表排行榜将在二期上线。金库与链上委托合约对接中。"
+    "toast": {
+      "comingSoon": "详情页即将上线，敬请期待。"
     }
   },
   "checkout": {

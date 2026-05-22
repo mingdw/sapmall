@@ -5,14 +5,31 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 // 导入翻译资源
 import zhTranslation from './locales/zh/translation.json';
 import enTranslation from './locales/en/translation.json';
+import zhHelp from './locales/zh/help.json';
+import enHelp from './locales/en/help.json';
+import { buildTopicQaI18nTree } from '../pages/help/mocks/helpTopicQaCatalog';
 
 const resources = {
   zh: {
-    translation: zhTranslation
+    translation: {
+      ...zhTranslation,
+      ...zhHelp,
+      help: {
+        ...zhHelp.help,
+        topicQa: buildTopicQaI18nTree('zh'),
+      },
+    },
   },
   en: {
-    translation: enTranslation
-  }
+    translation: {
+      ...enTranslation,
+      ...enHelp,
+      help: {
+        ...enHelp.help,
+        topicQa: buildTopicQaI18nTree('en'),
+      },
+    },
+  },
 };
 
 i18n

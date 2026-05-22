@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import LiveChatWidget from '../components/live-chat/LiveChatWidget';
 import HeaderPageDetail from '../pages/header/HeaderPageDetail';
 import ContentLayout from './ContentLayout';
 import FooterPageDetail from '../pages/footer/FooterPageDetail';
@@ -37,6 +38,8 @@ const Layout: React.FC = () => {
           </div>
         </>
       )}
+
+      {!isAdminRoute ? <LiveChatWidget /> : null}
     </div>
   );
 };
