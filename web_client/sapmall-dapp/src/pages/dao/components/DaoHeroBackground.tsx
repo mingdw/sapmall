@@ -9,7 +9,7 @@ type Props = {
 };
 
 const DaoHeroBackground: React.FC<Props> = ({ slideIndex }) => {
-  const activeDimension = DAO_HERO_SLIDES[slideIndex]?.id ?? 'proposals';
+  const activeDimension = DAO_HERO_SLIDES[slideIndex]?.id ?? 'events';
 
   const [srcByDimension, setSrcByDimension] = useState<Record<DaoHeroDimension, string>>(() => ({
     discussions: DAO_HERO_BACKGROUNDS.discussions,
@@ -61,3 +61,6 @@ const DaoHeroBackground: React.FC<Props> = ({ slideIndex }) => {
 };
 
 export default DaoHeroBackground;
+
+
+

@@ -55,6 +55,8 @@
       "updated": "Updated"
     },
     "related": "More in this topic",
+    "relatedHint": "Keep exploring questions in {{category}}",
+    "relatedViewAll": "View all",
     "feedback": "Was this article helpful?",
     "feedbackYes": "Yes",
     "feedbackNo": "No",

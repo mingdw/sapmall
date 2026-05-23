@@ -1,9 +1,9 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MarketPlacePageDetail from '../pages/marketplace/MarketPlacePageDetail';
-import RewardsPageDetail from '../pages/rewards/RewardsPageDetail';
+import RewardsRoutes from '../pages/rewards/RewardsRoutes';
 import ExchangePageDetail from '../pages/exchange/ExchangePageDetail';
-import DaoPage from '../pages/dao/DaoPage';
+import DaoRoutes from '../pages/dao/DaoRoutes';
 import HelpRoutes from '../pages/help/HelpRoutes';
 import AdminIframeEmbedded from '../components/AdminIframeEmbedded';
 import ProductDetailPage from '../pages/marketplace/product/ProductDetailPage';
@@ -29,9 +29,9 @@ const ContentLayout: React.FC = () => {
             <CheckoutStubPage />
           </div>
         } />
-        <Route path="/rewards" element={
+        <Route path="/rewards/*" element={
           <div className="mx-auto w-[95%]">
-            <RewardsPageDetail />
+            <RewardsRoutes />
           </div>
         } />
         <Route path="/exchange" element={
@@ -39,8 +39,7 @@ const ContentLayout: React.FC = () => {
             <ExchangePageDetail />
           </div>
         } />
-        <Route path="/dao" element={<DaoPage />} />
-        <Route path="/dao/*" element={<DaoPage />} />
+        <Route path="/dao/*" element={<DaoRoutes />} />
         <Route path="/help/*" element={<HelpRoutes />} />
         <Route path="/admin" element={<AdminIframeEmbedded />} />
       </Routes>

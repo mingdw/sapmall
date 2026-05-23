@@ -1,21 +1,29 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useTranslation } from 'react-i18next';
 import { FilePlus, MessagesSquare, UserRound } from 'lucide-react';
 import { useAccount } from 'wagmi';
+import { getMockUserParticipationSummary } from '../utils/daoProposalVote.mock';
 import styles from '../DaoPage.module.scss';
 
 type Props = {
   onCreateProposal: () => void;
   onStartDiscussion: () => void;
-  onVote: () => void;
+  onViewParticipated: (tab: 'proposals' | 'discussions') => void;
 };
 
-const shortenAddress = (addr: string) => `${addr.slice(0, 6)}…${addr.slice(-4)}`;
-
-const DaoParticipationCard: React.FC<Props> = ({ onCreateProposal, onStartDiscussion, onVote }) => {
+const DaoParticipationCard: React.FC<Props> = ({
+  onCreateProposal,
+  onStartDiscussion,
+  onViewParticipated,
+}) => {
   const { t } = useTranslation();
   const { address, isConnected } = useAccount();
+
+  const participation = useMemo(
+    () => (address ? getMockUserParticipationSummary(address) : null),
+    [address],
+  );
 
   return (
     <aside className={`${styles.panelCard} ${styles.sidebarCard}`} aria-labelledby="dao-participation-title">
@@ -45,8 +53,36 @@ const DaoParticipationCard: React.FC<Props> = ({ onCreateProposal, onStartDiscus
         </>
       ) : (
         <>
-          <p className={styles.walletAddress}>{shortenAddress(address)}</p>
-          <p className={styles.participationStat}>{t('dao.sidebar.connectedStat')}</p>
+          {participation ? (
+            <div className={styles.participationStats}>
+              <div className={styles.participationStatItem}>
+                <span className={styles.participationStatLabel}>{t('dao.sidebar.proposalsParticipated')}</span>
+                <button
+                  type="button"
+                  className={styles.participationStatValueBtn}
+                  onClick={() => onViewParticipated('proposals')}
+                  aria-label={t('dao.sidebar.viewParticipatedProposals', {
+                    count: participation.proposalsParticipated,
+                  })}
+                >
+                  {t('dao.sidebar.participationCount', { count: participation.proposalsParticipated })}
+                </button>
+              </div>
+              <div className={styles.participationStatItem}>
+                <span className={styles.participationStatLabel}>{t('dao.sidebar.discussionsParticipated')}</span>
+                <button
+                  type="button"
+                  className={styles.participationStatValueBtn}
+                  onClick={() => onViewParticipated('discussions')}
+                  aria-label={t('dao.sidebar.viewParticipatedDiscussions', {
+                    count: participation.discussionsParticipated,
+                  })}
+                >
+                  {t('dao.sidebar.participationCount', { count: participation.discussionsParticipated })}
+                </button>
+              </div>
+            </div>
+          ) : null}
           <div className={styles.sidebarActions}>
             <button type="button" className={styles.sidebarBtnPrimary} onClick={onCreateProposal}>
               <FilePlus className="h-4 w-4" aria-hidden />
@@ -55,9 +91,6 @@ const DaoParticipationCard: React.FC<Props> = ({ onCreateProposal, onStartDiscus
             <button type="button" className={styles.sidebarBtnOutline} onClick={onStartDiscussion}>
               <MessagesSquare className="h-4 w-4" aria-hidden />
               {t('dao.actions.startDiscussion')}
-            </button>
-            <button type="button" className={styles.sidebarBtnGhost} onClick={onVote}>
-              {t('dao.sidebar.voteAction')}
             </button>
           </div>
         </>

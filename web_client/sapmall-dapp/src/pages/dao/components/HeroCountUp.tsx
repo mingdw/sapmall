@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { formatHeroMetricNumeric, parseHeroMetricValue } from '../utils/parseHeroMetricValue';
 import styles from '../DaoPage.module.scss';
 
@@ -86,3 +86,6 @@ const HeroCountUp: React.FC<Props> = ({ value, active, className }) => {
 };
 
 export default HeroCountUp;
+
+
+

@@ -1,17 +1,23 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Input, Pagination, Select } from 'antd';
+import type { LucideIcon } from 'lucide-react';
 import { Eye, FileText, MessageCircle, MessagesSquare, Search, Sparkles } from 'lucide-react';
 import { DAO_PAGE_SIZE, getDaoEventFallbackImageUrl } from '../constants';
+import { DAO_VIEW_TAB_ORDER } from '../constants/daoViewTabs';
 import { DAO_DISCUSSIONS, DAO_EVENTS, DAO_PROPOSALS } from '../mocks/dao.mock';
 import {
-  DAO_DISCUSSION_TOPIC_TAG_FILTERS,
+  DAO_DISCUSSION_CATEGORY_FILTERS,
+  discussionMatchesCategoryFilter,
+} from '../constants/discussionCategories';
+import {
   discussionMatchesTopicTagFilter,
   sortDiscussionTopicTags,
   sortDiscussionsForList,
   type DaoDiscussionTopicTagFilter,
 } from '../constants/discussionTopicTags';
 import type {
+  DaoDiscussionCategoryFilter,
   DaoDiscussionItem,
   DaoEventFilter,
   DaoEventItem,
@@ -23,7 +29,7 @@ import { shortenWalletAddress } from '../utils/walletAddress';
 import styles from '../DaoPage.module.scss';
 
 const PROPOSAL_FILTER_OPTIONS: DaoProposalFilter[] = ['all', 'active', 'passed', 'pending'];
-const DISCUSSION_TAG_FILTER_OPTIONS = DAO_DISCUSSION_TOPIC_TAG_FILTERS;
+const DISCUSSION_CATEGORY_FILTER_OPTIONS = DAO_DISCUSSION_CATEGORY_FILTERS;
 const EVENT_FILTER_OPTIONS: DaoEventFilter[] = ['all', 'ama', 'grant', 'milestone', 'announcement'];
 
 const statusClass: Record<DaoProposalItem['status'], string> = {
@@ -49,38 +55,62 @@ const eventCategoryClass: Record<DaoEventItem['category'], string> = {
   announcement: styles.eventTagAnnouncement,
 };
 
+const listTabIconMap: Record<DaoViewTab, LucideIcon> = {
+  events: Sparkles,
+  discussions: MessageCircle,
+  proposals: FileText,
+};
+
 type Props = {
   tab: DaoViewTab;
   onTabChange: (tab: DaoViewTab) => void;
+  participatedIds?: string[] | null;
   proposalFilter: DaoProposalFilter;
+  discussionCategoryFilter: DaoDiscussionCategoryFilter;
   discussionTagFilter: DaoDiscussionTopicTagFilter;
   eventFilter: DaoEventFilter;
   onProposalFilterChange: (f: DaoProposalFilter) => void;
+  onDiscussionCategoryFilterChange: (f: DaoDiscussionCategoryFilter) => void;
   onDiscussionTagFilterChange: (f: DaoDiscussionTopicTagFilter) => void;
   onEventFilterChange: (f: DaoEventFilter) => void;
   page: number;
   onPageChange: (p: number) => void;
-  onRowClick: () => void;
+  onDiscussionClick: (id: string) => void;
+  onProposalClick: (id: string) => void;
+  onEventClick: (id: string) => void;
 };
 
 const DaoMainListCard: React.FC<Props> = ({
   tab,
   onTabChange,
+  participatedIds = null,
   proposalFilter,
+  discussionCategoryFilter,
   discussionTagFilter,
   eventFilter,
   onProposalFilterChange,
+  onDiscussionCategoryFilterChange,
   onDiscussionTagFilterChange,
   onEventFilterChange,
   page,
   onPageChange,
-  onRowClick,
+  onDiscussionClick,
+  onProposalClick,
+  onEventClick,
 }) => {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
 
+  const participatedIdSet = useMemo(
+    () => (participatedIds && participatedIds.length > 0 ? new Set(participatedIds) : null),
+    [participatedIds],
+  );
+
   const proposalFiltered = useMemo(() => {
     let list = DAO_PROPOSALS;
+    if (participatedIdSet && tab === 'proposals') {
+      list = list.filter((p) => participatedIdSet.has(p.id));
+    }
     if (proposalFilter !== 'all') {
       list = list.filter((p) => p.status === proposalFilter);
     }
@@ -90,10 +120,17 @@ const DaoMainListCard: React.FC<Props> = ({
       const hay = `${t(p.titleKey)} ${t(p.summaryKey)} ${p.authorAddress}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [proposalFilter, search, t]);
+  }, [proposalFilter, search, t, participatedIdSet, tab]);
 
   const discussionFiltered = useMemo(() => {
-    let list = DAO_DISCUSSIONS.filter((d) => discussionMatchesTopicTagFilter(d, discussionTagFilter));
+    let list = DAO_DISCUSSIONS.filter(
+      (d) =>
+        discussionMatchesCategoryFilter(d, discussionCategoryFilter) &&
+        discussionMatchesTopicTagFilter(d, discussionTagFilter),
+    );
+    if (participatedIdSet && tab === 'discussions') {
+      list = list.filter((d) => participatedIdSet.has(d.id));
+    }
     list = sortDiscussionsForList(list);
     const q = search.trim().toLowerCase();
     if (!q) return list;
@@ -102,7 +139,7 @@ const DaoMainListCard: React.FC<Props> = ({
       const hay = `${t(d.titleKey)} ${t(d.excerptKey)} ${t(d.channelKey)} ${tagHay}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [discussionTagFilter, search, t]);
+  }, [discussionCategoryFilter, discussionTagFilter, search, t, participatedIdSet, tab]);
 
   const eventFiltered = useMemo(() => {
     let list = DAO_EVENTS;
@@ -135,15 +172,19 @@ const DaoMainListCard: React.FC<Props> = ({
   };
 
   const filterValue =
-    tab === 'proposals' ? proposalFilter : tab === 'discussions' ? discussionTagFilter : eventFilter;
+    tab === 'proposals'
+      ? proposalFilter
+      : tab === 'discussions'
+        ? discussionCategoryFilter
+        : eventFilter;
 
   const filterOptions: { value: string; label: string }[] =
     tab === 'proposals'
       ? PROPOSAL_FILTER_OPTIONS.map((f) => ({ value: f, label: t(`dao.filters.proposals.${f}`) }))
       : tab === 'discussions'
-        ? DISCUSSION_TAG_FILTER_OPTIONS.map((f) => ({
+        ? DISCUSSION_CATEGORY_FILTER_OPTIONS.map((f) => ({
             value: f,
-            label: f === 'all' ? t('dao.topicTagFilter.all') : t(`dao.topicTags.${f}`),
+            label: t(`dao.filters.discussions.${f}`),
           }))
         : EVENT_FILTER_OPTIONS.map((f) => ({ value: f, label: t(`dao.filters.events.${f}`) }));
 
@@ -151,7 +192,7 @@ const DaoMainListCard: React.FC<Props> = ({
     if (tab === 'proposals') {
       onProposalFilterChange(value as DaoProposalFilter);
     } else if (tab === 'discussions') {
-      onDiscussionTagFilterChange(value as DaoDiscussionTopicTagFilter);
+      onDiscussionCategoryFilterChange(value as DaoDiscussionCategoryFilter);
     } else {
       onEventFilterChange(value as DaoEventFilter);
     }
@@ -163,42 +204,24 @@ const DaoMainListCard: React.FC<Props> = ({
     <div className={`${styles.panelCard} ${styles.mainListCard}`}>
       <div className={styles.listToolbar}>
         <div className={styles.listTabRail} role="tablist" aria-label={t('dao.list.tabListAria')}>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'proposals'}
-            className={styles.listTabBtn}
-            data-active={tab === 'proposals'}
-            data-tab="proposals"
-            onClick={() => onTabSwitch('proposals')}
-          >
-            <FileText className={styles.listTabIcon} strokeWidth={2.25} aria-hidden />
-            <span>{t('dao.tabs.proposals')}</span>
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'discussions'}
-            className={styles.listTabBtn}
-            data-active={tab === 'discussions'}
-            data-tab="discussions"
-            onClick={() => onTabSwitch('discussions')}
-          >
-            <MessageCircle className={styles.listTabIcon} strokeWidth={2.25} aria-hidden />
-            <span>{t('dao.tabs.discussions')}</span>
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'events'}
-            className={styles.listTabBtn}
-            data-active={tab === 'events'}
-            data-tab="events"
-            onClick={() => onTabSwitch('events')}
-          >
-            <Sparkles className={styles.listTabIcon} strokeWidth={2.25} aria-hidden />
-            <span>{t('dao.tabs.events')}</span>
-          </button>
+          {DAO_VIEW_TAB_ORDER.map((tabKey) => {
+            const TabIcon = listTabIconMap[tabKey];
+            return (
+              <button
+                key={tabKey}
+                type="button"
+                role="tab"
+                aria-selected={tab === tabKey}
+                className={styles.listTabBtn}
+                data-active={tab === tabKey}
+                data-tab={tabKey}
+                onClick={() => onTabSwitch(tabKey)}
+              >
+                <TabIcon className={styles.listTabIcon} strokeWidth={2.25} aria-hidden />
+                <span>{t(`dao.tabs.${tabKey}`)}</span>
+              </button>
+            );
+          })}
         </div>
 
         <div className={styles.listToolbarRight}>
@@ -242,7 +265,7 @@ const DaoMainListCard: React.FC<Props> = ({
                 key={row.id}
                 type="button"
                 className={`${styles.listRow} ${styles.listRowProposal}`}
-                onClick={onRowClick}
+                onClick={() => onProposalClick(row.id)}
               >
                 <div className={styles.proposalHead}>
                   <FileText className={styles.proposalLeadIcon} strokeWidth={2} aria-hidden />
@@ -333,7 +356,7 @@ const DaoMainListCard: React.FC<Props> = ({
               key={row.id}
               type="button"
               className={`${styles.listRow} ${styles.listRowDiscussion}`}
-              onClick={onRowClick}
+              onClick={() => onDiscussionClick(row.id)}
             >
               <div className={styles.discussionHead}>
                 <MessageCircle className={styles.discussionLeadIcon} aria-hidden />
@@ -386,7 +409,7 @@ const DaoMainListCard: React.FC<Props> = ({
               key={row.id}
               type="button"
               className={styles.eventRow}
-              onClick={onRowClick}
+              onClick={() => onEventClick(row.id)}
             >
               <div className={styles.eventThumb}>
                 <img
@@ -445,3 +468,5 @@ const DaoMainListCard: React.FC<Props> = ({
 };
 
 export default DaoMainListCard;
+
+

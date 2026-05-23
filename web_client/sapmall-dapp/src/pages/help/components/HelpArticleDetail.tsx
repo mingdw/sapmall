@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, Clock, Eye } from 'lucide-react';
 import HelpArticleBody from './HelpArticleBody';
+import HelpArticleRelated from './HelpArticleRelated';
 import HelpGuideVoteStats from './HelpGuideVoteStats';
 import type { HelpArticleMeta } from '../types';
 import { articleTitleKey } from '../utils/articleI18nKey';
@@ -88,19 +89,7 @@ const HelpArticleDetail: React.FC<Props> = ({ article }) => {
 
         {relatedArticles.length > 0 && (
           <div className={styles.articleDetailFooter}>
-            <section className={styles.articleRelated}>
-              <h2 className={styles.articleRelatedTitle}>{t('help.related')}</h2>
-              <ul className={styles.articleRelatedList}>
-                {relatedArticles.map((related) => (
-                  <li key={related.slug}>
-                    <Link to={`/help/a/${related.slug}`} className={styles.articleRelatedLink}>
-                      {t(articleTitleKey(related.slug))}
-                      <ChevronRight size={16} aria-hidden />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <HelpArticleRelated articles={relatedArticles} category={article.category} />
           </div>
         )}
       </article>

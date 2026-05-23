@@ -61,9 +61,9 @@ const calloutToneClass: Record<DaoOverviewStatTone, string> = {
 };
 
 /**
- * 与 .overviewDonutChart 一致。
- * conic-gradient：0° = 12 点，顺时针增大（与 buildDonutGradient 的 from 角一致）。
- * rotate：0° = 3 点（箭头默认向右），顺时针增大。
+ * 涓?.overviewDonutChart 涓€鑷淬€?
+ * conic-gradient锛?掳 = 12 鐐癸紝椤烘椂閽堝澶э紙涓?buildDonutGradient 鐨?from 瑙掍竴鑷达級銆?
+ * rotate锛?掳 = 3 鐐癸紙绠ご榛樿鍚戝彸锛夛紝椤烘椂閽堝澶с€?
  */
 const DONUT_CHART_PX = 152;
 const DONUT_CONIC_FROM_DEG = 0;
@@ -71,10 +71,10 @@ const DONUT_STAGE = { width: 300, height: 220, cx: 150, cy: 110 };
 
 const donutOuterRadius = () => DONUT_CHART_PX / 2;
 
-/** 箭头在环外延伸长度（px），起点贴外缘不进入色环 */
+/** 绠ご鍦ㄧ幆澶栧欢浼搁暱搴︼紙px锛夛紝璧风偣璐村缂樹笉杩涘叆鑹茬幆 */
 const DONUT_CALLOUT_ARROW_LEN_PX = 18;
 
-/** conic 角（12 点为 0°）→ CSS rotate 角（3 点为 0°） */
+/** conic 瑙掞紙12 鐐逛负 0掳锛夆啋 CSS rotate 瑙掞紙3 鐐逛负 0掳锛?*/
 const conicDegToRotateDeg = (conicDeg: number) => conicDeg - 90;
 
 type DonutSliceArc = {
@@ -376,3 +376,6 @@ const DaoTabOverviewCard: React.FC<Props> = ({ tab, onTrendingItemClick }) => {
 };
 
 export default DaoTabOverviewCard;
+
+
+

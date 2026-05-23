@@ -17,7 +17,7 @@ export const DAO_DISCUSSION_TOPIC_TAG_DISPLAY_ORDER: DaoDiscussionTopicTag[] = [
   'resolved',
 ];
 
-/** 侧栏 / 筛选下拉可选标签（含全部标签） */
+/** 侧栏话题标签筛选（顶部分板块下拉与之独立） */
 export const DAO_DISCUSSION_TOPIC_TAG_FILTERS = [
   'all',
   ...DAO_DISCUSSION_TOPIC_TAG_DISPLAY_ORDER,

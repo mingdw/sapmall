@@ -87,6 +87,8 @@ export type DaoProposalFilter = 'all' | 'active' | 'passed' | 'pending';
 
 export type DaoDiscussionCategory = 'hot' | 'marketplace' | 'community';
 
+export type DaoDiscussionCategoryFilter = 'all' | DaoDiscussionCategory;
+
 /** 讨论话题标签（列表标题后、侧栏筛选） */
 export type DaoDiscussionTopicTag =
   | 'pinned'
@@ -116,6 +118,17 @@ export type DaoEventItem = {
   categoryKey: string;
   publishedAtKey: string;
   views: number;
+};
+
+export type DaoEventDetailBlock =
+  | { type: 'paragraph'; key: string }
+  | { type: 'heading'; level: 2 | 3; key: string }
+  | { type: 'image'; srcKey?: string; src?: string; altKey: string; captionKey?: string }
+  | { type: 'callout'; variant: 'info' | 'highlight'; key: string }
+  | { type: 'bulletList'; key: string };
+
+export type DaoEventDetail = DaoEventItem & {
+  blocks: DaoEventDetailBlock[];
 };
 
 export type DaoMetric = {
@@ -163,6 +176,22 @@ export type DaoHeroSlide = {
   layout: 'split' | 'feature';
 };
 
+export type DaoProposalReference = {
+  labelKey: string;
+  url: string;
+};
+
+export type DaoProposalTimelineStepId = 'created' | 'open' | 'closed' | 'executed';
+
+export type DaoProposalTimelineStep = {
+  id: DaoProposalTimelineStepId;
+  labelKey: string;
+  atKey: string;
+  status: 'done' | 'current' | 'pending';
+};
+
+export type DaoProposalDetailBlock = DaoEventDetailBlock;
+
 export type DaoProposalItem = {
   id: string;
   titleKey: string;
@@ -175,6 +204,35 @@ export type DaoProposalItem = {
   endAtKey: string;
   votesFor: number;
   votesAgainst: number;
+  /** 赞成/反对参与人数（Mock） */
+  votersFor: number;
+  votersAgainst: number;
+};
+
+export type DaoProposalDetail = DaoProposalItem & {
+  blocks: DaoProposalDetailBlock[];
+  quorumRequired: number;
+  differentialRequired: number;
+  votingNetworkKey: string;
+  forumUrl: string;
+  references: DaoProposalReference[];
+  timeline: DaoProposalTimelineStep[];
+  createdAtKey: string;
+};
+
+export type DaoProposalVoteChoice = 'for' | 'against';
+
+export type DaoProposalDraft = {
+  title: string;
+  summary: string;
+  tagKeys: string[];
+  startAt: string;
+  endAt: string;
+  motivation: string;
+  specification: string;
+  callout: string;
+  referenceForum: string;
+  referenceImplementation: string;
 };
 
 export type DaoDiscussionItem = {
@@ -187,4 +245,27 @@ export type DaoDiscussionItem = {
   views: number;
   /** 可多选；展示与排序按 pinned → hot → … 顺序 */
   tags: DaoDiscussionTopicTag[];
+};
+
+export type DaoDiscussionDetailBlock = DaoEventDetailBlock;
+
+export type DaoDiscussionReplyItem = {
+  id: string;
+  authorAddress: string;
+  /** Mock 回复文案 i18n key */
+  bodyKey?: string;
+  /** 用户发表回复正文 */
+  body?: string;
+  /** Mock 回复时间 i18n key */
+  publishedAtKey?: string;
+  /** 用户回复 Unix ms */
+  createdAt?: number;
+  isOfficial?: boolean;
+  likes: number;
+};
+
+export type DaoDiscussionDetail = DaoDiscussionItem & {
+  authorAddress: string;
+  activityKey: string;
+  blocks: DaoDiscussionDetailBlock[];
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -56,3 +56,6 @@ const DaoProposalRulesCard: React.FC = () => {
 };
 
 export default DaoProposalRulesCard;
+
+
+

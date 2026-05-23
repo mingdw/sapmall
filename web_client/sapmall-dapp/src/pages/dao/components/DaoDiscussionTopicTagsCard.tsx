@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DAO_DISCUSSION_TOPIC_TAG_DISPLAY_ORDER,
@@ -46,3 +46,6 @@ const DaoDiscussionTopicTagsCard: React.FC<Props> = ({ activeFilter, onFilterCha
 };
 
 export default DaoDiscussionTopicTagsCard;
+
+
+

@@ -21,7 +21,7 @@ export const DAO_HERO_BACKGROUNDS_FALLBACK: Record<DaoHeroDimension, string> = {
 };
 
 /** 下区叠入 Hero 的上移量（部分叠层） */
-export const DAO_OVERLAP_PX = 48;
+export const DAO_OVERLAP_PX = 36;
 
 /** 列表每页条数 */
 export const DAO_PAGE_SIZE = 10;

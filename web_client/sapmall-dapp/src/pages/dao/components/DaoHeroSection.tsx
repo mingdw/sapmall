@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DAO_HERO_SLIDES } from '../mocks/daoHero.mock';
@@ -61,3 +61,6 @@ const DaoHeroSection: React.FC = () => {
 };
 
 export default DaoHeroSection;
+
+
+

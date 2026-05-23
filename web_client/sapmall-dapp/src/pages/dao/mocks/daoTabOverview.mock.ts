@@ -117,6 +117,7 @@ export const getDaoTabOverview = (tab: DaoViewTab): DaoTabOverviewData => {
   }
 
   const items = [...DAO_EVENTS]
+    .filter((event) => event.category !== 'announcement')
     .sort(
       (a, b) =>
         (EVENT_PUBLISHED_AT_SORT[b.id] ?? '').localeCompare(EVENT_PUBLISHED_AT_SORT[a.id] ?? ''),

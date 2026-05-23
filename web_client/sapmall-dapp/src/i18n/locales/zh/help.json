@@ -55,6 +55,8 @@
       "updated": "更新时间"
     },
     "related": "同主题其他问题",
+    "relatedHint": "继续探索「{{category}}」主题下的相关问题",
+    "relatedViewAll": "查看全部",
     "feedback": "这篇文章有帮助吗？",
     "feedbackYes": "有帮助",
     "feedbackNo": "没帮助",

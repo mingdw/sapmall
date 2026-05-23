@@ -28,6 +28,8 @@ export const DAO_PROPOSALS: DaoProposalItem[] = [
     endAtKey: 'dao.list.proposals.p1.endAt',
     votesFor: 1240,
     votesAgainst: 312,
+    votersFor: 67,
+    votersAgainst: 18,
   },
   {
     id: 'p2',
@@ -41,6 +43,8 @@ export const DAO_PROPOSALS: DaoProposalItem[] = [
     endAtKey: 'dao.list.proposals.p2.endAt',
     votesFor: 890,
     votesAgainst: 120,
+    votersFor: 52,
+    votersAgainst: 9,
   },
   {
     id: 'p3',
@@ -54,6 +58,8 @@ export const DAO_PROPOSALS: DaoProposalItem[] = [
     endAtKey: 'dao.list.proposals.p3.endAt',
     votesFor: 0,
     votesAgainst: 0,
+    votersFor: 0,
+    votersAgainst: 0,
   },
   {
     id: 'p4',
@@ -67,6 +73,8 @@ export const DAO_PROPOSALS: DaoProposalItem[] = [
     endAtKey: 'dao.list.proposals.p4.endAt',
     votesFor: 2100,
     votesAgainst: 98,
+    votersFor: 124,
+    votersAgainst: 6,
   },
   {
     id: 'p5',
@@ -80,6 +88,8 @@ export const DAO_PROPOSALS: DaoProposalItem[] = [
     endAtKey: 'dao.list.proposals.p5.endAt',
     votesFor: 456,
     votesAgainst: 89,
+    votersFor: 38,
+    votersAgainst: 11,
   },
   {
     id: 'p6',
@@ -93,6 +103,8 @@ export const DAO_PROPOSALS: DaoProposalItem[] = [
     endAtKey: 'dao.list.proposals.p6.endAt',
     votesFor: 1800,
     votesAgainst: 45,
+    votersFor: 98,
+    votersAgainst: 4,
   },
   {
     id: 'p7',
@@ -106,6 +118,8 @@ export const DAO_PROPOSALS: DaoProposalItem[] = [
     endAtKey: 'dao.list.proposals.p7.endAt',
     votesFor: 0,
     votesAgainst: 0,
+    votersFor: 0,
+    votersAgainst: 0,
   },
   {
     id: 'p8',
@@ -119,6 +133,8 @@ export const DAO_PROPOSALS: DaoProposalItem[] = [
     endAtKey: 'dao.list.proposals.p8.endAt',
     votesFor: 678,
     votesAgainst: 201,
+    votersFor: 45,
+    votersAgainst: 14,
   },
   {
     id: 'p9',
@@ -132,6 +148,8 @@ export const DAO_PROPOSALS: DaoProposalItem[] = [
     endAtKey: 'dao.list.proposals.p9.endAt',
     votesFor: 1520,
     votesAgainst: 88,
+    votersFor: 86,
+    votersAgainst: 7,
   },
   {
     id: 'p10',
@@ -145,6 +163,8 @@ export const DAO_PROPOSALS: DaoProposalItem[] = [
     endAtKey: 'dao.list.proposals.p10.endAt',
     votesFor: 534,
     votesAgainst: 167,
+    votersFor: 41,
+    votersAgainst: 13,
   },
   {
     id: 'p11',
@@ -158,6 +178,8 @@ export const DAO_PROPOSALS: DaoProposalItem[] = [
     endAtKey: 'dao.list.proposals.p11.endAt',
     votesFor: 0,
     votesAgainst: 0,
+    votersFor: 0,
+    votersAgainst: 0,
   },
 ];
 
