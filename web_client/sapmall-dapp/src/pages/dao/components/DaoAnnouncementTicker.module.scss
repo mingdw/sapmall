@@ -1,0 +1,99 @@
+/* Requires ancestor .pageRoot for --dao-* CSS variables */
+
+/* —— 公告横向轮播（参考兑换页 merchantTicker，无外层卡片） —— */
+.announcementTickerSlot {
+  position: absolute;
+  z-index: 5;
+  box-sizing: border-box;
+  top: calc(
+    -1 * var(--dao-content-overlap) - var(--dao-ticker-band-height) - var(--dao-ticker-gap) +
+      var(--dao-ticker-offset-y)
+  );
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding-inline: 1.25rem;
+  pointer-events: none;
+
+  @media (min-width: 1024px) {
+    padding-inline: 1.5rem;
+  }
+}
+
+.announcementTickerWrap {
+  width: min(100%, var(--dao-content-max-width));
+  max-width: var(--dao-content-max-width);
+  margin-inline: auto;
+  overflow: hidden;
+  pointer-events: auto;
+
+  @media (min-width: 1024px) {
+    margin-left: max(0px, calc((100% - var(--dao-content-align-width)) / 2));
+    margin-right: auto;
+  }
+}
+
+.announcementTickerTrack {
+  display: inline-flex;
+  align-items: center;
+  gap: 2rem;
+  min-width: max-content;
+  padding: 0.35rem 0;
+  animation: daoAnnouncementTickerScroll 36s linear infinite;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+.announcementTickerItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.92;
+
+    .announcementTickerText {
+      color: #e2e8f0;
+    }
+  }
+}
+
+.announcementTickerIcon {
+  flex-shrink: 0;
+  color: #ef4444;
+}
+
+.announcementTickerText {
+  font-family: 'Plus Jakarta Sans', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #94a3b8;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+@keyframes daoAnnouncementTickerScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .announcementTickerTrack {
+    animation: none;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+}
+

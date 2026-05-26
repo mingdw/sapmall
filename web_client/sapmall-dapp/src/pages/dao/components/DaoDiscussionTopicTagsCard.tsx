@@ -1,11 +1,12 @@
-﻿import React from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DAO_DISCUSSION_TOPIC_TAG_DISPLAY_ORDER,
   type DaoDiscussionTopicTagFilter,
 } from '../constants/discussionTopicTags';
 import type { DaoDiscussionTopicTag } from '../types';
-import styles from '../DaoPage.module.scss';
+import sharedStyles from '../styles/dao.shared.module.scss';
+import styles from './DaoDiscussionTopicTagsCard.module.scss';
 
 type Props = {
   activeFilter: DaoDiscussionTopicTagFilter;
@@ -31,7 +32,7 @@ const DaoDiscussionTopicTagsCard: React.FC<Props> = ({ activeFilter, onFilterCha
 
   return (
     <div
-      className={`${styles.panelCard} ${styles.discussionTagFilterPanel}`}
+      className={`${sharedStyles.panelCard} ${styles.discussionTagFilterPanel}`}
       role="group"
       aria-label={t('dao.topicTagFilter.groupAria')}
     >

@@ -11,7 +11,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import type { HelpCategory } from '../types';
-import styles from '../HelpPage.module.scss';
+import styles from './HelpArticleFigure.module.scss';
 
 const FIGURE_META: Record<HelpCategory, { Icon: LucideIcon; labelZh: string; labelEn: string }> = {
   'getting-started': { Icon: Wallet, labelZh: '入门', labelEn: 'Start' },

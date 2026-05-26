@@ -1,0 +1,328 @@
+/* Requires ancestor .pageRoot for --dao-* CSS variables */
+
+.heroBgStack {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.heroBgLayer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity 0.85s ease;
+
+  &[data-active='true'] {
+    opacity: 1;
+
+    .heroBgImage {
+      animation: heroKenBurns 22s ease-in-out infinite alternate;
+    }
+  }
+
+  &[data-dimension='discussions'] .heroBgImage {
+    filter: saturate(1.05) hue-rotate(-8deg) brightness(0.92);
+  }
+
+  &[data-dimension='proposals'] .heroBgImage {
+    filter: saturate(1.08) hue-rotate(12deg) brightness(0.9);
+  }
+
+  &[data-dimension='events'] .heroBgImage {
+    filter: saturate(1.1) hue-rotate(-4deg) brightness(0.94);
+  }
+}
+
+.heroBgImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  transform: scale(1.06);
+  will-change: transform;
+}
+
+@keyframes heroKenBurns {
+  0% {
+    transform: scale(1.06) translate(0, 0);
+  }
+
+  100% {
+    transform: scale(1.14) translate(-1.5%, -1%);
+  }
+}
+
+/* 维度动态背景层 */
+.heroBgFx {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+
+  &[data-dimension='proposals'] {
+    --hero-fx-a: rgba(139, 92, 246, 0.55);
+    --hero-fx-b: rgba(99, 102, 241, 0.4);
+    --hero-fx-c: rgba(196, 181, 253, 0.35);
+  }
+
+  &[data-dimension='discussions'] {
+    --hero-fx-a: rgba(251, 146, 60, 0.55);
+    --hero-fx-b: rgba(251, 191, 36, 0.38);
+    --hero-fx-c: rgba(253, 186, 116, 0.32);
+  }
+
+  &[data-dimension='events'] {
+    --hero-fx-a: rgba(74, 222, 128, 0.5);
+    --hero-fx-b: rgba(52, 211, 153, 0.38);
+    --hero-fx-c: rgba(134, 239, 172, 0.3);
+  }
+}
+
+.heroBgAurora {
+  position: absolute;
+  inset: -20% -10%;
+  opacity: 0.28;
+  background:
+    radial-gradient(ellipse 55% 45% at 20% 30%, var(--hero-fx-a) 0%, transparent 58%),
+    radial-gradient(ellipse 50% 40% at 80% 60%, var(--hero-fx-b) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 55% 10%, var(--hero-fx-c) 0%, transparent 50%);
+  filter: blur(28px);
+  animation: heroAuroraDrift 14s ease-in-out infinite alternate;
+}
+
+.heroBgBeam {
+  position: absolute;
+  top: -30%;
+  left: -15%;
+  width: 45%;
+  height: 160%;
+  opacity: 0.12;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    var(--hero-fx-c) 42%,
+    transparent 72%
+  );
+  transform: rotate(-8deg);
+  animation: heroBeamSweep 9s ease-in-out infinite;
+}
+
+.heroBgOrbA,
+.heroBgOrbB,
+.heroBgOrbC {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.32;
+  animation: heroOrbFloat 11s ease-in-out infinite;
+}
+
+.heroBgOrbA {
+  width: 14rem;
+  height: 14rem;
+  top: 8%;
+  left: 12%;
+  background: var(--hero-fx-a);
+  animation-duration: 13s;
+}
+
+.heroBgOrbB {
+  width: 10rem;
+  height: 10rem;
+  right: 10%;
+  bottom: 18%;
+  background: var(--hero-fx-b);
+  animation-duration: 10s;
+  animation-delay: -3s;
+}
+
+.heroBgOrbC {
+  width: 7rem;
+  height: 7rem;
+  left: 48%;
+  bottom: 8%;
+  background: var(--hero-fx-c);
+  animation-duration: 8s;
+  animation-delay: -5s;
+}
+
+.heroBgParticles {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.9) 0.5px, transparent 0.6px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.5) 0.5px, transparent 0.6px);
+  background-size:
+    42px 42px,
+    68px 68px;
+  background-position:
+    0 0,
+    18px 24px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 10%, transparent 72%);
+  animation: heroParticlesDrift 24s linear infinite;
+}
+
+.heroBgRipple {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  width: min(28rem, 80vw);
+  height: min(28rem, 80vw);
+  margin-left: calc(min(28rem, 80vw) / -2);
+  margin-top: calc(min(28rem, 80vw) / -2);
+  border-radius: 50%;
+  border: 1px solid var(--hero-fx-c);
+  opacity: 0;
+  animation: heroRipplePulse 4.5s ease-out infinite;
+}
+
+.heroBgFx[data-dimension='discussions'] .heroBgRipple {
+  animation-duration: 3.8s;
+}
+
+.heroBgFx[data-dimension='events'] .heroBgRipple {
+  animation-duration: 5.2s;
+}
+
+@keyframes heroAuroraDrift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate(4%, -3%) scale(1.08);
+  }
+}
+
+@keyframes heroBeamSweep {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: rotate(-8deg) translateX(-8%);
+  }
+
+  50% {
+    opacity: 0.32;
+    transform: rotate(-5deg) translateX(18%);
+  }
+}
+
+@keyframes heroOrbFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(12px, -16px) scale(1.06);
+  }
+
+  66% {
+    transform: translate(-10px, 10px) scale(0.94);
+  }
+}
+
+@keyframes heroParticlesDrift {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-42px);
+  }
+}
+
+@keyframes heroRipplePulse {
+  0% {
+    opacity: 0.45;
+    transform: scale(0.35);
+  }
+
+  70% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+.heroBgMesh {
+  position: absolute;
+  inset: 0;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, transparent 72%);
+  animation: heroMeshPulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes heroMeshPulse {
+  0% {
+    opacity: 0.22;
+  }
+
+  100% {
+    opacity: 0.38;
+  }
+}
+
+.heroBgScrim {
+  position: absolute;
+  inset: 0;
+  transition: background 0.75s ease;
+  background:
+    linear-gradient(
+      100deg,
+      rgba(15, 23, 42, 0.96) 0%,
+      rgba(15, 23, 42, 0.88) 42%,
+      rgba(15, 23, 42, 0.7) 72%,
+      rgba(15, 23, 42, 0.52) 100%
+    ),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.6) 0%, transparent 52%);
+
+  &[data-dimension='proposals'] {
+    background:
+      linear-gradient(
+        100deg,
+        rgba(15, 23, 42, 0.97) 0%,
+        rgba(30, 27, 75, 0.82) 45%,
+        rgba(15, 23, 42, 0.65) 100%
+      ),
+      linear-gradient(180deg, rgba(15, 23, 42, 0.55) 0%, transparent 50%),
+      radial-gradient(ellipse 70% 55% at 65% 0%, rgba(139, 92, 246, 0.22) 0%, transparent 58%);
+  }
+
+  &[data-dimension='discussions'] {
+    background:
+      linear-gradient(
+        100deg,
+        rgba(15, 23, 42, 0.96) 0%,
+        rgba(67, 20, 7, 0.55) 48%,
+        rgba(15, 23, 42, 0.62) 100%
+      ),
+      linear-gradient(180deg, rgba(15, 23, 42, 0.58) 0%, transparent 50%),
+      radial-gradient(ellipse 75% 50% at 30% 15%, rgba(251, 146, 60, 0.18) 0%, transparent 55%);
+  }
+
+  &[data-dimension='events'] {
+    background:
+      linear-gradient(
+        100deg,
+        rgba(15, 23, 42, 0.96) 0%,
+        rgba(6, 78, 59, 0.45) 46%,
+        rgba(15, 23, 42, 0.6) 100%
+      ),
+      linear-gradient(180deg, rgba(15, 23, 42, 0.58) 0%, transparent 50%),
+      radial-gradient(ellipse 80% 55% at 50% 0%, rgba(74, 222, 128, 0.2) 0%, transparent 58%);
+  }
+}
+

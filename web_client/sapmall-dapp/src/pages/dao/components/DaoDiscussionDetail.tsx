@@ -15,11 +15,22 @@ import {
   daoHomePath,
 } from '../utils/daoNavigation';
 import { shortenWalletAddress } from '../utils/walletAddress';
+import {
+  formatDiscussionActivity,
+  getDiscussionChannel,
+  getDiscussionExcerpt,
+  getDiscussionTitle,
+} from '../utils/daoDiscussionDisplay';
 import { sortDiscussionTopicTags } from '../constants/discussionTopicTags';
 import DaoDiscussionDetailBody from './DaoDiscussionDetailBody';
 import DaoDiscussionReplyComposer from './DaoDiscussionReplyComposer';
 import DaoDiscussionReplyList from './DaoDiscussionReplyList';
-import styles from '../DaoPage.module.scss';
+import detailStyles from '../styles/dao.detailCommon.module.scss';
+import pageLayoutStyles from '../styles/dao.pageLayout.module.scss';
+import sharedStyles from '../styles/dao.shared.module.scss';
+import eventStyles from './DaoEventDetail.module.scss';
+import replyStyles from './DaoDiscussionReplyList.module.scss';
+import styles from './DaoDiscussionDetail.module.scss';
 
 type Props = {
   discussion: DaoDiscussionDetailType;
@@ -27,7 +38,10 @@ type Props = {
 
 const DaoDiscussionDetail: React.FC<Props> = ({ discussion }) => {
   const { t, i18n } = useTranslation();
-  const title = t(discussion.titleKey);
+  const title = getDiscussionTitle(discussion, t);
+  const excerpt = getDiscussionExcerpt(discussion, t);
+  const channelLabel = getDiscussionChannel(discussion, t);
+  const activityLabel = formatDiscussionActivity(discussion, i18n.language, t);
   const viewsLabel = formatHelpMetricNumber(discussion.views, i18n.language);
   const relatedDiscussions = useMemo(() => getRelatedDaoDiscussions(discussion, 3), [discussion]);
   const [replyVersion, setReplyVersion] = useState(0);
@@ -50,19 +64,26 @@ const DaoDiscussionDetail: React.FC<Props> = ({ discussion }) => {
   }, [discussion.id]);
 
   return (
-    <section className={styles.contentZoneInnerFull}>
-      <article className={`${styles.panelCard} ${styles.discussionDetailCard}`} aria-label={title}>
+    <section className={pageLayoutStyles.contentZoneInnerFull}>
+      <article className={`${sharedStyles.panelCard} ${styles.discussionDetailCard}`} aria-label={title}>
         <header className={styles.discussionDetailHead}>
-          <nav className={styles.eventDetailBreadcrumb} aria-label="Breadcrumb">
-            <Link to={daoHomePath} className={styles.eventDetailBreadcrumbLink}>
+          <nav className={eventStyles.eventDetailBreadcrumb} aria-label="Breadcrumb">
+            <Link to={daoHomePath} className={eventStyles.eventDetailBreadcrumbLink}>
               {t('navigation.dao')}
             </Link>
             <ChevronRight size={14} aria-hidden />
-            <Link to={daoDiscussionsListPath} className={styles.eventDetailBreadcrumbLink}>
+            <Link to={daoDiscussionsListPath()} className={eventStyles.eventDetailBreadcrumbLink}>
               {t('dao.tabs.discussions')}
             </Link>
             <ChevronRight size={14} aria-hidden />
-            <span className={styles.eventDetailBreadcrumbCurrent} aria-current="page">
+            <Link
+              to={daoDiscussionsListPath(discussion.category)}
+              className={eventStyles.eventDetailBreadcrumbLink}
+            >
+              {t(`dao.filters.discussions.${discussion.category}`)}
+            </Link>
+            <ChevronRight size={14} aria-hidden />
+            <span className={eventStyles.eventDetailBreadcrumbCurrent} aria-current="page">
               {title}
             </span>
           </nav>
@@ -71,7 +92,7 @@ const DaoDiscussionDetail: React.FC<Props> = ({ discussion }) => {
             <div className={styles.discussionDetailTitleMain}>
               <MessageCircle className={styles.discussionDetailLeadIcon} strokeWidth={2} aria-hidden />
               <h1 className={styles.discussionDetailTitle}>{title}</h1>
-              <span className={styles.discussionChannelTag}>{t(discussion.channelKey)}</span>
+              <span className={styles.discussionChannelTag}>{channelLabel}</span>
             </div>
             {discussion.tags.length > 0 ? (
               <div className={styles.discussionDetailTagsRow}>
@@ -93,38 +114,43 @@ const DaoDiscussionDetail: React.FC<Props> = ({ discussion }) => {
               <Eye className="h-4 w-4" aria-hidden />
               {t('dao.discussionDetail.views', { views: viewsLabel })}
             </span>
-            <span className={styles.discussionDetailMetaItem}>{t(discussion.activityKey)}</span>
+            <span className={styles.discussionDetailMetaItem}>{activityLabel}</span>
           </div>
         </header>
 
         <section className={styles.discussionOpPost} aria-label={t('dao.discussionDetail.opSection')}>
           <header className={styles.discussionOpHead}>
-            <span className={styles.discussionReplyAvatar}>{discussion.authorAddress.slice(2, 4).toUpperCase()}</span>
+            <span className={replyStyles.discussionReplyAvatar}>{discussion.authorAddress.slice(2, 4).toUpperCase()}</span>
             <div className={styles.discussionOpAuthorWrap}>
               <span className={styles.discussionOpAuthor}>{shortenWalletAddress(discussion.authorAddress)}</span>
-              <span className={styles.discussionReplyOpBadge}>{t('dao.discussionDetail.opBadge')}</span>
+              <span className={replyStyles.discussionReplyOpBadge}>{t('dao.discussionDetail.opBadge')}</span>
             </div>
-            <time className={styles.discussionOpTime}>{t(discussion.activityKey)}</time>
+            <time className={styles.discussionOpTime}>{activityLabel}</time>
           </header>
-          <p className={styles.discussionOpExcerpt}>{t(discussion.excerptKey)}</p>
+          <p className={styles.discussionOpExcerpt}>{excerpt}</p>
           <DaoDiscussionDetailBody blocks={discussion.blocks} />
         </section>
 
-        <section className={styles.discussionReplySection} aria-labelledby="dao-discussion-replies-title">
-          <h2 id="dao-discussion-replies-title" className={styles.discussionReplySectionTitle}>
+        <section className={replyStyles.discussionReplySection} aria-labelledby="dao-discussion-replies-title">
+          <h2 id="dao-discussion-replies-title" className={replyStyles.discussionReplySectionTitle}>
             {t('dao.discussionDetail.replySectionTitle')}
-            <span className={styles.discussionReplySectionCount}>{replyCount}</span>
+            <span className={replyStyles.discussionReplySectionCount}>{replyCount}</span>
           </h2>
-          <DaoDiscussionReplyList replies={allReplies} opAuthorAddress={discussion.authorAddress} />
+          <DaoDiscussionReplyList
+            discussionId={discussion.id}
+            replies={allReplies}
+            opAuthorAddress={discussion.authorAddress}
+            onReplyPosted={onReplyPosted}
+          />
         </section>
 
         <DaoDiscussionReplyComposer discussionId={discussion.id} onReplyPosted={onReplyPosted} />
 
         {relatedDiscussions.length > 0 ? (
           <footer className={styles.discussionDetailFooter}>
-            <div className={styles.eventDetailRelatedHead}>
-              <h2 className={styles.eventDetailRelatedTitle}>{t('dao.discussionDetail.relatedTitle')}</h2>
-              <Link to={daoDiscussionsListPath} className={styles.eventDetailViewAll}>
+            <div className={detailStyles.eventDetailRelatedHead}>
+              <h2 className={detailStyles.eventDetailRelatedTitle}>{t('dao.discussionDetail.relatedTitle')}</h2>
+              <Link to={daoDiscussionsListPath()} className={detailStyles.eventDetailViewAll}>
                 {t('dao.discussionDetail.viewAll')}
                 <ChevronRight size={14} aria-hidden />
               </Link>
@@ -133,8 +159,8 @@ const DaoDiscussionDetail: React.FC<Props> = ({ discussion }) => {
               {relatedDiscussions.map((item) => (
                 <li key={item.id}>
                   <Link to={daoDiscussionPath(item.id)} className={styles.discussionRelatedItem}>
-                    <span className={styles.discussionRelatedChannel}>{t(item.channelKey)}</span>
-                    <span className={styles.discussionRelatedTitle}>{t(item.titleKey)}</span>
+                    <span className={styles.discussionRelatedChannel}>{getDiscussionChannel(item, t)}</span>
+                    <span className={styles.discussionRelatedTitle}>{getDiscussionTitle(item, t)}</span>
                     <span className={styles.discussionRelatedMeta}>
                       {t('dao.list.discussionReplies', { count: item.replies })}
                     </span>

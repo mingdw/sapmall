@@ -6,7 +6,8 @@ import { HELP_ARTICLES } from '../mocks/helpArticles.mock';
 import type { HelpCategory, HelpCategoryFilter } from '../types';
 import { HELP_TOPIC_ICON_MAP } from '../utils/helpTopicIcons';
 import HelpCardTitle from './HelpCardTitle';
-import styles from '../HelpPage.module.scss';
+import sharedStyles from '../styles/help.shared.module.scss';
+import styles from './HelpTopicBrowse.module.scss';
 
 type Props = {
   activeCategory: HelpCategoryFilter;
@@ -32,7 +33,7 @@ const HelpTopicBrowse: React.FC<Props> = ({ activeCategory, onTopicSelect }) => 
         {t('help.hero.browseTopics')}
       </HelpCardTitle>
 
-      <ul className={`${styles.topicBrowseGrid} ${styles.cardSectionBody}`}>
+      <ul className={`${styles.topicBrowseGrid} ${sharedStyles.cardSectionBody}`}>
         <li>
           <button
             type="button"

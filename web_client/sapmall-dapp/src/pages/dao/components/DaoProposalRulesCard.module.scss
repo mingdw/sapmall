@@ -1,0 +1,117 @@
+/* Requires ancestor .pageRoot for --dao-* CSS variables */
+
+// 提案规则（仅提案 Tab 右侧，位于提案概览下方）
+.proposalRulesCard {
+  padding: 1.25rem 1.35rem;
+  border-top: 3px solid var(--dao-tab-proposals);
+}
+
+.proposalRulesTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--dao-panel-text);
+}
+
+.proposalRulesTitleIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+  color: var(--dao-tab-proposals);
+}
+
+.proposalRulesIntro {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--dao-panel-muted);
+}
+
+.proposalRulesList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.proposalRulesItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.proposalRulesIconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: #f5f3ff;
+
+  &[data-rule='submit'] {
+    background: #f5f3ff;
+    color: #7c3aed;
+  }
+
+  &[data-rule='window'] {
+    background: #eff6ff;
+    color: #2563eb;
+  }
+
+  &[data-rule='quorum'] {
+    background: #ecfdf5;
+    color: #059669;
+  }
+
+  &[data-rule='vote'] {
+    background: #fffbeb;
+    color: #d97706;
+  }
+
+  &[data-rule='execute'] {
+    background: #f1f5f9;
+    color: #475569;
+  }
+}
+
+.proposalRulesIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.proposalRulesCopy {
+  min-width: 0;
+  flex: 1;
+}
+
+.proposalRulesItemTitle {
+  margin: 0 0 0.2rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--dao-panel-text);
+}
+
+.proposalRulesItemDesc {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--dao-panel-muted);
+}
+
+.proposalRulesFootnote {
+  margin: 1rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid #eef1f5;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: #94a3b8;
+}

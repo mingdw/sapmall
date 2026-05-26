@@ -1,4 +1,6 @@
 import { DAO_DISCUSSIONS } from './dao.mock';
+import { getUserDiscussionRecord, userRecordToDetail } from '../utils/daoUserDiscussion.storage';
+import { getMergedDaoDiscussions } from '../utils/daoDiscussionsList';
 import type {
   DaoDiscussionDetail,
   DaoDiscussionDetailBlock,
@@ -122,6 +124,9 @@ const getDefaultMockReplies = (discussion: DaoDiscussionItem): DaoDiscussionRepl
 };
 
 export const getDaoDiscussionDetail = (id: string): DaoDiscussionDetail | undefined => {
+  const userRecord = getUserDiscussionRecord(id);
+  if (userRecord) return userRecordToDetail(userRecord);
+
   const base = DAO_DISCUSSIONS.find((d) => d.id === id);
   if (!base) return undefined;
 
@@ -142,7 +147,7 @@ export const getRelatedDaoDiscussions = (
   discussion: DaoDiscussionItem,
   limit = 3,
 ): DaoDiscussionItem[] =>
-  DAO_DISCUSSIONS.filter((d) => d.id !== discussion.id && d.category === discussion.category).slice(
+  getMergedDaoDiscussions().filter((d) => d.id !== discussion.id && d.category === discussion.category).slice(
     0,
     limit,
   );

@@ -7,7 +7,9 @@ import {
   formatProposalCompact,
   formatProposalVoteCount,
 } from '../utils/daoProposalMetrics';
-import styles from '../DaoPage.module.scss';
+import listTagStyles from '../styles/dao.listTags.module.scss';
+import sharedStyles from '../styles/dao.shared.module.scss';
+import styles from './DaoProposalDetail.module.scss';
 
 type Props = {
   proposal: DaoProposalDetail;
@@ -16,9 +18,9 @@ type Props = {
 };
 
 const statusClass: Record<DaoProposalDetail['status'], string> = {
-  active: styles.statusActive,
-  passed: styles.statusPassed,
-  pending: styles.statusPending,
+  active: listTagStyles.statusActive,
+  passed: listTagStyles.statusPassed,
+  pending: listTagStyles.statusPending,
 };
 
 const DaoProposalResultsCard: React.FC<Props> = ({ proposal, votesFor, votesAgainst }) => {
@@ -47,7 +49,7 @@ const DaoProposalResultsCard: React.FC<Props> = ({ proposal, votesFor, votesAgai
     metrics.againstPct > 0 && metrics.againstPct < 0.01 ? '< 0.01' : Math.round(metrics.againstPct);
 
   return (
-    <aside className={`${styles.panelCard} ${styles.proposalDetailSidebarCard}`}>
+    <aside className={`${sharedStyles.panelCard} ${styles.proposalDetailSidebarCard}`}>
       <div className={styles.proposalDetailResultsHead}>
         <h2 className={styles.proposalDetailSidebarTitle}>{t('dao.proposalDetail.resultsCard.title')}</h2>
         <span className={statusClass[proposal.status]}>{t(proposal.statusKey)}</span>

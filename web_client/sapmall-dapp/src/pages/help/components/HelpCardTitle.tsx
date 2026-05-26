@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../HelpPage.module.scss';
+import sharedStyles from '../styles/help.shared.module.scss';
 
 type Props = {
   id?: string;
@@ -10,11 +10,11 @@ type Props = {
 /** 帮助中心卡片区统一标题：图标 + 文案 */
 const HelpCardTitle: React.FC<Props> = ({ id, icon, children }) => {
   return (
-    <h2 id={id} className={styles.cardSectionTitle}>
-      <span className={styles.cardSectionTitleIcon} aria-hidden>
+    <h2 id={id} className={sharedStyles.cardSectionTitle}>
+      <span className={sharedStyles.cardSectionTitleIcon} aria-hidden>
         {icon}
       </span>
-      <span className={styles.cardSectionTitleText}>{children}</span>
+      <span className={sharedStyles.cardSectionTitleText}>{children}</span>
     </h2>
   );
 };

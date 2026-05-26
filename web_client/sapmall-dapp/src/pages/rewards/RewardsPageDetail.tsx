@@ -1,26 +1,24 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SlidersHorizontal } from 'lucide-react';
 import { CAMPAIGNS } from './mocks/campaigns.mock';
-import type { CampaignCategoryFilter, CampaignSortKey, CampaignStatus } from './types';
-import RewardsWalletNotice from './components/RewardsWalletNotice';
+import type { CampaignCategory, CampaignCategoryFilter, CampaignSortKey, CampaignStatus } from './types';
+import { computeRewardsHubStats, pickFeaturedCampaigns } from './utils/rewardsHubStats';
+import RewardsHeroSection from './components/RewardsHeroSection';
+import RewardsStatsStrip from './components/RewardsStatsStrip';
+import RewardsFeaturedRow from './components/RewardsFeaturedRow';
+import RewardsCategoryBrowse from './components/RewardsCategoryBrowse';
+import RewardsSidebar from './components/RewardsSidebar';
 import RewardsCampaignCard from './components/RewardsCampaignCard';
 import styles from './RewardsPageDetail.module.scss';
-
-const CATEGORY_FILTERS: CampaignCategoryFilter[] = [
-  'all',
-  'shopping',
-  'newbie',
-  'referral',
-  'task',
-  'dao',
-  'bags',
-];
 
 const RewardsPageDetail: React.FC = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<CampaignStatus>('ongoing');
   const [categoryFilter, setCategoryFilter] = useState<CampaignCategoryFilter>('all');
   const [sortKey, setSortKey] = useState<CampaignSortKey>('latest');
+
+  const hubStats = useMemo(() => computeRewardsHubStats(CAMPAIGNS), []);
 
   const tabCounts = useMemo(
     () => ({
@@ -31,8 +29,36 @@ const RewardsPageDetail: React.FC = () => {
     [],
   );
 
+  const featuredCampaigns = useMemo(
+    () => (activeTab === 'ongoing' ? pickFeaturedCampaigns(CAMPAIGNS, 'ongoing', 3) : []),
+    [activeTab],
+  );
+
+  const featuredSlugs = useMemo(
+    () => new Set(featuredCampaigns.map((c) => c.slug)),
+    [featuredCampaigns],
+  );
+
+  const countByCategory = useMemo(() => {
+    const map: Record<CampaignCategory, number> = {
+      shopping: 0,
+      newbie: 0,
+      referral: 0,
+      task: 0,
+      dao: 0,
+      bags: 0,
+    };
+    for (const campaign of CAMPAIGNS.filter((c) => c.status === activeTab)) {
+      map[campaign.category] += 1;
+    }
+    return map;
+  }, [activeTab]);
+
   const filteredCampaigns = useMemo(() => {
     let list = CAMPAIGNS.filter((c) => c.status === activeTab);
+    if (activeTab === 'ongoing' && featuredSlugs.size > 0) {
+      list = list.filter((c) => !featuredSlugs.has(c.slug));
+    }
     if (categoryFilter !== 'all') {
       list = list.filter((c) => c.category === categoryFilter);
     }
@@ -44,88 +70,101 @@ const RewardsPageDetail: React.FC = () => {
       sorted.sort((a, b) => (b.participants ?? 0) - (a.participants ?? 0));
     } else if (sortKey === 'deadline') {
       sorted.sort((a, b) => {
-        const aEnd = a.isLongTerm ? Number.MAX_SAFE_INTEGER : a.endAt ? new Date(a.endAt).getTime() : Number.MAX_SAFE_INTEGER;
-        const bEnd = b.isLongTerm ? Number.MAX_SAFE_INTEGER : b.endAt ? new Date(b.endAt).getTime() : Number.MAX_SAFE_INTEGER;
+        const aEnd = a.isLongTerm
+          ? Number.MAX_SAFE_INTEGER
+          : a.endAt
+            ? new Date(a.endAt).getTime()
+            : Number.MAX_SAFE_INTEGER;
+        const bEnd = b.isLongTerm
+          ? Number.MAX_SAFE_INTEGER
+          : b.endAt
+            ? new Date(b.endAt).getTime()
+            : Number.MAX_SAFE_INTEGER;
         return aEnd - bEnd;
       });
     }
     return sorted;
-  }, [activeTab, categoryFilter, sortKey]);
+  }, [activeTab, categoryFilter, sortKey, featuredSlugs]);
 
   const tabs: CampaignStatus[] = ['ongoing', 'upcoming', 'ended'];
 
   return (
     <div className={styles.pageContent}>
-      <header className={styles.hero}>
-        <span className={styles.heroBadge}>
-          <span className={styles.heroBadgeDot} aria-hidden />
-          {t('rewards.badgeHub')}
-        </span>
-        <h1 className={styles.heroTitle}>{t('rewards.title')}</h1>
-        <p className={styles.heroSubtitle}>{t('rewards.heroSubtitle')}</p>
-      </header>
+      <RewardsHeroSection />
+      <RewardsStatsStrip stats={hubStats} />
 
-      <RewardsWalletNotice />
+      <div className={styles.pageLayout}>
+        <main className={styles.mainColumn}>
+          {featuredCampaigns.length > 0 ? (
+            <RewardsFeaturedRow campaigns={featuredCampaigns} />
+          ) : null}
 
-      <div className={styles.toolbar}>
-        <div className={styles.tabList} role="tablist" aria-label={t('rewards.tabListAria')}>
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab}
-              className={styles.tabBtn}
-              data-active={activeTab === tab}
-              onClick={() => setActiveTab(tab)}
-            >
-              {t(`rewards.tabs.${tab}`, { count: tabCounts[tab] })}
-            </button>
-          ))}
-        </div>
+          <div className={styles.listPanel} data-zone="minimal">
+            <div className={styles.toolbar}>
+              <div className={styles.tabList} role="tablist" aria-label={t('rewards.tabListAria')}>
+                {tabs.map((tab) => (
+                  <button
+                    key={tab}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeTab === tab}
+                    className={styles.tabBtn}
+                    data-active={activeTab === tab}
+                    data-tab={tab}
+                    onClick={() => setActiveTab(tab)}
+                  >
+                    {t(`rewards.tabs.${tab}`, { count: tabCounts[tab] })}
+                  </button>
+                ))}
+              </div>
 
-        <div className={styles.sortRow}>
-          <label htmlFor="rewards-sort">{t('rewards.sortLabel')}</label>
-          <select
-            id="rewards-sort"
-            className={styles.sortSelect}
-            value={sortKey}
-            onChange={(e) => setSortKey(e.target.value as CampaignSortKey)}
-          >
-            <option value="latest">{t('rewards.sortLatest')}</option>
-            <option value="participants">{t('rewards.sortReward')}</option>
-            <option value="deadline">{t('rewards.sortDeadline')}</option>
-          </select>
-        </div>
-      </div>
+              <div className={styles.sortRow}>
+                <SlidersHorizontal size={14} aria-hidden />
+                <label htmlFor="rewards-sort">{t('rewards.sortLabel')}</label>
+                <select
+                  id="rewards-sort"
+                  className={styles.sortSelect}
+                  value={sortKey}
+                  onChange={(e) => setSortKey(e.target.value as CampaignSortKey)}
+                >
+                  <option value="latest">{t('rewards.sortLatest')}</option>
+                  <option value="participants">{t('rewards.sortReward')}</option>
+                  <option value="deadline">{t('rewards.sortDeadline')}</option>
+                </select>
+              </div>
+            </div>
 
-      <div className={styles.categoryRow} role="group" aria-label={t('rewards.categoryFilterLabel')}>
-        {CATEGORY_FILTERS.map((cat) => (
-          <button
-            key={cat}
-            type="button"
-            className={styles.categoryChip}
-            data-active={categoryFilter === cat}
-            onClick={() => setCategoryFilter(cat)}
-          >
-            {cat === 'all' ? t('rewards.filterAll') : t(`rewards.categories.${cat}`)}
-          </button>
-        ))}
-      </div>
+            <RewardsCategoryBrowse
+              activeCategory={categoryFilter}
+              countByCategory={countByCategory}
+              onCategorySelect={setCategoryFilter}
+            />
 
-      <div className={styles.campaignGrid} role="tabpanel">
-        {filteredCampaigns.length === 0 ? (
-          <p className={styles.emptyState}>{t('rewards.empty')}</p>
-        ) : (
-          filteredCampaigns.map((campaign) => (
-            <RewardsCampaignCard key={campaign.slug} campaign={campaign} />
-          ))
-        )}
+            <div className={styles.campaignGrid} role="tabpanel">
+              {filteredCampaigns.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <p>{t('rewards.empty')}</p>
+                  <button
+                    type="button"
+                    className={styles.emptyReset}
+                    onClick={() => setCategoryFilter('all')}
+                  >
+                    {t('rewards.emptyReset')}
+                  </button>
+                </div>
+              ) : (
+                filteredCampaigns.map((campaign) => (
+                  <RewardsCampaignCard key={campaign.slug} campaign={campaign} variant="minimal" />
+                ))
+              )}
+            </div>
+          </div>
+        </main>
+
+        <RewardsSidebar />
       </div>
     </div>
   );
 };
 
 export default RewardsPageDetail;
-
-

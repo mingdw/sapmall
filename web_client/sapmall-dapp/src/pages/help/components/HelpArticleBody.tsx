@@ -7,7 +7,7 @@ import HelpArticleFigure from './HelpArticleFigure';
 import type { HelpArticleBlock } from '../types';
 import { getArticleLayoutVariant } from '../utils/buildHelpArticleBlocks';
 import { parseTopicQaArticleIndex } from '../utils/helpTopicSlug';
-import styles from '../HelpPage.module.scss';
+import styles from './HelpArticleBody.module.scss';
 
 type Props = {
   blocks: HelpArticleBlock[];

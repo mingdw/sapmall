@@ -11,7 +11,8 @@ import {
   setUserProposalVote,
 } from '../utils/daoProposalVote.mock';
 import { formatProposalVoteCount } from '../utils/daoProposalMetrics';
-import styles from '../DaoPage.module.scss';
+import sharedStyles from '../styles/dao.shared.module.scss';
+import styles from './DaoProposalDetail.module.scss';
 
 type Props = {
   proposal: DaoProposalDetail;
@@ -202,7 +203,7 @@ const DaoProposalVoteCard: React.FC<Props> = ({
               return (
                 <button
                   type="button"
-                  className={styles.connectBtn}
+                  className={sharedStyles.connectBtn}
                   disabled={!ready || proposal.status !== 'active'}
                   onClick={openConnectModal}
                 >
@@ -257,7 +258,7 @@ const DaoProposalVoteCard: React.FC<Props> = ({
   };
 
   return (
-    <aside className={`${styles.panelCard} ${styles.proposalDetailSidebarCard}`}>
+    <aside className={`${sharedStyles.panelCard} ${styles.proposalDetailSidebarCard}`}>
       <h2 className={styles.proposalDetailSidebarTitle}>{t('dao.proposalDetail.voteCard.title')}</h2>
       {renderBody()}
     </aside>

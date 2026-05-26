@@ -9,7 +9,8 @@ import type {
   DaoTabOverviewData,
   DaoViewTab,
 } from '../types';
-import styles from '../DaoPage.module.scss';
+import sharedStyles from '../styles/dao.shared.module.scss';
+import styles from './DaoTabOverviewCard.module.scss';
 
 const tabIconMap = {
   proposals: FileText,
@@ -321,7 +322,7 @@ const DaoTabOverviewCard: React.FC<Props> = ({ tab, onTrendingItemClick }) => {
 
   return (
     <aside
-      className={`${styles.panelCard} ${styles.sidebarCard} ${styles.overviewCard} ${overviewAccentClass[overview.accent]}`}
+      className={`${sharedStyles.panelCard} ${sharedStyles.sidebarCard} ${styles.overviewCard} ${overviewAccentClass[overview.accent]}`}
       aria-labelledby="dao-overview-title"
     >
       <div

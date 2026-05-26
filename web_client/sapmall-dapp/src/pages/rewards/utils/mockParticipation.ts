@@ -22,3 +22,8 @@ export const markCampaignClaimed = (slug: string): void => {
   claims[slug] = true;
   writeClaims(claims);
 };
+
+export const getClaimedCampaignSlugs = (): string[] =>
+  Object.entries(readClaims())
+    .filter(([, claimed]) => claimed)
+    .map(([slug]) => slug);

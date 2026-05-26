@@ -1,0 +1,241 @@
+/* Requires ancestor .pageRoot for --dao-* CSS variables */
+
+.discussionReplySection {
+  padding: 1.15rem 1.25rem 0.5rem;
+
+  @media (min-width: 768px) {
+    padding: 1.35rem 1.65rem 0.65rem;
+  }
+}
+
+.discussionReplySectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--dao-panel-text);
+}
+
+.discussionReplySectionCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: rgb(234 88 12 / 0.12);
+  color: var(--dao-tab-discussions);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.discussionReplyList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.discussionReplyItem {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: 0.5rem 0.85rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #f1f5f9;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &:first-child {
+    padding-top: 0;
+  }
+}
+
+.discussionReplyChildItem {
+  padding: 0.65rem 0 0;
+
+  &:first-child {
+    padding-top: 0.5rem;
+  }
+}
+
+.discussionReplyAside {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.15rem;
+}
+
+.discussionReplyFloor {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #94a3b8;
+  font-variant-numeric: tabular-nums;
+}
+
+.discussionReplyContent {
+  min-width: 0;
+}
+
+.discussionReplyHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.discussionReplyAuthorRow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+}
+
+.discussionReplyAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #fb923c, #ea580c);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.discussionReplyAvatarSm {
+  width: 1.65rem;
+  height: 1.65rem;
+  font-size: 0.625rem;
+}
+
+.discussionReplyAuthor {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--dao-panel-text);
+  font-family: ui-monospace, monospace;
+}
+
+.discussionReplyOpBadge {
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  background: rgb(234 88 12 / 0.12);
+  color: var(--dao-tab-discussions);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.discussionReplyOfficialBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  background: rgb(34 197 94 / 0.12);
+  color: #16a34a;
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+.discussionReplyTime {
+  font-size: 0.75rem;
+  color: var(--dao-panel-muted);
+}
+
+.discussionReplyQuote {
+  margin: 0 0 0.45rem;
+  padding: 0.35rem 0.55rem;
+  border-left: 2px solid rgb(234 88 12 / 0.35);
+  border-radius: 0 0.25rem 0.25rem 0;
+  background: rgb(255 247 237 / 0.45);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--dao-panel-muted);
+}
+
+.discussionReplyBody {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: #334155;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.discussionReplyFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.discussionReplyActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--dao-tab-discussions);
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--dao-tab-discussions-muted);
+    text-decoration: underline;
+  }
+}
+
+.discussionReplyActionBtnActive {
+  text-decoration: underline;
+}
+
+.discussionReplyLikes {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.discussionReplyThread {
+  margin-top: 0.5rem;
+}
+
+.discussionReplyChildren {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 0.65rem;
+  border-left: 2px solid #e2e8f0;
+}
+
+.discussionReplyInlineForm {
+  margin-top: 0.65rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.discussionReplyEmpty {
+  margin: 0 0 1rem;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  background: #f8fafc;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--dao-panel-muted);
+}

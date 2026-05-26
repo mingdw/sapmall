@@ -1,10 +1,10 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DAO_HERO_SLIDES } from '../mocks/daoHero.mock';
 import DaoHeroBackground from './DaoHeroBackground';
 import DaoHeroCarousel from './DaoHeroCarousel';
-import styles from '../DaoPage.module.scss';
+import styles from './DaoHeroSection.module.scss';
 
 const SLIDE_COUNT = DAO_HERO_SLIDES.length;
 

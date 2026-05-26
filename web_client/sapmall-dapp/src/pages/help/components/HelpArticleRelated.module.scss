@@ -1,0 +1,232 @@
+.articleRelated {
+  margin-top: 0;
+}
+
+.articleRelatedPanel {
+  padding: 1.15rem 0 0;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+
+  @media (min-width: 768px) {
+    padding-top: 1.25rem;
+  }
+}
+
+.articleRelatedHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.articleRelatedHeadMain {
+  flex: 1;
+  min-width: min(100%, 14rem);
+}
+
+.articleRelatedHint {
+  margin: 0.35rem 0 0;
+  padding-left: var(--help-card-content-indent);
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: var(--help-panel-muted);
+}
+
+.articleRelatedViewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  padding: 0.42rem 0.72rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  background: rgba(255, 255, 255, 0.88);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--help-primary);
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(139, 92, 246, 0.42);
+    background: #fff;
+    color: #6d28d9;
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.12);
+  }
+}
+
+.articleRelatedViewAllIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 9999px;
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--help-primary);
+}
+
+.articleRelatedGrid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.55rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+}
+
+.articleRelatedCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  height: 100%;
+  padding: 0.85rem 0.9rem;
+  border-radius: 0.72rem;
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  background: rgba(139, 92, 246, 0.06);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: none;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    border-color: rgba(139, 92, 246, 0.22);
+    background: rgba(139, 92, 246, 0.12);
+    box-shadow: 0 4px 14px rgba(139, 92, 246, 0.08);
+    transform: translateY(-1px);
+
+    .articleRelatedCardTitle {
+      color: var(--help-primary);
+    }
+
+    .articleRelatedCardArrow {
+      opacity: 1;
+      transform: translate(2px, -2px);
+      color: var(--help-primary);
+    }
+
+    .articleRelatedCardIndex {
+      background: rgba(139, 92, 246, 0.18);
+      color: #5b21b6;
+      border-color: rgba(139, 92, 246, 0.28);
+    }
+  }
+}
+
+.articleRelatedCardIndex {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.35rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(139, 92, 246, 0.16);
+  background: rgba(139, 92, 246, 0.08);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: #6d28d9;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.articleRelatedCardBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.articleRelatedCardTitle {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--help-panel-text);
+  transition: color 0.2s ease;
+}
+
+.articleRelatedCardSummary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 0.6875rem;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--help-panel-muted);
+}
+
+.articleRelatedCardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.75rem;
+  margin-top: 0.15rem;
+}
+
+.articleRelatedCardMetric {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #94a3b8;
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.85;
+  }
+
+  &:first-child svg {
+    color: var(--help-primary);
+  }
+
+  &:last-child svg {
+    color: #16a34a;
+  }
+}
+
+.articleRelatedCardArrow {
+  flex-shrink: 0;
+  align-self: center;
+  opacity: 0.35;
+  color: #94a3b8;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .articleRelatedCard,
+  .articleRelatedViewAll {
+    transition: none;
+    animation: none;
+  }
+
+  .articleRelatedCard:hover {
+    transform: none;
+  }
+}

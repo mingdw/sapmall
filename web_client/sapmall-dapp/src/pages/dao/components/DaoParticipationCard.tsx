@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { FilePlus, MessagesSquare, UserRound } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { getMockUserParticipationSummary } from '../utils/daoProposalVote.mock';
-import styles from '../DaoPage.module.scss';
+import sharedStyles from '../styles/dao.shared.module.scss';
+import styles from './DaoParticipationCard.module.scss';
 
 type Props = {
   onCreateProposal: () => void;
@@ -26,22 +27,22 @@ const DaoParticipationCard: React.FC<Props> = ({
   );
 
   return (
-    <aside className={`${styles.panelCard} ${styles.sidebarCard}`} aria-labelledby="dao-participation-title">
-      <h2 id="dao-participation-title" className={styles.sidebarTitle}>
-        <UserRound className={styles.sidebarTitleIcon} strokeWidth={2.25} aria-hidden />
+    <aside className={`${sharedStyles.panelCard} ${sharedStyles.sidebarCard}`} aria-labelledby="dao-participation-title">
+      <h2 id="dao-participation-title" className={sharedStyles.sidebarTitle}>
+        <UserRound className={sharedStyles.sidebarTitleIcon} strokeWidth={2.25} aria-hidden />
         <span>{t('dao.sidebar.title')}</span>
       </h2>
 
       {!isConnected || !address ? (
         <>
-          <p className={styles.sidebarHint}>{t('dao.sidebar.connectHint')}</p>
+          <p className={sharedStyles.sidebarHint}>{t('dao.sidebar.connectHint')}</p>
           <ConnectButton.Custom>
             {({ openConnectModal, mounted, authenticationStatus }) => {
               const ready = mounted && authenticationStatus !== 'loading';
               return (
                 <button
                   type="button"
-                  className={styles.connectBtn}
+                  className={sharedStyles.connectBtn}
                   disabled={!ready}
                   onClick={openConnectModal}
                 >

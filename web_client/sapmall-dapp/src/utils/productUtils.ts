@@ -1,4 +1,8 @@
 import { Product } from '../services/types/productTypes';
+import { formatDualPrice } from '../pages/marketplace/product/utils/priceDisplay';
+import { resolveProductImageUrl } from './productImageUrls';
+
+export { resolveProductImageUrl, buildSampleProductImageUrl } from './productImageUrls';
 
 /**
  * 将后端商品数据转换为前端显示格式
@@ -9,7 +13,11 @@ export const transformProductForDisplay = (product: Product): Product => {
     // 使用后端返回的字段
     title: product.name,
     description: product.description,
-    image: product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/300x200',
+    image: resolveProductImageUrl(
+      product.images,
+      product.id ?? product.code ?? product.name,
+      product.category3Code,
+    ),
     badges: generateProductBadges(product),
     categoryId: product.category1Id,
     categoryName: product.category1Code, // 可以根据需要映射到分类名称
@@ -82,17 +90,9 @@ export const generateProductBadges = (product: Product): string[] => {
 };
 
 /**
- * 格式化价格显示
+ * 格式化价格显示（主价 ≈ 副价）
  */
-export const formatPrice = (price: string | number): string => {
-  const numPrice = typeof price === 'number' ? price : parseFloat(price);
-  if (isNaN(numPrice)) return String(price);
-  
-  if (numPrice >= 1000) {
-    return `${(numPrice / 1000).toFixed(1)}K SAP`;
-  }
-  return `${numPrice} SAP`;
-};
+export const formatPrice = (price: string | number): string => formatDualPrice(price);
 
 /**
  * 格式化时间显示

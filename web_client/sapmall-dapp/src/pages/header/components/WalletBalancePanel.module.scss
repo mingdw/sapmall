@@ -1,0 +1,109 @@
+.balanceTable {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+}
+
+.balanceTableCompact {
+  padding: 0;
+}
+
+.balanceTableFull {
+  padding: 0.35rem 0 0.5rem;
+  border-radius: 0.55rem;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.balanceCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.65rem;
+  min-width: 0;
+
+  &[data-token='native'] {
+    border-right: 1px solid rgba(255, 255, 255, 0.07);
+
+    .balanceSymbol {
+      color: #7dd3fc;
+    }
+  }
+
+  &[data-token='sap'] .balanceSymbol {
+    color: #c4b5fd;
+  }
+}
+
+.balanceSpinner {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.35rem;
+  color: #a78bfa;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.balanceSymbol {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.balanceValue {
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #f8fafc;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
+}
+
+.balanceSkeleton {
+  display: inline-block;
+  width: 2.5rem;
+  height: 0.8rem;
+  border-radius: 0.25rem;
+  vertical-align: middle;
+  background: linear-gradient(
+    90deg,
+    rgba(71, 85, 105, 0.35) 25%,
+    rgba(148, 163, 184, 0.25) 50%,
+    rgba(71, 85, 105, 0.35) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+.balanceTableFull .balanceCol {
+  padding: 0.75rem 0.85rem;
+}
+
+.balanceTableFull .balanceSymbol {
+  font-size: 0.75rem;
+}
+
+.balanceTableFull .balanceValue {
+  font-size: 1.125rem;
+}

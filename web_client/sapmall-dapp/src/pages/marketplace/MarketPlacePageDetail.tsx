@@ -6,6 +6,7 @@ import { productApiService } from '../../services/api/productApiService';
 import { CategoryTreeResp, AttrGroupResp } from '../../services/types/categoryTypes';
 import { Product, FilterOptions, FILTER_OPTIONS, ProductQueryParams } from '../../services/types/productTypes';
 import CategoryButton from './components/CategoryButton';
+import { ALL_PRODUCTS_CATEGORY_CODE } from './utils/categoryIconTheme';
 import AttrGroupFilter from './components/AttrGroupFilter';
 import ProductCategoryComponent from '../../components/ProductCategoryCard';
 import { useCategoryStore } from '../../store/categoryStore';
@@ -434,8 +435,9 @@ const MarketPlacePageDetail: React.FC = () => {
   // 创建"全部商品"选项
   const allProductsCategory = {
     id: 0,
+    code: ALL_PRODUCTS_CATEGORY_CODE,
     name: '全部商品',
-    icon: 'fas fa-th-large'
+    icon: '',
   };
 
   if (isLoading) {
@@ -455,74 +457,58 @@ const MarketPlacePageDetail: React.FC = () => {
       <div className="w-full px-6 py-4">
         {/* 商品筛选区域 */}
         <div className="mb-6">
-          <div className={`${styles.filterCard} rounded-xl p-4`}>
-            {/* 商品目录筛选 */}
-            <div className="mb-2">
-              <div className="flex flex-wrap items-start justify-between">
-                <div className="flex flex-wrap gap-2 items-start flex-1 min-w-0">
-                  <span className="text-xs font-medium text-gray-400 flex-shrink-0 w-[68px] h-[36px] flex items-center">
-                    商品目录
-                  </span>
-                  
-                  {/* 筛选按钮区域 */}
-                  <div className="flex flex-wrap gap-2 items-center flex-1">
-                    {/* 全部商品选项 */}
+          <div className={styles.filterCard}>
+            <div className={styles.filterSection}>
+              <div className={styles.filterRow}>
+                <span className={styles.filterLabel}>商品目录</span>
+                <div className={styles.filterChips}>
+                  <CategoryButton
+                    key={allProductsCategory.id}
+                    category={allProductsCategory}
+                    isActive={selectedCategory === null || selectedCategory === 0}
+                    onClick={handleCategorySelect}
+                  />
+                  {categories.map((category) => (
                     <CategoryButton
-                      key={allProductsCategory.id}
-                      category={allProductsCategory}
-                      isActive={selectedCategory === null || selectedCategory === 0}
+                      key={category.id}
+                      category={{
+                        id: category.id,
+                        code: category.code,
+                        name: category.name,
+                        icon: category.icon,
+                        children: category.children,
+                      }}
+                      isActive={selectedCategory === category.id}
                       onClick={handleCategorySelect}
+                      onSubCategoryClick={handleSubCategorySelect}
                     />
-                    
-                    {/* 其他分类选项 */}
-                    {categories.map((category) => (
-                      <CategoryButton
-                        key={category.id}
-                        category={{
-                          id: category.id,
-                          name: category.name,
-                          icon: category.icon,
-                          children: category.children // 使用children结构
-                        }}
-                        isActive={selectedCategory === category.id}
-                        onClick={handleCategorySelect}
-                        onSubCategoryClick={handleSubCategorySelect}
-                      />
-                    ))}
-                  </div>
+                  ))}
                 </div>
+              </div>
 
-                {/* 搜索框 */}
-                <div className="flex-shrink-0 ml-6 flex items-center">
-                  <div className="flex gap-2 items-center">
-                    <div className="relative">
-                      <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
-                      <input 
-                        type="text" 
-                        placeholder="搜索商品..." 
-                        value={searchInput}
-                        onChange={(e) => setSearchInput(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                        className={`${styles.searchInput} w-72 pl-9 pr-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-sapphire-500 focus:outline-none focus:bg-gray-700 transition-all text-sm`}
-                      />
-                    </div>
-                    <button 
-                      onClick={handleSearch}
-                      className="bg-sapphire-600 hover:bg-sapphire-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors whitespace-nowrap"
-                    >
-                      筛选商品
-                    </button>
-                  </div>
+              <div className={styles.searchArea}>
+                <div className={styles.searchBar}>
+                  <i className={`fas fa-search ${styles.searchIcon}`} aria-hidden />
+                  <input
+                    type="search"
+                    placeholder="搜索商品..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                    className={styles.searchInput}
+                    aria-label="搜索商品"
+                  />
+                  <span className={styles.searchBtnDivider} aria-hidden />
+                  <button type="button" onClick={handleSearch} className={styles.searchBtn}>
+                    搜索
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* 分隔线 */}
-            <div className="border-t border-gray-600 my-4"></div>
+            <hr className={styles.filterDivider} />
 
-            {/* 其他筛选条件 */}
-            <div>
-              <div className="space-y-3 relative">
+            <div className={styles.filterBody}>
                 {/* 默认显示前3个attrGroups */}
                 {displayedAttrGroups.slice(0, 3).map((attrGroup, index) => {
                   // 再次检查属性组状态和属性（防御性编程）
@@ -541,33 +527,35 @@ const MarketPlacePageDetail: React.FC = () => {
                   const hasSelectedFilters = Object.values(attrGroupFilters).some(attrs => attrs.length > 0);
                   
                   return (
-                    <div key={attrGroup.id} className="flex flex-wrap gap-2 items-center justify-between">
+                    <div key={attrGroup.id} className={styles.filterAttrRow}>
                       <AttrGroupFilter
                         attrGroup={attrGroup}
                         selectedAttrs={attrGroupFilters[attrGroup.id] || []}
                         onAttrSelect={handleAttrGroupFilter}
                       />
-                      {/* 操作按钮 - 当收起时显示在最后一行右侧 */}
                       {isLastVisible && (
-                        <div className="flex gap-2">
-                          {/* 只要有筛选就显示清空筛选按钮 */}
+                        <div className={styles.filterActions}>
                           {hasSelectedFilters && (
-                            <button 
-                              className={`${styles.clearBtn} px-3 py-1.5 rounded-lg font-medium text-xs`}
+                            <button
+                              type="button"
+                              className={styles.clearBtn}
                               onClick={clearAllFilters}
                             >
-                              <i className="fas fa-trash mr-1"></i>
+                              <i className="fas fa-trash" aria-hidden />
                               清空筛选
                             </button>
                           )}
-                          {/* 筛选行数大于3才显示展开筛选按钮 */}
                           {displayedAttrGroups.length > 3 && (
-                            <button 
-                              className={`${styles.moreBtn} px-3 py-1.5 rounded-lg font-medium text-xs`}
+                            <button
+                              type="button"
+                              className={styles.moreBtn}
                               onClick={() => setShowMoreFilters(!showMoreFilters)}
                             >
                               {showMoreFilters ? '收起筛选' : '展开筛选'}
-                              <i className={`fas fa-chevron-${showMoreFilters ? 'up' : 'down'} ml-1 text-xs`}></i>
+                              <i
+                                className={`fas fa-chevron-${showMoreFilters ? 'up' : 'down'}`}
+                                aria-hidden
+                              />
                             </button>
                           )}
                         </div>
@@ -596,32 +584,31 @@ const MarketPlacePageDetail: React.FC = () => {
                       const hasSelectedFilters = Object.values(attrGroupFilters).some(attrs => attrs.length > 0);
                       
                       return (
-                        <div key={attrGroup.id} className="flex flex-wrap gap-2 items-center justify-between">
+                        <div key={attrGroup.id} className={styles.filterAttrRow}>
                           <AttrGroupFilter
                             attrGroup={attrGroup}
                             selectedAttrs={attrGroupFilters[attrGroup.id] || []}
                             onAttrSelect={handleAttrGroupFilter}
                           />
-                          {/* 操作按钮 - 当展开时显示在最后一个筛选条件右侧 */}
                           {isLastExpanded && (
-                            <div className="flex gap-2">
-                              {/* 只要有筛选就显示清空筛选按钮 */}
+                            <div className={styles.filterActions}>
                               {hasSelectedFilters && (
-                                <button 
-                                  className={`${styles.clearBtn} px-3 py-1.5 rounded-lg font-medium text-xs`}
+                                <button
+                                  type="button"
+                                  className={styles.clearBtn}
                                   onClick={clearAllFilters}
                                 >
-                                  <i className="fas fa-trash mr-1"></i>
+                                  <i className="fas fa-trash" aria-hidden />
                                   清空筛选
                                 </button>
                               )}
-                              {/* 展开状态下显示收起筛选按钮 */}
-                              <button 
-                                className={`${styles.moreBtn} px-3 py-1.5 rounded-lg font-medium text-xs`}
+                              <button
+                                type="button"
+                                className={styles.moreBtn}
                                 onClick={() => setShowMoreFilters(false)}
                               >
                                 收起筛选
-                                <i className="fas fa-chevron-up ml-1 text-xs"></i>
+                                <i className="fas fa-chevron-up" aria-hidden />
                               </button>
                             </div>
                           )}
@@ -630,7 +617,6 @@ const MarketPlacePageDetail: React.FC = () => {
                     })}
                   </>
                 )}
-              </div>
             </div>
           </div>
         </div>
@@ -646,7 +632,7 @@ const MarketPlacePageDetail: React.FC = () => {
                     key="all-products-search"
                     categoryId={0}
                     categoryName="全部商品"
-                    categoryCode=""
+                    categoryCode={ALL_PRODUCTS_CATEGORY_CODE}
                     categoryIcon="fas fa-search"
                     productCount={totalItems}
                     products={products}
@@ -704,12 +690,13 @@ const MarketPlacePageDetail: React.FC = () => {
                   {/* 加载更多类别链接 */}
                   {firstLevelCategories.length > displayedCategoriesCount && (
                     <div className="flex justify-center">
-                      <button 
+                      <button
+                        type="button"
                         onClick={handleLoadMoreCategories}
-                        className={`${styles.loadMoreCategoriesLink}`}
+                        className={styles.loadMoreCategoriesLink}
                       >
                         <span>加载更多类别</span>
-                        <i className="fas fa-chevron-down"></i>
+                        <i className="fas fa-chevron-down" aria-hidden />
                       </button>
                     </div>
                   )}

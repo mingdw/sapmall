@@ -1,0 +1,127 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (min-width: 1024px) {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+.panel {
+  padding: 1.1rem 1.15rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(124, 77, 255, 0.22);
+  background: linear-gradient(155deg, rgba(24, 20, 52, 0.92), rgba(15, 23, 42, 0.88));
+}
+
+.panelIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.65rem;
+  color: #c4b5fd;
+  background: rgba(124, 77, 255, 0.15);
+  border: 1px solid rgba(124, 77, 255, 0.28);
+  border-radius: 0.5rem;
+
+  &[data-tone='amber'] {
+    color: #fde68a;
+    background: rgba(251, 191, 36, 0.12);
+    border-color: rgba(251, 191, 36, 0.28);
+  }
+}
+
+.panelTitle {
+  margin: 0 0 0.65rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.walletList {
+  margin: 0;
+  padding: 0 0 0 1rem;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #94a3b8;
+
+  li + li {
+    margin-top: 0.35rem;
+  }
+}
+
+.connectWrap {
+  margin-top: 0.85rem;
+}
+
+.panelHint {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: #64748b;
+}
+
+.claimedList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  li {
+    padding: 0.45rem 0.55rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #cbd5e1;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.45rem;
+  }
+}
+
+.quickLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.quickLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.55rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  span {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &:hover {
+    color: #f8fafc;
+    background: rgba(99, 102, 241, 0.14);
+
+    .quickLinkArrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+.quickLinkArrow {
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  color: #a78bfa;
+}

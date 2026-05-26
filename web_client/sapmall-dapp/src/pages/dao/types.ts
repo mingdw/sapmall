@@ -121,11 +121,12 @@ export type DaoEventItem = {
 };
 
 export type DaoEventDetailBlock =
-  | { type: 'paragraph'; key: string }
-  | { type: 'heading'; level: 2 | 3; key: string }
+  | { type: 'paragraph'; key?: string; text?: string }
+  | { type: 'heading'; level: 2 | 3; key?: string; text?: string }
   | { type: 'image'; srcKey?: string; src?: string; altKey: string; captionKey?: string }
-  | { type: 'callout'; variant: 'info' | 'highlight'; key: string }
-  | { type: 'bulletList'; key: string };
+  | { type: 'callout'; variant: 'info' | 'highlight'; key?: string; text?: string }
+  | { type: 'bulletList'; key: string }
+  | { type: 'html'; html: string };
 
 export type DaoEventDetail = DaoEventItem & {
   blocks: DaoEventDetailBlock[];
@@ -235,6 +236,12 @@ export type DaoProposalDraft = {
   referenceImplementation: string;
 };
 
+/** 用户发起的讨论（直显文案，不依赖 i18n 列表键） */
+export type DaoDiscussionUserContent = {
+  title: string;
+  excerpt: string;
+};
+
 export type DaoDiscussionItem = {
   id: string;
   titleKey: string;
@@ -245,6 +252,19 @@ export type DaoDiscussionItem = {
   views: number;
   /** 可多选；展示与排序按 pinned → hot → … 顺序 */
   tags: DaoDiscussionTopicTag[];
+  /** 本地用户发帖 */
+  userContent?: DaoDiscussionUserContent;
+  /** 用户发帖时间（Unix ms），用于详情活跃展示 */
+  createdAt?: number;
+};
+
+export type DaoDiscussionDraft = {
+  title: string;
+  excerpt: string;
+  category: DaoDiscussionCategory;
+  tags: DaoDiscussionTopicTag[];
+  body: string;
+  referenceLink: string;
 };
 
 export type DaoDiscussionDetailBlock = DaoEventDetailBlock;
@@ -262,6 +282,19 @@ export type DaoDiscussionReplyItem = {
   createdAt?: number;
   isOfficial?: boolean;
   likes: number;
+  /** 楼中楼：被回复的回复 id */
+  parentReplyId?: string;
+  /** 楼中楼：被回复者地址（展示用） */
+  replyToAuthorAddress?: string;
+  /** 楼中楼：被回复内容摘要 */
+  replyToSnippet?: string;
+};
+
+/** 回复编辑器当前针对的楼层 */
+export type DaoDiscussionReplyTarget = {
+  replyId: string;
+  authorAddress: string;
+  preview: string;
 };
 
 export type DaoDiscussionDetail = DaoDiscussionItem & {

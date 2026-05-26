@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { getDaoEventDetail } from './mocks/daoEventDetails.mock';
 import DaoEventDetail from './components/DaoEventDetail';
 import { daoEventsListPath } from './utils/daoNavigation';
-import styles from './DaoPage.module.scss';
+import pageLayoutStyles from './styles/dao.pageLayout.module.scss';
+import sharedStyles from './styles/dao.shared.module.scss';
+import styles from './components/DaoEventDetail.module.scss';
 
 const DaoEventDetailPage: React.FC = () => {
   const { id = '' } = useParams<{ id: string }>();
@@ -17,8 +19,8 @@ const DaoEventDetailPage: React.FC = () => {
 
   if (!event) {
     return (
-      <div className={styles.contentZoneInnerFull}>
-        <div className={`${styles.panelCard} ${styles.eventDetailCard}`}>
+      <div className={pageLayoutStyles.contentZoneInnerFull}>
+        <div className={`${sharedStyles.panelCard} ${styles.eventDetailCard}`}>
           <div className={styles.eventDetailNotFound}>
             <p>{t('dao.eventDetail.notFound')}</p>
             <Link to={daoEventsListPath} className={styles.eventDetailBreadcrumbLink}>
@@ -34,6 +36,3 @@ const DaoEventDetailPage: React.FC = () => {
 };
 
 export default DaoEventDetailPage;
-
-
-

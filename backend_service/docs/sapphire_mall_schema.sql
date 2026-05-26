@@ -958,4 +958,50 @@ CREATE TABLE `sys_operation_log` (
   INDEX `idx_request_id` (`request_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC COMMENT = '系统公用操作日志';
 
+-- ----------------------------
+-- Table structure for sys_tag
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_tag`;
+CREATE TABLE `sys_tag`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '标签编码（业务范围内唯一）',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '标签名称',
+  `scope` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '业务范围：dao_proposal/dao_discussion/product_spu/help_article/sys_file',
+  `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态：0=禁用 1=启用',
+  `sort` int NOT NULL DEFAULT 0 COMMENT '排序（越小越靠前）',
+  `icon` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '图标（可选）',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '描述',
+  `metadata` json NULL COMMENT '扩展字段 JSON',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除：0=否 1=是',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_scope_code`(`scope`, `code`) USING BTREE,
+  INDEX `idx_scope_status`(`scope`, `status`, `is_deleted`) USING BTREE,
+  INDEX `idx_sort`(`sort`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for sys_tag_relation
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_tag_relation`;
+CREATE TABLE `sys_tag_relation`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `tag_id` bigint NOT NULL DEFAULT 0 COMMENT '标签 ID，关联 sys_tag.id',
+  `business_type` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '业务类型，与 sys_tag.scope 对齐',
+  `business_id` bigint NOT NULL DEFAULT 0 COMMENT '业务记录 ID',
+  `sort` int NOT NULL DEFAULT 0 COMMENT '该业务上的展示顺序',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除：0=否 1=是',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_tag_business`(`tag_id`, `business_type`, `business_id`) USING BTREE,
+  INDEX `idx_business`(`business_type`, `business_id`) USING BTREE,
+  INDEX `idx_tag_id`(`tag_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签业务关联表' ROW_FORMAT = DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS = 1;

@@ -62,7 +62,25 @@
     "statusActive": "Active",
     "registeredAt": "Registered",
     "unknown": "Unknown",
-    "defaultRole": "Standard user"
+    "defaultRole": "Standard user",
+    "networks": {
+      "ethereum": "Ethereum",
+      "base": "Base",
+      "arcTestnet": "Arc Testnet",
+      "sepolia": "Sepolia",
+      "goerli": "Goerli",
+      "holesky": "Holesky",
+      "bsc": "BSC",
+      "polygon": "Polygon"
+    },
+    "portfolioTitle": "Portfolio",
+    "portfolioSubtitle": "On-chain balances on current network",
+    "usdcBalance": "USDC",
+    "sapBalance": "SAP",
+    "balanceUnavailable": "Not available on this network",
+    "sapNotConfigured": "Contract not configured",
+    "viewAccountDetails": "Account details",
+    "personalInfo": "Personal info"
   },
   "homepage": {
     "title": "SapMall DApp",
@@ -305,7 +323,29 @@
     "subscribePlaceholder": "youremail@web3.com",
     "subscribeButton": "Subscribe",
     "subscribeToast": "Subscriptions are coming soon—thanks for your interest.",
-    "scrollTopAria": "Scroll to top"
+    "scrollTopAria": "Scroll to top",
+    "heroHint": "Connect an EVM wallet for on-site campaigns. Bags partners require Solana on bags.fm — the two are separate.",
+    "statsAria": "Campaign overview",
+    "stats": {
+      "ongoing": "Live now",
+      "upcoming": "Starting soon",
+      "participants": "Total participants",
+      "endingSoon": "Ending in 7 days"
+    },
+    "featuredTitle": "Featured",
+    "featuredHint": "Hot or ending soon",
+    "daysLeft": "{{count}} days left",
+    "progressLabel": "Timeline",
+    "emptyReset": "Show all categories",
+    "sidebarAria": "Rewards sidebar",
+    "myActivityTitle": "My participation (demo)",
+    "myActivityEmpty": "Claimed campaigns appear here (local demo only).",
+    "quickLinksTitle": "Quick links",
+    "walletChip": {
+      "evm": "EVM wallet",
+      "solana": "Solana · Bags",
+      "evmOptional": "EVM recommended"
+    }
   },
   "exchange": {
     "errors": {
@@ -872,7 +912,93 @@
         "datesRequired": "Set start and end dates",
         "endAfterStart": "End date must be after start date",
         "motivationRequired": "Motivation is required"
-      }
+      },
+      "selectedTagsAria": "Selected proposal tags",
+      "removeTag": "Remove tag: {{tag}}",
+      "tagPickerAria": "Available proposal tags",
+      "tagsInputPlaceholder": "Click a tag above to add it here"
+    },
+    "discussionCreate": {
+      "breadcrumbCurrent": "Start discussion",
+      "pageTitle": "Start a community discussion",
+      "pageLead": "Post to the right board to share ideas, feedback, and governance topics with the community (demo).",
+      "demoCallout": "Demo: drafts and published threads are stored in your browser. Production will connect to the forum or on-chain messaging.",
+      "sections": {
+        "basic": "Basics",
+        "body": "Post body",
+        "references": "References"
+      },
+      "fields": {
+        "title": "Title",
+        "excerpt": "Summary",
+        "category": "Board",
+        "tags": "Topic tags",
+        "body": "Body",
+        "referenceLink": "Reference link (optional)"
+      },
+      "placeholders": {
+        "title": "e.g. Mobile wallet signing UX improvements",
+        "excerpt": "1–2 sentences on context and what feedback you need",
+        "body": "Describe the issue, proposal, or questions in detail. Use blank lines between paragraphs…",
+        "referenceLink": "https://..."
+      },
+      "channels": {
+        "hot": "#hot-discussions",
+        "marketplace": "#marketplace-governance",
+        "community": "#community"
+      },
+      "categoryHint": "Will be posted to {{channel}}",
+      "bodyHint": "Uses Quill with its built-in toolbar. Character count is plain text only. Images are compressed and stored locally in the demo.",
+      "richEditor": {
+        "toolbar": "Formatting",
+        "undo": "Undo",
+        "redo": "Redo",
+        "bold": "Bold",
+        "italic": "Italic",
+        "underline": "Underline",
+        "strike": "Strikethrough",
+        "inlineCode": "Inline code",
+        "paragraph": "Paragraph",
+        "heading": "Heading 2",
+        "heading3": "Heading 3",
+        "list": "Bullet list",
+        "orderedList": "Numbered list",
+        "blockquote": "Quote",
+        "horizontalRule": "Divider",
+        "link": "Insert link",
+        "linkPrompt": "Enter link URL (https://)",
+        "code": "Code block",
+        "codePlaceholder": "// Paste or type code here",
+        "image": "Insert image",
+        "imageInsertSuccess": "Image inserted",
+        "imageInvalidType": "Only JPG, PNG, GIF, and WebP images are supported",
+        "imageTooLarge": "Image is too large. Use a file under 3MB.",
+        "imageUploadFailed": "Could not process the image. Try again."
+      },
+      "saveDraft": "Save draft",
+      "submit": "Publish",
+      "discard": "Discard",
+      "connectWallet": "Connect wallet",
+      "connectToSubmit": "Connect your wallet to publish (demo).",
+      "saveDraftSuccess": "Draft saved locally",
+      "submitSuccess": "Discussion published (demo)",
+      "submitConfirmTitle": "Publish discussion?",
+      "submitConfirmBody": "It will appear in the discussions list. Nothing is submitted on-chain in this demo.",
+      "discardTitle": "Discard edits?",
+      "discardBody": "This clears the local draft and returns to the list. Unsaved content will be lost.",
+      "discardConfirm": "Discard and leave",
+      "validation": {
+        "titleRequired": "Title is required",
+        "excerptRequired": "Summary is required",
+        "bodyRequired": "Body is required",
+        "bodyMax": "Plain-text body must be at most {{max}} characters",
+        "tagRequired": "Select at least one topic tag",
+        "tagMax": "You can select up to {{max}} tags"
+      },
+      "tagPickerAria": "Available topic tags",
+      "selectedTagsAria": "Selected topic tags",
+      "tagsInputPlaceholder": "Click a tag above to add it here",
+      "removeTag": "Remove tag: {{tag}}"
     },
     "proposalDetail": {
       "notFound": "Proposal not found—it may have been removed or the link is invalid.",
@@ -1103,16 +1229,26 @@
       "opSection": "Original post",
       "likes": "{{count}}",
       "noReplies": "No replies yet. Be the first to respond.",
+      "replyAction": "Reply",
+      "replyActionWithCount": "Reply ({{count}})",
+      "replyCollapse": "Collapse replies",
+      "replyThreadLabel": "Replies to {{user}}",
+      "replyToQuote": "Reply to {{user}}: {{excerpt}}",
       "relatedTitle": "More in this board",
       "viewAll": "View all",
       "composer": {
         "title": "Post a reply",
         "placeholder": "Share your view, add context, or ask a question…",
+        "placeholderReply": "Reply to {{user}}…",
         "submit": "Post reply",
+        "submitReply": "Send reply",
         "connectHint": "Connect your wallet to reply",
         "connectWallet": "Connect wallet",
         "emptyError": "Please enter your reply",
-        "successToast": "Reply posted (demo)"
+        "successToast": "Reply posted (demo)",
+        "charCount": "{{current}} / {{max}}",
+        "replyingTo": "Replying to {{user}}",
+        "cancelReplyTo": "Cancel reply"
       },
       "default": {
         "intro": "This thread is for community discussion on Sapphire Mall governance and product direction. Please stay constructive and cite data when you can.",
@@ -1264,6 +1400,9 @@
     },
     "toast": {
       "comingSoon": "Detail pages are coming soon."
+    },
+    "categoryBrowse": {
+      "aria": "Browse discussion boards"
     }
   },
   "checkout": {
@@ -1298,6 +1437,16 @@
     "copyright": "© 2026 Sapphire Mall Ecosystem. All rights reserved.",
     "privacy": "Privacy",
     "terms": "Terms of service",
-    "cookie": "Cookie policy"
+    "cookie": "Cookie policy",
+    "brandTagline": "Web3 virtual goods ecosystem",
+    "badgesAria": "Ecosystem capabilities",
+    "socialAria": "Social media",
+    "legalAria": "Legal and policies",
+    "badges": {
+      "web3": "Web3",
+      "dao": "DAO",
+      "nft": "NFT"
+    },
+    "followUs": "Follow us"
   }
 }

@@ -4,7 +4,7 @@ import { Megaphone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getDaoAnnouncements } from '../mocks/daoAnnouncements.mock';
 import { daoEventPath } from '../utils/daoNavigation';
-import styles from '../DaoPage.module.scss';
+import styles from './DaoAnnouncementTicker.module.scss';
 
 const DaoAnnouncementTicker: React.FC = () => {
   const { t } = useTranslation();

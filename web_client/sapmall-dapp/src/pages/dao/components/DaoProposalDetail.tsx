@@ -15,26 +15,30 @@ import DaoProposalDetailBody from './DaoProposalDetailBody';
 import DaoProposalResultsCard from './DaoProposalResultsCard';
 import DaoProposalTimelineCard from './DaoProposalTimelineCard';
 import DaoProposalVoteCard from './DaoProposalVoteCard';
-import styles from '../DaoPage.module.scss';
+import detailStyles from '../styles/dao.detailCommon.module.scss';
+import listTagStyles from '../styles/dao.listTags.module.scss';
+import pageLayoutStyles from '../styles/dao.pageLayout.module.scss';
+import sharedStyles from '../styles/dao.shared.module.scss';
+import styles from './DaoProposalDetail.module.scss';
 
 type Props = {
   proposal: DaoProposalDetailData;
 };
 
 const statusClass: Record<DaoProposalDetailData['status'], string> = {
-  active: styles.statusActive,
-  passed: styles.statusPassed,
-  pending: styles.statusPending,
+  active: listTagStyles.statusActive,
+  passed: listTagStyles.statusPassed,
+  pending: listTagStyles.statusPending,
 };
 
 const topicTagClass: Record<string, string> = {
-  'dao.list.proposals.tags.governance': styles.topicTagGovernance,
-  'dao.list.proposals.tags.treasury': styles.topicTagTreasury,
-  'dao.list.proposals.tags.marketplace': styles.topicTagMarketplace,
-  'dao.list.proposals.tags.staking': styles.topicTagStaking,
-  'dao.list.proposals.tags.grant': styles.topicTagGrant,
-  'dao.list.proposals.tags.multisig': styles.topicTagMultisig,
-  'dao.list.proposals.tags.security': styles.topicTagSecurity,
+  'dao.list.proposals.tags.governance': listTagStyles.topicTagGovernance,
+  'dao.list.proposals.tags.treasury': listTagStyles.topicTagTreasury,
+  'dao.list.proposals.tags.marketplace': listTagStyles.topicTagMarketplace,
+  'dao.list.proposals.tags.staking': listTagStyles.topicTagStaking,
+  'dao.list.proposals.tags.grant': listTagStyles.topicTagGrant,
+  'dao.list.proposals.tags.multisig': listTagStyles.topicTagMultisig,
+  'dao.list.proposals.tags.security': listTagStyles.topicTagSecurity,
 };
 
 const DaoProposalDetailView: React.FC<Props> = ({ proposal }) => {
@@ -107,10 +111,10 @@ const DaoProposalDetailView: React.FC<Props> = ({ proposal }) => {
   );
 
   return (
-    <section className={`${styles.contentZoneInnerFull} ${styles.proposalDetailLayout}`}>
-      <article className={`${styles.panelCard} ${styles.proposalDetailMain}`} aria-label={title}>
+    <section className={`${pageLayoutStyles.contentZoneInnerFull} ${styles.proposalDetailLayout}`}>
+      <article className={`${sharedStyles.panelCard} ${styles.proposalDetailMain}`} aria-label={title}>
         <header className={styles.proposalDetailHead}>
-          <nav className={styles.eventDetailBreadcrumb} aria-label="Breadcrumb">
+          <nav className={styles.proposalDetailBreadcrumb} aria-label="Breadcrumb">
             <Link to={daoHomePath} className={styles.proposalDetailBreadcrumbLink}>
               {t('navigation.dao')}
             </Link>
@@ -119,7 +123,7 @@ const DaoProposalDetailView: React.FC<Props> = ({ proposal }) => {
               {t('dao.tabs.proposals')}
             </Link>
             <ChevronRight size={14} aria-hidden />
-            <span className={styles.eventDetailBreadcrumbCurrent} aria-current="page">
+            <span className={styles.proposalDetailBreadcrumbCurrent} aria-current="page">
               {title}
             </span>
           </nav>
@@ -132,7 +136,7 @@ const DaoProposalDetailView: React.FC<Props> = ({ proposal }) => {
             {proposal.tagKeys.length > 0 ? (
               <div className={styles.proposalDetailTitleTags}>
                 {proposal.tagKeys.map((tagKey) => (
-                  <span key={tagKey} className={`${styles.proposalTopicTag} ${topicTagClass[tagKey] ?? ''}`}>
+                  <span key={tagKey} className={`${listTagStyles.proposalTopicTag} ${topicTagClass[tagKey] ?? ''}`}>
                     {t(tagKey)}
                   </span>
                 ))}
@@ -175,9 +179,9 @@ const DaoProposalDetailView: React.FC<Props> = ({ proposal }) => {
 
         {related.length > 0 ? (
           <footer className={styles.proposalDetailRelated}>
-            <div className={styles.eventDetailRelatedHead}>
-              <h2 className={styles.eventDetailRelatedTitle}>{t('dao.proposalDetail.relatedTitle')}</h2>
-              <Link to={daoProposalsListPath} className={styles.eventDetailViewAll}>
+            <div className={detailStyles.eventDetailRelatedHead}>
+              <h2 className={detailStyles.eventDetailRelatedTitle}>{t('dao.proposalDetail.relatedTitle')}</h2>
+              <Link to={daoProposalsListPath} className={detailStyles.eventDetailViewAll}>
                 {t('dao.proposalDetail.viewAll')}
                 <ChevronRight size={14} aria-hidden />
               </Link>

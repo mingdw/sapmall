@@ -1,0 +1,95 @@
+/* Requires ancestor .pageRoot for --dao-* CSS variables */
+
+.eventTagAma {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.eventTagGrant {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+.eventTagMilestone {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.eventTagAnnouncement {
+  color: #6d28d9;
+  background: #ede9fe;
+}
+
+.statusActive {
+  display: inline-block;
+  border-radius: 9999px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #15803d;
+  background: #dcfce7;
+}
+
+.statusPending {
+  display: inline-block;
+  border-radius: 9999px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #a16207;
+  background: #fef9c3;
+}
+
+.statusPassed {
+  display: inline-block;
+  border-radius: 9999px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #6d28d9;
+  background: #ede9fe;
+}
+
+.proposalTopicTag {
+  display: inline-block;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.625rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.topicTagGovernance {
+  color: #5b21b6;
+  background: #ede9fe;
+}
+
+.topicTagTreasury {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+.topicTagMarketplace {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.topicTagStaking {
+  color: #0f766e;
+  background: #ccfbf1;
+}
+
+.topicTagGrant {
+  color: #c2410c;
+  background: #ffedd5;
+}
+
+.topicTagMultisig {
+  color: #4338ca;
+  background: #e0e7ff;
+}
+
+.topicTagSecurity {
+  color: #be123c;
+  background: #ffe4e6;
+}

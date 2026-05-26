@@ -16,7 +16,7 @@ import {
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { ProductDetailView, ProductSkuView } from '../types/productDetailTypes';
-import { formatUsd, formatSap, calcDiscountPercent } from '../utils/priceDisplay';
+import { formatUsdc, formatSap, formatDualPrice, calcDiscountPercent } from '../utils/priceDisplay';
 import styles from '../ProductDetailPage.module.scss';
 
 interface ProductBuyBoxProps {
@@ -74,7 +74,7 @@ const ProductBuyBox: React.FC<ProductBuyBoxProps> = ({
 
   const handleShare = () => {
     const shareUrl = window.location.href;
-    const shareText = `${product.spu.name} - ${formatUsd(displayPrice)}`;
+    const shareText = `${product.spu.name} - ${formatDualPrice(displayPrice)}`;
 
     if (navigator.share) {
       navigator.share({
@@ -142,9 +142,17 @@ const ProductBuyBox: React.FC<ProductBuyBoxProps> = ({
           <span className={styles.soldCount}>已售 {(soldCount / 1000).toFixed(1)}k</span>
         </div>
         <div className={styles.priceSection}>
-          <span className={styles.currentPrice}>{formatUsd(displayPrice)}</span>
-          <span className={styles.sapPrice}>{formatSap(displayPrice)}</span>
-          <span className={styles.originalPrice}>原 {formatUsd(realPrice)}</span>
+          <div
+            className={styles.priceMain}
+            title={formatDualPrice(displayPrice)}
+          >
+            <span className={styles.currentPrice}>{formatUsdc(displayPrice)}</span>
+            <span className={styles.priceApprox} aria-hidden> ≈ </span>
+            <span className={styles.sapPrice}>{formatSap(displayPrice)}</span>
+          </div>
+          <span className={styles.originalPrice} title={`原 ${formatDualPrice(realPrice)}`}>
+            原 {formatDualPrice(realPrice)}
+          </span>
           <Tag color="orange" className={styles.discountTag}>-{discountPercent}%</Tag>
         </div>
       </div>

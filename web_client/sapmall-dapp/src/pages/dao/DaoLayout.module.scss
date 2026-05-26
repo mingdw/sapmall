@@ -1,0 +1,38 @@
+/* Requires ancestor .pageRoot for --dao-* CSS variables */
+
+/* 单容器：宽 95%，上黑下白无缝衔接 */
+.pageShell {
+  width: 95%;
+  max-width: var(--dao-shell-max-width);
+  margin: 0 auto;
+  border-radius: 1rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.12);
+}
+
+
+.contentZone {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 1.25rem var(--dao-content-bottom-gap);
+  overflow: visible;
+  background: linear-gradient(
+    180deg,
+    transparent 0,
+    transparent var(--dao-content-overlap),
+    var(--dao-zone-bg) var(--dao-content-overlap)
+  );
+
+  @media (min-width: 1024px) {
+    padding-inline: 1.5rem;
+  }
+}
+
+.contentZoneBody {
+  position: relative;
+  z-index: 3;
+  margin-top: calc(-1 * var(--dao-content-overlap));
+}

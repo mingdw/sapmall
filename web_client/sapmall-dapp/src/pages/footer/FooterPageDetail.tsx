@@ -1,8 +1,123 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import type { LucideIcon } from 'lucide-react';
+import {
+  ArrowUpRight,
+  BadgeCheck,
+  BookOpen,
+  Bug,
+  ChevronRight,
+  CircleDollarSign,
+  Code2,
+  FileText,
+  GitBranch,
+  Globe2,
+  Landmark,
+  Package,
+  PieChart,
+  ScrollText,
+  ShieldCheck,
+  Store,
+  Ticket,
+} from 'lucide-react';
 import logoMarkSrc from '../../assets/logo-mark.svg';
 import styles from './FooterPageDetail.module.scss';
+
+type InternalLink = { kind: 'internal'; to: string; labelKey: string; icon: LucideIcon };
+type ExternalLink = { kind: 'external'; href: string; labelKey: string; icon: LucideIcon };
+type FooterLinkItem = InternalLink | ExternalLink;
+
+const MALL_LINKS: InternalLink[] = [
+  { kind: 'internal', to: '/marketplace', labelKey: 'footer.mall.digitalRights', icon: BadgeCheck },
+  { kind: 'internal', to: '/marketplace', labelKey: 'footer.mall.nftRedeem', icon: Ticket },
+  { kind: 'internal', to: '/marketplace', labelKey: 'footer.mall.virtualItems', icon: Package },
+  { kind: 'internal', to: '/help', labelKey: 'footer.mall.recharge', icon: CircleDollarSign },
+];
+
+const ECOSYSTEM_LINKS: FooterLinkItem[] = [
+  { kind: 'internal', to: '/dao', labelKey: 'footer.eco.dao', icon: Landmark },
+  { kind: 'external', href: 'https://github.com', labelKey: 'footer.eco.whitepaper', icon: ScrollText },
+  { kind: 'external', href: 'https://github.com', labelKey: 'footer.eco.tokenomics', icon: PieChart },
+  { kind: 'external', href: 'https://github.com', labelKey: 'footer.eco.audit', icon: ShieldCheck },
+];
+
+const DEV_LINKS: ExternalLink[] = [
+  { kind: 'external', href: 'https://github.com', labelKey: 'footer.dev.api', icon: FileText },
+  { kind: 'external', href: 'https://github.com', labelKey: 'footer.dev.bounty', icon: Bug },
+  { kind: 'external', href: 'https://github.com', labelKey: 'footer.dev.guide', icon: BookOpen },
+  { kind: 'external', href: 'https://github.com', labelKey: 'footer.dev.opensource', icon: GitBranch },
+];
+
+const SOCIAL_LINKS = [
+  { href: 'https://twitter.com', label: 'Twitter', iconClass: 'fab fa-twitter' },
+  { href: 'https://github.com', label: 'GitHub', iconClass: 'fab fa-github' },
+  { href: 'https://t.me', label: 'Telegram', iconClass: 'fab fa-telegram' },
+  { href: 'https://youtube.com', label: 'YouTube', iconClass: 'fab fa-youtube' },
+] as const;
+
+type LinkColumnProps = {
+  titleKey: string;
+  columnIcon: LucideIcon;
+  accent: 'mall' | 'eco' | 'dev';
+  items: FooterLinkItem[];
+  t: (key: string) => string;
+};
+
+const FooterLinkColumn: React.FC<LinkColumnProps> = ({
+  titleKey,
+  columnIcon: ColumnIcon,
+  accent,
+  items,
+  t,
+}) => (
+  <div className={styles.linkColumn} data-accent={accent}>
+    <div className={styles.columnHead}>
+      <span className={styles.columnIcon} aria-hidden>
+        <ColumnIcon strokeWidth={2} />
+      </span>
+      <h4 className={styles.footerColTitle}>{t(titleKey)}</h4>
+    </div>
+    <ul className={styles.linkList}>
+      {items.map((item) => {
+        const ItemIcon = item.icon;
+        const label = t(item.labelKey);
+        const content = (
+          <>
+            <span className={styles.linkIconWrap}>
+              <ItemIcon strokeWidth={1.75} aria-hidden />
+            </span>
+            <span className={styles.linkLabel}>{label}</span>
+            {item.kind === 'external' ? (
+              <ArrowUpRight className={styles.linkArrow} strokeWidth={2} aria-hidden />
+            ) : (
+              <ChevronRight className={styles.linkArrow} strokeWidth={2} aria-hidden />
+            )}
+          </>
+        );
+
+        return (
+          <li key={item.labelKey} className={styles.linkItem}>
+            {item.kind === 'internal' ? (
+              <Link to={item.to} className={styles.footerLink}>
+                {content}
+              </Link>
+            ) : (
+              <a
+                href={item.href}
+                className={styles.footerLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {content}
+              </a>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+);
 
 const FooterPageDetail: React.FC = () => {
   const { t, ready } = useTranslation();
@@ -11,136 +126,78 @@ const FooterPageDetail: React.FC = () => {
     return null;
   }
 
-  const mallLinks: { to: string; labelKey: string }[] = [
-    { to: '/marketplace', labelKey: 'footer.mall.digitalRights' },
-    { to: '/marketplace', labelKey: 'footer.mall.nftRedeem' },
-    { to: '/marketplace', labelKey: 'footer.mall.virtualItems' },
-    { to: '/help', labelKey: 'footer.mall.recharge' },
-  ];
-
-  type EcoLink =
-    | { kind: 'internal'; to: string; labelKey: string }
-    | { kind: 'external'; href: string; labelKey: string };
-
-  const ecosystemLinks: EcoLink[] = [
-    { kind: 'internal', to: '/dao', labelKey: 'footer.eco.dao' },
-    { kind: 'external', href: 'https://github.com', labelKey: 'footer.eco.whitepaper' },
-    { kind: 'external', href: 'https://github.com', labelKey: 'footer.eco.tokenomics' },
-    { kind: 'external', href: 'https://github.com', labelKey: 'footer.eco.audit' },
-  ];
-
-  const devLinks: { href: string; labelKey: string }[] = [
-    { href: 'https://github.com', labelKey: 'footer.dev.api' },
-    { href: 'https://github.com', labelKey: 'footer.dev.bounty' },
-    { href: 'https://github.com', labelKey: 'footer.dev.guide' },
-    { href: 'https://github.com', labelKey: 'footer.dev.opensource' },
-  ];
-
   return (
     <footer className={styles.footerRoot} role="contentinfo">
+      <div className={styles.footerBackdrop} aria-hidden />
+      <div className={styles.footerGridPattern} aria-hidden />
+      <div className={styles.footerTopGlow} aria-hidden />
+
       <div className={styles.footerInner}>
-        <div className="mb-0 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-x-12 lg:gap-y-10">
-          {/* 品牌 + 简介 + 社交（占 2 列，与原型 lg:col-span-2 一致） */}
-          <div className="sm:col-span-2 lg:col-span-2">
-            <div className="mb-6 flex items-center gap-3">
+        <div className={styles.footerMain}>
+          <section className={styles.brandSection} aria-labelledby="footer-brand-heading">
+            <div className={styles.brandHeader}>
               <div className={styles.brandMarkWrap}>
-                <img src={logoMarkSrc} alt="" className="h-7 w-7 object-contain" />
+                <img src={logoMarkSrc} alt="" width={28} height={28} decoding="async" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white">{t('footer.brand')}</span>
+              <div className={styles.brandTitleBlock}>
+                <span id="footer-brand-heading" className={styles.brandName}>
+                  {t('footer.brand')}
+                </span>
+                <span className={styles.brandTagline}>{t('footer.brandTagline')}</span>
+              </div>
             </div>
-            <p className="max-w-xs text-sm leading-relaxed text-slate-400">{t('footer.brandDesc')}</p>
-            <div className="mt-6 flex gap-4">
-              <a
-                className={styles.socialLink}
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Twitter"
-              >
-                <i className="fab fa-twitter text-xl" aria-hidden />
-              </a>
-              <a
-                className={styles.socialLink}
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-              >
-                <i className="fab fa-github text-xl" aria-hidden />
-              </a>
-              <a
-                className={styles.socialLink}
-                href="https://t.me"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Telegram"
-              >
-                <i className="fab fa-telegram text-xl" aria-hidden />
-              </a>
-              <a
-                className={styles.socialLink}
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="YouTube"
-              >
-                <i className="fab fa-youtube text-xl" aria-hidden />
-              </a>
-            </div>
-          </div>
 
-          {/* 商城服务 */}
-          <div>
-            <h4 className={styles.footerColTitle}>{t('footer.colMall')}</h4>
-            <ul className="flex flex-col gap-3">
-              {mallLinks.map((item) => (
-                <li key={item.labelKey}>
-                  <Link to={item.to} className={styles.footerLink}>
-                    {t(item.labelKey)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <p className={styles.brandDesc}>{t('footer.brandDesc')}</p>
 
-          {/* 关于生态 */}
-          <div>
-            <h4 className={styles.footerColTitle}>{t('footer.colEco')}</h4>
-            <ul className="flex flex-col gap-3">
-              {ecosystemLinks.map((item) => (
-                <li key={item.labelKey}>
-                  {item.kind === 'internal' ? (
-                    <Link to={item.to} className={styles.footerLink}>
-                      {t(item.labelKey)}
-                    </Link>
-                  ) : (
-                    <a href={item.href} className={styles.footerLink} target="_blank" rel="noopener noreferrer">
-                      {t(item.labelKey)}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* 开发者 */}
-          <div>
-            <h4 className={styles.footerColTitle}>{t('footer.colDev')}</h4>
-            <ul className="flex flex-col gap-3">
-              {devLinks.map((item) => (
-                <li key={item.labelKey}>
-                  <a href={item.href} className={styles.footerLink} target="_blank" rel="noopener noreferrer">
-                    {t(item.labelKey)}
+            <div className={styles.socialBlock}>
+              <span className={styles.socialLabel}>{t('footer.followUs')}</span>
+              <div className={styles.socialRow} role="list" aria-label={t('footer.socialAria')}>
+                {SOCIAL_LINKS.map((social) => (
+                  <a
+                    key={social.label}
+                    className={styles.socialLink}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    role="listitem"
+                  >
+                    <i className={social.iconClass} aria-hidden />
                   </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <FooterLinkColumn
+            titleKey="footer.colMall"
+            columnIcon={Store}
+            accent="mall"
+            items={MALL_LINKS}
+            t={t}
+          />
+          <FooterLinkColumn
+            titleKey="footer.colEco"
+            columnIcon={Globe2}
+            accent="eco"
+            items={ECOSYSTEM_LINKS}
+            t={t}
+          />
+          <FooterLinkColumn
+            titleKey="footer.colDev"
+            columnIcon={Code2}
+            accent="dev"
+            items={DEV_LINKS}
+            t={t}
+          />
         </div>
 
         <div className={styles.bottomBar}>
-          <p className="m-0 text-center md:text-left">{t('footer.copyright')}</p>
-          <div className={styles.bottomBarLinks}>
+          <div className={styles.copyrightBlock}>
+            <span className={styles.statusDot} aria-hidden />
+            <span>{t('footer.copyright')}</span>
+          </div>
+          <nav className={styles.bottomBarLinks} aria-label={t('footer.legalAria')}>
             <Link to="/help" className={styles.bottomBarLink}>
               {t('footer.privacy')}
             </Link>
@@ -150,7 +207,7 @@ const FooterPageDetail: React.FC = () => {
             <Link to="/help" className={styles.bottomBarLink}>
               {t('footer.cookie')}
             </Link>
-          </div>
+          </nav>
         </div>
       </div>
     </footer>

@@ -12,6 +12,7 @@ import {
   SendHorizontal,
   Sparkles,
   Tags,
+  X,
 } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { DAO_DISCORD_URL } from '../constants';
@@ -23,16 +24,20 @@ import {
   saveProposalDraft,
 } from '../utils/daoProposalDraft.storage';
 import { daoHomePath, daoProposalsListPath } from '../utils/daoNavigation';
-import styles from '../DaoPage.module.scss';
+import listTagStyles from '../styles/dao.listTags.module.scss';
+import pageLayoutStyles from '../styles/dao.pageLayout.module.scss';
+import sharedStyles from '../styles/dao.shared.module.scss';
+import detailStyles from './DaoProposalDetail.module.scss';
+import styles from './DaoProposalEditor.module.scss';
 
 const topicTagClass: Record<string, string> = {
-  'dao.list.proposals.tags.governance': styles.topicTagGovernance,
-  'dao.list.proposals.tags.treasury': styles.topicTagTreasury,
-  'dao.list.proposals.tags.marketplace': styles.topicTagMarketplace,
-  'dao.list.proposals.tags.staking': styles.topicTagStaking,
-  'dao.list.proposals.tags.grant': styles.topicTagGrant,
-  'dao.list.proposals.tags.multisig': styles.topicTagMultisig,
-  'dao.list.proposals.tags.security': styles.topicTagSecurity,
+  'dao.list.proposals.tags.governance': listTagStyles.topicTagGovernance,
+  'dao.list.proposals.tags.treasury': listTagStyles.topicTagTreasury,
+  'dao.list.proposals.tags.marketplace': listTagStyles.topicTagMarketplace,
+  'dao.list.proposals.tags.staking': listTagStyles.topicTagStaking,
+  'dao.list.proposals.tags.grant': listTagStyles.topicTagGrant,
+  'dao.list.proposals.tags.multisig': listTagStyles.topicTagMultisig,
+  'dao.list.proposals.tags.security': listTagStyles.topicTagSecurity,
 };
 
 const SUMMARY_MAX = 280;
@@ -52,14 +57,18 @@ const DaoProposalEditor: React.FC = () => {
     setDraft((prev) => ({ ...prev, ...partial }));
   }, []);
 
-  const toggleTag = useCallback((tagKey: string) => {
+  const addTag = useCallback((tagKey: string) => {
     setDraft((prev) => {
-      const exists = prev.tagKeys.includes(tagKey);
-      return {
-        ...prev,
-        tagKeys: exists ? prev.tagKeys.filter((k) => k !== tagKey) : [...prev.tagKeys, tagKey],
-      };
+      if (prev.tagKeys.includes(tagKey)) return prev;
+      return { ...prev, tagKeys: [...prev.tagKeys, tagKey] };
     });
+  }, []);
+
+  const removeTag = useCallback((tagKey: string) => {
+    setDraft((prev) => ({
+      ...prev,
+      tagKeys: prev.tagKeys.filter((k) => k !== tagKey),
+    }));
   }, []);
 
   const validateDraft = useCallback((): string | null => {
@@ -123,19 +132,19 @@ const DaoProposalEditor: React.FC = () => {
   }, [navigate, t]);
 
   return (
-    <section className={styles.contentZoneInnerFull}>
-      <article className={`${styles.panelCard} ${styles.proposalEditorCard}`} aria-label={t('dao.proposalCreate.pageTitle')}>
+    <section className={pageLayoutStyles.contentZoneInnerFull}>
+      <article className={`${sharedStyles.panelCard} ${styles.proposalEditorCard}`} aria-label={t('dao.proposalCreate.pageTitle')}>
         <header className={styles.proposalEditorHead}>
-          <nav className={styles.eventDetailBreadcrumb} aria-label="Breadcrumb">
-            <Link to={daoHomePath} className={styles.proposalDetailBreadcrumbLink}>
+          <nav className={detailStyles.proposalDetailBreadcrumb} aria-label="Breadcrumb">
+            <Link to={daoHomePath} className={detailStyles.proposalDetailBreadcrumbLink}>
               {t('navigation.dao')}
             </Link>
             <ChevronRight size={14} aria-hidden />
-            <Link to={daoProposalsListPath} className={styles.proposalDetailBreadcrumbLink}>
+            <Link to={daoProposalsListPath} className={detailStyles.proposalDetailBreadcrumbLink}>
               {t('dao.tabs.proposals')}
             </Link>
             <ChevronRight size={14} aria-hidden />
-            <span className={styles.eventDetailBreadcrumbCurrent} aria-current="page">
+            <span className={detailStyles.proposalDetailBreadcrumbCurrent} aria-current="page">
               {t('dao.proposalCreate.breadcrumbCurrent')}
             </span>
           </nav>
@@ -198,27 +207,64 @@ const DaoProposalEditor: React.FC = () => {
               />
             </label>
 
-            <fieldset className={styles.proposalEditorFieldset}>
-              <legend className={styles.proposalEditorLabel}>
-                <Tags size={14} aria-hidden />
-                {t('dao.proposalCreate.fields.tags')}
-              </legend>
-              <div className={styles.proposalEditorTagGrid}>
-                {DAO_PROPOSAL_TAG_KEYS.map((tagKey) => {
-                  const active = draft.tagKeys.includes(tagKey);
-                  return (
+            <fieldset className={`${styles.proposalEditorFieldset} ${styles.proposalEditorTagFieldset}`}>
+              <legend className="sr-only">{t('dao.proposalCreate.fields.tags')}</legend>
+              <div className={styles.proposalEditorTagHeadRow}>
+                <span className={styles.proposalEditorTagLabel} id="proposal-tag-label">
+                  <Tags size={12} aria-hidden />
+                  {t('dao.proposalCreate.fields.tags')}
+                </span>
+                <span className={styles.proposalEditorTagDivider} aria-hidden />
+                <div
+                  className={styles.proposalEditorTagPicker}
+                  role="group"
+                  aria-labelledby="proposal-tag-label"
+                >
+                  {DAO_PROPOSAL_TAG_KEYS.map((tagKey) => {
+                    const isSelected = draft.tagKeys.includes(tagKey);
+                    return (
+                      <button
+                        key={tagKey}
+                        type="button"
+                        className={`${styles.proposalEditorTagBtn} ${topicTagClass[tagKey] ?? ''}`}
+                        data-selected={isSelected}
+                        disabled={isSelected}
+                        aria-pressed={isSelected}
+                        onClick={() => addTag(tagKey)}
+                      >
+                        {t(tagKey)}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div
+                className={styles.proposalEditorTagInput}
+                role="list"
+                aria-label={t('dao.proposalCreate.selectedTagsAria')}
+              >
+                {draft.tagKeys.map((tagKey) => (
+                  <span
+                    key={tagKey}
+                    role="listitem"
+                    className={`${styles.proposalEditorSelectedTag} ${topicTagClass[tagKey] ?? ''}`}
+                  >
+                    <span className={styles.proposalEditorSelectedTagLabel}>{t(tagKey)}</span>
                     <button
-                      key={tagKey}
                       type="button"
-                      className={`${styles.proposalEditorTagBtn} ${topicTagClass[tagKey] ?? ''}`}
-                      data-active={active}
-                      aria-pressed={active}
-                      onClick={() => toggleTag(tagKey)}
+                      className={styles.proposalEditorSelectedTagRemove}
+                      aria-label={t('dao.proposalCreate.removeTag', { tag: t(tagKey) })}
+                      onClick={() => removeTag(tagKey)}
                     >
-                      {t(tagKey)}
+                      <X size={12} strokeWidth={2.5} aria-hidden />
                     </button>
-                  );
-                })}
+                  </span>
+                ))}
+                {draft.tagKeys.length === 0 ? (
+                  <span className={styles.proposalEditorTagInputPlaceholder}>
+                    {t('dao.proposalCreate.tagsInputPlaceholder')}
+                  </span>
+                ) : null}
               </div>
             </fieldset>
           </section>

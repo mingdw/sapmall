@@ -1,83 +1,95 @@
 import React, { useState } from 'react';
 import styles from './CategoryButton.module.scss';
+import {
+  categoryPlainIconStyle,
+  resolveCategoryIconTheme,
+  type CategoryIconTheme,
+  type CategoryIconThemeTier,
+} from '../utils/categoryIconTheme';
 
-// 子菜单组件
+type CategoryNode = {
+  id: number;
+  code?: string;
+  name: string;
+  icon?: string;
+  children?: CategoryNode[];
+};
+
+const CategoryPlainIcon: React.FC<{
+  theme: CategoryIconTheme;
+  size?: 'sm' | 'md';
+  active?: boolean;
+  tier?: CategoryIconThemeTier;
+}> = ({ theme, size = 'md', active = false, tier = 'primary' }) => (
+  <span
+    className={`${styles.categoryPlainIcon} ${size === 'sm' ? styles.categoryPlainIconSm : ''}`}
+    style={categoryPlainIconStyle(theme, { tier, active })}
+  >
+    <i className={theme.icon} aria-hidden />
+  </span>
+);
+
 interface SubMenuProps {
-  children: Array<{
-    id: number;
-    name: string;
-    icon?: string;
-    children?: Array<{
-      id: number;
-      name: string;
-      icon?: string;
-    }>;
-  }>;
+  children: CategoryNode[];
   onSubCategoryClick?: (categoryId: number, subCategoryId: number) => void;
+  parentCode?: string;
   level?: number;
 }
 
-const SubMenu: React.FC<SubMenuProps> = ({ children, onSubCategoryClick, level = 1 }) => {
+const SubMenu: React.FC<SubMenuProps> = ({
+  children,
+  onSubCategoryClick,
+  parentCode,
+  level = 1,
+}) => {
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
 
   return (
-    <div className="py-2">
-      {children.map((child) => (
-        <div key={child.id} className="relative">
-          <a
-            href="#"
-            className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white transition-colors"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              if (onSubCategoryClick) {
-                onSubCategoryClick(0, child.id); // 这里可以根据需要调整父级ID
-              }
-            }}
-            onMouseEnter={() => setHoveredItem(child.id)}
-            onMouseLeave={() => setHoveredItem(null)}
-          >
-            <div className="flex items-center space-x-2">
-              <i className={`${child.icon || 'fas fa-folder'} text-xs`} style={{ fontSize: '0.75rem' }}></i>
-              <span>{child.name}</span>
+    <div className={styles.subMenuList}>
+      {children.map((child) => {
+        const theme = resolveCategoryIconTheme(child.code, child.icon, parentCode, {
+          tier: 'submenu',
+        });
+
+        return (
+          <div key={child.id} className={styles.subMenuItem}>
+            <a
+              href="#"
+              className={styles.subMenuLink}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onSubCategoryClick?.(0, child.id);
+              }}
+              onMouseEnter={() => setHoveredItem(child.id)}
+              onMouseLeave={() => setHoveredItem(null)}
+            >
+              <CategoryPlainIcon theme={theme} size="sm" tier="submenu" />
+              <span className={styles.subMenuLabel}>{child.name}</span>
               {child.children && child.children.length > 0 && (
-                <i className="fas fa-chevron-right text-xs opacity-50 ml-auto"></i>
+                <i className={`fas fa-chevron-right ${styles.subMenuChevron}`} aria-hidden />
               )}
-            </div>
-          </a>
-          
-          {/* 三级菜单 */}
-          {child.children && child.children.length > 0 && hoveredItem === child.id && (
-            <div className={`${styles.subDropdownMenu} absolute left-full top-0 mt-0`}>
-              <SubMenu 
-                children={child.children} 
-                onSubCategoryClick={onSubCategoryClick}
-                level={level + 1}
-              />
-            </div>
-          )}
-        </div>
-      ))}
+            </a>
+
+            {child.children && child.children.length > 0 && hoveredItem === child.id && (
+              <div className={`${styles.subDropdownMenu} ${styles.show} absolute left-full top-0 mt-0`}>
+                <SubMenu
+                  children={child.children}
+                  onSubCategoryClick={onSubCategoryClick}
+                  parentCode={child.code ?? parentCode}
+                  level={level + 1}
+                />
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
 
 interface CategoryButtonProps {
-  category: {
-    id: number;
-    name: string;
-    icon?: string; // 图标可选，有默认值
-    children?: Array<{
-      id: number;
-      name: string;
-      icon?: string;
-      children?: Array<{
-        id: number;
-        name: string;
-        icon?: string;
-      }>;
-    }>;
-  };
+  category: CategoryNode;
   isActive: boolean;
   onClick: (categoryId: number) => void;
   onSubCategoryClick?: (categoryId: number, subCategoryId: number) => void;
@@ -87,9 +99,10 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
   category,
   isActive,
   onClick,
-  onSubCategoryClick
+  onSubCategoryClick,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const theme = resolveCategoryIconTheme(category.code, category.icon);
 
   const handleClick = () => {
     onClick(category.id);
@@ -105,14 +118,6 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
     setShowDropdown(false);
   };
 
-  const handleSubCategoryClick = (e: React.MouseEvent, subCategoryId: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (onSubCategoryClick) {
-      onSubCategoryClick(category.id, subCategoryId);
-    }
-  };
-
   return (
     <div
       className={`${styles.categoryItem} ${isActive ? styles.active : ''}`}
@@ -120,27 +125,20 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="flex items-center w-full">
-        <div className="flex items-center space-x-2">
-          <i 
-            className={`${category.icon || 'fas fa-th-large'} ${styles.categoryIcon}`} 
-            style={{ fontSize: '0.875rem' }}
-          ></i>
-          <span className="text-sm font-medium">{category.name}</span>
-          {category.children && category.children.length > 0 && (
-            <i className="fas fa-chevron-down text-xs opacity-50 ml-1"></i>
-          )}
-        </div>
+      <div className={styles.categoryRow}>
+        <CategoryPlainIcon theme={theme} active={isActive} />
+        <span className={styles.categoryLabel}>{category.name}</span>
+        {category.children && category.children.length > 0 && (
+          <i className={`fas fa-chevron-down ${styles.categoryChevron}`} aria-hidden />
+        )}
       </div>
-      
-      {/* 下拉菜单 */}
+
       {category.children && category.children.length > 0 && (
-        <div 
-          className={`${styles.dropdownMenu} ${showDropdown ? styles.show : ''}`}
-        >
-          <SubMenu 
-            children={category.children} 
+        <div className={`${styles.dropdownMenu} ${showDropdown ? styles.show : ''}`}>
+          <SubMenu
+            children={category.children}
             onSubCategoryClick={onSubCategoryClick}
+            parentCode={category.code}
           />
         </div>
       )}

@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { getDaoDiscussionDetail } from './mocks/daoDiscussionDetails.mock';
 import DaoDiscussionDetail from './components/DaoDiscussionDetail';
 import { daoDiscussionsListPath } from './utils/daoNavigation';
-import styles from './DaoPage.module.scss';
+import pageLayoutStyles from './styles/dao.pageLayout.module.scss';
+import sharedStyles from './styles/dao.shared.module.scss';
+import eventStyles from './components/DaoEventDetail.module.scss';
+import styles from './components/DaoDiscussionDetail.module.scss';
 
 const DaoDiscussionDetailPage: React.FC = () => {
   const { id = '' } = useParams<{ id: string }>();
@@ -17,11 +20,11 @@ const DaoDiscussionDetailPage: React.FC = () => {
 
   if (!discussion) {
     return (
-      <div className={styles.contentZoneInnerFull}>
-        <div className={`${styles.panelCard} ${styles.discussionDetailCard}`}>
-          <div className={styles.eventDetailNotFound}>
+      <div className={pageLayoutStyles.contentZoneInnerFull}>
+        <div className={`${sharedStyles.panelCard} ${styles.discussionDetailCard}`}>
+          <div className={eventStyles.eventDetailNotFound}>
             <p>{t('dao.discussionDetail.notFound')}</p>
-            <Link to={daoDiscussionsListPath} className={styles.eventDetailBreadcrumbLink}>
+            <Link to={daoDiscussionsListPath()} className={eventStyles.eventDetailBreadcrumbLink}>
               {t('dao.discussionDetail.backToList')}
             </Link>
           </div>

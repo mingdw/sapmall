@@ -1,0 +1,243 @@
+/* Cyberpunk — compact featured rail */
+
+.featured {
+  position: relative;
+  margin-bottom: 1.25rem;
+  padding: 0.85rem 0 0.85rem 0.85rem;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(0, 255, 255, 0.22);
+  background: #0a0a12;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 255, 0.06) 2px,
+      rgba(0, 255, 255, 0.06) 4px
+    );
+  }
+}
+
+.featuredHead {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  margin-bottom: 0.65rem;
+  padding: 0 0.15rem;
+}
+
+.featuredTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #00ffff;
+  text-shadow: 0 0 12px rgba(0, 255, 255, 0.45);
+
+  svg {
+    color: #ff00ff;
+    filter: drop-shadow(0 0 6px rgba(255, 0, 255, 0.6));
+  }
+}
+
+.featuredHint {
+  font-size: 0.625rem;
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.06em;
+  color: rgba(148, 163, 184, 0.75);
+}
+
+.featuredTrack {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.15rem 0.05rem 0.25rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 255, 255, 0.35) transparent;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 255, 0.35);
+    border-radius: 999px;
+  }
+}
+
+.featuredCard {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(100%, 11.5rem);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-decoration: none;
+  color: #e2e8f0;
+  border-radius: 0.35rem;
+  border: 1px solid rgba(0, 255, 255, 0.28);
+  background: rgba(13, 13, 20, 0.95);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow: inset 0 0 24px rgba(255, 0, 255, 0.04);
+  }
+
+  &:hover {
+    border-color: rgba(255, 0, 255, 0.55);
+    box-shadow:
+      0 0 16px rgba(0, 255, 255, 0.2),
+      inset 0 0 20px rgba(255, 0, 255, 0.06);
+    transform: translateY(-1px);
+  }
+
+  &[data-category='bags'] {
+    border-color: rgba(255, 0, 255, 0.35);
+
+    &:hover {
+      border-color: rgba(255, 0, 255, 0.5);
+      box-shadow: 0 0 16px rgba(255, 0, 255, 0.15);
+    }
+  }
+}
+
+.featuredCover {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.88;
+    transition: opacity 0.25s ease, transform 0.35s ease;
+  }
+
+  .featuredCard:hover & img {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+.featuredOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 10, 18, 0.2) 0%, rgba(10, 10, 18, 0.92) 100%);
+}
+
+.featuredHot {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  z-index: 1;
+  padding: 0.12rem 0.35rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #0a0a12;
+  background: #00ffff;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.65);
+}
+
+.featuredBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.55rem 0.6rem 0.6rem;
+}
+
+.featuredCategory {
+  font-family: ui-monospace, monospace;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ff00ff;
+}
+
+.featuredCardTitle {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #f8fafc;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.featuredFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-top: 0.1rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(0, 255, 255, 0.12);
+}
+
+.featuredTime {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.5625rem;
+  color: rgba(0, 255, 255, 0.75);
+}
+
+.featuredLink {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.5625rem;
+  font-weight: 600;
+  color: #00ffff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.35);
+}
+
+@media (min-width: 900px) {
+  .featuredTrack {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow-x: visible;
+    scroll-snap-type: none;
+    gap: 0.55rem;
+  }
+
+  .featuredCard {
+    width: auto;
+  }
+}

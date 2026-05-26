@@ -1,0 +1,86 @@
+/* Quill Snow 内置工具栏，仅做主题适配 */
+
+.richEditorRoot {
+  border-radius: 0.55rem;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+
+  &:focus-within {
+    box-shadow: 0 0 0 3px rgb(234 88 12 / 0.12);
+  }
+
+  :global(.ql-toolbar.ql-snow) {
+    border: 1px solid #e2e8f0;
+    border-bottom: none;
+    border-radius: 0.55rem 0.55rem 0 0;
+    background: #fafafa;
+    font-family: inherit;
+  }
+
+  :global(.ql-container.ql-snow) {
+    border: 1px solid #e2e8f0;
+    border-radius: 0 0 0.55rem 0.55rem;
+    font-family: inherit;
+    font-size: 0.875rem;
+  }
+
+  :global(.ql-editor) {
+    min-height: 12rem;
+    max-height: 28rem;
+    overflow-y: auto;
+    line-height: 1.65;
+    color: var(--dao-panel-text);
+
+    &.ql-blank::before {
+      color: #94a3b8;
+      font-style: normal;
+    }
+  }
+
+  :global(.ql-snow .ql-picker.ql-header .ql-picker-label::before),
+  :global(.ql-snow .ql-picker.ql-header .ql-picker-item::before) {
+    font-size: 0.8125rem;
+  }
+
+  :global(.ql-snow.ql-toolbar button:hover),
+  :global(.ql-snow .ql-toolbar button.ql-active),
+  :global(.ql-snow.ql-toolbar .ql-picker-label:hover),
+  :global(.ql-snow.ql-toolbar .ql-picker-label.ql-active) {
+    color: var(--dao-tab-discussions);
+  }
+
+  :global(.ql-snow.ql-toolbar button:hover .ql-stroke),
+  :global(.ql-snow .ql-toolbar button.ql-active .ql-stroke),
+  :global(.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke) {
+    stroke: var(--dao-tab-discussions);
+  }
+
+  :global(.ql-snow.ql-toolbar button:hover .ql-fill),
+  :global(.ql-snow .ql-toolbar button.ql-active .ql-fill) {
+    fill: var(--dao-tab-discussions);
+  }
+
+  :global(.ql-editor pre.ql-syntax) {
+    margin: 0.65rem 0;
+    padding: 0.75rem 0.85rem;
+    border-radius: 0.5rem;
+    background: #0f172a;
+    color: #e2e8f0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  :global(.ql-editor img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0.5rem auto;
+    border-radius: 0.5rem;
+  }
+
+  :global(.ql-editor blockquote) {
+    border-left: 3px solid rgb(234 88 12 / 0.4);
+    color: #475569;
+  }
+}

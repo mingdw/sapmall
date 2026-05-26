@@ -1,0 +1,128 @@
+.articleDetailCard {
+  padding: 1.15rem 1.35rem 1.5rem;
+
+  @media (min-width: 768px) {
+    padding: 1.35rem 1.65rem 1.75rem;
+  }
+}
+
+.articleDetailHead {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.articleDetailBreadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.35rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.articleDetailBreadcrumbLink {
+  color: var(--help-primary);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #6d28d9;
+    text-decoration: underline;
+  }
+}
+
+.articleDetailBreadcrumbCurrent {
+  color: var(--help-panel-muted);
+  font-weight: 500;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.articleDetailTitleRow {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 1fr) minmax(0, 2.2fr) minmax(5.5rem, 1fr);
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.articleDetailTitleSide {
+  min-height: 1px;
+}
+
+.articleDetailTitle {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--help-panel-text);
+  letter-spacing: -0.02em;
+}
+
+.articleDetailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem 1.1rem;
+}
+
+.articleDetailMetric {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  color: var(--help-panel-muted);
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &[data-metric='views'] svg {
+    color: var(--help-primary);
+  }
+
+  &[data-metric='updated'] svg {
+    color: var(--help-amber-deep);
+  }
+}
+
+.articleDetailMetricValue {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #64748b;
+  letter-spacing: 0.01em;
+}
+
+.articleDetailVote {
+  justify-self: end;
+}
+
+.articleDetailBody {
+  margin: 0 auto;
+  max-width: 52rem;
+}
+
+.articleDetailFooter {
+  margin-top: 1.75rem;
+}
+@media (max-width: 640px) {
+  .articleDetailTitleRow {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .articleDetailTitleSide {
+    display: none;
+  }
+
+  .articleDetailVote {
+    justify-self: center;
+  }
+}

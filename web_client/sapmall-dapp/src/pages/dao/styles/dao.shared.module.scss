@@ -1,0 +1,66 @@
+/* Requires ancestor .pageRoot for --dao-* CSS variables */
+
+.panelCard {
+  border-radius: 1rem;
+  background: var(--dao-panel-bg);
+  color: var(--dao-panel-text);
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.06),
+    0 12px 32px -8px rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.sidebarCard {
+  padding: 1.5rem;
+}
+
+.sidebarTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--dao-panel-text);
+}
+
+.sidebarTitleIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+  color: var(--dao-primary);
+}
+
+.sidebarHint {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--dao-panel-muted);
+  margin-bottom: 1rem;
+}
+
+.connectBtn {
+  width: 100%;
+  border: none;
+  border-radius: 0.625rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--dao-amber), var(--dao-amber-deep));
+  cursor: pointer;
+  transition: filter 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+
+  &:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 6px 18px rgba(245, 158, 11, 0.4);
+  }
+}
+
+.walletAddress {
+  font-family: ui-monospace, monospace;
+  font-size: 0.8125rem;
+  color: var(--dao-panel-muted);
+  margin-bottom: 0.5rem;
+}

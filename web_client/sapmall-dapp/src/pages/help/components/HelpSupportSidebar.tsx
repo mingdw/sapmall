@@ -7,7 +7,8 @@ import { openLiveChat } from '../../../components/live-chat/LiveChatWidget';
 import { HELP_CONTACT_CHANNELS, HELP_SUPPORT_ACTIONS } from '../mocks/helpSupport.mock';
 import type { HelpContactChannel, HelpSupportAction, HelpSupportActionIcon } from '../types';
 import HelpCardTitle from './HelpCardTitle';
-import styles from '../HelpPage.module.scss';
+import sharedStyles from '../styles/help.shared.module.scss';
+import styles from './HelpSupportSidebar.module.scss';
 
 const supportActionIcons: Record<HelpSupportActionIcon, React.ReactNode> = {
   headphones: <Headphones strokeWidth={1.75} aria-hidden />,
@@ -127,15 +128,15 @@ const HelpSupportSidebar: React.FC = () => {
   };
 
   return (
-    <div className={`${styles.panelCard} ${styles.sidebarCard} ${styles.supportSidebarCard}`}>
+    <div className={`${sharedStyles.panelCard} ${sharedStyles.sidebarCard} ${styles.supportSidebarCard}`}>
       <section className={styles.supportSidebar} aria-labelledby="help-support-title">
-        <div className={styles.cardSectionHead}>
+        <div className={sharedStyles.cardSectionHead}>
           <HelpCardTitle id="help-support-title" icon={<LifeBuoy size={18} strokeWidth={2.25} />}>
             {t('help.support.title')}
           </HelpCardTitle>
         </div>
 
-        <div className={styles.cardSectionBody}>
+        <div className={sharedStyles.cardSectionBody}>
           <div
             className={styles.supportShortcutGrid}
             role="list"

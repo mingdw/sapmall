@@ -62,7 +62,25 @@
     "statusActive": "正常",
     "registeredAt": "注册时间",
     "unknown": "未知",
-    "defaultRole": "普通用户"
+    "defaultRole": "普通用户",
+    "networks": {
+      "ethereum": "Ethereum",
+      "base": "Base",
+      "arcTestnet": "ArcTestnet",
+      "sepolia": "Sepolia",
+      "goerli": "Goerli",
+      "holesky": "Holesky",
+      "bsc": "BSC",
+      "polygon": "Polygon"
+    },
+    "portfolioTitle": "资产概览",
+    "portfolioSubtitle": "当前网络链上余额",
+    "personalInfo": "个人信息",
+    "usdcBalance": "USDC",
+    "sapBalance": "SAP",
+    "balanceUnavailable": "当前网络暂不支持",
+    "sapNotConfigured": "待配置合约",
+    "viewAccountDetails": "查看账户详情"
   },
   "homepage": {
     "title": "SapMall DApp",
@@ -305,7 +323,29 @@
     "subscribePlaceholder": "youremail@web3.com",
     "subscribeButton": "订阅",
     "subscribeToast": "订阅功能即将上线，感谢关注。",
-    "scrollTopAria": "回到顶部"
+    "scrollTopAria": "回到顶部",
+    "heroHint": "连接 EVM 钱包参与主站活动；Bags 合作活动需在 Solana 环境完成，两类钱包相互独立。",
+    "statsAria": "活动数据概览",
+    "stats": {
+      "ongoing": "进行中",
+      "upcoming": "即将开始",
+      "participants": "累计参与人次",
+      "endingSoon": "7 日内截止"
+    },
+    "featuredTitle": "精选推荐",
+    "featuredHint": "热门或即将截止",
+    "daysLeft": "剩余 {{count}} 天",
+    "progressLabel": "时间进度",
+    "emptyReset": "查看全部分类",
+    "sidebarAria": "活动页侧边栏",
+    "myActivityTitle": "我的参与（演示）",
+    "myActivityEmpty": "参与活动后，领取记录将显示在此（本地演示）。",
+    "quickLinksTitle": "快捷入口",
+    "walletChip": {
+      "evm": "EVM 钱包",
+      "solana": "Solana · Bags",
+      "evmOptional": "EVM 推荐"
+    }
   },
   "exchange": {
     "errors": {
@@ -872,7 +912,93 @@
         "datesRequired": "请设置投票开始与结束日期",
         "endAfterStart": "结束日期须晚于开始日期",
         "motivationRequired": "请填写动机与背景"
-      }
+      },
+      "selectedTagsAria": "已选提案标签",
+      "removeTag": "移除标签：{{tag}}",
+      "tagPickerAria": "可选提案标签",
+      "tagsInputPlaceholder": "点击上方标签添加到此处"
+    },
+    "discussionCreate": {
+      "breadcrumbCurrent": "发起讨论",
+      "pageTitle": "发起社区讨论",
+      "pageLead": "发布话题至对应板块，与社区成员交流观点、反馈与治理议题（演示环境）。",
+      "demoCallout": "演示环境：草稿与已发布讨论保存在本地浏览器，正式版将对接论坛或链上留言模块。",
+      "sections": {
+        "basic": "基本信息",
+        "body": "讨论正文",
+        "references": "参考链接"
+      },
+      "fields": {
+        "title": "讨论标题",
+        "excerpt": "摘要",
+        "category": "发布板块",
+        "tags": "话题标签",
+        "body": "正文内容",
+        "referenceLink": "参考链接（可选）"
+      },
+      "placeholders": {
+        "title": "例如：移动端钱包签名体验优化",
+        "excerpt": "用 1–2 句话概括讨论背景与希望收集的反馈",
+        "body": "详细描述问题、建议或待讨论方案。段落之间空一行……",
+        "referenceLink": "https://..."
+      },
+      "channels": {
+        "hot": "#热门讨论",
+        "marketplace": "#商城治理",
+        "community": "#社区发展"
+      },
+      "categoryHint": "将发布至 {{channel}} 频道",
+      "bodyHint": "使用 Quill 富文本编辑器（内置工具栏）。字数按纯文本统计；演示环境图片压缩后存于本地。",
+      "richEditor": {
+        "toolbar": "正文格式",
+        "undo": "撤销",
+        "redo": "重做",
+        "bold": "加粗",
+        "italic": "斜体",
+        "underline": "下划线",
+        "strike": "删除线",
+        "inlineCode": "行内代码",
+        "paragraph": "正文",
+        "heading": "二级标题",
+        "heading3": "三级标题",
+        "list": "无序列表",
+        "orderedList": "有序列表",
+        "blockquote": "引用",
+        "horizontalRule": "分割线",
+        "link": "插入链接",
+        "linkPrompt": "请输入链接地址（https://）",
+        "code": "代码块",
+        "codePlaceholder": "// 在此粘贴或输入代码",
+        "image": "插入图片",
+        "imageInsertSuccess": "图片已插入",
+        "imageInvalidType": "仅支持 JPG、PNG、GIF、WebP 图片",
+        "imageTooLarge": "图片过大，请换一张较小的图片（单张不超过 3MB）",
+        "imageUploadFailed": "图片处理失败，请重试"
+      },
+      "saveDraft": "保存草稿",
+      "submit": "发布讨论",
+      "discard": "放弃编辑",
+      "connectWallet": "连接钱包",
+      "connectToSubmit": "连接钱包后可发布讨论（演示）。",
+      "saveDraftSuccess": "草稿已保存到本地",
+      "submitSuccess": "讨论已发布（演示）",
+      "submitConfirmTitle": "确认发布讨论",
+      "submitConfirmBody": "发布后将出现在热门讨论列表。演示环境不会上链，请确认内容无误。",
+      "discardTitle": "放弃编辑？",
+      "discardBody": "将清除本地草稿并返回讨论列表，未保存内容会丢失。",
+      "discardConfirm": "放弃并返回",
+      "validation": {
+        "titleRequired": "请填写讨论标题",
+        "excerptRequired": "请填写摘要",
+        "bodyRequired": "请填写正文内容",
+        "bodyMax": "正文纯文本不能超过 {{max}} 字",
+        "tagRequired": "请至少选择一个话题标签",
+        "tagMax": "最多选择 {{max}} 个标签"
+      },
+      "tagPickerAria": "可选话题标签",
+      "selectedTagsAria": "已选话题标签",
+      "tagsInputPlaceholder": "点击上方标签添加到此处",
+      "removeTag": "移除标签：{{tag}}"
     },
     "proposalDetail": {
       "notFound": "未找到该提案，可能已下线或链接有误。",
@@ -1103,16 +1229,26 @@
       "opSection": "主帖",
       "likes": "{{count}}",
       "noReplies": "暂无回复，来发表第一条吧。",
+      "replyAction": "回复",
+      "replyActionWithCount": "回复 ({{count}})",
+      "replyCollapse": "收起回复",
+      "replyThreadLabel": "{{user}} 的回复讨论",
+      "replyToQuote": "回复 {{user}}：{{excerpt}}",
       "relatedTitle": "同板块讨论",
       "viewAll": "查看全部",
       "composer": {
         "title": "发表回复",
         "placeholder": "分享你的观点、补充信息或提出问题…",
+        "placeholderReply": "回复 {{user}}…",
         "submit": "发表回复",
+        "submitReply": "发送回复",
         "connectHint": "连接钱包后即可参与回复",
         "connectWallet": "连接钱包",
         "emptyError": "请输入回复内容",
-        "successToast": "回复已发表（演示）"
+        "successToast": "回复已发表（演示）",
+        "charCount": "{{current}} / {{max}}",
+        "replyingTo": "正在回复 {{user}}",
+        "cancelReplyTo": "取消回复"
       },
       "default": {
         "intro": "本帖用于社区成员就 Sapphire Mall 治理与产品方向展开讨论，欢迎理性发言、引用数据与链上信息。",
@@ -1264,6 +1400,9 @@
     },
     "toast": {
       "comingSoon": "详情页即将上线，敬请期待。"
+    },
+    "categoryBrowse": {
+      "aria": "浏览讨论板块"
     }
   },
   "checkout": {
@@ -1298,6 +1437,16 @@
     "copyright": "© 2026 Sapphire Mall Ecosystem. 保留所有权利。",
     "privacy": "隐私政策",
     "terms": "服务条款",
-    "cookie": "Cookie 政策"
+    "cookie": "Cookie 政策",
+    "brandTagline": "Web3 虚拟商品生态",
+    "badgesAria": "生态能力",
+    "socialAria": "社交媒体",
+    "legalAria": "法律与政策",
+    "badges": {
+      "web3": "Web3",
+      "dao": "DAO",
+      "nft": "NFT"
+    },
+    "followUs": "关注我们"
   }
 }

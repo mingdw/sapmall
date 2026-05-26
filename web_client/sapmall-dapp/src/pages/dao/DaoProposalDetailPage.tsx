@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { getDaoProposalDetail } from './mocks/daoProposalDetails.mock';
 import DaoProposalDetail from './components/DaoProposalDetail';
 import { daoProposalsListPath } from './utils/daoNavigation';
-import styles from './DaoPage.module.scss';
+import pageLayoutStyles from './styles/dao.pageLayout.module.scss';
+import sharedStyles from './styles/dao.shared.module.scss';
+import eventStyles from './components/DaoEventDetail.module.scss';
+import styles from './components/DaoProposalDetail.module.scss';
 
 const DaoProposalDetailPage: React.FC = () => {
   const { id = '' } = useParams<{ id: string }>();
@@ -17,9 +20,9 @@ const DaoProposalDetailPage: React.FC = () => {
 
   if (!proposal) {
     return (
-      <div className={styles.contentZoneInnerFull}>
-        <div className={`${styles.panelCard} ${styles.proposalDetailMain}`}>
-          <div className={styles.eventDetailNotFound}>
+      <div className={pageLayoutStyles.contentZoneInnerFull}>
+        <div className={`${sharedStyles.panelCard} ${styles.proposalDetailMain}`}>
+          <div className={eventStyles.eventDetailNotFound}>
             <p>{t('dao.proposalDetail.notFound')}</p>
             <Link to={daoProposalsListPath} className={styles.proposalDetailBreadcrumbLink}>
               {t('dao.proposalDetail.backToList')}

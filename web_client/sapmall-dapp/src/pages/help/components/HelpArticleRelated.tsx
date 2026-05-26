@@ -10,7 +10,7 @@ import { HELP_TOPIC_ICON_MAP } from '../utils/helpTopicIcons';
 import { helpTopicPath } from '../utils/helpTopicNavigation';
 import { parseTopicQaArticleIndex } from '../utils/helpTopicSlug';
 import HelpCardTitle from './HelpCardTitle';
-import styles from '../HelpPage.module.scss';
+import styles from './HelpArticleRelated.module.scss';
 
 type Props = {
   articles: HelpArticleMeta[];

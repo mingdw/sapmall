@@ -3,6 +3,10 @@ import { Product } from '../services/types/productTypes';
 import ProductDetailComponent from './ProductCard';
 import Pagination from './Pagination';
 import styles from './ProductCategoryCard.module.scss';
+import {
+  categoryPlainIconStyle,
+  resolveCategoryIconTheme,
+} from '../pages/marketplace/utils/categoryIconTheme';
 
 interface ProductCategoryComponentProps {
   // 分类信息
@@ -62,33 +66,39 @@ const ProductCategoryComponent: React.FC<ProductCategoryComponentProps> = ({
     }
   };
 
+  const iconTheme = resolveCategoryIconTheme(categoryCode, categoryIcon);
+
   return (
     <div className={`${styles.categoryMainCard}`}>
-      {/* 分类头部 */}
-      <div className={`${styles.categoryMainHeader}`}>
-        <div className={`${styles.categoryMainTitle}`}>
-          <div className={`${styles.categoryMainIcon} bg-gradient-to-br from-blue-500 to-indigo-600`}>
-            <i className={categoryIcon}></i>
-          </div>
-          <div className={`${styles.categoryMainInfo}`}>
-            <h3>{categoryName}</h3>
-            <span className={`${styles.categoryItemCount}`}>
-              {productCount}个商品
+      {/* 分类头部 — 对齐帮助中心 cardSectionHead 布局 */}
+      <div className={styles.categoryMainHeader}>
+        <div className={styles.categoryMainHead}>
+          <div className={styles.categoryMainTitle}>
+            <span
+              className={styles.categoryMainIcon}
+              style={categoryPlainIconStyle(iconTheme)}
+            >
+              <i className={iconTheme.icon} aria-hidden />
             </span>
+            <h3 className={styles.categoryMainTitleText}>{categoryName}</h3>
           </div>
+          {showMoreButton && (
+            <button
+              type="button"
+              className={styles.categoryMoreBtn}
+              onClick={handleMoreClick}
+            >
+              <span>{showPagination ? '返回商城' : '更多'}</span>
+              <i
+                className={`fas ${showPagination ? 'fa-arrow-left' : 'fa-arrow-right'}`}
+                aria-hidden
+              />
+            </button>
+          )}
         </div>
-        {showMoreButton && (
-          <button 
-            className={`${styles.categoryMoreBtn}`}
-            onClick={handleMoreClick}
-          >
-            <span>{showPagination ? '返回商城' : '更多'}</span>
-            <i className={`fas ${showPagination ? 'fa-arrow-left' : 'fa-arrow-right'}`}></i>
-          </button>
-        )}
       </div>
-      
-      {/* 商品网格 */}
+
+      <div className={styles.categoryMainBody}>
       {paginationProps?.isLoading ? (
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
@@ -131,6 +141,7 @@ const ProductCategoryComponent: React.FC<ProductCategoryComponentProps> = ({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

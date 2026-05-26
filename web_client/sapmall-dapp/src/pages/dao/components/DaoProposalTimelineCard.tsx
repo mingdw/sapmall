@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { ExternalLink } from 'lucide-react';
 import { DAO_DISCORD_URL } from '../constants';
 import type { DaoProposalDetail } from '../types';
-import styles from '../DaoPage.module.scss';
+import sharedStyles from '../styles/dao.shared.module.scss';
+import styles from './DaoProposalDetail.module.scss';
 
 type Props = {
   proposal: DaoProposalDetail;
@@ -14,7 +15,7 @@ const DaoProposalTimelineCard: React.FC<Props> = ({ proposal }) => {
   const discordUrl = proposal.forumUrl || DAO_DISCORD_URL;
 
   return (
-    <aside className={`${styles.panelCard} ${styles.proposalDetailSidebarCard}`}>
+    <aside className={`${sharedStyles.panelCard} ${styles.proposalDetailSidebarCard}`}>
       <h2 className={styles.proposalDetailSidebarTitle}>{t('dao.proposalDetail.timeline.title')}</h2>
 
       <ol className={styles.proposalDetailTimeline}>

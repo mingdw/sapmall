@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
 import HelpHeroBackground from './HelpHeroBackground';
 import { HELP_HOT_SEARCH_IDS } from '../mocks/helpHotSearch.mock';
-import styles from '../HelpPage.module.scss';
+import styles from './HelpHeroSection.module.scss';
 
 type Props = {
   keyword: string;

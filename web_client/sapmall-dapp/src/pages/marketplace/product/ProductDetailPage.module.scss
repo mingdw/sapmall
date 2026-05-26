@@ -554,6 +554,7 @@ $detail-action-control-size: 2rem;
   padding: 0.625rem 0;
   border-bottom: 1px solid rgba(71, 85, 105, 0.15);
   flex-shrink: 0;
+  min-width: 0;
 }
 
 .ratingSection {
@@ -592,17 +593,35 @@ $detail-action-control-size: 2rem;
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.priceMain {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.priceApprox {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #94a3b8;
 }
 
 .currentPrice {
   font-size: 1.75rem;
   font-weight: 800;
   color: #f87171;
-  line-height: 1;
 }
 
 .sapPrice {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   color: #94a3b8;
 }
 
@@ -610,6 +629,10 @@ $detail-action-control-size: 2rem;
   font-size: 0.75rem;
   color: #64748b;
   text-decoration: line-through;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .discountTag {

@@ -8,7 +8,8 @@ import type { HelpCategoryFilter, HelpFaqItem } from '../types';
 import HelpCardTitle from './HelpCardTitle';
 import { articleSummaryKey } from '../utils/articleI18nKey';
 import { faqArticleSlugFromId } from '../utils/faqArticleSlug';
-import styles from '../HelpPage.module.scss';
+import sharedStyles from '../styles/help.shared.module.scss';
+import styles from './HelpFaqSection.module.scss';
 
 type Props = {
   category: HelpCategoryFilter;
@@ -50,7 +51,7 @@ const HelpFaqSection: React.FC<Props> = ({ category, variant = 'main' }) => {
   if (filtered.length === 0) return null;
 
   const titleRow = () => (
-    <div className={styles.cardSectionHead}>
+    <div className={sharedStyles.cardSectionHead}>
       <HelpCardTitle id="help-faq-title" icon={<CircleHelp size={18} strokeWidth={2.25} />}>
         {t('help.faqTitle')}
       </HelpCardTitle>
@@ -113,10 +114,10 @@ const HelpFaqSection: React.FC<Props> = ({ category, variant = 'main' }) => {
 
   if (variant === 'sidebar') {
     return (
-      <div className={`${styles.panelCard} ${styles.sidebarCard}`}>
+      <div className={`${sharedStyles.panelCard} ${sharedStyles.sidebarCard}`}>
         <section className={styles.faqSidebar} aria-labelledby="help-faq-title">
           {titleRow()}
-          <div className={styles.cardSectionBody}>{list}</div>
+          <div className={sharedStyles.cardSectionBody}>{list}</div>
         </section>
       </div>
     );
@@ -125,7 +126,7 @@ const HelpFaqSection: React.FC<Props> = ({ category, variant = 'main' }) => {
   return (
     <section aria-labelledby="help-faq-title">
       {titleRow()}
-      <div className={styles.cardSectionBody}>
+      <div className={sharedStyles.cardSectionBody}>
         <p className={styles.panelHint}>{t('help.faqHint')}</p>
         {list}
       </div>

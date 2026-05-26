@@ -1,0 +1,110 @@
+/* Shared help panel primitives — requires ancestor .pageRoot for CSS variables */
+
+.panelCard {
+  border-radius: 1rem;
+  background: var(--help-panel-bg);
+  color: var(--help-panel-text);
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.06),
+    0 12px 32px -8px rgba(15, 23, 42, 0.12);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.panelCard,
+.panelCardAccent {
+  position: relative;
+}
+
+.panelCardAccent {
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--help-amber) 0%, var(--help-primary) 100%);
+    border-radius: 1rem 1rem 0 0;
+  }
+}
+
+.panelSection {
+  padding: 1.15rem 1.35rem;
+
+  & + & {
+    border-top: 1px solid #e2e8f0;
+  }
+}
+
+.cardSectionTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--help-card-title-gap);
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.cardSectionTitleIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--help-primary);
+
+  svg {
+    width: var(--help-card-title-icon-size);
+    height: var(--help-card-title-icon-size);
+  }
+}
+
+.cardSectionTitleText {
+  min-width: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  color: #0f172a;
+}
+
+.cardSectionBody {
+  padding-left: var(--help-card-content-indent);
+}
+
+.cardSectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.articleTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.articleTag {
+  font-size: 0.6875rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 9999px;
+  background: rgba(139, 92, 246, 0.08);
+  color: #6d28d9;
+}
+
+.emptyState {
+  padding: 1.25rem;
+  border-radius: 0.7rem;
+  border: 1px dashed rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.04);
+  font-size: 0.875rem;
+  color: var(--help-panel-muted);
+  text-align: center;
+}
+
+.sidebarCard {
+  padding: 1.15rem 1.25rem;
+}

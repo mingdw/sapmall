@@ -1,0 +1,19 @@
+.notFoundWrap {
+  padding: 1.15rem 1.35rem;
+}
+
+.notFound {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.notFoundLink {
+  color: var(--help-primary);
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

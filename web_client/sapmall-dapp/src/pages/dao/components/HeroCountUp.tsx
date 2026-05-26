@@ -1,6 +1,6 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { formatHeroMetricNumeric, parseHeroMetricValue } from '../utils/parseHeroMetricValue';
-import styles from '../DaoPage.module.scss';
+import styles from './DaoHeroCarousel.module.scss';
 
 const DURATION_MS = 1200;
 

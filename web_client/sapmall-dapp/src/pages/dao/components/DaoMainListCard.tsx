@@ -5,11 +5,17 @@ import type { LucideIcon } from 'lucide-react';
 import { Eye, FileText, MessageCircle, MessagesSquare, Search, Sparkles } from 'lucide-react';
 import { DAO_PAGE_SIZE, getDaoEventFallbackImageUrl } from '../constants';
 import { DAO_VIEW_TAB_ORDER } from '../constants/daoViewTabs';
-import { DAO_DISCUSSIONS, DAO_EVENTS, DAO_PROPOSALS } from '../mocks/dao.mock';
+import { DAO_EVENTS, DAO_PROPOSALS } from '../mocks/dao.mock';
+import { getMergedDaoDiscussions } from '../utils/daoDiscussionsList';
 import {
-  DAO_DISCUSSION_CATEGORY_FILTERS,
-  discussionMatchesCategoryFilter,
-} from '../constants/discussionCategories';
+  getDiscussionChannel,
+  getDiscussionExcerpt,
+  getDiscussionTitle,
+} from '../utils/daoDiscussionDisplay';
+import { discussionMatchesCategoryFilter } from '../constants/discussionCategories';
+import DaoDiscussionCategoryBrowse, {
+  type DaoDiscussionCategoryCounts,
+} from './DaoDiscussionCategoryBrowse';
 import {
   discussionMatchesTopicTagFilter,
   sortDiscussionTopicTags,
@@ -17,6 +23,7 @@ import {
   type DaoDiscussionTopicTagFilter,
 } from '../constants/discussionTopicTags';
 import type {
+  DaoDiscussionCategory,
   DaoDiscussionCategoryFilter,
   DaoDiscussionItem,
   DaoEventFilter,
@@ -26,33 +33,34 @@ import type {
   DaoViewTab,
 } from '../types';
 import { shortenWalletAddress } from '../utils/walletAddress';
-import styles from '../DaoPage.module.scss';
+import listTagStyles from '../styles/dao.listTags.module.scss';
+import sharedStyles from '../styles/dao.shared.module.scss';
+import styles from './DaoMainListCard.module.scss';
 
 const PROPOSAL_FILTER_OPTIONS: DaoProposalFilter[] = ['all', 'active', 'passed', 'pending'];
-const DISCUSSION_CATEGORY_FILTER_OPTIONS = DAO_DISCUSSION_CATEGORY_FILTERS;
 const EVENT_FILTER_OPTIONS: DaoEventFilter[] = ['all', 'ama', 'grant', 'milestone', 'announcement'];
 
 const statusClass: Record<DaoProposalItem['status'], string> = {
-  active: styles.statusActive,
-  passed: styles.statusPassed,
-  pending: styles.statusPending,
+  active: listTagStyles.statusActive,
+  passed: listTagStyles.statusPassed,
+  pending: listTagStyles.statusPending,
 };
 
 const topicTagClass: Record<string, string> = {
-  'dao.list.proposals.tags.governance': styles.topicTagGovernance,
-  'dao.list.proposals.tags.treasury': styles.topicTagTreasury,
-  'dao.list.proposals.tags.marketplace': styles.topicTagMarketplace,
-  'dao.list.proposals.tags.staking': styles.topicTagStaking,
-  'dao.list.proposals.tags.grant': styles.topicTagGrant,
-  'dao.list.proposals.tags.multisig': styles.topicTagMultisig,
-  'dao.list.proposals.tags.security': styles.topicTagSecurity,
+  'dao.list.proposals.tags.governance': listTagStyles.topicTagGovernance,
+  'dao.list.proposals.tags.treasury': listTagStyles.topicTagTreasury,
+  'dao.list.proposals.tags.marketplace': listTagStyles.topicTagMarketplace,
+  'dao.list.proposals.tags.staking': listTagStyles.topicTagStaking,
+  'dao.list.proposals.tags.grant': listTagStyles.topicTagGrant,
+  'dao.list.proposals.tags.multisig': listTagStyles.topicTagMultisig,
+  'dao.list.proposals.tags.security': listTagStyles.topicTagSecurity,
 };
 
 const eventCategoryClass: Record<DaoEventItem['category'], string> = {
-  ama: styles.eventTagAma,
-  grant: styles.eventTagGrant,
-  milestone: styles.eventTagMilestone,
-  announcement: styles.eventTagAnnouncement,
+  ama: listTagStyles.eventTagAma,
+  grant: listTagStyles.eventTagGrant,
+  milestone: listTagStyles.eventTagMilestone,
+  announcement: listTagStyles.eventTagAnnouncement,
 };
 
 const listTabIconMap: Record<DaoViewTab, LucideIcon> = {
@@ -122,8 +130,26 @@ const DaoMainListCard: React.FC<Props> = ({
     });
   }, [proposalFilter, search, t, participatedIdSet, tab]);
 
+  const discussionCategoryCounts = useMemo((): DaoDiscussionCategoryCounts => {
+    let list = getMergedDaoDiscussions().filter((d) =>
+      discussionMatchesTopicTagFilter(d, discussionTagFilter),
+    );
+    if (participatedIdSet && tab === 'discussions') {
+      list = list.filter((d) => participatedIdSet.has(d.id));
+    }
+    const byCategory: Record<DaoDiscussionCategory, number> = {
+      hot: 0,
+      marketplace: 0,
+      community: 0,
+    };
+    for (const item of list) {
+      byCategory[item.category] += 1;
+    }
+    return { total: list.length, byCategory };
+  }, [discussionTagFilter, participatedIdSet, tab]);
+
   const discussionFiltered = useMemo(() => {
-    let list = DAO_DISCUSSIONS.filter(
+    let list = getMergedDaoDiscussions().filter(
       (d) =>
         discussionMatchesCategoryFilter(d, discussionCategoryFilter) &&
         discussionMatchesTopicTagFilter(d, discussionTagFilter),
@@ -136,7 +162,7 @@ const DaoMainListCard: React.FC<Props> = ({
     if (!q) return list;
     return list.filter((d) => {
       const tagHay = d.tags.map((tag) => t(`dao.topicTags.${tag}`)).join(' ');
-      const hay = `${t(d.titleKey)} ${t(d.excerptKey)} ${t(d.channelKey)} ${tagHay}`.toLowerCase();
+      const hay = `${getDiscussionTitle(d, t)} ${getDiscussionExcerpt(d, t)} ${getDiscussionChannel(d, t)} ${tagHay}`.toLowerCase();
       return hay.includes(q);
     });
   }, [discussionCategoryFilter, discussionTagFilter, search, t, participatedIdSet, tab]);
@@ -171,28 +197,18 @@ const DaoMainListCard: React.FC<Props> = ({
     onTabChange(next);
   };
 
-  const filterValue =
-    tab === 'proposals'
-      ? proposalFilter
-      : tab === 'discussions'
-        ? discussionCategoryFilter
-        : eventFilter;
+  const showToolbarFilter = tab !== 'discussions';
+
+  const filterValue = tab === 'proposals' ? proposalFilter : eventFilter;
 
   const filterOptions: { value: string; label: string }[] =
     tab === 'proposals'
       ? PROPOSAL_FILTER_OPTIONS.map((f) => ({ value: f, label: t(`dao.filters.proposals.${f}`) }))
-      : tab === 'discussions'
-        ? DISCUSSION_CATEGORY_FILTER_OPTIONS.map((f) => ({
-            value: f,
-            label: t(`dao.filters.discussions.${f}`),
-          }))
-        : EVENT_FILTER_OPTIONS.map((f) => ({ value: f, label: t(`dao.filters.events.${f}`) }));
+      : EVENT_FILTER_OPTIONS.map((f) => ({ value: f, label: t(`dao.filters.events.${f}`) }));
 
   const onFilterSelect = (value: string) => {
     if (tab === 'proposals') {
       onProposalFilterChange(value as DaoProposalFilter);
-    } else if (tab === 'discussions') {
-      onDiscussionCategoryFilterChange(value as DaoDiscussionCategoryFilter);
     } else {
       onEventFilterChange(value as DaoEventFilter);
     }
@@ -201,7 +217,7 @@ const DaoMainListCard: React.FC<Props> = ({
   const formatViews = (views: number) => views.toLocaleString();
 
   return (
-    <div className={`${styles.panelCard} ${styles.mainListCard}`}>
+    <div className={`${sharedStyles.panelCard} ${styles.mainListCard}`}>
       <div className={styles.listToolbar}>
         <div className={styles.listTabRail} role="tablist" aria-label={t('dao.list.tabListAria')}>
           {DAO_VIEW_TAB_ORDER.map((tabKey) => {
@@ -225,16 +241,18 @@ const DaoMainListCard: React.FC<Props> = ({
         </div>
 
         <div className={styles.listToolbarRight}>
-          <label className={styles.filterLabel}>
-            <span className="sr-only">{t('dao.list.filterLabel')}</span>
-            <Select
-              className={styles.filterSelect}
-              value={filterValue}
-              options={filterOptions}
-              onChange={onFilterSelect}
-              popupMatchSelectWidth={false}
-            />
-          </label>
+          {showToolbarFilter ? (
+            <label className={styles.filterLabel}>
+              <span className="sr-only">{t('dao.list.filterLabel')}</span>
+              <Select
+                className={styles.filterSelect}
+                value={filterValue}
+                options={filterOptions}
+                onChange={onFilterSelect}
+                popupMatchSelectWidth={false}
+              />
+            </label>
+          ) : null}
           <Input
             className={styles.searchInput}
             placeholder={t('dao.list.searchPlaceholder')}
@@ -248,6 +266,17 @@ const DaoMainListCard: React.FC<Props> = ({
           />
         </div>
       </div>
+
+      {tab === 'discussions' ? (
+        <DaoDiscussionCategoryBrowse
+          activeCategory={discussionCategoryFilter}
+          counts={discussionCategoryCounts}
+          onCategorySelect={(category) => {
+            onDiscussionCategoryFilterChange(category);
+            onPageChange(1);
+          }}
+        />
+      ) : null}
 
       <div className={tab === 'events' ? styles.listBodyEvents : styles.listBody}>
         {pageItems.length === 0 ? (
@@ -363,8 +392,8 @@ const DaoMainListCard: React.FC<Props> = ({
                 <div className={styles.discussionBody}>
                   <div className={styles.discussionTitleRow}>
                     <div className={styles.discussionTitleMain}>
-                      <span className={styles.listRowTitle}>{t(row.titleKey)}</span>
-                      <span className={styles.discussionChannelTag}>{t(row.channelKey)}</span>
+                      <span className={styles.listRowTitle}>{getDiscussionTitle(row, t)}</span>
+                      <span className={styles.discussionChannelTag}>{getDiscussionChannel(row, t)}</span>
                     </div>
                     {row.tags.length > 0 ? (
                       <div className={styles.discussionTagsRow}>
@@ -380,7 +409,7 @@ const DaoMainListCard: React.FC<Props> = ({
                       </div>
                     ) : null}
                   </div>
-                  <p className={styles.discussionExcerpt}>{t(row.excerptKey)}</p>
+                  <p className={styles.discussionExcerpt}>{getDiscussionExcerpt(row, t)}</p>
                   <div className={styles.discussionFooter}>
                     <span className={styles.discussionStat}>
                       <MessagesSquare

@@ -6,12 +6,14 @@ import DaoEventDetailPage from './DaoEventDetailPage';
 import DaoProposalDetailPage from './DaoProposalDetailPage';
 import DaoProposalCreatePage from './DaoProposalCreatePage';
 import DaoDiscussionDetailPage from './DaoDiscussionDetailPage';
+import DaoDiscussionCreatePage from './DaoDiscussionCreatePage';
 
 const DaoRoutes: React.FC = () => (
   <Routes>
     <Route element={<DaoLayout />}>
       <Route index element={<DaoHomePage />} />
       <Route path="events/:id" element={<DaoEventDetailPage />} />
+      <Route path="discussions/new" element={<DaoDiscussionCreatePage />} />
       <Route path="discussions/:id" element={<DaoDiscussionDetailPage />} />
       <Route path="proposals/new" element={<DaoProposalCreatePage />} />
       <Route path="proposals/:id" element={<DaoProposalDetailPage />} />

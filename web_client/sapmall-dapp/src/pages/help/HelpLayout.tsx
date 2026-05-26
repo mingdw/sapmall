@@ -7,7 +7,7 @@ import type { HelpCategoryFilter } from './types';
 import type { HelpOutletContext } from './helpOutletContext';
 import { readHelpTopicFromSearch } from './utils/helpTopicNavigation';
 import { filterHelpArticles } from './utils/helpSearch';
-import styles from './HelpPage.module.scss';
+import layoutStyles from './HelpLayout.module.scss';
 
 const HelpLayout: React.FC = () => {
   const { t, ready } = useTranslation();
@@ -76,13 +76,13 @@ const HelpLayout: React.FC = () => {
   }
 
   return (
-    <div className={styles.pageRoot}>
-      <div className={styles.pageShell}>
+    <div className={layoutStyles.pageRoot}>
+      <div className={layoutStyles.pageShell}>
         <HelpHeroSection keyword={keyword} onKeywordChange={onKeywordChange} />
 
         <section
           id="help-content-zone"
-          className={styles.contentZone}
+          className={layoutStyles.contentZone}
           aria-label={t('help.guide.aria')}
         >
           <Outlet context={outletContext} />

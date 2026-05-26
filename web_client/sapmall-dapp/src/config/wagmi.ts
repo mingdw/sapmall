@@ -1,6 +1,7 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { http } from 'wagmi';
 import { mainnet, polygon, bsc, arbitrum, optimism, sepolia, goerli, holesky, base } from 'wagmi/chains';
+import { arcTestnet, ARC_TESTNET_RPC_URL } from './chains/arcTestnet';
 
 // 获取 WalletConnect Project ID
 // RainbowKit v2 要求 projectId 非空，否则会在初始化时报错。
@@ -24,10 +25,11 @@ if (
 export const config = getDefaultConfig({
   appName: 'Sapphire Mall',
   projectId: walletConnectProjectId,
-  chains: [mainnet, base, sepolia, goerli, holesky, polygon, bsc, arbitrum, optimism],
+  chains: [arcTestnet, mainnet, base, sepolia, goerli, holesky, polygon, bsc, arbitrum, optimism],
   transports: {
     [mainnet.id]: http(),
     [base.id]: http(),
+    [arcTestnet.id]: http(ARC_TESTNET_RPC_URL),
     [sepolia.id]: http(),
     [goerli.id]: http(),
     [holesky.id]: http(),

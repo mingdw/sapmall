@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -11,7 +11,8 @@ import {
 } from 'lucide-react';
 import { DAO_PROPOSAL_RULES } from '../mocks/daoProposalRules.mock';
 import type { DaoProposalRuleIcon } from '../mocks/daoProposalRules.mock';
-import styles from '../DaoPage.module.scss';
+import sharedStyles from '../styles/dao.shared.module.scss';
+import styles from './DaoProposalRulesCard.module.scss';
 
 const ruleIconMap: Record<DaoProposalRuleIcon, LucideIcon> = {
   submit: FilePenLine,
@@ -26,7 +27,7 @@ const DaoProposalRulesCard: React.FC = () => {
 
   return (
     <aside
-      className={`${styles.panelCard} ${styles.sidebarCard} ${styles.proposalRulesCard}`}
+      className={`${sharedStyles.panelCard} ${sharedStyles.sidebarCard} ${styles.proposalRulesCard}`}
       aria-labelledby="dao-proposal-rules-title"
     >
       <h2 id="dao-proposal-rules-title" className={styles.proposalRulesTitle}>

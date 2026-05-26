@@ -7,7 +7,8 @@ import { HELP_GUIDE_PAGE_SIZE } from '../constants/helpGuide';
 import type { HelpArticleMeta, HelpCategoryFilter } from '../types';
 import { articleSummaryKey, articleTitleKey } from '../utils/articleI18nKey';
 import HelpGuideVoteStats from './HelpGuideVoteStats';
-import styles from '../HelpPage.module.scss';
+import sharedStyles from '../styles/help.shared.module.scss';
+import styles from './HelpTopicGuideList.module.scss';
 
 type Props = {
   articles: HelpArticleMeta[];
@@ -42,14 +43,20 @@ const HelpTopicGuideList: React.FC<Props> = ({ articles, category, keyword }) =>
 
   if (sortedArticles.length === 0) {
     return (
-      <section className={`${styles.guideList} ${styles.cardSectionBody}`} aria-label={t('help.guide.aria')}>
-        <div className={styles.emptyState}>{t('help.empty')}</div>
+      <section
+        className={`${styles.guideList} ${sharedStyles.cardSectionBody}`}
+        aria-label={t('help.guide.aria')}
+      >
+        <div className={sharedStyles.emptyState}>{t('help.empty')}</div>
       </section>
     );
   }
 
   return (
-    <section className={`${styles.guideList} ${styles.cardSectionBody}`} aria-label={t('help.guide.aria')}>
+    <section
+      className={`${styles.guideList} ${sharedStyles.cardSectionBody}`}
+      aria-label={t('help.guide.aria')}
+    >
       {hasKeyword ? (
         <p className={styles.guideListHint}>{t('help.guide.searchResults')}</p>
       ) : null}

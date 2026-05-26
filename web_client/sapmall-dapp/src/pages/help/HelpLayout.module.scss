@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Exo+2:wght@400;500;600&display=swap');
+
+.pageRoot {
+  --help-amber: #f59e0b;
+  --help-amber-soft: #fbbf24;
+  --help-amber-deep: #ea580c;
+  --help-primary: #8b5cf6;
+  --help-primary-muted: #a78bfa;
+  --help-cta: #8b5cf6;
+  --help-success: #22c55e;
+  --help-zone-bg: #f1f1f3;
+  --help-panel-bg: #ffffff;
+  --help-panel-text: #0f172a;
+  --help-panel-muted: #64748b;
+  --help-border: rgba(15, 23, 42, 0.08);
+  --help-shell-max: 1360px;
+  --help-content-align: 980px;
+  --help-content-max: 1044px;
+  --help-sidebar-w: 380px;
+  --help-overlap: 36px;
+  --help-hero-min-height: 13.5rem;
+  --help-hero-pad-x: 1.35rem;
+  --help-content-bottom: 2rem;
+  --help-card-title-icon-size: 1.125rem;
+  --help-card-title-gap: 0.5rem;
+  --help-card-content-indent: calc(var(--help-card-title-icon-size) + var(--help-card-title-gap));
+  min-height: 100%;
+  padding-bottom: 3rem;
+  font-family: 'Plus Jakarta Sans', 'Exo 2', system-ui, sans-serif;
+}
+
+.pageShell {
+  width: 95%;
+  max-width: var(--help-shell-max);
+  margin: 0 auto;
+  border-radius: 1rem;
+  border: 1px solid var(--help-border);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.12);
+}
+
+.contentZone {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 1.25rem var(--help-content-bottom);
+  overflow: visible;
+  background: linear-gradient(
+    180deg,
+    transparent 0,
+    transparent var(--help-overlap),
+    var(--help-zone-bg) var(--help-overlap)
+  );
+
+  @media (min-width: 1024px) {
+    padding-inline: 1.5rem;
+  }
+}

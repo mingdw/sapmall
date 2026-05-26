@@ -1,0 +1,687 @@
+/* Requires ancestor .pageRoot for --dao-* CSS variables */
+
+/* —— 提案详情（左文右栏三卡） —— */
+.proposalDetailLayout {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: minmax(0, 1fr) min(100%, 380px);
+    gap: 1.25rem;
+  }
+}
+
+.proposalDetailMain {
+  padding: 1.15rem 1.25rem 1.5rem;
+
+  @media (min-width: 768px) {
+    padding: 1.35rem 1.65rem 1.85rem;
+  }
+}
+
+.proposalDetailBreadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.35rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.proposalDetailBreadcrumbLink {
+  color: var(--dao-tab-proposals);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--dao-tab-proposals-muted);
+    text-decoration: underline;
+  }
+}
+
+.proposalDetailBreadcrumbCurrent {
+  color: var(--dao-panel-muted);
+  font-weight: 500;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.proposalDetailHead {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.proposalDetailTitleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+}
+
+.proposalDetailTitleMain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 0.75rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.proposalDetailTitleTags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  max-width: 45%;
+
+  @media (max-width: 640px) {
+    max-width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+.proposalDetailTitle {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--dao-panel-text);
+
+  @media (min-width: 768px) {
+    font-size: 1.55rem;
+  }
+}
+
+.proposalDetailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--dao-panel-muted);
+}
+
+.proposalDetailAuthor {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #475569;
+}
+
+.proposalDetailMetaSep {
+  color: #cbd5e1;
+}
+
+.proposalDetailSummary {
+  padding-top: 0.25rem;
+}
+
+.proposalDetailSectionTitle {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.proposalDetailLead {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: #334155;
+}
+
+.proposalDetailBody {
+  padding-top: 0.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.proposalDetailReferences {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.proposalDetailReferencesList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--dao-tab-proposals);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.proposalDetailRelated {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.proposalDetailRelatedList {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.proposalDetailRelatedItem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid #e2e8f0;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    border-color: #c4b5fd;
+    background: #faf5ff;
+  }
+}
+
+.proposalDetailRelatedTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--dao-panel-text);
+}
+
+.proposalDetailSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (min-width: 1024px) {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+.proposalDetailSidebarCard {
+  padding: 1.15rem 1.25rem;
+}
+
+.proposalDetailSidebarTitle {
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--dao-panel-text);
+}
+
+.proposalDetailResultsHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+
+  .proposalDetailSidebarTitle {
+    margin: 0;
+  }
+}
+
+.proposalDetailResultsWindow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--dao-panel-muted);
+}
+
+.proposalDetailResultsTotalCentered {
+  margin: 0.35rem 0 0;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--dao-panel-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.proposalDetailResultsTitleGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+  min-width: 0;
+
+  .proposalDetailSidebarTitle {
+    margin: 0;
+  }
+}
+
+.proposalDetailResultsTotal {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--dao-panel-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.proposalDetailVoteStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.proposalDetailVoteStatItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.proposalDetailVoteStatLabel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #64748b;
+}
+
+.proposalDetailVoteStatValue {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.12rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+
+  &[data-stat='participation'],
+  &[data-stat='power'],
+  &[data-stat='lifetime'] {
+    .proposalDetailVoteStatNumber,
+    .proposalDetailVoteStatUnit {
+      color: var(--dao-hero-value);
+    }
+  }
+
+  &[data-stat='activity'] {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  &[data-stat='activity'][data-level='high'] {
+    color: #15803d;
+    background: #dcfce7;
+  }
+
+  &[data-stat='activity'][data-level='medium'] {
+    color: #a16207;
+    background: #fef9c3;
+  }
+
+  &[data-stat='activity'][data-level='low'] {
+    color: #475569;
+    background: #f1f5f9;
+  }
+}
+
+.proposalDetailVoteStatNumber {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.proposalDetailVoteStatUnit {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.proposalDetailVoteSubmitted {
+  margin: 0 0 0.65rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: #334155;
+  font-weight: 600;
+}
+
+.proposalDetailNetwork {
+  margin: 0 0 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.proposalDetailSidebarHint {
+  margin: 0 0 0.85rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--dao-panel-muted);
+}
+
+.proposalDetailSidebarStat {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: #334155;
+  font-weight: 600;
+}
+
+.proposalDetailVoteActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.proposalDetailVoteBtnFor,
+.proposalDetailVoteBtnAgainst {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.55rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.proposalDetailVoteBtnLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.proposalDetailVoteBtnCount {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  opacity: 0.88;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.proposalDetailVoteBtnSelected {
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.12);
+}
+
+.proposalDetailVoteBtnFor {
+  color: #14532d;
+  background: #dcfce7;
+  border-color: #86efac;
+
+  &:hover:not(:disabled) {
+    filter: brightness(0.98);
+  }
+}
+
+.proposalDetailVoteBtnAgainst {
+  color: #7f1d1d;
+  background: #fee2e2;
+  border-color: #fca5a5;
+
+  &:hover:not(:disabled) {
+    filter: brightness(0.98);
+  }
+}
+
+.proposalDetailResultsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.proposalDetailVoteRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.proposalDetailVoteRowHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.proposalDetailVoteLabelYae {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #15803d;
+}
+
+.proposalDetailVoteLabelNay {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #b91c1c;
+}
+
+.proposalDetailVoteMeta {
+  font-size: 0.6875rem;
+  color: var(--dao-panel-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.proposalDetailVoteBar {
+  display: flex;
+  height: 6px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.proposalDetailVoteBarFor {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  transition: width 0.25s ease;
+}
+
+.proposalDetailVoteBarAgainst {
+  height: 100%;
+  background: linear-gradient(90deg, #f87171, #ef4444);
+  transition: width 0.25s ease;
+}
+
+.proposalDetailTotalParticipation {
+  margin: 0.15rem 0 0;
+  font-size: 0.75rem;
+  color: var(--dao-panel-muted);
+}
+
+.proposalDetailThresholdSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.proposalDetailThresholdHeading {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.proposalDetailThresholdRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.proposalDetailThresholdHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--dao-panel-text);
+}
+
+.proposalDetailThresholdReached,
+.proposalDetailThresholdNotReached {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.proposalDetailThresholdReached {
+  color: #15803d;
+}
+
+.proposalDetailThresholdNotReached {
+  color: #b45309;
+}
+
+.proposalDetailThresholdValues {
+  margin: 0;
+  font-size: 0.6875rem;
+  color: var(--dao-panel-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.proposalDetailStateRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--dao-panel-text);
+}
+
+.proposalDetailTimeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.proposalDetailTimelineItem {
+  position: relative;
+  display: flex;
+  gap: 0.65rem;
+  padding-bottom: 1rem;
+
+  &:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 0.42rem;
+    top: 1rem;
+    bottom: 0;
+    width: 2px;
+    background: #e2e8f0;
+  }
+
+  &[data-status='current'] .proposalDetailTimelineDot {
+    border-color: var(--dao-tab-proposals);
+    background: #ede9fe;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  }
+
+  &[data-status='done'] .proposalDetailTimelineDot {
+    background: var(--dao-tab-proposals);
+    border-color: var(--dao-tab-proposals);
+  }
+}
+
+.proposalDetailTimelineDot {
+  flex-shrink: 0;
+  width: 0.875rem;
+  height: 0.875rem;
+  margin-top: 0.15rem;
+  border-radius: 999px;
+  border: 2px solid #cbd5e1;
+  background: #fff;
+}
+
+.proposalDetailTimelineBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.proposalDetailTimelineLabel {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--dao-panel-text);
+}
+
+.proposalDetailTimelineDate {
+  font-size: 0.6875rem;
+  color: var(--dao-panel-muted);
+}
+
+.proposalDetailForumLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+  margin-top: 0.85rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.55rem;
+  border: 1px solid rgba(88, 101, 242, 0.28);
+  background: rgba(88, 101, 242, 0.08);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #4752c4;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    border-color: rgba(88, 101, 242, 0.45);
+    background: rgba(88, 101, 242, 0.12);
+  }
+
+  &[data-link='discord'] {
+    color: #5865f2;
+  }
+}
+

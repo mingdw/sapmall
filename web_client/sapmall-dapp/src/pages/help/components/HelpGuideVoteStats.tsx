@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import type { HelpArticleMeta } from '../types';
-import styles from '../HelpPage.module.scss';
+import styles from './HelpGuideVoteStats.module.scss';
 
 type VoteType = 'helpful' | 'notHelpful';
 

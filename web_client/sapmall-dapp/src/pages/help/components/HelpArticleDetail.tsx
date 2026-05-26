@@ -10,7 +10,9 @@ import { articleTitleKey } from '../utils/articleI18nKey';
 import { formatHelpMetricNumber } from '../utils/formatHelpMetric';
 import { getRelatedTopicArticles } from '../utils/getRelatedTopicArticles';
 import { helpHomePath, helpTopicPath } from '../utils/helpTopicNavigation';
-import styles from '../HelpPage.module.scss';
+import layoutStyles from '../styles/help.pageLayout.module.scss';
+import sharedStyles from '../styles/help.shared.module.scss';
+import styles from './HelpArticleDetail.module.scss';
 
 type Props = {
   article: HelpArticleMeta;
@@ -32,9 +34,9 @@ const HelpArticleDetail: React.FC<Props> = ({ article }) => {
   }, [article.slug]);
 
   return (
-    <div className={styles.contentZoneInnerFull}>
+    <div className={layoutStyles.contentZoneInnerFull}>
       <article
-        className={`${styles.panelCard} ${styles.panelCardAccent} ${styles.articleDetailCard}`}
+        className={`${sharedStyles.panelCard} ${sharedStyles.panelCardAccent} ${styles.articleDetailCard}`}
         aria-label={t('help.article.aria')}
       >
         <header className={styles.articleDetailHead}>

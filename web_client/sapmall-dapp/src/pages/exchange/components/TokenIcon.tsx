@@ -10,6 +10,8 @@ const TOKEN_COLORS: Record<string, { from: string; to: string; glow: string; emo
   SAP: { from: '#7c4dff', to: '#00e5ff', glow: 'rgba(124,77,255,0.6)', emoji: '◈' },
   USDT: { from: '#26a17b', to: '#1a7a5e', glow: 'rgba(38,161,123,0.6)', emoji: '₮' },
   USDC: { from: '#2775ca', to: '#1a5a9a', glow: 'rgba(39,117,202,0.6)', emoji: '◎' },
+  ETH: { from: '#627eea', to: '#3c4f9a', glow: 'rgba(98,126,234,0.6)', emoji: 'Ξ' },
+  MATIC: { from: '#8247e5', to: '#6b3bc4', glow: 'rgba(130,71,229,0.6)', emoji: '⬡' },
   BUSD: { from: '#f0b90b', to: '#d4a208', glow: 'rgba(240,185,11,0.6)', emoji: '◈' },
   DAI: { from: '#f5ac37', to: '#d4922a', glow: 'rgba(245,172,55,0.6)', emoji: '◇' },
   BNB: { from: '#f3ba2f', to: '#c69315', glow: 'rgba(243,186,47,0.6)', emoji: '◆' },

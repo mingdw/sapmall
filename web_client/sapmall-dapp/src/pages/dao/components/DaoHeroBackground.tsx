@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { DAO_HERO_BACKGROUNDS, DAO_HERO_BACKGROUNDS_FALLBACK } from '../constants';
 import { DAO_HERO_SLIDES } from '../mocks/daoHero.mock';
 import type { DaoHeroDimension } from '../types';
-import styles from '../DaoPage.module.scss';
+import styles from './DaoHeroBackground.module.scss';
 
 type Props = {
   slideIndex: number;

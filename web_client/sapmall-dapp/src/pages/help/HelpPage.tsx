@@ -4,7 +4,9 @@ import HelpTopicBrowse from './components/HelpTopicBrowse';
 import HelpTopicGuideList from './components/HelpTopicGuideList';
 import HelpSidebar from './components/HelpSidebar';
 import type { HelpOutletContext } from './helpOutletContext';
-import styles from './HelpPage.module.scss';
+import pageStyles from './HelpPage.module.scss';
+import layoutStyles from './styles/help.pageLayout.module.scss';
+import sharedStyles from './styles/help.shared.module.scss';
 
 const HelpPage: React.FC = () => {
   const { keyword, category, filteredArticles, onTopicSelect } =
@@ -25,14 +27,14 @@ const HelpPage: React.FC = () => {
   }, [category]);
 
   return (
-    <div className={styles.contentZoneInner}>
-      <div className={styles.mainListCard}>
-        <div className={`${styles.panelCard} ${styles.panelCardAccent}`}>
-                <div className={styles.helpTopicsPanel} ref={topicPanelRef}>
-                  <div className={`${styles.panelSection} ${styles.panelSectionFilter}`}>
+    <div className={layoutStyles.contentZoneInner}>
+      <div className={layoutStyles.mainListCard}>
+        <div className={`${sharedStyles.panelCard} ${sharedStyles.panelCardAccent}`}>
+          <div className={pageStyles.helpTopicsPanel} ref={topicPanelRef}>
+            <div className={`${sharedStyles.panelSection} ${pageStyles.panelSectionFilter}`}>
               <HelpTopicBrowse activeCategory={category} onTopicSelect={onTopicSelect} />
             </div>
-            <div className={`${styles.panelSection} ${styles.panelSectionGuide}`}>
+            <div className={`${sharedStyles.panelSection} ${pageStyles.panelSectionGuide}`}>
               <HelpTopicGuideList
                 articles={filteredArticles}
                 category={category}

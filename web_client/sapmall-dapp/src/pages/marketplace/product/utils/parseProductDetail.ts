@@ -7,6 +7,7 @@ import {
   ProductSpuView,
 } from '../types/productDetailTypes';
 import { resolveMarketingTags } from '../mocks/marketingTags.mock';
+import { resolveProductImageList } from '../../../../utils/productImageUrls';
 
 function parseJson<T>(raw: unknown, fallback: T): T {
   if (raw == null) return fallback;
@@ -56,7 +57,11 @@ function mapSpu(spu: Record<string, unknown>): ProductSpuView {
     totalSales: Number(spu.totalSales ?? 0),
     totalStock: Number(spu.totalStock ?? 0),
     status: Number(spu.status ?? 0),
-    images: parseImageUrls(spu.images),
+    images: resolveProductImageList(
+      parseImageUrls(spu.images),
+      Number(spu.id ?? 0) || String(spu.code ?? ''),
+      String(spu.category3Code ?? ''),
+    ),
   };
 }
 
@@ -68,7 +73,15 @@ function mapSku(sku: Record<string, unknown>): ProductSkuView {
     stock: Number(sku.stock ?? 0),
     saleCount: Number(sku.saleCount ?? 0),
     indexs: String(sku.indexs ?? ''),
-    images: parseImageUrls(sku.images),
+    images: (() => {
+      const raw = parseImageUrls(sku.images);
+      if (!raw.length) return [];
+      return resolveProductImageList(
+        raw,
+        Number(sku.id ?? 0) || String(sku.skuCode ?? ''),
+        undefined,
+      );
+    })(),
     title: sku.title ? String(sku.title) : undefined,
   };
 }

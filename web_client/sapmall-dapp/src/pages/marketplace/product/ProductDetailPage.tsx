@@ -17,6 +17,7 @@ import { useCategoryStore } from '../../../store/categoryStore';
 import { commonApiService } from '../../../services/api/commonApiService';
 import { cartApi } from '../../../services/api/cartApi';
 import { favoriteApi } from '../../../services/api/favoriteApi';
+import { isTrustedProductImageUrl, resolveProductImageList } from '../../../utils/productImageUrls';
 import { redirectToAdmin } from '../../../utils/redirectToAdmin';
 import styles from './ProductDetailPage.module.scss';
 
@@ -86,8 +87,24 @@ const ProductDetailPage: React.FC = () => {
 
   const galleryImages = useMemo(() => {
     if (!product) return [];
-    const skuImgs = sku.selectedSku?.images?.length ? sku.selectedSku.images : [];
-    return skuImgs.length ? skuImgs : product.spu.images;
+    const { spu } = product;
+    const seed = spu.id || spu.code;
+    const category3 = spu.category3Code;
+
+    const skuTrusted = (sku.selectedSku?.images ?? []).filter((url) =>
+      isTrustedProductImageUrl(url),
+    );
+    const spuResolved = resolveProductImageList(spu.images, seed, category3);
+
+    if (skuTrusted.length) {
+      const merged = [...skuTrusted];
+      spuResolved.forEach((url) => {
+        if (!merged.includes(url)) merged.push(url);
+      });
+      return merged;
+    }
+
+    return spuResolved;
   }, [product, sku.selectedSku]);
 
   const handleAddToCart = async (quantity: number) => {

@@ -73,56 +73,388 @@
 }
 
 .networkIcon {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.userDropdownPanel {
+  overflow: hidden;
+}
+
+.userDropdownShell {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  min-width: 280px;
+  z-index: 50;
+  border-radius: 0.75rem;
+  background: linear-gradient(165deg, #1a1730 0%, #111827 58%, #0f172a 100%);
+  border: 1px solid rgba(124, 77, 255, 0.28);
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.userDropdownHeader {
+  padding: 0.8rem 1rem 0.65rem;
+  background: linear-gradient(180deg, rgba(124, 77, 255, 0.14) 0%, rgba(124, 77, 255, 0.02) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.userDropdownTitle {
+  margin: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: bold;
-  color: white;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #f8fafc;
+
+  &::before {
+    content: '';
+    flex-shrink: 0;
+    width: 3px;
+    height: 0.95rem;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #7c4dff 0%, #22d3ee 100%);
+    box-shadow: 0 0 10px rgba(124, 77, 255, 0.45);
+  }
 }
 
-.networkEthereum {
-  background: linear-gradient(135deg, #627eea, #4c6ef5);
+.userDropdownBody {
+  margin: 0.65rem 0.75rem 0;
+  border-radius: 0.6rem;
+  background: rgba(15, 23, 42, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  overflow: hidden;
 }
 
-.networkPolygon {
-  background: linear-gradient(135deg, #8247e5, #7c3aed);
+.userDropdownMenu {
+  padding: 0.45rem 0.35rem 0.5rem;
+  margin-top: 0.55rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.networkBsc {
-  background: linear-gradient(135deg, #f3ba2f, #fbbf24);
+.userMenuBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  border: none;
+  border-radius: 0.45rem;
+  background: transparent;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  i {
+    width: 1rem;
+    text-align: center;
+    font-size: 0.75rem;
+    transition: color 0.15s ease;
+  }
+
+  &[data-menu='profile'] i {
+    color: #a78bfa;
+  }
+
+  &[data-menu='profile']:hover i {
+    color: #c4b5fd;
+  }
+
+  &[data-menu='cart'] i {
+    color: #22d3ee;
+  }
+
+  &[data-menu='cart']:hover i {
+    color: #67e8f9;
+  }
+
+  &[data-menu='favorites'] i {
+    color: #f472b6;
+  }
+
+  &[data-menu='favorites']:hover i {
+    color: #f9a8d4;
+  }
+
+  &[data-menu='orders'] i {
+    color: #fbbf24;
+  }
+
+  &[data-menu='orders']:hover i {
+    color: #fcd34d;
+  }
+
+  &[data-menu='history'] i {
+    color: #60a5fa;
+  }
+
+  &[data-menu='history']:hover i {
+    color: #93c5fd;
+  }
+
+  &[data-menu='settings'] i {
+    color: #94a3b8;
+  }
+
+  &[data-menu='settings']:hover i {
+    color: #cbd5e1;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #f8fafc;
+  }
 }
 
-.networkSepolia {
-  background: linear-gradient(135deg, #627eea, #4c6ef5);
-  border: 1px solid #3b82f6;
+.userMenuBtnWithBadge {
+  justify-content: space-between;
 }
 
-.networkGoerli {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  border: 1px solid #1e40af;
+.userMenuBtnMain {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
 }
 
-.networkHolesky {
-  background: linear-gradient(135deg, #1e40af, #1e3a8a);
-  border: 1px solid #1e3a8a;
+.userMenuBadge {
+  flex-shrink: 0;
+  min-width: 1.25rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  color: #fff;
+  border-radius: 999px;
+}
+
+.userMenuBadgeRed {
+  background: rgba(239, 68, 68, 0.85);
+}
+
+.userMenuBadgePink {
+  background: rgba(236, 72, 153, 0.85);
+}
+
+.userMenuDivider {
+  height: 1px;
+  margin: 0.3rem 0.65rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(148, 163, 184, 0.22) 20%,
+    rgba(148, 163, 184, 0.22) 80%,
+    transparent
+  );
+}
+
+.userMenuBtnDanger {
+  color: #fca5a5;
+
+  i {
+    color: #f87171;
+  }
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #fecaca;
+
+    i {
+      color: #fca5a5;
+    }
+  }
 }
 
 .userModal {
-  :global(.ant-modal-header) {
-    background-color: #f9fafb !important;
-    border-bottom: 1px solid #e5e7eb !important;
+  :global(.ant-modal-content) {
+    padding: 0 !important;
+    overflow: hidden;
+    border-radius: 1rem !important;
+    background: linear-gradient(165deg, #1e1b4b 0%, #111827 55%, #0f172a 100%) !important;
+    border: 1px solid rgba(124, 77, 255, 0.28) !important;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45) !important;
   }
 
-  :global(.ant-modal-title) {
-    color: #111827 !important;
+  :global(.ant-modal-close) {
+    color: #94a3b8 !important;
+
+    &:hover {
+      color: #f8fafc !important;
+    }
   }
 
   :global(.ant-modal-body) {
-    padding: 24px !important;
+    padding: 0 !important;
+  }
+}
+
+.modalBody {
+  padding: 1.25rem 1.25rem 1.1rem;
+}
+
+.modalHero {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.modalAvatar {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: #fff;
+  background: linear-gradient(135deg, #7c4dff 0%, #00e5ff 100%);
+  box-shadow: 0 0 20px rgba(124, 77, 255, 0.45);
+  flex-shrink: 0;
+}
+
+.modalHeroText {
+  min-width: 0;
+}
+
+.modalName {
+  margin: 0 0 0.25rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.modalAddress {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #94a3b8;
+  word-break: break-all;
+  line-height: 1.45;
+}
+
+.modalNetworkBadge {
+  display: inline-block;
+  margin-top: 0.35rem;
+  padding: 0.12rem 0.4rem;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #22d3ee;
+  background: rgba(6, 182, 212, 0.12);
+  border: 1px solid rgba(6, 182, 212, 0.28);
+  border-radius: 0.25rem;
+}
+
+.modalInfoCard {
+  margin-top: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.65rem;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.modalInfoTitle {
+  margin: 0 0 0.55rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c4b5fd;
+}
+
+.modalInfoList {
+  margin: 0;
+}
+
+.modalInfoRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+  font-size: 0.75rem;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  dt {
+    margin: 0;
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  dd {
+    margin: 0;
+    color: #e2e8f0;
+    font-weight: 600;
+    text-align: right;
+  }
+}
+
+.statusActive {
+  color: #34d399;
+}
+
+.statusInactive {
+  color: #f87171;
+}
+
+.modalActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.modalBtnSecondary,
+.modalBtnDanger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.modalBtnSecondary {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(167, 139, 250, 0.35);
+  }
+}
+
+.modalBtnDanger {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.28);
+
+  &:hover {
+    color: #fff;
+    background: rgba(239, 68, 68, 0.22);
   }
 }
 

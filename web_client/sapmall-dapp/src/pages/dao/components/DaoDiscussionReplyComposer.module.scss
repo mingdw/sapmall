@@ -1,0 +1,210 @@
+/* Requires ancestor .pageRoot for --dao-* CSS variables */
+
+.discussionReplyComposer {
+  padding: 1rem 1.25rem 1.35rem;
+  border-top: 1px solid #f1f5f9;
+  background: #fafafa;
+
+  @media (min-width: 768px) {
+    padding: 1.15rem 1.65rem 1.55rem;
+  }
+}
+
+.discussionReplyComposerTitle {
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--dao-panel-text);
+}
+
+.discussionReplyComposerGuest {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px dashed #cbd5e1;
+  background: #fff;
+}
+
+.discussionReplyComposerGuestInline {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px dashed #cbd5e1;
+  background: #fff;
+}
+
+.discussionReplyComposerHint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--dao-panel-muted);
+}
+
+.discussionReplyConnectBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.9rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #fb923c, #ea580c);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.discussionReplyComposerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.replyTargetBanner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(234 88 12 / 0.22);
+  background: rgb(255 247 237 / 0.65);
+}
+
+.replyTargetBannerInline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+
+.replyTargetText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--dao-tab-discussions);
+}
+
+.replyTargetPreview {
+  font-weight: 400;
+  color: var(--dao-panel-muted);
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.replyTargetCancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+
+  &:hover {
+    background: rgb(15 23 42 / 0.06);
+    color: #334155;
+  }
+}
+
+.discussionReplyTextarea {
+  :global(.ant-input) {
+    font-size: 0.875rem;
+    border-color: #e2e8f0;
+    border-radius: 0.5rem;
+    padding-bottom: 0.65rem;
+  }
+
+  :global(.ant-input:focus),
+  :global(.ant-input-focused) {
+    border-color: var(--dao-tab-discussions) !important;
+    box-shadow: 0 0 0 2px rgb(234 88 12 / 0.15) !important;
+  }
+}
+
+.discussionReplyComposerActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+}
+
+.discussionReplyComposerActionBtns {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.discussionReplyCancelBtn {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--dao-panel-muted);
+  cursor: pointer;
+
+  &:hover {
+    color: #334155;
+    background: rgb(15 23 42 / 0.05);
+  }
+}
+
+.charCount {
+  font-size: 0.75rem;
+  color: var(--dao-panel-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.discussionReplySubmitBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #fb923c, #ea580c);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

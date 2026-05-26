@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -17,7 +17,7 @@ import {
 import { DAO_DISCORD_URL } from '../constants';
 import type { DaoHeroAsideIcon, DaoHeroAsideItem, DaoHeroDimension, DaoHeroSlide } from '../types';
 import HeroCountUp from './HeroCountUp';
-import styles from '../DaoPage.module.scss';
+import styles from './DaoHeroCarousel.module.scss';
 
 const dimensionTabIconMap: Record<DaoHeroDimension, LucideIcon> = {
   discussions: MessageCircle,

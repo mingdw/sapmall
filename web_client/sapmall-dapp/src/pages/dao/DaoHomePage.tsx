@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAccount } from 'wagmi';
-import { DAO_DISCORD_URL } from './constants';
 import { DAO_DEFAULT_VIEW_TAB } from './constants/daoViewTabs';
 import DaoMainListCard from './components/DaoMainListCard';
 import DaoParticipationCard from './components/DaoParticipationCard';
@@ -11,12 +10,21 @@ import DaoTabOverviewCard from './components/DaoTabOverviewCard';
 import DaoDiscussionTopicTagsCard from './components/DaoDiscussionTopicTagsCard';
 import type { DaoDiscussionTopicTagFilter } from './constants/discussionTopicTags';
 import type { DaoDiscussionCategoryFilter, DaoEventFilter, DaoProposalFilter, DaoViewTab } from './types';
-import { daoEventPath, daoProposalCreatePath, daoProposalPath, daoDiscussionPath, isDaoViewTab } from './utils/daoNavigation';
+import {
+  DAO_DISCUSSION_BOARD_PARAM,
+  daoEventPath,
+  daoProposalCreatePath,
+  daoProposalPath,
+  daoDiscussionPath,
+  daoDiscussionCreatePath,
+  isDaoViewTab,
+  readDaoDiscussionBoardFromSearch,
+} from './utils/daoNavigation';
 import {
   getMockUserParticipatedDiscussionIds,
   getMockUserParticipatedProposalIds,
 } from './utils/daoProposalVote.mock';
-import styles from './DaoPage.module.scss';
+import pageLayoutStyles from './styles/dao.pageLayout.module.scss';
 
 type DaoParticipatedListFocus = 'proposals' | 'discussions';
 
@@ -33,7 +41,13 @@ const DaoHomePage: React.FC = () => {
   const [participatedFocus, setParticipatedFocus] = useState<DaoParticipatedListFocus | null>(null);
   const [proposalFilter, setProposalFilter] = useState<DaoProposalFilter>('all');
   const [discussionCategoryFilter, setDiscussionCategoryFilter] =
-    useState<DaoDiscussionCategoryFilter>('all');
+    useState<DaoDiscussionCategoryFilter>(() =>
+      initialTab === 'discussions'
+        ? readDaoDiscussionBoardFromSearch(
+            searchParams.toString() ? `?${searchParams.toString()}` : '',
+          )
+        : 'all',
+    );
   const [discussionTagFilter, setDiscussionTagFilter] = useState<DaoDiscussionTopicTagFilter>('all');
   const [eventFilter, setEventFilter] = useState<DaoEventFilter>('all');
   const [page, setPage] = useState(1);
@@ -46,9 +60,17 @@ const DaoHomePage: React.FC = () => {
     }
   }, [tabFromUrl, tab]);
 
-  const openDiscord = useCallback(() => {
-    window.open(DAO_DISCORD_URL, '_blank', 'noopener,noreferrer');
-  }, []);
+  useEffect(() => {
+    if (tab !== 'discussions') return;
+    const board = readDaoDiscussionBoardFromSearch(
+      searchParams.toString() ? `?${searchParams.toString()}` : '',
+    );
+    setDiscussionCategoryFilter((prev) => {
+      if (prev === board) return prev;
+      setPage(1);
+      return board;
+    });
+  }, [searchParams, tab]);
 
   useEffect(() => {
     if (!address) {
@@ -64,18 +86,31 @@ const DaoHomePage: React.FC = () => {
     return getMockUserParticipatedDiscussionIds(address);
   }, [address, participatedFocus]);
 
+  const syncDiscussionBoardToUrl = useCallback(
+    (board: DaoDiscussionCategoryFilter) => {
+      const params = new URLSearchParams({ tab: 'discussions' });
+      if (board !== 'all') {
+        params.set(DAO_DISCUSSION_BOARD_PARAM, board);
+      }
+      setSearchParams(params, { replace: true });
+    },
+    [setSearchParams],
+  );
+
   const onTabChange = useCallback(
     (next: DaoViewTab) => {
       setTab(next);
       setPage(1);
       setParticipatedFocus(null);
-      setSearchParams(next === DAO_DEFAULT_VIEW_TAB ? {} : { tab: next }, { replace: true });
-      if (next !== 'discussions') {
+      if (next === 'discussions') {
+        syncDiscussionBoardToUrl(discussionCategoryFilter);
+      } else {
+        setSearchParams(next === DAO_DEFAULT_VIEW_TAB ? {} : { tab: next }, { replace: true });
         setDiscussionCategoryFilter('all');
         setDiscussionTagFilter('all');
       }
     },
-    [setSearchParams],
+    [discussionCategoryFilter, setSearchParams, syncDiscussionBoardToUrl],
   );
 
   const onViewParticipated = useCallback(
@@ -98,10 +133,16 @@ const DaoHomePage: React.FC = () => {
     setPage(1);
   }, []);
 
-  const onDiscussionCategoryFilterChange = useCallback((f: DaoDiscussionCategoryFilter) => {
-    setDiscussionCategoryFilter(f);
-    setPage(1);
-  }, []);
+  const onDiscussionCategoryFilterChange = useCallback(
+    (f: DaoDiscussionCategoryFilter) => {
+      setDiscussionCategoryFilter(f);
+      setPage(1);
+      if (tab === 'discussions') {
+        syncDiscussionBoardToUrl(f);
+      }
+    },
+    [syncDiscussionBoardToUrl, tab],
+  );
 
   const onDiscussionTagFilterChange = useCallback((f: DaoDiscussionTopicTagFilter) => {
     setDiscussionTagFilter(f);
@@ -138,6 +179,10 @@ const DaoHomePage: React.FC = () => {
     navigate(daoProposalCreatePath);
   }, [navigate]);
 
+  const onStartDiscussion = useCallback(() => {
+    navigate(daoDiscussionCreatePath);
+  }, [navigate]);
+
   if (!ready) {
     return (
       <div className="p-6 text-sm text-slate-400" aria-busy="true">
@@ -147,7 +192,7 @@ const DaoHomePage: React.FC = () => {
   }
 
   return (
-    <div className={styles.contentZoneInner}>
+    <div className={pageLayoutStyles.contentZoneInner}>
       <div ref={mainListRef}>
         <DaoMainListCard
           tab={tab}
@@ -168,10 +213,10 @@ const DaoHomePage: React.FC = () => {
           onEventClick={onEventClick}
         />
       </div>
-      <div className={styles.sidebarColumn}>
+      <div className={pageLayoutStyles.sidebarColumn}>
         <DaoParticipationCard
           onCreateProposal={onCreateProposal}
-          onStartDiscussion={openDiscord}
+          onStartDiscussion={onStartDiscussion}
           onViewParticipated={onViewParticipated}
         />
         <DaoTabOverviewCard tab={tab} onTrendingItemClick={onDiscussionClick} />

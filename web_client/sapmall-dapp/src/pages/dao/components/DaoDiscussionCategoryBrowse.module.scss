@@ -1,0 +1,103 @@
+/* Requires ancestor .pageRoot for --dao-* CSS variables */
+
+.categoryBrowse {
+  padding: 0.75rem 1.25rem 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.categoryBrowseGrid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem 0.5rem;
+
+  @media (min-width: 520px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.categoryBrowseItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.4rem 0.2rem;
+  text-align: center;
+  border: none;
+  border-radius: 0.35rem;
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.2s ease, opacity 0.2s ease;
+
+  &:hover {
+    .categoryBrowseItemIcon {
+      color: var(--dao-tab-discussions);
+    }
+
+    .categoryBrowseItemLabel {
+      color: var(--dao-primary);
+    }
+
+    .categoryBrowseItemCount {
+      color: var(--dao-tab-discussions);
+    }
+  }
+
+  &[data-active='true'] {
+    .categoryBrowseItemIcon {
+      color: var(--dao-primary);
+    }
+
+    .categoryBrowseItemLabel {
+      color: var(--dao-primary);
+      font-weight: 600;
+    }
+
+    .categoryBrowseItemCount {
+      color: var(--dao-primary);
+    }
+  }
+}
+
+.categoryBrowseItemIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--dao-tab-discussions-muted);
+  transition: color 0.2s ease;
+
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.categoryBrowseItemCaption {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.25rem;
+  max-width: 100%;
+  line-height: 1.25;
+}
+
+.categoryBrowseItemLabel {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--dao-panel-text);
+  transition: color 0.2s ease;
+}
+
+.categoryBrowseItemCount {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #94a3b8;
+  transition: color 0.2s ease;
+}

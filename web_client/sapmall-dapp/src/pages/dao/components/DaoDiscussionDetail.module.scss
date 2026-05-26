@@ -1,0 +1,286 @@
+/* Requires ancestor .pageRoot for --dao-* CSS variables */
+
+/* —— 讨论详情（论坛式主帖 + 回复） —— */
+.discussionDetailCard {
+  border-top: 3px solid var(--dao-tab-discussions);
+  padding: 0;
+  overflow: hidden;
+}
+
+.discussionDetailHead {
+  padding: 1.15rem 1.25rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+
+  @media (min-width: 768px) {
+    padding: 1.35rem 1.65rem 1.15rem;
+  }
+}
+
+.discussionDetailTitleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.discussionDetailTitleMain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  flex: 1;
+  min-width: min(100%, 12rem);
+}
+
+.discussionDetailLeadIcon {
+  flex-shrink: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+  color: var(--dao-tab-discussions);
+}
+
+.discussionDetailTitle {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--dao-panel-text);
+  letter-spacing: -0.02em;
+
+  @media (min-width: 768px) {
+    font-size: 1.55rem;
+  }
+}
+
+.discussionDetailTagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  max-width: 100%;
+}
+
+.discussionDetailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--dao-panel-muted);
+}
+
+.discussionDetailMetaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.discussionOpPost {
+  padding: 1.15rem 1.25rem 1.35rem;
+  border-bottom: 1px solid #f1f5f9;
+  background: linear-gradient(180deg, rgb(255 247 237 / 0.45) 0%, #fff 100%);
+
+  @media (min-width: 768px) {
+    padding: 1.35rem 1.65rem 1.55rem;
+  }
+}
+
+.discussionOpHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.discussionOpAuthorWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.discussionOpAuthor {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--dao-panel-text);
+  font-family: ui-monospace, monospace;
+}
+
+.discussionOpTime {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--dao-panel-muted);
+}
+
+.discussionOpExcerpt {
+  margin: 0 0 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: #475569;
+}
+
+
+.discussionDetailFooter {
+  padding: 1rem 1.25rem 1.35rem;
+  border-top: 1px solid #f1f5f9;
+
+  @media (min-width: 768px) {
+    padding: 1.15rem 1.65rem 1.55rem;
+  }
+}
+
+.discussionRelatedList {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.discussionRelatedItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    border-color: var(--dao-tab-discussions-muted);
+    background: rgb(255 247 237 / 0.35);
+  }
+}
+
+.discussionRelatedChannel {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--dao-tab-discussions);
+  white-space: nowrap;
+}
+
+.discussionRelatedTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--dao-panel-text);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.discussionRelatedMeta {
+  font-size: 0.6875rem;
+  color: var(--dao-panel-muted);
+  white-space: nowrap;
+}
+
+.discussionChannelTag {
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #2563eb;
+}
+
+.discussionTopicTag {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+
+  &[data-tag='pinned'] {
+    color: #92400e;
+    background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+    border-color: #fcd34d;
+    box-shadow: 0 1px 0 rgba(251, 191, 36, 0.25);
+  }
+
+  &[data-tag='hot'] {
+    color: #9f1239;
+    background: linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%);
+    border-color: #fda4af;
+  }
+
+  &[data-tag='urgent'] {
+    color: #991b1b;
+    background: linear-gradient(180deg, #fef2f2 0%, #fee2e2 100%);
+    border-color: #fca5a5;
+  }
+
+  &[data-tag='trendingWeek'] {
+    color: #6d28d9;
+    background: linear-gradient(180deg, #f5f3ff 0%, #ede9fe 100%);
+    border-color: #c4b5fd;
+  }
+
+  &[data-tag='official'] {
+    color: #3730a3;
+    background: linear-gradient(180deg, #eef2ff 0%, #e0e7ff 100%);
+    border-color: #a5b4fc;
+  }
+
+  &[data-tag='featured'] {
+    color: #047857;
+    background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%);
+    border-color: #6ee7b7;
+  }
+
+  &[data-tag='governance'] {
+    color: #1e40af;
+    background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+    border-color: #93c5fd;
+  }
+
+  &[data-tag='new'] {
+    color: #0369a1;
+    background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-color: #7dd3fc;
+  }
+
+  &[data-tag='poll'] {
+    color: #c2410c;
+    background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%);
+    border-color: #fdba74;
+  }
+
+  &[data-tag='bounty'] {
+    color: #4d7c0f;
+    background: linear-gradient(180deg, #f7fee7 0%, #ecfccb 100%);
+    border-color: #bef264;
+  }
+
+  &[data-tag='qa'] {
+    color: #0f766e;
+    background: linear-gradient(180deg, #f0fdfa 0%, #ccfbf1 100%);
+    border-color: #5eead4;
+  }
+
+  &[data-tag='feedback'] {
+    color: #be185d;
+    background: linear-gradient(180deg, #fdf2f8 0%, #fce7f3 100%);
+    border-color: #f9a8d4;
+  }
+
+  &[data-tag='resolved'] {
+    color: #4b5563;
+    background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+    border-color: #d1d5db;
+  }
+}
+

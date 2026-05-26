@@ -1,0 +1,98 @@
+.categoryBrowse {
+  margin-bottom: 1.25rem;
+}
+
+.categoryGrid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem 0.55rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}
+
+.categoryItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.55rem 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.65rem;
+  background: rgba(15, 23, 42, 0.45);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    border-color: rgba(124, 77, 255, 0.35);
+    background: rgba(30, 27, 75, 0.55);
+  }
+
+  &[data-active='true'] {
+    border-color: rgba(167, 139, 250, 0.55);
+    background: rgba(99, 102, 241, 0.18);
+    transform: translateY(-1px);
+
+    .categoryIcon {
+      color: #e9d5ff;
+    }
+
+    .categoryLabel {
+      color: #f1f5f9;
+      font-weight: 700;
+    }
+
+    .categoryCount {
+      color: #c4b5fd;
+    }
+  }
+
+  &[data-category='bags'][data-active='true'] {
+    border-color: rgba(56, 189, 248, 0.45);
+    background: rgba(14, 165, 233, 0.12);
+  }
+}
+
+.categoryIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  transition: color 0.2s ease;
+}
+
+.categoryCaption {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05rem;
+  line-height: 1.2;
+}
+
+.categoryLabel {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-align: center;
+  transition: color 0.2s ease;
+}
+
+.categoryCount {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+}

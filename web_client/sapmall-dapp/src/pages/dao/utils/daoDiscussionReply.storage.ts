@@ -30,6 +30,7 @@ export const addUserDiscussionReply = (
   discussionId: string,
   authorAddress: string,
   body: string,
+  parent?: Pick<DaoDiscussionReplyItem, 'parentReplyId' | 'replyToAuthorAddress' | 'replyToSnippet'>,
 ): DaoDiscussionReplyItem => {
   const store = readStore();
   const reply: DaoDiscussionReplyItem = {
@@ -38,6 +39,9 @@ export const addUserDiscussionReply = (
     body: body.trim(),
     createdAt: Date.now(),
     likes: 0,
+    ...(parent?.parentReplyId ? { parentReplyId: parent.parentReplyId } : {}),
+    ...(parent?.replyToAuthorAddress ? { replyToAuthorAddress: parent.replyToAuthorAddress } : {}),
+    ...(parent?.replyToSnippet ? { replyToSnippet: parent.replyToSnippet } : {}),
   };
   store[discussionId] = [...(store[discussionId] ?? []), reply];
   writeStore(store);

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal } from 'antd';
-import { useConnect, useDisconnect, useAccount, useBalance, useSignMessage, useSwitchChain } from 'wagmi';
+import { useConnect, useDisconnect, useAccount, useSignMessage, useSwitchChain } from 'wagmi';
+import { Copy } from 'lucide-react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { commonApiService } from '../../../services/api/commonApiService';
 import { useUserStore } from '../../../store/userStore';
@@ -9,6 +10,10 @@ import MessageUtils from '../../../utils/messageUtils';
 import { userApiService } from '../../../services/api/userApiService';
 import styles from './WalletConnect.module.scss';
 import { UserStatus } from '../../../services/types/userTypes';
+import { WALLET_UI_NETWORKS } from '../../../config/walletUiNetworks';
+import ChainNetworkIcon from './ChainNetworkIcon';
+import WalletBalancePanel from './WalletBalancePanel';
+import { ARC_TESTNET_CHAIN_ID } from '../../../config/chains/arcTestnet';
 
 /** 与语言无关的错误码，供静默处理分支识别 */
 const WALLET_ERR_USER_REJECTED_SIGN = 'WALLET_ERR_USER_REJECTED_SIGN';
@@ -43,10 +48,6 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   const { status: connectStatus, error } = useConnect();
   const { disconnect } = useDisconnect();
   const { address, isConnected, chainId } = useAccount();
-  const { data: balance } = useBalance({
-    address: isConnected ? address : undefined,
-    chainId,
-  });
   const { signMessageAsync } = useSignMessage();
   const { switchChain } = useSwitchChain();
   const isPending = connectStatus === 'pending';
@@ -54,11 +55,9 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   // Zustand store
   const { 
     user, 
-    tokenBalances, 
-    isLoggedIn, 
+    isLoggedIn,
     setUser, 
-    setTokenBalances, 
-    setLoggedIn, 
+    setLoggedIn,
     setConnected,
     setStatus,
     setAuthToken,
@@ -347,16 +346,10 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     }
   };
 
-  // 网络配置
-  const networks = [
-    { id: 1, name: 'Ethereum', icon: 'fab fa-ethereum', color: 'text-blue-400', iconClass: 'networkEthereum', symbol: 'Ξ' },
-    { id: 8453, name: 'Base', icon: 'fas fa-layer-group', color: 'text-blue-500', iconClass: 'networkBase', symbol: '◎' },
-    { id: 11155111, name: 'Sepolia', icon: 'fab fa-ethereum', color: 'text-blue-300', iconClass: 'networkSepolia', symbol: 'Ξ' },
-    { id: 5, name: 'Goerli', icon: 'fab fa-ethereum', color: 'text-blue-200', iconClass: 'networkGoerli', symbol: 'Ξ' },
-    { id: 17000, name: 'Holesky', icon: 'fab fa-ethereum', color: 'text-blue-100', iconClass: 'networkHolesky', symbol: 'Ξ' },
-    { id: 56, name: 'BSC', icon: 'fas fa-cube', color: 'text-yellow-400', iconClass: 'networkBsc', symbol: 'B' },
-    { id: 137, name: 'Polygon', icon: 'fab fa-polygon', color: 'text-purple-400', iconClass: 'networkPolygon', symbol: '⬢' },
-  ];
+  const networks = WALLET_UI_NETWORKS.map((network) => ({
+    ...network,
+    name: t(`walletConnect.networks.${network.nameKey}`),
+  }));
 
   // 获取当前网络信息
   const getCurrentNetwork = () => {
@@ -521,10 +514,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     );
   }
 
-  const nativeBalanceAmount =
-    balance != null
-      ? `${parseFloat(balance.formatted).toFixed(4)} ${balance.symbol ?? 'ETH'}`
-      : `0.0000 ETH`;
+  const walletAddress = address as `0x${string}` | undefined;
 
   // 如果已连接，显示用户信息区域（完全按照原型页面布局）
   return (
@@ -535,9 +525,11 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
           onClick={() => setShowNetworkMenu(!showNetworkMenu)}
           className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors"
         >
-          <div className={`${styles.networkIcon} ${styles[getCurrentNetwork().iconClass]}`}>
-            {getCurrentNetwork().symbol}
-          </div>
+          <ChainNetworkIcon
+            chainId={getCurrentNetwork().id}
+            alt={getCurrentNetwork().name}
+            className={styles.networkIcon}
+          />
           <span className="text-sm">{getCurrentNetwork().name}</span>
           <i className="fas fa-chevron-down text-xs"></i>
         </button>
@@ -552,9 +544,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
                 }}
                 className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
               >
-                <div className={`${styles.networkIcon} ${styles[network.iconClass]}`}>
-                  {network.symbol}
-                </div>
+                <ChainNetworkIcon chainId={network.id} alt={network.name} className={styles.networkIcon} />
                 <span>{network.name}</span>
                 {network.id === chainId && (
                   <i className="fas fa-check text-sapphire-400 ml-auto"></i>
@@ -577,180 +567,204 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
           </span>
           <i className="fas fa-chevron-down text-xs"></i>
         </button>
-        <div className={`${styles.dropdown} ${showUserDropdown ? styles.show : ''} absolute right-0 top-full mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl min-w-[200px] z-50`}>
-          <div className="py-2">
-            <div className="px-4 py-2 text-sm text-gray-400 border-b border-gray-600">
-              {t('walletConnect.balanceDisplay', { amount: nativeBalanceAmount })}
-            </div>
-            
-            <button 
+        <div
+          className={`${styles.dropdown} ${styles.userDropdownPanel} ${showUserDropdown ? styles.show : ''} ${styles.userDropdownShell}`}
+        >
+          <div className={styles.userDropdownHeader}>
+            <h3 className={styles.userDropdownTitle}>{t('walletConnect.personalInfo')}</h3>
+          </div>
+
+          <div className={styles.userDropdownBody}>
+            <WalletBalancePanel
+              chainId={chainId}
+              address={walletAddress}
+              variant="compact"
+            />
+          </div>
+
+          <div className={styles.userDropdownMenu}>
+            <button
+              type="button"
               onClick={() => {
                 handleMenuClick({ key: 'profile' });
                 setShowUserDropdown(false);
               }}
-              className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+              className={styles.userMenuBtn}
+              data-menu="profile"
             >
-              <i className="fas fa-user"></i>
+              <i className="fas fa-user" />
               <span>{t('user.profile')}</span>
             </button>
-            
-            <button 
+
+            <button
+              type="button"
               onClick={() => {
                 handleMenuClick({ key: 'cart' });
                 setShowUserDropdown(false);
               }}
-              className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+              className={`${styles.userMenuBtn} ${styles.userMenuBtnWithBadge}`}
+              data-menu="cart"
             >
-              <div className="flex items-center space-x-2">
-                <i className="fas fa-shopping-cart"></i>
+              <span className={styles.userMenuBtnMain}>
+                <i className="fas fa-shopping-cart" />
                 <span>{t('user.cart')}</span>
-              </div>
-              <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">3</span>
+              </span>
+              <span className={`${styles.userMenuBadge} ${styles.userMenuBadgeRed}`}>3</span>
             </button>
-            
-            <button 
+
+            <button
+              type="button"
               onClick={() => {
                 handleMenuClick({ key: 'favorites' });
                 setShowUserDropdown(false);
               }}
-              className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+              className={`${styles.userMenuBtn} ${styles.userMenuBtnWithBadge}`}
+              data-menu="favorites"
             >
-              <div className="flex items-center space-x-2">
-                <i className="fas fa-heart"></i>
+              <span className={styles.userMenuBtnMain}>
+                <i className="fas fa-heart" />
                 <span>{t('user.favorites')}</span>
-              </div>
-              <span className="bg-pink-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">8</span>
+              </span>
+              <span className={`${styles.userMenuBadge} ${styles.userMenuBadgePink}`}>8</span>
             </button>
-            
-            <div className="border-t border-gray-600 my-1"></div>
-            
-            <button 
+
+            <div className={styles.userMenuDivider} role="separator" />
+
+            <button
+              type="button"
               onClick={() => {
                 handleMenuClick({ key: 'orders' });
                 setShowUserDropdown(false);
               }}
-              className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+              className={styles.userMenuBtn}
+              data-menu="orders"
             >
-              <i className="fas fa-box"></i>
+              <i className="fas fa-box" />
               <span>{t('user.orders')}</span>
             </button>
-            
-            <button 
+
+            <button
+              type="button"
               onClick={() => {
                 handleMenuClick({ key: 'history' });
                 setShowUserDropdown(false);
               }}
-              className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+              className={styles.userMenuBtn}
+              data-menu="history"
             >
-              <i className="fas fa-history"></i>
+              <i className="fas fa-history" />
               <span>{t('user.history')}</span>
             </button>
-            
-            <div className="border-t border-gray-600 my-1"></div>
-            
-            <button 
+
+            <div className={styles.userMenuDivider} role="separator" />
+
+            <button
+              type="button"
               onClick={() => {
                 handleMenuClick({ key: 'settings' });
                 setShowUserDropdown(false);
               }}
-              className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+              className={styles.userMenuBtn}
+              data-menu="settings"
             >
-              <i className="fas fa-cog"></i>
+              <i className="fas fa-cog" />
               <span>{t('user.settings')}</span>
             </button>
-            
-            <button 
+
+            <button
+              type="button"
               onClick={() => {
                 handleMenuClick({ key: 'disconnect' });
                 setShowUserDropdown(false);
               }}
-              className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-400 hover:bg-gray-700 hover:text-red-300"
+              className={`${styles.userMenuBtn} ${styles.userMenuBtnDanger}`}
+              data-menu="disconnect"
             >
-              <i className="fas fa-sign-out-alt"></i>
+              <i className="fas fa-sign-out-alt" />
               <span>{t('user.disconnect')}</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* 用户信息模态框 - 使用Antd Modal和自定义样式 */}
       <Modal
-        title={
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center">
-              <i className="fas fa-user text-white text-sm"></i>
-            </div>
-            <span className="text-lg font-semibold text-gray-900">{t('walletConnect.modalTitle')}</span>
-          </div>
-        }
+        title={null}
         open={showUserModal}
         onCancel={() => setShowUserModal(false)}
-        footer={[
-          <Button key="copy" onClick={copyAddress} className="mr-2">
-            <i className="fas fa-copy mr-2"></i>
-            {t('walletConnect.copyAddress')}
-          </Button>,
-          <Button key="disconnect" type="primary" danger onClick={handleDisconnect}>
-            <i className="fas fa-sign-out-alt mr-2"></i>
-            {t('user.disconnect')}
-          </Button>,
-        ]}
-        width={500}
+        footer={null}
+        width={440}
+        centered
         className={styles.userModal}
+        destroyOnClose
       >
-        <div className="space-y-4">
-          {/* 用户头像和基本信息 */}
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center">
-              <i className="fas fa-user text-white text-2xl"></i>
+        <div className={styles.modalBody}>
+          <div className={styles.modalHero}>
+            <div className={styles.modalAvatar} aria-hidden>
+              <i className="fas fa-user" />
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">
+            <div className={styles.modalHeroText}>
+              <h3 className={styles.modalName}>
                 {user?.nickname || t('walletConnect.noNickname')}
               </h3>
-              <p className="text-sm text-gray-500 font-mono">
-                {address}
-              </p>
+              <p className={styles.modalAddress}>{address}</p>
+              {chainId === ARC_TESTNET_CHAIN_ID ? (
+                <span className={styles.modalNetworkBadge}>Arc Testnet</span>
+              ) : null}
             </div>
           </div>
 
-          {/* 钱包余额 */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('walletConnect.walletBalance')}</h4>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">{balance?.symbol ?? 'ETH'}</span>
-              <span className="font-mono text-sm">
-                {nativeBalanceAmount}
-              </span>
-            </div>
-          </div>
+          <WalletBalancePanel
+            chainId={chainId}
+            address={walletAddress}
+            variant="full"
+          />
 
-          {/* 用户统计信息 */}
-          {user && (
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('walletConnect.accountInfo')}</h4>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{t('walletConnect.userId')}</span>
-                  <span className="font-mono">{user.id}</span>
+          {user ? (
+            <div className={styles.modalInfoCard}>
+              <h4 className={styles.modalInfoTitle}>{t('walletConnect.accountInfo')}</h4>
+              <dl className={styles.modalInfoList}>
+                <div className={styles.modalInfoRow}>
+                  <dt>{t('walletConnect.userId')}</dt>
+                  <dd>{user.id}</dd>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{t('walletConnect.userType')}</span>
-                  <span>{user.roles ? user.roles.join(', ') : t('walletConnect.defaultRole')}</span>
+                <div className={styles.modalInfoRow}>
+                  <dt>{t('walletConnect.userType')}</dt>
+                  <dd>{user.roles?.length ? user.roles.join(', ') : t('walletConnect.defaultRole')}</dd>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{t('walletConnect.accountStatus')}</span>
-                  <span className={user.status === 1 ? 'text-green-600' : 'text-red-600'}>
-                    {t('walletConnect.statusActive')}
-                  </span>
+                <div className={styles.modalInfoRow}>
+                  <dt>{t('walletConnect.accountStatus')}</dt>
+                  <dd>
+                    <span
+                      className={
+                        user.status === 1 ? styles.statusActive : styles.statusInactive
+                      }
+                    >
+                      {t('walletConnect.statusActive')}
+                    </span>
+                  </dd>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{t('walletConnect.registeredAt')}</span>
-                  <span>{user.created_at ? new Date(user.created_at).toLocaleDateString() : t('walletConnect.unknown')}</span>
+                <div className={styles.modalInfoRow}>
+                  <dt>{t('walletConnect.registeredAt')}</dt>
+                  <dd>
+                    {user.created_at
+                      ? new Date(user.created_at).toLocaleDateString()
+                      : t('walletConnect.unknown')}
+                  </dd>
                 </div>
-              </div>
+              </dl>
             </div>
-          )}
+          ) : null}
+
+          <div className={styles.modalActions}>
+            <button type="button" className={styles.modalBtnSecondary} onClick={copyAddress}>
+              <Copy size={15} strokeWidth={2.25} aria-hidden />
+              {t('walletConnect.copyAddress')}
+            </button>
+            <button type="button" className={styles.modalBtnDanger} onClick={handleDisconnect}>
+              <i className="fas fa-sign-out-alt" aria-hidden />
+              {t('user.disconnect')}
+            </button>
+          </div>
         </div>
       </Modal>
     </div>
