@@ -96,29 +96,131 @@
 }
 
 .userDropdownHeader {
-  padding: 0.8rem 1rem 0.65rem;
-  background: linear-gradient(180deg, rgba(124, 77, 255, 0.14) 0%, rgba(124, 77, 255, 0.02) 100%);
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.userDropdownTitle {
-  margin: 0;
+.userDropdownTitleRow {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  color: #f8fafc;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
 
-  &::before {
-    content: '';
-    flex-shrink: 0;
-    width: 3px;
-    height: 0.95rem;
-    border-radius: 999px;
-    background: linear-gradient(180deg, #7c4dff 0%, #22d3ee 100%);
-    box-shadow: 0 0 10px rgba(124, 77, 255, 0.45);
+.userDropdownTitleMain {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.userDropdownAddress {
+  margin: 0;
+  min-width: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.02em;
+  color: #e2e8f0;
+  line-height: 1.4;
+}
+
+.addressCopyBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  border: none;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #cbd5e1;
+  }
+}
+
+.roleIconGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.roleIconBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.35rem;
+  border: 1px solid transparent;
+  cursor: default;
+}
+
+.roleIconBadgeSm {
+  width: 1.4rem;
+  height: 1.4rem;
+
+  i {
+    font-size: 0.625rem;
+  }
+}
+
+.roleIconBadgeMd {
+  width: 1.65rem;
+  height: 1.65rem;
+
+  i {
+    font-size: 0.6875rem;
+  }
+}
+
+.roleBadgeAdmin,
+.roleIconBadge.roleBadgeAdmin {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.22);
+}
+
+.roleBadgeMerchant,
+.roleIconBadge.roleBadgeMerchant {
+  color: #22d3ee;
+  background: rgba(34, 211, 238, 0.1);
+  border-color: rgba(34, 211, 238, 0.22);
+}
+
+.roleBadgeBuyer,
+.roleIconBadge.roleBadgeBuyer {
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.1);
+  border-color: rgba(167, 139, 250, 0.22);
+}
+
+.userProfileCopyBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.4rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: #cbd5e1;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: rgba(124, 77, 255, 0.16);
+    border-color: rgba(167, 139, 250, 0.35);
+    color: #f8fafc;
   }
 }
 
@@ -327,8 +429,18 @@
   min-width: 0;
 }
 
+.modalNameRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-bottom: 0.25rem;
+}
+
 .modalName {
-  margin: 0 0 0.25rem;
+  margin: 0;
+  min-width: 0;
+  flex: 1;
   font-size: 1.0625rem;
   font-weight: 700;
   color: #f8fafc;

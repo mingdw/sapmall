@@ -5,8 +5,9 @@ import (
 	"errors"
 	"strings"
 
-	"gorm.io/gorm"
 	"sapphire-mall/app/internal/model"
+
+	"gorm.io/gorm"
 )
 
 type ProductRepository interface {

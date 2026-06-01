@@ -10,10 +10,18 @@ import MessageUtils from '../../../utils/messageUtils';
 import { userApiService } from '../../../services/api/userApiService';
 import styles from './WalletConnect.module.scss';
 import { UserStatus } from '../../../services/types/userTypes';
-import { WALLET_UI_NETWORKS } from '../../../config/walletUiNetworks';
+import { WALLET_UI_NETWORKS, isWalletNetworkSwitchable } from '../../../config/walletUiNetworks';
 import ChainNetworkIcon from './ChainNetworkIcon';
 import WalletBalancePanel from './WalletBalancePanel';
 import { ARC_TESTNET_CHAIN_ID } from '../../../config/chains/arcTestnet';
+import { shortenWalletAddress } from '../../dao/utils/walletAddress';
+import {
+  resolveWalletRoleCodes,
+  WALLET_ROLE_BADGE_CLASS,
+  WALLET_ROLE_I18N_KEY,
+  WALLET_ROLE_ICON,
+  WalletRoleCode,
+} from '../utils/walletRoleUtils';
 
 /** 与语言无关的错误码，供静默处理分支识别 */
 const WALLET_ERR_USER_REJECTED_SIGN = 'WALLET_ERR_USER_REJECTED_SIGN';
@@ -358,6 +366,10 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
 
   // 处理网络切换
   const handleNetworkSwitch = async (targetChainId: number) => {
+    if (!isWalletNetworkSwitchable(targetChainId)) {
+      MessageUtils.info(t('walletConnect.networkViewOnly'));
+      return;
+    }
     try {
       await switchChain({ chainId: targetChainId });
       setShowNetworkMenu(false);
@@ -515,6 +527,22 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   }
 
   const walletAddress = address as `0x${string}` | undefined;
+  const identityRoleCodes = resolveWalletRoleCodes(user?.roles);
+
+  const renderRoleIcons = (size: 'sm' | 'md' = 'sm') => (
+    <div className={styles.roleIconGroup} aria-label={t('walletConnect.userType')}>
+      {identityRoleCodes.map((roleCode: WalletRoleCode) => (
+        <span
+          key={roleCode}
+          className={`${styles.roleIconBadge} ${styles[`roleIconBadge${size === 'md' ? 'Md' : 'Sm'}`]} ${styles[WALLET_ROLE_BADGE_CLASS[roleCode]]}`}
+          title={t(WALLET_ROLE_I18N_KEY[roleCode])}
+          aria-label={t(WALLET_ROLE_I18N_KEY[roleCode])}
+        >
+          <i className={`fas ${WALLET_ROLE_ICON[roleCode]}`} aria-hidden />
+        </span>
+      ))}
+    </div>
+  );
 
   // 如果已连接，显示用户信息区域（完全按照原型页面布局）
   return (
@@ -535,22 +563,41 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
         </button>
         <div className={`${styles.dropdown} ${showNetworkMenu ? styles.show : ''} absolute right-0 top-full mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl min-w-[150px] z-50`}>
           <div className="py-2">
-            {networks.map((network) => (
+            {networks.map((network) => {
+              const canSwitch = isWalletNetworkSwitchable(network.id);
+              return (
               <button
                 key={network.id.toString()}
+                type="button"
+                disabled={!canSwitch}
                 onClick={() => {
+                  if (!canSwitch) {
+                    MessageUtils.info(t('walletConnect.networkViewOnly'));
+                    return;
+                  }
                   handleNetworkSwitch(network.id);
                   setShowNetworkMenu(false);
                 }}
-                className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+                className={`flex items-center space-x-3 w-full px-4 py-2 text-sm ${
+                  canSwitch
+                    ? 'text-gray-300 hover:bg-gray-700 hover:text-white cursor-pointer'
+                    : 'text-gray-500 cursor-not-allowed opacity-60'
+                }`}
+                title={canSwitch ? undefined : t('walletConnect.networkViewOnly')}
               >
                 <ChainNetworkIcon chainId={network.id} alt={network.name} className={styles.networkIcon} />
                 <span>{network.name}</span>
+                {!canSwitch && (
+                  <span className="ml-auto text-[10px] uppercase tracking-wide text-slate-500">
+                    {t('walletConnect.networkBadgeView')}
+                  </span>
+                )}
                 {network.id === chainId && (
-                  <i className="fas fa-check text-sapphire-400 ml-auto"></i>
+                  <i className={`fas fa-check text-sapphire-400 ${canSwitch ? 'ml-auto' : ''}`}></i>
                 )}
               </button>
-            ))}
+            );
+            })}
           </div>
         </div>
       </div>
@@ -571,7 +618,29 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
           className={`${styles.dropdown} ${styles.userDropdownPanel} ${showUserDropdown ? styles.show : ''} ${styles.userDropdownShell}`}
         >
           <div className={styles.userDropdownHeader}>
-            <h3 className={styles.userDropdownTitle}>{t('walletConnect.personalInfo')}</h3>
+            <div className={styles.userDropdownTitleRow}>
+              <div className={styles.userDropdownTitleMain}>
+                <h3
+                  className={styles.userDropdownAddress}
+                  title={address ?? undefined}
+                >
+                  {address
+                    ? shortenWalletAddress(address)
+                    : t('walletConnect.unknownAddress')}
+                </h3>
+                {address ? (
+                  <button
+                    type="button"
+                    className={styles.addressCopyBtn}
+                    onClick={copyAddress}
+                    aria-label={t('walletConnect.copyAddress')}
+                  >
+                    <Copy size={14} strokeWidth={2} aria-hidden />
+                  </button>
+                ) : null}
+              </div>
+              {renderRoleIcons('sm')}
+            </div>
           </div>
 
           <div className={styles.userDropdownBody}>
@@ -703,9 +772,12 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               <i className="fas fa-user" />
             </div>
             <div className={styles.modalHeroText}>
-              <h3 className={styles.modalName}>
-                {user?.nickname || t('walletConnect.noNickname')}
-              </h3>
+              <div className={styles.modalNameRow}>
+                <h3 className={styles.modalName}>
+                  {user?.nickname || t('walletConnect.noNickname')}
+                </h3>
+                {user ? renderRoleIcons('md') : null}
+              </div>
               <p className={styles.modalAddress}>{address}</p>
               {chainId === ARC_TESTNET_CHAIN_ID ? (
                 <span className={styles.modalNetworkBadge}>Arc Testnet</span>
@@ -726,10 +798,6 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
                 <div className={styles.modalInfoRow}>
                   <dt>{t('walletConnect.userId')}</dt>
                   <dd>{user.id}</dd>
-                </div>
-                <div className={styles.modalInfoRow}>
-                  <dt>{t('walletConnect.userType')}</dt>
-                  <dd>{user.roles?.length ? user.roles.join(', ') : t('walletConnect.defaultRole')}</dd>
                 </div>
                 <div className={styles.modalInfoRow}>
                   <dt>{t('walletConnect.accountStatus')}</dt>

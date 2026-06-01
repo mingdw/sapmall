@@ -1,7 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Product } from '../services/types/productTypes';
 import ProductDetailComponent from './ProductCard';
-import Pagination from './Pagination';
+import MarketplacePagination from '../pages/marketplace/components/MarketplacePagination';
 import styles from './ProductCategoryCard.module.scss';
 import {
   categoryPlainIconStyle,
@@ -56,6 +57,7 @@ const ProductCategoryComponent: React.FC<ProductCategoryComponentProps> = ({
   showPagination = false,
   paginationProps
 }) => {
+  const { t } = useTranslation();
   // 根据是否显示分页来决定商品显示逻辑
   const displayProducts = showPagination ? products : products.slice(0, maxDisplayCount);
   
@@ -88,7 +90,7 @@ const ProductCategoryComponent: React.FC<ProductCategoryComponentProps> = ({
               className={styles.categoryMoreBtn}
               onClick={handleMoreClick}
             >
-              <span>{showPagination ? '返回商城' : '更多'}</span>
+              <span>{showPagination ? t('marketplacePage.backToMall') : t('marketplacePage.more')}</span>
               <i
                 className={`fas ${showPagination ? 'fa-arrow-left' : 'fa-arrow-right'}`}
                 aria-hidden
@@ -102,7 +104,7 @@ const ProductCategoryComponent: React.FC<ProductCategoryComponentProps> = ({
       {paginationProps?.isLoading ? (
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">加载商品中...</p>
+          <p className="text-gray-400">{t('marketplacePage.loadingProducts')}</p>
         </div>
       ) : displayProducts.length > 0 ? (
         <>
@@ -119,7 +121,7 @@ const ProductCategoryComponent: React.FC<ProductCategoryComponentProps> = ({
           
           {/* 分页组件 */}
           {showPagination && paginationProps && (
-            <Pagination
+            <MarketplacePagination
               currentPage={paginationProps.currentPage}
               totalPages={paginationProps.totalPages}
               totalItems={paginationProps.totalItems}
@@ -136,8 +138,8 @@ const ProductCategoryComponent: React.FC<ProductCategoryComponentProps> = ({
         <div className="text-center py-12">
           <div className="text-gray-400 text-lg mb-4">
             <i className="fas fa-search text-4xl mb-4 block"></i>
-            <p>暂无商品数据</p>
-            <p className="text-sm mt-2">请尝试其他分类或搜索条件</p>
+            <p>{t('marketplacePage.noProducts')}</p>
+            <p className="text-sm mt-2">{t('marketplacePage.tryOtherFilters')}</p>
           </div>
         </div>
       )}

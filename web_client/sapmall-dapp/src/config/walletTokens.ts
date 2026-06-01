@@ -1,4 +1,5 @@
 import { ARC_TESTNET_CHAIN_ID } from './chains/arcTestnet';
+import { LINEA_SEPOLIA_CHAIN_ID } from './chains/lineaSepolia';
 import { config } from './wagmi';
 
 export type WalletErc20Config = {
@@ -14,7 +15,15 @@ const ARC_USDC: WalletErc20Config = {
   symbol: 'USDC',
 };
 
+/** Linea Sepolia USDC — contract/docs/payment-phase1.md */
+const LINEA_SEPOLIA_USDC: WalletErc20Config = {
+  address: '0xFEce4462D57bD51A6A552365A011b95f0E16d9B7',
+  decimals: 6,
+  symbol: 'USDC',
+};
+
 const USDC_BY_CHAIN: Partial<Record<number, WalletErc20Config>> = {
+  [LINEA_SEPOLIA_CHAIN_ID]: LINEA_SEPOLIA_USDC,
   [ARC_TESTNET_CHAIN_ID]: ARC_USDC,
   1: {
     address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',

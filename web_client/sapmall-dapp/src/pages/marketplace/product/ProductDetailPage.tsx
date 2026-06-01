@@ -14,7 +14,7 @@ import { ProductDetailLocationState } from './types/productDetailTypes';
 import { buildProductBreadcrumbItems } from './utils/buildProductBreadcrumb';
 import { navigateToMarketplace } from '../paths';
 import { useCategoryStore } from '../../../store/categoryStore';
-import { commonApiService } from '../../../services/api/commonApiService';
+import { useCategoryTreeRefresh } from '../hooks/useCategoryTreeRefresh';
 import { cartApi } from '../../../services/api/cartApi';
 import { favoriteApi } from '../../../services/api/favoriteApi';
 import { isTrustedProductImageUrl, resolveProductImageList } from '../../../utils/productImageUrls';
@@ -34,31 +34,9 @@ const ProductDetailPage: React.FC = () => {
 
   const { product, loading, error, reload } = useProductDetail(productCode);
 
-  const {
-    categories,
-    setCategories,
-    setLoading: setCategoryLoading,
-    setLastFetchTime,
-    isCacheValid,
-  } = useCategoryStore();
+  const { categories } = useCategoryStore();
 
-  useEffect(() => {
-    const loadCategories = async () => {
-      if (isCacheValid() && categories.length > 0) return;
-      try {
-        setCategoryLoading(true);
-        const response = await commonApiService.getCategoryTree(0);
-        const categoryList = Array.isArray(response) ? response : [response];
-        setCategories(categoryList);
-        setLastFetchTime(Date.now());
-      } catch {
-        // 鍒嗙被鍚嶇己澶辨椂鍥為€€涓?code锛屼笉闃绘柇璇︽儏灞曠ず
-      } finally {
-        setCategoryLoading(false);
-      }
-    };
-    loadCategories();
-  }, [categories.length, isCacheValid, setCategories, setCategoryLoading, setLastFetchTime]);
+  useCategoryTreeRefresh();
 
   const breadcrumbItems = useMemo(() => {
     if (!product) return [];
@@ -139,15 +117,12 @@ const ProductDetailPage: React.FC = () => {
       return;
     }
     if (!product || !sku.selectedSku) return;
-    navigate('/checkout/stub', {
-      state: {
-        productId: product.spu.id,
-        productCode: product.spu.code,
-        skuId: sku.selectedSku.id,
-        quantity,
-        price: sku.selectedSku.price,
-      },
+    const params = new URLSearchParams({
+      skuId: String(sku.selectedSku.id),
+      quantity: String(quantity),
+      productCode: product.spu.code,
     });
+    navigate(`/marketplace/payment?${params.toString()}`);
   };
 
   const handleToggleFavorite = async () => {
@@ -229,7 +204,9 @@ const ProductDetailPage: React.FC = () => {
                 selectedSpecs={sku.selectedSpecs}
                 selectedSku={sku.selectedSku}
                 canPurchase={sku.canPurchase}
+                purchaseBlockReason={sku.purchaseBlockReason}
                 onSelectSpec={sku.onSelectSpec}
+                isSpecValueAvailable={sku.isSpecValueAvailable}
                 onAddToCart={handleAddToCart}
                 onBuyNow={handleBuyNow}
                 isFavorited={isFavorited}

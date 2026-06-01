@@ -80,7 +80,13 @@
     "sapBalance": "SAP",
     "balanceUnavailable": "当前网络暂不支持",
     "sapNotConfigured": "待配置合约",
-    "viewAccountDetails": "查看账户详情"
+    "viewAccountDetails": "查看账户详情",
+    "walletAddress": "钱包地址",
+    "roles": {
+      "admin": "系统管理员",
+      "merchant": "商家",
+      "buyer": "买家"
+    }
   },
   "homepage": {
     "title": "SapMall DApp",

@@ -18,7 +18,7 @@ import (
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 保存属性（新增/编辑）
@@ -63,7 +63,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 获取商品详情（聚合所有信息：SPU、属性、SKU、详情）
@@ -108,7 +108,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 新增/修改系统参数
@@ -195,7 +195,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 获取导航目录结构
@@ -234,7 +234,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 查询产品详细信息
@@ -255,7 +255,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 查询用户的申请单

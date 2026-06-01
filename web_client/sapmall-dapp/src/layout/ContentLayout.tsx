@@ -8,6 +8,8 @@ import HelpRoutes from '../pages/help/HelpRoutes';
 import AdminIframeEmbedded from '../components/AdminIframeEmbedded';
 import ProductDetailPage from '../pages/marketplace/product/ProductDetailPage';
 import CheckoutStubPage from '../pages/checkout/CheckoutStubPage';
+import CheckoutPage from '../pages/marketplace/payment/CheckoutPage';
+import OrderResultPage from '../pages/marketplace/payment/OrderResultPage';
 
 const ContentLayout: React.FC = () => {
   return (
@@ -24,11 +26,13 @@ const ContentLayout: React.FC = () => {
             <ProductDetailPage />
           </div>
         } />
-        <Route path="/checkout/stub" element={
-          <div className="mx-auto w-[95%]">
-            <CheckoutStubPage />
-          </div>
+        <Route path="/marketplace/payment" element={
+          <CheckoutPage />
         } />
+        <Route path="/marketplace/payment/result/:orderCode" element={
+          <OrderResultPage />
+        } />
+        <Route path="/checkout/stub" element={<CheckoutStubPage />} />
         <Route path="/rewards/*" element={
           <div className="mx-auto w-[95%]">
             <RewardsRoutes />

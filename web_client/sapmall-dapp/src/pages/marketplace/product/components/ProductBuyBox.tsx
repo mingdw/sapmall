@@ -25,7 +25,9 @@ interface ProductBuyBoxProps {
   selectedSpecs: Record<string, string>;
   selectedSku: ProductSkuView | null;
   canPurchase: boolean;
+  purchaseBlockReason?: 'spec' | 'stock' | null;
   onSelectSpec: (key: string, value: string) => void;
+  isSpecValueAvailable: (key: string, value: string) => boolean;
   onAddToCart: (quantity: number) => Promise<void>;
   onBuyNow: (quantity: number) => void;
   isFavorited: boolean;
@@ -39,7 +41,9 @@ const ProductBuyBox: React.FC<ProductBuyBoxProps> = ({
   selectedSpecs,
   selectedSku,
   canPurchase,
+  purchaseBlockReason,
   onSelectSpec,
+  isSpecValueAvailable,
   onAddToCart,
   onBuyNow,
   isFavorited,
@@ -56,9 +60,17 @@ const ProductBuyBox: React.FC<ProductBuyBoxProps> = ({
   const stockStatus = maxQty > 10 ? 'sufficient' : maxQty > 0 ? 'limited' : 'outOfStock';
   const soldCount = selectedSku?.saleCount ?? product.spu.totalSales ?? 0;
 
+  const warnCannotPurchase = () => {
+    if (purchaseBlockReason === 'stock') {
+      message.warning(t('productDetail.outOfStock'));
+      return;
+    }
+    message.warning(t('productDetail.selectSpecFirst'));
+  };
+
   const handleAddCart = async () => {
     if (!canPurchase) {
-      message.warning(t('productDetail.selectSpecFirst'));
+      warnCannotPurchase();
       return;
     }
     await onAddToCart(quantity);
@@ -66,7 +78,7 @@ const ProductBuyBox: React.FC<ProductBuyBoxProps> = ({
 
   const handleBuy = () => {
     if (!canPurchase) {
-      message.warning(t('productDetail.selectSpecFirst'));
+      warnCannotPurchase();
       return;
     }
     onBuyNow(quantity);
@@ -185,16 +197,25 @@ const ProductBuyBox: React.FC<ProductBuyBoxProps> = ({
             <div key={key} className={styles.specItemCompact}>
               <span className={styles.specLabelCompact}>{key}</span>
               <div className={styles.specButtonsCompact}>
-                {(product.specifications[key] || []).slice(0, 5).map((val) => (
-                  <button
-                    key={val}
-                    type="button"
-                    className={`${styles.specBtnCompact} ${selectedSpecs[key] === val ? styles.specBtnCompactActive : ''}`}
-                    onClick={() => onSelectSpec(key, val)}
-                  >
-                    {val}
-                  </button>
-                ))}
+                {(product.specifications[key] || []).slice(0, 5).map((val) => {
+                  const available = isSpecValueAvailable(key, val);
+                  return (
+                    <button
+                      key={val}
+                      type="button"
+                      disabled={!available}
+                      className={`${styles.specBtnCompact} ${
+                        available && selectedSpecs[key] === val
+                          ? styles.specBtnCompactActive
+                          : ''
+                      } ${!available ? styles.specBtnCompactDisabled : ''}`}
+                      onClick={() => onSelectSpec(key, val)}
+                      aria-disabled={!available}
+                    >
+                      {val}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           ))}

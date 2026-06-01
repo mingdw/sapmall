@@ -31,7 +31,7 @@ MerchantDeposit:
   Amount: "100"
   TokenSymbol: "USDT"
   TokenAddress: ""
-  ChainID: 111111
+  ChainID: 56
   ContractAddress: "sapmall-secretxxx"
   IntentExpireMins: 30
 

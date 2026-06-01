@@ -36,7 +36,7 @@ const HelpArticleDetail: React.FC<Props> = ({ article }) => {
   return (
     <div className={layoutStyles.contentZoneInnerFull}>
       <article
-        className={`${sharedStyles.panelCard} ${sharedStyles.panelCardAccent} ${styles.articleDetailCard}`}
+        className={`${sharedStyles.panelCard} ${styles.articleDetailCard}`}
         aria-label={t('help.article.aria')}
       >
         <header className={styles.articleDetailHead}>

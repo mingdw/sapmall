@@ -29,7 +29,7 @@ const HelpPage: React.FC = () => {
   return (
     <div className={layoutStyles.contentZoneInner}>
       <div className={layoutStyles.mainListCard}>
-        <div className={`${sharedStyles.panelCard} ${sharedStyles.panelCardAccent}`}>
+        <div className={sharedStyles.panelCard}>
           <div className={pageStyles.helpTopicsPanel} ref={topicPanelRef}>
             <div className={`${sharedStyles.panelSection} ${pageStyles.panelSectionFilter}`}>
               <HelpTopicBrowse activeCategory={category} onTopicSelect={onTopicSelect} />

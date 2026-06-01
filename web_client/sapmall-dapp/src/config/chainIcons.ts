@@ -10,6 +10,7 @@ const trustWalletChainLogo = (folder: string) =>
  * 测试网与主网同系列链共用主网品牌图标（行业常见做法）
  */
 export const CHAIN_ICON_BY_ID: Record<number, string> = {
+  59141: trustWalletChainLogo('ethereum'),
   1: trustWalletChainLogo('ethereum'),
   8453: trustWalletChainLogo('base'),
   [ARC_TESTNET_CHAIN_ID]: arcIcon,
@@ -24,6 +25,7 @@ export const CHAIN_ICON_BY_ID: Record<number, string> = {
 
 /** 图标加载失败时的单字缩写 */
 export const CHAIN_ICON_FALLBACK_LETTER: Record<number, string> = {
+  59141: 'L',
   1: 'E',
   8453: 'B',
   [ARC_TESTNET_CHAIN_ID]: 'A',

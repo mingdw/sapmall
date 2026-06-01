@@ -80,7 +80,13 @@
     "balanceUnavailable": "Not available on this network",
     "sapNotConfigured": "Contract not configured",
     "viewAccountDetails": "Account details",
-    "personalInfo": "Personal info"
+    "personalInfo": "Personal info",
+    "walletAddress": "Wallet address",
+    "roles": {
+      "admin": "Admin",
+      "merchant": "Merchant",
+      "buyer": "Buyer"
+    }
   },
   "homepage": {
     "title": "SapMall DApp",

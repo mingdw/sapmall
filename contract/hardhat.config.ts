@@ -52,5 +52,13 @@ export default defineConfig({
       url: configVariable("LINEA_SEPOLIA_RPC_URL"),
       accounts: [configVariable("LINEA_SEPOLIA_PRIVATE_KEY")],
     },
+    /** Arc Testnet — Phase 1 订单支付联调链 */
+    arcTestnet: {
+      type: "http",
+      chainType: "generic",
+      chainId: 5_042_002,
+      url: configVariable("ARC_TESTNET_RPC_URL"),
+      accounts: [configVariable("ARC_TESTNET_PRIVATE_KEY")],
+    },
   },
 });

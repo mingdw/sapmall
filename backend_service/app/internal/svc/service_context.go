@@ -20,12 +20,13 @@ import (
 )
 
 type ServiceContext struct {
-	Config         config.Config
-	Redis          *redis.Client
-	GormDB         *gorm.DB
-	AuthMiddleware rest.Middleware
-	RespMiddleware rest.Middleware
-	CosClient      *cos.Client
+	Config             config.Config
+	Redis              *redis.Client
+	GormDB             *gorm.DB
+	AuthMiddleware     rest.Middleware
+	LanguageMiddleware rest.Middleware
+	RespMiddleware     rest.Middleware
+	CosClient          *cos.Client
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -120,8 +121,9 @@ func buildServiceContext(c config.Config, redisClient *redis.Client, db *gorm.DB
 		Config:         c,
 		Redis:          redisClient,
 		GormDB:         db,
-		AuthMiddleware: middleware.NewAuthMiddleware(db, &c).Handle,
-		RespMiddleware: middleware.NewUnifiedResponseMiddleware().Handle,
-		CosClient:      cosClient,
+		AuthMiddleware:     middleware.NewAuthMiddleware(db, &c).Handle,
+		LanguageMiddleware: middleware.NewLanguageMiddleware().Handle,
+		RespMiddleware:     middleware.NewUnifiedResponseMiddleware().Handle,
+		CosClient:          cosClient,
 	}
 }

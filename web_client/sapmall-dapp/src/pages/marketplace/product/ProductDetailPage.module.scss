@@ -798,9 +798,19 @@ $detail-action-control-size: 2rem;
     color: #fbbf24;
   }
 
-  &:disabled {
-    opacity: 0.4;
+  &:disabled,
+  &.specBtnCompactDisabled {
+    opacity: 0.38;
     cursor: not-allowed;
+    color: #64748b;
+    border-color: rgba(71, 85, 105, 0.25);
+    background: rgba(15, 23, 42, 0.35);
+  }
+
+  &.specBtnCompactDisabled:hover {
+    border-color: rgba(71, 85, 105, 0.25);
+    background: rgba(15, 23, 42, 0.35);
+    color: #64748b;
   }
 }
 

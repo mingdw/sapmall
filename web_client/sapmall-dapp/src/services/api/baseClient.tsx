@@ -1,6 +1,16 @@
 import { ApiResponse } from '../types/baseTypes';
 import MessageUtils from '../../utils/messageUtils';
 import { useUserStore } from '../../store/userStore';
+import i18n from '../../i18n';
+
+/** 规范为 HTTP Accept-Language（BCP 47） */
+const normalizeAcceptLanguage = (lang: string): string => {
+  const lower = lang.trim().toLowerCase();
+  if (!lower) return 'zh-CN';
+  if (lower.startsWith('zh')) return 'zh-CN';
+  if (lower.startsWith('en')) return 'en-US';
+  return lang;
+};
 
 // 请求配置
 interface RequestConfig {
@@ -55,20 +65,16 @@ class BaseClient {
     return localStorage.getItem('auth_token');
   }
 
-  // 获取当前语言
+  // 获取当前语言（与 i18n 切换保持一致）
   private getCurrentLocale(): string {
-    // 优先使用URL参数
     const urlParams = new URLSearchParams(window.location.search);
     const urlLocale = urlParams.get('lang');
-    if (urlLocale) return urlLocale;
+    if (urlLocale) return normalizeAcceptLanguage(urlLocale);
 
-    // 使用localStorage
-    const storedLocale = localStorage.getItem('app_locale');
-    if (storedLocale) return storedLocale;
+    const i18nLang = i18n.language || localStorage.getItem('i18nextLng') || '';
+    if (i18nLang) return normalizeAcceptLanguage(i18nLang);
 
-    // 使用浏览器语言
-    const browserLocale = navigator.language;
-    return browserLocale.startsWith('zh') ? 'zh-CN' : 'en-US';
+    return navigator.language.startsWith('zh') ? 'zh-CN' : 'en-US';
   }
 
   // 构建完整URL
@@ -89,10 +95,9 @@ class BaseClient {
       headers.Authorization = `Bearer ${token}`;
     }
 
-    // 添加国际化头
+    // 标准 HTTP 语言头
     const locale = options?.locale || this.getCurrentLocale();
     headers['Accept-Language'] = locale;
-    headers['X-Locale'] = locale;
 
     return headers;
   }
@@ -331,9 +336,9 @@ class BaseClient {
     });
   }
 
-  // 设置语言
+  // 设置语言（与 i18n 同步，供 URL 参数等场景覆盖）
   setLocale(locale: string): void {
-    localStorage.setItem('app_locale', locale);
+    localStorage.setItem('i18nextLng', locale);
   }
 }
 

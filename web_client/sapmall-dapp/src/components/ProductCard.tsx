@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Product } from '../services/types/productTypes';
 import { formatUsdc, formatSap, formatDualPrice } from '../pages/marketplace/product/utils/priceDisplay';
 import { resolveProductImageUrl, picsumDirectUrl, dummyImageUrl } from '../utils/productImageUrls';
@@ -35,6 +36,7 @@ const ProductDetailComponent: React.FC<ProductDetailComponentProps> = ({
   onProductClick,
   onProductBuy
 }) => {
+  const { t } = useTranslation();
   const imageSeed = product.id ?? product.code ?? product.title;
   const category3 = product.category3Code ?? product.category;
   const fallbackChain = [
@@ -119,7 +121,7 @@ const ProductDetailComponent: React.FC<ProductDetailComponentProps> = ({
           className={styles.buyBtn}
           onClick={handleBuyClick}
         >
-          立即购买
+          {t('marketplacePage.goToBuy')}
         </button>
       </div>
     </div>

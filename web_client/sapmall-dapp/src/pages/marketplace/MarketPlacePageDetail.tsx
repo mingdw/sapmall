@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import styles from './MarketPlacePageDetail.module.scss';
-import { commonApiService } from '../../services/api/commonApiService';
 import { productApiService } from '../../services/api/productApiService';
 import { CategoryTreeResp, AttrGroupResp } from '../../services/types/categoryTypes';
 import { Product, FilterOptions, FILTER_OPTIONS, ProductQueryParams } from '../../services/types/productTypes';
@@ -14,8 +14,10 @@ import { transformProductForDisplay } from '../../utils/productUtils';
 import { navigateToProductDetail } from './product/paths';
 import { MarketplaceLocationState } from './paths';
 import { findCategoryById } from './utils/categoryUtils';
+import { useCategoryTreeRefresh } from './hooks/useCategoryTreeRefresh';
 
 const MarketPlacePageDetail: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const INITIAL_CATEGORY_PAGE_SIZE = 30;
@@ -49,38 +51,10 @@ const MarketPlacePageDetail: React.FC = () => {
     categories,
     allAttrGroups,
     isLoading,
-    setCategories,
-    setLoading,
-    setLastFetchTime,
-    isCacheValid,
     collectAttrGroupsForCategory
   } = useCategoryStore();
 
-  // 获取分类数据
-  useEffect(() => {
-    const fetchCategories = async () => {
-      // 检查缓存是否有效
-      if (isCacheValid() && categories.length > 0) {
-        console.log('使用缓存的分类数据');
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const response = await commonApiService.getCategoryTree(0); // 0表示商品分类类型
-        const categoryList = Array.isArray(response) ? response : [response];
-        setCategories(categoryList);
-        setLastFetchTime(Date.now());
-        console.log('从API获取分类数据并缓存');
-      } catch (error) {
-        console.error('获取分类失败:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, [isCacheValid, categories.length, setCategories, setLoading, setLastFetchTime]);
+  useCategoryTreeRefresh();
 
   // 面包屑等入口通过 location.state 预选分类
   useEffect(() => {
@@ -433,19 +407,22 @@ const MarketPlacePageDetail: React.FC = () => {
   }, {} as {[key: number]: {products: Product[], totalCount: number}});
 
   // 创建"全部商品"选项
-  const allProductsCategory = {
-    id: 0,
-    code: ALL_PRODUCTS_CATEGORY_CODE,
-    name: '全部商品',
-    icon: '',
-  };
+  const allProductsCategory = useMemo(
+    () => ({
+      id: 0,
+      code: ALL_PRODUCTS_CATEGORY_CODE,
+      name: t('marketplacePage.allProducts'),
+      icon: '',
+    }),
+    [t],
+  );
 
-  if (isLoading) {
+  if (isLoading && categories.length === 0) {
     return (
       <div className="min-h-screen text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">加载中...</p>
+          <p className="text-gray-400">{t('marketplacePage.loading')}</p>
         </div>
       </div>
     );
@@ -460,7 +437,7 @@ const MarketPlacePageDetail: React.FC = () => {
           <div className={styles.filterCard}>
             <div className={styles.filterSection}>
               <div className={styles.filterRow}>
-                <span className={styles.filterLabel}>商品目录</span>
+                <span className={styles.filterLabel}>{t('marketplacePage.categoryCatalog')}</span>
                 <div className={styles.filterChips}>
                   <CategoryButton
                     key={allProductsCategory.id}
@@ -491,16 +468,16 @@ const MarketPlacePageDetail: React.FC = () => {
                   <i className={`fas fa-search ${styles.searchIcon}`} aria-hidden />
                   <input
                     type="search"
-                    placeholder="搜索商品..."
+                    placeholder={t('marketplacePage.searchPlaceholder')}
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                     className={styles.searchInput}
-                    aria-label="搜索商品"
+                    aria-label={t('marketplacePage.searchAriaLabel')}
                   />
                   <span className={styles.searchBtnDivider} aria-hidden />
                   <button type="button" onClick={handleSearch} className={styles.searchBtn}>
-                    搜索
+                    {t('marketplacePage.search')}
                   </button>
                 </div>
               </div>
@@ -542,7 +519,7 @@ const MarketPlacePageDetail: React.FC = () => {
                               onClick={clearAllFilters}
                             >
                               <i className="fas fa-trash" aria-hidden />
-                              清空筛选
+                              {t('marketplacePage.clearFilters')}
                             </button>
                           )}
                           {displayedAttrGroups.length > 3 && (
@@ -551,7 +528,9 @@ const MarketPlacePageDetail: React.FC = () => {
                               className={styles.moreBtn}
                               onClick={() => setShowMoreFilters(!showMoreFilters)}
                             >
-                              {showMoreFilters ? '收起筛选' : '展开筛选'}
+                              {showMoreFilters
+                                ? t('marketplacePage.collapseFilters')
+                                : t('marketplacePage.expandFilters')}
                               <i
                                 className={`fas fa-chevron-${showMoreFilters ? 'up' : 'down'}`}
                                 aria-hidden
@@ -599,7 +578,7 @@ const MarketPlacePageDetail: React.FC = () => {
                                   onClick={clearAllFilters}
                                 >
                                   <i className="fas fa-trash" aria-hidden />
-                                  清空筛选
+                                  {t('marketplacePage.clearFilters')}
                                 </button>
                               )}
                               <button
@@ -607,7 +586,7 @@ const MarketPlacePageDetail: React.FC = () => {
                                 className={styles.moreBtn}
                                 onClick={() => setShowMoreFilters(false)}
                               >
-                                收起筛选
+                                {t('marketplacePage.collapseFilters')}
                                 <i className="fas fa-chevron-up" aria-hidden />
                               </button>
                             </div>
@@ -631,7 +610,7 @@ const MarketPlacePageDetail: React.FC = () => {
                   <ProductCategoryComponent
                     key="all-products-search"
                     categoryId={0}
-                    categoryName="全部商品"
+                    categoryName={t('marketplacePage.allProducts')}
                     categoryCode={ALL_PRODUCTS_CATEGORY_CODE}
                     categoryIcon="fas fa-search"
                     productCount={totalItems}
@@ -695,7 +674,7 @@ const MarketPlacePageDetail: React.FC = () => {
                         onClick={handleLoadMoreCategories}
                         className={styles.loadMoreCategoriesLink}
                       >
-                        <span>加载更多类别</span>
+                        <span>{t('marketplacePage.loadMoreCategories')}</span>
                         <i className="fas fa-chevron-down" aria-hidden />
                       </button>
                     </div>
