@@ -17,7 +17,7 @@ import DaoProposalTimelineCard from './DaoProposalTimelineCard';
 import DaoProposalVoteCard from './DaoProposalVoteCard';
 import detailStyles from '../styles/dao.detailCommon.module.scss';
 import listTagStyles from '../styles/dao.listTags.module.scss';
-import pageLayoutStyles from '../styles/dao.pageLayout.module.scss';
+import { DAO_LAYOUT } from '../constants/daoLayoutClasses';
 import sharedStyles from '../styles/dao.shared.module.scss';
 import styles from './DaoProposalDetail.module.scss';
 
@@ -111,7 +111,7 @@ const DaoProposalDetailView: React.FC<Props> = ({ proposal }) => {
   );
 
   return (
-    <section className={`${pageLayoutStyles.contentZoneInnerFull} ${styles.proposalDetailLayout}`}>
+    <section className={`${DAO_LAYOUT.contentZoneInnerFull} ${styles.proposalDetailLayout}`}>
       <article className={`${sharedStyles.panelCard} ${styles.proposalDetailMain}`} aria-label={title}>
         <header className={styles.proposalDetailHead}>
           <nav className={styles.proposalDetailBreadcrumb} aria-label="Breadcrumb">

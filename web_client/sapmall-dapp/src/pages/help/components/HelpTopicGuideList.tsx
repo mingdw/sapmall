@@ -8,13 +8,15 @@ import type { HelpArticleMeta, HelpCategoryFilter } from '../types';
 import { articleSummaryKey, articleTitleKey } from '../utils/articleI18nKey';
 import HelpGuideVoteStats from './HelpGuideVoteStats';
 import sharedStyles from '../styles/help.shared.module.scss';
-import styles from './HelpTopicGuideList.module.scss';
 
 type Props = {
   articles: HelpArticleMeta[];
   category: HelpCategoryFilter;
   keyword: string;
 };
+
+const rowHeadBtn =
+  'flex w-full cursor-pointer items-center justify-between gap-3 border-none bg-transparent py-[0.8rem] text-left transition-colors hover:[&_.row-title]:text-[var(--help-primary)]';
 
 const HelpTopicGuideList: React.FC<Props> = ({ articles, category, keyword }) => {
   const { t } = useTranslation();
@@ -43,57 +45,56 @@ const HelpTopicGuideList: React.FC<Props> = ({ articles, category, keyword }) =>
 
   if (sortedArticles.length === 0) {
     return (
-      <section
-        className={`${styles.guideList} ${sharedStyles.cardSectionBody}`}
-        aria-label={t('help.guide.aria')}
-      >
+      <section className={`m-0 ${sharedStyles.cardSectionBody}`} aria-label={t('help.guide.aria')}>
         <div className={sharedStyles.emptyState}>{t('help.empty')}</div>
       </section>
     );
   }
 
   return (
-    <section
-      className={`${styles.guideList} ${sharedStyles.cardSectionBody}`}
-      aria-label={t('help.guide.aria')}
-    >
+    <section className={`m-0 ${sharedStyles.cardSectionBody}`} aria-label={t('help.guide.aria')}>
       {hasKeyword ? (
-        <p className={styles.guideListHint}>{t('help.guide.searchResults')}</p>
+        <p className="mb-[0.65rem] text-xs font-medium text-slate-400">{t('help.guide.searchResults')}</p>
       ) : null}
-      <ul className={styles.guideRows}>
+      <ul className="m-0 list-none p-0">
         {pageArticles.map((article) => {
           const isOpen = expandedSlug === article.slug;
           return (
-            <li key={article.slug} className={styles.guideRowItem}>
-              <div className={styles.guideRow}>
+            <li key={article.slug} className="border-b border-[#eef1f5] last:border-b-0">
+              <div className="p-0">
                 <button
                   type="button"
-                  className={styles.guideRowHead}
+                  className={rowHeadBtn}
                   aria-expanded={isOpen}
                   onClick={() => toggleExpand(article.slug)}
                 >
-                  <span className={styles.guideRowTitle}>{t(articleTitleKey(article.slug))}</span>
+                  <span className="row-title m-0 min-w-0 flex-1 text-sm font-medium leading-snug tracking-wide text-[var(--help-panel-text)] transition-colors">
+                    {t(articleTitleKey(article.slug))}
+                  </span>
                   <ChevronDown
-                    className={styles.guideRowChevron}
-                    data-expanded={isOpen}
-                    size={18}
+                    className={`h-[18px] w-[18px] shrink-0 text-slate-400 transition-transform ${
+                      isOpen ? 'rotate-180 text-[var(--help-primary)]' : ''
+                    }`}
                     strokeWidth={2.25}
                     aria-hidden
                   />
                 </button>
 
                 {isOpen && (
-                  <div className={styles.guideRowBody}>
+                  <div className="overflow-visible pb-[0.85rem]">
                     <Link
                       to={`/help/a/${article.slug}`}
-                      className={styles.guideRowSummaryLink}
+                      className="mb-[0.55rem] line-clamp-3 text-xs font-normal leading-relaxed text-slate-500 no-underline transition-colors hover:text-[var(--help-primary)]"
                       title={t(articleSummaryKey(article.slug))}
                     >
                       {t(articleSummaryKey(article.slug))}
                     </Link>
-                    <div className={styles.guideRowFoot}>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <HelpGuideVoteStats article={article} />
-                      <time className={styles.guideRowDate} dateTime={article.updatedAt}>
+                      <time
+                        className="ml-auto shrink-0 whitespace-nowrap text-[0.6875rem] font-medium tracking-wide text-slate-400"
+                        dateTime={article.updatedAt}
+                      >
                         {t('help.updated', { date: article.updatedAt })}
                       </time>
                     </div>
@@ -107,7 +108,7 @@ const HelpTopicGuideList: React.FC<Props> = ({ articles, category, keyword }) =>
 
       {sortedArticles.length > HELP_GUIDE_PAGE_SIZE && (
         <Pagination
-          className={styles.guidePagination}
+          className="help-guide-pagination mt-4 flex justify-end"
           current={page}
           pageSize={HELP_GUIDE_PAGE_SIZE}
           total={sortedArticles.length}

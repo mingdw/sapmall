@@ -14,6 +14,7 @@ export type WalletUiNetwork = {
 export const WALLET_UI_NETWORKS: WalletUiNetwork[] = [
   { id: LINEA_SEPOLIA_CHAIN_ID, nameKey: 'lineaSepolia', switchable: true },
   { id: ARC_TESTNET_CHAIN_ID, nameKey: 'arcTestnet', switchable: true },
+  { id: 84532, nameKey: 'baseSepolia', switchable: true },
   { id: 1, nameKey: 'ethereum', switchable: false },
   { id: 8453, nameKey: 'base', switchable: false },
   { id: 11155111, nameKey: 'sepolia', switchable: false },
@@ -25,6 +26,7 @@ export const WALLET_UI_NETWORKS: WalletUiNetwork[] = [
 
 export function isWalletNetworkSwitchable(chainId: number): boolean {
   const item = WALLET_UI_NETWORKS.find((n) => n.id === chainId);
-  if (item && item.switchable === false) return false;
+  if (item?.switchable === true) return true;
+  if (item?.switchable === false) return false;
   return PAYMENT_CHAIN_IDS.includes(chainId);
 }

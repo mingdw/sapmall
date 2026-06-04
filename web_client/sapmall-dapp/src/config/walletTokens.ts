@@ -35,6 +35,11 @@ const USDC_BY_CHAIN: Partial<Record<number, WalletErc20Config>> = {
     decimals: 6,
     symbol: 'USDC',
   },
+  84532: {
+    address: '0x036CbD53842c542663c028D8e0b8708fF7Dd4B7',
+    decimals: 6,
+    symbol: 'USDC',
+  },
   11155111: {
     address: '0x1c7D4B196Cb0C7B01d157F041a657A09DDBf8aF4',
     decimals: 6,

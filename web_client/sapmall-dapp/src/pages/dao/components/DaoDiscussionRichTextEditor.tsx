@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { insertImageIntoQuillEditor } from '../utils/quillDiscussionImage';
-import styles from './DaoDiscussionRichTextEditor.module.scss';
 
 type Props = {
   value: string;
@@ -79,7 +78,7 @@ const DaoDiscussionRichTextEditor: React.FC<Props> = ({
   );
 
   return (
-    <div className={styles.richEditorRoot} data-editor="quill" aria-label={ariaLabel}>
+    <div className="dao-discussion-quill" data-editor="quill" aria-label={ariaLabel}>
       <ReactQuill
         ref={quillRef}
         theme="snow"

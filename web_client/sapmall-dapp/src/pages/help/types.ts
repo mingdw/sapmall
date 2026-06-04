@@ -23,7 +23,6 @@ export interface HelpArticleMeta {
   category: HelpCategory;
   tagKeys: string[];
   updatedAt: string;
-  hot?: boolean;
   /** 演示阅读量 */
   viewCount: number;
   blocks: HelpArticleBlock[];
@@ -36,7 +35,6 @@ export interface HelpFaqItem {
   id: string;
   category: HelpCategory;
   questionKey: string;
-  answerKey: string;
 }
 
 export type HelpTopicIcon =
@@ -45,20 +43,8 @@ export type HelpTopicIcon =
   | 'store'
   | 'gift'
   | 'users'
-  | 'shield'
   | 'building'
   | 'support';
-
-export interface HelpQuickLink {
-  id: string;
-  category: HelpCategory;
-  icon: HelpTopicIcon;
-  titleKey: string;
-  descKey: string;
-  /** 站内路由或 `#search=keyword` */
-  href: string;
-  searchHint?: string;
-}
 
 export type HelpSupportActionId = 'liveChat' | 'feedback' | 'community';
 

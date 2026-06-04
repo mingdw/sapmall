@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heart, MessageCircle, ShieldCheck } from 'lucide-react';
+import { DAO_REPLY_LIST } from '../constants/daoReplyListClasses';
 import type { DaoDiscussionReplyItem, DaoDiscussionReplyTarget } from '../types';
 import {
   buildDiscussionReplyTree,
@@ -9,7 +10,6 @@ import {
 } from '../utils/daoDiscussionReplyTree';
 import { shortenWalletAddress } from '../utils/walletAddress';
 import DaoDiscussionReplyEditor from './DaoDiscussionReplyEditor';
-import styles from './DaoDiscussionReplyList.module.scss';
 
 type Props = {
   discussionId: string;
@@ -95,41 +95,41 @@ const ReplyRow: React.FC<ReplyRowProps> = ({
 
   return (
     <li
-      className={`${isRoot ? styles.discussionReplyItem : styles.discussionReplyChildItem}`}
+      className={isRoot ? DAO_REPLY_LIST.item : DAO_REPLY_LIST.childItem}
       data-depth={depth}
     >
       {isRoot && floor !== undefined ? (
-        <div className={styles.discussionReplyAside} aria-hidden>
-          <span className={styles.discussionReplyFloor}>
+        <div className={DAO_REPLY_LIST.aside} aria-hidden>
+          <span className={DAO_REPLY_LIST.floor}>
             {t('dao.discussionDetail.replyFloor', { floor })}
           </span>
         </div>
       ) : null}
 
-      <div className={styles.discussionReplyContent}>
-        <header className={styles.discussionReplyHead}>
-          <div className={styles.discussionReplyAuthorRow}>
+      <div className={DAO_REPLY_LIST.content}>
+        <header className={DAO_REPLY_LIST.head}>
+          <div className={DAO_REPLY_LIST.authorRow}>
             <span
-              className={`${styles.discussionReplyAvatar}${!isRoot ? ` ${styles.discussionReplyAvatarSm}` : ''}`}
+              className={`${DAO_REPLY_LIST.avatar}${!isRoot ? ` ${DAO_REPLY_LIST.avatarSm}` : ''}`}
             >
               {reply.authorAddress.slice(2, 4).toUpperCase()}
             </span>
-            <span className={styles.discussionReplyAuthor}>{shortenWalletAddress(reply.authorAddress)}</span>
+            <span className={DAO_REPLY_LIST.author}>{shortenWalletAddress(reply.authorAddress)}</span>
             {isOp ? (
-              <span className={styles.discussionReplyOpBadge}>{t('dao.discussionDetail.opBadge')}</span>
+              <span className={DAO_REPLY_LIST.opBadge}>{t('dao.discussionDetail.opBadge')}</span>
             ) : null}
             {reply.isOfficial ? (
-              <span className={styles.discussionReplyOfficialBadge}>
+              <span className={DAO_REPLY_LIST.officialBadge}>
                 <ShieldCheck className="h-3 w-3" aria-hidden />
                 {t('dao.discussionDetail.officialBadge')}
               </span>
             ) : null}
           </div>
-          {timeLabel ? <time className={styles.discussionReplyTime}>{timeLabel}</time> : null}
+          {timeLabel ? <time className={DAO_REPLY_LIST.time}>{timeLabel}</time> : null}
         </header>
 
         {reply.replyToAuthorAddress && reply.replyToSnippet ? (
-          <p className={styles.discussionReplyQuote}>
+          <p className={DAO_REPLY_LIST.quote}>
             {t('dao.discussionDetail.replyToQuote', {
               user: shortenWalletAddress(reply.replyToAuthorAddress),
               excerpt: reply.replyToSnippet,
@@ -137,12 +137,12 @@ const ReplyRow: React.FC<ReplyRowProps> = ({
           </p>
         ) : null}
 
-        <p className={styles.discussionReplyBody}>{body}</p>
+        <p className={DAO_REPLY_LIST.body}>{body}</p>
 
-        <footer className={styles.discussionReplyFoot}>
+        <footer className={DAO_REPLY_LIST.foot}>
           <button
             type="button"
-            className={`${styles.discussionReplyActionBtn}${isExpanded ? ` ${styles.discussionReplyActionBtnActive}` : ''}`}
+            className={`${DAO_REPLY_LIST.actionBtn}${isExpanded ? ` ${DAO_REPLY_LIST.actionBtnActive}` : ''}`}
             onClick={() => onToggleThread(reply.id)}
             aria-expanded={isExpanded}
             aria-controls={`dao-reply-thread-${reply.id}`}
@@ -150,7 +150,7 @@ const ReplyRow: React.FC<ReplyRowProps> = ({
             <MessageCircle className="h-3.5 w-3.5" aria-hidden />
             {replyActionLabel}
           </button>
-          <span className={styles.discussionReplyLikes}>
+          <span className={DAO_REPLY_LIST.likes}>
             <Heart className="h-3.5 w-3.5" aria-hidden />
             {t('dao.discussionDetail.likes', { count: reply.likes })}
           </span>
@@ -159,14 +159,14 @@ const ReplyRow: React.FC<ReplyRowProps> = ({
         {isExpanded ? (
           <div
             id={`dao-reply-thread-${reply.id}`}
-            className={styles.discussionReplyThread}
+            className={DAO_REPLY_LIST.thread}
             role="region"
             aria-label={t('dao.discussionDetail.replyThreadLabel', {
               user: shortenWalletAddress(reply.authorAddress),
             })}
           >
             {children.length > 0 ? (
-              <ol className={styles.discussionReplyChildren}>
+              <ol className={DAO_REPLY_LIST.children}>
                 {children.map((child) => (
                   <ReplyRow
                     key={child.reply.id}
@@ -184,7 +184,7 @@ const ReplyRow: React.FC<ReplyRowProps> = ({
             ) : null}
 
             <div
-              className={styles.discussionReplyInlineForm}
+              className={DAO_REPLY_LIST.inlineForm}
               aria-label={t('dao.discussionDetail.composer.replyingTo', {
                 user: shortenWalletAddress(reply.authorAddress),
               })}
@@ -220,11 +220,11 @@ const DaoDiscussionReplyList: React.FC<Props> = ({ discussionId, replies, opAuth
   }, []);
 
   if (replyTree.length === 0) {
-    return <p className={styles.discussionReplyEmpty}>{t('dao.discussionDetail.noReplies')}</p>;
+    return <p className={DAO_REPLY_LIST.empty}>{t('dao.discussionDetail.noReplies')}</p>;
   }
 
   return (
-    <ol className={styles.discussionReplyList}>
+    <ol className={DAO_REPLY_LIST.list}>
       {replyTree.map((node, index) => (
         <ReplyRow
           key={node.reply.id}
@@ -244,3 +244,5 @@ const DaoDiscussionReplyList: React.FC<Props> = ({ discussionId, replies, opAuth
 };
 
 export default DaoDiscussionReplyList;
+
+export { DAO_REPLY_LIST };

@@ -25,7 +25,7 @@ import {
 } from '../utils/daoProposalDraft.storage';
 import { daoHomePath, daoProposalsListPath } from '../utils/daoNavigation';
 import listTagStyles from '../styles/dao.listTags.module.scss';
-import pageLayoutStyles from '../styles/dao.pageLayout.module.scss';
+import { DAO_LAYOUT } from '../constants/daoLayoutClasses';
 import sharedStyles from '../styles/dao.shared.module.scss';
 import detailStyles from './DaoProposalDetail.module.scss';
 import styles from './DaoProposalEditor.module.scss';
@@ -132,7 +132,7 @@ const DaoProposalEditor: React.FC = () => {
   }, [navigate, t]);
 
   return (
-    <section className={pageLayoutStyles.contentZoneInnerFull}>
+    <section className={DAO_LAYOUT.contentZoneInnerFull}>
       <article className={`${sharedStyles.panelCard} ${styles.proposalEditorCard}`} aria-label={t('dao.proposalCreate.pageTitle')}>
         <header className={styles.proposalEditorHead}>
           <nav className={detailStyles.proposalDetailBreadcrumb} aria-label="Breadcrumb">

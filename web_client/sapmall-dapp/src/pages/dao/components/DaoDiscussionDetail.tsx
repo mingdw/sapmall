@@ -26,10 +26,10 @@ import DaoDiscussionDetailBody from './DaoDiscussionDetailBody';
 import DaoDiscussionReplyComposer from './DaoDiscussionReplyComposer';
 import DaoDiscussionReplyList from './DaoDiscussionReplyList';
 import detailStyles from '../styles/dao.detailCommon.module.scss';
-import pageLayoutStyles from '../styles/dao.pageLayout.module.scss';
+import { DAO_LAYOUT } from '../constants/daoLayoutClasses';
 import sharedStyles from '../styles/dao.shared.module.scss';
-import eventStyles from './DaoEventDetail.module.scss';
-import replyStyles from './DaoDiscussionReplyList.module.scss';
+import { DAO_EVENT_BREADCRUMB } from '../constants/daoBreadcrumbClasses';
+import { DAO_REPLY_LIST } from '../constants/daoReplyListClasses';
 import styles from './DaoDiscussionDetail.module.scss';
 
 type Props = {
@@ -64,26 +64,26 @@ const DaoDiscussionDetail: React.FC<Props> = ({ discussion }) => {
   }, [discussion.id]);
 
   return (
-    <section className={pageLayoutStyles.contentZoneInnerFull}>
+    <section className={DAO_LAYOUT.contentZoneInnerFull}>
       <article className={`${sharedStyles.panelCard} ${styles.discussionDetailCard}`} aria-label={title}>
         <header className={styles.discussionDetailHead}>
-          <nav className={eventStyles.eventDetailBreadcrumb} aria-label="Breadcrumb">
-            <Link to={daoHomePath} className={eventStyles.eventDetailBreadcrumbLink}>
+          <nav className={DAO_EVENT_BREADCRUMB.nav} aria-label="Breadcrumb">
+            <Link to={daoHomePath} className={DAO_EVENT_BREADCRUMB.link}>
               {t('navigation.dao')}
             </Link>
             <ChevronRight size={14} aria-hidden />
-            <Link to={daoDiscussionsListPath()} className={eventStyles.eventDetailBreadcrumbLink}>
+            <Link to={daoDiscussionsListPath()} className={DAO_EVENT_BREADCRUMB.link}>
               {t('dao.tabs.discussions')}
             </Link>
             <ChevronRight size={14} aria-hidden />
             <Link
               to={daoDiscussionsListPath(discussion.category)}
-              className={eventStyles.eventDetailBreadcrumbLink}
+              className={DAO_EVENT_BREADCRUMB.link}
             >
               {t(`dao.filters.discussions.${discussion.category}`)}
             </Link>
             <ChevronRight size={14} aria-hidden />
-            <span className={eventStyles.eventDetailBreadcrumbCurrent} aria-current="page">
+            <span className={DAO_EVENT_BREADCRUMB.current} aria-current="page">
               {title}
             </span>
           </nav>
@@ -120,10 +120,10 @@ const DaoDiscussionDetail: React.FC<Props> = ({ discussion }) => {
 
         <section className={styles.discussionOpPost} aria-label={t('dao.discussionDetail.opSection')}>
           <header className={styles.discussionOpHead}>
-            <span className={replyStyles.discussionReplyAvatar}>{discussion.authorAddress.slice(2, 4).toUpperCase()}</span>
+            <span className={DAO_REPLY_LIST.avatar}>{discussion.authorAddress.slice(2, 4).toUpperCase()}</span>
             <div className={styles.discussionOpAuthorWrap}>
               <span className={styles.discussionOpAuthor}>{shortenWalletAddress(discussion.authorAddress)}</span>
-              <span className={replyStyles.discussionReplyOpBadge}>{t('dao.discussionDetail.opBadge')}</span>
+              <span className={DAO_REPLY_LIST.opBadge}>{t('dao.discussionDetail.opBadge')}</span>
             </div>
             <time className={styles.discussionOpTime}>{activityLabel}</time>
           </header>
@@ -131,10 +131,10 @@ const DaoDiscussionDetail: React.FC<Props> = ({ discussion }) => {
           <DaoDiscussionDetailBody blocks={discussion.blocks} />
         </section>
 
-        <section className={replyStyles.discussionReplySection} aria-labelledby="dao-discussion-replies-title">
-          <h2 id="dao-discussion-replies-title" className={replyStyles.discussionReplySectionTitle}>
+        <section className={DAO_REPLY_LIST.section} aria-labelledby="dao-discussion-replies-title">
+          <h2 id="dao-discussion-replies-title" className={DAO_REPLY_LIST.sectionTitle}>
             {t('dao.discussionDetail.replySectionTitle')}
-            <span className={replyStyles.discussionReplySectionCount}>{replyCount}</span>
+            <span className={DAO_REPLY_LIST.sectionCount}>{replyCount}</span>
           </h2>
           <DaoDiscussionReplyList
             discussionId={discussion.id}

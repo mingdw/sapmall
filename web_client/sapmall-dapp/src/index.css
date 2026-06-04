@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './pages/dao/styles/daoHeroBackground.global.scss';
+@import './pages/dao/styles/daoHeroCarousel.global.scss';
+@import './pages/dao/styles/daoTabOverview.global.scss';
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -14,6 +18,120 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Help 模块 — Ant Design 分页（需在 .pageRoot 内使用 CSS 变量） */
+@layer components {
+  .help-guide-pagination .ant-pagination-item-active {
+    border-color: var(--help-primary);
+  }
+
+  .help-guide-pagination .ant-pagination-item-active a {
+    color: var(--help-primary);
+  }
+
+  /* DAO — 讨论回复 TextArea（antd） */
+  .dao-discussion-reply-textarea .ant-input {
+    font-size: 0.875rem;
+    border-color: #e2e8f0;
+    border-radius: 0.5rem;
+    padding-bottom: 0.65rem;
+  }
+
+  .dao-discussion-reply-textarea .ant-input:focus,
+  .dao-discussion-reply-textarea .ant-input-focused {
+    border-color: var(--dao-tab-discussions) !important;
+    box-shadow: 0 0 0 2px rgb(234 88 12 / 0.15) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-dao-announcement-scroll {
+      animation: none !important;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+  }
+
+  /* DAO — 讨论富文本编辑器（Quill） */
+  .dao-discussion-quill {
+    border-radius: 0.55rem;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .dao-discussion-quill:focus-within {
+    box-shadow: 0 0 0 3px rgb(234 88 12 / 0.12);
+  }
+
+  .dao-discussion-quill .ql-toolbar.ql-snow {
+    border: 1px solid #e2e8f0;
+    border-bottom: none;
+    border-radius: 0.55rem 0.55rem 0 0;
+    background: #fafafa;
+    font-family: inherit;
+  }
+
+  .dao-discussion-quill .ql-container.ql-snow {
+    border: 1px solid #e2e8f0;
+    border-radius: 0 0 0.55rem 0.55rem;
+    font-family: inherit;
+    font-size: 0.875rem;
+  }
+
+  .dao-discussion-quill .ql-editor {
+    min-height: 12rem;
+    max-height: 28rem;
+    overflow-y: auto;
+    line-height: 1.65;
+    color: var(--dao-panel-text);
+  }
+
+  .dao-discussion-quill .ql-editor.ql-blank::before {
+    color: #94a3b8;
+    font-style: normal;
+  }
+
+  .dao-discussion-quill .ql-snow.ql-toolbar button:hover,
+  .dao-discussion-quill .ql-snow .ql-toolbar button.ql-active,
+  .dao-discussion-quill .ql-snow.ql-toolbar .ql-picker-label:hover,
+  .dao-discussion-quill .ql-snow.ql-toolbar .ql-picker-label.ql-active {
+    color: var(--dao-tab-discussions);
+  }
+
+  .dao-discussion-quill .ql-snow.ql-toolbar button:hover .ql-stroke,
+  .dao-discussion-quill .ql-snow .ql-toolbar button.ql-active .ql-stroke,
+  .dao-discussion-quill .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke {
+    stroke: var(--dao-tab-discussions);
+  }
+
+  .dao-discussion-quill .ql-snow.ql-toolbar button:hover .ql-fill,
+  .dao-discussion-quill .ql-snow .ql-toolbar button.ql-active .ql-fill {
+    fill: var(--dao-tab-discussions);
+  }
+
+  .dao-discussion-quill .ql-editor pre.ql-syntax {
+    margin: 0.65rem 0;
+    padding: 0.75rem 0.85rem;
+    border-radius: 0.5rem;
+    background: #0f172a;
+    color: #e2e8f0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .dao-discussion-quill .ql-editor img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0.5rem auto;
+    border-radius: 0.5rem;
+  }
+
+  .dao-discussion-quill .ql-editor blockquote {
+    border-left: 3px solid rgb(234 88 12 / 0.4);
+    color: #475569;
+  }
 }
 
 /* Admin iframe 样式已移至 dapp-common.css 中统一管理 */

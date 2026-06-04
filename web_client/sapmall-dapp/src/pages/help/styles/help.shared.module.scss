@@ -11,22 +11,8 @@
   overflow: hidden;
 }
 
-.panelCard,
-.panelCardAccent {
+.panelCard {
   position: relative;
-}
-
-.panelCardAccent {
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--help-amber) 0%, var(--help-primary) 100%);
-    border-radius: 1rem 1rem 0 0;
-  }
 }
 
 .panelSection {
@@ -79,20 +65,6 @@
   justify-content: space-between;
   gap: 0.5rem;
   margin-bottom: 0.85rem;
-}
-
-.articleTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.articleTag {
-  font-size: 0.6875rem;
-  padding: 0.12rem 0.5rem;
-  border-radius: 9999px;
-  background: rgba(139, 92, 246, 0.08);
-  color: #6d28d9;
 }
 
 .emptyState {

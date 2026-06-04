@@ -1,0 +1,111 @@
+{
+  "exchange": {
+    "errors": {
+      "pageErrorToast": "页面出现错误，请刷新重试",
+      "pageErrorFallback": "页面出现错误，请刷新重试"
+    },
+    "toasts": {
+      "swapSuccess": "兑换成功！",
+      "swapSuccessDesc": "您已获得 {{amount}} SAP 代币",
+      "connectWallet": "请先连接钱包",
+      "noPendingDeposit": "当前无待缴纳保证金申请单",
+      "missingIntent": "缺少申请单信息，请从 Admin 重新进入",
+      "depositSuccess": "保证金支付提交成功",
+      "depositTxHash": "交易哈希：{{prefix}}...{{suffix}}",
+      "swapTabWallet": "请先连接钱包后再操作兑换",
+      "depositTabNoPending": "当前没有待缴纳保证金申请单"
+    },
+    "hero": {
+      "tagline": "去中心化兑换 · 安全 · 快速 · 低手续费",
+      "title": "兑换 SAP 代币",
+      "subtitle": "使用主流稳定币兑换 SAP，购物可享更低手续费、商家专属折扣与生态活动优先权益"
+    },
+    "badges": {
+      "audited": "合约已审计",
+      "bestRate": "最优汇率",
+      "multiChain": "多链支持"
+    },
+    "ticker": {
+      "tag": "商家入驻",
+      "congrats": "恭喜",
+      "joinedSuffix": "入驻成为商家"
+    },
+    "tabs": {
+      "swap": "主流币兑换 SAP",
+      "deposit": "缴纳商家保证金"
+    },
+    "hints": {
+      "walletRequired": "当前钱包未连接，请先连接钱包后再进行兑换或保证金操作",
+      "depositLocked": "暂无待缴纳保证金申请单，缴纳保证金入口已锁定",
+      "syncingDeposit": "正在同步申请单状态..."
+    },
+    "deposit": {
+      "title": "商家保证金缴纳",
+      "subtitle": "请在有效期内完成支付，逾期后申请单会失效。",
+      "amountDue": "应缴金额",
+      "intentId": "意图单 ID",
+      "deadline": "截止时间",
+      "payProcessing": "支付处理中...",
+      "paySubmitted": "已提交链上交易",
+      "payNow": "使用钱包立即支付",
+      "txSubmitted": "已提交交易：{{hash}}",
+      "backAdmin": "已完成支付，返回 Admin 查看状态",
+      "footnote": "说明：当前页面已接入 Admin 跳转与支付提交流程，链上确认状态以后端回调结果为准。"
+    },
+    "supportedCoins": "支持的兑换币种",
+    "swap": {
+      "title": "代币兑换",
+      "subtitle": "用主流币兑换 SAP 代币",
+      "slippage": "滑点容忍度",
+      "customSlippage": "自定义",
+      "pay": "支付",
+      "balance": "余额",
+      "max": "MAX",
+      "selectPayToken": "选择支付币种",
+      "tokenTypeStable": "稳定币",
+      "tokenTypeMajor": "主流币",
+      "receive": "获得",
+      "priceImpact": "价格影响",
+      "feeLabel": "手续费 ({{percent}}%)",
+      "slippageTolerance": "滑点容忍度",
+      "eta": "预计到账时间",
+      "etaValue": "~15 秒",
+      "connectWalletBtn": "请先连接钱包",
+      "swapSuccessBtn": "✓ 兑换成功！",
+      "swapping": "兑换中...",
+      "enterAmount": "请输入金额",
+      "swapNow": "立即兑换",
+      "securityNote": "智能合约已审计 · 资产安全有保障",
+      "rateLine": "1 {{from}} = {{rate}} SAP",
+      "disabledReason": "请先连接钱包后再进行代币兑换"
+    },
+    "marketStats": {
+      "title": "市场数据",
+      "sapPrice": "SAP 当前价格",
+      "vol24h": "24h 交易量",
+      "tvl": "总锁仓量 (TVL)",
+      "holders": "持币地址数"
+    },
+    "chart": {
+      "pair": "SAP / USD",
+      "period24H": "24H",
+      "period7D": "7D",
+      "period30D": "30D"
+    },
+    "recentTx": {
+      "title": "近期兑换记录",
+      "viewAll": "查看全部",
+      "success": "成功",
+      "time2m": "2 分钟前",
+      "time8m": "8 分钟前",
+      "time15m": "15 分钟前",
+      "time23m": "23 分钟前"
+    },
+    "sapVisual": {
+      "name": "SAP Token",
+      "tagline": "SAPMall 生态核心代币",
+      "currentPrice": "当前价格",
+      "changeLabel": "▲ 5.82% (24h)"
+    }
+  }
+}

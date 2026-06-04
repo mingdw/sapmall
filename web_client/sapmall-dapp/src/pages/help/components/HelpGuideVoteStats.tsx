@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import type { HelpArticleMeta } from '../types';
-import styles from './HelpGuideVoteStats.module.scss';
 
 type VoteType = 'helpful' | 'notHelpful';
 
@@ -12,6 +11,9 @@ type Props = {
 };
 
 const BUBBLE_MS = 550;
+
+const voteBtn =
+  'relative inline-flex items-center gap-1 rounded-md border-none bg-transparent px-1 py-0.5 text-[0.6875rem] font-medium text-slate-400 transition-colors hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/45 active:[&_.stat-value]:text-[var(--help-panel-text)]';
 
 const HelpGuideVoteStats: React.FC<Props> = ({ article, className }) => {
   const { t } = useTranslation();
@@ -44,36 +46,46 @@ const HelpGuideVoteStats: React.FC<Props> = ({ article, className }) => {
 
   return (
     <div
-      className={[styles.guideRowStats, className].filter(Boolean).join(' ')}
+      className={['inline-flex flex-wrap items-center gap-x-3 gap-y-2 overflow-visible', className]
+        .filter(Boolean)
+        .join(' ')}
       aria-label={t('help.guide.statsAria')}
     >
       <button
         type="button"
-        className={`${styles.guideVoteBtn} ${styles.guideVoteBtnHelpful}`}
+        className={voteBtn}
         aria-label={t('help.guide.voteHelpful')}
         onClick={() => vote('helpful')}
       >
-        <span className={styles.guideVoteIconWrap}>
-          <ThumbsUp size={13} strokeWidth={2.25} aria-hidden />
+        <span className="relative inline-flex items-center justify-center">
+          <ThumbsUp size={13} strokeWidth={2.25} className="text-green-600" aria-hidden />
           {bubble === 'helpful' ? (
-            <span className={`${styles.guideVoteBubble} ${styles.guideVoteBubbleHelpful}`}>+1</span>
+            <span className="pointer-events-none absolute -top-[1.35rem] left-1/2 z-[2] animate-help-vote-bubble whitespace-nowrap rounded-md bg-green-600 px-1.5 py-0.5 text-[0.625rem] font-bold leading-tight text-white shadow-[0_2px_8px_rgba(15,23,42,0.12)]">
+              +1
+            </span>
           ) : null}
         </span>
-        <span className={styles.guideRowStatValue}>{counts.helpful}</span>
+        <span className="stat-value font-medium tabular-nums text-slate-500 transition-colors">
+          {counts.helpful}
+        </span>
       </button>
       <button
         type="button"
-        className={`${styles.guideVoteBtn} ${styles.guideVoteBtnNotHelpful}`}
+        className={voteBtn}
         aria-label={t('help.guide.voteNotHelpful')}
         onClick={() => vote('notHelpful')}
       >
-        <span className={styles.guideVoteIconWrap}>
-          <ThumbsDown size={13} strokeWidth={2.25} aria-hidden />
+        <span className="relative inline-flex items-center justify-center">
+          <ThumbsDown size={13} strokeWidth={2.25} className="text-red-600" aria-hidden />
           {bubble === 'notHelpful' ? (
-            <span className={`${styles.guideVoteBubble} ${styles.guideVoteBubbleNotHelpful}`}>+1</span>
+            <span className="pointer-events-none absolute -top-[1.35rem] left-1/2 z-[2] animate-help-vote-bubble whitespace-nowrap rounded-md bg-red-600 px-1.5 py-0.5 text-[0.625rem] font-bold leading-tight text-white shadow-[0_2px_8px_rgba(15,23,42,0.12)]">
+              +1
+            </span>
           ) : null}
         </span>
-        <span className={styles.guideRowStatValue}>{counts.notHelpful}</span>
+        <span className="stat-value font-medium tabular-nums text-slate-500 transition-colors">
+          {counts.notHelpful}
+        </span>
       </button>
     </div>
   );

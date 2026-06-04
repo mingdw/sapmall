@@ -143,7 +143,6 @@ export function buildHelpTopicArticles(): HelpArticleMeta[] {
         category,
         tagKeys: [],
         updatedAt: `2026-05-${day}`,
-        hot: i === 0,
         viewCount: computeHelpViewCount(category, i, slug),
         blocks: buildTopicQaArticleBlocks(slug, category, i),
         helpfulCount: 86 + i * 23 + category.length * 3,
@@ -163,7 +162,6 @@ export function buildHelpTopicFaq(): HelpFaqItem[] {
         id: `faq-${slug}`,
         category,
         questionKey: `help.topicQa.${slug}.title`,
-        answerKey: `help.topicQa.${slug}.body`,
       });
     });
   }

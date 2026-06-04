@@ -117,6 +117,18 @@ export function resolveProductImageUrl(
   return resolveProductImageList(images, seed, category3)[0];
 }
 
+/** 主图：优先 SKU 可信图，否则 SPU 图（与商品详情 gallery 一致） */
+export function resolvePrimaryProductImage(
+  spuImages: string[] | undefined,
+  skuImages: string[] | undefined,
+  seed: string | number,
+  category3?: string,
+): string {
+  const skuTrusted = (skuImages ?? []).filter((url) => isTrustedProductImageUrl(url));
+  if (skuTrusted.length) return skuTrusted[0];
+  return resolveProductImageList(spuImages, seed, category3)[0] ?? buildSampleProductImageUrl(seed, category3);
+}
+
 /** 解析商品图列表：过滤无效 URL，至少返回 1 张可用图 */
 export function resolveProductImageList(
   images: string[] | string | undefined,

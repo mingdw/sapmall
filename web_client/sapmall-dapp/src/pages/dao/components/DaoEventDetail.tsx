@@ -6,12 +6,12 @@ import { getRelatedDaoEvents } from '../mocks/daoEventDetails.mock';
 import type { DaoEventDetail as DaoEventDetailType } from '../types';
 import { formatHelpMetricNumber } from '../../help/utils/formatHelpMetric';
 import { daoEventPath, daoEventsListPath } from '../utils/daoNavigation';
+import { DAO_EVENT_BREADCRUMB } from '../constants/daoBreadcrumbClasses';
 import detailStyles from '../styles/dao.detailCommon.module.scss';
 import listTagStyles from '../styles/dao.listTags.module.scss';
-import pageLayoutStyles from '../styles/dao.pageLayout.module.scss';
+import { DAO_LAYOUT } from '../constants/daoLayoutClasses';
 import sharedStyles from '../styles/dao.shared.module.scss';
 import DaoEventDetailBody from './DaoEventDetailBody';
-import styles from './DaoEventDetail.module.scss';
 
 type Props = {
   event: DaoEventDetailType;
@@ -35,41 +35,50 @@ const DaoEventDetail: React.FC<Props> = ({ event }) => {
   }, [event.id]);
 
   return (
-    <section className={pageLayoutStyles.contentZoneInnerFull}>
-      <article className={`${sharedStyles.panelCard} ${styles.eventDetailCard}`} aria-label={title}>
-        <header className={styles.eventDetailHead}>
-          <nav className={styles.eventDetailBreadcrumb} aria-label="Breadcrumb">
-            <Link to={daoEventsListPath} className={styles.eventDetailBreadcrumbLink}>
+    <section className={DAO_LAYOUT.contentZoneInnerFull}>
+      <article
+        className={`${sharedStyles.panelCard} px-5 pb-6 pt-[1.15rem] md:px-[1.65rem] md:pb-7 md:pt-[1.35rem]`}
+        aria-label={title}
+      >
+        <header className="mb-5 flex flex-col gap-5">
+          <nav className={DAO_EVENT_BREADCRUMB.nav} aria-label="Breadcrumb">
+            <Link to={daoEventsListPath} className={DAO_EVENT_BREADCRUMB.link}>
               {t('dao.tabs.events')}
             </Link>
             <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-50" aria-hidden />
-            <span className={styles.eventDetailBreadcrumbCurrent} aria-current="page">
+            <span className={DAO_EVENT_BREADCRUMB.current} aria-current="page">
               {title}
             </span>
           </nav>
 
-          <div className={styles.eventDetailHero}>
-            <div className={styles.eventDetailCover}>
-              <img src={event.imageUrl} alt="" loading="eager" />
+          <div className="grid gap-[1.15rem] md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] md:items-start md:gap-[1.35rem]">
+            <div className="aspect-[16/10] overflow-hidden rounded-[0.85rem] border border-slate-900/10 bg-slate-100">
+              <img src={event.imageUrl} alt="" className="h-full w-full object-cover" loading="eager" />
             </div>
-            <div className={styles.eventDetailHeroBody}>
-              <span className={`${styles.eventDetailCategory} ${eventCategoryClass[event.category]}`}>
+            <div className="flex min-w-0 flex-col gap-[0.65rem]">
+              <span
+                className={`self-start rounded-full px-[0.6rem] py-[0.22rem] text-[0.6875rem] font-bold uppercase tracking-wide ${eventCategoryClass[event.category]}`}
+              >
                 {t(event.categoryKey)}
               </span>
-              <h1 className={styles.eventDetailTitle}>{title}</h1>
-              <div className={styles.eventDetailMeta}>
+              <h1 className="m-0 text-[clamp(1.25rem,2.8vw,1.75rem)] font-bold leading-snug tracking-tight text-[var(--dao-panel-text)]">
+                {title}
+              </h1>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-[0.65rem] text-[0.8125rem] text-[var(--dao-panel-muted)]">
                 <time dateTime={t(event.publishedAtKey)}>{t(event.publishedAtKey)}</time>
-                <span className={styles.eventDetailMetric}>
+                <span className="inline-flex items-center gap-1.5 font-semibold text-slate-500 [&_svg]:text-[var(--dao-tab-events)]">
                   <Eye className="h-4 w-4" aria-hidden />
                   {viewsLabel}
                 </span>
               </div>
-              <p className={styles.eventDetailLead}>{t(event.excerptKey)}</p>
+              <p className="m-0 mt-[0.15rem] text-[0.9375rem] leading-relaxed text-slate-600">
+                {t(event.excerptKey)}
+              </p>
             </div>
           </div>
         </header>
 
-        <div className={styles.eventDetailBody}>
+        <div className="mx-auto max-w-[52rem] border-t border-slate-900/10 pt-[0.35rem]">
           <DaoEventDetailBody event={event} blocks={event.blocks} />
         </div>
 

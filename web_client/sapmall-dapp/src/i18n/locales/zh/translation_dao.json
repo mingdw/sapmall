@@ -1,0 +1,906 @@
+{
+  "dao": {
+    "title": "DAO 治理",
+    "tabs": {
+      "proposals": "提案",
+      "discussions": "热门讨论",
+      "events": "大事件"
+    },
+    "hero": {
+      "slidePrev": "上一屏",
+      "slideNext": "下一屏",
+      "dimensionNavAria": "治理维度切换",
+      "dimensions": {
+        "discussions": "热门讨论",
+        "proposals": "社区提案",
+        "events": "大事件"
+      },
+      "slides": {
+        "discussions": {
+          "title": "倾听社区声音",
+          "subtitle": "Discord 是讨论主阵地",
+          "description": "在频道里交流产品、治理与生态想法；讨论用于凝聚共识，链上投票才是最终决策。"
+        },
+        "proposals": {
+          "title": "链上提案，共同决策",
+          "subtitle": "用投票塑造 Sapphire Mall",
+          "description": "浏览进行中与历史提案，连接钱包即可参与投票。每一笔赞成或反对，都在书写生态规则。"
+        },
+        "events": {
+          "title": "治理大事件一览",
+          "subtitle": "AMA、Grant 与里程碑",
+          "description": "关注社区 AMA、资助计划与重要里程碑，第一时间参与关键节点。",
+          "highlight": "下一场社区 AMA · 5 月 28 日 20:00 UTC+8"
+        }
+      },
+      "aside": {
+        "discussions": {
+          "kicker": "社区脉搏"
+        },
+        "proposals": {
+          "kicker": "链上治理",
+          "activeVotes": "投票进行中",
+          "quorum": "当前 Quorum",
+          "voteWindow": "投票窗口",
+          "hint": "连接钱包后即可参与链上投票"
+        },
+        "events": {
+          "liveTag": "治理现场",
+          "footnote": "Grant 与里程碑同步更新至治理看板",
+          "grantOpen": "Grant 开放",
+          "milestone": "最新里程碑"
+        }
+      }
+    },
+    "metrics": {
+      "proposals": {
+        "total": "总提案数",
+        "active": "进行中",
+        "passed": "已完成",
+        "pending": "待开始"
+      },
+      "discussions": {
+        "hot": "热门讨论",
+        "marketplace": "商城治理",
+        "community": "社区发展",
+        "members": "社区成员"
+      },
+      "events": {
+        "upcoming": "即将开始",
+        "ama": "本月 AMA",
+        "grant": "Grant 轮次",
+        "milestones": "里程碑"
+      }
+    },
+    "actions": {
+      "createProposal": "发起提案",
+      "startDiscussion": "发起讨论"
+    },
+    "filters": {
+      "proposalsAria": "提案筛选",
+      "discussionsAria": "讨论筛选",
+      "proposals": {
+        "all": "全部",
+        "active": "进行中",
+        "passed": "已完成",
+        "pending": "待开始"
+      },
+      "discussions": {
+        "all": "全部板块",
+        "hot": "热门讨论",
+        "marketplace": "商城治理",
+        "community": "社区发展"
+      },
+      "eventsAria": "大事件筛选",
+      "events": {
+        "all": "全部",
+        "ama": "AMA",
+        "grant": "Grant",
+        "milestone": "里程碑",
+        "announcement": "公告"
+      }
+    },
+    "list": {
+      "tabListAria": "列表类型切换",
+      "filterLabel": "筛选",
+      "searchPlaceholder": "搜索…",
+      "empty": "暂无符合条件的内容",
+      "votesSummary": "{{for}} 赞成 / {{against}} 反对 · {{pct}}% 赞成",
+      "voteFor": "{{count}} 赞成",
+      "voteAgainst": "{{count}} 反对",
+      "voteForPct": "{{pct}}% 赞成",
+      "proposerLabel": "提案者：",
+      "startsAt": "开始 {{date}}",
+      "endsAt": "结束 {{date}}",
+      "startsAtLabel": "开始",
+      "endsAtLabel": "结束",
+      "discussionMeta": "{{replies}} 条回复 · {{activity}}",
+      "discussionReplies": "{{count}} 条回复",
+      "discussionViews": "{{views}} 次浏览",
+      "eventMeta": "{{views}} 次浏览",
+      "events": {
+        "categories": {
+          "ama": "AMA",
+          "grant": "Grant",
+          "milestone": "里程碑",
+          "announcement": "公告"
+        },
+        "e1": {
+          "title": "五月社区 AMA：治理路线图与 Q2 里程碑",
+          "excerpt": "核心团队解读 Sapphire Mall 治理代币经济、商城手续费回购与 Grant 第二季开放节奏，并现场答疑。",
+          "publishedAt": "2026-05-18"
+        },
+        "e2": {
+          "title": "Grant 第二季正式启动 · 50,000 USDT 池",
+          "excerpt": "面向开发者工具、社区运营与生态集成三类项目开放申请，评审委员会将于 6 月上旬公布首轮名单。",
+          "publishedAt": "2026-05-15"
+        },
+        "e3": {
+          "title": "里程碑：DAO 治理模块主网上线",
+          "excerpt": "链上提案、投票与委托功能已接入主网环境，社区可通过连接钱包直接参与治理决策。",
+          "publishedAt": "2026-05-10"
+        },
+        "e4": {
+          "title": "公告：治理投票窗口规则更新",
+          "excerpt": "为提升参与率，活跃提案投票期由 5 天延长至 7 天，Quorum 阈值同步在社区论坛公示。",
+          "publishedAt": "2026-05-08"
+        },
+        "e5": {
+          "title": "回顾：四月生态 AMA 精华纪要",
+          "excerpt": "汇总 NFT 上架审核、多语言文档与 Bags 合作进展，完整回放与文字实录已发布至论坛。",
+          "publishedAt": "2026-05-02"
+        },
+        "e6": {
+          "title": "Grant 第一季收官：12 个项目获资助",
+          "excerpt": "涵盖钱包集成、数据看板与社区 Bot 等方向，第二季申请通道现已开放。",
+          "publishedAt": "2026-04-28"
+        },
+        "e7": {
+          "title": "生态周报：治理参与率突破 65%",
+          "excerpt": "链上投票、委托与论坛讨论数据汇总，附下月治理日历。",
+          "publishedAt": "2026-04-22"
+        },
+        "e8": {
+          "title": "公告：商城手续费分配细则公示",
+          "excerpt": "明确回购、金库注入与社区激励的分配比例与执行节奏。",
+          "publishedAt": "2026-04-18"
+        },
+        "e9": {
+          "title": "六月 AMA：多链部署与钱包支持路线",
+          "excerpt": "技术负责人解读 EVM 兼容链接入计划与测试网时间表。",
+          "publishedAt": "2026-04-12"
+        },
+        "e10": {
+          "title": "Grant 定向扶持：开发者工具专项",
+          "excerpt": "面向 SDK、索引器与监控工具开放快速评审通道。",
+          "publishedAt": "2026-04-08"
+        },
+        "e11": {
+          "title": "公告：治理模块维护窗口通知",
+          "excerpt": "计划 6 月 2 日凌晨进行合约参数升级，投票功能短暂暂停。",
+          "publishedAt": "2026-04-02"
+        }
+      },
+      "proposals": {
+        "tags": {
+          "governance": "治理",
+          "treasury": "金库",
+          "marketplace": "商城",
+          "staking": "质押",
+          "grant": "Grant",
+          "multisig": "多签",
+          "security": "安全"
+        },
+        "p1": {
+          "title": "SAP 质押奖励参数调整",
+          "summary": "提议将社区质押年化区间调整为 8%–12%，并引入 30 天解锁期。",
+          "startAt": "2026-05-12",
+          "endAt": "2026-05-19"
+        },
+        "p2": {
+          "title": "市场手续费回购计划",
+          "summary": "将商城交易手续费的 20% 用于回购 SAP 并注入社区金库。",
+          "startAt": "2026-05-10",
+          "endAt": "2026-05-17"
+        },
+        "p3": {
+          "title": "Grant 第二季预算公示",
+          "summary": "拨款 50,000 USDT 支持开发者工具与社区运营 Grant。",
+          "startAt": "2026-05-22",
+          "endAt": "2026-05-29"
+        },
+        "p4": {
+          "title": "治理多签成员换届",
+          "summary": "提名新一届多签成员名单，公示 7 天后链上确认。",
+          "startAt": "2026-04-20",
+          "endAt": "2026-04-27"
+        },
+        "p5": {
+          "title": "数字权益类目审核标准",
+          "summary": "明确 NFT 与虚拟道具的上架审核流程与披露模板。",
+          "startAt": "2026-05-08",
+          "endAt": "2026-05-15"
+        },
+        "p6": {
+          "title": "SAP 代币销毁机制",
+          "summary": "每季度将回购代币的 50% 永久销毁，其余注入金库。",
+          "startAt": "2026-04-05",
+          "endAt": "2026-04-12"
+        },
+        "p7": {
+          "title": "商户保证金调整方案",
+          "summary": "分级调整商户入驻保证金，降低中小商户门槛。",
+          "startAt": "2026-05-25",
+          "endAt": "2026-06-01"
+        },
+        "p8": {
+          "title": "跨链桥安全审计公示",
+          "summary": "公布第三方审计结论与后续漏洞赏金计划。",
+          "startAt": "2026-05-14",
+          "endAt": "2026-05-21"
+        },
+        "p9": {
+          "title": "社区金库季度披露模板",
+          "summary": "统一链上收支、Grant 拨付与回购数据的披露格式。",
+          "startAt": "2026-04-28",
+          "endAt": "2026-05-05"
+        },
+        "p10": {
+          "title": "委托投票默认策略优化",
+          "summary": "允许持有人为不同提案类型设置差异化委托规则。",
+          "startAt": "2026-05-20",
+          "endAt": "2026-05-27"
+        },
+        "p11": {
+          "title": "商户 KYC 分级标准修订",
+          "summary": "按交易规模划分 KYC 等级，简化小额商户入驻流程。",
+          "startAt": "2026-06-02",
+          "endAt": "2026-06-09"
+        }
+      },
+      "discussions": {
+        "d1": {
+          "title": "钱包签名体验优化建议",
+          "channel": "#热门讨论",
+          "excerpt": "移动端投票时的签名弹窗与 Gas 预估展示，已收集 86 条反馈。",
+          "activity": "今日活跃"
+        },
+        "d2": {
+          "title": "商城类目费率是否合理",
+          "channel": "#商城治理",
+          "excerpt": "讨论不同类目差异化费率与透明披露方式。",
+          "activity": "置顶话题"
+        },
+        "d3": {
+          "title": "Q3 社区活动提案征集",
+          "channel": "#社区发展",
+          "excerpt": "征集线下 Meetup 与线上 AMA 主题，欢迎提交想法。",
+          "activity": "本周最热"
+        },
+        "d4": {
+          "title": "多语言治理文档计划",
+          "channel": "#热门讨论",
+          "excerpt": "如何将提案摘要自动翻译为英/中/日，降低参与门槛。",
+          "activity": "128 条消息"
+        },
+        "d5": {
+          "title": "NFT 上架审核时长讨论",
+          "channel": "#商城治理",
+          "excerpt": "商户反馈审核周期过长，讨论 SLA 与加急通道。",
+          "activity": "昨日活跃"
+        },
+        "d6": {
+          "title": "新成员 onboarding 改进",
+          "channel": "#社区发展",
+          "excerpt": "志愿者整理新手引导：连接钱包、投票、委托三步走。",
+          "activity": "54 条回复"
+        },
+        "d7": {
+          "title": "治理投票通知渠道",
+          "channel": "#热门讨论",
+          "excerpt": "是否增加邮件 / Discord 机器人提醒新提案开放投票。",
+          "activity": "讨论中"
+        },
+        "d8": {
+          "title": "虚拟道具版权争议流程",
+          "channel": "#商城治理",
+          "excerpt": "梳理买家申诉与商户举证的标准流程与时限。",
+          "activity": "新帖"
+        },
+        "d9": {
+          "title": "治理论坛 spam 过滤规则",
+          "channel": "#社区发展",
+          "excerpt": "讨论低质量提案与灌水帖的自动识别与人工复核机制。",
+          "activity": "15 条回复"
+        },
+        "d10": {
+          "title": "质押收益计算器需求",
+          "channel": "#热门讨论",
+          "excerpt": "希望在前端展示不同锁仓期的预估收益与解锁时间线。",
+          "activity": "热议中"
+        },
+        "d11": {
+          "title": "DAO 页面移动端布局反馈",
+          "channel": "#商城治理",
+          "excerpt": "收集小屏下列表与投票按钮的可用性问题与改进建议。",
+          "activity": "9 条回复"
+        }
+      }
+    },
+    "status": {
+      "active": "投票中",
+      "pending": "待开始",
+      "passed": "已完成"
+    },
+    "topicTags": {
+      "pinned": "置顶",
+      "hot": "热",
+      "urgent": "紧急",
+      "trendingWeek": "本周热门",
+      "official": "官方",
+      "featured": "精",
+      "governance": "治理",
+      "new": "新话题",
+      "poll": "投票",
+      "bounty": "悬赏",
+      "qa": "问答",
+      "feedback": "反馈",
+      "resolved": "已解决"
+    },
+    "announcementTicker": {
+      "label": "公告",
+      "aria": "社区公告轮播",
+      "linkAria": "查看公告：{{title}}",
+      "titles": {
+        "e4": "治理投票窗口规则更新",
+        "e7": "治理参与率突破 65%",
+        "e8": "商城手续费分配细则公示",
+        "e11": "治理模块维护窗口通知"
+      }
+    },
+    "proposalCreate": {
+      "breadcrumbCurrent": "发起提案",
+      "pageTitle": "发起治理提案",
+      "pageLead": "填写提案信息与投票窗口，提交后将进入社区公示与链上投票流程（演示环境）。",
+      "demoCallout": "演示环境：草稿保存在本地浏览器，正式版将对接 Snapshot / 链上治理合约。",
+      "sections": {
+        "basic": "基本信息",
+        "votingWindow": "投票窗口",
+        "body": "提案正文",
+        "references": "参考链接"
+      },
+      "fields": {
+        "title": "提案标题",
+        "summary": "简要说明",
+        "tags": "提案标签",
+        "startAt": "开始日期",
+        "endAt": "结束日期",
+        "motivation": "动机与背景",
+        "specification": "规格说明",
+        "callout": "补充提示（可选）",
+        "referenceForum": "社区讨论链接",
+        "referenceImplementation": "实现 / 测试链接"
+      },
+      "placeholders": {
+        "title": "例如：SAP 质押奖励参数调整",
+        "summary": "用 1–2 句话说明提案要解决什么问题、预期影响",
+        "motivation": "阐述现状、问题与提出本提案的原因……",
+        "specification": "逐条列出具体变更，每行一条，例如：\n- 调整质押 APR 区间\n- 新增 30 天解锁期",
+        "callout": "投票前需知、风险提示或金库影响说明",
+        "referenceImplementation": "https://github.com/..."
+      },
+      "specificationHint": "每行一条规格项，提交后将渲染为列表",
+      "votingWindowHint": "建议投票窗口不少于 5 天，以便社区充分讨论。",
+      "saveDraft": "保存草稿",
+      "submit": "提交提案",
+      "discard": "放弃编辑",
+      "connectWallet": "连接钱包",
+      "connectToSubmit": "连接钱包后可提交提案（演示）。",
+      "saveDraftSuccess": "草稿已保存到本地",
+      "submitSuccess": "提案已提交（演示），将进入公示队列",
+      "submitConfirmTitle": "确认提交提案",
+      "submitConfirmBody": "提交后将进入治理公示流程。演示环境不会实际上链，请确认内容无误。",
+      "discardTitle": "放弃编辑？",
+      "discardBody": "将清除本地草稿并返回提案列表，未保存内容会丢失。",
+      "discardConfirm": "放弃并返回",
+      "validation": {
+        "titleRequired": "请填写提案标题",
+        "summaryRequired": "请填写简要说明",
+        "tagRequired": "请至少选择一个标签",
+        "datesRequired": "请设置投票开始与结束日期",
+        "endAfterStart": "结束日期须晚于开始日期",
+        "motivationRequired": "请填写动机与背景"
+      },
+      "selectedTagsAria": "已选提案标签",
+      "removeTag": "移除标签：{{tag}}",
+      "tagPickerAria": "可选提案标签",
+      "tagsInputPlaceholder": "点击上方标签添加到此处"
+    },
+    "discussionCreate": {
+      "breadcrumbCurrent": "发起讨论",
+      "pageTitle": "发起社区讨论",
+      "pageLead": "发布话题至对应板块，与社区成员交流观点、反馈与治理议题（演示环境）。",
+      "demoCallout": "演示环境：草稿与已发布讨论保存在本地浏览器，正式版将对接论坛或链上留言模块。",
+      "sections": {
+        "basic": "基本信息",
+        "body": "讨论正文",
+        "references": "参考链接"
+      },
+      "fields": {
+        "title": "讨论标题",
+        "excerpt": "摘要",
+        "category": "发布板块",
+        "tags": "话题标签",
+        "body": "正文内容",
+        "referenceLink": "参考链接（可选）"
+      },
+      "placeholders": {
+        "title": "例如：移动端钱包签名体验优化",
+        "excerpt": "用 1–2 句话概括讨论背景与希望收集的反馈",
+        "body": "详细描述问题、建议或待讨论方案。段落之间空一行……",
+        "referenceLink": "https://..."
+      },
+      "channels": {
+        "hot": "#热门讨论",
+        "marketplace": "#商城治理",
+        "community": "#社区发展"
+      },
+      "categoryHint": "将发布至 {{channel}} 频道",
+      "bodyHint": "使用 Quill 富文本编辑器（内置工具栏）。字数按纯文本统计；演示环境图片压缩后存于本地。",
+      "richEditor": {
+        "toolbar": "正文格式",
+        "undo": "撤销",
+        "redo": "重做",
+        "bold": "加粗",
+        "italic": "斜体",
+        "underline": "下划线",
+        "strike": "删除线",
+        "inlineCode": "行内代码",
+        "paragraph": "正文",
+        "heading": "二级标题",
+        "heading3": "三级标题",
+        "list": "无序列表",
+        "orderedList": "有序列表",
+        "blockquote": "引用",
+        "horizontalRule": "分割线",
+        "link": "插入链接",
+        "linkPrompt": "请输入链接地址（https://）",
+        "code": "代码块",
+        "codePlaceholder": "// 在此粘贴或输入代码",
+        "image": "插入图片",
+        "imageInsertSuccess": "图片已插入",
+        "imageInvalidType": "仅支持 JPG、PNG、GIF、WebP 图片",
+        "imageTooLarge": "图片过大，请换一张较小的图片（单张不超过 3MB）",
+        "imageUploadFailed": "图片处理失败，请重试"
+      },
+      "saveDraft": "保存草稿",
+      "submit": "发布讨论",
+      "discard": "放弃编辑",
+      "connectWallet": "连接钱包",
+      "connectToSubmit": "连接钱包后可发布讨论（演示）。",
+      "saveDraftSuccess": "草稿已保存到本地",
+      "submitSuccess": "讨论已发布（演示）",
+      "submitConfirmTitle": "确认发布讨论",
+      "submitConfirmBody": "发布后将出现在热门讨论列表。演示环境不会上链，请确认内容无误。",
+      "discardTitle": "放弃编辑？",
+      "discardBody": "将清除本地草稿并返回讨论列表，未保存内容会丢失。",
+      "discardConfirm": "放弃并返回",
+      "validation": {
+        "titleRequired": "请填写讨论标题",
+        "excerptRequired": "请填写摘要",
+        "bodyRequired": "请填写正文内容",
+        "bodyMax": "正文纯文本不能超过 {{max}} 字",
+        "tagRequired": "请至少选择一个话题标签",
+        "tagMax": "最多选择 {{max}} 个标签"
+      },
+      "tagPickerAria": "可选话题标签",
+      "selectedTagsAria": "已选话题标签",
+      "tagsInputPlaceholder": "点击上方标签添加到此处",
+      "removeTag": "移除标签：{{tag}}"
+    },
+    "proposalDetail": {
+      "notFound": "未找到该提案，可能已下线或链接有误。",
+      "backToList": "返回提案列表",
+      "relatedTitle": "相关提案",
+      "viewAll": "查看全部",
+      "simpleSummary": "简要说明",
+      "referencesTitle": "参考链接",
+      "sidebarAria": "提案投票与进度",
+      "overviewLabel": "提案概览",
+      "votingNetworkEthereum": "投票于 Ethereum 主网",
+      "references": {
+        "forum": "治理论坛",
+        "discussion": "社区讨论",
+        "implementation": "实现与测试"
+      },
+      "voteCard": {
+        "title": "您的投票信息",
+        "connectHint": "连接钱包后可查看治理数据并参与本提案。",
+        "connectToVote": "连接钱包以投票",
+        "voteFor": "赞成",
+        "voteAgainst": "反对",
+        "voterCount": "{{count}} 人",
+        "confirmTitle": "确认投票",
+        "confirmBody": "您将投「{{choice}}」，权重 {{power}} SAP。链上操作不可撤销，请确认已阅读全文。",
+        "confirmOk": "确认投票",
+        "successToast": "投票已提交（演示）",
+        "notOpenYet": "尚未开放投票，开始时间：{{date}}",
+        "notParticipated": "您未参与本提案",
+        "stats": {
+          "historicalParticipation": "历史参与",
+          "votingPower": "投票权",
+          "lifetimeWeight": "累计投票",
+          "activeLevel": "治理活跃度",
+          "times": "{{count}} 次",
+          "timesUnit": "次",
+          "sapAmount": "{{amount}} SAP",
+          "sapTotal": "{{total}} SAP",
+          "activeLevelValue": {
+            "high": "高",
+            "medium": "中",
+            "low": "低"
+          }
+        },
+        "choice": {
+          "for": "赞成",
+          "against": "反对"
+        },
+        "alreadyVoted": {
+          "for": "您已投赞成 · 权重 {{power}} SAP",
+          "against": "您已投反对 · 权重 {{power}} SAP"
+        }
+      },
+      "resultsCard": {
+        "title": "投票结果",
+        "thresholdSection": "通过条件",
+        "yae": "赞成",
+        "nay": "反对",
+        "votesPct": "{{amount}} SAP · {{pct}}%",
+        "totalParticipationInline": "总参与 {{total}} SAP",
+        "quorum": "法定人数 Quorum",
+        "differential": "差值门槛 Differential",
+        "reached": "已达成",
+        "notReached": "未达成",
+        "currentRequired": "当前 {{current}} · 要求 {{required}}"
+      },
+      "timeline": {
+        "title": "提案进度",
+        "created": "提案创建",
+        "open": "开放投票",
+        "closed": "投票结束",
+        "executed": "Payload 执行",
+        "pendingExecution": "待执行",
+        "discordDiscussion": "Discord 讨论"
+      },
+      "default": {
+        "h1": "动机与说明",
+        "p1": "本提案旨在调整 Sapphire Mall 生态治理或协议参数。请在投票前阅读全文，并在论坛参与讨论。",
+        "callout": "演示环境：投票结果与门槛为 Mock 数据，正式环境以链上治理合约为准。"
+      },
+      "p1": {
+        "h1": "动机",
+        "p1": "当前质押激励参数已运行多个季度，社区反馈希望在不牺牲安全性的前提下，提高长期持有者的收益预期，并抑制短期套利。",
+        "h2": "规格说明",
+        "bullets1": [
+          "社区质押年化区间调整为 8%–12%",
+          "新增 30 天解锁期，提前解锁扣减 5% 奖励",
+          "参数变更仅影响新质押仓位，存量按原规则至下一 epoch"
+        ],
+        "callout": "投票前请确认已阅读金库影响评估（演示）。"
+      },
+      "p3": {
+        "h1": "预算说明",
+        "p1": "Grant 第二季将面向开发者工具、社区运营与生态集成三类项目开放申请，评审委员会由社区代表与核心贡献者组成。",
+        "bullets1": [
+          "总池 50,000 USDT，分三批拨付",
+          "单项目上限 8,000 USDT",
+          "获选项目需按月提交里程碑报告"
+        ],
+        "callout": "本提案尚未开始投票，开始时间见上方投票窗口。"
+      },
+      "p4": {
+        "h1": "换届说明",
+        "p1": "新一届多签成员名单已在论坛公示 7 天，社区未收到有效反对意见，现提交链上确认。",
+        "bullets1": [
+          "成员 5/7 多签，任一交易需 4 签",
+          "任期 12 个月，可连任一次",
+          "离任成员 30 天内不得参与同一权限组"
+        ],
+        "callout": "本提案已完成投票并通过（演示归档）。",
+        "executedAt": "2026-04-28"
+      }
+    },
+    "eventDetail": {
+      "notFound": "未找到该大事件，可能已下线或链接有误。",
+      "backToList": "返回大事件列表",
+      "views": "{{views}} 次浏览",
+      "relatedTitle": "同类型大事件",
+      "viewAll": "查看全部",
+      "e1": {
+        "intro": "五月社区 AMA 面向全体 Sapphire Mall 持有者与贡献者开放，核心团队将解读 Q2 治理路线图、商城手续费回购机制与 Grant 第二季节奏。",
+        "coverAlt": "五月社区 AMA 活动封面",
+        "coverCaption": "活动现场示意 · 完整回放将同步至论坛",
+        "h1": "议程亮点",
+        "p1": "本次 AMA 聚焦治理代币经济、商城手续费分配与生态 Grant 开放计划，并预留社区自由提问环节。",
+        "bullets1": [
+          "Q2 治理模块迭代与委托投票体验优化",
+          "商城手续费 20% 回购 SAP 的执行节奏与链上公示",
+          "Grant 第二季 50,000 USDT 池的申请类别与评审流程",
+          "Bags 合作与多链部署的阶段性里程碑"
+        ],
+        "h2": "参与方式",
+        "p2": "活动以 Discord 语音频道为主阵地，无法实时参与的用户可在活动结束后 48 小时内查看文字实录与回放链接。",
+        "callout": "本页为活动资讯归档，仅作浏览；实时互动请前往 Discord 社区频道。"
+      },
+      "e2": {
+        "intro": "Grant 第二季正式开放申请，总池 50,000 USDT，面向开发者工具、社区运营与生态集成三类方向。",
+        "coverAlt": "Grant 第二季启动海报",
+        "h1": "资助范围",
+        "bullets1": [
+          "开发者工具：SDK、索引器、监控与调试工具",
+          "社区运营：多语言内容、线下 Meetup 与新手引导",
+          "生态集成：钱包、支付与跨链桥接相关 PoC"
+        ],
+        "p1": "评审委员会由社区代表与核心贡献者组成，首轮名单预计于 6 月上旬公布，获选项目将分阶段拨付。",
+        "callout": "申请指南与表单链接将在论坛置顶帖持续更新（演示环境）。"
+      },
+      "e3": {
+        "intro": "Sapphire Mall DAO 治理模块已接入主网环境，社区可通过连接钱包参与链上提案与投票。",
+        "coverAlt": "DAO 治理模块主网上线",
+        "coverCaption": "治理看板已同步链上状态（演示）",
+        "h1": "上线能力",
+        "p1": "本次里程碑涵盖提案创建、投票、委托与结果公示等核心流程，为后续 Grant 与参数治理打下基础。",
+        "bullets1": [
+          "链上提案浏览与状态追踪",
+          "钱包连接后的赞成 / 反对投票",
+          "委托投票与 Quorum 可视化",
+          "历史提案归档与结果查询"
+        ],
+        "p2": "维护窗口与参数升级将提前通过公告类大事件同步，请留意本页更新。"
+      },
+      "e4": {
+        "intro": "为提升治理参与率，活跃提案投票期由 5 天延长至 7 天，Quorum 阈值调整方案已在社区论坛公示。",
+        "coverAlt": "治理投票规则更新公告",
+        "h1": "规则调整说明",
+        "p1": "新规则适用于发布后新进入投票阶段的提案，已在进行中的提案仍按原窗口执行。",
+        "callout": "完整参数对照表可在论坛公告帖查阅。"
+      },
+      "e5": {
+        "intro": "四月生态 AMA 精华纪要已整理发布，涵盖 NFT 上架审核、多语言文档与 Bags 合作进展。",
+        "coverAlt": "四月 AMA 回顾",
+        "h1": "纪要要点",
+        "p1": "回放视频与文字实录已上传至论坛，方便不同时区的社区成员回顾。",
+        "callout": "欢迎关注下一场六月 AMA 预告。"
+      },
+      "e6": {
+        "intro": "Grant 第一季圆满收官，共 12 个项目获得资助，涵盖钱包集成、数据看板与社区 Bot 等方向。",
+        "coverAlt": "Grant 第一季收官",
+        "h1": "成果概览",
+        "p1": "获选项目进展将在治理看板定期更新，第二季申请通道现已开放。",
+        "callout": "第一季项目清单见论坛归档区。"
+      },
+      "e7": {
+        "intro": "本周生态周报显示治理参与率突破 65%，链上投票、委托与论坛讨论数据一并汇总。",
+        "coverAlt": "生态周报",
+        "h1": "数据摘要",
+        "p1": "附下月治理日历，便于社区提前安排投票与讨论。",
+        "callout": "周报为演示数据，正式环境以后台统计为准。"
+      },
+      "e8": {
+        "intro": "商城手续费分配细则正式公示，明确回购、金库注入与社区激励的比例与执行节奏。",
+        "coverAlt": "手续费分配细则",
+        "h1": "分配框架",
+        "p1": "细则将在下一次参数治理提案中提请社区确认后链上生效。",
+        "callout": "公示期为社区意见收集阶段。"
+      },
+      "e9": {
+        "intro": "六月 AMA 将聚焦多链部署计划与钱包支持路线，技术负责人将解读测试网时间表。",
+        "coverAlt": "六月 AMA 预告",
+        "h1": "预告议题",
+        "p1": "具体时间与频道链接将于活动前一周在本页更新。",
+        "callout": "欢迎提前在论坛提交问题。"
+      },
+      "e10": {
+        "intro": "Grant 定向扶持专项面向 SDK、索引器与监控工具开放快速评审通道。",
+        "coverAlt": "开发者工具 Grant 专项",
+        "h1": "申请提示",
+        "p1": "提交材料需包含开源仓库、演示视频与里程碑计划。",
+        "callout": "专项名额有限，先到先得。"
+      },
+      "e11": {
+        "intro": "治理模块计划于 6 月 2 日凌晨进行合约参数升级，投票功能将短暂暂停。",
+        "coverAlt": "维护窗口通知",
+        "h1": "维护说明",
+        "p1": "维护完成后系统将自动恢复，无需用户额外操作。",
+        "callout": "如有异常请及时通过论坛反馈。"
+      }
+    },
+    "discussionDetail": {
+      "notFound": "未找到该讨论帖，可能已删除或链接有误。",
+      "backToList": "返回热门讨论列表",
+      "views": "{{views}} 次浏览",
+      "replies": "{{count}} 条回复",
+      "replySectionTitle": "全部回复",
+      "replyFloor": "#{{floor}}",
+      "opBadge": "楼主",
+      "officialBadge": "官方",
+      "opSection": "主帖",
+      "likes": "{{count}}",
+      "noReplies": "暂无回复，来发表第一条吧。",
+      "replyAction": "回复",
+      "replyActionWithCount": "回复 ({{count}})",
+      "replyCollapse": "收起回复",
+      "replyThreadLabel": "{{user}} 的回复讨论",
+      "replyToQuote": "回复 {{user}}：{{excerpt}}",
+      "relatedTitle": "同板块讨论",
+      "viewAll": "查看全部",
+      "composer": {
+        "title": "发表回复",
+        "placeholder": "分享你的观点、补充信息或提出问题…",
+        "placeholderReply": "回复 {{user}}…",
+        "submit": "发表回复",
+        "submitReply": "发送回复",
+        "connectHint": "连接钱包后即可参与回复",
+        "connectWallet": "连接钱包",
+        "emptyError": "请输入回复内容",
+        "successToast": "回复已发表（演示）",
+        "charCount": "{{current}} / {{max}}",
+        "replyingTo": "正在回复 {{user}}",
+        "cancelReplyTo": "取消回复"
+      },
+      "default": {
+        "intro": "本帖用于社区成员就 Sapphire Mall 治理与产品方向展开讨论，欢迎理性发言、引用数据与链上信息。",
+        "h1": "讨论说明",
+        "p1": "请尽量在回复中说明背景、预期影响与可验证依据；涉及参数或资金变动时，建议同步链上提案链接。",
+        "callout": "演示环境：回复保存在本地浏览器，正式环境将接入论坛或链下签名留言。",
+        "replies": {
+          "1": {
+            "body": "支持这个方向，建议补充一下对存量用户的影响评估。",
+            "time": "2 小时前"
+          },
+          "2": {
+            "body": "我们已在内部排期评估，预计本周内补充数据对比表。",
+            "time": "5 小时前"
+          },
+          "3": {
+            "body": "能否在回复里附上相关提案编号？方便大家交叉查阅。",
+            "time": "昨天"
+          }
+        }
+      },
+      "d1": {
+        "intro": "移动端连接钱包投票时，签名弹窗与 Gas 预估的展示方式直接影响参与率。本帖汇总社区反馈，并讨论可落地的交互优化方案。",
+        "h1": "主要反馈点",
+        "p1": "多数反馈集中在：签名步骤过多、网络切换提示不清晰、投票确认页信息密度过高。",
+        "bullets1": [
+          "合并「连接钱包」与「切换网络」为一步引导",
+          "投票前展示预估 Gas 与 SAP 权重说明",
+          "失败重试时保留已选选项，避免重新阅读全文"
+        ],
+        "callout": "产品团队将在下版 DApp 迭代中优先处理前两项（演示说明）。",
+        "replies": {
+          "r1": "iOS 上 MetaMask 内置浏览器里弹窗经常被遮挡，希望能检测环境并给出提示。",
+          "r1Time": "3 小时前",
+          "r2": "收到。我们会在 QA 清单里加入主流钱包内置浏览器场景，并考虑增加「复制 calldata 到桌面端」的备选路径。",
+          "r2Time": "1 小时前",
+          "r3": "附议。如果能在投票页直接显示当前网络与合约地址摘要就更好了。",
+          "r3Time": "45 分钟前"
+        }
+      },
+      "d2": {
+        "intro": "商城不同类目的费率结构是否应进一步差异化，以及如何向买家与商户透明披露，是本帖讨论焦点。",
+        "h1": "讨论焦点",
+        "p1": "社区建议按类目风险、履约复杂度与历史纠纷率分档，而非单一费率；同时希望链上或站内可查询每笔订单的费率构成。",
+        "bullets1": [
+          "虚拟道具与实物商品是否应采用不同费率模型",
+          "是否引入「优质商户」费率折扣与考核指标",
+          "费率调整是否需提前 14 天公告并走治理提案"
+        ],
+        "callout": "若形成共识，将整理为参数治理提案提交投票（演示）。",
+        "replies": {
+          "r1": "建议公开过去一季度各品类平均费率与纠纷率，数据透明更好讨论。",
+          "r1Time": "6 小时前",
+          "r2": "运营侧可以脱敏后提供汇总表，预计下周贴到本帖。",
+          "r2Time": "4 小时前",
+          "r3": "支持分档。小额订单固定费率对新手商户不太友好。",
+          "r3Time": "2 小时前"
+        }
+      },
+      "d3": {
+        "intro": "征集 Q3 社区活动主题：线下 Meetup、线上 AMA、黑客松与新手训练营均可提名。",
+        "h1": "征集方式",
+        "p1": "请在回复中说明活动形式、目标人群、预估规模与所需资源；获选主题将进入 Grant 或社区基金评审流程。",
+        "bullets1": [
+          "提名截止：6 月 30 日",
+          "优先支持多语言与跨时区参与的设计",
+          "鼓励与治理投票、商城体验相关的实战工作坊"
+        ]
+      }
+    },
+    "topicTagFilter": {
+      "title": "话题标签",
+      "hint": "点击标签筛选左侧讨论列表，可与顶部分板块筛选联动。",
+      "all": "全部标签",
+      "groupAria": "按话题标签筛选"
+    },
+    "overview": {
+      "proposals": {
+        "title": "提案概览",
+        "subtitle": "社区治理提案实时统计",
+        "highlight": "总提案数",
+        "participation": "平均参与率",
+        "footnote": "数据基于当前链上治理周期（演示）"
+      },
+      "discussions": {
+        "title": "讨论概览",
+        "subtitle": "社区频道热度与互动",
+        "highlight": "总回复数",
+        "threads": "活跃话题",
+        "totalViews": "累计浏览",
+        "footnote": "成员数据同步自 Discord 社区"
+      },
+      "trending": {
+        "title": "大家都在讨论",
+        "refresh": "换一换",
+        "hotTag": "热",
+        "footnote": "按回复热度排序（演示）"
+      },
+      "events": {
+        "title": "大事件概览",
+        "subtitle": "生态动态与重要节点",
+        "highlight": "累计浏览",
+        "published": "已发布",
+        "itemMeta": "{{count}} 条 · {{views}} 浏览",
+        "footnote": "含 AMA、Grant、里程碑与公告"
+      },
+      "milestones": {
+        "title": "里程碑",
+        "subtitle": "生态重要节点时间轴",
+        "footnote": "按发布时间倒序展示（演示）"
+      }
+    },
+    "proposalRules": {
+      "title": "提案规则",
+      "intro": "链上治理遵循公开、可验证流程；以下为 Sapphire Mall 社区提案的通用规则摘要。",
+      "footnote": "具体门槛与参数以各提案详情及链上合约为准。",
+      "items": {
+        "submit": {
+          "title": "发起资格",
+          "desc": "持有 SAP 或达到社区公示门槛的钱包地址可提交提案；需包含标题、说明与可执行项。"
+        },
+        "window": {
+          "title": "投票周期",
+          "desc": "常规提案投票期一般为 3–7 天；涉及资金或协议升级的重大提案可延长并提前公告。"
+        },
+        "quorum": {
+          "title": "法定人数",
+          "desc": "提案须达到最低投票参与率（Quorum）方可生效；未达门槛将自动视为未通过。"
+        },
+        "vote": {
+          "title": "表决方式",
+          "desc": "一地址一票，连接钱包后在投票期内提交链上交易；赞成、反对或弃权以提案页选项为准。"
+        },
+        "execute": {
+          "title": "通过与执行",
+          "desc": "表决通过后进入时间锁公示，执行结果与交易哈希可在治理看板中查询。"
+        }
+      }
+    },
+    "sidebar": {
+      "title": "我的参与",
+      "connectHint": "请连接钱包以查看您的治理参与情况。",
+      "connectWallet": "Connect wallet",
+      "proposalsParticipated": "参与提案",
+      "discussionsParticipated": "参与讨论",
+      "participationCount": "{{count}} 次",
+      "viewParticipatedProposals": "查看我参与的 {{count}} 条提案",
+      "viewParticipatedDiscussions": "查看我参与的 {{count}} 条讨论"
+    },
+    "toast": {
+      "comingSoon": "详情页即将上线，敬请期待。"
+    },
+    "categoryBrowse": {
+      "aria": "浏览讨论板块"
+    }
+  }
+}

@@ -1,0 +1,427 @@
+{
+  "help": {
+    "title": "Sapphire Mall 帮助中心",
+    "tagline": "连接钱包、兑换 SAP、逛商城、参与社区——链上购物与治理，一站查懂。",
+    "hero": {
+      "badge": "Sapphire Mall 官方支持",
+      "statsAria": "帮助中心数据概览",
+      "statArticles": "知识文章",
+      "statTopics": "主题分类",
+      "statSupport": "支持渠道",
+      "browseTopics": "按主题浏览",
+      "quickNavHint": "一键跳转业务页面或相关指南"
+    },
+    "topicBrowse": {
+      "allTopic": "全部主题"
+    },
+    "searchPlaceholder": "搜索问题，例如：保证金、支付失败、钱包连接…",
+    "searchAria": "搜索帮助文章",
+    "hotSearches": "热门搜索",
+    "main": {
+      "quickEntryTitle": "常用入口",
+      "quickEntryHint": "跳转业务页面或打开相关指南"
+    },
+    "quickNav": "快速导航",
+    "faqTitle": "常见问题",
+    "faqMoreHint": "左侧主题下共 {{count}} 条，此处展示 {{shown}} 条",
+    "faqRotateHint": "换一批常见问题",
+    "knowledge": "知识库",
+    "topicTree": {
+      "aria": "按主题查看问题与解答"
+    },
+    "guide": {
+      "aria": "主题问题与解答",
+      "selectTopic": "请选择上方主题，查看相关问题与解答",
+      "searchResults": "搜索结果",
+      "articleCount": "共 {{count}} 篇",
+      "total": "共 {{total}} 条",
+      "expand": "展开",
+      "collapse": "收起",
+      "helpful": "有用",
+      "notHelpful": "无用",
+      "statsAria": "反馈统计",
+      "voteHelpful": "标记为有用",
+      "voteNotHelpful": "标记为无用"
+    },
+    "resultCount": "共 {{count}} 条",
+    "empty": "未找到匹配内容，请换关键词或浏览分类。",
+    "readMore": "阅读全文",
+    "updated": "更新于 {{date}}",
+    "backToHelp": "返回帮助中心",
+    "article": {
+      "aria": "文章详情",
+      "views": "阅读量",
+      "updated": "更新时间"
+    },
+    "related": "同主题其他问题",
+    "relatedHint": "继续探索「{{category}}」主题下的相关问题",
+    "relatedViewAll": "查看全部",
+    "feedback": "这篇文章有帮助吗？",
+    "feedbackYes": "有帮助",
+    "feedbackNo": "没帮助",
+    "feedbackThanks": "感谢反馈，我们会持续改进内容。",
+    "ctaTitle": "仍未解决？",
+    "ctaDesc": "通过在线客服、邮件或社区获取人工支持。",
+    "support": {
+      "title": "联系与支持",
+      "hint": "仍未解决？选择以下方式获取人工协助。",
+      "solutionsTitle": "获取帮助",
+      "solutionsAria": "支持与服务入口",
+      "contactTitle": "联系方式",
+      "actions": {
+        "liveChat": {
+          "title": "在线客服",
+          "desc": "工作日实时回复，平均约 3 分钟内响应"
+        },
+        "feedback": {
+          "title": "意见建议",
+          "desc": "产品建议、体验问题与功能需求"
+        },
+        "community": {
+          "title": "社区求助",
+          "desc": "在 DAO 讨论区与其他用户交流"
+        }
+      },
+      "channels": {
+        "email": {
+          "label": "客服邮箱",
+          "value": "support@sapmall.io"
+        },
+        "telegram": {
+          "label": "Telegram",
+          "value": "@SapMallSupport"
+        },
+        "discord": {
+          "label": "Discord",
+          "value": "SapMall Community"
+        },
+        "hours": {
+          "label": "服务时间",
+          "value": "周一至周五 09:00–18:00 (UTC+8)"
+        }
+      }
+    },
+    "categories": {
+      "all": "全部",
+      "getting-started": "新手入门",
+      "wallet-security": "钱包与安全",
+      "exchange-payment": "兑换与支付",
+      "marketplace": "商城购物",
+      "merchant": "商家入驻",
+      "order-support": "订单与售后",
+      "dao-community": "社区与 DAO"
+    },
+    "tags": {
+      "newbie": "新手",
+      "flow": "流程",
+      "shopping": "购物",
+      "sap": "SAP",
+      "wallet": "钱包",
+      "sign": "签名",
+      "security": "安全",
+      "privateKey": "私钥",
+      "stablecoin": "稳定币",
+      "fee": "手续费",
+      "pay": "支付",
+      "marketplace": "商城",
+      "virtual": "虚拟商品",
+      "nft": "NFT",
+      "rights": "权益",
+      "merchant": "商家",
+      "deposit": "保证金",
+      "admin": "后台",
+      "order": "订单",
+      "refund": "退款",
+      "chain": "链上",
+      "tx": "交易",
+      "dao": "DAO",
+      "vote": "投票",
+      "community": "社区",
+      "discord": "Discord"
+    },
+    "hotTags": {
+      "payFail": "支付失败",
+      "deposit": "商家保证金",
+      "wallet": "钱包连接",
+      "refund": "退款进度",
+      "fee": "手续费优惠"
+    },
+    "sidebar": {
+      "support": "联系支持",
+      "liveChat": "在线客服",
+      "liveChatEta": "平均响应 2–5 分钟",
+      "liveChatAction": "开始对话",
+      "email": "邮件支持",
+      "emailEta": "工作日 1–4 小时内回复",
+      "emailAction": "发送邮件",
+      "community": "社区支持",
+      "communityHint": "Discord / Telegram 社群",
+      "onboarding": "新手上路",
+      "onboardingSteps": [
+        "连接顶部钱包并完成签名",
+        "在兑换页将稳定币兑换为 SAP",
+        "进入商城选购并完成链上支付"
+      ],
+      "popular": "热门文章"
+    },
+    "liveChat": {
+      "title": "SapMall 在线客服",
+      "statusOnline": "在线 · 平均 2–5 分钟响应",
+      "welcome": "您好，我是 SapMall 在线客服。请描述您的问题（例如钱包连接、订单支付、SAP 兑换），我会尽快为您解答。",
+      "placeholder": "输入消息，Enter 发送…",
+      "send": "发送",
+      "typing": "客服正在输入",
+      "open": "打开在线客服",
+      "minimize": "最小化",
+      "close": "关闭",
+      "replies": {
+        "default": "已收到您的问题。请补充钱包地址、订单号或 TxHash（如有），便于我们进一步核查；紧急事项也可发送邮件至 support@sapmall.io。",
+        "wallet": "钱包相关问题：请确认插件已解锁、网络与站点一致，并尝试断开站点后重新连接。切勿向任何人透露助记词或私钥。",
+        "order": "订单相关问题：请提供订单号与链上 TxHash，并说明是支付 pending、未发货还是退款诉求，我们会按规则处理。",
+        "exchange": "兑换与 Gas：请检查稳定币余额、授权额度与滑点设置；交易失败可在钱包中查看 revert 原因后再试。",
+        "merchant": "商家入驻：请说明当前阶段（资料审核、保证金支付或上架），并附上后台提示或 TxHash。",
+        "dao": "社区与治理：投票前请核对提案链接与合约地址；投票权以各提案快照规则为准。",
+        "human": "如需人工深度跟进，请留下邮箱或 Telegram，并附上订单号与问题摘要，工作日将优先处理。"
+      }
+    },
+    "toast": {
+      "chatSoon": "在线客服即将接入，请先使用邮件或社区渠道。",
+      "emailOpened": "已打开邮件客户端。",
+      "feedbackRecorded": "感谢反馈！",
+      "feedbackOpening": "感谢反馈，请在邮件中描述问题与建议。",
+      "ticketOpening": "工单邮件已准备，请补充订单号与问题详情。"
+    },
+    "faqItems": {
+      "walletConnect": {
+        "q": "钱包连接或签名失败怎么办？",
+        "a": "请确认：① 浏览器已安装钱包插件且已解锁；② 网络与 SapMall 要求一致；③ 刷新页面后重新点击「连接钱包」；④ 签名弹窗中选择当前站点并确认。若仍失败，清除站点缓存或换浏览器重试。"
+      },
+      "txFail": {
+        "q": "链上交易失败常见原因？",
+        "a": "多为 Gas 不足、网络拥堵、余额不足或滑点过低。可适当提高 Gas、等待网络恢复、确认账户余额，或在兑换页调整滑点后重试。"
+      },
+      "sapPay": {
+        "q": "使用 SAP 支付有什么优势？",
+        "a": "平台对 SAP 支付场景提供手续费优惠与活动叠加，结算路径更短，综合成本通常低于仅用稳定币支付。"
+      },
+      "refund": {
+        "q": "订单取消后多久退款？",
+        "a": "退款依支付方式与链上确认进度处理，可在用户菜单「交易历史」查看状态；链上退回需等待足够确认块。"
+      },
+      "deposit": {
+        "q": "商家保证金如何缴纳？",
+        "a": "后台提交入驻申请后，按指引跳转 DApp 兑换页「商家保证金」区域，使用 SAP 完成链上支付并保留交易哈希备查。"
+      },
+      "daoVote": {
+        "q": "如何参与 DAO 投票？",
+        "a": "连接钱包后进入「社区参与」，查看活跃提案并阅读详情，在投票期内完成链上投票。具体门槛以提案说明为准。"
+      },
+      "firstBuy": {
+        "q": "第一次购物需要准备什么？",
+        "a": "连接钱包 → 兑换足够 SAP → 在商城选择商品 → 确认订单并用 SAP 支付。建议先小额试单熟悉流程。"
+      },
+      "virtualItem": {
+        "q": "虚拟商品和数字权益有何不同？",
+        "a": "虚拟道具侧重游戏/应用内使用；数字权益/NFT 类商品可能附带链上凭证，购买前请阅读商品详情与交付说明。"
+      }
+    },
+    "articles": {
+      "newbie3min": {
+        "title": "新用户 3 分钟上手",
+        "summary": "连接钱包 → 兑换 SAP → 商城首单，快速完成首次链上购物。",
+        "p1": "SapMall 是 Web3 去中心化虚拟商品交易平台。按下列三步即可开始：",
+        "steps": [
+          "点击页头「连接钱包」，选择 MetaMask 等并完成签名",
+          "打开「兑换」，用 USDT/USDC 等兑换 SAP",
+          "进入「商城」选品下单，使用 SAP 完成支付"
+        ],
+        "tip": "首次操作建议使用小额 SAP 试单，熟悉 Gas 与确认时间。"
+      },
+      "firstPurchase": {
+        "title": "如何完成第一笔订单",
+        "summary": "从选品、加购到链上支付的完整说明。",
+        "p1": "在商城浏览商品，进入详情页确认规格与价格后下单。",
+        "steps": [
+          "确认钱包已连接且 SAP 余额充足",
+          "提交订单并在钱包中确认交易",
+          "等待链上确认后，在订单/交易历史中查看状态"
+        ]
+      },
+      "walletConnectFail": {
+        "title": "钱包连接失败排查",
+        "summary": "从网络、授权、浏览器三方面快速恢复连接。",
+        "p1": "连接失败通常与钱包状态、网络或站点权限有关。",
+        "steps": [
+          "确认钱包插件已启用且账户已解锁",
+          "检查当前链 ID 是否与平台要求一致",
+          "断开站点连接后重新连接并签名",
+          "尝试无痕模式或更换浏览器"
+        ],
+        "warn": "切勿在不明链接中输入助记词或私钥。"
+      },
+      "protectKey": {
+        "title": "如何保护私钥与资产",
+        "summary": "硬件钱包、签名核验与防钓鱼最佳实践。",
+        "p1": "您的资产安全取决于私钥与助记词的保密程度。",
+        "steps": [
+          "助记词/私钥仅离线备份，永不截图或发送他人",
+          "大额资产优先使用硬件钱包",
+          "每次签名前核对站点域名与交易参数",
+          "警惕冒充客服的钓鱼链接"
+        ],
+        "warn": "SapMall 工作人员不会向您索要助记词。"
+      },
+      "stablecoinSap": {
+        "title": "稳定币兑换 SAP",
+        "summary": "支持 USDT/USDC 等，授权后一次完成兑换。",
+        "p1": "在兑换页选择输入代币与数量，预览汇率与手续费后确认。",
+        "steps": [
+          "连接钱包并选择支持的稳定币",
+          "输入兑换数量并授权（首次需 Approve）",
+          "确认兑换交易并等待链上确认",
+          "到账后 SAP 可用于商城与平台场景"
+        ],
+        "linkExchange": "前往兑换页"
+      },
+      "sapFees": {
+        "title": "SAP 支付手续费说明",
+        "summary": "SAP 支付场景的费率优惠与活动叠加规则。",
+        "p1": "使用 SAP 结算可享受平台手续费减免；具体比例以兑换页与活动页公示为准。",
+        "tip": "大额或频繁交易建议关注生态活动页的费率公告。"
+      },
+      "browseGoods": {
+        "title": "浏览与购买虚拟商品",
+        "summary": "商城分类、商品详情与链上支付要点。",
+        "p1": "商城提供虚拟道具、数字权益等商品，购买前请阅读交付方式。",
+        "steps": [
+          "在列表页按分类或搜索定位商品",
+          "进入详情核对价格、库存与说明",
+          "使用 SAP 支付并保存交易哈希备查"
+        ],
+        "linkMarket": "进入商城"
+      },
+      "digitalRights": {
+        "title": "数字权益与 NFT 说明",
+        "summary": "权益类商品的链上凭证与兑换流程。",
+        "p1": "部分商品发放链上凭证或兑换码，交付时间以商品页说明为准。",
+        "tip": "兑换码类商品请在有效期内完成兑换，逾期可能失效。"
+      },
+      "merchantDeposit": {
+        "title": "商家保证金缴纳",
+        "summary": "入驻后在 DApp 完成链上保证金支付。",
+        "p1": "提交入驻资料并审核通过后，系统会引导至保证金支付流程。",
+        "steps": [
+          "在商家后台完成资质提交",
+          "按指引打开 DApp 兑换页保证金专区",
+          "使用指定数量 SAP 支付并记录 TxHash",
+          "等待链上确认后状态更新为已缴纳"
+        ],
+        "linkExchange": "打开兑换页"
+      },
+      "merchantAdmin": {
+        "title": "商家后台使用入门",
+        "summary": "商品、订单与保证金在后台的统一管理。",
+        "p1": "通过页头或帮助中心入口进入嵌入式商家后台（需相应权限）。",
+        "linkAdmin": "打开商家后台"
+      },
+      "orderRefund": {
+        "title": "订单取消与退款",
+        "summary": "退款时效与交易历史查询方式。",
+        "p1": "取消订单后，平台按原支付路径发起退款；链上退回需等待确认。",
+        "steps": [
+          "在订单详情发起取消（若符合规则）",
+          "在「交易历史」查看退款进度",
+          "链上退款完成后余额自动更新"
+        ]
+      },
+      "txhash": {
+        "title": "用交易哈希查询链上状态",
+        "summary": "复制 TxHash 到区块浏览器核验确认数。",
+        "p1": "每笔链上操作都会生成唯一交易哈希（TxHash）。",
+        "steps": [
+          "在交易历史或钱包记录中复制 TxHash",
+          "打开对应网络的区块浏览器",
+          "粘贴哈希查看确认数与执行结果"
+        ],
+        "tip": "未确认交易请耐心等待，勿重复提交相同订单。"
+      },
+      "daoVote": {
+        "title": "参与 DAO 提案投票",
+        "summary": "查看提案、理解规则并完成链上投票。",
+        "p1": "治理投票在「社区参与」进行，投票权规则以各提案为准。",
+        "steps": [
+          "连接钱包进入社区参与页",
+          "阅读提案背景、选项与截止时间",
+          "在投票期内提交链上投票交易"
+        ],
+        "linkDao": "进入社区参与"
+      },
+      "joinCommunity": {
+        "title": "加入 SapMall 社区",
+        "summary": "Discord 讨论区与 Telegram 公告频道。",
+        "p1": "加入社区可获取公告、活动信息与同行者交流。",
+        "linkDiscord": "打开 Discord 社区"
+      },
+      "connectWalletBasics": {
+        "title": "如何连接 MetaMask 等钱包",
+        "summary": "支持主流浏览器插件钱包，连接后需完成一次签名以验证身份。",
+        "p1": "点击页头「连接钱包」，在弹窗中选择已安装的钱包并完成账户授权与签名即可。"
+      },
+      "gasFeesBeginner": {
+        "title": "链上 Gas 费是什么",
+        "summary": "Gas 为网络矿工费，与订单金额无关；拥堵时可能升高。",
+        "p1": "每笔链上交易需支付 Gas。建议在钱包中预留少量原生代币（如 ETH）用于支付网络费用。"
+      },
+      "sapRewardsIntro": {
+        "title": "SAP 积分与生态奖励",
+        "summary": "购物、兑换与活动可累积生态权益，具体规则以活动页为准。",
+        "p1": "在「生态奖励」查看可参与任务与发放记录；奖励可能与 SAP 持仓或交易行为挂钩。"
+      },
+      "marketplaceTour": {
+        "title": "商城首页功能导览",
+        "summary": "分类筛选、搜索、商品卡片与链上价格一目了然。",
+        "p1": "使用顶部分类与搜索快速定位商品；商品卡片展示 SAP 价格与库存状态。"
+      },
+      "wrongNetworkFix": {
+        "title": "钱包网络选错怎么办",
+        "summary": "在钱包中切换到平台支持的网络后重新连接站点。",
+        "p1": "若提示网络不匹配，请在钱包网络列表中选择推荐链，刷新页面后重新连接。"
+      },
+      "tokenApprovalRevoke": {
+        "title": "如何管理代币授权额度",
+        "summary": "可在区块浏览器或钱包安全中心查看并撤销不再使用的 Approve。",
+        "p1": "首次兑换需授权合约使用代币。不用的授权建议及时撤销以降低风险。"
+      },
+      "swapFailed": {
+        "title": "兑换失败常见原因",
+        "summary": "余额不足、滑点过低、授权未完成或网络拥堵都可能导致失败。",
+        "p1": "请检查输入数量、滑点设置与授权状态；失败交易可在钱包历史查看原因。"
+      },
+      "exchangeLimits": {
+        "title": "兑换限额与到账时间",
+        "summary": "单笔与每日限额以兑换页公示为准；到账需等待链上确认。",
+        "p1": "大额兑换可能触发额外确认。到账时间取决于网络确认速度。"
+      },
+      "cartAndCheckout": {
+        "title": "购物车与结算流程",
+        "summary": "支持多商品合并下单，结算前请确认 SAP 余额与 Gas 预留。",
+        "p1": "加入购物车后进入结算页核对明细，确认后在钱包中完成支付签名。"
+      },
+      "paymentPending": {
+        "title": "支付一直显示处理中",
+        "summary": "链上确认未完成时会显示 pending，请勿重复支付。",
+        "p1": "在交易历史中查看 TxHash 与确认数；长时间未确认可联系支持并提供哈希。"
+      },
+      "contactSupport": {
+        "title": "如何联系人工客服",
+        "summary": "可通过邮件、Discord 或 Telegram 提交订单号与 TxHash。",
+        "p1": "描述问题并附上钱包地址、订单号与交易哈希，便于客服快速定位。"
+      },
+      "proposalBasics": {
+        "title": "DAO 提案从哪查看",
+        "summary": "在社区参与页浏览进行中、已通过及历史提案。",
+        "p1": "进入「社区参与」查看提案列表，点击标题阅读完整说明与投票选项。"
+      }
+    }
+  }
+}

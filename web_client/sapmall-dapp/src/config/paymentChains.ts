@@ -1,9 +1,13 @@
 import { ARC_TESTNET_CHAIN_ID } from './chains/arcTestnet';
 import { LINEA_SEPOLIA_CHAIN_ID } from './chains/lineaSepolia';
 
-/** 商城 USDC 支付可用链（须与 PlatformConfig / 后端 intent 一致） */
+/** Base Sepolia testnet */
+export const BASE_SEPOLIA_CHAIN_ID = 84532;
+
+/** 商城支付可用链（与导航栏可切换网络一致） */
 export const PAYMENT_CHAIN_IDS: readonly number[] = [
   LINEA_SEPOLIA_CHAIN_ID,
+  BASE_SEPOLIA_CHAIN_ID,
   ARC_TESTNET_CHAIN_ID,
 ];
 
@@ -15,6 +19,7 @@ export function isPaymentChain(chainId?: number): boolean {
 
 export function getPaymentChainLabel(chainId: number): string {
   if (chainId === LINEA_SEPOLIA_CHAIN_ID) return 'Linea Sepolia';
+  if (chainId === BASE_SEPOLIA_CHAIN_ID) return 'Base Sepolia';
   if (chainId === ARC_TESTNET_CHAIN_ID) return 'Arc Testnet';
   return `Chain ${chainId}`;
 }

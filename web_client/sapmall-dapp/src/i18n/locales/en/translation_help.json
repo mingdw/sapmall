@@ -1,0 +1,427 @@
+{
+  "help": {
+    "title": "SapMall Help Center",
+    "tagline": "Connect your wallet, swap SAP, shop the marketplace, and join the community—on-chain commerce and governance, explained in one place.",
+    "hero": {
+      "badge": "Official SapMall Support",
+      "statsAria": "Help center overview",
+      "statArticles": "Articles",
+      "statTopics": "Topics",
+      "statSupport": "Channels",
+      "browseTopics": "Browse by topic",
+      "quickNavHint": "Jump to app areas or related guides"
+    },
+    "topicBrowse": {
+      "allTopic": "All topics"
+    },
+    "searchPlaceholder": "Search topics, e.g. deposit, payment failed, wallet…",
+    "searchAria": "Search help articles",
+    "hotSearches": "Popular searches",
+    "main": {
+      "quickEntryTitle": "Shortcuts",
+      "quickEntryHint": "Jump to app areas or open related guides"
+    },
+    "quickNav": "Quick navigation",
+    "faqTitle": "FAQ",
+    "faqMoreHint": "{{shown}} shown here, {{count}} in the topic list",
+    "faqRotateHint": "Show another set of FAQs",
+    "knowledge": "Knowledge base",
+    "topicTree": {
+      "aria": "Questions and answers by topic"
+    },
+    "guide": {
+      "aria": "Topic questions and answers",
+      "selectTopic": "Select a topic above to view related questions and answers",
+      "searchResults": "Search results",
+      "articleCount": "{{count}} articles",
+      "total": "{{total}} items",
+      "expand": "Expand",
+      "collapse": "Collapse",
+      "helpful": "Helpful",
+      "notHelpful": "Not helpful",
+      "statsAria": "Feedback stats",
+      "voteHelpful": "Mark as helpful",
+      "voteNotHelpful": "Mark as not helpful"
+    },
+    "resultCount": "{{count}} results",
+    "empty": "No matches. Try another keyword or browse categories.",
+    "readMore": "Read article",
+    "updated": "Updated {{date}}",
+    "backToHelp": "Back to Help Center",
+    "article": {
+      "aria": "Article detail",
+      "views": "Views",
+      "updated": "Updated"
+    },
+    "related": "More in this topic",
+    "relatedHint": "Keep exploring questions in {{category}}",
+    "relatedViewAll": "View all",
+    "feedback": "Was this article helpful?",
+    "feedbackYes": "Yes",
+    "feedbackNo": "No",
+    "feedbackThanks": "Thanks for your feedback.",
+    "ctaTitle": "Still need help?",
+    "ctaDesc": "Reach us via live chat, email, or community channels.",
+    "support": {
+      "title": "Contact & support",
+      "hint": "Still stuck? Pick a channel below for human assistance.",
+      "solutionsTitle": "Get help",
+      "solutionsAria": "Support and service options",
+      "contactTitle": "Contact details",
+      "actions": {
+        "liveChat": {
+          "title": "Live chat",
+          "desc": "Real-time replies on business days, ~3 min avg. response"
+        },
+        "feedback": {
+          "title": "Feedback",
+          "desc": "Product ideas, UX issues, and feature requests"
+        },
+        "community": {
+          "title": "Community",
+          "desc": "Discuss with others in the DAO forum"
+        }
+      },
+      "channels": {
+        "email": {
+          "label": "Support email",
+          "value": "support@sapmall.io"
+        },
+        "telegram": {
+          "label": "Telegram",
+          "value": "@SapMallSupport"
+        },
+        "discord": {
+          "label": "Discord",
+          "value": "SapMall Community"
+        },
+        "hours": {
+          "label": "Hours",
+          "value": "Mon–Fri 09:00–18:00 (UTC+8)"
+        }
+      }
+    },
+    "categories": {
+      "all": "All",
+      "getting-started": "Getting started",
+      "wallet-security": "Wallet & security",
+      "exchange-payment": "Exchange & payments",
+      "marketplace": "Marketplace",
+      "merchant": "Merchants",
+      "order-support": "Orders & support",
+      "dao-community": "Community & DAO"
+    },
+    "tags": {
+      "newbie": "Beginner",
+      "flow": "Flow",
+      "shopping": "Shopping",
+      "sap": "SAP",
+      "wallet": "Wallet",
+      "sign": "Signature",
+      "security": "Security",
+      "privateKey": "Private key",
+      "stablecoin": "Stablecoin",
+      "fee": "Fees",
+      "pay": "Payment",
+      "marketplace": "Marketplace",
+      "virtual": "Virtual goods",
+      "nft": "NFT",
+      "rights": "Rights",
+      "merchant": "Merchant",
+      "deposit": "Deposit",
+      "admin": "Admin",
+      "order": "Order",
+      "refund": "Refund",
+      "chain": "On-chain",
+      "tx": "Transaction",
+      "dao": "DAO",
+      "vote": "Vote",
+      "community": "Community",
+      "discord": "Discord"
+    },
+    "hotTags": {
+      "payFail": "Payment failed",
+      "deposit": "Merchant deposit",
+      "wallet": "Wallet connect",
+      "refund": "Refund status",
+      "fee": "Fee discounts"
+    },
+    "sidebar": {
+      "support": "Contact support",
+      "liveChat": "Live chat",
+      "liveChatEta": "Typical reply: 2–5 min",
+      "liveChatAction": "Start chat",
+      "email": "Email support",
+      "emailEta": "Reply within 1–4 business hours",
+      "emailAction": "Send email",
+      "community": "Community",
+      "communityHint": "Discord / Telegram",
+      "onboarding": "Quick start",
+      "onboardingSteps": [
+        "Connect wallet in the header and sign in",
+        "Swap stablecoins to SAP on Exchange",
+        "Shop the marketplace and pay with SAP"
+      ],
+      "popular": "Popular articles"
+    },
+    "liveChat": {
+      "title": "SapMall Live Chat",
+      "statusOnline": "Online · ~2–5 min reply",
+      "welcome": "Hi! I'm SapMall support. Describe your issue (wallet, orders, SAP swap, etc.) and I'll help as soon as I can.",
+      "placeholder": "Type a message, Enter to send…",
+      "send": "Send",
+      "typing": "Agent is typing",
+      "open": "Open live chat",
+      "minimize": "Minimize",
+      "close": "Close",
+      "replies": {
+        "default": "Thanks for your message. Share wallet address, order ID, or TxHash if you have one. For urgent cases, email support@sapmall.io.",
+        "wallet": "Wallet: unlock the extension, match the network, disconnect the site and reconnect. Never share seed phrase or private key.",
+        "order": "Orders: send order ID and TxHash, and whether it's pending payment, delivery, or refund—we'll follow policy.",
+        "exchange": "Swaps & gas: check balance, allowance, and slippage; inspect revert reason in the wallet before retrying.",
+        "merchant": "Merchants: tell us your stage (review, deposit, listing) and any admin message or TxHash.",
+        "dao": "DAO: verify proposal links and contracts before voting; power follows each snapshot rule.",
+        "human": "For deeper follow-up, leave email or Telegram with order ID and a short summary."
+      }
+    },
+    "toast": {
+      "chatSoon": "Live chat is coming soon. Please use email or community channels.",
+      "emailOpened": "Opening your mail client.",
+      "feedbackRecorded": "Thanks for your feedback!",
+      "feedbackOpening": "Thanks—describe your feedback in the email.",
+      "ticketOpening": "Ticket email ready—include order ID and details."
+    },
+    "faqItems": {
+      "walletConnect": {
+        "q": "Wallet won't connect or sign?",
+        "a": "Check: ① extension installed and unlocked; ② correct network; ③ refresh and click Connect again; ④ approve the site in the wallet popup. Clear site data or try another browser if needed."
+      },
+      "txFail": {
+        "q": "Why did my on-chain transaction fail?",
+        "a": "Common causes: low gas, congestion, insufficient balance, or low slippage. Increase gas, wait, verify balance, or adjust slippage on Exchange and retry."
+      },
+      "sapPay": {
+        "q": "Benefits of paying with SAP?",
+        "a": "SAP payments may receive fee discounts and campaign benefits with a shorter settlement path versus stablecoin-only checkout."
+      },
+      "refund": {
+        "q": "When will I get a refund after canceling?",
+        "a": "Refunds follow your payment method and on-chain confirmations. Track status under Transaction history in the user menu."
+      },
+      "deposit": {
+        "q": "How do merchants pay the deposit?",
+        "a": "After admin approval, follow the guide to the Exchange deposit section, pay in SAP on-chain, and keep the TxHash for records."
+      },
+      "daoVote": {
+        "q": "How do I vote on DAO proposals?",
+        "a": "Connect wallet, open Community, read active proposals, and submit an on-chain vote within the voting window per proposal rules."
+      },
+      "firstBuy": {
+        "q": "What do I need for my first purchase?",
+        "a": "Connect wallet → swap SAP → pick a product → pay with SAP. Start with a small order to learn gas and confirmation times."
+      },
+      "virtualItem": {
+        "q": "Virtual goods vs digital rights?",
+        "a": "Virtual items are for in-app use; digital rights/NFT products may include on-chain proof—read product details before buying."
+      }
+    },
+    "articles": {
+      "newbie3min": {
+        "title": "Get started in 3 minutes",
+        "summary": "Wallet → SAP → first order on the marketplace.",
+        "p1": "SapMall is a Web3 marketplace for virtual goods. Follow these three steps:",
+        "steps": [
+          "Click Connect wallet in the header and sign",
+          "Open Exchange and swap stablecoins to SAP",
+          "Browse Marketplace and pay with SAP"
+        ],
+        "tip": "Try a small SAP amount for your first order to learn gas and confirmations."
+      },
+      "firstPurchase": {
+        "title": "Your first order",
+        "summary": "From product page to on-chain payment.",
+        "p1": "Browse products, confirm details on the product page, then checkout.",
+        "steps": [
+          "Ensure wallet is connected with enough SAP",
+          "Submit the order and confirm in your wallet",
+          "Track status in orders / transaction history after confirmation"
+        ]
+      },
+      "walletConnectFail": {
+        "title": "Fix wallet connection issues",
+        "summary": "Network, permissions, and browser checks.",
+        "p1": "Failures are usually wallet state, network, or site permissions.",
+        "steps": [
+          "Confirm the extension is enabled and unlocked",
+          "Verify chain ID matches platform requirements",
+          "Disconnect the site and reconnect with a new signature",
+          "Try incognito or another browser"
+        ],
+        "warn": "Never enter your seed phrase on unknown links."
+      },
+      "protectKey": {
+        "title": "Protect keys and assets",
+        "summary": "Hardware wallets, signing checks, anti-phishing.",
+        "p1": "Asset safety depends on keeping keys and seed phrases private.",
+        "steps": [
+          "Back up seed phrases offline only—never share or screenshot",
+          "Use a hardware wallet for larger holdings",
+          "Verify domain and tx params before every signature",
+          "Beware fake support and phishing sites"
+        ],
+        "warn": "SapMall staff will never ask for your seed phrase."
+      },
+      "stablecoinSap": {
+        "title": "Swap stablecoins to SAP",
+        "summary": "USDT/USDC and more with approve + swap.",
+        "p1": "On Exchange, pick input token and amount, preview rate and fees, then confirm.",
+        "steps": [
+          "Connect wallet and select a supported stablecoin",
+          "Enter amount and approve (first time requires Approve)",
+          "Confirm swap and wait for on-chain confirmation",
+          "Use SAP in marketplace and platform flows"
+        ],
+        "linkExchange": "Go to Exchange"
+      },
+      "sapFees": {
+        "title": "SAP payment fees",
+        "summary": "Discounts and campaigns for SAP checkout.",
+        "p1": "SAP settlement may qualify for fee reductions; see Exchange and campaigns for current rates.",
+        "tip": "Check ecosystem campaigns for fee announcements on large or frequent trades."
+      },
+      "browseGoods": {
+        "title": "Browse and buy virtual goods",
+        "summary": "Categories, product pages, and SAP checkout.",
+        "p1": "The marketplace lists virtual items and digital rights—read delivery notes on each product.",
+        "steps": [
+          "Filter or search the product list",
+          "Open details to verify price, stock, and terms",
+          "Pay with SAP and save the TxHash for reference"
+        ],
+        "linkMarket": "Open Marketplace"
+      },
+      "digitalRights": {
+        "title": "Digital rights & NFT products",
+        "summary": "On-chain proof and redemption flows.",
+        "p1": "Some items deliver on-chain credentials or codes—see the product page for timing.",
+        "tip": "Redeem codes before expiry; late redemption may fail."
+      },
+      "merchantDeposit": {
+        "title": "Pay merchant deposit",
+        "summary": "On-chain deposit after onboarding approval.",
+        "p1": "After KYC/approval, you'll be guided to pay the deposit in SAP.",
+        "steps": [
+          "Submit credentials in merchant admin",
+          "Open Exchange deposit section per guide",
+          "Pay required SAP on-chain and record TxHash",
+          "Wait for confirmation to update status"
+        ],
+        "linkExchange": "Open Exchange"
+      },
+      "merchantAdmin": {
+        "title": "Merchant admin basics",
+        "summary": "Products, orders, and deposit in one portal.",
+        "p1": "Access the embedded merchant admin from the header when you have permission.",
+        "linkAdmin": "Open merchant admin"
+      },
+      "orderRefund": {
+        "title": "Cancel orders & refunds",
+        "summary": "Timing and tracking refunds.",
+        "p1": "Eligible cancellations refund via the original path; on-chain refunds need confirmations.",
+        "steps": [
+          "Cancel from order details when allowed",
+          "Track refund in Transaction history",
+          "Balance updates after on-chain completion"
+        ]
+      },
+      "txhash": {
+        "title": "Look up TxHash on explorer",
+        "summary": "Verify confirmations and execution results.",
+        "p1": "Every on-chain action has a unique transaction hash (TxHash).",
+        "steps": [
+          "Copy TxHash from history or wallet",
+          "Open the network block explorer",
+          "Paste hash to view status and confirmations"
+        ],
+        "tip": "Wait for pending txs—avoid duplicate orders."
+      },
+      "daoVote": {
+        "title": "Vote on DAO proposals",
+        "summary": "Read proposals and vote on-chain.",
+        "p1": "Governance lives under Community; voting power rules vary per proposal.",
+        "steps": [
+          "Connect wallet and open Community",
+          "Read background, options, and deadline",
+          "Submit an on-chain vote within the window"
+        ],
+        "linkDao": "Open Community"
+      },
+      "joinCommunity": {
+        "title": "Join the SapMall community",
+        "summary": "Discord discussions and Telegram updates.",
+        "p1": "Get announcements, campaigns, and peer support in our channels.",
+        "linkDiscord": "Open Discord"
+      },
+      "connectWalletBasics": {
+        "title": "Connect MetaMask and other wallets",
+        "summary": "Browser extension wallets are supported; one signature verifies your session.",
+        "p1": "Click Connect wallet in the header, pick your installed wallet, and approve plus sign."
+      },
+      "gasFeesBeginner": {
+        "title": "What is on-chain gas",
+        "summary": "Gas pays miners/validators and is separate from order totals; it rises when the network is busy.",
+        "p1": "Keep a small amount of native token (e.g. ETH) in the wallet to cover network fees."
+      },
+      "sapRewardsIntro": {
+        "title": "SAP points and ecosystem rewards",
+        "summary": "Shopping, swaps, and campaigns may earn benefits—see the rewards page for rules.",
+        "p1": "Open Ecosystem rewards for tasks and payout history; rules may depend on SAP activity."
+      },
+      "marketplaceTour": {
+        "title": "Marketplace home tour",
+        "summary": "Categories, search, product cards, and SAP prices at a glance.",
+        "p1": "Use top categories and search to find items; cards show SAP price and stock."
+      },
+      "wrongNetworkFix": {
+        "title": "Wrong network selected",
+        "summary": "Switch to a supported network in the wallet, then reconnect the site.",
+        "p1": "If you see a network mismatch, pick the recommended chain, refresh, and connect again."
+      },
+      "tokenApprovalRevoke": {
+        "title": "Manage token approvals",
+        "summary": "Review and revoke unused Approve permissions in the wallet or explorer.",
+        "p1": "First swap needs token approval. Revoke approvals you no longer need."
+      },
+      "swapFailed": {
+        "title": "Why swaps fail",
+        "summary": "Low balance, slippage, missing approval, or congestion can cause failures.",
+        "p1": "Check amount, slippage, and approval; inspect failed txs in wallet history."
+      },
+      "exchangeLimits": {
+        "title": "Swap limits and settlement time",
+        "summary": "Per-tx and daily limits are shown on Exchange; settlement waits for confirmations.",
+        "p1": "Large swaps may need extra confirmation. Timing depends on network speed."
+      },
+      "cartAndCheckout": {
+        "title": "Cart and checkout",
+        "summary": "Combine items in one order; confirm SAP balance and gas before paying.",
+        "p1": "Review the cart, then sign payment in the wallet on the checkout page."
+      },
+      "paymentPending": {
+        "title": "Payment stuck on pending",
+        "summary": "Pending means the tx is not confirmed yet—do not pay twice.",
+        "p1": "Check TxHash and confirmations in history; contact support with the hash if it takes too long."
+      },
+      "contactSupport": {
+        "title": "Contact support",
+        "summary": "Reach us by email, Discord, or Telegram with order ID and TxHash.",
+        "p1": "Include wallet address, order ID, and transaction hash so we can investigate faster."
+      },
+      "proposalBasics": {
+        "title": "Where to find DAO proposals",
+        "summary": "Browse active, passed, and past proposals under Community.",
+        "p1": "Open Community for the proposal list and read full details before voting."
+      }
+    }
+  }
+}

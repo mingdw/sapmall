@@ -5,6 +5,21 @@ module.exports = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        'help-vote-bubble': {
+          '0%': { opacity: '0', transform: 'translateX(-50%) translateY(6px) scale(0.8)' },
+          '25%': { opacity: '1', transform: 'translateX(-50%) translateY(0) scale(1)' },
+          '100%': { opacity: '0', transform: 'translateX(-50%) translateY(-10px) scale(0.92)' },
+        },
+        'dao-announcement-scroll': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+      },
+      animation: {
+        'help-vote-bubble': 'help-vote-bubble 0.55s ease forwards',
+        'dao-announcement-scroll': 'dao-announcement-scroll 36s linear infinite',
+      },
       colors: {
         'sapphire': {
           50: '#eff6ff',

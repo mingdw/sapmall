@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { Input, message } from 'antd';
 import { SendHorizonal, X } from 'lucide-react';
 import { useAccount } from 'wagmi';
+import { DAO_REPLY } from '../constants/daoReplyComposerClasses';
 import type { DaoDiscussionReplyTarget } from '../types';
 import { addUserDiscussionReply } from '../utils/daoDiscussionReply.storage';
 import { shortenWalletAddress } from '../utils/walletAddress';
-import styles from './DaoDiscussionReplyComposer.module.scss';
 
 const { TextArea } = Input;
 
@@ -82,15 +82,15 @@ const DaoDiscussionReplyEditor: React.FC<Props> = ({
 
   if (!isConnected || !address) {
     return (
-      <div className={isInline ? styles.discussionReplyComposerGuestInline : styles.discussionReplyComposerGuest}>
-        <p className={styles.discussionReplyComposerHint}>{t('dao.discussionDetail.composer.connectHint')}</p>
+      <div className={isInline ? DAO_REPLY.guestInline : DAO_REPLY.guest}>
+        <p className={DAO_REPLY.hint}>{t('dao.discussionDetail.composer.connectHint')}</p>
         <ConnectButton.Custom>
           {({ openConnectModal, mounted, authenticationStatus }) => {
             const ready = mounted && authenticationStatus !== 'loading';
             return (
               <button
                 type="button"
-                className={styles.discussionReplyConnectBtn}
+                className={DAO_REPLY.connectBtn}
                 disabled={!ready}
                 onClick={openConnectModal}
               >
@@ -104,10 +104,10 @@ const DaoDiscussionReplyEditor: React.FC<Props> = ({
   }
 
   return (
-    <div className={styles.discussionReplyComposerForm}>
+    <div className={DAO_REPLY.form}>
       {replyTarget && isInline ? (
-        <div className={styles.replyTargetBannerInline}>
-          <span className={styles.replyTargetText}>
+        <div className={DAO_REPLY.targetBannerInline}>
+          <span className={DAO_REPLY.targetText}>
             {t('dao.discussionDetail.composer.replyingTo', {
               user: shortenWalletAddress(replyTarget.authorAddress),
             })}
@@ -115,7 +115,7 @@ const DaoDiscussionReplyEditor: React.FC<Props> = ({
           {onCancel ? (
             <button
               type="button"
-              className={styles.replyTargetCancel}
+              className={DAO_REPLY.targetCancel}
               onClick={onCancel}
               aria-label={t('dao.discussionDetail.composer.cancelReplyTo')}
             >
@@ -126,17 +126,17 @@ const DaoDiscussionReplyEditor: React.FC<Props> = ({
       ) : null}
 
       {replyTarget && !isInline ? (
-        <div className={styles.replyTargetBanner}>
-          <span className={styles.replyTargetText}>
+        <div className={DAO_REPLY.targetBanner}>
+          <span className={DAO_REPLY.targetText}>
             {t('dao.discussionDetail.composer.replyingTo', {
               user: shortenWalletAddress(replyTarget.authorAddress),
             })}
-            <span className={styles.replyTargetPreview}>{replyTarget.preview}</span>
+            <span className={DAO_REPLY.targetPreview}>{replyTarget.preview}</span>
           </span>
           {onCancel ? (
             <button
               type="button"
-              className={styles.replyTargetCancel}
+              className={DAO_REPLY.targetCancel}
               onClick={onCancel}
               aria-label={t('dao.discussionDetail.composer.cancelReplyTo')}
             >
@@ -148,7 +148,7 @@ const DaoDiscussionReplyEditor: React.FC<Props> = ({
 
       <TextArea
         ref={textareaRef}
-        className={styles.discussionReplyTextarea}
+        className={DAO_REPLY.textarea}
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         placeholder={placeholder}
@@ -156,22 +156,17 @@ const DaoDiscussionReplyEditor: React.FC<Props> = ({
         maxLength={MAX_LENGTH}
       />
 
-      <div className={styles.discussionReplyComposerActions}>
-        <span className={styles.charCount} aria-live="polite">
+      <div className={DAO_REPLY.actions}>
+        <span className={DAO_REPLY.charCount} aria-live="polite">
           {t('dao.discussionDetail.composer.charCount', { current: draft.length, max: MAX_LENGTH })}
         </span>
-        <div className={styles.discussionReplyComposerActionBtns}>
+        <div className={DAO_REPLY.actionBtns}>
           {onCancel && isInline ? (
-            <button type="button" className={styles.discussionReplyCancelBtn} onClick={onCancel}>
+            <button type="button" className={DAO_REPLY.cancelBtn} onClick={onCancel}>
               {t('dao.discussionDetail.composer.cancelReplyTo')}
             </button>
           ) : null}
-          <button
-            type="button"
-            className={styles.discussionReplySubmitBtn}
-            disabled={!canSubmit}
-            onClick={onSubmit}
-          >
+          <button type="button" className={DAO_REPLY.submitBtn} disabled={!canSubmit} onClick={onSubmit}>
             <SendHorizonal className="h-4 w-4" aria-hidden />
             {replyTarget
               ? t('dao.discussionDetail.composer.submitReply')

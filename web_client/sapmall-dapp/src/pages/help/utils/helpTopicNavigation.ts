@@ -1,4 +1,4 @@
-import type { HelpCategory, HelpCategoryFilter } from '../types';
+import type { HelpCategory } from '../types';
 
 const TOPIC_PARAM = 'topic';
 
@@ -24,6 +24,3 @@ export const readHelpTopicFromSearch = (search: string): HelpCategory | null => 
   const topic = new URLSearchParams(search).get(TOPIC_PARAM);
   return isHelpCategory(topic) ? topic : null;
 };
-
-export const isHelpCategoryFilter = (value: HelpCategoryFilter): value is HelpCategory =>
-  value !== 'all';

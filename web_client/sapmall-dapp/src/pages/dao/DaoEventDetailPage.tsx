@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { getDaoEventDetail } from './mocks/daoEventDetails.mock';
 import DaoEventDetail from './components/DaoEventDetail';
 import { daoEventsListPath } from './utils/daoNavigation';
-import pageLayoutStyles from './styles/dao.pageLayout.module.scss';
+import { DAO_EVENT_BREADCRUMB, DAO_DETAIL_NOT_FOUND } from './constants/daoBreadcrumbClasses';
+import { DAO_LAYOUT } from './constants/daoLayoutClasses';
 import sharedStyles from './styles/dao.shared.module.scss';
-import styles from './components/DaoEventDetail.module.scss';
 
 const DaoEventDetailPage: React.FC = () => {
   const { id = '' } = useParams<{ id: string }>();
@@ -19,11 +19,11 @@ const DaoEventDetailPage: React.FC = () => {
 
   if (!event) {
     return (
-      <div className={pageLayoutStyles.contentZoneInnerFull}>
-        <div className={`${sharedStyles.panelCard} ${styles.eventDetailCard}`}>
-          <div className={styles.eventDetailNotFound}>
+      <div className={DAO_LAYOUT.contentZoneInnerFull}>
+        <div className={`${sharedStyles.panelCard} px-5 py-[1.15rem] md:px-[1.65rem]`}>
+          <div className={DAO_DETAIL_NOT_FOUND}>
             <p>{t('dao.eventDetail.notFound')}</p>
-            <Link to={daoEventsListPath} className={styles.eventDetailBreadcrumbLink}>
+            <Link to={daoEventsListPath} className={DAO_EVENT_BREADCRUMB.link}>
               {t('dao.eventDetail.backToList')}
             </Link>
           </div>

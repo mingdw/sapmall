@@ -24,7 +24,7 @@ import {
   getMockUserParticipatedDiscussionIds,
   getMockUserParticipatedProposalIds,
 } from './utils/daoProposalVote.mock';
-import pageLayoutStyles from './styles/dao.pageLayout.module.scss';
+import { DAO_LAYOUT } from './constants/daoLayoutClasses';
 
 type DaoParticipatedListFocus = 'proposals' | 'discussions';
 
@@ -192,7 +192,7 @@ const DaoHomePage: React.FC = () => {
   }
 
   return (
-    <div className={pageLayoutStyles.contentZoneInner}>
+    <div className={DAO_LAYOUT.contentZoneInner}>
       <div ref={mainListRef}>
         <DaoMainListCard
           tab={tab}
@@ -213,7 +213,7 @@ const DaoHomePage: React.FC = () => {
           onEventClick={onEventClick}
         />
       </div>
-      <div className={pageLayoutStyles.sidebarColumn}>
+      <div className={DAO_LAYOUT.sidebarColumn}>
         <DaoParticipationCard
           onCreateProposal={onCreateProposal}
           onStartDiscussion={onStartDiscussion}

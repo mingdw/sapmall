@@ -25,9 +25,9 @@ import {
   daoHomePath,
 } from '../utils/daoNavigation';
 import listRowStyles from './DaoMainListCard.module.scss';
-import pageLayoutStyles from '../styles/dao.pageLayout.module.scss';
+import { DAO_LAYOUT } from '../constants/daoLayoutClasses';
 import sharedStyles from '../styles/dao.shared.module.scss';
-import eventStyles from './DaoEventDetail.module.scss';
+import { DAO_EVENT_BREADCRUMB } from '../constants/daoBreadcrumbClasses';
 import styles from './DaoDiscussionEditor.module.scss';
 
 const TITLE_MAX = 120;
@@ -141,22 +141,22 @@ const DaoDiscussionEditor: React.FC = () => {
   }, [navigate, t]);
 
   return (
-    <section className={pageLayoutStyles.contentZoneInnerFull}>
+    <section className={DAO_LAYOUT.contentZoneInnerFull}>
       <article
         className={`${sharedStyles.panelCard} ${styles.discussionEditorCard}`}
         aria-label={t('dao.discussionCreate.pageTitle')}
       >
         <header className={styles.discussionEditorHead}>
-          <nav className={eventStyles.eventDetailBreadcrumb} aria-label="Breadcrumb">
-            <Link to={daoHomePath} className={eventStyles.eventDetailBreadcrumbLink}>
+          <nav className={DAO_EVENT_BREADCRUMB.nav} aria-label="Breadcrumb">
+            <Link to={daoHomePath} className={DAO_EVENT_BREADCRUMB.link}>
               {t('navigation.dao')}
             </Link>
             <ChevronRight size={14} aria-hidden />
-            <Link to={daoDiscussionsListPath()} className={eventStyles.eventDetailBreadcrumbLink}>
+            <Link to={daoDiscussionsListPath()} className={DAO_EVENT_BREADCRUMB.link}>
               {t('dao.tabs.discussions')}
             </Link>
             <ChevronRight size={14} aria-hidden />
-            <span className={eventStyles.eventDetailBreadcrumbCurrent} aria-current="page">
+            <span className={DAO_EVENT_BREADCRUMB.current} aria-current="page">
               {t('dao.discussionCreate.breadcrumbCurrent')}
             </span>
           </nav>

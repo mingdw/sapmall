@@ -7,6 +7,8 @@ export interface OrderPreviewItem {
   skuCode: string;
   productCode: string;
   productName: string;
+  /** 商品简介缩写（首行截断） */
+  productBrief?: string;
   imageUrl: string;
   specText: string;
   quantity: number;
@@ -16,7 +18,20 @@ export interface OrderPreviewItem {
 
 export interface OrderPreviewResult {
   items: OrderPreviewItem[];
+  /** 应付合计（含结算层促销后） */
   totalAmount: number;
+  /** 商品售价小计（促销前） */
+  saleSubtotal?: number;
+  /** 标价/划线价合计（仅展示用） */
+  listAmount?: number;
+  /** @deprecated 同 listAmount */
+  originalAmount?: number;
+  /** 结算层促销减免合计（不含标价→售价差额） */
+  discountAmount?: number;
+  /** @deprecated 使用 promotions */
+  promotionLabel?: string;
+  /** 促销明细（多项合计等于 discountAmount） */
+  promotions?: Array<{ id: string; labelKey: string; amount: number }>;
   currency: 'USDC';
 }
 
@@ -89,6 +104,7 @@ export const orderApi = {
     specText?: string;
     unitPrice?: number;
     productName?: string;
+    productBrief?: string;
     imageUrl?: string;
     skuCode?: string;
   }): Promise<OrderPreviewResult> => {
@@ -103,6 +119,7 @@ export const orderApi = {
             skuCode: payload.skuCode ?? `SKU-${payload.skuId}`,
             productCode: payload.productCode ?? '',
             productName: payload.productName ?? 'Sapphire Mall Item',
+            productBrief: payload.productBrief,
             imageUrl: payload.imageUrl ?? '',
             specText: payload.specText ?? '',
             quantity: payload.quantity,

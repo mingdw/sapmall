@@ -1,0 +1,149 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info",
+    "explore": "Explore",
+    "connect": "Connect",
+    "reward": "Reward",
+    "participate": "Participate"
+  },
+  "header": {
+    "tagline": "Web3 decentralized marketplace for virtual goods"
+  },
+  "navigation": {
+    "home": "Home",
+    "marketplace": "Marketplace",
+    "wallet": "Wallet",
+    "rewards": "Ecosystem",
+    "exchange": "Exchange",
+    "dao": "Community",
+    "help": "Help Center"
+  },
+  "user": {
+    "profile": "Profile",
+    "cart": "My Cart",
+    "favorites": "My Favorites",
+    "orders": "My Orders",
+    "history": "Transaction History",
+    "settings": "Settings",
+    "disconnect": "Disconnect"
+  },
+  "walletConnect": {
+    "unknownAddress": "Unknown address",
+    "balanceDisplay": "Balance: {{amount}}",
+    "connectWallet": "Connect wallet",
+    "retryConnect": "Retry",
+    "connecting": "Connecting...",
+    "networkSwitchSuccess": "Network switched",
+    "networkSwitchFail": "Network switch failed: {{message}}",
+    "addressCopied": "Address copied",
+    "walletConnectSuccess": "Wallet connected",
+    "connectionFailed": "Connection failed",
+    "loginFailedRetry": "Sign-in failed. Please try again.",
+    "modalTitle": "Account",
+    "copyAddress": "Copy address",
+    "noNickname": "No nickname",
+    "walletBalance": "Wallet balance",
+    "accountInfo": "Account details",
+    "userId": "User ID",
+    "userType": "Role",
+    "accountStatus": "Status",
+    "statusActive": "Active",
+    "registeredAt": "Registered",
+    "unknown": "Unknown",
+    "defaultRole": "Standard user",
+    "networks": {
+      "ethereum": "Ethereum",
+      "base": "Base Mainnet",
+      "arcTestnet": "Arc Testnet",
+      "sepolia": "Sepolia",
+      "goerli": "Goerli",
+      "holesky": "Holesky",
+      "bsc": "BSC",
+      "polygon": "Polygon",
+      "lineaSepolia": "Linea Sepolia",
+      "baseSepolia": "Base Sepolia"
+    },
+    "portfolioTitle": "Portfolio",
+    "portfolioSubtitle": "On-chain balances on current network",
+    "usdcBalance": "USDC",
+    "sapBalance": "SAP",
+    "balanceUnavailable": "Not available on this network",
+    "sapNotConfigured": "Contract not configured",
+    "viewAccountDetails": "Account details",
+    "personalInfo": "Personal info",
+    "walletAddress": "Wallet address",
+    "roles": {
+      "admin": "Admin",
+      "merchant": "Merchant",
+      "buyer": "Buyer"
+    },
+    "networkViewOnly": "View only—switch to Linea Sepolia or Arc Testnet to pay",
+    "networkBadgeView": "View"
+  },
+  "homepage": {
+    "title": "SapMall DApp",
+    "subtitle": "Decentralized E-commerce Platform",
+    "welcome": "Welcome to SapMall DApp",
+    "description": "Experience decentralized e-commerce ecosystem and enjoy the new shopping experience brought by Web3",
+    "ready": "System is ready, waiting for feature modules configuration...",
+    "marketplace": "Marketplace",
+    "marketplaceDesc": "Browse and purchase decentralized products",
+    "wallet": "Wallet",
+    "walletDesc": "Manage your digital assets",
+    "rewards": "Ecosystem",
+    "rewardsDesc": "Campaigns & rewards; Bags participation uses Solana on their site",
+    "dao": "Community",
+    "daoDesc": "Join governance, discussions, and community initiatives"
+  },
+  "footer": {
+    "brand": "Sapphire Mall",
+    "brandDesc": "We are committed to redefining virtual goods trading—real value and transparency for global users through Web3.",
+    "colMall": "Mall services",
+    "colEco": "Ecosystem",
+    "colDev": "Developers",
+    "mall": {
+      "digitalRights": "Digital rights",
+      "nftRedeem": "NFT redemption",
+      "virtualItems": "Virtual goods",
+      "recharge": "Top-up service"
+    },
+    "eco": {
+      "dao": "DAO governance",
+      "whitepaper": "Whitepaper",
+      "tokenomics": "Token model",
+      "audit": "Audit reports"
+    },
+    "dev": {
+      "api": "API docs",
+      "bounty": "Bug bounty",
+      "guide": "Developer guide",
+      "opensource": "Open source"
+    },
+    "copyright": "© 2026 Sapphire Mall Ecosystem. All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms of service",
+    "cookie": "Cookie policy",
+    "brandTagline": "Web3 virtual goods ecosystem",
+    "badgesAria": "Ecosystem capabilities",
+    "socialAria": "Social media",
+    "legalAria": "Legal and policies",
+    "badges": {
+      "web3": "Web3",
+      "dao": "DAO",
+      "nft": "NFT"
+    },
+    "followUs": "Follow us"
+  }
+}

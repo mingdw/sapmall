@@ -9,14 +9,15 @@ import HelpCardTitle from './HelpCardTitle';
 import { articleSummaryKey } from '../utils/articleI18nKey';
 import { faqArticleSlugFromId } from '../utils/faqArticleSlug';
 import sharedStyles from '../styles/help.shared.module.scss';
-import styles from './HelpFaqSection.module.scss';
 
 type Props = {
   category: HelpCategoryFilter;
-  variant?: 'main' | 'sidebar';
 };
 
-const HelpFaqSection: React.FC<Props> = ({ category, variant = 'main' }) => {
+const faqHeadBtn =
+  'flex w-full cursor-pointer items-start justify-between gap-2 border-none bg-transparent py-[0.7rem] text-left hover:[&_.faq-q]:text-[var(--help-primary)]';
+
+const HelpFaqSection: React.FC<Props> = ({ category }) => {
   const { t } = useTranslation();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [faqOffset, setFaqOffset] = useState(0);
@@ -50,87 +51,71 @@ const HelpFaqSection: React.FC<Props> = ({ category, variant = 'main' }) => {
 
   if (filtered.length === 0) return null;
 
-  const titleRow = () => (
-    <div className={sharedStyles.cardSectionHead}>
-      <HelpCardTitle id="help-faq-title" icon={<CircleHelp size={18} strokeWidth={2.25} />}>
-        {t('help.faqTitle')}
-      </HelpCardTitle>
-      {hasMore && (
-        <button
-          type="button"
-          className={styles.faqMoreDotsBtn}
-          title={t('help.faqRotateHint')}
-          aria-label={t('help.faqRotateHint')}
-          onClick={onRotateFaq}
-        >
-          <span className={styles.faqMoreDots} aria-hidden>
-            <span />
-            <span />
-            <span />
-          </span>
-        </button>
-      )}
-    </div>
-  );
-
-  const list = (
-    <ul className={styles.faqRows}>
-      {visibleItems.map((faq) => {
-        const isOpen = expandedId === faq.id;
-        const articleSlug = faqArticleSlugFromId(faq.id);
-        return (
-          <li key={faq.id} className={styles.faqRowItem}>
+  return (
+    <div className={`${sharedStyles.panelCard} ${sharedStyles.sidebarCard}`}>
+      <section className="m-0" aria-labelledby="help-faq-title">
+        <div className={sharedStyles.cardSectionHead}>
+          <HelpCardTitle id="help-faq-title" icon={<CircleHelp size={18} strokeWidth={2.25} />}>
+            {t('help.faqTitle')}
+          </HelpCardTitle>
+          {hasMore && (
             <button
               type="button"
-              className={styles.faqRowHead}
-              aria-expanded={isOpen}
-              onClick={() => toggle(faq.id)}
+              className="inline-flex shrink-0 items-center justify-center rounded-md border-none bg-transparent p-1 transition-colors hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/45"
+              title={t('help.faqRotateHint')}
+              aria-label={t('help.faqRotateHint')}
+              onClick={onRotateFaq}
             >
-              <span className={styles.faqRowQuestion}>{t(faq.questionKey)}</span>
-              <ChevronDown
-                className={styles.faqRowChevron}
-                data-expanded={isOpen}
-                size={16}
-                strokeWidth={2.25}
-                aria-hidden
-              />
+              <span className="pointer-events-none inline-flex items-center gap-[0.28rem]" aria-hidden>
+                <span className="block h-1.5 w-1.5 rounded-full bg-[var(--help-primary-muted)] transition-transform hover:scale-110" />
+                <span className="block h-1.5 w-1.5 rounded-full bg-[var(--help-primary)] opacity-85 transition-transform hover:scale-110" />
+                <span className="block h-1.5 w-1.5 rounded-full bg-[var(--help-amber-soft)] transition-transform hover:scale-110" />
+              </span>
             </button>
-            {isOpen && (
-              <div className={styles.faqRowAnswer}>
-                <Link
-                  to={`/help/a/${articleSlug}`}
-                  className={styles.faqRowAnswerLink}
-                  title={t(articleSummaryKey(articleSlug))}
-                >
-                  {t(articleSummaryKey(articleSlug))}
-                </Link>
-              </div>
-            )}
-          </li>
-        );
-      })}
-    </ul>
-  );
-
-  if (variant === 'sidebar') {
-    return (
-      <div className={`${sharedStyles.panelCard} ${sharedStyles.sidebarCard}`}>
-        <section className={styles.faqSidebar} aria-labelledby="help-faq-title">
-          {titleRow()}
-          <div className={sharedStyles.cardSectionBody}>{list}</div>
-        </section>
-      </div>
-    );
-  }
-
-  return (
-    <section aria-labelledby="help-faq-title">
-      {titleRow()}
-      <div className={sharedStyles.cardSectionBody}>
-        <p className={styles.panelHint}>{t('help.faqHint')}</p>
-        {list}
-      </div>
-    </section>
+          )}
+        </div>
+        <div className={sharedStyles.cardSectionBody}>
+          <ul className="m-0 list-none p-0">
+            {visibleItems.map((faq) => {
+              const isOpen = expandedId === faq.id;
+              const articleSlug = faqArticleSlugFromId(faq.id);
+              return (
+                <li key={faq.id} className="border-b border-[#eef1f5] last:border-b-0">
+                  <button
+                    type="button"
+                    className={faqHeadBtn}
+                    aria-expanded={isOpen}
+                    onClick={() => toggle(faq.id)}
+                  >
+                    <span className="faq-q min-w-0 flex-1 text-[0.8125rem] font-medium leading-snug text-[var(--help-panel-text)] transition-colors">
+                      {t(faq.questionKey)}
+                    </span>
+                    <ChevronDown
+                      className={`mt-0.5 h-4 w-4 shrink-0 text-slate-400 transition-transform ${
+                        isOpen ? 'rotate-180 text-[var(--help-primary)]' : ''
+                      }`}
+                      strokeWidth={2.25}
+                      aria-hidden
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="pb-3">
+                      <Link
+                        to={`/help/a/${articleSlug}`}
+                        className="m-0 line-clamp-3 text-[0.6875rem] font-normal leading-relaxed text-slate-500 no-underline transition-colors hover:text-[var(--help-primary)]"
+                        title={t(articleSummaryKey(articleSlug))}
+                      >
+                        {t(articleSummaryKey(articleSlug))}
+                      </Link>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </section>
+    </div>
   );
 };
 

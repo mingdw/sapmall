@@ -1,0 +1,111 @@
+{
+  "exchange": {
+    "errors": {
+      "pageErrorToast": "Something went wrong. Please refresh and try again.",
+      "pageErrorFallback": "Something went wrong. Please refresh and try again."
+    },
+    "toasts": {
+      "swapSuccess": "Swap successful!",
+      "swapSuccessDesc": "You received {{amount}} SAP",
+      "connectWallet": "Connect your wallet first",
+      "noPendingDeposit": "No pending deposit request",
+      "missingIntent": "Missing request details. Please reopen from Admin.",
+      "depositSuccess": "Deposit submitted",
+      "depositTxHash": "Tx hash: {{prefix}}...{{suffix}}",
+      "swapTabWallet": "Connect your wallet before swapping",
+      "depositTabNoPending": "No pending deposit request"
+    },
+    "hero": {
+      "tagline": "Decentralized swap · Secure · Fast · Low fees",
+      "title": "Swap for SAP",
+      "subtitle": "Swap mainstream stablecoins for SAP—lower fees when you shop, merchant perks, and early access to ecosystem campaigns."
+    },
+    "badges": {
+      "audited": "Audited contracts",
+      "bestRate": "Best rates",
+      "multiChain": "Multi-chain"
+    },
+    "ticker": {
+      "tag": "Merchant onboard",
+      "congrats": "Congrats",
+      "joinedSuffix": "—now a merchant"
+    },
+    "tabs": {
+      "swap": "Swap to SAP",
+      "deposit": "Merchant deposit"
+    },
+    "hints": {
+      "walletRequired": "Wallet not connected. Connect to swap or pay a deposit.",
+      "depositLocked": "No pending deposit—the deposit tab stays locked.",
+      "syncingDeposit": "Syncing request status..."
+    },
+    "deposit": {
+      "title": "Merchant security deposit",
+      "subtitle": "Pay before the deadline or the request expires.",
+      "amountDue": "Amount due",
+      "intentId": "Intent ID",
+      "deadline": "Deadline",
+      "payProcessing": "Processing...",
+      "paySubmitted": "Transaction submitted",
+      "payNow": "Pay with wallet",
+      "txSubmitted": "Submitted: {{hash}}",
+      "backAdmin": "Done—back to Admin for status",
+      "footnote": "This flow links from Admin. On-chain confirmation follows backend callbacks."
+    },
+    "supportedCoins": "Supported assets",
+    "swap": {
+      "title": "Token swap",
+      "subtitle": "Swap mainstream tokens for SAP",
+      "slippage": "Slippage tolerance",
+      "customSlippage": "Custom",
+      "pay": "Pay",
+      "balance": "Balance",
+      "max": "MAX",
+      "selectPayToken": "Choose pay token",
+      "tokenTypeStable": "Stablecoin",
+      "tokenTypeMajor": "Major asset",
+      "receive": "Receive",
+      "priceImpact": "Price impact",
+      "feeLabel": "Fee ({{percent}}%)",
+      "slippageTolerance": "Slippage tolerance",
+      "eta": "Est. arrival",
+      "etaValue": "~15s",
+      "connectWalletBtn": "Connect wallet",
+      "swapSuccessBtn": "✓ Swap complete!",
+      "swapping": "Swapping...",
+      "enterAmount": "Enter amount",
+      "swapNow": "Swap now",
+      "securityNote": "Audited contracts · Funds protected",
+      "rateLine": "1 {{from}} = {{rate}} SAP",
+      "disabledReason": "Connect your wallet to swap"
+    },
+    "marketStats": {
+      "title": "Market data",
+      "sapPrice": "SAP price",
+      "vol24h": "24h volume",
+      "tvl": "TVL",
+      "holders": "Holders"
+    },
+    "chart": {
+      "pair": "SAP / USD",
+      "period24H": "24H",
+      "period7D": "7D",
+      "period30D": "30D"
+    },
+    "recentTx": {
+      "title": "Recent swaps",
+      "viewAll": "View all",
+      "success": "Success",
+      "time2m": "2m ago",
+      "time8m": "8m ago",
+      "time15m": "15m ago",
+      "time23m": "23m ago"
+    },
+    "sapVisual": {
+      "name": "SAP Token",
+      "tagline": "Core token of the SAPMall ecosystem",
+      "currentPrice": "Price",
+      "changeLabel": "▲ 5.82% (24h)"
+    }
+  }
+}

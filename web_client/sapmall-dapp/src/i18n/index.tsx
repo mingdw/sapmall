@@ -2,79 +2,72 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-// 导入翻译资源
-import zhTranslation from './locales/zh/translation.json';
-import enTranslation from './locales/en/translation.json';
-import zhHelp from './locales/zh/help.json';
-import enHelp from './locales/en/help.json';
-import zhMarketplacePage from './locales/zh/marketplacePage';
-import enMarketplacePage from './locales/en/marketplacePage.json';
-import zhPaymentPage from './locales/zh/paymentPage';
-import enPaymentPage from './locales/en/paymentPage';
-import zhWalletNetworkExtras from './locales/zh/walletNetworkExtras';
-import enWalletNetworkExtras from './locales/en/walletNetworkExtras';
-import zhProductDetailExtras from './locales/zh/productDetailExtras';
-import enProductDetailExtras from './locales/en/productDetailExtras';
+import { mergeTranslationBundles } from './mergeTranslationBundles';
 import { buildTopicQaI18nTree } from '../pages/help/mocks/helpTopicQaCatalog';
 
-function mergeWalletConnectExtras<T extends Record<string, unknown>>(base: T, extras: typeof zhWalletNetworkExtras): T {
-  const baseWc = (base as { walletConnect?: Record<string, unknown> }).walletConnect ?? {};
-  const extraWc = extras.walletConnect ?? {};
+import zhCommon from './locales/zh/translation_common.json';
+import zhMarketplace from './locales/zh/translation_marketplace.json';
+import zhRewards from './locales/zh/translation_rewards.json';
+import zhExchange from './locales/zh/translation_exchange.json';
+import zhDao from './locales/zh/translation_dao.json';
+import zhHelp from './locales/zh/translation_help.json';
+
+import enCommon from './locales/en/translation_common.json';
+import enMarketplace from './locales/en/translation_marketplace.json';
+import enRewards from './locales/en/translation_rewards.json';
+import enExchange from './locales/en/translation_exchange.json';
+import enDao from './locales/en/translation_dao.json';
+import enHelp from './locales/en/translation_help.json';
+
+function buildLocaleTranslation(
+  common: Record<string, unknown>,
+  marketplace: Record<string, unknown>,
+  rewards: Record<string, unknown>,
+  exchange: Record<string, unknown>,
+  dao: Record<string, unknown>,
+  help: Record<string, unknown>,
+  locale: 'zh' | 'en',
+) {
+  const merged = mergeTranslationBundles(
+    common,
+    marketplace,
+    rewards,
+    exchange,
+    dao,
+    help,
+  );
+  const helpRoot = (merged.help ?? {}) as Record<string, unknown>;
   return {
-    ...base,
-    walletConnect: {
-      ...baseWc,
-      ...extraWc,
-      networks: {
-        ...(baseWc.networks as Record<string, string> | undefined),
-        ...(extraWc.networks as Record<string, string> | undefined),
-      },
+    ...merged,
+    help: {
+      ...helpRoot,
+      topicQa: buildTopicQaI18nTree(locale),
     },
-  } as T;
+  };
 }
-
-const zhTranslationMerged = mergeWalletConnectExtras(zhTranslation, zhWalletNetworkExtras);
-const enTranslationMerged = mergeWalletConnectExtras(enTranslation, enWalletNetworkExtras);
-
-function mergeProductDetailExtras<T extends Record<string, unknown>>(
-  base: T,
-  extras: typeof zhProductDetailExtras,
-): T {
-  const basePd = (base as { productDetail?: Record<string, unknown> }).productDetail ?? {};
-  const extraPd = extras.productDetail ?? {};
-  return {
-    ...base,
-    productDetail: { ...basePd, ...extraPd },
-  } as T;
-}
-
-const zhWithProductDetail = mergeProductDetailExtras(zhTranslationMerged, zhProductDetailExtras);
-const enWithProductDetail = mergeProductDetailExtras(enTranslationMerged, enProductDetailExtras);
 
 const resources = {
   zh: {
-    translation: {
-      ...zhWithProductDetail,
-      ...zhHelp,
-      ...zhMarketplacePage,
-      ...zhPaymentPage,
-      help: {
-        ...zhHelp.help,
-        topicQa: buildTopicQaI18nTree('zh'),
-      },
-    },
+    translation: buildLocaleTranslation(
+      zhCommon as Record<string, unknown>,
+      zhMarketplace as Record<string, unknown>,
+      zhRewards as Record<string, unknown>,
+      zhExchange as Record<string, unknown>,
+      zhDao as Record<string, unknown>,
+      zhHelp as Record<string, unknown>,
+      'zh',
+    ),
   },
   en: {
-    translation: {
-      ...enWithProductDetail,
-      ...enHelp,
-      ...enMarketplacePage,
-      ...enPaymentPage,
-      help: {
-        ...enHelp.help,
-        topicQa: buildTopicQaI18nTree('en'),
-      },
-    },
+    translation: buildLocaleTranslation(
+      enCommon as Record<string, unknown>,
+      enMarketplace as Record<string, unknown>,
+      enRewards as Record<string, unknown>,
+      enExchange as Record<string, unknown>,
+      enDao as Record<string, unknown>,
+      enHelp as Record<string, unknown>,
+      'en',
+    ),
   },
 };
 
@@ -84,7 +77,7 @@ i18n
   .init({
     resources,
     fallbackLng: 'zh',
-    debug: true, // 开启调试模式
+    debug: process.env.NODE_ENV === 'development',
     interpolation: {
       escapeValue: false,
     },
@@ -92,6 +85,6 @@ i18n
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
     },
-  } as any); // 添加类型断言
+  });
 
 export default i18n;

@@ -4,9 +4,9 @@ import {
   DAO_DISCUSSION_TOPIC_TAG_DISPLAY_ORDER,
   type DaoDiscussionTopicTagFilter,
 } from '../constants/discussionTopicTags';
+import { getDaoTopicTagFilterClass } from '../constants/daoTopicTagFilterClasses';
 import type { DaoDiscussionTopicTag } from '../types';
 import sharedStyles from '../styles/dao.shared.module.scss';
-import styles from './DaoDiscussionTopicTagsCard.module.scss';
 
 type Props = {
   activeFilter: DaoDiscussionTopicTagFilter;
@@ -20,7 +20,7 @@ const DaoDiscussionTopicTagsCard: React.FC<Props> = ({ activeFilter, onFilterCha
     <button
       key={filter}
       type="button"
-      className={styles.discussionTagFilterBtn}
+      className={getDaoTopicTagFilterClass(filter, activeFilter === filter)}
       data-tag={filter === 'all' ? 'all' : filter}
       data-active={activeFilter === filter ? 'true' : 'false'}
       aria-pressed={activeFilter === filter}
@@ -32,11 +32,11 @@ const DaoDiscussionTopicTagsCard: React.FC<Props> = ({ activeFilter, onFilterCha
 
   return (
     <div
-      className={`${sharedStyles.panelCard} ${styles.discussionTagFilterPanel}`}
+      className={`${sharedStyles.panelCard} box-border w-full px-[1.15rem] py-4`}
       role="group"
       aria-label={t('dao.topicTagFilter.groupAria')}
     >
-      <div className={styles.discussionTagFilterGrid}>
+      <div className="flex flex-wrap justify-start gap-[0.4rem]">
         {renderTagButton('all', t('dao.topicTagFilter.all'))}
         {DAO_DISCUSSION_TOPIC_TAG_DISPLAY_ORDER.map((tag: DaoDiscussionTopicTag) =>
           renderTagButton(tag, t(`dao.topicTags.${tag}`)),
@@ -47,6 +47,3 @@ const DaoDiscussionTopicTagsCard: React.FC<Props> = ({ activeFilter, onFilterCha
 };
 
 export default DaoDiscussionTopicTagsCard;
-
-
-

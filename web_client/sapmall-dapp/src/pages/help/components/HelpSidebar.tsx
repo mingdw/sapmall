@@ -2,7 +2,7 @@ import React from 'react';
 import type { HelpCategoryFilter } from '../types';
 import HelpFaqSection from './HelpFaqSection';
 import HelpSupportSidebar from './HelpSupportSidebar';
-import layoutStyles from '../styles/help.pageLayout.module.scss';
+import { HELP_LAYOUT } from '../constants/helpLayoutClasses';
 
 type Props = {
   category: HelpCategoryFilter;
@@ -10,8 +10,8 @@ type Props = {
 
 const HelpSidebar: React.FC<Props> = ({ category }) => {
   return (
-    <aside className={layoutStyles.sidebarColumn}>
-      <HelpFaqSection category={category} variant="sidebar" />
+    <aside className={HELP_LAYOUT.sidebarColumn}>
+      <HelpFaqSection category={category} />
       <HelpSupportSidebar />
     </aside>
   );

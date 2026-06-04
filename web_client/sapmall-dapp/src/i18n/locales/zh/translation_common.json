@@ -1,0 +1,149 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "search": "搜索",
+    "submit": "提交",
+    "confirm": "确认",
+    "success": "成功",
+    "error": "错误",
+    "warning": "警告",
+    "info": "信息",
+    "explore": "探索",
+    "connect": "连接",
+    "reward": "奖励",
+    "participate": "参与"
+  },
+  "header": {
+    "tagline": "Web3去中心化虚拟商品交易平台"
+  },
+  "navigation": {
+    "home": "首页",
+    "marketplace": "商城",
+    "wallet": "钱包",
+    "rewards": "生态活动",
+    "exchange": "兑换",
+    "dao": "社区参与",
+    "help": "帮助中心"
+  },
+  "user": {
+    "profile": "个人资料",
+    "cart": "我的购物车",
+    "favorites": "我的收藏",
+    "orders": "我的订单",
+    "history": "交易历史",
+    "settings": "设置",
+    "disconnect": "断开连接"
+  },
+  "walletConnect": {
+    "unknownAddress": "未知地址",
+    "balanceDisplay": "余额: {{amount}}",
+    "connectWallet": "连接钱包",
+    "retryConnect": "重试连接",
+    "connecting": "连接中...",
+    "networkSwitchSuccess": "网络切换成功",
+    "networkSwitchFail": "网络切换失败：{{message}}",
+    "addressCopied": "地址已复制到剪贴板",
+    "walletConnectSuccess": "钱包连接成功！",
+    "connectionFailed": "连接失败",
+    "loginFailedRetry": "登录失败，请重试",
+    "modalTitle": "用户信息",
+    "copyAddress": "复制地址",
+    "noNickname": "未设置昵称",
+    "walletBalance": "钱包余额",
+    "accountInfo": "账户信息",
+    "userId": "用户 ID",
+    "userType": "用户类型",
+    "accountStatus": "状态",
+    "statusActive": "正常",
+    "registeredAt": "注册时间",
+    "unknown": "未知",
+    "defaultRole": "普通用户",
+    "networks": {
+      "ethereum": "Ethereum",
+      "base": "Base 主网",
+      "baseSepolia": "Base Sepolia",
+      "arcTestnet": "Arc Testnet",
+      "sepolia": "Sepolia",
+      "goerli": "Goerli",
+      "holesky": "Holesky",
+      "bsc": "BSC",
+      "polygon": "Polygon",
+      "lineaSepolia": "Linea Sepolia"
+    },
+    "portfolioTitle": "资产概览",
+    "portfolioSubtitle": "当前网络链上余额",
+    "personalInfo": "个人信息",
+    "usdcBalance": "USDC",
+    "sapBalance": "SAP",
+    "balanceUnavailable": "当前网络暂不支持",
+    "sapNotConfigured": "待配置合约",
+    "viewAccountDetails": "查看账户详情",
+    "walletAddress": "钱包地址",
+    "roles": {
+      "admin": "系统管理员",
+      "merchant": "商家",
+      "buyer": "买家"
+    },
+    "networkViewOnly": "该网络仅展示；支付请切换到 Linea Sepolia 或 Arc Testnet",
+    "networkBadgeView": "仅展示"
+  },
+  "homepage": {
+    "title": "SapMall DApp",
+    "subtitle": "去中心化电商平台",
+    "welcome": "欢迎使用 SapMall DApp",
+    "description": "体验去中心化的电商生态，享受Web3带来的全新购物体验",
+    "ready": "系统已准备就绪，等待配置功能模块...",
+    "marketplace": "市场",
+    "marketplaceDesc": "浏览和购买去中心化商品",
+    "wallet": "钱包",
+    "walletDesc": "管理您的数字资产",
+    "rewards": "生态活动",
+    "rewardsDesc": "活动与奖励入口；参与 Bags 需在对方站点使用 Solana",
+    "dao": "DAO治理",
+    "daoDesc": "参与社区决策和治理"
+  },
+  "footer": {
+    "brand": "Sapphire Mall",
+    "brandDesc": "我们致力于重新定义虚拟商品交易，通过 Web3 技术为全球用户创造真正的价值和透明度。",
+    "colMall": "商城服务",
+    "colEco": "关于生态",
+    "colDev": "开发者",
+    "mall": {
+      "digitalRights": "数字权益购买",
+      "nftRedeem": "NFT 兑换码",
+      "virtualItems": "虚拟道具交易",
+      "recharge": "代充服务"
+    },
+    "eco": {
+      "dao": "DAO 治理",
+      "whitepaper": "白皮书",
+      "tokenomics": "代币模型",
+      "audit": "审计报告"
+    },
+    "dev": {
+      "api": "API 文档",
+      "bounty": "Bug 赏金",
+      "guide": "开发者指南",
+      "opensource": "开源仓库"
+    },
+    "copyright": "© 2026 Sapphire Mall Ecosystem. 保留所有权利。",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "cookie": "Cookie 政策",
+    "brandTagline": "Web3 虚拟商品生态",
+    "badgesAria": "生态能力",
+    "socialAria": "社交媒体",
+    "legalAria": "法律与政策",
+    "badges": {
+      "web3": "Web3",
+      "dao": "DAO",
+      "nft": "NFT"
+    },
+    "followUs": "关注我们"
+  }
+}

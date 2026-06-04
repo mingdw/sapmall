@@ -8,6 +8,9 @@ import DaoProposalCreatePage from './DaoProposalCreatePage';
 import DaoDiscussionDetailPage from './DaoDiscussionDetailPage';
 import DaoDiscussionCreatePage from './DaoDiscussionCreatePage';
 
+/**
+ * DAO 模块路由（详见 ./README.md）
+ */
 const DaoRoutes: React.FC = () => (
   <Routes>
     <Route element={<DaoLayout />}>

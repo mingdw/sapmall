@@ -1,0 +1,93 @@
+---
+description: "sapmall-dapp 功能模块页面目录、路由与 Tailwind + SCSS Module 样式分工"
+globs: ["web_client/sapmall-dapp/src/pages/**/*.tsx", "web_client/sapmall-dapp/src/pages/**/*.scss"]
+alwaysApply: false
+---
+
+# 功能模块页面与样式组织规范（sapmall-dapp）
+
+## 1. 目录与命名
+
+每个业务功能模块放在 `src/pages/{feature}/`（如 `help`、`dao`、`marketplace/payment`）。
+
+### 1.1 路由与页面文件
+
+- **布局壳（有子路由）**：`{Feature}Layout.tsx` + `{Feature}Layout.module.scss`（Outlet、模块级 Hero、CSS 变量主题）。
+- **模块首页（index 路由）**：`{Feature}HomePage.tsx` + `{Feature}HomePage.module.scss`（仅首页专属样式，非整模块样式桶）。
+- **同级子页面**：如 `{Feature}ArticlePage.tsx`，与 Home 同级。
+- **路由表**：`{Feature}Routes.tsx`；模块说明见 `{feature}/README.md`。
+- **子组件**：`components/{Feature}Xxx.tsx`；跨模块复用提升到 `src/components/`。
+
+### 1.2 样式文件（同一模块内）
+
+| 文件 | 职责 |
+|------|------|
+| `{Feature}Layout.module.scss` | 壳、Hero 区、主题 CSS 变量、内容区背景 |
+| `{Feature}HomePage.module.scss` | **仅首页**独有区块 |
+| `styles/{feature}.shared.module.scss` | 模块内多页/多组件复用（面板、标题、标签等） |
+| `constants/{feature}LayoutClasses.ts` | 可选：多页共用的 Tailwind 布局 class 字符串 |
+| `components/Xxx.module.scss` | 仅该组件复杂视觉（动画、富文本等） |
+
+- 可复用样式**不要**默认堆进 `HomePage.module.scss`；超过约 300 行或重复 ≥3 次时迁入 `help.shared.module.scss`（或 `{feature}.shared`）。
+- 子组件可 `import` `shared` / `pageLayout` 常量；**禁止**子组件依赖 `HomePage.module.scss`。
+
+## 2. Tailwind 与 SCSS 分工
+
+### 2.1 优先 Tailwind（写在 `className`）
+
+- Flex/Grid：`flex`、`grid`、`gap-*`、`justify-*`、`items-*`
+- 间距尺寸：`p-*`、`m-*`、`w-full`、`max-w-*`、`space-y-*`
+- 响应式：`sm:`、`md:`、`lg:`（优先于 SCSS `@media`）
+- 简单排版与一次性布局
+
+### 2.2 优先 SCSS Module
+
+- 玻璃态/渐变/复杂阴影、多状态伪类链
+- `:global(.ant-*)` 等第三方覆盖
+- 需在 ≥3 处复用的语义化块（如 `.panelCard`）
+- 依赖 `.pageRoot` CSS 变量的主题组件
+
+### 2.3 混用约定
+
+- `className={\`${styles.glassCard} p-5 md:p-6\`}`：SCSS 管皮肤，Tailwind 管间距。
+- 同一元素禁止 SCSS 与 Tailwind 同时设置同一属性。
+- 同一串 utility 重复 ≥3 次 → 抽到 `shared` 或 `layoutClasses` 常量。
+
+## 3. 实现 checklist
+
+1. 有子路由？→ `Layout` + `Routes` + `HomePage` + 子页。
+2. 跨页复用？→ `styles/{feature}.shared.module.scss`。
+3. 纯布局？→ Tailwind。
+4. 覆盖 antd？→ SCSS `:global`。
+5. 组件复杂视觉？→ 组件旁 `.module.scss`。
+6. 新模块在 `{feature}/README.md` 记录路由表。
+
+## 4. 参考模块
+
+**help**
+
+```
+pages/help/
+  README.md
+  HelpRoutes.tsx
+  HelpLayout.tsx + HelpLayout.module.scss
+  HelpHomePage.tsx + HelpHomePage.module.scss
+  HelpArticlePage.tsx
+  styles/help.shared.module.scss
+  constants/helpLayoutClasses.ts
+  components/...
+```
+
+**dao**
+
+```
+pages/dao/
+  README.md
+  DaoRoutes.tsx
+  DaoLayout.tsx + DaoLayout.module.scss
+  DaoHomePage.tsx
+  Dao*DetailPage.tsx / Dao*CreatePage.tsx
+  styles/dao.shared.module.scss
+  constants/daoLayoutClasses.ts
+  components/...
+```

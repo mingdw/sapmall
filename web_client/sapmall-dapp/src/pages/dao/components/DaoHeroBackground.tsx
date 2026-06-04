@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { DAO_HERO_BACKGROUNDS, DAO_HERO_BACKGROUNDS_FALLBACK } from '../constants';
 import { DAO_HERO_SLIDES } from '../mocks/daoHero.mock';
 import type { DaoHeroDimension } from '../types';
-import styles from './DaoHeroBackground.module.scss';
 
 type Props = {
   slideIndex: number;
@@ -26,16 +25,16 @@ const DaoHeroBackground: React.FC<Props> = ({ slideIndex }) => {
   }, []);
 
   return (
-    <div className={styles.heroBgStack} data-dimension={activeDimension} aria-hidden>
+    <div className="heroBgStack" data-dimension={activeDimension} aria-hidden>
       {DAO_HERO_SLIDES.map((slide, i) => (
         <div
           key={slide.id}
-          className={styles.heroBgLayer}
+          className="heroBgLayer"
           data-active={i === slideIndex ? 'true' : 'false'}
           data-dimension={slide.id}
         >
           <img
-            className={styles.heroBgImage}
+            className="heroBgImage"
             src={srcByDimension[slide.id]}
             alt=""
             decoding="async"
@@ -44,23 +43,20 @@ const DaoHeroBackground: React.FC<Props> = ({ slideIndex }) => {
         </div>
       ))}
 
-      <div className={styles.heroBgFx} data-dimension={activeDimension}>
-        <div className={styles.heroBgAurora} />
-        <div className={styles.heroBgBeam} />
-        <span className={styles.heroBgOrbA} />
-        <span className={styles.heroBgOrbB} />
-        <span className={styles.heroBgOrbC} />
-        <div className={styles.heroBgParticles} />
-        <div className={styles.heroBgRipple} />
+      <div className="heroBgFx" data-dimension={activeDimension}>
+        <div className="heroBgAurora" />
+        <div className="heroBgBeam" />
+        <span className="heroBgOrbA" />
+        <span className="heroBgOrbB" />
+        <span className="heroBgOrbC" />
+        <div className="heroBgParticles" />
+        <div className="heroBgRipple" />
       </div>
 
-      <div className={styles.heroBgMesh} />
-      <div className={styles.heroBgScrim} data-dimension={activeDimension} />
+      <div className="heroBgMesh" />
+      <div className="heroBgScrim" data-dimension={activeDimension} />
     </div>
   );
 };
 
 export default DaoHeroBackground;
-
-
-

@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { formatHeroMetricNumeric, parseHeroMetricValue } from '../utils/parseHeroMetricValue';
-import styles from './DaoHeroCarousel.module.scss';
 
 const DURATION_MS = 1200;
 
@@ -71,12 +70,7 @@ const HeroCountUp: React.FC<Props> = ({ value, active, className }) => {
     };
   }, [active, parsed, value]);
 
-  const mergedClass = [
-    className,
-    showLandBounce ? styles.heroValueLand : undefined,
-  ]
-    .filter(Boolean)
-    .join(' ');
+  const mergedClass = [className, showLandBounce ? 'heroValueLand' : undefined].filter(Boolean).join(' ');
 
   return (
     <span className={mergedClass} aria-label={value}>
@@ -86,6 +80,3 @@ const HeroCountUp: React.FC<Props> = ({ value, active, className }) => {
 };
 
 export default HeroCountUp;
-
-
-

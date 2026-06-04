@@ -1,17 +1,38 @@
-import React from 'react';
+﻿import React, { useEffect, useMemo } from 'react';
 import { Button, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
-import { ShieldCheck, Wallet } from 'lucide-react';
+import { ArrowRightLeft, Wallet } from 'lucide-react';
 import { OrderPreviewResult } from '../../../../services/api/orderApi';
-import { getPaymentChainLabel, isPaymentChain } from '../../../../config/paymentChains';
-import { getUsdcTokenConfig } from '../../../../config/walletTokens';
-import { useUsdcBalance } from '../hooks/useUsdcBalance';
-import { formatUsdcDisplay, formatUsdcFromRaw } from '../utils/formatPaymentAmount';
-import { PaymentPhase } from '../types/paymentTypes';
+import type { PaymentIntentBundle } from '../../../../services/api/orderApi';
+import { isPaymentChain } from '../../../../config/paymentChains';
+import {
+  getAvailablePaymentCurrencies,
+  isOnChainPaySupported,
+  isSapPayment,
+} from '../../../../config/paymentCurrencies';
+import { usePaymentTokenBalance } from '../hooks/usePaymentTokenBalance';
+import { formatUsdcFromRaw, formatAmountNumber } from '../utils/formatPaymentAmount';
+import { estimateGasFeeUsdc, isArcTestnetChain } from '../utils/estimateGasFee';
+import {
+  calcPlatformFeeInToken,
+  calcPlatformFeeUsdc,
+  calcReferencePlatformFeeUsdc,
+  calcTotalDueInToken,
+  NON_SAP_PAYMENT_FEE_RATE,
+} from '../utils/paymentFee';
+import { calcPayAmountInToken } from '../utils/paymentTokenRates';
+import PaymentMoney, { PaymentMoneyParts } from './PaymentMoney';
+import PaymentCardHeader from './PaymentCardHeader';
+import PaymentCurrencySelect from './PaymentCurrencySelect';
+import PaymentCurrencyRatePanel from './PaymentCurrencyRatePanel';
+import { PaymentMethod, PaymentPhase } from '../types/paymentTypes';
 import PaymentGlassCard from './PaymentGlassCard';
 import PaymentStatusBanner from './PaymentStatusBanner';
-import type { PaymentIntentBundle } from '../../../../services/api/orderApi';
+import styles from '../PaymentPage.module.scss';
+
+const FEE_PERCENT_DISPLAY = `${NON_SAP_PAYMENT_FEE_RATE * 100}%`;
 
 interface Props {
   preview: OrderPreviewResult;
@@ -19,8 +40,11 @@ interface Props {
   errorKey: string | null;
   intent: PaymentIntentBundle | null;
   txHash: string | null;
+  paymentMethod: PaymentMethod;
+  onPaymentMethodChange: (method: PaymentMethod) => void;
   onPay: () => void;
   busy: boolean;
+  contactValid: boolean;
 }
 
 const CheckoutPayPanel: React.FC<Props> = ({
@@ -29,21 +53,75 @@ const CheckoutPayPanel: React.FC<Props> = ({
   errorKey,
   intent,
   txHash,
+  paymentMethod,
+  onPaymentMethodChange,
   onPay,
   busy,
+  contactValid,
 }) => {
   const { t } = useTranslation();
   const { isConnected, chainId, address } = useAccount();
-  const targetChainId = intent?.chainId ?? chainId;
-  const usdcConfig = getUsdcTokenConfig(targetChainId);
-  const { formatted: usdcFormatted, symbol: usdcSymbol } = useUsdcBalance(targetChainId, address);
 
-  const payAmountDisplay = intent
-    ? `${formatUsdcFromRaw(intent.amount, intent.decimals)} USDC`
-    : formatUsdcDisplay(preview.totalAmount);
+  const activeChainId = intent?.chainId ?? chainId;
+  const tokenBalance = usePaymentTokenBalance(paymentMethod, activeChainId, address);
 
-  const networkOk = isConnected && isPaymentChain(chainId) && (!intent || chainId === intent.chainId);
-  const canSubmit = phase === 'idle' && isConnected && networkOk && !busy;
+  useEffect(() => {
+    if (activeChainId == null) return;
+    const available = getAvailablePaymentCurrencies(activeChainId);
+    if (!available.includes(paymentMethod)) {
+      onPaymentMethodChange(available[0]);
+    }
+  }, [activeChainId, onPaymentMethodChange, paymentMethod]);
+
+  const orderPayable = preview.totalAmount;
+  const gasFeeUsdc = estimateGasFeeUsdc(activeChainId);
+  const showGasRow = gasFeeUsdc > 0 || isArcTestnetChain(activeChainId);
+  const platformFeeUsdc = calcPlatformFeeUsdc(orderPayable, paymentMethod);
+  const platformFeeInToken = calcPlatformFeeInToken(orderPayable, paymentMethod);
+  const gasFeeInToken = calcPayAmountInToken(gasFeeUsdc, paymentMethod);
+  const referenceFeeUsdc = calcReferencePlatformFeeUsdc(orderPayable);
+  const payEquivInToken = calcTotalDueInToken(orderPayable, paymentMethod, gasFeeUsdc);
+
+  const intentPayAmount = intent
+    ? Number.parseFloat(formatUsdcFromRaw(intent.amount, intent.decimals))
+    : null;
+
+  const finalTotal =
+    paymentMethod === 'USDC' && intentPayAmount != null ? intentPayAmount : payEquivInToken;
+  const finalCurrency = paymentMethod;
+
+  const payAmountDue = payEquivInToken;
+  const isUsdcPayment = paymentMethod === 'USDC';
+
+  const tokenInsufficient =
+    isConnected &&
+    isOnChainPaySupported(paymentMethod) &&
+    !tokenBalance.isLoading &&
+    tokenBalance.configured &&
+    tokenBalance.numeric + 1e-9 < payAmountDue;
+
+  const balanceSufficient =
+    !isUsdcPayment &&
+    isConnected &&
+    tokenBalance.configured &&
+    !tokenBalance.isLoading &&
+    tokenBalance.numeric + 1e-9 >= payAmountDue;
+
+  const networkOk =
+    isConnected && isPaymentChain(chainId) && (!intent || chainId === intent.chainId);
+
+  const canPayOnChain =
+    phase === 'idle' &&
+    isConnected &&
+    networkOk &&
+    !busy &&
+    isOnChainPaySupported(paymentMethod) &&
+    (paymentMethod === 'USDC' || isSapPayment(paymentMethod)) &&
+    tokenBalance.configured &&
+    !tokenBalance.isLoading &&
+    tokenBalance.numeric + 1e-9 >= payAmountDue;
+
+  const canSubmit = canPayOnChain;
 
   const statusMessageKey = errorKey
     ? `payment.errors.${errorKey}`
@@ -59,42 +137,160 @@ const CheckoutPayPanel: React.FC<Props> = ({
               ? 'payment.status.confirming'
               : undefined;
 
-  return (
-    <PaymentGlassCard className="p-5 md:p-6 lg:sticky lg:top-24">
-      <h2 className="text-base font-semibold text-slate-100 mb-4">{t('payment.pay.title')}</h2>
+  const payAmountDisplay = formatAmountNumber(finalTotal, finalCurrency);
 
-      <dl className="space-y-3 text-sm mb-4">
-        <div className="flex justify-between">
-          <dt className="text-slate-400">{t('payment.pay.subtotal')}</dt>
-          <dd className="text-slate-200">{formatUsdcDisplay(preview.totalAmount)}</dd>
+  const payButtonLabel = busy
+    ? t(`payment.pay.buttonBusy.${phase}`)
+    : t('payment.pay.confirmPay', { amount: payAmountDisplay, token: finalCurrency });
+
+  const contextAlerts = useMemo(() => {
+    const alerts: string[] = [];
+    if (!isConnected) alerts.push(t('payment.pay.connectWallet'));
+    else if (!networkOk) alerts.push(t('payment.pay.switchNetworkManual'));
+    if (!contactValid && phase === 'idle') alerts.push(t('payment.pay.contactRequired'));
+    if (isSapPayment(paymentMethod) && !tokenBalance.configured && isConnected) {
+      alerts.push(t('payment.pay.sapPayUnavailable'));
+    }
+    if (tokenInsufficient) {
+      alerts.push(
+        isUsdcPayment
+          ? t('payment.pay.usdcInsufficient')
+          : t('payment.pay.tokenInsufficient', {
+              token: paymentMethod,
+              need: payAmountDue.toFixed(2),
+              have: tokenBalance.numeric.toFixed(4),
+            }),
+      );
+    }
+    if (!isOnChainPaySupported(paymentMethod) && phase === 'idle') {
+      alerts.push(t('payment.pay.tokenPayComingSoon', { token: paymentMethod }));
+    }
+    return alerts;
+  }, [contactValid, isConnected, isUsdcPayment, networkOk, paymentMethod, phase, payAmountDue, tokenBalance.configured, tokenBalance.numeric, tokenInsufficient, t]);
+
+  const totalSavings = isSapPayment(paymentMethod) ? referenceFeeUsdc : 0;
+
+  return (
+    <PaymentGlassCard className={`p-5 md:p-6 ${styles.payPanelCard}`}>
+      <PaymentCardHeader
+        icon={<Wallet strokeWidth={1.75} aria-hidden />}
+        iconVariant="pay"
+        title={t('payment.pay.title')}
+      />
+
+      <div className={styles.payDetailBlock}>
+        <span className={styles.payDetailLabel}>{t('payment.pay.currency')}</span>
+        <PaymentCurrencySelect
+          key={activeChainId ?? 'unknown'}
+          chainId={activeChainId}
+          value={paymentMethod}
+          onChange={onPaymentMethodChange}
+          disabled={busy || phase !== 'idle'}
+        />
+        <PaymentCurrencyRatePanel method={paymentMethod} />
+      </div>
+
+      <dl className={styles.payBreakdownList}>
+        <div className={styles.payBreakdownRow}>
+          <dt>{t('payment.pay.orderPayable')}</dt>
+          <dd>
+            <PaymentMoney amount={orderPayable} currency="USDC" />
+          </dd>
         </div>
-        <div className="flex justify-between border-t border-slate-600/30 pt-3">
-          <dt className="text-slate-200 font-medium">{t('payment.pay.total')}</dt>
-          <dd className="text-lg font-semibold text-orange-400">{payAmountDisplay}</dd>
+
+        {!isSapPayment(paymentMethod) && platformFeeUsdc > 0 ? (
+          <div className={styles.payBreakdownRow}>
+            <dt>
+              {t('payment.pay.feeWithToken', { token: paymentMethod })}
+              <span className={styles.feeRateTag}>{FEE_PERCENT_DISPLAY}</span>
+            </dt>
+            <dd>
+              <PaymentMoney
+                amount={platformFeeInToken}
+                currency={paymentMethod}
+                sign="+"
+                size="sm"
+              />
+            </dd>
+          </div>
+        ) : null}
+
+        {isSapPayment(paymentMethod) && referenceFeeUsdc > 0 ? (
+          <div className={`${styles.payBreakdownRow} ${styles.payBreakdownRowSaving}`}>
+            <dt>{t('payment.pay.feeSaving')}</dt>
+            <dd>
+              <PaymentMoney amount={referenceFeeUsdc} currency="USDC" sign="-" size="sm" />
+            </dd>
+          </div>
+        ) : null}
+
+        {showGasRow ? (
+          <div className={styles.payBreakdownRow}>
+            <dt>{t('payment.pay.estimatedGas')}</dt>
+            <dd>
+              <PaymentMoney amount={gasFeeInToken} currency={paymentMethod} sign="+" size="sm" />
+            </dd>
+          </div>
+        ) : null}
+
+        <div className={`${styles.payBreakdownRow} ${styles.payBreakdownRowEquiv}`}>
+          <dt>{t('payment.pay.payEquivLine')}</dt>
+          <dd>
+            <PaymentMoney amount={payEquivInToken} currency={paymentMethod} size="md" />
+          </dd>
         </div>
       </dl>
 
-      <div className="rounded-lg bg-slate-900/50 border border-slate-600/30 p-3 mb-4 space-y-2 text-sm">
-        <div className="flex items-center gap-2 text-slate-300">
-          <Wallet size={16} className="text-slate-400 shrink-0" aria-hidden />
-          <span>
-            {t('payment.pay.network')}:{' '}
-            <strong>{targetChainId ? getPaymentChainLabel(targetChainId) : '—'}</strong>
-          </span>
-        </div>
-        <div className="flex justify-between text-slate-400">
-          <span>{t('payment.pay.balance')}</span>
-          <span className="text-slate-200 font-mono text-xs">
-            {usdcConfig ? `${usdcFormatted} ${usdcSymbol}` : t('payment.pay.balanceUnavailable')}
-          </span>
-        </div>
-        {!networkOk && isConnected ? (
-          <p className="text-amber-400/90 text-xs leading-relaxed">{t('payment.pay.switchNetworkManual')}</p>
-        ) : null}
-        {!isConnected ? (
-          <p className="text-amber-400/90 text-xs">{t('payment.pay.connectWallet')}</p>
-        ) : null}
+      <div
+        className={[
+          styles.payBalanceRow,
+          isUsdcPayment || balanceSufficient ? styles.payBalanceRowSufficient : '',
+          tokenInsufficient && !isUsdcPayment ? styles.payBalanceRowInsufficient : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        <span className={styles.payBalanceLabel}>
+          {t('payment.pay.tokenBalance', { token: paymentMethod })}
+          {!isUsdcPayment && balanceSufficient ? (
+            <span className={styles.payBalanceStatusOk}>{t('payment.pay.balanceSufficient')}</span>
+          ) : null}
+        </span>
+        <span className={styles.payBalanceValue}>
+          <PaymentMoneyParts
+            num={tokenBalance.formatted}
+            unit={tokenBalance.symbol}
+            size="sm"
+            className={styles.payBalanceAmount}
+          />
+        </span>
       </div>
+
+      {tokenInsufficient && !isUsdcPayment ? (
+        <div className={styles.tokenInsufficientBlock}>
+          <p className={styles.tokenInsufficientText}>
+            {t('payment.pay.tokenInsufficient', {
+              token: paymentMethod,
+              need: payAmountDue.toFixed(2),
+              have: tokenBalance.numeric.toFixed(4),
+            })}
+          </p>
+          {isSapPayment(paymentMethod) ? (
+            <Link to="/exchange" className={styles.exchangeLinkBtn}>
+              <ArrowRightLeft size={14} aria-hidden />
+              {t('payment.pay.goExchange')}
+            </Link>
+          ) : null}
+        </div>
+      ) : null}
+
+      {contextAlerts.length > 0 ? (
+        <ul className={styles.payContextAlerts}>
+          {contextAlerts.map((msg) => (
+            <li key={msg}>{msg}</li>
+          ))}
+        </ul>
+      ) : null}
 
       <div className="mb-4">
         <PaymentStatusBanner
@@ -106,19 +302,27 @@ const CheckoutPayPanel: React.FC<Props> = ({
         />
       </div>
 
-      <Button
-        type="primary"
-        size="large"
-        block
-        disabled={!canSubmit}
-        onClick={onPay}
-        className="!h-12 !font-semibold !rounded-lg"
-        icon={busy ? <Spin size="small" /> : <ShieldCheck size={18} />}
-      >
-        {busy ? t(`payment.pay.buttonBusy.${phase}`) : t('payment.pay.button')}
-      </Button>
+      <div className={styles.payFooterBar}>
+        {totalSavings > 0 ? (
+          <p className={styles.payFooterSavings}>
+            {t('payment.pay.totalSaving', { amount: totalSavings.toFixed(2) })}
+          </p>
+        ) : null}
 
-      <p className="mt-3 text-[11px] text-slate-500 text-center leading-relaxed">{t('payment.pay.legalHint')}</p>
+        <Button
+          type="primary"
+          size="large"
+          block
+          disabled={!canSubmit}
+          onClick={onPay}
+          className={styles.primaryPayBtnLight}
+          icon={busy ? <Spin size="small" /> : undefined}
+        >
+          {payButtonLabel}
+        </Button>
+      </div>
+
+      <p className={styles.payLegalHint}>{t('payment.pay.legalHint')}</p>
     </PaymentGlassCard>
   );
 };

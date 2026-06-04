@@ -3,7 +3,6 @@ import {
   Building2,
   Gift,
   Headphones,
-  Shield,
   Store,
   Users,
   Wallet,
@@ -17,7 +16,6 @@ export const HELP_TOPIC_ICON_MAP: Record<HelpTopicIcon, LucideIcon> = {
   store: Store,
   gift: Gift,
   users: Users,
-  shield: Shield,
   building: Building2,
   support: Headphones,
 };

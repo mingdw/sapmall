@@ -9,8 +9,14 @@ import type {
   DaoTabOverviewData,
   DaoViewTab,
 } from '../types';
+import {
+  DAO_OVERVIEW_ACCENT,
+  DAO_OVERVIEW_CALLOUT,
+  DAO_OVERVIEW_TIMELINE_DOT,
+  DAO_OVERVIEW_TIMELINE_TAG,
+  DAO_TRENDING_RANK_BULLET,
+} from '../constants/daoTabOverviewClassNames';
 import sharedStyles from '../styles/dao.shared.module.scss';
-import styles from './DaoTabOverviewCard.module.scss';
 
 const tabIconMap = {
   proposals: FileText,
@@ -30,18 +36,10 @@ const formatTrendingMetric = (value: number): string => {
   return String(value);
 };
 
-const trendingRankBulletClass = (rank: number): string => {
-  if (rank === 0) return styles.trendingRankBullet1;
-  if (rank === 1) return styles.trendingRankBullet2;
-  if (rank === 2) return styles.trendingRankBullet3;
-  return styles.trendingRankBulletDefault;
-};
+const trendingRankBulletClass = (rank: number): string =>
+  DAO_TRENDING_RANK_BULLET[Math.min(rank, 3)] ?? DAO_TRENDING_RANK_BULLET[3];
 
-const overviewAccentClass = {
-  emerald: styles.overviewCardEmerald,
-  violet: styles.overviewCardViolet,
-  amber: styles.overviewCardAmber,
-} as const;
+const overviewAccentClass = DAO_OVERVIEW_ACCENT;
 
 const donutToneColor: Record<DaoOverviewStatTone, string> = {
   emerald: '#34d399',
@@ -52,14 +50,7 @@ const donutToneColor: Record<DaoOverviewStatTone, string> = {
   slate: '#94a3b8',
 };
 
-const calloutToneClass: Record<DaoOverviewStatTone, string> = {
-  emerald: styles.overviewCalloutEmerald,
-  violet: styles.overviewCalloutViolet,
-  amber: styles.overviewCalloutAmber,
-  sky: styles.overviewCalloutSky,
-  rose: styles.overviewCalloutRose,
-  slate: styles.overviewCalloutSlate,
-};
+const calloutToneClass = DAO_OVERVIEW_CALLOUT;
 
 /**
  * 涓?.overviewDonutChart 涓€鑷淬€?
@@ -113,21 +104,8 @@ const buildDonutSliceArcs = (slices: DaoOverviewSegment[]): DonutSliceArc[] => {
   });
 };
 
-const timelineDotClass: Record<DaoOverviewStatTone, string> = {
-  emerald: styles.overviewTimelineDotEmerald,
-  violet: styles.overviewTimelineDotViolet,
-  amber: styles.overviewTimelineDotAmber,
-  sky: styles.overviewTimelineDotSky,
-  rose: styles.overviewTimelineDotRose,
-  slate: styles.overviewTimelineDotSlate,
-};
-
-const timelineTagClass: Record<DaoEventCategory, string> = {
-  ama: styles.overviewTimelineTagAma,
-  grant: styles.overviewTimelineTagGrant,
-  milestone: styles.overviewTimelineTagMilestone,
-  announcement: styles.overviewTimelineTagAnnouncement,
-};
+const timelineDotClass = DAO_OVERVIEW_TIMELINE_DOT;
+const timelineTagClass = DAO_OVERVIEW_TIMELINE_TAG;
 
 const buildDonutGradient = (slices: DaoOverviewSegment[]) => {
   const total = slices.reduce((sum, s) => sum + s.value, 0);
@@ -163,17 +141,17 @@ const ProposalDonutBody: React.FC<{ overview: Extract<DaoTabOverviewData, { layo
     .join('，');
 
   return (
-    <div className={styles.overviewDonutLayout}>
+    <div className="overviewDonutLayout">
       <div
-        className={styles.overviewDonutStage}
+        className="overviewDonutStage"
         role="img"
         aria-label={`${t(overview.donut.totalDisplay)} ${t('dao.overview.proposals.highlight')}，${sliceSummary}`}
       >
-        <div className={styles.overviewDonutChart}>
-          <div className={styles.overviewDonutRing} style={{ background: gradient }} />
-          <div className={styles.overviewDonutHole}>
-            <span className={styles.overviewDonutTotal}>{overview.donut.totalDisplay}</span>
-            <span className={styles.overviewDonutTotalLabel}>
+        <div className="overviewDonutChart">
+          <div className="overviewDonutRing" style={{ background: gradient }} />
+          <div className="overviewDonutHole">
+            <span className="overviewDonutTotal">{overview.donut.totalDisplay}</span>
+            <span className="overviewDonutTotalLabel">
               {t('dao.overview.proposals.highlight')}
             </span>
           </div>
@@ -181,20 +159,20 @@ const ProposalDonutBody: React.FC<{ overview: Extract<DaoTabOverviewData, { layo
         {sliceArcs.map(({ slice, rotateDeg, x, y, arrowLenPx }) => (
           <div
             key={slice.id}
-            className={styles.overviewDonutCallout}
+            className="overviewDonutCallout"
             style={{ left: x, top: y }}
           >
             <span
-              className={styles.overviewDonutCalloutRow}
+              className="overviewDonutCalloutRow"
               style={{ transform: `rotate(${rotateDeg}deg)` }}
             >
               <span
-                className={styles.overviewDonutCalloutArrow}
+                className="overviewDonutCalloutArrow"
                 style={{ width: arrowLenPx }}
                 aria-hidden
               />
               <span
-                className={`${styles.overviewDonutCalloutText} ${calloutToneClass[slice.tone]}`}
+                className={`overviewDonutCalloutText ${calloutToneClass[slice.tone]}`}
                 style={{ transform: `rotate(${-rotateDeg}deg)` }}
               >
                 {t(slice.labelKey)} {slice.displayValue}
@@ -203,11 +181,11 @@ const ProposalDonutBody: React.FC<{ overview: Extract<DaoTabOverviewData, { layo
           </div>
         ))}
       </div>
-      <p className={styles.overviewParticipation}>
-        <span className={styles.overviewParticipationLabel}>
+      <p className="overviewParticipation">
+        <span className="overviewParticipationLabel">
           {t(overview.donut.participation.labelKey)}
         </span>
-        <span className={styles.overviewParticipationValue}>
+        <span className="overviewParticipationValue">
           {overview.donut.participation.value}
         </span>
       </p>
@@ -230,26 +208,26 @@ const TrendingDiscussionsBody: React.FC<{
   }, [overview.pool, overview.pageSize, offset]);
 
   return (
-    <div className={styles.trendingLayout}>
-      <ol className={styles.trendingList}>
+    <div className="trendingLayout">
+      <ol className="trendingList">
         {visibleItems.map((item, rank) => (
-          <li key={`${item.id}-${offset}`} className={styles.trendingItem}>
+          <li key={`${item.id}-${offset}`} className="trendingItem">
             <span
-              className={`${styles.trendingRankBullet} ${trendingRankBulletClass(rank)}`}
+              className={`trendingRankBullet ${trendingRankBulletClass(rank)}`}
               aria-hidden
             />
             <button
               type="button"
-              className={styles.trendingLink}
+              className="trendingLink"
               onClick={() => onItemClick?.(item.discussionId)}
             >
-              <span className={styles.trendingTopic}>{t(item.titleKey)}</span>
-              <span className={styles.trendingMeta}>
-                <span className={styles.trendingMetric}>
+              <span className="trendingTopic">{t(item.titleKey)}</span>
+              <span className="trendingMeta">
+                <span className="trendingMetric">
                   {formatTrendingMetric(item.metricValue)}
                 </span>
                 {item.showHotTag ? (
-                  <span className={styles.trendingHotTag}>{t('dao.overview.trending.hotTag')}</span>
+                  <span className="trendingHotTag">{t('dao.overview.trending.hotTag')}</span>
                 ) : null}
               </span>
             </button>
@@ -266,31 +244,31 @@ const MilestoneTimelineBody: React.FC<{
   const { t } = useTranslation();
 
   return (
-    <div className={styles.overviewTimelineLayout}>
-      <ol className={styles.overviewTimelineList}>
+    <div className="overviewTimelineLayout">
+      <ol className="overviewTimelineList">
         {overview.items.map((item, index) => (
-          <li key={item.id} className={styles.overviewTimelineItem}>
-            <div className={styles.overviewTimelineRail} aria-hidden>
+          <li key={item.id} className="overviewTimelineItem">
+            <div className="overviewTimelineRail" aria-hidden>
               <span
-                className={`${styles.overviewTimelineDot} ${timelineDotClass[item.tone]} ${
-                  item.isHighlight ? styles.overviewTimelineDotHighlight : ''
+                className={`overviewTimelineDot ${timelineDotClass[item.tone]} ${
+                  item.isHighlight ? 'overviewTimelineDotHighlight' : ''
                 }`}
               />
               {index < overview.items.length - 1 ? (
-                <span className={styles.overviewTimelineLine} />
+                <span className="overviewTimelineLine" />
               ) : null}
             </div>
-            <div className={styles.overviewTimelineContent}>
-              <time className={styles.overviewTimelineDate} dateTime={item.publishedAtSort}>
+            <div className="overviewTimelineContent">
+              <time className="overviewTimelineDate" dateTime={item.publishedAtSort}>
                 {t(item.publishedAtKey)}
               </time>
-              <div className={styles.overviewTimelineTitleRow}>
-                <h3 className={styles.overviewTimelineTitle}>{t(item.titleKey)}</h3>
-                <span className={`${styles.overviewTimelineTag} ${timelineTagClass[item.category]}`}>
+              <div className="overviewTimelineTitleRow">
+                <h3 className="overviewTimelineTitle">{t(item.titleKey)}</h3>
+                <span className={`overviewTimelineTag ${timelineTagClass[item.category]}`}>
                   {t(item.categoryKey)}
                 </span>
               </div>
-              <p className={styles.overviewTimelineExcerpt}>{t(item.excerptKey)}</p>
+              <p className="overviewTimelineExcerpt">{t(item.excerptKey)}</p>
             </div>
           </li>
         ))}
@@ -322,30 +300,30 @@ const DaoTabOverviewCard: React.FC<Props> = ({ tab, onTrendingItemClick }) => {
 
   return (
     <aside
-      className={`${sharedStyles.panelCard} ${sharedStyles.sidebarCard} ${styles.overviewCard} ${overviewAccentClass[overview.accent]}`}
+      className={`${sharedStyles.panelCard} ${sharedStyles.sidebarCard} overviewCard ${overviewAccentClass[overview.accent]}`}
       aria-labelledby="dao-overview-title"
     >
       <div
-        className={`${styles.overviewHeader} ${
-          overview.layout === 'trendingList' ? styles.overviewHeaderWithAction : ''
+        className={`overviewHeader ${
+          overview.layout === 'trendingList' ? 'overviewHeaderWithAction' : ''
         }`}
       >
-        <div className={styles.overviewTitleRow}>
-          <h2 id="dao-overview-title" className={styles.overviewTitle}>
-            <TabIcon className={styles.overviewTitleIcon} strokeWidth={2.25} aria-hidden />
+        <div className="overviewTitleRow">
+          <h2 id="dao-overview-title" className="overviewTitle">
+            <TabIcon className="overviewTitleIcon" strokeWidth={2.25} aria-hidden />
             <span>{t(overview.titleKey)}</span>
           </h2>
           {overview.layout === 'trendingList' ? (
-            <button type="button" className={styles.trendingRefreshBtn} onClick={onTrendingRefresh}>
-              <RefreshCw className={styles.trendingRefreshIcon} strokeWidth={2} aria-hidden />
+            <button type="button" className="trendingRefreshBtn" onClick={onTrendingRefresh}>
+              <RefreshCw className="trendingRefreshIcon" strokeWidth={2} aria-hidden />
               <span>{t('dao.overview.trending.refresh')}</span>
             </button>
           ) : null}
         </div>
         {overview.subtitleKey ? (
           <p
-            className={`${styles.overviewSubtitle} ${
-              overview.layout === 'donut' ? styles.overviewSubtitleCenter : ''
+            className={`overviewSubtitle ${
+              overview.layout === 'donut' ? 'overviewSubtitleCenter' : ''
             }`}
           >
             {t(overview.subtitleKey)}
@@ -365,8 +343,8 @@ const DaoTabOverviewCard: React.FC<Props> = ({ tab, onTrendingItemClick }) => {
 
       {overview.footnoteKey ? (
         <p
-          className={`${styles.overviewFootnote} ${
-            overview.layout === 'trendingList' ? styles.overviewFootnoteTrending : ''
+          className={`overviewFootnote ${
+            overview.layout === 'trendingList' ? 'overviewFootnoteTrending' : ''
           }`}
         >
           {t(overview.footnoteKey)}

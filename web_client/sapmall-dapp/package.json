@@ -40,7 +40,9 @@
   "scripts": {
     "start": "cross-env PORT=3005 react-scripts start",
     "build": "react-scripts build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "i18n:split": "node scripts/split-i18n.mjs",
+    "i18n:merge-extras": "node scripts/merge-i18n-extras.mjs"
   },
   "eslintConfig": {
     "extends": [

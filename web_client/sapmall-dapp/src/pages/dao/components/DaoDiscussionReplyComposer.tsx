@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { DAO_REPLY } from '../constants/daoReplyComposerClasses';
 import DaoDiscussionReplyEditor from './DaoDiscussionReplyEditor';
-import styles from './DaoDiscussionReplyComposer.module.scss';
 
 type Props = {
   discussionId: string;
@@ -14,10 +14,10 @@ const DaoDiscussionReplyComposer: React.FC<Props> = ({ discussionId, onReplyPost
   return (
     <section
       id="dao-discussion-reply-composer"
-      className={styles.discussionReplyComposer}
+      className={DAO_REPLY.composer}
       aria-labelledby="dao-discussion-reply-title"
     >
-      <h2 id="dao-discussion-reply-title" className={styles.discussionReplyComposerTitle}>
+      <h2 id="dao-discussion-reply-title" className={DAO_REPLY.composerTitle}>
         {t('dao.discussionDetail.composer.title')}
       </h2>
       <DaoDiscussionReplyEditor discussionId={discussionId} variant="footer" onPosted={onReplyPosted} />
