@@ -13,6 +13,7 @@ import { EMPTY_CONTACT, PaymentMethod } from './types/paymentTypes';
 import { isOnChainPaySupported, isSapPayment } from '../../../config/paymentCurrencies';
 import { navigateToMarketplace } from '../paths';
 import MessageUtils from '../../../utils/messageUtils';
+import { buildCreateOrderPayload } from './utils/buildCreateOrderPayload';
 import styles from './PaymentPage.module.scss';
 
 function isContactValid(contact: typeof EMPTY_CONTACT): boolean {
@@ -46,8 +47,8 @@ const CheckoutPage: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('USDC');
   const [buyerMessage, setBuyerMessage] = useState('');
 
-  const pollEnabled = payment.phase === 'confirming' && Boolean(payment.intent?.intentId);
-  const { status: pollStatus } = usePaymentStatusPoll(payment.intent?.intentId ?? null, pollEnabled);
+  const pollEnabled = payment.phase === 'confirming' && Boolean(payment.orderCode);
+  const { status: pollStatus } = usePaymentStatusPoll(payment.orderCode, pollEnabled);
 
   const busy = ['submitting', 'intentLoading', 'approving', 'paying', 'confirming'].includes(payment.phase);
   const contactValid = isContactValid(contact);
@@ -61,13 +62,13 @@ const CheckoutPage: React.FC = () => {
           replace: true,
           state: {
             txHash: pollStatus.txHash ?? payment.txHash,
-            amount: preview?.totalAmount,
+            amount: payment.paidAmount ?? preview?.totalAmount,
             chainId: payment.intent?.chainId,
           },
         });
       }
     }
-    if (pollStatus?.paymentStatus === 6) {
+    if (pollStatus?.paymentStatus === 4) {
       payment.retry();
     }
   }, [pollStatus, payment, navigate, preview?.totalAmount]);
@@ -86,7 +87,14 @@ const CheckoutPage: React.FC = () => {
   }, [navigate, preview?.items, productCode]);
 
   const handlePay = async () => {
-    if (!preview || !Number.isFinite(skuId)) return;
+    if (!preview || !Number.isFinite(skuId) || !payment.address) return;
+    if (
+      payment.intent &&
+      (payment.phase === 'authCancelled' || payment.phase === 'payCancelled')
+    ) {
+      await payment.continuePayment();
+      return;
+    }
     setContactTouched(true);
     if (!isContactValid(contact)) return;
     if (isSapPayment(paymentMethod)) {
@@ -97,11 +105,17 @@ const CheckoutPage: React.FC = () => {
       MessageUtils.info(t('payment.pay.tokenPayComingSoon', { token: paymentMethod }));
       return;
     }
-    await payment.startPayment({
+    const createPayload = buildCreateOrderPayload({
+      preview,
       skuId,
       quantity: preview.items[0]?.quantity ?? orderQty,
-      totalAmount: preview.totalAmount,
+      payerAddress: payment.address,
+      chainId: payment.chainId,
+      paymentMethod,
+      contact,
+      buyerMessage,
     });
+    await payment.startPayment(createPayload);
   };
 
   if (!Number.isFinite(skuId) || skuId <= 0) {
@@ -179,7 +193,7 @@ const CheckoutPage: React.FC = () => {
                 onBuyerMessageChange={setBuyerMessage}
                 quantity={orderQty}
                 onQuantityChange={setOrderQty}
-                quantityDisabled={busy}
+                quantityDisabled={busy || Boolean(payment.intent)}
                 previewRefreshing={refreshing}
               />
             </div>
@@ -193,6 +207,7 @@ const CheckoutPage: React.FC = () => {
                 paymentMethod={paymentMethod}
                 onPaymentMethodChange={setPaymentMethod}
                 onPay={handlePay}
+                onContinuePay={() => payment.continuePayment()}
                 busy={busy}
                 contactValid={contactValid}
               />

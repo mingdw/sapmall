@@ -1,4 +1,4 @@
-﻿{
+{
   "productDetail": {
     "breadcrumbMall": "All products",
     "breadcrumbHome": "Home",
@@ -251,7 +251,9 @@
       "estimatedGas": "Est. gas",
       "tokenInsufficient": "Insufficient {{token}} (need {{need}}, have {{have}})",
       "usdcInsufficient": "Insufficient balance. Please top up or pay with another token.",
-      "balanceSufficient": "Sufficient"
+      "balanceSufficient": "Sufficient",
+      "continueApprove": "Continue approval",
+      "continuePay": "Continue payment"
     },
     "status": {
       "creatingOrder": "Creating your order…",
@@ -270,7 +272,9 @@
       "previewFailed": "Could not load order preview",
       "walletNotConnected": "Connect your wallet first",
       "wrongNetwork": "Wrong network—switch manually to a supported payment network",
-      "paymentFailed": "Payment failed. Please try again."
+      "paymentFailed": "Payment failed. Please try again.",
+      "authRejected": "You cancelled token approval. Your order was created — please continue to approve.",
+      "payRejected": "You cancelled the payment signature. Your order was created — please continue to pay."
     },
     "actions": {
       "retry": "Retry",

@@ -3,9 +3,11 @@ pragma solidity ^0.8.28;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
 /// @title SettlementVault
 /// @notice 订单支付资金托管金库（Phase 1 不可升级）；仅 PaymentRouter 可记账入账
-contract SettlementVault is AccessControl, Pausable {
+contract SettlementVault is AccessControl, Pausable, ReentrancyGuard {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant ROUTER_ROLE = keccak256("ROUTER_ROLE");
     bytes32 public constant SETTLEMENT_OPERATOR_ROLE = keccak256("SETTLEMENT_OPERATOR_ROLE");
@@ -41,7 +43,7 @@ contract SettlementVault is AccessControl, Pausable {
         address payer,
         address token,
         uint256 amount
-    ) external onlyRole(ROUTER_ROLE) whenNotPaused {
+    ) external onlyRole(ROUTER_ROLE) whenNotPaused nonReentrant {
         _validateIntentAndOrderRef(intentId, orderRef);
         if (payer == address(0) || token == address(0)) revert ZeroAddress();
         if (amount == 0) revert ZeroAmount();

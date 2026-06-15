@@ -1,0 +1,174 @@
+syntax = "v1"
+
+info (
+	title:   "Sapphire Mall Order API Types"
+	desc:    "商城下单与订单查询；结构体按 sys_order（含商品快照）/ sys_order_payment / sys_order_promotion 等表划分"
+	version: "1.0"
+)
+
+type (
+	// ---------- 子表 / 共用结构（与 DB 字段对齐） ----------
+
+	// sys_order_promotion
+	OrderPromotionItem {
+		PromoId   string  `json:"promoId"` // promo_id
+		LabelKey  string  `json:"labelKey"` // label_key
+		Label     string  `json:"label,optional"`
+		Amount    float64 `json:"amount"` // decimal(12,2)
+	}
+
+	// sys_order_delivery_address（创建订单时写入）
+	OrderDeliveryInput {
+		ReceiverName  string `json:"receiverName,optional"`
+		ReceiverPhone string `json:"receiverPhone,optional"`
+		ReceiverEmail string `json:"receiverEmail,optional"`
+	}
+
+	// sys_order 对外字段（含商品快照；不含 id / 审计字段）
+	OrderInfo {
+		OrderCode               string  `json:"orderCode"`
+		SpuId                   int64   `json:"spuId,optional"` // spu_id
+		SpuCode                 string  `json:"spuCode,optional"` // spu_code
+		SkuId                   int64   `json:"skuId,optional"` // sku_id
+		SkuCode                 string  `json:"skuCode,optional"` // sku_code
+		ProductName             string  `json:"productName,optional"` // product_name
+		ProductPrice            float64 `json:"productPrice,optional"` // product_price
+		ProductQuantity         int64   `json:"productQuantity,optional"` // product_quantity
+		ProductTotal            float64 `json:"productTotal,optional"` // product_total
+		ProductRemark           string  `json:"productRemark,optional"` // product_remark
+		OrderStatus             int64   `json:"orderStatus"` // order_status：10待支付 30已支付 40待发货 50已发货 60已完成 70已取消 80已过期 90支付失败
+		OrderStatusDesc         string  `json:"orderStatusDesc,optional"`
+		PaymentStatus           int64   `json:"paymentStatus"` // payment_status（冗余）：1未支付 2链上确认中 3已支付 4已关闭
+		PaymentStatusDesc       string  `json:"paymentStatusDesc,optional"`
+		OrderDate               string  `json:"orderDate,optional"` // order_date RFC3339
+		Currency                string  `json:"currency,optional"` // 默认 USDC
+		SaleSubtotal            float64 `json:"saleSubtotal,optional"`
+		PromotionDiscountAmount float64 `json:"promotionDiscountAmount,optional"`
+		PayableAmount           float64 `json:"payableAmount,optional"`
+		PlatformFeeAmount       float64 `json:"platformFeeAmount,optional"`
+		EstimatedGasFee         float64 `json:"estimatedGasFee,optional"`
+		PayAmount               float64 `json:"payAmount,optional"`
+		OrderRemark             string  `json:"orderRemark,optional"` // order_remark / 买家留言
+		ExpireAt                string  `json:"expireAt,optional"` // 订单支付超时 order.expire_at
+	}
+
+	// sys_order_payment 对外字段（链上 intent + 交易；不含 id / 审计字段）
+	OrderPaymentInfo {
+		IntentId              string  `json:"intentId"` // intent_id
+		OrderCode             string  `json:"orderCode,optional"`
+		PayerAddress          string  `json:"payerAddress"`
+		ChainId               int64   `json:"chainId"`
+		TokenSymbol           string  `json:"tokenSymbol"`
+		TokenAddress          string  `json:"tokenAddress"`
+		ContractAddress       string  `json:"contractAddress"`
+		AmountRaw             string  `json:"amountRaw"` // amount_raw，链上最小单位
+		TokenDecimals         int64   `json:"tokenDecimals"`
+		PayAmount             float64 `json:"payAmount,optional"` // 实付快照，与 sys_order.pay_amount 一致
+		PaymentStatus         int64   `json:"paymentStatus,optional"` // 与 sys_order.payment_status 同步
+		PaymentStatusDesc     string  `json:"paymentStatusDesc,optional"`
+		TxHash                string  `json:"txHash,optional"`
+		BlockNumber           int64   `json:"blockNumber,optional"`
+		Confirmations         int64   `json:"confirmations,optional"`
+		RequiredConfirmations int64   `json:"requiredConfirmations,optional"`
+		ExpireAt              string  `json:"expireAt,optional"` // intent 过期时间
+		PaidAt                string  `json:"paidAt,optional"`
+		ConfirmedAt           string  `json:"confirmedAt,optional"`
+		FailReason            string  `json:"failReason,optional"`
+	}
+
+	// ---------- POST /api/order/create ----------
+
+	CreateOrderReq {
+		// sys_order 商品快照（Phase 1 单 SKU，落主表）
+		SkuId         int64   `json:"skuId"`
+		SkuCode       string  `json:"skuCode,optional"`
+		SpuId         int64   `json:"spuId,optional"`
+		SpuCode       string  `json:"spuCode,optional"`
+		ProductName   string  `json:"productName,optional"`
+		ProductPrice  float64 `json:"productPrice,optional"`
+		Quantity      int64   `json:"quantity"` // product_quantity
+		ProductTotal  float64 `json:"productTotal,optional"`
+		ProductRemark string  `json:"productRemark,optional"`
+		// sys_order_payment（intent 生成）
+		PayerAddress string `json:"payerAddress"`
+		ChainId      int64  `json:"chainId,optional"`
+		TokenSymbol  string `json:"tokenSymbol,optional"` // 默认 USDC
+		// sys_order 金额（前端展示值，Phase 1 落库不重算）
+		SaleSubtotal            float64              `json:"saleSubtotal,optional"`
+		Promotions              []OrderPromotionItem `json:"promotions,optional"`
+		PromotionDiscountAmount float64              `json:"promotionDiscountAmount"`
+		PayableAmount           float64              `json:"payableAmount"`
+		PlatformFeeAmount       float64              `json:"platformFeeAmount"`
+		EstimatedGasFee         float64              `json:"estimatedGasFee"`
+		PayAmount               float64              `json:"payAmount"`
+		Currency                string               `json:"currency,optional"`
+		OrderRemark             string               `json:"orderRemark,optional"` // buyerMessage
+		// sys_order_delivery_address
+		Delivery OrderDeliveryInput `json:"delivery,optional"`
+	}
+
+	CreateOrderResp {
+		Order     OrderInfo        `json:"order"`
+		Payment   OrderPaymentInfo `json:"payment"` // 含 payOrder 所需 intent 参数
+		Promotions []OrderPromotionItem `json:"promotions,optional"`
+	}
+
+	// ---------- GET /api/order/:orderCode ----------
+
+	GetOrderReq {
+		OrderCode string `path:"orderCode"`
+	}
+
+	GetOrderResp {
+		Order      OrderInfo            `json:"order"`
+		Payment    OrderPaymentInfo     `json:"payment"`
+		Promotions []OrderPromotionItem `json:"promotions,optional"`
+		Delivery   OrderDeliveryInput   `json:"delivery,optional"`
+	}
+
+	// ---------- POST /api/order/list、/modify ----------
+
+	// 列表行（含用户与审计字段）
+	AdminOrderSummary {
+		Id                      int64   `json:"id"`
+		OrderCode               string  `json:"orderCode"`
+		UserId                  int64   `json:"userId"`
+		UserCode                string  `json:"userCode,optional"`
+		ProductName             string  `json:"productName,optional"`
+		ProductQuantity         int64   `json:"productQuantity,optional"`
+		PayAmount               float64 `json:"payAmount,optional"`
+		Currency                string  `json:"currency,optional"`
+		OrderStatus             int64   `json:"orderStatus"`
+		OrderStatusDesc         string  `json:"orderStatusDesc,optional"`
+		PaymentStatus           int64   `json:"paymentStatus"`
+		PaymentStatusDesc       string  `json:"paymentStatusDesc,optional"`
+		PayerAddress            string  `json:"payerAddress,optional"`
+		OrderDate               string  `json:"orderDate,optional"`
+		ExpireAt                string  `json:"expireAt,optional"`
+		CreatedAt               string  `json:"createdAt,optional"`
+	}
+
+	ListOrderReq {
+		Page            int64  `json:"page,optional"`
+		PageSize        int64  `json:"pageSize,optional"`
+		OrderCode       string `json:"orderCode,optional"`
+		UserCode        string `json:"userCode,optional"`
+		OrderStatus     int64  `json:"orderStatus,optional"`
+		PaymentStatus   int64  `json:"paymentStatus,optional"`
+		OrderDateStart  string `json:"orderDateStart,optional"` // yyyy-MM-dd 或 RFC3339
+		OrderDateEnd    string `json:"orderDateEnd,optional"`
+	}
+
+	ListOrderResp {
+		List  []AdminOrderSummary `json:"list"`
+		Total int64               `json:"total"`
+	}
+
+	// action：cancel 取消订单 | delete 软删除 | resumePay 继续支付（延长 intent 有效期）
+	ModifyOrderReq {
+		Id                  int64  `json:"id"`
+		Action              string `json:"action"`
+		ExtendExpireMinutes int64  `json:"extendExpireMinutes,optional"`
+		OrderRemark         string `json:"orderRemark,optional"`
+	}
+)

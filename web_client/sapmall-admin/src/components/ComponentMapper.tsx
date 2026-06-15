@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AdminRouter from '../router/AdminRouter';
+import { resolveMenuRoute } from '../router/menuRouteMap';
 
 interface ComponentMapperProps {
   componentName?: string;
@@ -13,14 +14,14 @@ const ComponentMapper: React.FC<ComponentMapperProps> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const resolvedRoute = useMemo(() => resolveMenuRoute(componentName), [componentName]);
 
   // 当组件名称改变时，导航到对应路由
   useEffect(() => {
-    if (componentName && componentName !== location.pathname) {
-      console.log('导航到路由:', componentName);
-      navigate(componentName);
+    if (resolvedRoute && resolvedRoute !== location.pathname) {
+      navigate(resolvedRoute);
     }
-  }, [componentName, navigate, location.pathname]);
+  }, [resolvedRoute, navigate, location.pathname]);
 
   // 如果没有指定组件名称，显示404
   if (!componentName) {

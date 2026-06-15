@@ -1,0 +1,130 @@
+syntax = "v1"
+
+info (
+	title:   "Sapphire Mall Admin Chain API Types"
+	desc:    "区块链网络与支付代币管理"
+	version: "1.0"
+)
+
+type (
+	ChainPaymentTokenInfo {
+		ID              int64  `json:"id"`
+		ChainID         int64  `json:"chainId"`
+		Symbol          string `json:"symbol"`
+		DisplayName     string `json:"displayName,optional"`
+		ContractAddress string `json:"contractAddress"`
+		Decimals        int64  `json:"decimals"`
+		ConfigKey       string `json:"configKey"`
+		SyncStatus      int64  `json:"syncStatus"`
+		LastSyncTxHash  string `json:"lastSyncTxHash,optional"`
+		LastSyncAt      string `json:"lastSyncAt,optional"`
+		SyncError       string `json:"syncError,optional"`
+		Sort            int64  `json:"sort"`
+		Status          int64  `json:"status"`
+		Remark          string `json:"remark,optional"`
+		CreatedAt       string `json:"createdAt,optional"`
+		UpdatedAt       string `json:"updatedAt,optional"`
+		Creator         string `json:"creator,optional"`
+		Updator         string `json:"updator,optional"`
+	}
+
+	ChainNetworkInfo {
+		ID                     int64                   `json:"id"`
+		ChainID                int64                   `json:"chainId"`
+		Code                   string                  `json:"code"`
+		Name                   string                  `json:"name"`
+		RpcURL                 string                  `json:"rpcUrl,optional"`
+		WsURL                  string                  `json:"wsUrl,optional"`
+		ExplorerURL            string                  `json:"explorerUrl,optional"`
+		NativeSymbol           string                  `json:"nativeSymbol,optional"`
+		PlatformConfigAddress  string                  `json:"platformConfigAddress,optional"`
+		PaymentRouterAddress   string                  `json:"paymentRouterAddress,optional"`
+		SettlementVaultAddress string                  `json:"settlementVaultAddress,optional"`
+		SignerKeyRef           string                  `json:"signerKeyRef,optional"`
+		ListenerEnabled        int64                   `json:"listenerEnabled"`
+		ListenerStartBlock     int64                   `json:"listenerStartBlock"`
+		ListenerLastBlock      int64                   `json:"listenerLastBlock"`
+		Sort                   int64                   `json:"sort"`
+		Status                 int64                   `json:"status"`
+		Remark                 string                  `json:"remark,optional"`
+		PaymentTokens          []ChainPaymentTokenInfo `json:"paymentTokens,optional"` // list 接口嵌套返回
+		CreatedAt              string                  `json:"createdAt,optional"`
+		UpdatedAt              string                  `json:"updatedAt,optional"`
+		Creator                string                  `json:"creator,optional"`
+		Updator                string                  `json:"updator,optional"`
+	}
+
+	ListChainNetworkReq {
+		Code     string `json:"code,optional"` // 编码模糊
+		Name     string `json:"name,optional"` // 名称模糊
+		Status   int64  `json:"status,optional"` // 0 启用 1 禁用；不传查全部
+		Page     int64  `json:"page"` // 页码，从 1 开始
+		PageSize int64  `json:"pageSize"` // 每页条数
+	}
+
+	ListChainNetworkResp {
+		List  []ChainNetworkInfo `json:"list"`
+		Total int64              `json:"total"`
+	}
+
+	// POST /api/admin/chain/network
+	SaveChainNetworkReq {
+		ID                     int64  `json:"id,optional"` // 空或 0 新增
+		ChainID                int64  `json:"chainId"` // 新增必填，更新不可改
+		Code                   string `json:"code"`
+		Name                   string `json:"name"`
+		RpcURL                 string `json:"rpcUrl,optional"`
+		WsURL                  string `json:"wsUrl,optional"`
+		ExplorerURL            string `json:"explorerUrl,optional"`
+		NativeSymbol           string `json:"nativeSymbol,optional"`
+		PlatformConfigAddress  string `json:"platformConfigAddress,optional"`
+		PaymentRouterAddress   string `json:"paymentRouterAddress,optional"`
+		SettlementVaultAddress string `json:"settlementVaultAddress,optional"`
+		SignerKeyRef           string `json:"signerKeyRef,optional"`
+		ListenerEnabled        int64  `json:"listenerEnabled,optional"`
+		ListenerStartBlock     int64  `json:"listenerStartBlock,optional"`
+		ListenerLastBlock      int64  `json:"listenerLastBlock,optional"`
+		Sort                   int64  `json:"sort,optional"`
+		Status                 int64  `json:"status,optional"`
+		Remark                 string `json:"remark,optional"`
+	}
+
+	// DELETE /api/admin/chain/network/:id
+	DeleteChainNetworkReq {
+		ID int64 `path:"id"` // 主键 ID
+	}
+
+	// POST /api/admin/chain/payment-token/list
+	ListChainPaymentTokenReq {
+		ChainID    int64  `json:"chainId,optional"` // 按链筛选
+		Symbol     string `json:"symbol,optional"` // 符号模糊
+		Status     int64  `json:"status,optional"` // 0 启用 1 禁用
+		SyncStatus int64  `json:"syncStatus,optional"` // 0~3
+		Page       int64  `json:"page"`
+		PageSize   int64  `json:"pageSize"`
+	}
+
+	ListChainPaymentTokenResp {
+		List  []ChainPaymentTokenInfo `json:"list"`
+		Total int64                   `json:"total"`
+	}
+
+	// POST /api/admin/chain/payment-token
+	SaveChainPaymentTokenReq {
+		ID              int64  `json:"id,optional"` // 空或 0 新增
+		ChainID         int64  `json:"chainId"`
+		Symbol          string `json:"symbol"`
+		DisplayName     string `json:"displayName,optional"`
+		ContractAddress string `json:"contractAddress"`
+		Decimals        int64  `json:"decimals,optional"` // 默认 6
+		ConfigKey       string `json:"configKey,optional"` // 空则按 symbol 生成
+		Sort            int64  `json:"sort,optional"`
+		Status          int64  `json:"status,optional"`
+		Remark          string `json:"remark,optional"`
+	}
+
+	// DELETE /api/admin/chain/payment-token/:id
+	DeleteChainPaymentTokenReq {
+		ID int64 `path:"id"` // 主键 ID
+	}
+)

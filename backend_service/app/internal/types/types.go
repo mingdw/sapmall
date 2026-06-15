@@ -3,6 +3,25 @@
 
 package types
 
+type AdminOrderSummary struct {
+	Id                int64   `json:"id"`
+	OrderCode         string  `json:"orderCode"`
+	UserId            int64   `json:"userId"`
+	UserCode          string  `json:"userCode,optional"`
+	ProductName       string  `json:"productName,optional"`
+	ProductQuantity   int64   `json:"productQuantity,optional"`
+	PayAmount         float64 `json:"payAmount,optional"`
+	Currency          string  `json:"currency,optional"`
+	OrderStatus       int64   `json:"orderStatus"`
+	OrderStatusDesc   string  `json:"orderStatusDesc,optional"`
+	PaymentStatus     int64   `json:"paymentStatus"`
+	PaymentStatusDesc string  `json:"paymentStatusDesc,optional"`
+	PayerAddress      string  `json:"payerAddress,optional"`
+	OrderDate         string  `json:"orderDate,optional"`
+	ExpireAt          string  `json:"expireAt,optional"`
+	CreatedAt         string  `json:"createdAt,optional"`
+}
+
 type ApplyMerchantCertReq struct {
 	TermsVersion string `json:"termsVersion,optional"` // 用户已同意的条款版本号或摘要，便于审计
 }
@@ -21,6 +40,84 @@ type BaseResp struct {
 type BatchUploadFileResp struct {
 	FileList []FileInfo `json:"fileList"` // 上传成功的文件列表
 	Failed   []string   `json:"failed"`   // 上传失败的文件名列表
+}
+
+type ChainNetworkInfo struct {
+	ID                     int64                   `json:"id"`
+	ChainID                int64                   `json:"chainId"`
+	Code                   string                  `json:"code"`
+	Name                   string                  `json:"name"`
+	RpcURL                 string                  `json:"rpcUrl,optional"`
+	WsURL                  string                  `json:"wsUrl,optional"`
+	ExplorerURL            string                  `json:"explorerUrl,optional"`
+	NativeSymbol           string                  `json:"nativeSymbol,optional"`
+	PlatformConfigAddress  string                  `json:"platformConfigAddress,optional"`
+	PaymentRouterAddress   string                  `json:"paymentRouterAddress,optional"`
+	SettlementVaultAddress string                  `json:"settlementVaultAddress,optional"`
+	SignerKeyRef           string                  `json:"signerKeyRef,optional"`
+	ListenerEnabled        int64                   `json:"listenerEnabled"`
+	ListenerStartBlock     int64                   `json:"listenerStartBlock"`
+	ListenerLastBlock      int64                   `json:"listenerLastBlock"`
+	Sort                   int64                   `json:"sort"`
+	Status                 int64                   `json:"status"`
+	Remark                 string                  `json:"remark,optional"`
+	PaymentTokens          []ChainPaymentTokenInfo `json:"paymentTokens,optional"` // list 接口嵌套返回
+	CreatedAt              string                  `json:"createdAt,optional"`
+	UpdatedAt              string                  `json:"updatedAt,optional"`
+	Creator                string                  `json:"creator,optional"`
+	Updator                string                  `json:"updator,optional"`
+}
+
+type ChainPaymentTokenInfo struct {
+	ID              int64  `json:"id"`
+	ChainID         int64  `json:"chainId"`
+	Symbol          string `json:"symbol"`
+	DisplayName     string `json:"displayName,optional"`
+	ContractAddress string `json:"contractAddress"`
+	Decimals        int64  `json:"decimals"`
+	ConfigKey       string `json:"configKey"`
+	SyncStatus      int64  `json:"syncStatus"`
+	LastSyncTxHash  string `json:"lastSyncTxHash,optional"`
+	LastSyncAt      string `json:"lastSyncAt,optional"`
+	SyncError       string `json:"syncError,optional"`
+	Sort            int64  `json:"sort"`
+	Status          int64  `json:"status"`
+	Remark          string `json:"remark,optional"`
+	CreatedAt       string `json:"createdAt,optional"`
+	UpdatedAt       string `json:"updatedAt,optional"`
+	Creator         string `json:"creator,optional"`
+	Updator         string `json:"updator,optional"`
+}
+
+type CreateOrderReq struct {
+	SkuId                   int64                `json:"skuId"`
+	SkuCode                 string               `json:"skuCode,optional"`
+	SpuId                   int64                `json:"spuId,optional"`
+	SpuCode                 string               `json:"spuCode,optional"`
+	ProductName             string               `json:"productName,optional"`
+	ProductPrice            float64              `json:"productPrice,optional"`
+	Quantity                int64                `json:"quantity"` // product_quantity
+	ProductTotal            float64              `json:"productTotal,optional"`
+	ProductRemark           string               `json:"productRemark,optional"`
+	PayerAddress            string               `json:"payerAddress"`
+	ChainId                 int64                `json:"chainId,optional"`
+	TokenSymbol             string               `json:"tokenSymbol,optional"` // 默认 USDC
+	SaleSubtotal            float64              `json:"saleSubtotal,optional"`
+	Promotions              []OrderPromotionItem `json:"promotions,optional"`
+	PromotionDiscountAmount float64              `json:"promotionDiscountAmount"`
+	PayableAmount           float64              `json:"payableAmount"`
+	PlatformFeeAmount       float64              `json:"platformFeeAmount"`
+	EstimatedGasFee         float64              `json:"estimatedGasFee"`
+	PayAmount               float64              `json:"payAmount"`
+	Currency                string               `json:"currency,optional"`
+	OrderRemark             string               `json:"orderRemark,optional"` // buyerMessage
+	Delivery                OrderDeliveryInput   `json:"delivery,optional"`
+}
+
+type CreateOrderResp struct {
+	Order      OrderInfo            `json:"order"`
+	Payment    OrderPaymentInfo     `json:"payment"` // 含 payOrder 所需 intent 参数
+	Promotions []OrderPromotionItem `json:"promotions,optional"`
 }
 
 type CreateProductReq struct {
@@ -51,6 +148,14 @@ type DeleteAttrReq struct {
 
 type DeleteCategoryReq struct {
 	ID uint `path:"id"` // 目录ID
+}
+
+type DeleteChainNetworkReq struct {
+	ID int64 `path:"id"` // 主键 ID
+}
+
+type DeleteChainPaymentTokenReq struct {
+	ID int64 `path:"id"` // 主键 ID
 }
 
 type DeleteDictCategoryReq struct {
@@ -153,6 +258,17 @@ type GetNonceByAddressReq struct {
 
 type GetNonceByAddressResp struct {
 	Nonce string `json:"nonce"`
+}
+
+type GetOrderReq struct {
+	OrderCode string `path:"orderCode"`
+}
+
+type GetOrderResp struct {
+	Order      OrderInfo            `json:"order"`
+	Payment    OrderPaymentInfo     `json:"payment"`
+	Promotions []OrderPromotionItem `json:"promotions,optional"`
+	Delivery   OrderDeliveryInput   `json:"delivery,optional"`
 }
 
 type GetProductDetailReq struct {
@@ -264,6 +380,33 @@ type HealthCheckResp struct {
 	Time   int64  `json:"time"`
 }
 
+type ListChainNetworkReq struct {
+	Code     string `json:"code,optional"`   // 编码模糊
+	Name     string `json:"name,optional"`   // 名称模糊
+	Status   int64  `json:"status,optional"` // 0 启用 1 禁用；不传查全部
+	Page     int64  `json:"page"`            // 页码，从 1 开始
+	PageSize int64  `json:"pageSize"`        // 每页条数
+}
+
+type ListChainNetworkResp struct {
+	List  []ChainNetworkInfo `json:"list"`
+	Total int64              `json:"total"`
+}
+
+type ListChainPaymentTokenReq struct {
+	ChainID    int64  `json:"chainId,optional"`    // 按链筛选
+	Symbol     string `json:"symbol,optional"`     // 符号模糊
+	Status     int64  `json:"status,optional"`     // 0 启用 1 禁用
+	SyncStatus int64  `json:"syncStatus,optional"` // 0~3
+	Page       int64  `json:"page"`
+	PageSize   int64  `json:"pageSize"`
+}
+
+type ListChainPaymentTokenResp struct {
+	List  []ChainPaymentTokenInfo `json:"list"`
+	Total int64                   `json:"total"`
+}
+
 type ListDictCategoryReq struct {
 	DictType string `json:"dictType,optional"` // 字典归属类型：0系统字典/1用户自定义/2其它
 	Code     string `json:"code,optional"`     // 分类编码（模糊）
@@ -287,6 +430,22 @@ type ListDictItemByTypeReq struct {
 type ListDictItemByTypeResp struct {
 	List  []DictItemInfo `json:"list"`
 	Total int64          `json:"total"`
+}
+
+type ListOrderReq struct {
+	Page           int64  `json:"page,optional"`
+	PageSize       int64  `json:"pageSize,optional"`
+	OrderCode      string `json:"orderCode,optional"`
+	UserCode       string `json:"userCode,optional"`
+	OrderStatus    int64  `json:"orderStatus,optional"`
+	PaymentStatus  int64  `json:"paymentStatus,optional"`
+	OrderDateStart string `json:"orderDateStart,optional"` // yyyy-MM-dd 或 RFC3339
+	OrderDateEnd   string `json:"orderDateEnd,optional"`
+}
+
+type ListOrderResp struct {
+	List  []AdminOrderSummary `json:"list"`
+	Total int64               `json:"total"`
 }
 
 type ListProductReq struct {
@@ -386,6 +545,13 @@ type MerchantDepositIntentResp struct {
 	UpdatedAt         string `json:"updatedAt,optional"`     // 更新时间
 }
 
+type ModifyOrderReq struct {
+	Id                  int64  `json:"id"`
+	Action              string `json:"action"`
+	ExtendExpireMinutes int64  `json:"extendExpireMinutes,optional"`
+	OrderRemark         string `json:"orderRemark,optional"`
+}
+
 type ModifyUserInfoReq struct {
 	Nickname string `json:"nickname,optional"` // 昵称
 	Gender   int64  `json:"gender,optional"`   // 性别：1=男，2=女
@@ -393,6 +559,69 @@ type ModifyUserInfoReq struct {
 	Email    string `json:"email,optional"`    // 邮箱
 	Phone    string `json:"phone,optional"`    // 手机号
 	Avatar   string `json:"avatar,optional"`   // 头像URL
+}
+
+type OrderDeliveryInput struct {
+	ReceiverName  string `json:"receiverName,optional"`
+	ReceiverPhone string `json:"receiverPhone,optional"`
+	ReceiverEmail string `json:"receiverEmail,optional"`
+}
+
+type OrderInfo struct {
+	OrderCode               string  `json:"orderCode"`
+	SpuId                   int64   `json:"spuId,optional"`           // spu_id
+	SpuCode                 string  `json:"spuCode,optional"`         // spu_code
+	SkuId                   int64   `json:"skuId,optional"`           // sku_id
+	SkuCode                 string  `json:"skuCode,optional"`         // sku_code
+	ProductName             string  `json:"productName,optional"`     // product_name
+	ProductPrice            float64 `json:"productPrice,optional"`    // product_price
+	ProductQuantity         int64   `json:"productQuantity,optional"` // product_quantity
+	ProductTotal            float64 `json:"productTotal,optional"`    // product_total
+	ProductRemark           string  `json:"productRemark,optional"`   // product_remark
+	OrderStatus             int64   `json:"orderStatus"`              // order_status：10待支付 30已支付 40待发货 50已发货 60已完成 70已取消 80已过期 90支付失败
+	OrderStatusDesc         string  `json:"orderStatusDesc,optional"`
+	PaymentStatus           int64   `json:"paymentStatus"` // payment_status（冗余）：1未支付 2链上确认中 3已支付 4已关闭
+	PaymentStatusDesc       string  `json:"paymentStatusDesc,optional"`
+	OrderDate               string  `json:"orderDate,optional"` // order_date RFC3339
+	Currency                string  `json:"currency,optional"`  // 默认 USDC
+	SaleSubtotal            float64 `json:"saleSubtotal,optional"`
+	PromotionDiscountAmount float64 `json:"promotionDiscountAmount,optional"`
+	PayableAmount           float64 `json:"payableAmount,optional"`
+	PlatformFeeAmount       float64 `json:"platformFeeAmount,optional"`
+	EstimatedGasFee         float64 `json:"estimatedGasFee,optional"`
+	PayAmount               float64 `json:"payAmount,optional"`
+	OrderRemark             string  `json:"orderRemark,optional"` // order_remark / 买家留言
+	ExpireAt                string  `json:"expireAt,optional"`    // 订单支付超时 order.expire_at
+}
+
+type OrderPaymentInfo struct {
+	IntentId              string  `json:"intentId"` // intent_id
+	OrderCode             string  `json:"orderCode,optional"`
+	PayerAddress          string  `json:"payerAddress"`
+	ChainId               int64   `json:"chainId"`
+	TokenSymbol           string  `json:"tokenSymbol"`
+	TokenAddress          string  `json:"tokenAddress"`
+	ContractAddress       string  `json:"contractAddress"`
+	AmountRaw             string  `json:"amountRaw"` // amount_raw，链上最小单位
+	TokenDecimals         int64   `json:"tokenDecimals"`
+	PayAmount             float64 `json:"payAmount,optional"`     // 实付快照，与 sys_order.pay_amount 一致
+	PaymentStatus         int64   `json:"paymentStatus,optional"` // 与 sys_order.payment_status 同步
+	PaymentStatusDesc     string  `json:"paymentStatusDesc,optional"`
+	TxHash                string  `json:"txHash,optional"`
+	BlockNumber           int64   `json:"blockNumber,optional"`
+	Confirmations         int64   `json:"confirmations,optional"`
+	RequiredConfirmations int64   `json:"requiredConfirmations,optional"`
+	ExpireAt              string  `json:"expireAt,optional"` // intent 过期时间
+	PaidAt                string  `json:"paidAt,optional"`
+	ConfirmedAt           string  `json:"confirmedAt,optional"`
+	FailReason            string  `json:"failReason,optional"`
+}
+
+type OrderPromotionItem struct {
+	PromoId  string  `json:"promoId"`  // promo_id
+	LabelKey string  `json:"labelKey"` // label_key
+	Label    string  `json:"label,optional"`
+	Amount   float64 `json:"amount"` // decimal(12,2)
 }
 
 type ProductAttrParamInfo struct {
@@ -608,6 +837,40 @@ type SaveCategoryReq struct {
 	Sort       int    `json:"sort"`                // 排序
 	Icon       string `json:"icon,optional"`       // 图标
 	MenuType   int    `json:"menuType"`            // 目录类型：0=商品目录 1=菜单目录
+}
+
+type SaveChainNetworkReq struct {
+	ID                     int64  `json:"id,optional"` // 空或 0 新增
+	ChainID                int64  `json:"chainId"`     // 新增必填，更新不可改
+	Code                   string `json:"code"`
+	Name                   string `json:"name"`
+	RpcURL                 string `json:"rpcUrl,optional"`
+	WsURL                  string `json:"wsUrl,optional"`
+	ExplorerURL            string `json:"explorerUrl,optional"`
+	NativeSymbol           string `json:"nativeSymbol,optional"`
+	PlatformConfigAddress  string `json:"platformConfigAddress,optional"`
+	PaymentRouterAddress   string `json:"paymentRouterAddress,optional"`
+	SettlementVaultAddress string `json:"settlementVaultAddress,optional"`
+	SignerKeyRef           string `json:"signerKeyRef,optional"`
+	ListenerEnabled        int64  `json:"listenerEnabled,optional"`
+	ListenerStartBlock     int64  `json:"listenerStartBlock,optional"`
+	ListenerLastBlock      int64  `json:"listenerLastBlock,optional"`
+	Sort                   int64  `json:"sort,optional"`
+	Status                 int64  `json:"status,optional"`
+	Remark                 string `json:"remark,optional"`
+}
+
+type SaveChainPaymentTokenReq struct {
+	ID              int64  `json:"id,optional"` // 空或 0 新增
+	ChainID         int64  `json:"chainId"`
+	Symbol          string `json:"symbol"`
+	DisplayName     string `json:"displayName,optional"`
+	ContractAddress string `json:"contractAddress"`
+	Decimals        int64  `json:"decimals,optional"`  // 默认 6
+	ConfigKey       string `json:"configKey,optional"` // 空则按 symbol 生成
+	Sort            int64  `json:"sort,optional"`
+	Status          int64  `json:"status,optional"`
+	Remark          string `json:"remark,optional"`
 }
 
 type SaveDictCategoryReq struct {

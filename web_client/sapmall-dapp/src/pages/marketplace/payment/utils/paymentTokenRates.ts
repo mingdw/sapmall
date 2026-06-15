@@ -17,6 +17,7 @@ export function calcPayAmountInToken(orderPayableUsdc: number, method: PaymentMe
   const rate = getTokenToUsdcRate(method);
   if (rate <= 0) return orderPayableUsdc;
   const amount = orderPayableUsdc / rate;
+  if (method === 'cirBTC') return Math.round(amount * 1e8) / 1e8;
   if (rate >= 1000) return Math.round(amount * 100000) / 100000;
   if (rate >= 1) return Math.round(amount * 100) / 100;
   return Math.round(amount * 10000) / 10000;
@@ -54,6 +55,11 @@ export function formatUsdcToTokenRate(method: PaymentMethod): string | null {
 
 /** 按币种精度格式化数量（用于展示） */
 export function formatTokenAmount(amount: number, method: PaymentMethod): string {
+  if (method === 'cirBTC') {
+    if (amount >= 1) return amount.toFixed(4);
+    const s = amount.toFixed(8);
+    return s.replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '') || '0';
+  }
   if (getTokenToUsdcRate(method) >= 1000) return amount.toFixed(5);
   if (isSapPayment(method) || getTokenToUsdcRate(method) < 1) return amount.toFixed(4);
   return amount.toFixed(2);

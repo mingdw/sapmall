@@ -2,6 +2,9 @@ import "dotenv/config";
 import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
 import { configVariable, defineConfig } from "hardhat/config";
 
+const sharedPrivateKey = configVariable("CONTRACT_PRIVATE_KEY");
+const arcTestnetRpcUrl = process.env.ARC_TESTNET_RPC_URL ?? "https://rpc.testnet.arc.network";
+
 export default defineConfig({
   plugins: [hardhatToolboxViemPlugin],
   solidity: {
@@ -40,25 +43,25 @@ export default defineConfig({
     sepolia: {
       type: "http",
       chainType: "l1",
-      chainId: 11_155_111,
+      chainId: 11155111,
       url: configVariable("SEPOLIA_RPC_URL"),
-      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+      accounts: [sharedPrivateKey],
     },
     /** Linea Sepolia：与 Infura `linea-sepolia` 等 RPC 对齐，勿与以太坊 Sepolia 混用 */
     lineaSepolia: {
       type: "http",
       chainType: "generic",
-      chainId: 59_141,
+      chainId: 59141,
       url: configVariable("LINEA_SEPOLIA_RPC_URL"),
-      accounts: [configVariable("LINEA_SEPOLIA_PRIVATE_KEY")],
+      accounts: [sharedPrivateKey],
     },
     /** Arc Testnet — Phase 1 订单支付联调链 */
     arcTestnet: {
       type: "http",
       chainType: "generic",
-      chainId: 5_042_002,
+      chainId: 5042002,
       url: configVariable("ARC_TESTNET_RPC_URL"),
-      accounts: [configVariable("ARC_TESTNET_PRIVATE_KEY")],
+      accounts: [sharedPrivateKey],
     },
   },
 });

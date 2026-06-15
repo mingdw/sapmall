@@ -36,9 +36,13 @@ const PaymentStatusBanner: React.FC<Props> = ({
               ? 'payment.status.confirming'
               : phase === 'success'
                 ? 'payment.status.success'
-                : phase === 'error'
-                  ? 'payment.status.error'
-                  : null);
+                : phase === 'authCancelled'
+                  ? 'payment.errors.authRejected'
+                  : phase === 'payCancelled'
+                    ? 'payment.errors.payRejected'
+                    : phase === 'error'
+                      ? 'payment.status.error'
+                      : null);
 
   if (!messageKey) return null;
 
@@ -48,9 +52,11 @@ const PaymentStatusBanner: React.FC<Props> = ({
   const tone =
     phase === 'error'
       ? 'border-red-500/40 bg-red-500/10 text-red-200'
-      : phase === 'success'
-        ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-100'
-        : 'border-sky-500/30 bg-sky-500/10 text-sky-100';
+      : phase === 'authCancelled' || phase === 'payCancelled'
+        ? 'border-amber-500/40 bg-amber-500/10 text-amber-100'
+        : phase === 'success'
+          ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-100'
+          : 'border-sky-500/30 bg-sky-500/10 text-sky-100';
 
   return (
     <div className={`rounded-lg border px-4 py-3 text-sm ${tone}`} role="status" aria-live="polite">

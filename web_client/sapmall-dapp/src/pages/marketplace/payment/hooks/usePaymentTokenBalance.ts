@@ -2,7 +2,13 @@ import { formatUnits } from 'viem';
 import { erc20Abi } from 'viem';
 import { useReadContract } from 'wagmi';
 import { isSapPayment } from '../../../../config/paymentCurrencies';
-import { getSapTokenConfig, getUsdcTokenConfig, type WalletErc20Config } from '../../../../config/walletTokens';
+import {
+  getArcPaymentTokenConfig,
+  getSapTokenConfig,
+  getUsdcTokenConfig,
+  type WalletErc20Config,
+} from '../../../../config/walletTokens';
+import { formatTokenBalanceDisplay } from '../utils/formatPaymentAmount';
 import type { PaymentMethod } from '../types/paymentTypes';
 
 function getPaymentTokenConfig(
@@ -11,17 +17,7 @@ function getPaymentTokenConfig(
 ): WalletErc20Config | undefined {
   if (method === 'USDC') return getUsdcTokenConfig(chainId);
   if (isSapPayment(method)) return getSapTokenConfig();
-  return undefined;
-}
-
-function formatBalanceDisplay(amount: number, symbol: string): string {
-  if (Number.isNaN(amount)) return symbol === 'SAP' ? '0' : '0.0000';
-  if (symbol === 'SAP') {
-    if (amount >= 1000) return `${(amount / 1000).toFixed(1)}K`;
-    return amount.toFixed(4);
-  }
-  if (amount >= 1000) return amount.toFixed(2);
-  return amount.toFixed(4);
+  return getArcPaymentTokenConfig(method, chainId);
 }
 
 /** 当前支付币种钱包余额（USDC / SAP 接链上；其余代币待配置合约地址） */
@@ -45,7 +41,7 @@ export function usePaymentTokenBalance(
   if (query.data !== undefined && config) {
     const n = Number.parseFloat(formatUnits(query.data, config.decimals));
     numeric = Number.isNaN(n) ? 0 : n;
-    formatted = formatBalanceDisplay(numeric, config.symbol);
+    formatted = formatTokenBalanceDisplay(numeric, config.symbol);
   }
 
   return {

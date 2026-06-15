@@ -251,7 +251,9 @@
       "estimatedGas": "预估 Gas",
       "tokenInsufficient": "{{token}} 余额不足（需 {{need}}，当前 {{have}}）",
       "usdcInsufficient": "余额不足，请充值或者使用其它代币支付",
-      "balanceSufficient": "余额充足"
+      "balanceSufficient": "余额充足",
+      "continueApprove": "继续授权支付",
+      "continuePay": "继续支付"
     },
     "status": {
       "creatingOrder": "正在创建订单，请稍候…",
@@ -277,7 +279,9 @@
       "previewFailed": "无法加载订单预览",
       "walletNotConnected": "请先连接钱包",
       "wrongNetwork": "网络不正确，请手动切换到支付网络",
-      "paymentFailed": "支付失败，请重试"
+      "paymentFailed": "支付失败，请重试",
+      "authRejected": "您已取消授权支付，订单已创建，请继续完成授权",
+      "payRejected": "您已取消支付签名，订单已创建，请继续完成支付"
     },
     "actions": {
       "retry": "重试",

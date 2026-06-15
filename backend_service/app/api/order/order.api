@@ -1,0 +1,29 @@
+// backend_service/app/api/order/order.api
+syntax = "v1"
+
+import "types/order_types.api"
+
+// 订单：创建待支付订单（同时生成 opi_ 支付 intent）、按订单号查询支付结果
+@server (
+	group:      order
+	prefix:     /api/order
+	middleware: AuthMiddleware, RespMiddleware
+)
+service sapmall {
+	@doc "创建待支付订单并生成支付 intent。请求：CreateOrderReq；响应 Data：CreateOrderResp { order, payment, promotions }"
+	@handler CreateOrder
+	post /create (CreateOrderReq) returns (BaseResp)
+
+	@doc "按订单号查询订单及支付结果（供结果页轮询）。响应 Data：GetOrderResp { order, payment, promotions, delivery }"
+	@handler GetOrder
+	get /:orderCode (GetOrderReq) returns (BaseResp)
+
+	@doc "订单列表查询。请求：ListOrderReq；响应 Data：ListOrderResp { list, total }"
+	@handler ListOrder
+	post /list (ListOrderReq) returns (BaseResp)
+
+	@doc "订单修改。action：cancel 取消 | delete 软删除 | resumePay 继续支付；请求：ModifyOrderReq"
+	@handler ModifyOrder
+	post /modify (ModifyOrderReq) returns (BaseResp)
+
+}

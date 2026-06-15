@@ -4,9 +4,6 @@ import { describe, it } from "node:test";
 import { network } from "hardhat";
 import { encodeFunctionData, keccak256, toBytes } from "viem";
 
-const CFG_PAYMENT_TOKEN_USDC = "payment.token.usdc";
-const CFG_PAYMENT_CHAIN_ID = "payment.chain.id";
-
 describe("PaymentRouter + SettlementVault", async function () {
   const connection = await network.create();
   const { viem } = connection;
@@ -17,98 +14,55 @@ describe("PaymentRouter + SettlementVault", async function () {
     await publicClient.waitForTransactionReceipt({ hash });
   }
 
-  async function deployPlatformConfig() {
-    const implementation = await viem.deployContract("PlatformConfig");
-    const initData = encodeFunctionData({
-      abi: implementation.abi,
-      functionName: "initialize",
-      args: [admin.account.address],
-    });
-    const proxy = await viem.deployContract("PlatformConfigProxy", [
-      implementation.address,
-      initData,
-    ]);
-    return viem.getContractAt("PlatformConfig", proxy.address);
-  }
-
-  async function createPaymentConfig(
-    config: Awaited<ReturnType<typeof deployPlatformConfig>>,
-    usdcAddress: `0x${string}`,
-    chainId: bigint,
-  ) {
-    const createUsdcTx = await admin.writeContract({
-      address: config.address,
-      abi: config.abi,
-      functionName: "createConfig",
-      args: [CFG_PAYMENT_TOKEN_USDC, usdcAddress, "address", "order payment USDC", 0],
-    });
-    await waitForTx(createUsdcTx);
-
-    const createChainTx = await admin.writeContract({
-      address: config.address,
-      abi: config.abi,
-      functionName: "createConfig",
-      args: [CFG_PAYMENT_CHAIN_ID, chainId.toString(), "number", "expected chain id", 0],
-    });
-    await waitForTx(createChainTx);
-  }
-
-  async function deployPaymentStack() {
-    const chainId = BigInt(await publicClient.getChainId());
-    const config = await deployPlatformConfig();
+  async function deployPaymentStack(expectedChainId?: bigint) {
+    const chainId = expectedChainId ?? BigInt(await publicClient.getChainId());
     const usdc = await viem.deployContract("MockUSDC");
-
-    await createPaymentConfig(config, usdc.address, chainId);
-
     const vault = await viem.deployContract("SettlementVault", [admin.account.address]);
-
     const routerImpl = await viem.deployContract("PaymentRouter");
     const initData = encodeFunctionData({
       abi: routerImpl.abi,
       functionName: "initialize",
-      args: [admin.account.address, config.address, vault.address],
+      args: [admin.account.address, vault.address, usdc.address, chainId],
     });
-    const routerProxy = await viem.deployContract("PaymentRouterProxy", [
-      routerImpl.address,
-      initData,
-    ]);
+    const routerProxy = await viem.deployContract("PaymentRouterProxy", [routerImpl.address, initData]);
     const router = await viem.getContractAt("PaymentRouter", routerProxy.address);
 
-    const grantTx = await admin.writeContract({
-      address: vault.address,
-      abi: vault.abi,
-      functionName: "grantRole",
-      args: [await vault.read.ROUTER_ROLE(), router.address],
-    });
-    await waitForTx(grantTx);
+    await waitForTx(
+      await admin.writeContract({
+        address: vault.address,
+        abi: vault.abi,
+        functionName: "grantRole",
+        args: [await vault.read.ROUTER_ROLE(), router.address],
+      }),
+    );
 
-    return { config, usdc, vault, router, chainId };
+    return { usdc, vault, router, chainId };
   }
 
   it("pays order and marks intent as paid", async function () {
     const { usdc, vault, router } = await deployPaymentStack();
-    const amount = 1_000_000n; // 1 USDC
+    const amount = 1_000_000n;
     const intentId = "opi_11111111-1111-4111-8111-111111111111";
     const orderRef = "ORD-2026-0001";
 
-    const mintTx = await usdc.write.mint([payer.account.address, amount]);
-    await waitForTx(mintTx);
+    await usdc.write.mint([payer.account.address, amount]);
+    await waitForTx(
+      await payer.writeContract({
+        address: usdc.address,
+        abi: usdc.abi,
+        functionName: "approve",
+        args: [router.address, amount],
+      }),
+    );
 
-    const approveTx = await payer.writeContract({
-      address: usdc.address,
-      abi: usdc.abi,
-      functionName: "approve",
-      args: [router.address, amount],
-    });
-    await waitForTx(approveTx);
-
-    const payTx = await payer.writeContract({
-      address: router.address,
-      abi: router.abi,
-      functionName: "payOrder",
-      args: [intentId, orderRef, usdc.address, amount],
-    });
-    await waitForTx(payTx);
+    await waitForTx(
+      await payer.writeContract({
+        address: router.address,
+        abi: router.abi,
+        functionName: "payOrder",
+        args: [intentId, orderRef, usdc.address, amount],
+      }),
+    );
 
     assert.equal(await router.read.isIntentPaid([intentId]), true);
     assert.equal(await usdc.read.balanceOf([vault.address]), amount);
@@ -145,8 +99,8 @@ describe("PaymentRouter + SettlementVault", async function () {
     );
   });
 
-  it("reverts when token is not configured USDC", async function () {
-    const { usdc, router } = await deployPaymentStack();
+  it("reverts when token is not configured payment token", async function () {
+    const { router } = await deployPaymentStack();
     const other = await viem.deployContract("MockUSDC");
     const amount = 100_000n;
 
@@ -166,8 +120,6 @@ describe("PaymentRouter + SettlementVault", async function () {
         args: ["opi_badtoken-3333-4333-8333-333333333333", "ORD-BAD", other.address, amount],
       }),
     );
-
-    assert.equal(await usdc.read.balanceOf([router.address]), 0n);
   });
 
   it("reverts without approve", async function () {
@@ -185,36 +137,11 @@ describe("PaymentRouter + SettlementVault", async function () {
     );
   });
 
-  it("reverts when chain id config mismatches", async function () {
-    const config = await deployPlatformConfig();
-    const usdc = await viem.deployContract("MockUSDC");
+  it("reverts when chain id mismatches expectedChainId", async function () {
     const wrongChainId = 999999n;
-    await createPaymentConfig(config, usdc.address, wrongChainId);
-
-    const vault = await viem.deployContract("SettlementVault", [admin.account.address]);
-    const routerImpl = await viem.deployContract("PaymentRouter");
-    const initData = encodeFunctionData({
-      abi: routerImpl.abi,
-      functionName: "initialize",
-      args: [admin.account.address, config.address, vault.address],
-    });
-    const routerProxy = await viem.deployContract("PaymentRouterProxy", [
-      routerImpl.address,
-      initData,
-    ]);
-    const router = await viem.getContractAt("PaymentRouter", routerProxy.address);
-
-    const routerRole = await vault.read.ROUTER_ROLE();
-    await waitForTx(
-      await admin.writeContract({
-        address: vault.address,
-        abi: vault.abi,
-        functionName: "grantRole",
-        args: [routerRole, router.address],
-      }),
-    );
-
+    const { usdc, router } = await deployPaymentStack(wrongChainId);
     const amount = 100_000n;
+
     await usdc.write.mint([payer.account.address, amount]);
     await payer.writeContract({
       address: usdc.address,

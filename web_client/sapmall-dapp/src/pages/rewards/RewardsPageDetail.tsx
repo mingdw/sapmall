@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SlidersHorizontal } from 'lucide-react';
 import { CAMPAIGNS } from './mocks/campaigns.mock';
@@ -14,6 +14,7 @@ import styles from './RewardsPageDetail.module.scss';
 
 const RewardsPageDetail: React.FC = () => {
   const { t } = useTranslation();
+  const listPanelRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<CampaignStatus>('ongoing');
   const [categoryFilter, setCategoryFilter] = useState<CampaignCategoryFilter>('all');
   const [sortKey, setSortKey] = useState<CampaignSortKey>('latest');
@@ -88,9 +89,17 @@ const RewardsPageDetail: React.FC = () => {
 
   const tabs: CampaignStatus[] = ['ongoing', 'upcoming', 'ended'];
 
+  const handleQuickFilter = (payload: { tab: CampaignStatus; category?: CampaignCategoryFilter }) => {
+    setActiveTab(payload.tab);
+    setCategoryFilter(payload.category ?? 'all');
+    window.requestAnimationFrame(() => {
+      listPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
+
   return (
     <div className={styles.pageContent}>
-      <RewardsHeroSection />
+      <RewardsHeroSection onQuickFilter={handleQuickFilter} />
       <RewardsStatsStrip stats={hubStats} />
 
       <div className={styles.pageLayout}>
@@ -99,7 +108,14 @@ const RewardsPageDetail: React.FC = () => {
             <RewardsFeaturedRow campaigns={featuredCampaigns} />
           ) : null}
 
-          <div className={styles.listPanel} data-zone="minimal">
+          <div ref={listPanelRef} className={styles.listPanel}>
+            <div className={styles.listSectionHead}>
+              <div>
+                <h2 className={styles.listSectionTitle}>{t('rewards.listSectionTitle')}</h2>
+                <p className={styles.listSectionHint}>{t('rewards.listSectionHint')}</p>
+              </div>
+            </div>
+
             <div className={styles.toolbar}>
               <div className={styles.tabList} role="tablist" aria-label={t('rewards.tabListAria')}>
                 {tabs.map((tab) => (
@@ -154,7 +170,7 @@ const RewardsPageDetail: React.FC = () => {
                 </div>
               ) : (
                 filteredCampaigns.map((campaign) => (
-                  <RewardsCampaignCard key={campaign.slug} campaign={campaign} variant="minimal" />
+                  <RewardsCampaignCard key={campaign.slug} campaign={campaign} variant="default" />
                 ))
               )}
             </div>

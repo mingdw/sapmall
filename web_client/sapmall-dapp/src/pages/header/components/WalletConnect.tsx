@@ -22,6 +22,7 @@ import {
   WALLET_ROLE_ICON,
   WalletRoleCode,
 } from '../utils/walletRoleUtils';
+import { isChainMismatchError } from '../../../utils/wagmiChainMismatch';
 
 /** 与语言无关的错误码，供静默处理分支识别 */
 const WALLET_ERR_USER_REJECTED_SIGN = 'WALLET_ERR_USER_REJECTED_SIGN';
@@ -160,6 +161,13 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
         }, 1000);
         
         // 不显示错误消息，让用户重新连接
+        return;
+      }
+
+      // 链 ID 不同步（如钱包在 Arc、应用缓存 Linea）——由 WagmiChainMismatchRecovery 自动恢复
+      if (isChainMismatchError(error.message)) {
+        console.log('检测到链 ID 不同步，等待自动同步…', error.message);
+        setConnectionError(null);
         return;
       }
       

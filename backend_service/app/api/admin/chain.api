@@ -1,0 +1,35 @@
+// backend_service/app/api/admin/chain.api
+syntax = "v1"
+
+import "types/chain_types.api"
+
+@server (
+	prefix:     /api/admin
+	group:      admin
+	middleware: AuthMiddleware,RespMiddleware
+)
+service sapmall {
+	@doc "查询区块链网络配置列表（含各链支付代币）。请求：ListChainNetworkReq；响应 Data：ListChainNetworkResp { list: ChainNetworkInfo[], total }，每条 ChainNetworkInfo 含 paymentTokens"
+	@handler ListChainNetwork
+	post /chain/network/list (ListChainNetworkReq) returns (BaseResp)
+
+	@doc "新增/修改区块链网络配置。请求：SaveChainNetworkReq（id 为空或 0 为新增）；响应 Data：null"
+	@handler SaveChainNetwork
+	post /chain/network (SaveChainNetworkReq) returns (BaseResp)
+
+	@doc "删除区块链网络配置（软删，并软删该链下全部支付代币）。路径参数：id；响应 Data：null"
+	@handler DeleteChainNetwork
+	delete /chain/network/:id (DeleteChainNetworkReq) returns (BaseResp)
+
+	@doc "查询链上支付代币列表（按需刷新/独立查询）。请求：ListChainPaymentTokenReq；响应 Data：ListChainPaymentTokenResp { list, total }"
+	@handler ListChainPaymentToken
+	post /chain/payment-token/list (ListChainPaymentTokenReq) returns (BaseResp)
+
+	@doc "新增/修改链上支付代币。请求：SaveChainPaymentTokenReq（id 为空或 0 为新增）；响应 Data：null"
+	@handler SaveChainPaymentToken
+	post /chain/payment-token (SaveChainPaymentTokenReq) returns (BaseResp)
+
+	@doc "删除链上支付代币（软删）。路径参数：id；响应 Data：null"
+	@handler DeleteChainPaymentToken
+	delete /chain/payment-token/:id (DeleteChainPaymentTokenReq) returns (BaseResp)
+}

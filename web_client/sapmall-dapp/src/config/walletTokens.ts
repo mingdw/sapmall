@@ -15,6 +15,26 @@ const ARC_USDC: WalletErc20Config = {
   symbol: 'USDC',
 };
 
+/** Arc Testnet EURC — https://docs.arc.io/arc/references/contract-addresses */
+const ARC_EURC: WalletErc20Config = {
+  address: '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a',
+  decimals: 6,
+  symbol: 'EURC',
+};
+
+/** Arc Testnet cirBTC — https://developers.circle.com/assets/cirbtc-contract-addresses */
+const ARC_CIRBTC: WalletErc20Config = {
+  address: '0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF',
+  decimals: 8,
+  symbol: 'cirBTC',
+};
+
+const ARC_PAYMENT_TOKEN_BY_SYMBOL: Record<string, WalletErc20Config> = {
+  USDC: ARC_USDC,
+  EURC: ARC_EURC,
+  cirBTC: ARC_CIRBTC,
+};
+
 /** Linea Sepolia USDC — contract/docs/payment-phase1.md */
 const LINEA_SEPOLIA_USDC: WalletErc20Config = {
   address: '0xFEce4462D57bD51A6A552365A011b95f0E16d9B7',
@@ -70,6 +90,15 @@ const USDC_BY_CHAIN: Partial<Record<number, WalletErc20Config>> = {
 export function getUsdcTokenConfig(chainId?: number): WalletErc20Config | undefined {
   if (!chainId) return undefined;
   return USDC_BY_CHAIN[chainId];
+}
+
+/** Arc Testnet 支付代币（USDC / EURC / cirBTC） */
+export function getArcPaymentTokenConfig(
+  symbol: string,
+  chainId?: number,
+): WalletErc20Config | undefined {
+  if (chainId !== ARC_TESTNET_CHAIN_ID) return undefined;
+  return ARC_PAYMENT_TOKEN_BY_SYMBOL[symbol];
 }
 
 export function getChainNativeCurrency(chainId?: number) {

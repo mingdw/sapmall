@@ -20,6 +20,7 @@ import {
   calcPlatformFeeUsdc,
   calcReferencePlatformFeeUsdc,
   calcTotalDueInToken,
+  calcTotalDueUsdc,
   NON_SAP_PAYMENT_FEE_RATE,
 } from '../utils/paymentFee';
 import { calcPayAmountInToken } from '../utils/paymentTokenRates';
@@ -43,6 +44,7 @@ interface Props {
   paymentMethod: PaymentMethod;
   onPaymentMethodChange: (method: PaymentMethod) => void;
   onPay: () => void;
+  onContinuePay?: () => void;
   busy: boolean;
   contactValid: boolean;
 }
@@ -56,6 +58,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
   paymentMethod,
   onPaymentMethodChange,
   onPay,
+  onContinuePay,
   busy,
   contactValid,
 }) => {
@@ -81,6 +84,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
   const gasFeeInToken = calcPayAmountInToken(gasFeeUsdc, paymentMethod);
   const referenceFeeUsdc = calcReferencePlatformFeeUsdc(orderPayable);
   const payEquivInToken = calcTotalDueInToken(orderPayable, paymentMethod, gasFeeUsdc);
+  const totalDueUsdc = calcTotalDueUsdc(orderPayable, paymentMethod, gasFeeUsdc);
 
   const intentPayAmount = intent
     ? Number.parseFloat(formatUsdcFromRaw(intent.amount, intent.decimals))
@@ -121,7 +125,20 @@ const CheckoutPayPanel: React.FC<Props> = ({
     !tokenBalance.isLoading &&
     tokenBalance.numeric + 1e-9 >= payAmountDue;
 
-  const canSubmit = canPayOnChain;
+  const isAuthCancelled = phase === 'authCancelled';
+  const isPayCancelled = phase === 'payCancelled';
+  const canContinuePayment =
+    Boolean(intent) &&
+    (isAuthCancelled || isPayCancelled) &&
+    isConnected &&
+    networkOk &&
+    !busy &&
+    isOnChainPaySupported(paymentMethod) &&
+    tokenBalance.configured &&
+    !tokenBalance.isLoading &&
+    tokenBalance.numeric + 1e-9 >= payAmountDue;
+
+  const canSubmit = canPayOnChain || canContinuePayment;
 
   const statusMessageKey = errorKey
     ? `payment.errors.${errorKey}`
@@ -141,7 +158,11 @@ const CheckoutPayPanel: React.FC<Props> = ({
 
   const payButtonLabel = busy
     ? t(`payment.pay.buttonBusy.${phase}`)
-    : t('payment.pay.confirmPay', { amount: payAmountDisplay, token: finalCurrency });
+    : isAuthCancelled
+      ? t('payment.pay.continueApprove')
+      : isPayCancelled
+        ? t('payment.pay.continuePay')
+        : t('payment.pay.confirmPay', { amount: payAmountDisplay, token: finalCurrency });
 
   const contextAlerts = useMemo(() => {
     const alerts: string[] = [];
@@ -235,8 +256,13 @@ const CheckoutPayPanel: React.FC<Props> = ({
 
         <div className={`${styles.payBreakdownRow} ${styles.payBreakdownRowEquiv}`}>
           <dt>{t('payment.pay.payEquivLine')}</dt>
-          <dd>
+          <dd className={styles.payEquivValueCol}>
             <PaymentMoney amount={payEquivInToken} currency={paymentMethod} size="md" />
+            {!isUsdcPayment ? (
+              <span className={styles.payEquivUsdcHint}>
+                {t('payment.pay.payEquivUsdcHint', { amount: totalDueUsdc.toFixed(2) })}
+              </span>
+            ) : null}
           </dd>
         </div>
       </dl>
@@ -314,7 +340,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
           size="large"
           block
           disabled={!canSubmit}
-          onClick={onPay}
+          onClick={canContinuePayment ? onContinuePay : onPay}
           className={styles.primaryPayBtnLight}
           icon={busy ? <Spin size="small" /> : undefined}
         >

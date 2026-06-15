@@ -265,30 +265,75 @@ CREATE TABLE `sys_file` (
 
 -- ----------------------------
 -- Table structure for sys_order
+-- 订单主状态 order_status：10待支付 30已支付 40待发货 50已发货 60已完成 70已取消 80已过期 90支付失败
+-- 支付状态 payment_status（冗余，与 sys_order_payment 同步）：1未支付 2链上确认中 3已支付 4已关闭
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_order`;
 CREATE TABLE `sys_order`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `order_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编码',
+  `order_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编码，对应 payOrder.orderRef',
   `user_id` bigint NOT NULL DEFAULT 0 COMMENT '用户id',
-  `user_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '用户编码',
-  `order_status` int NOT NULL DEFAULT 0 COMMENT '订单状态',
+  `user_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '用户编码',
+  `spu_id` bigint NOT NULL DEFAULT 0 COMMENT 'spu id',
+  `spu_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'spu编码',
+  `sku_id` bigint NOT NULL DEFAULT 0 COMMENT 'sku id',
+  `sku_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'sku编码',
+  `product_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品名称快照',
+  `product_price` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '商品单价快照',
+  `product_quantity` int NOT NULL DEFAULT 0 COMMENT '购买数量',
+  `product_total` decimal(12, 2) NOT NULL DEFAULT 0.00 COMMENT '商品行小计（单价×数量）',
+  `product_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品备注',
+  `order_status` int NOT NULL DEFAULT 10 COMMENT '订单状态：10待支付 30已支付 40待发货 50已发货 60已完成 70已取消 80已过期 90支付失败',
   `order_status_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单状态描述',
-  `payment_status` int NOT NULL DEFAULT 0 COMMENT '支付状态',
+  `payment_status` int NOT NULL DEFAULT 1 COMMENT '支付状态（冗余）：1未支付 2链上确认中 3已支付 4已关闭',
   `payment_status_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付状态描述',
-  `order_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '订单日期',
-  `order_amount` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '订单金额',
-  `order_discount` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '订单折扣',
-  `order_total` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '订单总价',
-  `order_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单备注',
-  `order_pay_type` int NOT NULL DEFAULT 0 COMMENT '支付方式',
+  `order_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '下单时间',
+  `currency` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'USDC' COMMENT '计价币种',
+  `sale_subtotal` decimal(12, 2) NOT NULL DEFAULT 0.00 COMMENT '商品售价小计（促销前）',
+  `promotion_discount_amount` decimal(12, 2) NOT NULL DEFAULT 0.00 COMMENT '促销减免合计',
+  `payable_amount` decimal(12, 2) NOT NULL DEFAULT 0.00 COMMENT '应付商品金额（减促销后）',
+  `platform_fee_amount` decimal(12, 2) NOT NULL DEFAULT 0.00 COMMENT '平台手续费',
+  `estimated_gas_fee` decimal(12, 2) NOT NULL DEFAULT 0.00 COMMENT '预估Gas费',
+  `pay_amount` decimal(12, 2) NOT NULL DEFAULT 0.00 COMMENT '实付金额',
+  `order_remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '买家留言',
+  `expire_at` datetime NULL DEFAULT NULL COMMENT '支付超时时间',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
   `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_order_code`(`order_code`) USING BTREE,
+  INDEX `idx_user_id`(`user_id`) USING BTREE,
+  INDEX `idx_user_code`(`user_code`) USING BTREE,
+  INDEX `idx_spu_id`(`spu_id`) USING BTREE,
+  INDEX `idx_sku_id`(`sku_id`) USING BTREE,
+  INDEX `idx_order_status`(`order_status`) USING BTREE,
+  INDEX `idx_payment_status`(`payment_status`) USING BTREE,
+  INDEX `idx_expire_at`(`expire_at`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '商城订单主表（含商品快照，Phase 1 单 SKU）' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for sys_order_promotion
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_order_promotion`;
+CREATE TABLE `sys_order_promotion`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `order_id` bigint NOT NULL DEFAULT 0 COMMENT '订单id',
+  `order_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编码',
+  `promo_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '促销项id',
+  `label_key` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '促销i18n key',
+  `label` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '促销展示文案快照',
+  `amount` decimal(12, 2) NOT NULL DEFAULT 0.00 COMMENT '单项减免金额',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
+  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
+  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_order_id`(`order_id`) USING BTREE,
+  INDEX `idx_order_code`(`order_code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '订单促销明细' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for sys_order_after_sale
@@ -324,8 +369,9 @@ CREATE TABLE `sys_order_delivery_address`  (
   `order_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编码',
   `user_id` bigint NOT NULL DEFAULT 0 COMMENT '用户id',
   `user_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '用户编码',
-  `receiver_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '收货人姓名',
-  `receiver_phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '收货人手机号',
+  `receiver_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '收货人姓名',
+  `receiver_phone` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '收货人手机号',
+  `receiver_email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '联系邮箱',
   `province_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '省编码',
   `province_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '省名称',
   `city_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '市编码',
@@ -366,51 +412,46 @@ CREATE TABLE `sys_order_logistics`  (
 
 -- ----------------------------
 -- Table structure for sys_order_payment
+-- payment_status：1未支付 2链上确认中 3已支付 4已关闭（与 sys_order.payment_status 冗余同步）
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_order_payment`;
 CREATE TABLE `sys_order_payment`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `order_id` bigint NOT NULL DEFAULT 0 COMMENT '订单id',
-  `order_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编码',
-  `payment_type` int NOT NULL DEFAULT 0 COMMENT '支付方式',
-  `payment_type_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付方式描述',
-  `payment_amount` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '支付金额',
-  `payment_time` datetime NULL DEFAULT NULL COMMENT '支付时间',
-  `payment_status` int NOT NULL DEFAULT 0 COMMENT '支付状态',
+  `order_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编码',
+  `intent_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付意图 opi_<uuid>',
+  `payer_address` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '付款钱包',
+  `chain_id` bigint NOT NULL DEFAULT 0 COMMENT '链ID',
+  `token_symbol` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'USDC' COMMENT '代币符号',
+  `token_address` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '代币合约地址',
+  `contract_address` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'PaymentRouter 地址',
+  `amount_raw` varchar(78) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '链上最小单位 amount',
+  `token_decimals` int NOT NULL DEFAULT 6 COMMENT '代币精度',
+  `pay_amount` decimal(12, 2) NOT NULL DEFAULT 0.00 COMMENT '实付金额快照（人类可读）',
+  `payment_status` int NOT NULL DEFAULT 1 COMMENT '支付状态：1未支付 2链上确认中 3已支付 4已关闭',
   `payment_status_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付状态描述',
-  `channel_payment_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '渠道支付单号',
+  `tx_hash` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '链上交易哈希',
+  `block_number` bigint NOT NULL DEFAULT 0 COMMENT '区块高度',
+  `confirmations` int NOT NULL DEFAULT 0 COMMENT '确认数',
+  `required_confirmations` int NOT NULL DEFAULT 6 COMMENT '所需确认数',
+  `expire_at` datetime NULL DEFAULT NULL COMMENT 'intent 过期时间',
+  `paid_at` datetime NULL DEFAULT NULL COMMENT '链上支付时间',
+  `confirmed_at` datetime NULL DEFAULT NULL COMMENT '链上确认时间',
+  `fail_reason` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '失败原因',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
   `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Table structure for sys_order_product
--- ----------------------------
-DROP TABLE IF EXISTS `sys_order_product`;
-CREATE TABLE `sys_order_product`  (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `order_id` bigint NOT NULL DEFAULT 0 COMMENT '订单id',
-  `order_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编码',
-  `spu_id` bigint NOT NULL DEFAULT 0 COMMENT 'spu id',
-  `spu_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'spu编码',
-  `sku_id` bigint NOT NULL DEFAULT 0 COMMENT 'sku id',
-  `sku_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'sku编码',
-  `product_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品名称',
-  `product_price` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '商品价格',
-  `product_quantity` int NOT NULL DEFAULT 0 COMMENT '商品数量',
-  `product_total` decimal(10, 2) NOT NULL DEFAULT 0.00 COMMENT '商品总价',
-  `product_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '商品备注',
-  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` int NULL DEFAULT 0 COMMENT '是否删除',
-  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
-  `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_intent_id`(`intent_id`) USING BTREE,
+  INDEX `idx_order_id`(`order_id`) USING BTREE,
+  INDEX `idx_order_code`(`order_code`) USING BTREE,
+  INDEX `idx_payment_status`(`payment_status`) USING BTREE,
+  INDEX `idx_chain_tx`(`chain_id`, `tx_hash`) USING BTREE,
+  INDEX `idx_payer_address`(`payer_address`) USING BTREE,
+  INDEX `idx_expire_at`(`expire_at`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '订单链上支付记录' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for sys_order_reviews

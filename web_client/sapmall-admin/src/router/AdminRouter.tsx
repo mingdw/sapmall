@@ -2,16 +2,17 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import NotFound from '../components/NotFound';
 
-// 导入页面组件
 import PlatformDashboard from '../pages/platform/dashboard/PlatformDashboard';
 import UserManagement from '../pages/platform/users/UserManage';
 import MerchantManager from '../pages/platform/merchants/MerchantManager';
 import OrderManager from '../pages/platform/orders/OrderManager';
 import CategoryManagement from '../pages/platform/categories/CategoryManagement';
 import DictionariesManager from '../pages/system/dictionaries/DictionariesManager';
+import ChainNetManager from '../pages/system/chainnet/ChainNetManager';
 import SystemSettingsPage from '../pages/system/settings/SystemSettingsPage';
 import ProductManagement from '../pages/business/products/ProductManagement';
 import ProfileManager from '../pages/personal/profile/ProfileManager';
+import PersonalOrderManager from '../pages/trading/order/PersonalOrderManager';
 
 interface AdminRouterProps {
   menuData?: any;
@@ -20,37 +21,29 @@ interface AdminRouterProps {
 const AdminRouter: React.FC<AdminRouterProps> = ({ menuData }) => {
   return (
     <Routes>
-
-      {/* 个人中心路由 */}
+      {/* 个人中心 */}
       <Route path="/personal/profile" element={<ProfileManager />} />
 
-      {/* 平台管理路由 */}
+      {/* 交易管理 - 我的订单（与 sys_category U003001 path/component 一致） */}
+      <Route path="/trading/orders" element={<PersonalOrderManager />} />
+      <Route path="/personal/orders" element={<Navigate to="/trading/orders" replace />} />
+
+      {/* 平台管理 */}
       <Route path="/platform/dashboard" element={<PlatformDashboard menuData={menuData} />} />
-      
-      {/* 用户管理路由 */}
       <Route path="/platform/users" element={<UserManagement />} />
-      
-      {/* 商户管理路由 */}
       <Route path="/platform/merchants" element={<MerchantManager />} />
-      
-      {/* 订单管理路由 */}
       <Route path="/platform/orders" element={<OrderManager />} />
-      
-      {/* 商品目录设置路由 */}
       <Route path="/platform/categories" element={<CategoryManagement />} />
 
-      {/* 字典管理路由 */}
+      {/* 系统管理 */}
       <Route path="/system/dictionaries" element={<DictionariesManager />} />
-
-      {/* 系统参数设置路由 */}
+      <Route path="/system/chainnet" element={<ChainNetManager />} />
       <Route path="/system/settings" element={<SystemSettingsPage />} />
-      
-      {/* 商品管理路由 */}
+
+      {/* 商品管理 */}
       <Route path="/business/products" element={<ProductManagement />} />
-      
+
       <Route path="/" element={<Navigate to="/platform/dashboard" replace />} />
-      
-      {/* 404 路由 - 如果路径不匹配，显示404 */}
       <Route path="*" element={<NotFound componentName="未找到页面" />} />
     </Routes>
   );

@@ -1,4 +1,4 @@
-/*
+﻿/*
  Navicat Premium Data Transfer
 
  Source Server         : sapmall-test（亿速云）
@@ -979,7 +979,7 @@ INSERT INTO `sys_category` VALUES (227, 'U002001', '账户余额', 226, 'U002', 
 INSERT INTO `sys_category` VALUES (228, 'U002002', '权益管理', 226, 'U002', 2, 2, 1, 'fas fa-gift', 1, '/assets/rewards', '/assets/rewards', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin');
 INSERT INTO `sys_category` VALUES (229, 'U002003', '交易记录', 226, 'U002', 2, 3, 1, 'fas fa-history', 1, '/assets/transactions', '/assets/transactions', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin');
 INSERT INTO `sys_category` VALUES (230, 'U003', '交易管理', 0, '', 1, 3, 1, 'fas fa-exchange-alt', 1, '/trading', '', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin');
-INSERT INTO `sys_category` VALUES (231, 'U003001', '我的订单', 230, 'U003', 2, 1, 1, 'fas fa-shopping-cart', 1, '/trading/orders', '/trading/orders', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin');
+INSERT INTO `sys_category` VALUES (231, 'U003001', '我的订单', 230, 'U003', 2, 1, 1, 'fas fa-shopping-cart', 1, '/personal/orders', '/personal/orders', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin');
 INSERT INTO `sys_category` VALUES (232, 'U003002', '我的收货地址', 230, 'U003', 2, 2, 1, 'fas fa-map-marker-alt', 1, '/trading/addresses', '/trading/addresses', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin');
 INSERT INTO `sys_category` VALUES (233, 'U003003', '退款/售后', 230, 'U003', 2, 3, 1, 'fas fa-undo', 1, '/trading/refunds', '/trading/refunds', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin');
 INSERT INTO `sys_category` VALUES (234, 'U004', 'DAO治理', 0, '', 1, 4, 1, 'fas fa-vote-yea', 1, '/dao-user', '', 0, '', '2025-01-02 10:00:00', '2025-01-02 10:00:00', 0, 'admin', 'admin');

@@ -10,7 +10,11 @@ export type PaymentPhase =
   | 'paying'
   | 'confirming'
   | 'success'
-  | 'error';
+  | 'error'
+  /** 订单已创建，用户在钱包中取消了代币授权 */
+  | 'authCancelled'
+  /** 订单已创建，用户在钱包中取消了 payOrder 签名 */
+  | 'payCancelled';
 
 export type ArcPaymentToken = 'USDC' | 'EURC' | 'cirBTC';
 

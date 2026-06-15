@@ -1877,6 +1877,20 @@
   }
 }
 
+.payEquivValueCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+}
+
+.payEquivUsdcHint {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #64748b;
+}
+
 .payBalanceRow {
   display: flex;
   justify-content: space-between;
