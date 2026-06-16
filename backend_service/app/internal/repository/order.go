@@ -34,20 +34,20 @@ type OrderRepository interface {
 }
 
 type orderRepository struct {
-	db *gorm.DB
+	*Repository
 }
 
 func NewOrderRepository(db *gorm.DB) OrderRepository {
-	return &orderRepository{db: db}
+	return &orderRepository{Repository: NewRepository(db)}
 }
 
 func (r *orderRepository) Create(ctx context.Context, order *model.Order) error {
-	return r.db.WithContext(ctx).Create(order).Error
+	return r.DB(ctx).Create(order).Error
 }
 
 func (r *orderRepository) GetByID(ctx context.Context, id int64) (*model.Order, error) {
 	var order model.Order
-	err := r.db.WithContext(ctx).Where("id = ? AND is_deleted = ?", id, 0).First(&order).Error
+	err := r.DB(ctx).Where("id = ? AND is_deleted = ?", id, 0).First(&order).Error
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (r *orderRepository) GetByID(ctx context.Context, id int64) (*model.Order, 
 
 func (r *orderRepository) GetByOrderCode(ctx context.Context, orderCode string) (*model.Order, error) {
 	var order model.Order
-	err := r.db.WithContext(ctx).Where("order_code = ? AND is_deleted = ?", orderCode, 0).First(&order).Error
+	err := r.DB(ctx).Where("order_code = ? AND is_deleted = ?", orderCode, 0).First(&order).Error
 	if err != nil {
 		return nil, err
 	}
@@ -64,25 +64,25 @@ func (r *orderRepository) GetByOrderCode(ctx context.Context, orderCode string) 
 }
 
 func (r *orderRepository) Update(ctx context.Context, order *model.Order) error {
-	return r.db.WithContext(ctx).Save(order).Error
+	return r.DB(ctx).Save(order).Error
 }
 
 func (r *orderRepository) UpdateColumnsByID(ctx context.Context, id int64, updates map[string]interface{}) error {
 	if len(updates) == 0 {
 		return nil
 	}
-	return r.db.WithContext(ctx).
+	return r.DB(ctx).
 		Model(&model.Order{}).
 		Where("id = ? AND is_deleted = ?", id, 0).
 		Updates(updates).Error
 }
 
 func (r *orderRepository) Delete(ctx context.Context, id int64) error {
-	return r.db.WithContext(ctx).Where("id = ?", id).Delete(&model.Order{}).Error
+	return r.DB(ctx).Where("id = ?", id).Delete(&model.Order{}).Error
 }
 
 func (r *orderRepository) SoftDelete(ctx context.Context, id int64, updator string) error {
-	return r.db.WithContext(ctx).
+	return r.DB(ctx).
 		Model(&model.Order{}).
 		Where("id = ? AND is_deleted = ?", id, 0).
 		Updates(map[string]interface{}{
@@ -95,7 +95,7 @@ func (r *orderRepository) List(ctx context.Context, offset, limit int) ([]*model
 	var orders []*model.Order
 	var total int64
 
-	db := r.db.WithContext(ctx).Model(&model.Order{}).Where("is_deleted = ?", 0)
+	db := r.DB(ctx).Model(&model.Order{}).Where("is_deleted = ?", 0)
 	if err := db.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
@@ -109,7 +109,7 @@ func (r *orderRepository) ListByCondition(ctx context.Context, filter OrderListF
 	var orders []*model.Order
 	var total int64
 
-	db := r.db.WithContext(ctx).Model(&model.Order{}).Where("is_deleted = ?", 0)
+	db := r.DB(ctx).Model(&model.Order{}).Where("is_deleted = ?", 0)
 	if filter.OrderCode != "" {
 		db = db.Where("order_code LIKE ?", "%"+filter.OrderCode+"%")
 	}

@@ -22,8 +22,12 @@ service sapmall {
 	@handler ListOrder
 	post /list (ListOrderReq) returns (BaseResp)
 
-	@doc "订单修改。action：cancel 取消 | delete 软删除 | resumePay 继续支付；请求：ModifyOrderReq"
+	@doc "订单修改。action：cancel 取消 | delete 软删除 | resumePay 继续支付 | confirming 标记链上确认中"
 	@handler ModifyOrder
 	post /modify (ModifyOrderReq) returns (BaseResp)
+
+	@doc "查询订单支付状态（前端轮询）。响应 Data：OrderStatusResp { orderStatus, paymentStatus, txHash }"
+	@handler GetOrderStatus
+	post /status (OrderStatusReq) returns (BaseResp)
 
 }

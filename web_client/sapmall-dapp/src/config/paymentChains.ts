@@ -32,5 +32,8 @@ export function getTxExplorerUrl(chainId: number, txHash: string): string | unde
   if (chainId === ARC_TESTNET_CHAIN_ID) {
     return `https://testnet.arcscan.app/tx/${hash}`;
   }
+  if (chainId === BASE_SEPOLIA_CHAIN_ID) {
+    return `https://sepolia.basescan.org/tx/${hash}`;
+  }
   return undefined;
 }

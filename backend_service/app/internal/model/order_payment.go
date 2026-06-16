@@ -28,6 +28,7 @@ type OrderPayment struct {
 	PaidAt                time.Time `json:"paidAt" gorm:"column:paid_at"`
 	ConfirmedAt           time.Time `json:"confirmedAt" gorm:"column:confirmed_at"`
 	FailReason            string    `json:"failReason" gorm:"column:fail_reason"`
+	ActualGasFee          float64   `json:"actualGasFee" gorm:"column:actual_gas_fee"`
 	CreatedAt             time.Time `json:"createdAt" gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt             time.Time `json:"updatedAt" gorm:"column:updated_at;autoUpdateTime"`
 	IsDeleted             int       `json:"isDeleted" gorm:"column:is_deleted;default:0"`

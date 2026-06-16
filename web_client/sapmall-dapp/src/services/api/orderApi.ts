@@ -10,6 +10,7 @@ export interface OrderPreviewItem {
   productName: string;
   productBrief?: string;
   imageUrl: string;
+  skuImgs?: string[];
   specText: string;
   quantity: number;
   unitPrice: number;
@@ -51,6 +52,7 @@ export interface OrderInfo {
   expireAt?: string;
   skuId?: number;
   skuCode?: string;
+  skuImgs?: string;
   productName?: string;
 }
 
@@ -77,6 +79,7 @@ export interface OrderPaymentInfo {
 export interface CreateOrderReq {
   skuId: number;
   skuCode?: string;
+  skuImgs?: string;
   spuId?: number;
   spuCode?: string;
   productName?: string;
@@ -103,6 +106,20 @@ export interface CreateOrderResp {
   order: OrderInfo;
   payment: OrderPaymentInfo;
   promotions?: OrderPromotionItem[];
+}
+
+/** POST /api/order/status 请求体 */
+export interface OrderStatusReq {
+  orderCode: string;
+  txHash?: string;
+  chainId?: number; // 链ID，用于查询 sys_chain_network 获取 RPC 地址
+}
+
+/** POST /api/order/status 响应体 */
+export interface OrderStatusResp {
+  orderStatus: number;
+  paymentStatus: number;
+  txHash?: string;
 }
 
 export interface GetOrderResp {
@@ -289,6 +306,42 @@ export const orderApi = {
     const response = await baseClient.post<CreateOrderResp>('/api/order/create', payload);
     if (!response.data) {
       throw new Error('创建订单响应为空');
+    }
+    return response.data;
+  },
+
+  /** 修改订单状态（cancel/delete/resumePay/confirming） */
+  modify: async (params: { orderId?: number; orderCode?: string; action: string; txHash?: string }): Promise<void> => {
+    if (isOrderApiMock()) {
+      await delay(300);
+      return;
+    }
+    await baseClient.post('/api/order/modify', params);
+  },
+
+  /** 查询订单支付状态（前端轮询） */
+  getStatus: async (params: OrderStatusReq): Promise<OrderStatusResp> => {
+    if (isOrderApiMock()) {
+      await delay(300);
+      const entry = mockOrderStore.get(params.orderCode);
+      if (!entry) {
+        return { orderStatus: 10, paymentStatus: 4 };
+      }
+      const elapsed = Date.now() - entry.createdAt;
+      let paymentStatus = entry.paymentStatus;
+      if (paymentStatus === 2 && elapsed > 6000) {
+        paymentStatus = 3;
+        entry.paymentStatus = 3;
+      }
+      return {
+        orderStatus: paymentStatus >= 3 ? 30 : paymentStatus === 2 ? 20 : 10,
+        paymentStatus,
+        txHash: entry.txHash,
+      };
+    }
+    const response = await baseClient.post<OrderStatusResp>('/api/order/status', params);
+    if (!response.data) {
+      throw new Error('查询支付状态响应为空');
     }
     return response.data;
   },

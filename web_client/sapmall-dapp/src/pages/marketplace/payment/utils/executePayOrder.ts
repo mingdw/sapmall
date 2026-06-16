@@ -87,32 +87,6 @@ export async function executePayOrder(params: {
 
   const router = bundle.contractAddress as Address;
   const token = bundle.tokenAddress as Address;
-  const chainId = bundle.chainId;
-
-  const walletChainId = await publicClient.getChainId();
-  if (walletChainId !== chainId) {
-    throw new PayOrderError('chainMismatch');
-  }
-
-  const [routerToken, expectedChainId] = await Promise.all([
-    publicClient.readContract({
-      address: router,
-      abi: paymentRouterAbi,
-      functionName: 'paymentToken',
-    }),
-    publicClient.readContract({
-      address: router,
-      abi: paymentRouterAbi,
-      functionName: 'expectedChainId',
-    }),
-  ]);
-
-  if (routerToken.toLowerCase() !== token.toLowerCase()) {
-    throw new PayOrderError('tokenMismatch');
-  }
-  if (Number(expectedChainId) !== chainId) {
-    throw new PayOrderError('chainMismatch');
-  }
 
   const allowance = await publicClient.readContract({
     address: token,
@@ -126,13 +100,14 @@ export async function executePayOrder(params: {
     if (allowance < amount) {
       activeStage = 'approve';
       params.onPhase?.('approving');
+      const MAX_UINT256 = 2n ** 256n - 1n;
       const approveHash = await walletClient.writeContract({
         account,
         chain: walletClient.chain,
         address: token,
         abi: erc20Abi,
         functionName: 'approve',
-        args: [router, amount],
+        args: [router, MAX_UINT256],
       });
       await waitReceipt(publicClient, approveHash);
     }

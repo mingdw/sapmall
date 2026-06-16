@@ -1,10 +1,11 @@
-import React from 'react';
-import { Descriptions, Drawer, Empty, Spin, Tag } from 'antd';
+import React, { useMemo } from 'react';
+import { ConfigProvider, Descriptions, Drawer, Empty, Spin, Tag } from 'antd';
 import type { GetOrderResp } from '../../../../services/api/orderApi';
-import {
-  orderStatusTagColor,
-  paymentStatusTagColor,
-} from '../constants';
+import { getPaymentChainLabel, getTxExplorerUrl } from '../utils/paymentChainUtils';
+import OrderProductThumb from './OrderProductThumb';
+import PaymentStatusTag from './PaymentStatusTag';
+import { ORDER_STATUS } from '../constants';
+import styles from './OrderDetailDrawer.module.scss';
 
 interface Props {
   open: boolean;
@@ -25,124 +26,267 @@ function formatAmount(amount?: number, currency?: string): string {
   return `${amount.toFixed(2)} ${currency || 'USDC'}`;
 }
 
+function MoneyText({
+  amount,
+  currency,
+  prefix,
+}: {
+  amount?: number;
+  currency?: string;
+  prefix?: string;
+}) {
+  if (amount == null) return <span className={styles.mutedValue}>—</span>;
+  return (
+    <span className={styles.moneyRed}>
+      {prefix}
+      {formatAmount(amount, currency)}
+    </span>
+  );
+}
+
+function getOrderStatusColor(status: number): string {
+  const colorMap: Record<number, string> = {
+    [ORDER_STATUS.PENDING_PAY]: 'warning',
+    [ORDER_STATUS.ON_CHAIN_CONFIRMING]: 'processing',
+    [ORDER_STATUS.PAID]: 'success',
+    [ORDER_STATUS.TO_SHIP]: 'processing',
+    [ORDER_STATUS.SHIPPED]: 'blue',
+    [ORDER_STATUS.COMPLETED]: 'green',
+    [ORDER_STATUS.CANCELLED]: 'default',
+    [ORDER_STATUS.EXPIRED]: 'error',
+    [ORDER_STATUS.PAY_FAILED]: 'error',
+  };
+  return colorMap[status] || 'default';
+}
+
 const OrderDetailDrawer: React.FC<Props> = ({ open, loading, detail, onClose }) => {
   const order = detail?.order;
   const payment = detail?.payment;
+  const currency = order?.currency || 'USDC';
+
+  const drawerTheme = useMemo(
+    () => ({
+      components: {
+        Spin: { colorPrimary: '#3b82f6' },
+      },
+    }),
+    [],
+  );
+
+  const txExplorerUrl =
+    payment?.txHash && payment.chainId
+      ? getTxExplorerUrl(payment.chainId, payment.txHash)
+      : undefined;
 
   return (
-    <Drawer
-      title="订单明细"
-      width={560}
-      open={open}
-      onClose={onClose}
-      destroyOnClose
-      className="[&_.ant-drawer-body]:bg-slate-50/60"
-    >
-      {loading ? (
-        <div className="flex min-h-[240px] items-center justify-center">
-          <Spin tip="加载中…" />
-        </div>
-      ) : !order ? (
-        <Empty description="暂无订单数据" />
-      ) : (
-        <div className="flex flex-col gap-4">
-          <section className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
-            <h4 className="mb-3 text-sm font-semibold text-slate-800">订单信息</h4>
-            <Descriptions column={1} size="small" colon={false}>
-              <Descriptions.Item label="订单号">
-                <span className="font-mono text-xs text-slate-700">{order.orderCode}</span>
-              </Descriptions.Item>
-              <Descriptions.Item label="订单状态">
-                <Tag color={orderStatusTagColor(order.orderStatus)}>
-                  {order.orderStatusDesc || order.orderStatus}
-                </Tag>
-              </Descriptions.Item>
-              <Descriptions.Item label="支付状态">
-                <Tag color={paymentStatusTagColor(order.paymentStatus)}>
-                  {order.paymentStatusDesc || order.paymentStatus}
-                </Tag>
-              </Descriptions.Item>
-              <Descriptions.Item label="下单时间">{formatTime(order.orderDate)}</Descriptions.Item>
-              <Descriptions.Item label="支付截止">{formatTime(order.expireAt)}</Descriptions.Item>
-              <Descriptions.Item label="实付金额">
-                {formatAmount(order.payAmount, order.currency)}
-              </Descriptions.Item>
-              {order.orderRemark ? (
-                <Descriptions.Item label="买家留言">{order.orderRemark}</Descriptions.Item>
-              ) : null}
-            </Descriptions>
-          </section>
-
-          <section className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
-            <h4 className="mb-3 text-sm font-semibold text-slate-800">商品快照</h4>
-            <Descriptions column={1} size="small" colon={false}>
-              <Descriptions.Item label="商品">{order.productName || '—'}</Descriptions.Item>
-              <Descriptions.Item label="SKU">{order.skuCode || order.skuId || '—'}</Descriptions.Item>
-              <Descriptions.Item label="数量">{order.productQuantity ?? '—'}</Descriptions.Item>
-              <Descriptions.Item label="单价">
-                {order.productPrice != null ? `${order.productPrice.toFixed(2)}` : '—'}
-              </Descriptions.Item>
-            </Descriptions>
-          </section>
-
-          {payment ? (
-            <section className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
-              <h4 className="mb-3 text-sm font-semibold text-slate-800">链上支付</h4>
-              <Descriptions column={1} size="small" colon={false}>
-                <Descriptions.Item label="Intent ID">
-                  <span className="break-all font-mono text-xs">{payment.intentId}</span>
+    <ConfigProvider theme={drawerTheme}>
+      <Drawer
+        title="订单明细"
+        width={560}
+        open={open}
+        onClose={onClose}
+        destroyOnClose
+        className={styles.detailDrawer}
+      >
+        {loading ? (
+          <div className={styles.loadingWrap}>
+            <Spin tip="加载中…" />
+          </div>
+        ) : !order ? (
+          <div className={styles.emptyWrap}>
+            <Empty description="暂无订单数据" />
+          </div>
+        ) : (
+          <div className={styles.detailContent}>
+            <section className={styles.sectionCard}>
+              <h4 className={styles.sectionTitle}>基本信息</h4>
+              <Descriptions column={2} size="small" colon={false} className={styles.detailDescriptions}>
+                <Descriptions.Item label="订单号">
+                  <span className={styles.monoValue}>{order.orderCode}</span>
                 </Descriptions.Item>
-                <Descriptions.Item label="付款地址">
-                  <span className="break-all font-mono text-xs">{payment.payerAddress}</span>
+                <Descriptions.Item label="订单状态">
+                  <Tag
+                    color={getOrderStatusColor(order.orderStatus)}
+                    className={styles.detailOrderStatusTag}
+                  >
+                    {order.orderStatusDesc || order.orderStatus}
+                  </Tag>
                 </Descriptions.Item>
-                <Descriptions.Item label="代币">{payment.tokenSymbol}</Descriptions.Item>
-                <Descriptions.Item label="链 ID">{payment.chainId}</Descriptions.Item>
-                {payment.txHash ? (
-                  <Descriptions.Item label="交易哈希">
-                    <span className="break-all font-mono text-xs">{payment.txHash}</span>
+                <Descriptions.Item label="支付状态">
+                  <PaymentStatusTag
+                    status={order.paymentStatus}
+                    label={order.paymentStatusDesc}
+                    className={styles.detailPaymentTag}
+                  />
+                </Descriptions.Item>
+                <Descriptions.Item label="下单时间">{formatTime(order.orderDate)}</Descriptions.Item>
+                <Descriptions.Item label="支付截止" span={2}>{formatTime(order.expireAt)}</Descriptions.Item>
+              </Descriptions>
+            </section>
+
+            <section className={styles.sectionCard}>
+              <h4 className={styles.sectionTitle}>费用明细</h4>
+              <Descriptions column={1} size="small" colon={false} className={styles.detailDescriptions}>
+                {order.productTotal != null ? (
+                  <Descriptions.Item label="商品总额">
+                    <MoneyText amount={order.productTotal} currency={currency} />
                   </Descriptions.Item>
                 ) : null}
+                {order.promotionDiscountAmount != null && order.promotionDiscountAmount > 0 ? (
+                  <Descriptions.Item label="优惠抵扣">
+                    <MoneyText amount={order.promotionDiscountAmount} currency={currency} prefix="-" />
+                  </Descriptions.Item>
+                ) : null}
+                {order.platformFeeAmount != null ? (
+                  <Descriptions.Item label="手续费">
+                    <MoneyText amount={order.platformFeeAmount} currency={currency} />
+                  </Descriptions.Item>
+                ) : null}
+                {order.estimatedGasFee != null ? (
+                  <Descriptions.Item label="预估 GAS 费">
+                    <MoneyText amount={order.estimatedGasFee} currency={currency} />
+                  </Descriptions.Item>
+                ) : null}
+                {order.orderRemark ? (
+                  <Descriptions.Item label="买家留言">{order.orderRemark}</Descriptions.Item>
+                ) : null}
               </Descriptions>
             </section>
-          ) : null}
 
-          {detail?.delivery &&
-          (detail.delivery.receiverName || detail.delivery.receiverPhone || detail.delivery.receiverEmail) ? (
-            <section className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
-              <h4 className="mb-3 text-sm font-semibold text-slate-800">收货 / 联系信息</h4>
-              <Descriptions column={1} size="small" colon={false}>
-                {detail.delivery.receiverName ? (
-                  <Descriptions.Item label="收件人">{detail.delivery.receiverName}</Descriptions.Item>
-                ) : null}
-                {detail.delivery.receiverPhone ? (
-                  <Descriptions.Item label="手机">{detail.delivery.receiverPhone}</Descriptions.Item>
-                ) : null}
-                {detail.delivery.receiverEmail ? (
-                  <Descriptions.Item label="邮箱">{detail.delivery.receiverEmail}</Descriptions.Item>
-                ) : null}
+            <section className={styles.sectionCard}>
+              <h4 className={styles.sectionTitle}>商品快照</h4>
+              <div className={styles.productRow}>
+                <OrderProductThumb
+                  skuImgs={order.skuImgs}
+                  className={styles.productThumb}
+                  placeholderClassName={styles.productThumbPlaceholder}
+                />
+                <div className={styles.productMeta}>
+                  <p className={styles.productName}>{order.productName || '—'}</p>
+                  <p className={styles.productSku}>
+                    SKU: {order.skuCode || order.skuId || '—'} · ×{order.productQuantity ?? '—'}
+                  </p>
+                </div>
+              </div>
+              <Descriptions
+                column={1}
+                size="small"
+                colon={false}
+                className={styles.detailDescriptions}
+                style={{ marginTop: 12 }}
+              >
+                <Descriptions.Item label="单价">
+                  {order.productPrice != null ? (
+                    <MoneyText amount={order.productPrice} currency={currency} />
+                  ) : (
+                    '—'
+                  )}
+                </Descriptions.Item>
               </Descriptions>
             </section>
-          ) : null}
 
-          {detail?.promotions && detail.promotions.length > 0 ? (
-            <section className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
-              <h4 className="mb-3 text-sm font-semibold text-slate-800">促销明细</h4>
-              <ul className="space-y-2 text-sm text-slate-600">
-                {detail.promotions.map((item) => (
-                  <li
-                    key={item.promoId}
-                    className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2"
-                  >
-                    <span>{item.label || item.labelKey}</span>
-                    <span className="font-medium text-emerald-600">-{item.amount.toFixed(2)}</span>
-                  </li>
-                ))}
-              </ul>
+            {payment ? (
+              <section className={styles.sectionCard}>
+                <h4 className={styles.sectionTitle}>链上支付</h4>
+                <Descriptions column={1} size="small" colon={false} className={styles.detailDescriptions}>
+                  <Descriptions.Item label="链名称">
+                    {getPaymentChainLabel(payment.chainId)}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Intent ID">
+                    <span className={styles.monoValue}>{payment.intentId}</span>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="付款地址">
+                    <span className={styles.monoValue}>{payment.payerAddress}</span>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="代币">{payment.tokenSymbol}</Descriptions.Item>
+                  {payment.txHash ? (
+                    <Descriptions.Item label="交易哈希">
+                      {txExplorerUrl ? (
+                        <a
+                          href={txExplorerUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.txLink}
+                        >
+                          {payment.txHash}
+                        </a>
+                      ) : (
+                        <span className={styles.monoValue}>{payment.txHash}</span>
+                      )}
+                    </Descriptions.Item>
+                  ) : null}
+                  {payment.confirmations != null ? (
+                    <Descriptions.Item label="确认数">
+                      {payment.confirmations}
+                      {payment.requiredConfirmations != null
+                        ? ` / ${payment.requiredConfirmations}`
+                        : ''}
+                    </Descriptions.Item>
+                  ) : null}
+                  {payment.paidAt ? (
+                    <Descriptions.Item label="支付时间">{formatTime(payment.paidAt)}</Descriptions.Item>
+                  ) : null}
+                  <Descriptions.Item label="实际 GAS 费">
+                    {payment.actualGasFee != null ? (
+                      <MoneyText amount={payment.actualGasFee} currency={currency} />
+                    ) : (
+                      <span className={styles.mutedValue}>—</span>
+                    )}
+                  </Descriptions.Item>
+                </Descriptions>
+              </section>
+            ) : null}
+
+            {detail?.delivery &&
+            (detail.delivery.receiverName ||
+              detail.delivery.receiverPhone ||
+              detail.delivery.receiverEmail) ? (
+              <section className={styles.sectionCard}>
+                <h4 className={styles.sectionTitle}>收货 / 联系信息</h4>
+                <Descriptions column={1} size="small" colon={false} className={styles.detailDescriptions}>
+                  {detail.delivery.receiverName ? (
+                    <Descriptions.Item label="收件人">{detail.delivery.receiverName}</Descriptions.Item>
+                  ) : null}
+                  {detail.delivery.receiverPhone ? (
+                    <Descriptions.Item label="手机">{detail.delivery.receiverPhone}</Descriptions.Item>
+                  ) : null}
+                  {detail.delivery.receiverEmail ? (
+                    <Descriptions.Item label="邮箱">{detail.delivery.receiverEmail}</Descriptions.Item>
+                  ) : null}
+                </Descriptions>
+              </section>
+            ) : null}
+
+            {detail?.promotions && detail.promotions.length > 0 ? (
+              <section className={styles.sectionCard}>
+                <h4 className={styles.sectionTitle}>促销明细</h4>
+                <ul className={styles.promoList}>
+                  {detail.promotions.map((item) => (
+                    <li key={item.promoId} className={styles.promoItem}>
+                      <span>{item.label || item.labelKey}</span>
+                      <span className={styles.moneyRed}>-{item.amount.toFixed(2)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            <section className={styles.payAmountCard}>
+              <span className={styles.payAmountCardLabel}>实付金额</span>
+              <span className={styles.payAmountCardValue}>
+                {formatAmount(order.payAmount, currency)}
+              </span>
             </section>
-          ) : null}
-        </div>
-      )}
-    </Drawer>
+
+            <div className={styles.drawerFooter}>
+              <button type="button" onClick={onClose} className={styles.footerCloseBtn}>
+                关闭
+              </button>
+            </div>
+          </div>
+        )}
+      </Drawer>
+    </ConfigProvider>
   );
 };
 

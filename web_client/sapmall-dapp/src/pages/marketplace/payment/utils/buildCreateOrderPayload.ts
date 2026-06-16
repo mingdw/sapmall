@@ -37,6 +37,7 @@ export function buildCreateOrderPayload(input: BuildCreateOrderPayloadInput): Cr
   return {
     skuId: input.skuId,
     skuCode: item?.skuCode,
+    skuImgs: item?.skuImgs ? JSON.stringify(item.skuImgs) : undefined,
     productName: item?.productName,
     productPrice: item?.unitPrice,
     quantity: input.quantity,

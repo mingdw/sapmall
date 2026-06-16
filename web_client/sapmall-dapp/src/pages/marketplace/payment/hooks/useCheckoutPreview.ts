@@ -19,6 +19,7 @@ type ProductPreviewMeta = {
   productName?: string;
   productBrief?: string;
   imageUrl: string;
+  skuImgs?: string[];
   specText: string;
   skuCode?: string;
 };
@@ -62,6 +63,7 @@ export function useCheckoutPreview(params: {
       let productName: string | undefined;
       let productBrief: string | undefined;
       let imageUrl = '';
+      let skuImgs: string[] | undefined;
       let specText = '';
       let skuCode: string | undefined;
       let imageSeed: string | number = skuId;
@@ -77,6 +79,7 @@ export function useCheckoutPreview(params: {
             productName,
             productBrief,
             imageUrl,
+            skuImgs,
             specText,
             skuCode,
           } = cached.meta);
@@ -101,6 +104,7 @@ export function useCheckoutPreview(params: {
                 imageSeed,
                 category3,
               );
+              skuImgs = sku.images;
               productMetaCacheRef.current = {
                 key: cacheKey,
                 meta: {
@@ -109,6 +113,7 @@ export function useCheckoutPreview(params: {
                   productName,
                   productBrief,
                   imageUrl,
+                  skuImgs,
                   specText,
                   skuCode,
                 },
@@ -135,6 +140,7 @@ export function useCheckoutPreview(params: {
         if (productBrief) result.items[0].productBrief = productBrief;
         if (specText) result.items[0].specText = specText;
         if (skuCode) result.items[0].skuCode = skuCode;
+        if (skuImgs) result.items[0].skuImgs = skuImgs;
         const seed = imageSeed || result.items[0].skuId;
         result.items[0].imageUrl = resolveProductImageUrl(
           imageUrl || result.items[0].imageUrl,

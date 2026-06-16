@@ -109,7 +109,20 @@ func (l *CreateOrderLogic) CreateOrder(req *types.CreateOrderReq) (resp *types.B
 		return failResp, nil
 	}
 
+	// 订单创建成功后，加入延时队列（30分钟未支付自动取消）
+	l.enqueueOrderExpire(bundle.order.OrderCode, validated.expireAt)
+
 	return customererrors.SuccessData(l.buildCreateOrderResp(bundle)), nil
+}
+
+// enqueueOrderExpire 将订单加入延时队列
+func (l *CreateOrderLogic) enqueueOrderExpire(orderCode string, expireAt time.Time) {
+	if l.svcCtx.OrderDelayQueue == nil {
+		return
+	}
+	if err := l.svcCtx.OrderDelayQueue.Enqueue(l.ctx, orderCode, expireAt); err != nil {
+		l.Errorf("enqueue order expire failed, orderCode=%s, err=%v", orderCode, err)
+	}
 }
 
 // validateCreateOrderAfterAuth 在已鉴权且已加锁后完成业务校验
@@ -220,6 +233,7 @@ func (l *CreateOrderLogic) assembleCreateOrderBundle(req *types.CreateOrderReq, 
 		SpuCode:                 snap.SpuCode,
 		SkuId:                   snap.SkuId,
 		SkuCode:                 snap.SkuCode,
+		SkuImgs:                 strings.TrimSpace(req.SkuImgs),
 		ProductName:             snap.ProductName,
 		ProductPrice:            snap.ProductPrice,
 		ProductQuantity:         int(req.Quantity),
@@ -275,28 +289,41 @@ func (l *CreateOrderLogic) assembleCreateOrderBundle(req *types.CreateOrderReq, 
 
 // persistCreateOrder 事务写入订单主表、支付记录及关联子表
 func (l *CreateOrderLogic) persistCreateOrder(bundle *createOrderBundle) *types.BaseResp {
-	txErr := l.svcCtx.GormDB.WithContext(l.ctx).Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(bundle.order).Error; err != nil {
+	repo := repository.NewRepository(l.svcCtx.GormDB)
+	
+	txErr := repo.Transaction(l.ctx, func(ctx context.Context) error {
+		orderRepo := repository.NewOrderRepository(l.svcCtx.GormDB)
+		if err := orderRepo.Create(ctx, bundle.order); err != nil {
 			return err
 		}
+
 		bundle.payment.OrderId = bundle.order.ID
-		if err := tx.Create(bundle.payment).Error; err != nil {
+		paymentRepo := repository.NewOrderPaymentRepository(l.svcCtx.GormDB)
+		if err := paymentRepo.Create(ctx, bundle.payment); err != nil {
 			return err
 		}
-		for i := range bundle.promotions {
-			bundle.promotions[i].OrderId = bundle.order.ID
-			if err := tx.Create(&bundle.promotions[i]).Error; err != nil {
+
+		if len(bundle.promotions) > 0 {
+			promoRepo := repository.NewOrderPromotionRepository(l.svcCtx.GormDB)
+			for i := range bundle.promotions {
+				bundle.promotions[i].OrderId = bundle.order.ID
+			}
+			if err := promoRepo.CreateBatch(ctx, bundle.promotions); err != nil {
 				return err
 			}
 		}
+
 		if bundle.delivery != nil {
 			bundle.delivery.OrderId = bundle.order.ID
-			if err := tx.Create(bundle.delivery).Error; err != nil {
+			deliveryRepo := repository.NewOrderDeliveryAddressRepository(l.svcCtx.GormDB)
+			if err := deliveryRepo.Create(ctx, bundle.delivery); err != nil {
 				return err
 			}
 		}
+
 		return nil
 	})
+	
 	if txErr != nil {
 		l.Errorf("create order transaction failed, err=%v", txErr)
 		return customererrors.DatabaseErrorResp("创建订单失败")

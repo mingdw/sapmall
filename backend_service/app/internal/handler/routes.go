@@ -306,6 +306,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/modify",
 					Handler: order.ModifyOrderHandler(serverCtx),
 				},
+				{
+					// 查询订单支付状态（前端轮询）。响应 Data：OrderStatusResp { orderStatus, paymentStatus, txHash }
+					Method:  http.MethodPost,
+					Path:    "/status",
+					Handler: order.GetOrderStatusHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/api/order"),

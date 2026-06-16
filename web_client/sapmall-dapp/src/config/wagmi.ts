@@ -37,26 +37,33 @@ const hasValidWalletConnectProjectId =
 if (!hasValidWalletConnectProjectId && process.env.NODE_ENV === 'development') {
   console.warn(
     '⚠️ WalletConnect Project ID 未设置。' +
-    '已禁用 MetaMask SDK / WalletConnect 连接器，请使用弹窗「已安装」中的 MetaMask（浏览器扩展直连）。' +
-    '配置 REACT_APP_WALLETCONNECT_PROJECT_ID 后可恢复完整钱包列表。' +
+    'MetaMask SDK 依赖 WalletConnect 中继，未配置将无法唤起锁定钱包。' +
+    '请在 .env.local 中配置 REACT_APP_WALLETCONNECT_PROJECT_ID。' +
     '获取地址：https://cloud.walletconnect.com'
   );
 }
 
 /**
- * 无效 projectId 时若仍使用默认 metaMaskWallet，会走 MetaMask SDK + WalletConnect，
- * 弹窗会一直停在「正在打开 MetaMask…」且扩展内无确认框。
+ * 钱包连接策略：
+ *
+ * 有效 WalletConnect Project ID：
+ *   - metaMaskWallet：使用 MetaMask SDK，无论 MetaMask 是否锁定/未登录都能唤起弹窗
+ *   - walletConnectWallet：通用 WalletConnect 协议，支持移动端钱包
+ *   首次连接需通过 WalletConnect 中继建立信道（3-10秒），后续复用 session 秒连。
+ *
+ * 无有效 Project ID（开发兜底）：
+ *   - injectedWallet：直连浏览器扩展，速度快但 MetaMask 锁定时无法唤起
  */
 const walletList = hasValidWalletConnectProjectId
   ? [
       {
         groupName: 'Recommended',
-        wallets: [injectedWallet, metaMaskWallet, walletConnectWallet],
+        wallets: [metaMaskWallet, walletConnectWallet],
       },
     ]
   : [
       {
-        groupName: 'Recommended',
+        groupName: 'Installed',
         wallets: [injectedWallet],
       },
     ];

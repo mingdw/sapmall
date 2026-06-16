@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"sapphire-mall/app/internal/config"
+	"sapphire-mall/app/internal/delayqueue"
 	"sapphire-mall/app/internal/middleware"
 	"strings"
 	"time"
@@ -20,13 +21,22 @@ import (
 )
 
 type ServiceContext struct {
-	Config             config.Config
-	Redis              *redis.Client
-	GormDB             *gorm.DB
-	AuthMiddleware     rest.Middleware
-	LanguageMiddleware rest.Middleware
-	RespMiddleware     rest.Middleware
-	CosClient          *cos.Client
+	Config              config.Config
+	Redis               *redis.Client
+	GormDB              *gorm.DB
+	AuthMiddleware      rest.Middleware
+	LanguageMiddleware  rest.Middleware
+	RespMiddleware      rest.Middleware
+	CosClient           *cos.Client
+	OrderDelayQueue     *delayqueue.OrderDelayQueue
+	OrderDelayWorker    *delayqueue.OrderDelayWorker
+}
+
+// Stop 优雅关闭 ServiceContext 中的后台任务
+func (s *ServiceContext) Stop() {
+	if s.OrderDelayWorker != nil {
+		s.OrderDelayWorker.Stop()
+	}
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -117,13 +127,29 @@ func buildServiceContext(c config.Config, redisClient *redis.Client, db *gorm.DB
 		)
 	}
 
+	// 初始化订单延时队列
+	orderDelayQueue := delayqueue.NewOrderDelayQueue(redisClient, c.OrderDelayQueue.QueueKey)
+
+	// 初始化并启动延时队列 Worker
+	var orderDelayWorker *delayqueue.OrderDelayWorker
+	if c.OrderDelayQueue.Enabled {
+		orderDelayWorker = delayqueue.NewOrderDelayWorker(redisClient, db, delayqueue.WorkerConfig{
+			Enabled:         c.OrderDelayQueue.Enabled,
+			PollIntervalSec: c.OrderDelayQueue.PollIntervalSec,
+			QueueKey:        c.OrderDelayQueue.QueueKey,
+		})
+		orderDelayWorker.Start()
+	}
+
 	return &ServiceContext{
-		Config:         c,
-		Redis:          redisClient,
-		GormDB:         db,
-		AuthMiddleware:     middleware.NewAuthMiddleware(db, &c).Handle,
-		LanguageMiddleware: middleware.NewLanguageMiddleware().Handle,
-		RespMiddleware:     middleware.NewUnifiedResponseMiddleware().Handle,
-		CosClient:          cosClient,
+		Config:              c,
+		Redis:               redisClient,
+		GormDB:              db,
+		AuthMiddleware:      middleware.NewAuthMiddleware(db, &c).Handle,
+		LanguageMiddleware:  middleware.NewLanguageMiddleware().Handle,
+		RespMiddleware:      middleware.NewUnifiedResponseMiddleware().Handle,
+		CosClient:           cosClient,
+		OrderDelayQueue:     orderDelayQueue,
+		OrderDelayWorker:    orderDelayWorker,
 	}
 }

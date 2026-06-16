@@ -48,7 +48,7 @@ const CheckoutPage: React.FC = () => {
   const [buyerMessage, setBuyerMessage] = useState('');
 
   const pollEnabled = payment.phase === 'confirming' && Boolean(payment.orderCode);
-  const { status: pollStatus } = usePaymentStatusPoll(payment.orderCode, pollEnabled);
+  const { status: pollStatus } = usePaymentStatusPoll(payment.orderCode, payment.txHash, pollEnabled);
 
   const busy = ['submitting', 'intentLoading', 'approving', 'paying', 'confirming'].includes(payment.phase);
   const contactValid = isContactValid(contact);

@@ -21,9 +21,10 @@ import (
 )
 
 const (
-	orderActionCancel    = "cancel"
-	orderActionDelete    = "delete"
-	orderActionResumePay = "resumePay"
+	orderActionCancel      = "cancel"
+	orderActionDelete      = "delete"
+	orderActionResumePay   = "resumePay"
+	orderActionConfirming  = "confirming"
 )
 
 type ModifyOrderLogic struct {
@@ -50,19 +51,25 @@ func (l *ModifyOrderLogic) ModifyOrder(req *types.ModifyOrderReq) (resp *types.B
 		return customererrors.AuthFailedResp("获取用户信息失败"), nil
 	}
 
-	if req.Id <= 0 {
-		return customererrors.ParamErrorResp("订单 ID 无效"), nil
+	if req.Id <= 0 && req.OrderCode == "" {
+		return customererrors.ParamErrorResp("订单 ID 或订单号不能为空"), nil
 	}
 
 	action := strings.ToLower(strings.TrimSpace(req.Action))
 	switch action {
-	case orderActionCancel, orderActionDelete, orderActionResumePay:
+	case orderActionCancel, orderActionDelete, orderActionResumePay, orderActionConfirming:
 	default:
 		return customererrors.ParamErrorResp("不支持的订单操作"), nil
 	}
 
 	orderRepo := repository.NewOrderRepository(l.svcCtx.GormDB)
-	orderRow, getErr := orderRepo.GetByID(l.ctx, req.Id)
+	var orderRow *model.Order
+	var getErr error
+	if req.Id > 0 {
+		orderRow, getErr = orderRepo.GetByID(l.ctx, req.Id)
+	} else {
+		orderRow, getErr = orderRepo.GetByOrderCode(l.ctx, req.OrderCode)
+	}
 	if getErr != nil {
 		if errors.Is(getErr, gorm.ErrRecordNotFound) {
 			return customererrors.NotFoundResp("订单不存在"), nil
@@ -72,7 +79,7 @@ func (l *ModifyOrderLogic) ModifyOrder(req *types.ModifyOrderReq) (resp *types.B
 	}
 
 	paymentRepo := repository.NewOrderPaymentRepository(l.svcCtx.GormDB)
-	paymentRow, payErr := paymentRepo.GetByOrderID(l.ctx, req.Id)
+	paymentRow, payErr := paymentRepo.GetByOrderID(l.ctx, orderRow.ID)
 	if payErr != nil {
 		if errors.Is(payErr, gorm.ErrRecordNotFound) {
 			return customererrors.NotFoundResp("支付记录不存在"), nil
@@ -103,10 +110,14 @@ func (l *ModifyOrderLogic) ModifyOrder(req *types.ModifyOrderReq) (resp *types.B
 		if errResp := l.resumePay(orderRow, paymentRow, req.ExtendExpireMinutes, updator); errResp != nil {
 			return errResp, nil
 		}
+	case orderActionConfirming:
+		if errResp := l.markConfirming(orderRow, paymentRow, req.TxHash, updator); errResp != nil {
+			return errResp, nil
+		}
 	}
 
 	if remark := strings.TrimSpace(req.OrderRemark); remark != "" {
-		if updateErr := orderRepo.UpdateColumnsByID(l.ctx, req.Id, map[string]interface{}{
+		if updateErr := orderRepo.UpdateColumnsByID(l.ctx, orderRow.ID, map[string]interface{}{
 			"order_remark": remark,
 			"updator":      updator,
 		}); updateErr != nil {
@@ -217,5 +228,47 @@ func (l *ModifyOrderLogic) resumePay(orderRow *model.Order, paymentRow *model.Or
 		return customererrors.DatabaseErrorResp("继续支付操作失败")
 	}
 	_ = paymentRow
+	return nil
+}
+
+func (l *ModifyOrderLogic) markConfirming(orderRow *model.Order, paymentRow *model.OrderPayment, txHash string, updator string) *types.BaseResp {
+	if orderRow.OrderStatus != OrderStatusPendingPay {
+		return customererrors.ParamErrorResp("订单状态不支持此操作")
+	}
+	if orderRow.PaymentStatus == PaymentStatusPaid {
+		return customererrors.ParamErrorResp("订单已支付")
+	}
+
+	txErr := l.svcCtx.GormDB.WithContext(l.ctx).Transaction(func(tx *gorm.DB) error {
+		orderRepo := repository.NewOrderRepository(tx)
+		paymentRepo := repository.NewOrderPaymentRepository(tx)
+		if err := orderRepo.UpdateColumnsByID(l.ctx, orderRow.ID, map[string]interface{}{
+			"order_status":        OrderStatusOnChainConfirming,
+			"order_status_desc":   OrderStatusDesc(OrderStatusOnChainConfirming),
+			"payment_status":      PaymentStatusConfirming,
+			"payment_status_desc": PaymentStatusDesc(PaymentStatusConfirming),
+			"updator":             updator,
+		}); err != nil {
+			return err
+		}
+		paymentUpdates := map[string]interface{}{
+			"payment_status":      PaymentStatusConfirming,
+			"payment_status_desc": PaymentStatusDesc(PaymentStatusConfirming),
+			"updator":             updator,
+		}
+		if txHash != "" {
+			paymentUpdates["tx_hash"] = txHash
+		}
+		return paymentRepo.UpdateColumnsByOrderID(l.ctx, orderRow.ID, paymentUpdates)
+	})
+	if txErr != nil {
+		l.Errorf("mark confirming failed, id=%d, err=%v", orderRow.ID, txErr)
+		return customererrors.DatabaseErrorResp("更新订单状态失败")
+	}
+
+	if txHash != "" {
+		go AsyncConfirmOrder(l.ctx, l.svcCtx, orderRow.ID, txHash)
+	}
+
 	return nil
 }

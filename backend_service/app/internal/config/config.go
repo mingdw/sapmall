@@ -55,4 +55,11 @@ type Config struct {
 		ContractAddress  string
 		SignerPrivateKey string
 	}
+	// OrderDelayQueue 订单超时自动关闭延时队列配置
+	OrderDelayQueue struct {
+		Enabled         bool   `json:",optional"` // 是否启用，默认 true
+		PollIntervalSec int    `json:",optional"` // 轮询间隔（秒），默认 5
+		QueueKey        string `json:",optional"` // Redis ZSET key，默认 order:delay_queue
+		ExpireMins      int    `json:",optional"` // 订单超时时间（分钟），默认 30
+	}
 }

@@ -31,6 +31,7 @@ type (
 		SpuCode                 string  `json:"spuCode,optional"` // spu_code
 		SkuId                   int64   `json:"skuId,optional"` // sku_id
 		SkuCode                 string  `json:"skuCode,optional"` // sku_code
+		SkuImgs                 string  `json:"skuImgs,optional"` // sku_imgs
 		ProductName             string  `json:"productName,optional"` // product_name
 		ProductPrice            float64 `json:"productPrice,optional"` // product_price
 		ProductQuantity         int64   `json:"productQuantity,optional"` // product_quantity
@@ -74,6 +75,7 @@ type (
 		PaidAt                string  `json:"paidAt,optional"`
 		ConfirmedAt           string  `json:"confirmedAt,optional"`
 		FailReason            string  `json:"failReason,optional"`
+		ActualGasFee          float64 `json:"actualGasFee,optional"` // 实际 GAS 费
 	}
 
 	// ---------- POST /api/order/create ----------
@@ -82,6 +84,7 @@ type (
 		// sys_order 商品快照（Phase 1 单 SKU，落主表）
 		SkuId         int64   `json:"skuId"`
 		SkuCode       string  `json:"skuCode,optional"`
+		SkuImgs       string  `json:"skuImgs,optional"` // sku_imgs
 		SpuId         int64   `json:"spuId,optional"`
 		SpuCode       string  `json:"spuCode,optional"`
 		ProductName   string  `json:"productName,optional"`
@@ -136,6 +139,8 @@ type (
 		UserCode                string  `json:"userCode,optional"`
 		ProductName             string  `json:"productName,optional"`
 		ProductQuantity         int64   `json:"productQuantity,optional"`
+		ProductTotal            float64 `json:"productTotal,optional"`
+		SkuImgs                 string  `json:"skuImgs,optional"`
 		PayAmount               float64 `json:"payAmount,optional"`
 		Currency                string  `json:"currency,optional"`
 		OrderStatus             int64   `json:"orderStatus"`
@@ -164,11 +169,26 @@ type (
 		Total int64               `json:"total"`
 	}
 
-	// action：cancel 取消订单 | delete 软删除 | resumePay 继续支付（延长 intent 有效期）
+	// action：cancel 取消 | delete 软删除 | resumePay 继续支付 | confirming 标记链上确认中
 	ModifyOrderReq {
-		Id                  int64  `json:"id"`
+		Id                  int64  `json:"id,optional"`
+		OrderCode           string `json:"orderCode,optional"`
 		Action              string `json:"action"`
+		TxHash              string `json:"txHash,optional"`
 		ExtendExpireMinutes int64  `json:"extendExpireMinutes,optional"`
 		OrderRemark         string `json:"orderRemark,optional"`
+	}
+
+	// 前端轮询支付状态
+	OrderStatusReq {
+		OrderCode string `json:"orderCode"`
+		TxHash    string `json:"txHash,optional"`
+		ChainId   int64  `json:"chainId,optional"` // 链ID，用于查询 sys_chain_network 获取 RPC 地址
+	}
+
+	OrderStatusResp {
+		OrderStatus   int64  `json:"orderStatus"`
+		PaymentStatus int64  `json:"paymentStatus"`
+		TxHash        string `json:"txHash,optional"`
 	}
 )

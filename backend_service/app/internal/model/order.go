@@ -14,6 +14,7 @@ type Order struct {
 	SpuCode                 string    `json:"spuCode" gorm:"column:spu_code"`
 	SkuId                   int64     `json:"skuId" gorm:"column:sku_id"`
 	SkuCode                 string    `json:"skuCode" gorm:"column:sku_code"`
+	SkuImgs                 string    `json:"skuImgs" gorm:"column:sku_imgs"`
 	ProductName             string    `json:"productName" gorm:"column:product_name"`
 	ProductPrice            float64   `json:"productPrice" gorm:"column:product_price"`
 	ProductQuantity         int       `json:"productQuantity" gorm:"column:product_quantity"`

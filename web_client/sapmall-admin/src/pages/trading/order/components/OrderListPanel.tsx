@@ -1,12 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ConfigProvider, Table, Tabs, Tag, Tooltip } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { OrderSummary } from '../../../../services/api/orderApi';
 import {
+  ORDER_STATUS,
   PAYMENT_STATUS_TABS,
-  orderStatusTagColor,
   paymentStatusTagColor,
 } from '../constants';
+import OrderProductThumb from './OrderProductThumb';
 import styles from '../PersonalOrderManager.module.scss';
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
   page: number;
   pageSize: number;
   activePaymentTab: string;
+  tabCounts?: Record<string, number>;
   onTabChange: (key: string) => void;
   onPageChange: (page: number, pageSize: number) => void;
   onOpenDetail: (orderCode: string) => void;
@@ -35,6 +37,63 @@ function shortAddress(addr?: string): string {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 }
 
+function formatCountdown(seconds: number): string {
+  if (seconds <= 0) return '已过期';
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function useCountdown(orderDate?: string, orderStatus?: number): string | null {
+  const [remaining, setRemaining] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!orderDate || orderStatus !== ORDER_STATUS.PENDING_PAY) {
+      setRemaining(null);
+      return;
+    }
+    const created = new Date(orderDate).getTime();
+    if (Number.isNaN(created)) {
+      setRemaining(null);
+      return;
+    }
+    const expireAt = created + 30 * 60 * 1000;
+
+    const tick = () => {
+      const left = Math.floor((expireAt - Date.now()) / 1000);
+      if (left <= 0) {
+        setRemaining(0);
+        return false;
+      }
+      setRemaining(left);
+      return true;
+    };
+
+    if (!tick()) return;
+    const timer = setInterval(() => {
+      if (!tick()) clearInterval(timer);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [orderDate, orderStatus]);
+
+  if (remaining === null) return null;
+  return formatCountdown(remaining);
+}
+
+const CountdownCell: React.FC<{ orderDate?: string; orderStatus?: number }> = ({
+  orderDate,
+  orderStatus,
+}) => {
+  const text = useCountdown(orderDate, orderStatus);
+  if (text === null) return <span className={styles.mutedText}>—</span>;
+  const isExpired = text === '已过期';
+  return (
+    <span className={isExpired ? styles.countdownExpired : styles.countdownActive}>
+      {text}
+    </span>
+  );
+};
+
 const OrderListPanel: React.FC<Props> = ({
   loading,
   list,
@@ -42,6 +101,7 @@ const OrderListPanel: React.FC<Props> = ({
   page,
   pageSize,
   activePaymentTab,
+  tabCounts,
   onTabChange,
   onPageChange,
   onOpenDetail,
@@ -69,7 +129,6 @@ const OrderListPanel: React.FC<Props> = ({
       title: '订单号',
       dataIndex: 'orderCode',
       width: 168,
-      fixed: 'left',
       render: (code: string) => (
         <button type="button" onClick={() => onOpenDetail(code)} className={styles.orderCodeLink}>
           {code}
@@ -80,14 +139,27 @@ const OrderListPanel: React.FC<Props> = ({
       title: '商品',
       dataIndex: 'productName',
       ellipsis: true,
-      width: 200,
+      width: 240,
       render: (name: string, record) => (
-        <div className="min-w-0">
-          <p className={styles.productName}>{name || '—'}</p>
-          {record.productQuantity ? (
-            <p className={styles.productQty}>× {record.productQuantity}</p>
-          ) : null}
-        </div>
+          <div className={styles.productCell}>
+            <OrderProductThumb skuImgs={record.skuImgs} />
+            <div className="min-w-0">
+              <p className={styles.productName}>{name || '—'}</p>
+              {record.productQuantity ? (
+                <p className={styles.productQty}>× {record.productQuantity}</p>
+              ) : null}
+            </div>
+          </div>
+        ),
+    },
+    {
+      title: '订单总金额',
+      dataIndex: 'productTotal',
+      width: 120,
+      render: (amount: number, record) => (
+        <span className={styles.amountRed}>
+          {amount != null ? `${amount.toFixed(2)} ${record.currency || 'USDC'}` : '—'}
+        </span>
       ),
     },
     {
@@ -95,27 +167,17 @@ const OrderListPanel: React.FC<Props> = ({
       dataIndex: 'payAmount',
       width: 120,
       render: (amount: number, record) => (
-        <span className={styles.payAmount}>
+        <span className={styles.amountRed}>
           {amount != null ? `${amount.toFixed(2)} ${record.currency || 'USDC'}` : '—'}
         </span>
       ),
     },
     {
-      title: '订单状态',
-      dataIndex: 'orderStatus',
-      width: 100,
-      render: (_: number, record) => (
-        <Tag color={orderStatusTagColor(record.orderStatus)}>
-          {record.orderStatusDesc || record.orderStatus}
-        </Tag>
-      ),
-    },
-    {
       title: '支付状态',
       dataIndex: 'paymentStatus',
-      width: 100,
+      width: 110,
       render: (_: number, record) => (
-        <Tag color={paymentStatusTagColor(record.paymentStatus)}>
+        <Tag color={paymentStatusTagColor(record.paymentStatus)} className={styles.paymentStatusTag}>
           {record.paymentStatusDesc || record.paymentStatus}
         </Tag>
       ),
@@ -125,6 +187,14 @@ const OrderListPanel: React.FC<Props> = ({
       dataIndex: 'orderDate',
       width: 168,
       render: (v: string) => <span className={styles.mutedText}>{formatDateTime(v)}</span>,
+    },
+    {
+      title: '支付倒计时',
+      key: 'countdown',
+      width: 100,
+      render: (_: unknown, record) => (
+        <CountdownCell orderDate={record.orderDate} orderStatus={record.orderStatus} />
+      ),
     },
     {
       title: '支付钱包',
@@ -139,8 +209,7 @@ const OrderListPanel: React.FC<Props> = ({
     {
       title: '操作',
       key: 'actions',
-      fixed: 'right',
-      width: 220,
+      width: 120,
       render: (_: unknown, record) => renderActions(record),
     },
   ];
@@ -159,9 +228,9 @@ const OrderListPanel: React.FC<Props> = ({
     label: (
       <span>
         {tab.label}
-        {activePaymentTab === tab.key ? (
-          <span className={`${styles.tabBadge} ${styles.tabBadgeActive}`}>({total})</span>
-        ) : null}
+        <span className={`${styles.tabBadge} ${activePaymentTab === tab.key ? styles.tabBadgeActive : ''}`}>
+          ({tabCounts?.[tab.key] ?? (activePaymentTab === tab.key ? total : 0)})
+        </span>
       </span>
     ),
     children: (

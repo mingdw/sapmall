@@ -72,6 +72,13 @@ export function useOrderPayment() {
 
       setTxHash(payHash);
       mockAdvancePaymentIntent(code, payHash);
+
+      try {
+        await orderApi.modify({ orderCode: code, action: 'confirming', txHash: payHash });
+      } catch {
+        // 静默失败，不影响支付流程
+      }
+
       setPhase('confirming');
     },
     [address, chainId, publicClient, walletClient],

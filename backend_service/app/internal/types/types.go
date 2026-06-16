@@ -10,6 +10,8 @@ type AdminOrderSummary struct {
 	UserCode          string  `json:"userCode,optional"`
 	ProductName       string  `json:"productName,optional"`
 	ProductQuantity   int64   `json:"productQuantity,optional"`
+	ProductTotal      float64 `json:"productTotal,optional"`
+	SkuImgs           string  `json:"skuImgs,optional"`
 	PayAmount         float64 `json:"payAmount,optional"`
 	Currency          string  `json:"currency,optional"`
 	OrderStatus       int64   `json:"orderStatus"`
@@ -92,6 +94,7 @@ type ChainPaymentTokenInfo struct {
 type CreateOrderReq struct {
 	SkuId                   int64                `json:"skuId"`
 	SkuCode                 string               `json:"skuCode,optional"`
+	SkuImgs                 string               `json:"skuImgs,optional"` // sku_imgs
 	SpuId                   int64                `json:"spuId,optional"`
 	SpuCode                 string               `json:"spuCode,optional"`
 	ProductName             string               `json:"productName,optional"`
@@ -546,10 +549,24 @@ type MerchantDepositIntentResp struct {
 }
 
 type ModifyOrderReq struct {
-	Id                  int64  `json:"id"`
+	Id                  int64  `json:"id,optional"`
+	OrderCode           string `json:"orderCode,optional"`
 	Action              string `json:"action"`
+	TxHash              string `json:"txHash,optional"`
 	ExtendExpireMinutes int64  `json:"extendExpireMinutes,optional"`
 	OrderRemark         string `json:"orderRemark,optional"`
+}
+
+type OrderStatusReq struct {
+	OrderCode string `json:"orderCode"`
+	TxHash    string `json:"txHash,optional"`
+	ChainId   int64  `json:"chainId,optional"` // 链ID，用于查询 sys_chain_network 获取 RPC 地址
+}
+
+type OrderStatusResp struct {
+	OrderStatus   int64  `json:"orderStatus"`
+	PaymentStatus int64  `json:"paymentStatus"`
+	TxHash        string `json:"txHash,optional"`
 }
 
 type ModifyUserInfoReq struct {
@@ -573,6 +590,7 @@ type OrderInfo struct {
 	SpuCode                 string  `json:"spuCode,optional"`         // spu_code
 	SkuId                   int64   `json:"skuId,optional"`           // sku_id
 	SkuCode                 string  `json:"skuCode,optional"`         // sku_code
+	SkuImgs                 string  `json:"skuImgs,optional"`         // sku_imgs
 	ProductName             string  `json:"productName,optional"`     // product_name
 	ProductPrice            float64 `json:"productPrice,optional"`    // product_price
 	ProductQuantity         int64   `json:"productQuantity,optional"` // product_quantity
@@ -615,6 +633,7 @@ type OrderPaymentInfo struct {
 	PaidAt                string  `json:"paidAt,optional"`
 	ConfirmedAt           string  `json:"confirmedAt,optional"`
 	FailReason            string  `json:"failReason,optional"`
+	ActualGasFee          float64 `json:"actualGasFee,optional"` // 实际 GAS 费
 }
 
 type OrderPromotionItem struct {

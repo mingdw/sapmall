@@ -22,11 +22,11 @@ type OrderPaymentRepository interface {
 }
 
 type orderPaymentRepository struct {
-	db *gorm.DB
+	*Repository
 }
 
 func NewOrderPaymentRepository(db *gorm.DB) OrderPaymentRepository {
-	return &orderPaymentRepository{db: db}
+	return &orderPaymentRepository{Repository: NewRepository(db)}
 }
 
 // NewOrder_paymentRepository 兼容旧命名
@@ -35,12 +35,12 @@ func NewOrder_paymentRepository(db *gorm.DB) OrderPaymentRepository {
 }
 
 func (r *orderPaymentRepository) Create(ctx context.Context, orderPayment *model.OrderPayment) error {
-	return r.db.WithContext(ctx).Create(orderPayment).Error
+	return r.DB(ctx).Create(orderPayment).Error
 }
 
 func (r *orderPaymentRepository) GetByID(ctx context.Context, id int64) (*model.OrderPayment, error) {
 	var row model.OrderPayment
-	err := r.db.WithContext(ctx).Where("id = ? AND is_deleted = ?", id, 0).First(&row).Error
+	err := r.DB(ctx).Where("id = ? AND is_deleted = ?", id, 0).First(&row).Error
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (r *orderPaymentRepository) GetByID(ctx context.Context, id int64) (*model.
 
 func (r *orderPaymentRepository) GetByIntentId(ctx context.Context, intentId string) (*model.OrderPayment, error) {
 	var row model.OrderPayment
-	err := r.db.WithContext(ctx).Where("intent_id = ? AND is_deleted = ?", intentId, 0).First(&row).Error
+	err := r.DB(ctx).Where("intent_id = ? AND is_deleted = ?", intentId, 0).First(&row).Error
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (r *orderPaymentRepository) GetByIntentId(ctx context.Context, intentId str
 
 func (r *orderPaymentRepository) GetByOrderID(ctx context.Context, orderID int64) (*model.OrderPayment, error) {
 	var row model.OrderPayment
-	err := r.db.WithContext(ctx).
+	err := r.DB(ctx).
 		Where("order_id = ? AND is_deleted = ?", orderID, 0).
 		First(&row).Error
 	if err != nil {
@@ -73,7 +73,7 @@ func (r *orderPaymentRepository) ListByOrderIDs(ctx context.Context, orderIDs []
 		return result, nil
 	}
 	var rows []*model.OrderPayment
-	if err := r.db.WithContext(ctx).
+	if err := r.DB(ctx).
 		Where("order_id IN ? AND is_deleted = ?", orderIDs, 0).
 		Find(&rows).Error; err != nil {
 		return nil, err
@@ -85,21 +85,21 @@ func (r *orderPaymentRepository) ListByOrderIDs(ctx context.Context, orderIDs []
 }
 
 func (r *orderPaymentRepository) Update(ctx context.Context, orderPayment *model.OrderPayment) error {
-	return r.db.WithContext(ctx).Save(orderPayment).Error
+	return r.DB(ctx).Save(orderPayment).Error
 }
 
 func (r *orderPaymentRepository) UpdateColumnsByOrderID(ctx context.Context, orderID int64, updates map[string]interface{}) error {
 	if len(updates) == 0 {
 		return nil
 	}
-	return r.db.WithContext(ctx).
+	return r.DB(ctx).
 		Model(&model.OrderPayment{}).
 		Where("order_id = ? AND is_deleted = ?", orderID, 0).
 		Updates(updates).Error
 }
 
 func (r *orderPaymentRepository) SoftDeleteByOrderID(ctx context.Context, orderID int64, updator string) error {
-	return r.db.WithContext(ctx).
+	return r.DB(ctx).
 		Model(&model.OrderPayment{}).
 		Where("order_id = ? AND is_deleted = ?", orderID, 0).
 		Updates(map[string]interface{}{
@@ -109,14 +109,14 @@ func (r *orderPaymentRepository) SoftDeleteByOrderID(ctx context.Context, orderI
 }
 
 func (r *orderPaymentRepository) Delete(ctx context.Context, id int64) error {
-	return r.db.WithContext(ctx).Where("id = ?", id).Delete(&model.OrderPayment{}).Error
+	return r.DB(ctx).Where("id = ?", id).Delete(&model.OrderPayment{}).Error
 }
 
 func (r *orderPaymentRepository) List(ctx context.Context, offset, limit int) ([]*model.OrderPayment, int64, error) {
 	var rows []*model.OrderPayment
 	var total int64
 
-	db := r.db.WithContext(ctx).Model(&model.OrderPayment{}).Where("is_deleted = ?", 0)
+	db := r.DB(ctx).Model(&model.OrderPayment{}).Where("is_deleted = ?", 0)
 	if err := db.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}

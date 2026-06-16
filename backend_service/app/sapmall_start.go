@@ -58,6 +58,7 @@ func main() {
 	<-sigChan
 	log.Println("收到停止信号，正在关闭服务器...")
 	listenerCancel()
+	ctx.Stop()
 	server.Stop()
 	log.Println("服务器已关闭")
 }

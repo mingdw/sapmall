@@ -2,28 +2,31 @@ package order
 
 // 订单主状态
 const (
-	OrderStatusPendingPay = 10
-	OrderStatusPaid       = 30
-	OrderStatusToShip     = 40
-	OrderStatusShipped    = 50
-	OrderStatusCompleted  = 60
-	OrderStatusCancelled  = 70
-	OrderStatusExpired    = 80
-	OrderStatusPayFailed  = 90
+	OrderStatusPendingPay        = 10
+	OrderStatusOnChainConfirming = 20
+	OrderStatusPaid              = 30
+	OrderStatusToShip            = 40
+	OrderStatusShipped           = 50
+	OrderStatusCompleted         = 60
+	OrderStatusCancelled         = 70
+	OrderStatusExpired           = 80
+	OrderStatusPayFailed         = 90
 )
 
 // 支付状态
 const (
-	PaymentStatusUnpaid      = 1
-	PaymentStatusConfirming  = 2
-	PaymentStatusPaid        = 3
-	PaymentStatusClosed      = 4
+	PaymentStatusUnpaid     = 1 //未支付
+	PaymentStatusConfirming = 2 //链上确认中
+	PaymentStatusPaid       = 3 //已支付
+	PaymentStatusClosed     = 4 //已关闭
 )
 
 func OrderStatusDesc(status int) string {
 	switch status {
 	case OrderStatusPendingPay:
 		return "待支付"
+	case OrderStatusOnChainConfirming:
+		return "链上确认中"
 	case OrderStatusPaid:
 		return "已支付"
 	case OrderStatusToShip:

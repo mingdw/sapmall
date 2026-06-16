@@ -322,6 +322,58 @@
   }
 }
 
+.orderCodeCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.orderStatusTag {
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  padding: 0 6px !important;
+  margin: 0 !important;
+  width: fit-content;
+}
+
+.paymentStatusTag {
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  padding: 0 8px !important;
+  margin: 0 !important;
+}
+
+.amountRed {
+  font-weight: 600;
+  color: #ef4444;
+  font-variant-numeric: tabular-nums;
+}
+
+.productCell {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.productThumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.productThumbPlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px dashed rgba(51, 65, 85, 0.4);
+}
+
 .productName {
   color: #e2e8f0;
   font-size: 12px;
@@ -357,7 +409,31 @@
 .actionGroup {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px 4px;
+  align-items: center;
+  gap: 2px 6px;
+}
+
+.viewBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.28);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  line-height: 1.5;
+
+  &:hover {
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.18);
+    border-color: rgba(59, 130, 246, 0.45);
+  }
 }
 
 .actionLink {
@@ -411,21 +487,206 @@
   }
 }
 
+.resumePayBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  line-height: 1.5;
+
+  &:hover:not(:disabled) {
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.18);
+    border-color: rgba(245, 158, 11, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.cancelBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  line-height: 1.5;
+
+  &:hover:not(:disabled) {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.45);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.statusBadge,
+.payBadge {
+  display: inline-block;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 4px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.statusBadge {
+  color: #94a3b8;
+  background: rgba(100, 116, 139, 0.12);
+}
+
+.status10 {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.status20 {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.status30 {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.status40 {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.status50 {
+  color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.12);
+}
+
+.status60 {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.status70 {
+  color: #64748b;
+  background: rgba(100, 116, 139, 0.12);
+}
+
+.status80 {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.status90 {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.payBadge {
+  color: #94a3b8;
+  background: rgba(100, 116, 139, 0.12);
+}
+
+.pay1 {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.pay2 {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.pay3 {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.pay4 {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.countdownActive {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #f59e0b;
+  letter-spacing: 0.5px;
+}
+
+.countdownExpired {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  color: #64748b;
+}
+
 // 下拉面板深色主题
 .filterDropdown {
   :global(.ant-select-dropdown) {
     background: #1e293b;
     border: 1px solid rgba(71, 85, 105, 0.55);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   }
 
   :global(.ant-select-item) {
     color: #cbd5e1;
+    border-radius: 6px;
+    margin: 2px 6px;
+    padding: 8px 12px !important;
   }
 
   :global(.ant-select-item-option-active),
   :global(.ant-select-item-option-selected) {
     background: rgba(59, 130, 246, 0.18) !important;
     color: #e2e8f0 !important;
+  }
+
+  :global(.ant-select-item-option-selected) {
+    background: rgba(59, 130, 246, 0.25) !important;
+    font-weight: 500;
+  }
+
+  :global(.ant-select-dropdown) {
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(71, 85, 105, 0.6);
+      border-radius: 3px;
+
+      &:hover {
+        background: rgba(100, 116, 139, 0.7);
+      }
+    }
   }
 }
 

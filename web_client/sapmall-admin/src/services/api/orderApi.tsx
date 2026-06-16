@@ -20,6 +20,7 @@ export interface OrderInfo {
   spuCode?: string;
   skuId?: number;
   skuCode?: string;
+  skuImgs?: string;
   productName?: string;
   productPrice?: number;
   productQuantity?: number;
@@ -62,6 +63,7 @@ export interface OrderPaymentInfo {
   paidAt?: string;
   confirmedAt?: string;
   failReason?: string;
+  actualGasFee?: number;
 }
 
 export interface OrderSummary {
@@ -71,6 +73,8 @@ export interface OrderSummary {
   userCode?: string;
   productName?: string;
   productQuantity?: number;
+  productTotal?: number;
+  skuImgs?: string;
   payAmount?: number;
   currency?: string;
   orderStatus: number;

@@ -29,6 +29,7 @@ func MapOrderInfo(o *model.Order) types.OrderInfo {
 		SpuCode:                 o.SpuCode,
 		SkuId:                   o.SkuId,
 		SkuCode:                 o.SkuCode,
+		SkuImgs:                 o.SkuImgs,
 		ProductName:             o.ProductName,
 		ProductPrice:            o.ProductPrice,
 		ProductQuantity:         int64(o.ProductQuantity),
@@ -77,6 +78,7 @@ func MapOrderPaymentInfo(p *model.OrderPayment) types.OrderPaymentInfo {
 		PaidAt:                formatTimeRFC3339(p.PaidAt),
 		ConfirmedAt:           formatTimeRFC3339(p.ConfirmedAt),
 		FailReason:            p.FailReason,
+		ActualGasFee:          p.ActualGasFee,
 	}
 }
 

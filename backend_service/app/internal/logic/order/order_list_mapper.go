@@ -54,6 +54,8 @@ func toAdminOrderSummary(o *model.Order, payment *model.OrderPayment) types.Admi
 		UserCode:          o.UserCode,
 		ProductName:       o.ProductName,
 		ProductQuantity:   int64(o.ProductQuantity),
+		ProductTotal:      o.ProductTotal,
+		SkuImgs:           o.SkuImgs,
 		PayAmount:         o.PayAmount,
 		Currency:          o.Currency,
 		OrderStatus:       int64(o.OrderStatus),

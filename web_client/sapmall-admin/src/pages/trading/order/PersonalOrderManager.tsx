@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Modal } from 'antd';
 import MessageUtils from '../../../utils/messageUtils';
 import orderApi, { GetOrderResp, OrderSummary } from '../../../services/api/orderApi';
@@ -9,10 +9,10 @@ import {
   type OrderFilterValues,
 } from './components';
 import {
+  PAYMENT_STATUS,
   PAYMENT_STATUS_TABS,
   buildDappPayUrl,
   canCancelOrder,
-  canDeleteOrder,
   canResumePay,
 } from './constants';
 import styles from './PersonalOrderManager.module.scss';
@@ -22,10 +22,11 @@ const DEFAULT_FILTERS: OrderFilterValues = {
   dateRange: null,
 };
 
-function resolvePaymentStatus(tabKey: string): number | undefined {
-  const tab = PAYMENT_STATUS_TABS.find((item) => item.key === tabKey);
-  if (!tab || tab.value === 0) return undefined;
-  return tab.value;
+function matchPaymentTab(order: OrderSummary, tabKey: string): boolean {
+  if (tabKey === 'all') return true;
+  const tab = PAYMENT_STATUS_TABS.find((t) => t.key === tabKey);
+  if (!tab || tab.value === 0) return true;
+  return order.paymentStatus === tab.value;
 }
 
 const PersonalOrderManager: React.FC = () => {
@@ -33,8 +34,7 @@ const PersonalOrderManager: React.FC = () => {
   const [filters, setFilters] = useState<OrderFilterValues>(DEFAULT_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState<OrderFilterValues>(DEFAULT_FILTERS);
   const [activePaymentTab, setActivePaymentTab] = useState<string>('all');
-  const [list, setList] = useState<OrderSummary[]>([]);
-  const [total, setTotal] = useState(0);
+  const [allOrders, setAllOrders] = useState<OrderSummary[]>([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [actionLoadingId, setActionLoadingId] = useState<number>();
@@ -43,29 +43,46 @@ const PersonalOrderManager: React.FC = () => {
   const [detailLoading, setDetailLoading] = useState(false);
   const [detail, setDetail] = useState<GetOrderResp | null>(null);
 
-  const loadOrders = useCallback(async () => {
+  const loadAllOrders = useCallback(async () => {
     setLoading(true);
     try {
       const resp = await orderApi.list({
-        page,
-        pageSize,
+        page: 1,
+        pageSize: 9999,
         orderStatus: appliedFilters.orderStatus || undefined,
-        paymentStatus: resolvePaymentStatus(activePaymentTab),
         orderDateStart: appliedFilters.dateRange?.[0]?.format('YYYY-MM-DD'),
         orderDateEnd: appliedFilters.dateRange?.[1]?.format('YYYY-MM-DD'),
       });
-      setList(Array.isArray(resp.data?.list) ? resp.data.list : []);
-      setTotal(resp.data?.total ?? 0);
+      setAllOrders(Array.isArray(resp.data?.list) ? resp.data.list : []);
     } catch {
       MessageUtils.error('加载订单列表失败');
     } finally {
       setLoading(false);
     }
-  }, [activePaymentTab, appliedFilters, page, pageSize]);
+  }, [appliedFilters]);
 
   useEffect(() => {
-    loadOrders().catch(() => undefined);
-  }, [loadOrders]);
+    loadAllOrders().catch(() => undefined);
+  }, [loadAllOrders]);
+
+  const filteredList = useMemo(() => {
+    return allOrders.filter((order) => matchPaymentTab(order, activePaymentTab));
+  }, [allOrders, activePaymentTab]);
+
+  const tabCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: allOrders.length };
+    PAYMENT_STATUS_TABS.forEach((tab) => {
+      if (tab.key === 'all') return;
+      counts[tab.key] = allOrders.filter((o) => o.paymentStatus === tab.value).length;
+    });
+    return counts;
+  }, [allOrders]);
+
+  const total = filteredList.length;
+  const pagedList = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filteredList.slice(start, start + pageSize);
+  }, [filteredList, page, pageSize]);
 
   const handleSearch = () => {
     setPage(1);
@@ -118,7 +135,7 @@ const PersonalOrderManager: React.FC = () => {
           if (action === 'resumePay') {
             window.open(buildDappPayUrl(record.orderCode), '_blank', 'noopener,noreferrer');
           }
-          await loadOrders();
+          await loadAllOrders();
         } catch {
           MessageUtils.error('操作失败');
         } finally {
@@ -130,17 +147,21 @@ const PersonalOrderManager: React.FC = () => {
 
   const renderActions = (record: OrderSummary) => {
     const busy = actionLoadingId === record.id;
+    const showView =
+      activePaymentTab === String(PAYMENT_STATUS.CONFIRMING) ||
+      record.paymentStatus === PAYMENT_STATUS.CONFIRMING;
     return (
       <div className={styles.actionGroup}>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => openDetail(record.orderCode)}
-          className={`${styles.actionLink} ${styles.actionPrimary}`}
-        >
-          明细
-        </button>
-        {canResumePay(record.orderStatus, record.paymentStatus) ? (
+        {showView ? (
+          <button
+            type="button"
+            onClick={() => openDetail(record.orderCode)}
+            className={styles.viewBtn}
+          >
+            查看
+          </button>
+        ) : null}
+        {canResumePay(record.orderStatus, record.paymentStatus, record.orderDate) ? (
           <button
             type="button"
             disabled={busy}
@@ -152,7 +173,7 @@ const PersonalOrderManager: React.FC = () => {
                 '将延长支付有效期，并在新窗口打开 DApp 完成链上支付。是否继续？',
               )
             }
-            className={`${styles.actionLink} ${styles.actionWarning}`}
+            className={styles.resumePayBtn}
           >
             继续支付
           </button>
@@ -164,21 +185,9 @@ const PersonalOrderManager: React.FC = () => {
             onClick={() =>
               runModify(record, 'cancel', '取消订单', '取消后订单将无法继续支付，是否确认？')
             }
-            className={`${styles.actionLink} ${styles.actionMuted}`}
+            className={styles.cancelBtn}
           >
-            取消
-          </button>
-        ) : null}
-        {canDeleteOrder(record.orderStatus, record.paymentStatus) ? (
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() =>
-              runModify(record, 'delete', '删除订单', '软删除后列表将不再展示该订单，是否确认？')
-            }
-            className={`${styles.actionLink} ${styles.actionDanger}`}
-          >
-            删除
+            取消订单
           </button>
         ) : null}
       </div>
@@ -200,11 +209,12 @@ const PersonalOrderManager: React.FC = () => {
       <div className={styles.listCard}>
         <OrderListPanel
             loading={loading}
-            list={list}
+            list={pagedList}
             total={total}
             page={page}
             pageSize={pageSize}
             activePaymentTab={activePaymentTab}
+            tabCounts={tabCounts}
             onTabChange={handleTabChange}
             onPageChange={(p, ps) => {
               setPage(p);

@@ -35,6 +35,12 @@ MerchantDeposit:
   ContractAddress: "sapmall-secretxxx"
   IntentExpireMins: 30
 
+OrderDelayQueue:
+  Enabled: true
+  PollIntervalSec: 5
+  QueueKey: "order:delay_queue"
+  ExpireMins: 30
+
 Swagger:
   Enabled: true
   Title: "Sapphire Mall API"

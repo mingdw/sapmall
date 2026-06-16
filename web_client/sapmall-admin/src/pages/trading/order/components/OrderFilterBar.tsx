@@ -6,7 +6,7 @@ import 'dayjs/locale/zh-cn';
 import locale from 'antd/locale/zh_CN';
 import { CalendarOutlined } from '@ant-design/icons';
 import AdminButton from '../../../../components/common/AdminButton';
-import { ORDER_STATUS_OPTIONS } from '../constants';
+import { ORDER_STATUS_OPTIONS, ORDER_STATUS_TAG_COLORS, ORDER_STATUS } from '../constants';
 import styles from '../PersonalOrderManager.module.scss';
 
 const { RangePicker } = DatePicker;
@@ -24,6 +24,18 @@ interface OrderFilterBarProps {
   onReset: () => void;
 }
 
+const ORDER_STATUS_LABELS: Record<number, string> = {
+  [ORDER_STATUS.PENDING_PAY]: '待支付',
+  [ORDER_STATUS.ON_CHAIN_CONFIRMING]: '链上确认中',
+  [ORDER_STATUS.PAID]: '已支付',
+  [ORDER_STATUS.TO_SHIP]: '待发货',
+  [ORDER_STATUS.SHIPPED]: '已发货',
+  [ORDER_STATUS.COMPLETED]: '已完成',
+  [ORDER_STATUS.CANCELLED]: '已取消',
+  [ORDER_STATUS.EXPIRED]: '已过期',
+  [ORDER_STATUS.PAY_FAILED]: '支付失败',
+};
+
 const OrderFilterBar: React.FC<OrderFilterBarProps> = ({
   value,
   loading,
@@ -35,6 +47,27 @@ const OrderFilterBar: React.FC<OrderFilterBarProps> = ({
     dayjs.locale('zh-cn');
   }, []);
 
+  const orderStatusOptions = ORDER_STATUS_OPTIONS.map((opt) => ({
+    ...opt,
+    label: opt.value === 0 ? (
+      opt.label
+    ) : (
+      <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span
+          style={{
+            display: 'inline-block',
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            background: ORDER_STATUS_TAG_COLORS[opt.value]?.color || '#94a3b8',
+            flexShrink: 0,
+          }}
+        />
+        {ORDER_STATUS_LABELS[opt.value] || opt.label}
+      </span>
+    ),
+  }));
+
   return (
     <div className={styles.querySection}>
       <h4 className={styles.sectionLabel}>查询条件</h4>
@@ -43,7 +76,7 @@ const OrderFilterBar: React.FC<OrderFilterBarProps> = ({
           <span className={styles.filterLabel}>订单状态：</span>
           <Select
             value={value.orderStatus}
-            options={ORDER_STATUS_OPTIONS}
+            options={orderStatusOptions}
             onChange={(orderStatus) => onChange({ ...value, orderStatus })}
             className={styles.filterSelect}
             popupMatchSelectWidth={false}
