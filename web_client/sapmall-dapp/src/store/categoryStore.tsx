@@ -1,29 +1,33 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { CategoryTreeResp, AttrGroupResp } from '../services/types/categoryTypes';
+import { getCurrentApiLocale } from '../utils/apiLocale';
 
 // 分类状态接口
 interface CategoryState {
   // 分类数据
   categories: CategoryTreeResp[];
   allAttrGroups: AttrGroupResp[];
-  
+  /** 缓存对应的 API 语言 */
+  categoriesLocale: string | null;
+
   // 加载状态
   isLoading: boolean;
   lastFetchTime: number | null;
-  
+
   // 缓存时间（5分钟）
   cacheExpiry: number;
-  
+
   // 操作函数
   setCategories: (categories: CategoryTreeResp[]) => void;
   setAllAttrGroups: (attrGroups: AttrGroupResp[]) => void;
+  setCategoriesLocale: (locale: string | null) => void;
   setLoading: (loading: boolean) => void;
   setLastFetchTime: (time: number) => void;
-  
+
   // 检查缓存是否有效
   isCacheValid: () => boolean;
-  
+
   // 清空缓存
   clearCache: () => void;
   
@@ -37,6 +41,7 @@ export const useCategoryStore = create<CategoryState>()(
       // 初始状态
       categories: [],
       allAttrGroups: [],
+      categoriesLocale: null,
       isLoading: false,
       lastFetchTime: null,
       cacheExpiry: 5 * 60 * 1000, // 5分钟
@@ -57,7 +62,9 @@ export const useCategoryStore = create<CategoryState>()(
       
       // 设置attrGroups
       setAllAttrGroups: (attrGroups) => set({ allAttrGroups: attrGroups }),
-      
+
+      setCategoriesLocale: (locale) => set({ categoriesLocale: locale }),
+
       // 设置加载状态
       setLoading: (loading) => set({ isLoading: loading }),
       
@@ -66,16 +73,18 @@ export const useCategoryStore = create<CategoryState>()(
       
       // 检查缓存是否有效
       isCacheValid: () => {
-        const { lastFetchTime, cacheExpiry } = get();
+        const { lastFetchTime, cacheExpiry, categoriesLocale } = get();
         if (!lastFetchTime) return false;
+        if (categoriesLocale !== getCurrentApiLocale()) return false;
         return Date.now() - lastFetchTime < cacheExpiry;
       },
-      
+
       // 清空缓存
       clearCache: () => {
         set({
           categories: [],
           allAttrGroups: [],
+          categoriesLocale: null,
           lastFetchTime: null
         });
       },
@@ -168,6 +177,7 @@ export const useCategoryStore = create<CategoryState>()(
       partialize: (state) => ({
         categories: state.categories,
         allAttrGroups: state.allAttrGroups,
+        categoriesLocale: state.categoriesLocale,
         lastFetchTime: state.lastFetchTime
       })
     }

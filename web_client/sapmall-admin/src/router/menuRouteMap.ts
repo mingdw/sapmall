@@ -27,7 +27,18 @@ export function resolveMenuRoute(component?: string): string {
 
 /** iframe ?menu= 参数别名（与 AdminLayout 深链匹配一致） */
 export const MENU_IFRAME_ALIASES: Record<string, string[]> = {
-  profile: ['profile', 'personal/profile'],
-  dashboard: ['dashboard', 'platform/dashboard'],
-  orders: ['orders', 'trading/orders'],
+  profile:       ['profile', 'personal/profile'],
+  security:      ['security', 'personal/security'],
+  notifications: ['notifications', 'personal/notifications'],
+  dashboard:     ['dashboard', 'platform/dashboard'],
+  orders:        ['orders', 'trading/orders', 'personal/orders'],
+  cart:          ['cart', 'business/products'],
+  settings:      ['settings', 'system/settings'],
+  history:       ['history', 'trading/orders'],
+  favorites:     ['favorites', 'business/products'],
+  users:         ['users', 'platform/users'],
+  merchants:     ['merchants', 'platform/merchants'],
+  categories:    ['categories', 'platform/categories'],
+  dictionaries:  ['dictionaries', 'system/dictionaries'],
+  chainnet:      ['chainnet', 'system/chainnet'],
 };

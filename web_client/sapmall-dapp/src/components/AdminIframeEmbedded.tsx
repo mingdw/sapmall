@@ -6,14 +6,16 @@ import { useUserStore } from '../store/userStore';
 import { useAccount } from 'wagmi';
 import { x1Testnet } from 'wagmi/chains';
 
-// 菜单项映射
+// 菜单项映射：DApp 菜单 key → Admin 实际 component 路径
 const menuItemMapping: { [key: string]: string } = {
-  'profile': 'profile',
-  'orders': 'merchant-orders',
-  'history': 'transactions',
-  'settings': 'system-settings',
-  'cart': 'product-management',
-  'favorites': 'assets'
+  'profile':   'personal/profile',
+  'security':  'personal/security',
+  'notifications': 'personal/notifications',
+  'orders':    'trading/orders',
+  'cart':      'business/products',
+  'settings':  'system/settings',
+  'history':   'trading/orders',
+  'favorites': 'business/products',
 };
 
 // 简化的状态类型

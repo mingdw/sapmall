@@ -623,8 +623,29 @@ code {
 
 /* 下拉菜单全局样式 */
 .ant-select-dropdown {
-  background-color: #1e293b !important;
-  border: 1px solid rgba(51, 65, 85, 0.5) !important;
+  background-color: rgba(30, 41, 59, 0.95) !important;
+  border: 1px solid rgba(51, 65, 85, 0.4) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(71, 85, 105, 0.6) rgba(15, 23, 42, 0.5);
+}
+
+.ant-select-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ant-select-dropdown::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 3px;
+}
+
+.ant-select-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.6);
+  border-radius: 3px;
+}
+
+.ant-select-dropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
 }
 
 .ant-select-dropdown .ant-select-item {

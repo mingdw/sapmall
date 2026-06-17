@@ -1,6 +1,7 @@
 import { ApiResponse } from   '../types/baseTypes';
 import MessageUtils from '../../utils/messageUtils';
 import { useUserStore } from '../../store/userStore';
+import { getCurrentApiLocale, normalizeApiLocale } from '../../utils/apiLocale';
 
 // 请求配置
 interface RequestConfig {
@@ -57,20 +58,9 @@ class BaseClient {
     return getCurrentUserToken();
   }
 
-  // 获取当前语言
+  // 获取当前语言（与 i18n 切换保持一致）
   private getCurrentLocale(): string {
-    // 优先使用URL参数
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlLocale = urlParams.get('lang');
-    if (urlLocale) return urlLocale;
-
-    // 使用localStorage
-    const storedLocale = localStorage.getItem('app_locale');
-    if (storedLocale) return storedLocale;
-
-    // 使用浏览器语言
-    const browserLocale = navigator.language;
-    return browserLocale.startsWith('zh') ? 'zh-CN' : 'en-US';
+    return getCurrentApiLocale();
   }
 
   // 构建完整URL
@@ -351,9 +341,10 @@ class BaseClient {
     });
   }
 
-  // 设置语言
+  // 设置语言（与 i18n 同步）
   setLocale(locale: string): void {
-    localStorage.setItem('app_locale', locale);
+    const normalized = normalizeApiLocale(locale);
+    localStorage.setItem('i18nextLng', normalized);
   }
 }
 

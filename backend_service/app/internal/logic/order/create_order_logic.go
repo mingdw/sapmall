@@ -49,9 +49,10 @@ type productSnapshot struct {
 	SpuCode       string
 	SkuId         int64
 	SkuCode       string
+	SkuImgs       string
 	ProductName   string
 	ProductPrice  float64
-	ProductTotal  float64
+	TotalAmount   float64
 	ProductRemark string
 }
 
@@ -213,8 +214,8 @@ func validateCreateOrderParams(req *types.CreateOrderReq) string {
 	if req.PayAmount <= 0 {
 		return "实付金额须大于 0"
 	}
-	if req.PayableAmount < 0 || req.PromotionDiscountAmount < 0 ||
-		req.PlatformFeeAmount < 0 || req.EstimatedGasFee < 0 {
+	if req.PayableAmount < 0 || req.DiscountAmount < 0 ||
+		req.PlatformFeeAmount < 0 || req.EstGasFee < 0 {
 		return "金额字段不能为负数"
 	}
 	return ""
@@ -226,36 +227,35 @@ func (l *CreateOrderLogic) assembleCreateOrderBundle(req *types.CreateOrderReq, 
 	now := time.Now()
 
 	orderRow := &model.Order{
-		OrderCode:               v.orderCode,
-		UserId:                  v.userInfo.ID,
-		UserCode:                v.userInfo.UserCode,
-		SpuId:                   snap.SpuId,
-		SpuCode:                 snap.SpuCode,
-		SkuId:                   snap.SkuId,
-		SkuCode:                 snap.SkuCode,
-		SkuImgs:                 strings.TrimSpace(req.SkuImgs),
-		ProductName:             snap.ProductName,
-		ProductPrice:            snap.ProductPrice,
-		ProductQuantity:         int(req.Quantity),
-		ProductTotal:            snap.ProductTotal,
-		ProductRemark:           snap.ProductRemark,
-		OrderStatus:             orderStatusPendingPay,
-		OrderStatusDesc:         orderStatusDescPendingPay,
-		PaymentStatus:           paymentStatusUnpaid,
-		PaymentStatusDesc:       paymentStatusDescUnpaid,
-		OrderDate:               now,
-		Currency:                v.currency,
-		SaleSubtotal:            req.SaleSubtotal,
-		PromotionDiscountAmount: req.PromotionDiscountAmount,
-		PayableAmount:           req.PayableAmount,
-		PlatformFeeAmount:       req.PlatformFeeAmount,
-		EstimatedGasFee:         req.EstimatedGasFee,
-		PayAmount:               req.PayAmount,
-		OrderRemark:             strings.TrimSpace(req.OrderRemark),
-		ExpireAt:                v.expireAt,
-		IsDeleted:               0,
-		Creator:                 v.operator,
-		Updator:                 v.operator,
+		OrderCode:         v.orderCode,
+		UserId:            v.userInfo.ID,
+		UserCode:          v.userInfo.UserCode,
+		SpuId:             snap.SpuId,
+		SpuCode:           snap.SpuCode,
+		SkuId:             snap.SkuId,
+		SkuCode:           snap.SkuCode,
+		SkuImgs:           strings.TrimSpace(req.SkuImgs),
+		ProductName:       snap.ProductName,
+		ProductPrice:      snap.ProductPrice,
+		ProductQuantity:   int(req.Quantity),
+		TotalAmount:       snap.TotalAmount,
+		ProductRemark:     snap.ProductRemark,
+		OrderStatus:       orderStatusPendingPay,
+		OrderStatusDesc:   orderStatusDescPendingPay,
+		PaymentStatus:     paymentStatusUnpaid,
+		PaymentStatusDesc: paymentStatusDescUnpaid,
+		OrderDate:         now,
+		Currency:          v.currency,
+		DiscountAmount:    req.DiscountAmount,
+		PayableAmount:     req.PayableAmount,
+		PlatformFeeAmount: req.PlatformFeeAmount,
+		EstGasFee:         req.EstGasFee,
+		PayAmount:         req.PayAmount,
+		OrderRemark:       strings.TrimSpace(req.OrderRemark),
+		ExpireAt:          v.expireAt,
+		IsDeleted:         0,
+		Creator:           v.operator,
+		Updator:           v.operator,
 	}
 
 	paymentRow := &model.OrderPayment{
@@ -346,6 +346,7 @@ func (l *CreateOrderLogic) buildProductSnapshot(req *types.CreateOrderReq, sku *
 		SpuCode:      sku.ProductSpuCode,
 		SkuId:        sku.ID,
 		SkuCode:      sku.SkuCode,
+		SkuImgs:      strings.TrimSpace(req.SkuImgs),
 		ProductName:  sku.Title,
 		ProductPrice: sku.Price,
 	}
@@ -364,10 +365,10 @@ func (l *CreateOrderLogic) buildProductSnapshot(req *types.CreateOrderReq, sku *
 	if req.ProductPrice > 0 {
 		snap.ProductPrice = req.ProductPrice
 	}
-	if req.ProductTotal > 0 {
-		snap.ProductTotal = req.ProductTotal
+	if req.TotalAmount > 0 {
+		snap.TotalAmount = req.TotalAmount
 	} else {
-		snap.ProductTotal = snap.ProductPrice * float64(req.Quantity)
+		snap.TotalAmount = snap.ProductPrice * float64(req.Quantity)
 	}
 	snap.ProductRemark = strings.TrimSpace(req.ProductRemark)
 	return snap

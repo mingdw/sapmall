@@ -17,17 +17,25 @@ const AppContent: React.FC = () => {
   const [iframeParams, setIframeParams] = useState<IframeParams>({});
   const [lastProcessedUrl, setLastProcessedUrl] = useState<string>('');
   
-  // 初始化商品目录（menu_type=0，首次进入后台管理时加载）
+  // 初始化商品目录（menu_type=0，首次进入或 URL 语言变化时加载）
   const { fetchProductCategories, hasHydrated } = useCategoryStore();
+
+  const urlLang = (() => {
+    const fromSearch = new URLSearchParams(location.search).get('lang');
+    if (fromSearch) return fromSearch;
+    if (location.hash.includes('?')) {
+      return new URLSearchParams(location.hash.split('?')[1]).get('lang');
+    }
+    return null;
+  })();
   
-  // 在应用启动时初始化商品目录
   useEffect(() => {
     if (!hasHydrated) return;
     console.log('应用启动，初始化商品目录数据（menu_type=0）');
     fetchProductCategories().catch(error => {
       console.error('初始化商品目录数据失败:', error);
     });
-  }, [hasHydrated, fetchProductCategories]);
+  }, [hasHydrated, fetchProductCategories, urlLang]);
 
   useEffect(() => {
     // 构建当前完整的URL标识
@@ -91,9 +99,26 @@ const AppContent: React.FC = () => {
 
 const App: React.FC = () => {
   const { i18n } = useTranslation();
+  const refreshProductCategories = useCategoryStore((s) => s.refreshProductCategories);
+  const clearProductCategoriesCache = useCategoryStore((s) => s.clearProductCategoriesCache);
   
   // 根据当前语言选择对应的 Ant Design 语言包
   const antdLocale = i18n.language === 'en' ? enUS : zhCN;
+
+  // 语言切换时刷新商品目录与属性（带新 Accept-Language 重新请求）
+  useEffect(() => {
+    const handleLanguageChanged = () => {
+      clearProductCategoriesCache();
+      refreshProductCategories().catch((error) => {
+        console.error('语言切换后刷新商品目录失败:', error);
+      });
+    };
+
+    i18n.on('languageChanged', handleLanguageChanged);
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, [i18n, clearProductCategoriesCache, refreshProductCategories]);
 
   return (
     <ConfigProvider locale={antdLocale}>

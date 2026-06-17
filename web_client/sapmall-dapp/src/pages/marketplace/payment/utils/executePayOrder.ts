@@ -100,14 +100,13 @@ export async function executePayOrder(params: {
     if (allowance < amount) {
       activeStage = 'approve';
       params.onPhase?.('approving');
-      const MAX_UINT256 = 2n ** 256n - 1n;
       const approveHash = await walletClient.writeContract({
         account,
         chain: walletClient.chain,
         address: token,
         abi: erc20Abi,
         functionName: 'approve',
-        args: [router, MAX_UINT256],
+        args: [router, amount],
       });
       await waitReceipt(publicClient, approveHash);
     }

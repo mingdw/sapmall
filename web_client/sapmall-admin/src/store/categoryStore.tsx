@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { CategoryTreeResp } from '../services/types/categoryTypes';
 import { commonApiService } from '../services/api/commonApiService';
+import { getCurrentApiLocale } from '../utils/apiLocale';
 
 // 分页信息类型
 interface PaginationInfo {
@@ -39,6 +40,8 @@ interface CategoryState {
   isProductCategoriesLoading: boolean;
   // 商品目录最后获取时间
   productCategoriesLastFetchTime: number | null;
+  /** 商品目录缓存对应的 API 语言 */
+  productCategoriesLocale: string | null;
   lastFetchTime: number | null;
   
   // 缓存时间（5分钟）
@@ -77,6 +80,8 @@ interface CategoryState {
   // 清空缓存
   clearCache: () => void;
   clearCategoryListCache: () => void;
+  /** 清空商品目录缓存（语言切换时调用） */
+  clearProductCategoriesCache: () => void;
   
   // 分类管理操作
   addCategory: (category: CategoryTreeResp) => void;
@@ -125,6 +130,7 @@ export const useCategoryStore = create<CategoryState>()(
       isCategoryListLoading: false,
       isProductCategoriesLoading: false,
       productCategoriesLastFetchTime: null,
+      productCategoriesLocale: null,
       lastFetchTime: null,
       cacheExpiry: 5 * 60 * 1000, // 5分钟
       
@@ -197,6 +203,14 @@ export const useCategoryStore = create<CategoryState>()(
         set({
           categoryList: [],
           lastFetchTime: null
+        });
+      },
+
+      clearProductCategoriesCache: () => {
+        set({
+          productCategories: [],
+          productCategoriesLastFetchTime: null,
+          productCategoriesLocale: null,
         });
       },
       
@@ -387,6 +401,7 @@ export const useCategoryStore = create<CategoryState>()(
           set({ 
             productCategories: convertedList,
             productCategoriesLastFetchTime: Date.now(),
+            productCategoriesLocale: getCurrentApiLocale(),
             isProductCategoriesLoading: false
           });
           console.log('商品目录数据获取成功并已缓存');
@@ -415,6 +430,7 @@ export const useCategoryStore = create<CategoryState>()(
           set({ 
             productCategories: convertedList,
             productCategoriesLastFetchTime: Date.now(),
+            productCategoriesLocale: getCurrentApiLocale(),
             isProductCategoriesLoading: false
           });
           console.log('商品目录数据刷新成功并已缓存');
@@ -427,8 +443,9 @@ export const useCategoryStore = create<CategoryState>()(
       
       // 检查商品目录缓存是否有效
       isProductCategoriesCacheValid: () => {
-        const { productCategoriesLastFetchTime, cacheExpiry } = get();
+        const { productCategoriesLastFetchTime, productCategoriesLocale, cacheExpiry } = get();
         if (!productCategoriesLastFetchTime) return false;
+        if (productCategoriesLocale !== getCurrentApiLocale()) return false;
         return Date.now() - productCategoriesLastFetchTime < cacheExpiry;
       },
       
@@ -458,6 +475,7 @@ export const useCategoryStore = create<CategoryState>()(
       partialize: (state) => ({
         productCategories: state.productCategories, // 持久化商品目录
         productCategoriesLastFetchTime: state.productCategoriesLastFetchTime,
+        productCategoriesLocale: state.productCategoriesLocale,
         categories: state.categories,
         categoryStats: state.categoryStats,
         lastFetchTime: state.lastFetchTime,

@@ -24,7 +24,7 @@ export interface OrderInfo {
   productName?: string;
   productPrice?: number;
   productQuantity?: number;
-  productTotal?: number;
+  totalAmount?: number;
   productRemark?: string;
   orderStatus: number;
   orderStatusDesc?: string;
@@ -32,12 +32,13 @@ export interface OrderInfo {
   paymentStatusDesc?: string;
   orderDate?: string;
   currency?: string;
-  saleSubtotal?: number;
-  promotionDiscountAmount?: number;
+  discountAmount?: number;
   payableAmount?: number;
   platformFeeAmount?: number;
-  estimatedGasFee?: number;
+  estGasFee?: number;
+  actGasFee?: number;
   payAmount?: number;
+  realAmount?: number;
   orderRemark?: string;
   expireAt?: string;
 }
@@ -53,6 +54,8 @@ export interface OrderPaymentInfo {
   amountRaw: string;
   tokenDecimals: number;
   payAmount?: number;
+  estGasFee?: number;
+  actGasFee?: number;
   paymentStatus?: number;
   paymentStatusDesc?: string;
   txHash?: string;
@@ -63,7 +66,6 @@ export interface OrderPaymentInfo {
   paidAt?: string;
   confirmedAt?: string;
   failReason?: string;
-  actualGasFee?: number;
 }
 
 export interface OrderSummary {
@@ -73,9 +75,10 @@ export interface OrderSummary {
   userCode?: string;
   productName?: string;
   productQuantity?: number;
-  productTotal?: number;
   skuImgs?: string;
+  totalAmount?: number;
   payAmount?: number;
+  realAmount?: number;
   currency?: string;
   orderStatus: number;
   orderStatusDesc?: string;
@@ -118,6 +121,18 @@ export interface ModifyOrderReq {
   orderRemark?: string;
 }
 
+export interface OrderStatusReq {
+  orderCode: string;
+  txHash?: string;
+  chainId?: number;
+}
+
+export interface OrderStatusResp {
+  orderStatus: number;
+  paymentStatus: number;
+  txHash?: string;
+}
+
 const orderApi = {
   list: async (payload: ListOrderReq): Promise<ApiResponse<ListOrderResp>> => {
     return baseClient.post<ListOrderResp>('/api/order/list', payload);
@@ -129,6 +144,10 @@ const orderApi = {
 
   modify: async (payload: ModifyOrderReq): Promise<ApiResponse<null>> => {
     return baseClient.post<null>('/api/order/modify', payload);
+  },
+
+  queryStatus: async (payload: OrderStatusReq): Promise<ApiResponse<OrderStatusResp>> => {
+    return baseClient.post<OrderStatusResp>('/api/order/status', payload);
   },
 };
 

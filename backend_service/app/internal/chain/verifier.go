@@ -19,17 +19,18 @@ import (
 var paymentPaidEventSig = crypto.Keccak256Hash([]byte("PaymentPaid(string,string,address,address,uint256,uint256)"))
 
 type PaymentEvent struct {
-	IntentId  string
-	OrderRef  string
-	Payer     common.Address
-	Token     common.Address
-	Amount    *big.Int
-	Timestamp *big.Int
+	IntentIdHash string   // keccak256 hash of intentId (indexed string stored as hash)
+	OrderRefHash string   // keccak256 hash of orderRef (indexed string stored as hash)
+	Payer        common.Address
+	Token        common.Address
+	Amount       *big.Int
+	Timestamp    *big.Int
 }
 
 type VerifyResult struct {
-	Receipt *types.Receipt
-	Event   *PaymentEvent
+	Receipt  *types.Receipt
+	Event    *PaymentEvent
+	GasFeeUSDC float64 // 实际 Gas 费（USDC 计价）
 }
 
 // VerifyPaymentTx 通过 RPC 查询链上交易，验证支付事件参数
@@ -59,8 +60,9 @@ func VerifyPaymentTx(ctx context.Context, rpcURL string, contractAddr string, tx
 	}
 
 	return &VerifyResult{
-		Receipt: receipt,
-		Event:   event,
+		Receipt:    receipt,
+		Event:      event,
+		GasFeeUSDC: calcGasFeeUSDC(receipt),
 	}, nil
 }
 
@@ -89,12 +91,10 @@ func decodePaymentPaidLog(log *types.Log) (*PaymentEvent, error) {
 	}
 
 	event := &PaymentEvent{
-		IntentId: string(log.Topics[1].Bytes()),
-		Payer:    common.BytesToAddress(log.Topics[3].Bytes()),
+		IntentIdHash: log.Topics[1].Hex(),
+		OrderRefHash: log.Topics[2].Hex(),
+		Payer:        common.BytesToAddress(log.Topics[3].Bytes()),
 	}
-
-	// orderRef 是 indexed string，存储在 Topics[2]
-	event.OrderRef = string(log.Topics[2].Bytes())
 
 	// 非 indexed 参数在 Data 中：token(address), amount(uint256), timestamp(uint256)
 	// 每个参数 32 字节
@@ -112,22 +112,50 @@ func decodePaymentPaidLog(log *types.Log) (*PaymentEvent, error) {
 	return event, nil
 }
 
+// calcGasFeeUSDC 从交易回执计算 Gas 费（USDC 计价）
+// Arc 使用 USDC 作为原生 gas token（18 decimals），EIP-1559 定价模型
+func calcGasFeeUSDC(receipt *types.Receipt) float64 {
+	if receipt == nil {
+		return 0
+	}
+
+	gasUsed := new(big.Int).SetUint64(receipt.GasUsed)
+
+	// EffectiveGasPrice：EIP-1559 交易中返回实际支付的 gas price（单位：USDC最小单位/ gas）
+	// 非 EIP-1559 交易或 RPC 未返回时可能为 nil
+	if receipt.EffectiveGasPrice == nil || receipt.EffectiveGasPrice.Sign() == 0 {
+		return 0
+	}
+
+	// totalGasFee = gasUsed × effectiveGasPrice（单位：USDC 最小单位，18 decimals）
+	totalGasFee := new(big.Int).Mul(gasUsed, receipt.EffectiveGasPrice)
+
+	// 转换为 USDC：除以 10^18
+	decimalFactor := new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil)
+	usdcFloat := new(big.Float).Quo(
+		new(big.Float).SetInt(totalGasFee),
+		new(big.Float).SetInt(decimalFactor),
+	)
+
+	result, _ := usdcFloat.Float64()
+	return result
+}
+
 // VerifyPaymentParams 验证事件参数是否与订单匹配
 func VerifyPaymentParams(event *PaymentEvent, expectedIntentId string, expectedOrderCode string, expectedAmount string, expectedToken string, expectedPayer string) error {
 	if event == nil {
 		return fmt.Errorf("event is nil")
 	}
 
-	// 去除 indexed string 的尾部零字节
-	eventIntentId := strings.TrimRight(string(event.IntentId), "\x00")
-	eventOrderRef := strings.TrimRight(string(event.OrderRef), "\x00")
-
-	if eventIntentId != expectedIntentId {
-		return fmt.Errorf("intentId mismatch: got %s, want %s", eventIntentId, expectedIntentId)
+	// indexed string 在 EVM 中存储为 keccak256 哈希，需要比较哈希值
+	expectedIntentIdHash := crypto.Keccak256Hash([]byte(expectedIntentId)).Hex()
+	if !strings.EqualFold(event.IntentIdHash, expectedIntentIdHash) {
+		return fmt.Errorf("intentId mismatch: got hash %s, want hash %s (expected %s)", event.IntentIdHash, expectedIntentIdHash, expectedIntentId)
 	}
 
-	if eventOrderRef != expectedOrderCode {
-		return fmt.Errorf("orderCode mismatch: got %s, want %s", eventOrderRef, expectedOrderCode)
+	expectedOrderCodeHash := crypto.Keccak256Hash([]byte(expectedOrderCode)).Hex()
+	if !strings.EqualFold(event.OrderRefHash, expectedOrderCodeHash) {
+		return fmt.Errorf("orderCode mismatch: got hash %s, want hash %s (expected %s)", event.OrderRefHash, expectedOrderCodeHash, expectedOrderCode)
 	}
 
 	eventAmount := event.Amount.String()

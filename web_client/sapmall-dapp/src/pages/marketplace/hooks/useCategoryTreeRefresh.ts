@@ -1,18 +1,25 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { commonApiService } from '../../../services/api/commonApiService';
 import { useCategoryStore } from '../../../store/categoryStore';
+import { getCurrentApiLocale } from '../../../utils/apiLocale';
 
 /**
- * 进入页面时始终拉取最新目录树；若有缓存则先展示缓存（stale-while-revalidate）。
+ * 进入页面时拉取最新目录树；语言切换时重新请求；若有同语言缓存则先展示（stale-while-revalidate）。
  */
 export function useCategoryTreeRefresh(): void {
+  const { i18n } = useTranslation();
+  const locale = i18n.language;
   const setCategories = useCategoryStore((s) => s.setCategories);
   const setLoading = useCategoryStore((s) => s.setLoading);
   const setLastFetchTime = useCategoryStore((s) => s.setLastFetchTime);
+  const setCategoriesLocale = useCategoryStore((s) => s.setCategoriesLocale);
 
   useEffect(() => {
     let cancelled = false;
-    const hasCached = useCategoryStore.getState().categories.length > 0;
+    const apiLocale = getCurrentApiLocale();
+    const { categories, categoriesLocale } = useCategoryStore.getState();
+    const hasCached = categories.length > 0 && categoriesLocale === apiLocale;
 
     const fetchCategories = async () => {
       if (!hasCached) {
@@ -24,6 +31,7 @@ export function useCategoryTreeRefresh(): void {
         if (cancelled) return;
         const categoryList = Array.isArray(response) ? response : [response];
         setCategories(categoryList);
+        setCategoriesLocale(apiLocale);
         setLastFetchTime(Date.now());
       } catch (error) {
         console.error('获取分类失败:', error);
@@ -39,5 +47,5 @@ export function useCategoryTreeRefresh(): void {
     return () => {
       cancelled = true;
     };
-  }, [setCategories, setLoading, setLastFetchTime]);
+  }, [locale, setCategories, setCategoriesLocale, setLastFetchTime, setLoading]);
 }

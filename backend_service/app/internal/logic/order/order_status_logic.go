@@ -147,9 +147,9 @@ func (l *OrderStatusLogic) syncChainStatus(orderID int64, paymentRow *model.Orde
 				return false
 			}
 		}
-		// 链上支付成功，更新数据库
-		l.Infof("syncChainStatus: payment confirmed on chain, orderCode=%s, blockNumber=%d", paymentRow.OrderCode, result.Receipt.BlockNumber.Int64())
-		l.markPaid(orderID, result.Receipt.BlockNumber.Int64())
+		// 链上支付成功，更新数据库（包含实际 Gas 费）
+		l.Infof("syncChainStatus: payment confirmed on chain, orderCode=%s, blockNumber=%d, gasFee=%.6f USDC", paymentRow.OrderCode, result.Receipt.BlockNumber.Int64(), result.GasFeeUSDC)
+		l.markPaid(orderID, result.Receipt.BlockNumber.Int64(), result.GasFeeUSDC)
 		return true
 	}
 
@@ -159,7 +159,7 @@ func (l *OrderStatusLogic) syncChainStatus(orderID int64, paymentRow *model.Orde
 	return true
 }
 
-func (l *OrderStatusLogic) markPaid(orderID int64, blockNumber int64) {
+func (l *OrderStatusLogic) markPaid(orderID int64, blockNumber int64, actGasFee float64) {
 	orderRepo := repository.NewOrderRepository(l.svcCtx.GormDB)
 	paymentRepo := repository.NewOrderPaymentRepository(l.svcCtx.GormDB)
 
@@ -168,12 +168,14 @@ func (l *OrderStatusLogic) markPaid(orderID int64, blockNumber int64) {
 		"order_status_desc":   OrderStatusDesc(OrderStatusPaid),
 		"payment_status":      PaymentStatusPaid,
 		"payment_status_desc": PaymentStatusDesc(PaymentStatusPaid),
+		"act_gas_fee":         actGasFee,
 	})
 
 	_ = paymentRepo.UpdateColumnsByOrderID(l.ctx, orderID, map[string]interface{}{
 		"payment_status":      PaymentStatusPaid,
 		"payment_status_desc": PaymentStatusDesc(PaymentStatusPaid),
 		"block_number":        blockNumber,
+		"act_gas_fee":         actGasFee,
 	})
 
 	// 支付成功后，从延时队列移除

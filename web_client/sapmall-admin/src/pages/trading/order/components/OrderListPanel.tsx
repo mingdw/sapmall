@@ -154,7 +154,7 @@ const OrderListPanel: React.FC<Props> = ({
     },
     {
       title: '订单总金额',
-      dataIndex: 'productTotal',
+      dataIndex: 'totalAmount',
       width: 120,
       render: (amount: number, record) => (
         <span className={styles.amountRed}>

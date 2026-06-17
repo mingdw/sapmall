@@ -1,16 +1,7 @@
 import { ApiResponse } from '../types/baseTypes';
 import MessageUtils from '../../utils/messageUtils';
 import { useUserStore } from '../../store/userStore';
-import i18n from '../../i18n';
-
-/** 规范为 HTTP Accept-Language（BCP 47） */
-const normalizeAcceptLanguage = (lang: string): string => {
-  const lower = lang.trim().toLowerCase();
-  if (!lower) return 'zh-CN';
-  if (lower.startsWith('zh')) return 'zh-CN';
-  if (lower.startsWith('en')) return 'en-US';
-  return lang;
-};
+import { getCurrentApiLocale, normalizeApiLocale } from '../../utils/apiLocale';
 
 // 请求配置
 interface RequestConfig {
@@ -67,14 +58,7 @@ class BaseClient {
 
   // 获取当前语言（与 i18n 切换保持一致）
   private getCurrentLocale(): string {
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlLocale = urlParams.get('lang');
-    if (urlLocale) return normalizeAcceptLanguage(urlLocale);
-
-    const i18nLang = i18n.language || localStorage.getItem('i18nextLng') || '';
-    if (i18nLang) return normalizeAcceptLanguage(i18nLang);
-
-    return navigator.language.startsWith('zh') ? 'zh-CN' : 'en-US';
+    return getCurrentApiLocale();
   }
 
   // 构建完整URL
@@ -338,7 +322,7 @@ class BaseClient {
 
   // 设置语言（与 i18n 同步，供 URL 参数等场景覆盖）
   setLocale(locale: string): void {
-    localStorage.setItem('i18nextLng', locale);
+    localStorage.setItem('i18nextLng', normalizeApiLocale(locale));
   }
 }
 

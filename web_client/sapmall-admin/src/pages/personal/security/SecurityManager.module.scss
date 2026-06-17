@@ -1,0 +1,676 @@
+.securityPage {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  min-width: 0;
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+.queryCard,
+.listCard {
+  background: rgba(30, 41, 59, 0.32);
+  border: 1px solid rgba(51, 65, 85, 0.28);
+  border-radius: 10px;
+  padding: 18px 20px;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.18);
+  }
+}
+
+.sectionLabel {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Score section */
+.scoreRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 0;
+}
+
+.scoreCircle {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .scoreText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #f8fafc;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+  }
+}
+
+.scoreInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.scoreTitle {
+  margin: 0 0 4px;
+  color: #f1f5f9;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.scoreDesc {
+  margin: 0 0 10px;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.btnReassess {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.18);
+    border-color: rgba(59, 130, 246, 0.45);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.btnReassessLoading i {
+  animation: spin 0.8s linear infinite;
+}
+
+/* Setting item */
+.settingItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.settingInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.settingTitle {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.settingDesc {
+  margin: 2px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.settingAction {
+  flex-shrink: 0;
+  margin-left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Toggle switch - compact */
+.toggleSwitch {
+  position: relative;
+  display: inline-flex;
+  width: 30px;
+  height: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border: none;
+  padding: 0;
+  flex-shrink: 0;
+
+  &.toggleOn {
+    background-color: #3b82f6;
+  }
+
+  &.toggleOff {
+    background-color: #475569;
+  }
+}
+
+.toggleKnob {
+  position: absolute;
+  top: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.toggleOn .toggleKnob {
+  transform: translateX(16px);
+}
+
+.toggleOff .toggleKnob {
+  transform: translateX(2px);
+}
+
+/* Button styles */
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+}
+
+.btnOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+  background: transparent;
+  border: 1px solid rgba(71, 85, 105, 0.5);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: #cbd5e1;
+    border-color: rgba(100, 116, 139, 0.7);
+    background: rgba(51, 65, 85, 0.2);
+  }
+}
+
+.btnDanger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.45);
+  }
+}
+
+/* Device card */
+.deviceCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(51, 65, 85, 0.25);
+  background: rgba(15, 23, 42, 0.3);
+  transition: all 0.15s ease;
+
+  &.deviceCurrent {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: rgba(59, 130, 246, 0.05);
+  }
+
+  &:not(.deviceCurrent):hover {
+    background: rgba(30, 41, 59, 0.45);
+  }
+}
+
+.deviceMain {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.deviceIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.deviceIconActive {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.deviceIconDefault {
+  background: rgba(51, 65, 85, 0.4);
+  color: #94a3b8;
+}
+
+.deviceNameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deviceName {
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.deviceCurrentTag {
+  padding: 1px 8px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.deviceMeta {
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.deviceIp {
+  color: #475569;
+  font-size: 11px;
+}
+
+/* Emergency cards */
+.emergencyGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.emergencyCard {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(51, 65, 85, 0.25);
+  background: rgba(15, 23, 42, 0.3);
+}
+
+.emergencyCardDanger {
+  border-color: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.emergencyCardPrimary {
+  border-color: rgba(59, 130, 246, 0.2);
+  background: rgba(59, 130, 246, 0.04);
+}
+
+.emergencyTitle {
+  margin: 0 0 4px;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.emergencyDesc {
+  margin: 0 0 12px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Activity list */
+.activityToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.filterBtn {
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: #cbd5e1;
+    background: rgba(51, 65, 85, 0.3);
+  }
+}
+
+.filterBtnActive {
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.28);
+}
+
+.searchBox {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #475569;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.searchInput {
+  padding: 5px 10px 5px 30px;
+  font-size: 12px;
+  color: #e2e8f0;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  border-radius: 6px;
+  outline: none;
+  width: 200px;
+  transition: border-color 0.15s ease;
+
+  &::placeholder {
+    color: #475569;
+  }
+
+  &:focus {
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+}
+
+/* Activity item */
+.activityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.15);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.activityIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.activityIconDefault {
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+}
+
+.activityIconWarning {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.activityBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.activityHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.activityTitle {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.activityTime {
+  color: #475569;
+  font-size: 11px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.activityDetail {
+  margin: 2px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.activityStatus {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.statusSuccess {
+  color: #22c55e;
+}
+
+.statusWarning {
+  color: #f59e0b;
+}
+
+.statusPending {
+  color: #64748b;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(51, 65, 85, 0.2);
+}
+
+.paginationBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  background: rgba(15, 23, 42, 0.5);
+  color: #94a3b8;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: #cbd5e1;
+    border-color: rgba(59, 130, 246, 0.4);
+    background: rgba(30, 41, 59, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.paginationInfo {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* Whitelist table */
+.whitelistTable {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #94a3b8;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+  }
+
+  td {
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #cbd5e1;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.15);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.addressValue {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* Recovery options */
+.recoveryOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(51, 65, 85, 0.35);
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.35);
+    background: rgba(59, 130, 246, 0.04);
+  }
+}
+
+.recoveryIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  flex-shrink: 0;
+}
+
+.recoveryTitle {
+  margin: 0;
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.recoveryDesc {
+  margin: 2px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .emergencyGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .activityToolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .searchInput {
+    width: 100%;
+  }
+}

@@ -12,6 +12,8 @@ import ChainNetManager from '../pages/system/chainnet/ChainNetManager';
 import SystemSettingsPage from '../pages/system/settings/SystemSettingsPage';
 import ProductManagement from '../pages/business/products/ProductManagement';
 import ProfileManager from '../pages/personal/profile/ProfileManager';
+import SecurityManager from '../pages/personal/security/SecurityManager';
+import NotificationManager from '../pages/personal/notifications/NotificationManager';
 import PersonalOrderManager from '../pages/trading/order/PersonalOrderManager';
 
 interface AdminRouterProps {
@@ -23,6 +25,8 @@ const AdminRouter: React.FC<AdminRouterProps> = ({ menuData }) => {
     <Routes>
       {/* 个人中心 */}
       <Route path="/personal/profile" element={<ProfileManager />} />
+      <Route path="/personal/security" element={<SecurityManager />} />
+      <Route path="/personal/notifications" element={<NotificationManager />} />
 
       {/* 交易管理 - 我的订单（与 sys_category U003001 path/component 一致） */}
       <Route path="/trading/orders" element={<PersonalOrderManager />} />

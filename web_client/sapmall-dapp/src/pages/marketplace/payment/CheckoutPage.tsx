@@ -14,6 +14,7 @@ import { isOnChainPaySupported, isSapPayment } from '../../../config/paymentCurr
 import { navigateToMarketplace } from '../paths';
 import MessageUtils from '../../../utils/messageUtils';
 import { buildCreateOrderPayload } from './utils/buildCreateOrderPayload';
+import { estimateGasFeeUsdc } from './utils/estimateGasFee';
 import styles from './PaymentPage.module.scss';
 
 function isContactValid(contact: typeof EMPTY_CONTACT): boolean {
@@ -58,12 +59,16 @@ const CheckoutPage: React.FC = () => {
       payment.markSuccess();
       const code = pollStatus.orderCode || payment.orderCode;
       if (code) {
+        const chainId = payment.intent?.chainId ?? payment.chainId;
         navigate(`/marketplace/payment/result/${encodeURIComponent(code)}`, {
           replace: true,
           state: {
             txHash: pollStatus.txHash ?? payment.txHash,
             amount: payment.paidAmount ?? preview?.totalAmount,
-            chainId: payment.intent?.chainId,
+            chainId,
+            items: preview?.items,
+            goodsAmount: preview?.totalAmount,
+            gasFeeUsdc: estimateGasFeeUsdc(chainId),
           },
         });
       }
@@ -146,7 +151,6 @@ const CheckoutPage: React.FC = () => {
                 ·
               </span>
               <span className={styles.checkoutStepTitle}>{t('payment.title')}</span>
-              <span className={styles.checkoutArcGasNote}>{t('payment.arcGasFreeNote')}</span>
             </h1>
             <Button
               type="text"

@@ -145,11 +145,28 @@ const PersonalOrderManager: React.FC = () => {
     });
   };
 
+  const handleQueryStatus = async (record: OrderSummary) => {
+    setActionLoadingId(record.id);
+    try {
+      const resp = await orderApi.queryStatus({ orderCode: record.orderCode });
+      if (resp.data) {
+        MessageUtils.success(`最新状态：订单状态=${resp.data.orderStatus}，支付状态=${resp.data.paymentStatus}`);
+      } else {
+        MessageUtils.success('查询完成');
+      }
+      await loadAllOrders();
+    } catch {
+      MessageUtils.error('查询失败');
+    } finally {
+      setActionLoadingId(undefined);
+    }
+  };
+
   const renderActions = (record: OrderSummary) => {
     const busy = actionLoadingId === record.id;
+    const isConfirming = record.paymentStatus === PAYMENT_STATUS.CONFIRMING;
     const showView =
-      activePaymentTab === String(PAYMENT_STATUS.CONFIRMING) ||
-      record.paymentStatus === PAYMENT_STATUS.CONFIRMING;
+      activePaymentTab === String(PAYMENT_STATUS.CONFIRMING) || isConfirming;
     return (
       <div className={styles.actionGroup}>
         {showView ? (
@@ -159,6 +176,16 @@ const PersonalOrderManager: React.FC = () => {
             className={styles.viewBtn}
           >
             查看
+          </button>
+        ) : null}
+        {isConfirming ? (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => handleQueryStatus(record)}
+            className={styles.queryStatusBtn}
+          >
+            手动查询
           </button>
         ) : null}
         {canResumePay(record.orderStatus, record.paymentStatus, record.orderDate) ? (

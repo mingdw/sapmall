@@ -1,5 +1,7 @@
 // API服务文件 - 统一管理API调用
 
+import { getCurrentApiLocale } from '../utils/apiLocale';
+
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:7102';
 
 // 通用API响应接口
@@ -17,10 +19,13 @@ export const categoryApi = {
       const url = `${API_BASE_URL}/api/common/${categoryType}/categories`;
       console.log('API调用URL:', url);
       
+      const locale = getCurrentApiLocale();
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Accept-Language': locale,
+          'X-Locale': locale,
         },
         mode: 'cors', // 明确设置CORS模式
       });

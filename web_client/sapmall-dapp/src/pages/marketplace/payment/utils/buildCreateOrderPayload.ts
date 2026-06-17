@@ -22,8 +22,7 @@ export interface BuildCreateOrderPayloadInput {
 /** 将结算页数据组装为 POST /api/order/create 请求体 */
 export function buildCreateOrderPayload(input: BuildCreateOrderPayloadInput): CreateOrderReq {
   const item = input.preview.items[0];
-  const saleSubtotal = input.preview.saleSubtotal ?? item?.subtotal ?? input.preview.totalAmount;
-  const promotionDiscountAmount = input.preview.discountAmount ?? 0;
+  const discountAmount = input.preview.discountAmount ?? 0;
   const payableAmount = input.preview.totalAmount;
   const chainId = input.chainId && input.chainId > 0 ? input.chainId : ARC_TESTNET_CHAIN_ID;
   const gasFeeUsdc = estimateGasFeeUsdc(chainId);
@@ -37,24 +36,22 @@ export function buildCreateOrderPayload(input: BuildCreateOrderPayloadInput): Cr
   return {
     skuId: input.skuId,
     skuCode: item?.skuCode,
-    skuImgs: item?.skuImgs ? JSON.stringify(item.skuImgs) : undefined,
     productName: item?.productName,
     productPrice: item?.unitPrice,
     quantity: input.quantity,
-    productTotal: item?.subtotal,
+    totalAmount: item?.subtotal,
     payerAddress: input.payerAddress,
     chainId,
     tokenSymbol: input.paymentMethod === 'USDC' ? 'USDC' : 'USDC',
-    saleSubtotal,
     promotions: input.preview.promotions?.map((p) => ({
       promoId: p.id,
       labelKey: p.labelKey,
       amount: p.amount,
     })),
-    promotionDiscountAmount,
+    discountAmount,
     payableAmount,
     platformFeeAmount,
-    estimatedGasFee: gasFeeUsdc,
+    estGasFee: gasFeeUsdc,
     payAmount,
     currency: 'USDC',
     orderRemark: input.buyerMessage?.trim() || undefined,

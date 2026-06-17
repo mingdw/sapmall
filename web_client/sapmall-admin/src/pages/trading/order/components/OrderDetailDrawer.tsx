@@ -127,14 +127,19 @@ const OrderDetailDrawer: React.FC<Props> = ({ open, loading, detail, onClose }) 
             <section className={styles.sectionCard}>
               <h4 className={styles.sectionTitle}>费用明细</h4>
               <Descriptions column={1} size="small" colon={false} className={styles.detailDescriptions}>
-                {order.productTotal != null ? (
+                {order.totalAmount != null ? (
                   <Descriptions.Item label="商品总额">
-                    <MoneyText amount={order.productTotal} currency={currency} />
+                    <MoneyText amount={order.totalAmount} currency={currency} />
                   </Descriptions.Item>
                 ) : null}
-                {order.promotionDiscountAmount != null && order.promotionDiscountAmount > 0 ? (
+                {order.discountAmount != null && order.discountAmount > 0 ? (
                   <Descriptions.Item label="优惠抵扣">
-                    <MoneyText amount={order.promotionDiscountAmount} currency={currency} prefix="-" />
+                    <MoneyText amount={order.discountAmount} currency={currency} prefix="-" />
+                  </Descriptions.Item>
+                ) : null}
+                {order.payableAmount != null ? (
+                  <Descriptions.Item label="应付金额">
+                    <MoneyText amount={order.payableAmount} currency={currency} />
                   </Descriptions.Item>
                 ) : null}
                 {order.platformFeeAmount != null ? (
@@ -142,9 +147,9 @@ const OrderDetailDrawer: React.FC<Props> = ({ open, loading, detail, onClose }) 
                     <MoneyText amount={order.platformFeeAmount} currency={currency} />
                   </Descriptions.Item>
                 ) : null}
-                {order.estimatedGasFee != null ? (
+                {order.estGasFee != null ? (
                   <Descriptions.Item label="预估 GAS 费">
-                    <MoneyText amount={order.estimatedGasFee} currency={currency} />
+                    <MoneyText amount={order.estGasFee} currency={currency} />
                   </Descriptions.Item>
                 ) : null}
                 {order.orderRemark ? (
@@ -156,11 +161,6 @@ const OrderDetailDrawer: React.FC<Props> = ({ open, loading, detail, onClose }) 
             <section className={styles.sectionCard}>
               <h4 className={styles.sectionTitle}>商品快照</h4>
               <div className={styles.productRow}>
-                <OrderProductThumb
-                  skuImgs={order.skuImgs}
-                  className={styles.productThumb}
-                  placeholderClassName={styles.productThumbPlaceholder}
-                />
                 <div className={styles.productMeta}>
                   <p className={styles.productName}>{order.productName || '—'}</p>
                   <p className={styles.productSku}>
@@ -226,9 +226,14 @@ const OrderDetailDrawer: React.FC<Props> = ({ open, loading, detail, onClose }) 
                   {payment.paidAt ? (
                     <Descriptions.Item label="支付时间">{formatTime(payment.paidAt)}</Descriptions.Item>
                   ) : null}
+                  {payment.estGasFee != null ? (
+                    <Descriptions.Item label="预估 GAS 费">
+                      <MoneyText amount={payment.estGasFee} currency={currency} />
+                    </Descriptions.Item>
+                  ) : null}
                   <Descriptions.Item label="实际 GAS 费">
-                    {payment.actualGasFee != null ? (
-                      <MoneyText amount={payment.actualGasFee} currency={currency} />
+                    {payment.actGasFee != null ? (
+                      <MoneyText amount={payment.actGasFee} currency={currency} />
                     ) : (
                       <span className={styles.mutedValue}>—</span>
                     )}
@@ -274,7 +279,7 @@ const OrderDetailDrawer: React.FC<Props> = ({ open, loading, detail, onClose }) 
             <section className={styles.payAmountCard}>
               <span className={styles.payAmountCardLabel}>实付金额</span>
               <span className={styles.payAmountCardValue}>
-                {formatAmount(order.payAmount, currency)}
+                {formatAmount(order.realAmount || order.payAmount, currency)}
               </span>
             </section>
 

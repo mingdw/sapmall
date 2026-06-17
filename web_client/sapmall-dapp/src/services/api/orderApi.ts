@@ -48,11 +48,17 @@ export interface OrderInfo {
   orderStatusDesc?: string;
   paymentStatus: number;
   paymentStatusDesc?: string;
+  totalAmount?: number;
+  discountAmount?: number;
+  payableAmount?: number;
+  platformFeeAmount?: number;
+  estGasFee?: number;
+  actGasFee?: number;
   payAmount?: number;
+  realAmount?: number;
   expireAt?: string;
   skuId?: number;
   skuCode?: string;
-  skuImgs?: string;
   productName?: string;
 }
 
@@ -67,6 +73,8 @@ export interface OrderPaymentInfo {
   amountRaw: string;
   tokenDecimals: number;
   payAmount?: number;
+  estGasFee?: number;
+  actGasFee?: number;
   paymentStatus?: number;
   paymentStatusDesc?: string;
   txHash?: string;
@@ -79,23 +87,21 @@ export interface OrderPaymentInfo {
 export interface CreateOrderReq {
   skuId: number;
   skuCode?: string;
-  skuImgs?: string;
   spuId?: number;
   spuCode?: string;
   productName?: string;
   productPrice?: number;
   quantity: number;
-  productTotal?: number;
+  totalAmount?: number;
   productRemark?: string;
   payerAddress: string;
   chainId?: number;
   tokenSymbol?: string;
-  saleSubtotal?: number;
   promotions?: OrderPromotionItem[];
-  promotionDiscountAmount: number;
+  discountAmount: number;
   payableAmount: number;
   platformFeeAmount: number;
-  estimatedGasFee: number;
+  estGasFee: number;
   payAmount: number;
   currency?: string;
   orderRemark?: string;

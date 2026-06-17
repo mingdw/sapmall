@@ -109,6 +109,7 @@ export interface ProductAttrsInfo {
 
 // SPU详情信息（与后端 ProductDetailInfo 对齐）
 export interface ProductDetailInfo {
+  id?: number;
   productSpuId: number;
   productSpuCode: string;
   detail?: string;

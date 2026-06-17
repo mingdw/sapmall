@@ -18,6 +18,8 @@ type OrderPayment struct {
 	AmountRaw             string    `json:"amountRaw" gorm:"column:amount_raw"`
 	TokenDecimals         int       `json:"tokenDecimals" gorm:"column:token_decimals"`
 	PayAmount             float64   `json:"payAmount" gorm:"column:pay_amount"`
+	EstGasFee             float64   `json:"estGasFee" gorm:"column:est_gas_fee"`
+	ActGasFee             float64   `json:"actGasFee" gorm:"column:act_gas_fee"`
 	PaymentStatus         int       `json:"paymentStatus" gorm:"column:payment_status"`
 	PaymentStatusDesc     string    `json:"paymentStatusDesc" gorm:"column:payment_status_desc"`
 	TxHash                string    `json:"txHash" gorm:"column:tx_hash"`
@@ -28,7 +30,6 @@ type OrderPayment struct {
 	PaidAt                time.Time `json:"paidAt" gorm:"column:paid_at"`
 	ConfirmedAt           time.Time `json:"confirmedAt" gorm:"column:confirmed_at"`
 	FailReason            string    `json:"failReason" gorm:"column:fail_reason"`
-	ActualGasFee          float64   `json:"actualGasFee" gorm:"column:actual_gas_fee"`
 	CreatedAt             time.Time `json:"createdAt" gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt             time.Time `json:"updatedAt" gorm:"column:updated_at;autoUpdateTime"`
 	IsDeleted             int       `json:"isDeleted" gorm:"column:is_deleted;default:0"`
