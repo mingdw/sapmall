@@ -4,6 +4,7 @@ import {
   type Hash,
   type PublicClient,
   type WalletClient,
+  type Chain,
   UserRejectedRequestError,
 } from 'viem';
 import { paymentRouterAbi } from '../../../../config/abis/paymentRouterAbi';
@@ -19,7 +20,6 @@ export type PayOrderErrorCode =
 
 export class PayOrderError extends Error {
   readonly code: PayOrderErrorCode;
-  /** 用户拒绝签名时所处的链上步骤 */
   readonly stage?: 'approve' | 'pay';
 
   constructor(code: PayOrderErrorCode, message?: string, stage?: 'approve' | 'pay') {
@@ -74,6 +74,32 @@ function isUserRejectedWalletError(err: unknown): boolean {
   return cause != null && isUserRejectedWalletError(cause);
 }
 
+async function estimateGasForContract(params: {
+  publicClient: PublicClient;
+  account: Address;
+  chain: Chain | undefined;
+  address: Address;
+  abi: typeof erc20Abi | typeof paymentRouterAbi;
+  functionName: string;
+  args: readonly unknown[];
+}): Promise<{ gas: bigint; gasPrice: bigint }> {
+  const { publicClient, account, chain, address, abi, functionName, args } = params;
+
+  const [gas, gasPrice] = await Promise.all([
+    publicClient.estimateContractGas({
+      address,
+      abi: abi as readonly unknown[],
+      functionName: functionName as 'approve' | 'payOrder',
+      args: args as readonly unknown[],
+      account,
+    }),
+    publicClient.getGasPrice(),
+  ]);
+
+  const buffer = (gas * 20n) / 100n;
+  return { gas: gas + buffer, gasPrice };
+}
+
 /** approve（如需要）并调用 PaymentRouter.payOrder */
 export async function executePayOrder(params: {
   walletClient: WalletClient;
@@ -87,6 +113,7 @@ export async function executePayOrder(params: {
 
   const router = bundle.contractAddress as Address;
   const token = bundle.tokenAddress as Address;
+  const chain = walletClient.chain;
 
   const allowance = await publicClient.readContract({
     address: token,
@@ -100,26 +127,52 @@ export async function executePayOrder(params: {
     if (allowance < amount) {
       activeStage = 'approve';
       params.onPhase?.('approving');
-      const approveHash = await walletClient.writeContract({
+
+      const { gas, gasPrice } = await estimateGasForContract({
+        publicClient,
         account,
-        chain: walletClient.chain,
+        chain,
         address: token,
         abi: erc20Abi,
         functionName: 'approve',
         args: [router, amount],
+      });
+
+      const approveHash = await walletClient.writeContract({
+        account,
+        chain,
+        address: token,
+        abi: erc20Abi,
+        functionName: 'approve',
+        args: [router, amount],
+        gas,
+        gasPrice,
       });
       await waitReceipt(publicClient, approveHash);
     }
 
     activeStage = 'pay';
     params.onPhase?.('paying');
-    const payHash = await walletClient.writeContract({
+
+    const { gas, gasPrice } = await estimateGasForContract({
+      publicClient,
       account,
-      chain: walletClient.chain,
+      chain,
       address: router,
       abi: paymentRouterAbi,
       functionName: 'payOrder',
       args: [bundle.intentId, bundle.orderCode, token, amount],
+    });
+
+    const payHash = await walletClient.writeContract({
+      account,
+      chain,
+      address: router,
+      abi: paymentRouterAbi,
+      functionName: 'payOrder',
+      args: [bundle.intentId, bundle.orderCode, token, amount],
+      gas,
+      gasPrice,
     });
     await waitReceipt(publicClient, payHash);
     return payHash;

@@ -1,9 +1,9 @@
-﻿import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
-import { ArrowRightLeft, Wallet } from 'lucide-react';
+import { ArrowRightLeft, Wallet, ChevronDown, Receipt } from 'lucide-react';
 import { OrderPreviewResult } from '../../../../services/api/orderApi';
 import type { PaymentIntentBundle } from '../../../../services/api/orderApi';
 import { isPaymentChain } from '../../../../config/paymentChains';
@@ -30,7 +30,7 @@ import PaymentCurrencySelect from './PaymentCurrencySelect';
 import PaymentCurrencyRatePanel from './PaymentCurrencyRatePanel';
 import { PaymentMethod, PaymentPhase } from '../types/paymentTypes';
 import PaymentGlassCard from './PaymentGlassCard';
-import PaymentStatusBanner from './PaymentStatusBanner';
+import PaymentProgressTracker from './PaymentProgressTracker/PaymentProgressTracker';
 import styles from '../PaymentPage.module.scss';
 
 const FEE_PERCENT_DISPLAY = `${NON_SAP_PAYMENT_FEE_RATE * 100}%`;
@@ -64,6 +64,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   const { isConnected, chainId, address } = useAccount();
+  const [detailExpanded, setDetailExpanded] = useState(true);
 
   const activeChainId = intent?.chainId ?? chainId;
   const tokenBalance = usePaymentTokenBalance(paymentMethod, activeChainId, address);
@@ -139,20 +140,6 @@ const CheckoutPayPanel: React.FC<Props> = ({
     tokenBalance.numeric + 1e-9 >= payAmountDue;
 
   const canSubmit = canPayOnChain || canContinuePayment;
-
-  const statusMessageKey = errorKey
-    ? `payment.errors.${errorKey}`
-    : phase === 'submitting'
-      ? 'payment.status.creatingOrder'
-      : phase === 'intentLoading'
-        ? 'payment.status.preparingIntent'
-        : phase === 'approving'
-          ? 'payment.status.approving'
-          : phase === 'paying'
-            ? 'payment.status.paying'
-            : phase === 'confirming'
-              ? 'payment.status.confirming'
-              : undefined;
 
   const payAmountDisplay = formatAmountNumber(finalTotal, finalCurrency);
 
@@ -318,14 +305,30 @@ const CheckoutPayPanel: React.FC<Props> = ({
         </ul>
       ) : null}
 
-      <div className="mb-4">
-        <PaymentStatusBanner
-          phase={phase}
-          statusMessageKey={statusMessageKey}
-          txHash={txHash}
-          chainId={intent?.chainId ?? chainId}
-          expireAt={intent?.expireAt}
-        />
+      <div className={styles.payDetailSection}>
+        <button
+          type="button"
+          className={styles.payDetailHeader}
+          onClick={() => setDetailExpanded((v) => !v)}
+        >
+            <span className={styles.payDetailHeaderLeft}>
+              <Receipt size={13} strokeWidth={1.75} className={styles.payDetailHeaderIcon} />
+              <span>{t('payment.steps.aria')}</span>
+            </span>
+          <ChevronDown
+            size={14}
+            className={`${styles.payDetailChevron} ${detailExpanded ? styles.payDetailChevronOpen : ''}`}
+          />
+        </button>
+
+        {detailExpanded ? (
+          <div className={styles.payDetailBody}>
+            <PaymentProgressTracker
+              phase={phase}
+              errorKey={errorKey}
+            />
+          </div>
+        ) : null}
       </div>
 
       <div className={styles.payFooterBar}>

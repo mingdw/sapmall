@@ -1,0 +1,238 @@
+// PaymentProgressTracker - 简洁进度列表
+
+.trackerContainer {
+  width: 100%;
+}
+
+.stepsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stepItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.35rem 0;
+  padding-left: calc(0.875rem + 0.375rem);
+  transition: opacity 0.2s ease;
+  animation: stepFadeIn 0.3s ease-out forwards;
+  opacity: 0;
+
+  & + & {
+    border-top: 1px solid rgba(71, 85, 105, 0.12);
+  }
+}
+
+@keyframes stepFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// 步骤图标 - 与标题icon对齐
+.stepIcon {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.875rem;
+  height: 0.875rem;
+  color: #475569;
+
+  .stepItem.active & {
+    color: #f97316;
+  }
+
+  .stepItem.error & {
+    color: #ef4444;
+  }
+
+  .stepItem.cancelled & {
+    color: #eab308;
+  }
+}
+
+.stepIconDot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #475569;
+
+  .stepItem.active & {
+    background: #f97316;
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+
+  .stepItem.error & {
+    background: #ef4444;
+  }
+
+  .stepItem.cancelled & {
+    background: #eab308;
+  }
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0);
+  }
+}
+
+// 已完成图标
+.stepIconDone {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.stepIconDotDone {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #22c55e;
+}
+
+// 失败图标
+.stepIconError {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.stepIconDotError {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #ef4444;
+}
+
+// 步骤名称
+.stepLabel {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #94a3b8;
+
+  .stepItem.active & {
+    color: #cbd5e1;
+  }
+
+  .stepItem.done & {
+    color: #94a3b8;
+  }
+
+  .stepItem.error &,
+  .stepItem.cancelled & {
+    color: #cbd5e1;
+  }
+}
+
+// 右侧完成勾
+.stepCheckRight {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #22c55e;
+  margin-left: auto;
+}
+
+// 右侧失败叉
+.stepCrossRight {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  font-size: 0.75rem;
+}
+
+// 跑马灯圆点
+.stepDots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 2px;
+}
+
+.stepDotItem {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: #f97316;
+  animation: marqueeDot 1.4s ease-in-out infinite;
+
+  &:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+}
+
+@keyframes marqueeDot {
+  0%, 80%, 100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+// 响应式
+@media (max-width: 639px) {
+  .stepIcon,
+  .stepIconDone,
+  .stepIconError {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  .stepLabel {
+    font-size: 0.75rem;
+  }
+}
+
+// 动画延迟
+@for $i from 1 through 6 {
+  .stepItem:nth-child(#{$i}) {
+    animation-delay: #{($i - 1) * 0.08}s;
+  }
+}
