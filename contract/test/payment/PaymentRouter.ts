@@ -14,15 +14,15 @@ describe("PaymentRouter + SettlementVault", async function () {
     await publicClient.waitForTransactionReceipt({ hash });
   }
 
-  async function deployPaymentStack(expectedChainId?: bigint) {
-    const chainId = expectedChainId ?? BigInt(await publicClient.getChainId());
+  async function deployPaymentStack() {
+    const chainId = BigInt(await publicClient.getChainId());
     const usdc = await viem.deployContract("MockUSDC");
     const vault = await viem.deployContract("SettlementVault", [admin.account.address]);
     const routerImpl = await viem.deployContract("PaymentRouter");
     const initData = encodeFunctionData({
       abi: routerImpl.abi,
       functionName: "initialize",
-      args: [admin.account.address, vault.address, usdc.address, chainId],
+      args: [admin.account.address, vault.address],
     });
     const routerProxy = await viem.deployContract("PaymentRouterProxy", [routerImpl.address, initData]);
     const router = await viem.getContractAt("PaymentRouter", routerProxy.address);
@@ -33,6 +33,15 @@ describe("PaymentRouter + SettlementVault", async function () {
         abi: vault.abi,
         functionName: "grantRole",
         args: [await vault.read.ROUTER_ROLE(), router.address],
+      }),
+    );
+
+    await waitForTx(
+      await admin.writeContract({
+        address: router.address,
+        abi: router.abi,
+        functionName: "addToken",
+        args: [chainId, usdc.address, 6, "USDC"],
       }),
     );
 
@@ -99,7 +108,7 @@ describe("PaymentRouter + SettlementVault", async function () {
     );
   });
 
-  it("reverts when token is not configured payment token", async function () {
+  it("reverts when token is not in whitelist", async function () {
     const { router } = await deployPaymentStack();
     const other = await viem.deployContract("MockUSDC");
     const amount = 100_000n;
@@ -133,29 +142,6 @@ describe("PaymentRouter + SettlementVault", async function () {
         abi: router.abi,
         functionName: "payOrder",
         args: ["opi_noapprove-4444-4444-8444-444444444444", "ORD-NOAPP", usdc.address, amount],
-      }),
-    );
-  });
-
-  it("reverts when chain id mismatches expectedChainId", async function () {
-    const wrongChainId = 999999n;
-    const { usdc, router } = await deployPaymentStack(wrongChainId);
-    const amount = 100_000n;
-
-    await usdc.write.mint([payer.account.address, amount]);
-    await payer.writeContract({
-      address: usdc.address,
-      abi: usdc.abi,
-      functionName: "approve",
-      args: [router.address, amount],
-    });
-
-    await assert.rejects(
-      payer.writeContract({
-        address: router.address,
-        abi: router.abi,
-        functionName: "payOrder",
-        args: ["opi_chain-5555-4555-8555-555555555555", "ORD-CHAIN", usdc.address, amount],
       }),
     );
   });
@@ -201,5 +187,137 @@ describe("PaymentRouter + SettlementVault", async function () {
     assert.equal(log.topics[2], keccak256(toBytes(orderRef)));
     const paddedPayer = `0x${payer.account.address.slice(2).padStart(64, "0")}`.toLowerCase();
     assert.equal(log.topics[3]?.toLowerCase(), paddedPayer);
+  });
+
+  it("supports multiple tokens via whitelist", async function () {
+    const { usdc, vault, router, chainId } = await deployPaymentStack();
+    const usdt = await viem.deployContract("MockUSDC");
+    const amount = 1_000_000n;
+    const intentId1 = "opi_multi1-7777-4777-8777-777777777777";
+    const intentId2 = "opi_multi2-8888-4888-8888-888888888888";
+    const orderRef = "ORD-MULTI";
+
+    await waitForTx(
+      await admin.writeContract({
+        address: router.address,
+        abi: router.abi,
+        functionName: "addToken",
+        args: [chainId, usdt.address, 6, "USDT"],
+      }),
+    );
+
+    await usdc.write.mint([payer.account.address, amount]);
+    await usdt.write.mint([payer.account.address, amount]);
+
+    await payer.writeContract({
+      address: usdc.address,
+      abi: usdc.abi,
+      functionName: "approve",
+      args: [router.address, amount],
+    });
+    await payer.writeContract({
+      address: usdt.address,
+      abi: usdt.abi,
+      functionName: "approve",
+      args: [router.address, amount],
+    });
+
+    await waitForTx(
+      await payer.writeContract({
+        address: router.address,
+        abi: router.abi,
+        functionName: "payOrder",
+        args: [intentId1, orderRef, usdc.address, amount],
+      }),
+    );
+
+    await waitForTx(
+      await payer.writeContract({
+        address: router.address,
+        abi: router.abi,
+        functionName: "payOrder",
+        args: [intentId2, orderRef, usdt.address, amount],
+      }),
+    );
+
+    assert.equal(await router.read.isIntentPaid([intentId1]), true);
+    assert.equal(await router.read.isIntentPaid([intentId2]), true);
+    assert.equal(await usdc.read.balanceOf([vault.address]), amount);
+    assert.equal(await usdt.read.balanceOf([vault.address]), amount);
+  });
+
+  it("can disable and re-enable token", async function () {
+    const { usdc, router, chainId } = await deployPaymentStack();
+    const amount = 100_000n;
+    const intentId = "opi_disable-9999-4999-8999-999999999999";
+    const orderRef = "ORD-DISABLE";
+
+    await usdc.write.mint([payer.account.address, amount * 2n]);
+    await payer.writeContract({
+      address: usdc.address,
+      abi: usdc.abi,
+      functionName: "approve",
+      args: [router.address, amount * 2n],
+    });
+
+    await waitForTx(
+      await payer.writeContract({
+        address: router.address,
+        abi: router.abi,
+        functionName: "payOrder",
+        args: [intentId, orderRef, usdc.address, amount],
+      }),
+    );
+
+    await waitForTx(
+      await admin.writeContract({
+        address: router.address,
+        abi: router.abi,
+        functionName: "setTokenStatus",
+        args: [chainId, usdc.address, false],
+      }),
+    );
+
+    await assert.rejects(
+      payer.writeContract({
+        address: router.address,
+        abi: router.abi,
+        functionName: "payOrder",
+        args: ["opi_disabled-aaaa-4aaa-8aaa-aaaaaaaaaaaa", "ORD-DIS", usdc.address, amount],
+      }),
+    );
+
+    await waitForTx(
+      await admin.writeContract({
+        address: router.address,
+        abi: router.abi,
+        functionName: "setTokenStatus",
+        args: [chainId, usdc.address, true],
+      }),
+    );
+
+    await waitForTx(
+      await payer.writeContract({
+        address: router.address,
+        abi: router.abi,
+        functionName: "payOrder",
+        args: ["opi_reenabled-bbbb-4bbb-8bbb-bbbbbbbbbbbb", "ORD-REEN", usdc.address, amount],
+      }),
+    );
+
+    assert.equal(await router.read.isIntentPaid(["opi_reenabled-bbbb-4bbb-8bbb-bbbbbbbbbbbb"]), true);
+  });
+
+  it("can query token config", async function () {
+    const { usdc, router, chainId } = await deployPaymentStack();
+
+    const isSupported = await router.read.isTokenSupported([chainId, usdc.address]);
+    assert.equal(isSupported, true);
+
+    const config = await router.read.getTokenConfig([chainId, usdc.address]);
+    assert.equal(config.tokenAddress.toLowerCase(), usdc.address.toLowerCase());
+    assert.equal(config.decimals, 6);
+    assert.equal(config.isActive, true);
+    assert.equal(config.symbol, "USDC");
   });
 });

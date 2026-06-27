@@ -11,8 +11,8 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SettlementVault} from "./SettlementVault.sol";
 
 /// @title PaymentRouter
-/// @notice 订单 USDC 支付入口（UUPS）；幂等 intent、链上白名单 token/chainId、资金进入 SettlementVault
-/// @dev 支付 token 与 chainId 由 PAYMENT_ADMIN 在 initialize 时写入；运营配置以 sys_chain_network 为准，链上仅做最小校验
+/// @notice 订单多币种稳定币支付入口（UUPS）；幂等 intent、链上白名单 token、资金进入 SettlementVault
+/// @dev 支付 token 由 PAYMENT_ADMIN 通过白名单管理；运营配置以 sys_chain_network 为准，链上仅做最小校验
 contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeable, PausableUpgradeable {
     using SafeERC20 for IERC20;
 
@@ -21,11 +21,17 @@ contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeab
 
     uint256 public constant MAX_ORDER_REF_LENGTH = 64;
 
+    struct TokenConfig {
+        address tokenAddress;
+        uint8 decimals;
+        bool isActive;
+        string symbol;
+    }
+
     SettlementVault public settlementVault;
-    address public paymentToken;
-    uint256 public expectedChainId;
 
     mapping(bytes32 => bool) private _paidIntents;
+    mapping(uint256 => mapping(address => TokenConfig)) public supportedTokens;
 
     event PaymentPaid(
         string indexed intentId,
@@ -35,8 +41,9 @@ contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeab
         uint256 amount,
         uint256 timestamp
     );
-    event PaymentTokenUpdated(address oldToken, address newToken);
-    event ExpectedChainIdUpdated(uint256 oldChainId, uint256 newChainId);
+    event TokenAdded(uint256 indexed chainId, address indexed token, uint8 decimals, string symbol);
+    event TokenRemoved(uint256 indexed chainId, address indexed token);
+    event TokenStatusChanged(uint256 indexed chainId, address indexed token, bool isActive);
 
     error ZeroAddress();
     error EmptyIntentId();
@@ -44,8 +51,10 @@ contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeab
     error OrderRefTooLong(uint256 length, uint256 maxLength);
     error ZeroAmount();
     error IntentAlreadyPaid(string intentId);
-    error TokenNotAllowed(address token);
-    error UnexpectedChainId(uint256 actual, uint256 expected);
+    error TokenNotSupported(address token);
+    error TokenAlreadySupported(address token);
+    error CannotRemoveActiveToken(address token);
+    error EmptySymbol();
     error ReentrancyGuardReentrantCall();
 
     uint256 private constant _NOT_ENTERED = 1;
@@ -66,14 +75,11 @@ contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeab
 
     function initialize(
         address admin,
-        address settlementVault_,
-        address paymentToken_,
-        uint256 expectedChainId_
+        address settlementVault_
     ) external initializer {
-        if (admin == address(0) || settlementVault_ == address(0) || paymentToken_ == address(0)) {
+        if (admin == address(0) || settlementVault_ == address(0)) {
             revert ZeroAddress();
         }
-        if (expectedChainId_ == 0) revert UnexpectedChainId(block.chainid, 0);
 
         __AccessControl_init();
         __Pausable_init();
@@ -84,8 +90,6 @@ contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeab
         _grantRole(PAUSER_ROLE, admin);
 
         settlementVault = SettlementVault(settlementVault_);
-        paymentToken = paymentToken_;
-        expectedChainId = expectedChainId_;
     }
 
     function payOrder(
@@ -97,10 +101,12 @@ contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeab
         _validateIntentAndOrderRef(intentId, orderRef);
         if (amount == 0) revert ZeroAmount();
 
+        if (!supportedTokens[block.chainid][token].isActive) {
+            revert TokenNotSupported(token);
+        }
+
         bytes32 intentHash = keccak256(bytes(intentId));
         if (_paidIntents[intentHash]) revert IntentAlreadyPaid(intentId);
-        if (token != paymentToken) revert TokenNotAllowed(token);
-        if (block.chainid != expectedChainId) revert UnexpectedChainId(block.chainid, expectedChainId);
 
         _paidIntents[intentHash] = true;
 
@@ -110,21 +116,78 @@ contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeab
         emit PaymentPaid(intentId, orderRef, _msgSender(), token, amount, block.timestamp);
     }
 
-    function setPaymentToken(address paymentToken_) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (paymentToken_ == address(0)) revert ZeroAddress();
-        emit PaymentTokenUpdated(paymentToken, paymentToken_);
-        paymentToken = paymentToken_;
-    }
-
-    function setExpectedChainId(uint256 expectedChainId_) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        if (expectedChainId_ == 0) revert UnexpectedChainId(block.chainid, 0);
-        emit ExpectedChainIdUpdated(expectedChainId, expectedChainId_);
-        expectedChainId = expectedChainId_;
-    }
-
     function setSettlementVault(address settlementVault_) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (settlementVault_ == address(0)) revert ZeroAddress();
         settlementVault = SettlementVault(settlementVault_);
+    }
+
+    function addToken(
+        uint256 chainId,
+        address token,
+        uint8 decimals,
+        string calldata symbol
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (token == address(0)) revert ZeroAddress();
+        if (bytes(symbol).length == 0) revert EmptySymbol();
+        if (supportedTokens[chainId][token].isActive) revert TokenAlreadySupported(token);
+
+        supportedTokens[chainId][token] = TokenConfig({
+            tokenAddress: token,
+            decimals: decimals,
+            isActive: true,
+            symbol: symbol
+        });
+
+        emit TokenAdded(chainId, token, decimals, symbol);
+    }
+
+    function removeToken(uint256 chainId, address token) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (!supportedTokens[chainId][token].isActive) revert TokenNotSupported(token);
+
+        delete supportedTokens[chainId][token];
+        emit TokenRemoved(chainId, token);
+    }
+
+    function setTokenStatus(
+        uint256 chainId,
+        address token,
+        bool isActive
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (supportedTokens[chainId][token].tokenAddress == address(0)) {
+            revert TokenNotSupported(token);
+        }
+        supportedTokens[chainId][token].isActive = isActive;
+        emit TokenStatusChanged(chainId, token, isActive);
+    }
+
+    function isTokenSupported(uint256 chainId, address token) external view returns (bool) {
+        return supportedTokens[chainId][token].isActive;
+    }
+
+    function getTokenConfig(uint256 chainId, address token) external view returns (TokenConfig memory) {
+        return supportedTokens[chainId][token];
+    }
+
+    function migrateInitialTokens(
+        address[] calldata tokens,
+        uint8[] calldata decimals,
+        string[] calldata symbols
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(tokens.length == decimals.length, "Length mismatch");
+        require(tokens.length == symbols.length, "Length mismatch");
+
+        for (uint256 i = 0; i < tokens.length; i++) {
+            if (tokens[i] == address(0)) revert ZeroAddress();
+            if (bytes(symbols[i]).length == 0) revert EmptySymbol();
+
+            supportedTokens[block.chainid][tokens[i]] = TokenConfig({
+                tokenAddress: tokens[i],
+                decimals: decimals[i],
+                isActive: true,
+                symbol: symbols[i]
+            });
+            emit TokenAdded(block.chainid, tokens[i], decimals[i], symbols[i]);
+        }
     }
 
     function isIntentPaid(string calldata intentId) external view returns (bool) {
@@ -149,5 +212,5 @@ contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeab
 
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
 
-    uint256[45] private __gap;
+    uint256[44] private __gap;
 }

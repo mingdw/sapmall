@@ -146,11 +146,13 @@ async function main() {
 
   await printAllPlatformConfigs(config);
 
-  const token = await publicClient.readContract({ address: router.address, abi: router.abi, functionName: "paymentToken" });
-  const chainId = await publicClient.readContract({ address: router.address, abi: router.abi, functionName: "expectedChainId" });
+  const chainId = await publicClient.getChainId();
+  const usdcAddress = process.env.PAYMENT_USDC_ADDRESS as `0x${string}`;
+  const isTokenSupported = await publicClient.readContract({ address: router.address, abi: router.abi, functionName: "isTokenSupported", args: [BigInt(chainId), usdcAddress] });
+  const tokenConfig = await publicClient.readContract({ address: router.address, abi: router.abi, functionName: "getTokenConfig", args: [BigInt(chainId), usdcAddress] });
   const routerRole = await vault.read.ROUTER_ROLE();
   const hasRouterRole = await publicClient.readContract({ address: vault.address, abi: vault.abi, functionName: "hasRole", args: [routerRole, router.address] });
-  console.log({ token, chainId: chainId.toString(), hasRouterRole });
+  console.log({ isTokenSupported, tokenConfig, hasRouterRole });
 }
 
 main().catch((error) => {

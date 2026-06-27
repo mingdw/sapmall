@@ -564,9 +564,20 @@ type OrderStatusReq struct {
 }
 
 type OrderStatusResp struct {
-	OrderStatus   int64  `json:"orderStatus"`
-	PaymentStatus int64  `json:"paymentStatus"`
-	TxHash        string `json:"txHash,optional"`
+	OrderStatus       int64   `json:"orderStatus"`
+	PaymentStatus     int64   `json:"paymentStatus"`
+	TxHash            string  `json:"txHash,optional"`
+	OrderCode         string  `json:"orderCode,optional"`
+	TotalAmount       float64 `json:"totalAmount,optional"`
+	DiscountAmount    float64 `json:"discountAmount,optional"`
+	PayableAmount     float64 `json:"payableAmount,optional"`
+	PlatformFeeAmount float64 `json:"platformFeeAmount,optional"`
+	PayAmount         float64 `json:"payAmount,optional"`
+	TokenSymbol       string  `json:"tokenSymbol,optional"`
+	ChainId           int64   `json:"chainId,optional"`
+	GasFeeUsdc        float64 `json:"gasFeeUsdc,optional"`
+	PaidAt            string  `json:"paidAt,optional"`
+	FailReason        string  `json:"failReason,optional"`
 }
 
 type ModifyUserInfoReq struct {

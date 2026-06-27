@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, Suspense, lazy } from 'react';
 import {
   Form,
   Steps,
@@ -806,6 +806,11 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
     }));
   };
 
+  const specificationValues = useMemo(
+    () => extractSpecifications(productData.attrs),
+    [productData.attrs]
+  );
+
   // 渲染步骤内容
   const renderStepContent = () => {
     const step = steps[currentStep];
@@ -882,7 +887,7 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
             </p>
             <div className={styles.specAndSkuContainer}>
               <SpecificationEditor
-                value={extractSpecifications(currentData.attrs)}
+                value={specificationValues}
                 onChange={(newSpecs) => {
                   const productId = currentData.spu.id || 0;
                   const productCode = currentData.spu.code || '';
@@ -902,7 +907,7 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
                 categoryId={form.getFieldValue('category3Id') || form.getFieldValue('category2Id') || form.getFieldValue('category1Id')}
               />
               <SKUManager
-                specifications={extractSpecifications(currentData.attrs)}
+                specifications={specificationValues}
                 skus={currentData.skus ? currentData.skus.map(convertSkuToItem) : []}
                 onChange={(newSkus) => {
                   const productId = currentData.spu.id || 0;

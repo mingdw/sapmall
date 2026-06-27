@@ -26,20 +26,26 @@ export function calcPlatformFeeInToken(
   return calcPayAmountInToken(feeUsdc, method);
 }
 
+/** 链上划转应付（不含 Gas）：订单 + 平台费（USDC 计价） */
+export function calcPayAmountDueUsdc(orderPayableUsdc: number, method: PaymentMethod): number {
+  return orderPayableUsdc + calcPlatformFeeUsdc(orderPayableUsdc, method);
+}
+
+/** 链上划转应付换算为支付币种（不含 Gas） */
+export function calcPayAmountDueInToken(orderPayableUsdc: number, method: PaymentMethod): number {
+  return calcPayAmountInToken(calcPayAmountDueUsdc(orderPayableUsdc, method), method);
+}
+
 /** 应付 + 平台费 + Gas 合计（USDC 计价） */
 export function calcTotalDueUsdc(
   orderPayableUsdc: number,
   method: PaymentMethod,
   gasFeeUsdc: number,
 ): number {
-  return (
-    orderPayableUsdc +
-    calcPlatformFeeUsdc(orderPayableUsdc, method) +
-    Math.max(0, gasFeeUsdc)
-  );
+  return calcPayAmountDueUsdc(orderPayableUsdc, method) + Math.max(0, gasFeeUsdc);
 }
 
-/** 约合支付：合计 USDC 按汇率换算为当前币种 */
+/** 约合支付：合计 USDC 按汇率换算为当前币种（含 Gas，与链上划转语义不一致，慎用） */
 export function calcTotalDueInToken(
   orderPayableUsdc: number,
   method: PaymentMethod,

@@ -35,6 +35,7 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
   const [hoveredNameIndex, setHoveredNameIndex] = useState<number | null>(null); // 鼠标悬停的规格名称索引
   const [templates, setTemplates] = useState<SpecificationTemplate[]>([]);
   const isInternalUpdate = useRef(false); // 标记是否是内部更新
+  const prevValueSerializedRef = useRef<string | null>(null); // 按内容比较 value，避免父组件每次渲染传入新对象引用
   const [addingValueIndex, setAddingValueIndex] = useState<number | null>(null); // 正在添加值的规格索引
   const [newValueInput, setNewValueInput] = useState<string>(''); // 新值的输入
   const inputRefs = useRef<{ [key: number]: InputRef | null }>({}); // 存储输入框引用
@@ -52,25 +53,43 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
   // 使用 ref 存储最新的规格数据，确保 notifyChange 总是使用最新值
   const specsRef = useRef<SpecificationItem[]>([]);
   
-  // 初始化：将JSON对象转换为数组格式
-  // 只在value从外部真正变化时更新（避免编辑时频繁更新）
-  useEffect(() => {
-    // 如果是内部更新触发的，不重新设置
-    if (isInternalUpdate.current) {
-      isInternalUpdate.current = false;
-      return;
-    }
-
-    // 将外部传入的 value 转换为数组格式
-    const items: SpecificationItem[] = Object.entries(value || {})
+  // 将外部 value 转为本地数组格式
+  const valueToItems = (source: Record<string, string[]>): SpecificationItem[] => {
+    return Object.entries(source || {})
       .filter(([name, values]) => name.trim() && Array.isArray(values) && values.length > 0)
       .map(([name, values]) => ({
         name,
         values: values.filter(v => v.trim()),
       }));
-    
-    setSpecifications(items);
-    specsRef.current = items; // 同步更新 ref
+  };
+
+  // 初始化 / 同步：仅在 value 内容真正变化时更新，并保留未同步到父组件的草稿行
+  useEffect(() => {
+    const serialized = JSON.stringify(value || {});
+
+    if (isInternalUpdate.current) {
+      isInternalUpdate.current = false;
+      prevValueSerializedRef.current = serialized;
+      return;
+    }
+
+    if (serialized === prevValueSerializedRef.current) {
+      return;
+    }
+    prevValueSerializedRef.current = serialized;
+
+    const itemsFromParent = valueToItems(value || {});
+
+    setSpecifications((prev) => {
+      const parentNames = new Set(itemsFromParent.map((item) => item.name.trim()));
+      // 保留名称未填写、或父组件尚未收录的草稿规格行
+      const drafts = prev.filter(
+        (spec) => !spec.name.trim() || !parentNames.has(spec.name.trim())
+      );
+      const merged = [...itemsFromParent, ...drafts];
+      specsRef.current = merged;
+      return merged;
+    });
   }, [value]);
 
   // 开始编辑规格名称（点击名称时触发）
@@ -116,13 +135,8 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
     setEditingNameValue('');
   };
 
-  // 取消编辑规格名称
-  const cancelNameEdit = (index: number) => {
-    const spec = specifications[index];
-    // 如果规格名和值都为空，删除该规格
-    if (!spec.name.trim() && spec.values.length === 0) {
-      removeSpecification(index);
-    }
+  // 取消编辑规格名称（仅退出编辑态，不自动删除草稿行，避免失焦时行被误删）
+  const cancelNameEdit = () => {
     setEditingNameIndex(null);
     setEditingNameValue('');
   };
@@ -350,7 +364,7 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
                   if (editingNameValue.trim()) {
                     saveNameEdit(index);
                   } else {
-                    cancelNameEdit(index);
+                    cancelNameEdit();
                   }
                 }, 200);
               }}

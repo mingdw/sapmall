@@ -62,11 +62,20 @@ export async function deployPaymentAndPlatformConfig(ctx: DeployContext) {
   const initRouterData = encodeFunctionData({
     abi: routerImpl.abi,
     functionName: "initialize",
-    args: [admin, vault.address, paymentToken, BigInt(chainId)],
+    args: [admin, vault.address],
   });
 
   const routerProxy = await ctx.viem.deployContract("PaymentRouterProxy", [routerImpl.address, initRouterData]);
   console.log("PaymentRouter proxy:", routerProxy.address);
+
+  const addTokenTx = await ctx.deployer.writeContract({
+    address: routerProxy.address,
+    abi: routerImpl.abi,
+    functionName: "addToken",
+    args: [BigInt(chainId), paymentToken, 6, "USDC"],
+  });
+  await ctx.publicClient.waitForTransactionReceipt({ hash: addTokenTx });
+  console.log("Added USDC to token whitelist");
 
   const platformImpl = await ctx.viem.deployContract("PlatformConfig");
   console.log("PlatformConfig implementation:", platformImpl.address);

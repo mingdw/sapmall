@@ -24,6 +24,23 @@ export const paymentRouterAbi = [
     name: 'expectedChainId',
     stateMutability: 'view',
     inputs: [],
-    outputs: [{ name: '', type: 'uint256' }],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    type: 'function',
+    name: 'isTokenSupported',
+    stateMutability: 'view',
+    inputs: [
+      { name: 'chainId', type: 'uint256' },
+      { name: 'token', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    type: 'function',
+    name: 'isIntentPaid',
+    stateMutability: 'view',
+    inputs: [{ name: 'intentId', type: 'string' }],
+    outputs: [{ name: '', type: 'bool' }],
   },
 ] as const;

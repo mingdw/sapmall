@@ -109,7 +109,9 @@ INSERT INTO `sys_chain_network` (
 ),
 (
   5042002, 'arc_testnet', 'Arc Testnet', 'https://rpc.testnet.arc.network', 'https://testnet.arcscan.app', 'USDC',
-  '', '', '',
+  '0x8569c81a0f1cb4cc7ceedda24e586fba8ffe2485',
+  '0xa9af86f5ac67a270d52f0e0936623cb2e4a71a9b',
+  '0x568ac7ec3ee1c5b72134b17e537c6db87aff839d',
   'CHAIN_SIGNER_ARC_TESTNET', 1, 20, 0, 'wallet_ui:switchable', 'system', 'system'
 ),
 (

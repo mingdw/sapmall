@@ -4,9 +4,31 @@ import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi';
 import { config } from '../config/wagmi';
 import {
   isChainMismatchError,
+  isConnectorNotConnectedErrorFrom,
   isRecoverableWalletChain,
   parseChainMismatchMessage,
 } from '../utils/wagmiChainMismatch';
+import { isUserWalletDisconnecting } from '../utils/walletDisconnectGuard';
+
+async function readConnectorChainId(
+  connector: NonNullable<ReturnType<typeof useAccount>['connector']>,
+): Promise<number | null> {
+  if (typeof connector.getChainId === 'function') {
+    return connector.getChainId();
+  }
+  try {
+    const provider = await connector.getProvider();
+    if (provider && typeof provider === 'object' && 'request' in provider) {
+      const hex = await (provider as { request: (args: { method: string }) => Promise<string> }).request({
+        method: 'eth_chainId',
+      });
+      return Number.parseInt(hex, 16);
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
 
 /**
  * 当 wagmi connection 链与钱包实际链不一致时自动同步（常见于 MetaMask 切换网络后刷新页面）。
@@ -22,6 +44,7 @@ export function WagmiChainMismatchRecovery() {
 
   const trySyncToWalletChain = useCallback(
     async (targetChainId: number, reason: string) => {
+      if (isUserWalletDisconnecting()) return;
       if (!isRecoverableWalletChain(targetChainId)) return;
       const attemptKey = `${reason}:${targetChainId}`;
       if (recoveringRef.current || lastAttemptKeyRef.current === attemptKey) return;
@@ -32,18 +55,24 @@ export function WagmiChainMismatchRecovery() {
       try {
         await switchChainAsync({ chainId: targetChainId });
       } catch (switchError) {
+        if (isUserWalletDisconnecting() || isConnectorNotConnectedErrorFrom(switchError)) {
+          return;
+        }
         console.warn('[WagmiChainMismatchRecovery] switchChain failed, reconnecting…', switchError);
         try {
+          if (isUserWalletDisconnecting()) return;
           const activeConnector = connector;
           await disconnectAsync();
-          if (activeConnector) {
+          if (activeConnector && !isUserWalletDisconnecting()) {
             await connect(config, {
               connector: activeConnector,
               chainId: targetChainId as (typeof config.chains)[number]['id'],
             });
           }
         } catch (reconnectError) {
-          console.error('[WagmiChainMismatchRecovery] reconnect failed', reconnectError);
+          if (!isConnectorNotConnectedErrorFrom(reconnectError)) {
+            console.error('[WagmiChainMismatchRecovery] reconnect failed', reconnectError);
+          }
         }
       } finally {
         recoveringRef.current = false;
@@ -58,6 +87,7 @@ export function WagmiChainMismatchRecovery() {
   );
 
   useEffect(() => {
+    if (isUserWalletDisconnecting()) return;
     if (!connectError?.message || !isChainMismatchError(connectError.message)) return;
     const parsed = parseChainMismatchMessage(connectError.message);
     if (!parsed) return;
@@ -65,17 +95,21 @@ export function WagmiChainMismatchRecovery() {
   }, [connectError, trySyncToWalletChain]);
 
   useEffect(() => {
-    if (!isConnected || !connector) return;
+    if (!isConnected || !connector || isUserWalletDisconnecting()) return;
 
     let cancelled = false;
     void (async () => {
       try {
-        const connectorChainId = await connector.getChainId();
-        if (cancelled || connectorChainId === chainId) return;
+        const connectorChainId = await readConnectorChainId(connector);
+        if (connectorChainId == null) return;
+        if (cancelled || isUserWalletDisconnecting()) return;
+        if (connectorChainId === chainId) return;
         if (!isRecoverableWalletChain(connectorChainId)) return;
         await trySyncToWalletChain(connectorChainId, 'connected-sync');
       } catch (err) {
-        console.warn('[WagmiChainMismatchRecovery] connector chain probe failed', err);
+        if (!isConnectorNotConnectedErrorFrom(err)) {
+          console.warn('[WagmiChainMismatchRecovery] connector chain probe failed', err);
+        }
       }
     })();
 

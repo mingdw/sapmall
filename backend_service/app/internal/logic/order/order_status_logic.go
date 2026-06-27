@@ -3,6 +3,7 @@ package order
 import (
 	"context"
 	"strings"
+	"time"
 
 	"sapphire-mall/app/internal/chain"
 	"sapphire-mall/app/internal/customererrors"
@@ -46,11 +47,7 @@ func (l *OrderStatusLogic) GetOrderStatus(req *types.OrderStatusReq) (resp *type
 		return customererrors.NotFoundResp("支付记录不存在"), nil
 	}
 
-	respData := types.OrderStatusResp{
-		OrderStatus:   int64(orderRow.OrderStatus),
-		PaymentStatus: int64(paymentRow.PaymentStatus),
-		TxHash:        paymentRow.TxHash,
-	}
+	respData := buildOrderStatusResp(orderRow, paymentRow, req.TxHash)
 
 	// 已支付成功，直接返回
 	if paymentRow.PaymentStatus == PaymentStatusPaid {
@@ -62,8 +59,15 @@ func (l *OrderStatusLogic) GetOrderStatus(req *types.OrderStatusReq) (resp *type
 		return customererrors.SuccessData(respData), nil
 	}
 
-	// 链上确认中且有 txHash，查询链上最新状态
-	if paymentRow.PaymentStatus == PaymentStatusConfirming && paymentRow.TxHash != "" {
+	// 链上确认中或前端已提交 tx（尚未落库）时，按 txHash 查链同步
+	reqTxHash := strings.TrimSpace(req.TxHash)
+	if reqTxHash != "" && strings.TrimSpace(paymentRow.TxHash) == "" {
+		paymentRow.TxHash = reqTxHash
+	}
+	shouldSyncChain := strings.TrimSpace(paymentRow.TxHash) != "" &&
+		(paymentRow.PaymentStatus == PaymentStatusConfirming ||
+			(paymentRow.PaymentStatus == PaymentStatusUnpaid && reqTxHash != ""))
+	if shouldSyncChain {
 		chainUpdated := l.syncChainStatus(orderRow.ID, paymentRow, req.ChainId)
 
 		// 链上状态有更新，重新读取数据库获取最新状态
@@ -71,14 +75,49 @@ func (l *OrderStatusLogic) GetOrderStatus(req *types.OrderStatusReq) (resp *type
 			orderRow2, _ := orderRepo.GetByOrderCode(l.ctx, req.OrderCode)
 			paymentRow2, _ := paymentRepo.GetByOrderID(l.ctx, orderRow.ID)
 			if orderRow2 != nil && paymentRow2 != nil {
-				respData.OrderStatus = int64(orderRow2.OrderStatus)
-				respData.PaymentStatus = int64(paymentRow2.PaymentStatus)
+				orderRow = orderRow2
+				paymentRow = paymentRow2
 			}
 		}
 		// 链上仍为确认中，不更新数据库，继续返回当前确认中状态给前端
 	}
 
-	return customererrors.SuccessData(respData), nil
+	return customererrors.SuccessData(buildOrderStatusResp(orderRow, paymentRow, req.TxHash)), nil
+}
+
+func buildOrderStatusResp(orderRow *model.Order, paymentRow *model.OrderPayment, fallbackTxHash string) types.OrderStatusResp {
+	gasFeeUsdc := paymentRow.EstGasFee
+	if paymentRow.ActGasFee > 0 {
+		gasFeeUsdc = paymentRow.ActGasFee
+	}
+	paidAt := paymentRow.PaidAt
+	if paidAt.IsZero() {
+		paidAt = paymentRow.ConfirmedAt
+	}
+	totalAmount := orderRow.TotalAmount
+	if totalAmount <= 0 && orderRow.PayableAmount > 0 {
+		totalAmount = orderRow.PayableAmount + orderRow.DiscountAmount
+	}
+	txHash := strings.TrimSpace(paymentRow.TxHash)
+	if txHash == "" {
+		txHash = strings.TrimSpace(fallbackTxHash)
+	}
+	return types.OrderStatusResp{
+		OrderCode:         orderRow.OrderCode,
+		OrderStatus:       int64(orderRow.OrderStatus),
+		PaymentStatus:     int64(paymentRow.PaymentStatus),
+		TxHash:            txHash,
+		TotalAmount:       totalAmount,
+		DiscountAmount:    orderRow.DiscountAmount,
+		PayableAmount:     orderRow.PayableAmount,
+		PlatformFeeAmount: orderRow.PlatformFeeAmount,
+		PayAmount:         paymentRow.PayAmount,
+		TokenSymbol:       paymentRow.TokenSymbol,
+		ChainId:           paymentRow.ChainId,
+		GasFeeUsdc:        gasFeeUsdc,
+		PaidAt:            formatTimeRFC3339(paidAt),
+		FailReason:        paymentRow.FailReason,
+	}
 }
 
 // syncChainStatus 同步链上支付状态，返回是否有更新
@@ -162,6 +201,7 @@ func (l *OrderStatusLogic) syncChainStatus(orderID int64, paymentRow *model.Orde
 func (l *OrderStatusLogic) markPaid(orderID int64, blockNumber int64, actGasFee float64) {
 	orderRepo := repository.NewOrderRepository(l.svcCtx.GormDB)
 	paymentRepo := repository.NewOrderPaymentRepository(l.svcCtx.GormDB)
+	now := time.Now()
 
 	_ = orderRepo.UpdateColumnsByID(l.ctx, orderID, map[string]interface{}{
 		"order_status":        OrderStatusPaid,
@@ -175,6 +215,8 @@ func (l *OrderStatusLogic) markPaid(orderID int64, blockNumber int64, actGasFee 
 		"payment_status":      PaymentStatusPaid,
 		"payment_status_desc": PaymentStatusDesc(PaymentStatusPaid),
 		"block_number":        blockNumber,
+		"confirmed_at":        now,
+		"paid_at":             now,
 		"act_gas_fee":         actGasFee,
 	})
 

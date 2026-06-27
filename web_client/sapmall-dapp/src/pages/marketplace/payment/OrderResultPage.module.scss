@@ -250,11 +250,22 @@
 }
 
 .detailCardTitle {
-  margin: 0;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: #64748b;
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.detailRowTotal {
+  margin-top: 0.25rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.detailValueDiscount {
+  color: #34d399 !important;
 }
 
 .detailList {
@@ -310,6 +321,33 @@
   line-height: 1.35;
   word-break: break-all;
   color: #cbd5e1;
+}
+
+.detailOrderCode {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  max-width: 70%;
+}
+
+.copyOrderBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  border: none;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    color: #e2e8f0;
+    background: rgba(148, 163, 184, 0.12);
+  }
 }
 
 .txLink {
@@ -418,6 +456,102 @@
   padding: 1.25rem 0 0;
 }
 
+.itemsSection {
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 0.5s ease-out 0.28s both;
+}
+
+.itemsSectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.875rem;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.itemsSectionTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.itemsSectionCount {
+  font-size: 0.75rem;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.itemsPlainList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.itemsPlainRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.itemsPlainThumb {
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.itemsPlainImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.itemsPlainBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-top: 0.125rem;
+}
+
+.itemsPlainName {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #f1f5f9;
+  line-height: 1.4;
+}
+
+.itemsPlainSpec {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  line-height: 1.35;
+}
+
+.itemsPlainQty {
+  margin: 0.125rem 0 0;
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+/* 保留旧类名供兼容，新页面不再使用卡片样式 */
 .resultCard {
   animation: fadeInUp 0.5s ease-out 0.28s both;
 }

@@ -5,7 +5,7 @@ import type {
   OrderPreviewResult,
 } from '../../../../services/api/orderApi';
 import type { CheckoutContactDraft, PaymentMethod } from '../types/paymentTypes';
-import { calcPlatformFeeUsdc, calcTotalDueUsdc } from './paymentFee';
+import { calcPayAmountDueInToken, calcPlatformFeeUsdc } from './paymentFee';
 import { estimateGasFeeUsdc } from './estimateGasFee';
 
 export interface BuildCreateOrderPayloadInput {
@@ -27,7 +27,7 @@ export function buildCreateOrderPayload(input: BuildCreateOrderPayloadInput): Cr
   const chainId = input.chainId && input.chainId > 0 ? input.chainId : ARC_TESTNET_CHAIN_ID;
   const gasFeeUsdc = estimateGasFeeUsdc(chainId);
   const platformFeeAmount = calcPlatformFeeUsdc(payableAmount, input.paymentMethod);
-  const payAmount = calcTotalDueUsdc(payableAmount, input.paymentMethod, gasFeeUsdc);
+  const payAmount = calcPayAmountDueInToken(payableAmount, input.paymentMethod);
 
   const dial = getPhoneDialCode(input.contact.phoneCountry);
   const localPhone = input.contact.phone.trim();
@@ -42,7 +42,7 @@ export function buildCreateOrderPayload(input: BuildCreateOrderPayloadInput): Cr
     totalAmount: item?.subtotal,
     payerAddress: input.payerAddress,
     chainId,
-    tokenSymbol: input.paymentMethod === 'USDC' ? 'USDC' : 'USDC',
+    tokenSymbol: input.paymentMethod,
     promotions: input.preview.promotions?.map((p) => ({
       promoId: p.id,
       labelKey: p.labelKey,

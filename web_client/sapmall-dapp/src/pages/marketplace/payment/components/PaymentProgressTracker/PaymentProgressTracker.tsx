@@ -7,9 +7,10 @@ import styles from './PaymentProgressTracker.module.scss';
 interface Props {
   phase: PaymentPhase;
   errorKey: string | null;
+  errorDetail?: string | null;
 }
 
-const PaymentProgressTracker: React.FC<Props> = ({ phase, errorKey }) => {
+const PaymentProgressTracker: React.FC<Props> = ({ phase, errorKey, errorDetail }) => {
   const visibleSteps = useMemo(() => {
     return PAYMENT_STEPS.reduce<{ step: (typeof PAYMENT_STEPS)[number]; status: StepStatus }[]>(
       (acc, step, i) => {
@@ -23,6 +24,8 @@ const PaymentProgressTracker: React.FC<Props> = ({ phase, errorKey }) => {
     );
   }, [phase, errorKey]);
 
+  const failedStep = visibleSteps.find((s) => s.status.status === 'error');
+
   if (visibleSteps.length === 0) return null;
 
   return (
@@ -32,6 +35,9 @@ const PaymentProgressTracker: React.FC<Props> = ({ phase, errorKey }) => {
           <ProgressStep key={step.key} step={step} status={status} />
         ))}
       </ol>
+      {failedStep && errorDetail ? (
+        <p className={styles.trackerErrorDetail} role="alert">{errorDetail}</p>
+      ) : null}
     </div>
   );
 };

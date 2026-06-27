@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useMemo, useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Button, Spin } from 'antd';
 import {
   CheckCircle2,
@@ -8,13 +8,15 @@ import {
   FileText,
   Share2,
   ArrowRight,
-  Package,
+  Copy,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getTxExplorerUrl } from '../../../config/paymentChains';
-import { estimateGasFeeUsdc } from './utils/estimateGasFee';
-import { formatUsdcDisplay } from './utils/formatPaymentAmount';
-import PaymentGlassCard from './components/PaymentGlassCard';
+import { isSapPayment } from '../../../config/paymentCurrencies';
+import { formatUsdcDisplay, formatTokenDisplay } from './utils/formatPaymentAmount';
+import { buildOrderResultView, buildOrderResultViewFromStatus } from './utils/buildOrderResultView';
+import type { PaymentMethod } from './types/paymentTypes';
+import { useOrderResultDetail } from './hooks/useOrderResultDetail';
 import { redirectToAdmin } from '../../../utils/redirectToAdmin';
 import { navigateToMarketplace } from '../paths';
 import { OrderPreviewItem } from '../../../services/api/orderApi';
@@ -31,47 +33,103 @@ import resultStyles from './OrderResultPage.module.scss';
 
 interface ResultLocationState {
   txHash?: string;
-  /** 实付金额（USDC） */
-  amount?: number;
   chainId?: number;
   items?: OrderPreviewItem[];
-  /** 商品总金额（不含平台费与 Gas） */
-  goodsAmount?: number;
-  /** 预估 Gas 费（USDC） */
-  gasFeeUsdc?: number;
+  platformFeeAmount?: number;
+  payableAmount?: number;
+  tokenSymbol?: string;
 }
 
 const FULFILLMENT_STEP_KEYS = ['paid', 'shipping', 'completed'] as const;
 
-/** 缩短链上哈希展示 */
 const shortenHash = (hash: string, head = 10, tail = 8): string => {
   if (hash.length <= head + tail + 3) return hash;
   return `${hash.slice(0, head)}…${hash.slice(-tail)}`;
 };
 
+function formatPaidAt(iso?: string, locale = 'zh-CN'): string {
+  if (!iso?.trim()) return '—';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleString(locale, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+}
+
+function formatDiscount(amount: number): string {
+  if (amount <= 0) return formatUsdcDisplay(0);
+  return `-${formatUsdcDisplay(amount)}`;
+}
+
 const OrderResultPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const { orderCode: orderCodeParam } = useParams<{ orderCode: string }>();
   const state = (location.state || {}) as ResultLocationState;
 
-  const explorer =
-    state.txHash && state.chainId ? getTxExplorerUrl(state.chainId, state.txHash) : undefined;
+  const { orderDetail, statusDetail, loading } = useOrderResultDetail({
+    orderCode: orderCodeParam,
+    txHash: state.txHash,
+    chainId: state.chainId,
+  });
 
-  const goodsTotal = useMemo(() => {
-    if (state.goodsAmount != null) return state.goodsAmount;
-    if (state.items?.length) {
-      return state.items.reduce((sum, item) => sum + (item.subtotal ?? 0), 0);
-    }
-    return 0;
-  }, [state.goodsAmount, state.items]);
-
-  const gasFee = useMemo(
-    () => state.gasFeeUsdc ?? estimateGasFeeUsdc(state.chainId),
-    [state.gasFeeUsdc, state.chainId],
+  const txFallback = useMemo(
+    () => ({
+      txHash: statusDetail?.txHash?.trim() || state.txHash?.trim() || undefined,
+      chainId: statusDetail?.chainId ?? state.chainId,
+    }),
+    [state.chainId, state.txHash, statusDetail?.chainId, statusDetail?.txHash],
   );
 
-  const paidAmount = state.amount ?? goodsTotal + gasFee;
+  const resultFallback = useMemo(
+    () => ({
+      ...txFallback,
+      platformFeeAmount: state.platformFeeAmount ?? statusDetail?.platformFeeAmount,
+      payableAmount: state.payableAmount ?? statusDetail?.payableAmount,
+      tokenSymbol: state.tokenSymbol ?? statusDetail?.tokenSymbol,
+    }),
+    [
+      state.payableAmount,
+      state.platformFeeAmount,
+      state.tokenSymbol,
+      statusDetail?.payableAmount,
+      statusDetail?.platformFeeAmount,
+      statusDetail?.tokenSymbol,
+      txFallback,
+    ],
+  );
+
+  const resultView = useMemo(() => {
+    if (orderDetail) {
+      return buildOrderResultView(orderDetail, state.items, resultFallback, statusDetail);
+    }
+    if (statusDetail) {
+      return buildOrderResultViewFromStatus(statusDetail, resultFallback, state.items);
+    }
+    return null;
+  }, [orderDetail, resultFallback, state.items, statusDetail]);
+
+  const paymentToken =
+    (resultView?.paidTokenSymbol ??
+      state.tokenSymbol ??
+      statusDetail?.tokenSymbol ??
+      'USDC') as PaymentMethod;
+  const showPlatformFeeRow = !isSapPayment(paymentToken);
+
+  const orderCode = resultView?.orderCode ?? orderCodeParam?.trim() ?? '';
+  const chainId = resultView?.chainId ?? txFallback.chainId;
+  const txHash = resultView?.txHash ?? txFallback.txHash;
+  const explorer = txHash && chainId ? getTxExplorerUrl(chainId, txHash) : undefined;
+  const displayItems = resultView?.items?.length ? resultView.items : state.items ?? [];
+  const locale = i18n.language?.startsWith('zh') ? 'zh-CN' : 'en-US';
+
   const [recommendations, setRecommendations] = useState<Product[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(true);
 
@@ -80,7 +138,7 @@ const OrderResultPage: React.FC = () => {
       try {
         setLoadingRecs(true);
         const resp = await productApiService.getProducts({ page: 1, pageSize: 5 });
-        const currentProductCode = state.items?.[0]?.productCode;
+        const currentProductCode = displayItems[0]?.productCode;
         const filtered = resp.products.filter((p) => p.code !== currentProductCode);
         setRecommendations(filtered.slice(0, 5));
       } catch {
@@ -90,7 +148,12 @@ const OrderResultPage: React.FC = () => {
       }
     };
     loadRecommendations();
-  }, [state.items]);
+  }, [displayItems]);
+
+  const handleCopyOrderCode = () => {
+    if (!orderCode) return;
+    navigator.clipboard.writeText(orderCode);
+  };
 
   const handleShare = () => {
     const shareData = {
@@ -110,6 +173,9 @@ const OrderResultPage: React.FC = () => {
     navigate(`/marketplace/product/${product.code}`);
   };
 
+  const renderDetailValue = (value: React.ReactNode) =>
+    loading ? <Spin size="small" /> : value;
+
   return (
     <div className={`${styles.pageShell} ${resultStyles.pageRoot}`}>
       <div className={styles.pageGlow} aria-hidden />
@@ -126,7 +192,6 @@ const OrderResultPage: React.FC = () => {
           ))}
         </div>
 
-        {/* 区域一：支付成功 */}
         <section className={resultStyles.heroZone} aria-labelledby="order-success-title">
           <div className={resultStyles.heroContent}>
             <ol className={resultStyles.fulfillmentTrack} aria-label={t('payment.resultSteps.aria')}>
@@ -163,123 +228,171 @@ const OrderResultPage: React.FC = () => {
           </div>
         </section>
 
-        {/* 区域二：金额与交易信息 */}
         <section className={resultStyles.detailZone} aria-label={t('payment.result.amountDetails')}>
           <div className={resultStyles.detailCard}>
-          <dl className={resultStyles.detailList}>
-            <div className={resultStyles.detailRow}>
-              <dt>{t('payment.result.goodsTotalAmount')}</dt>
-              <dd>{formatUsdcDisplay(goodsTotal)}</dd>
-            </div>
-            <div className={resultStyles.detailRow}>
-              <dt>{t('payment.result.paidAmount')}</dt>
-              <dd className={resultStyles.detailValueAccent}>{formatUsdcDisplay(paidAmount)}</dd>
-            </div>
-            <div className={resultStyles.detailRow}>
-              <dt>{t('payment.result.gasFee')}</dt>
-              <dd>{formatUsdcDisplay(gasFee)}</dd>
-            </div>
-            {state.txHash && (
-              <div className={resultStyles.detailRow}>
-                <dt>{t('payment.result.txHash')}</dt>
-                <dd>
-                  {explorer ? (
-                    <a
-                      href={explorer}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={resultStyles.txLink}
-                      title={t('payment.result.viewExplorer')}
+            <h2 className={resultStyles.detailCardTitle}>{t('payment.result.amountDetails')}</h2>
+            <dl className={resultStyles.detailList}>
+              {orderCode ? (
+                <div className={resultStyles.detailRow}>
+                  <dt>{t('payment.result.orderCode')}</dt>
+                  <dd className={resultStyles.detailOrderCode}>
+                    <span className={resultStyles.detailMono}>{orderCode}</span>
+                    <button
+                      type="button"
+                      className={resultStyles.copyOrderBtn}
+                      onClick={handleCopyOrderCode}
+                      aria-label={t('payment.result.copyOrderCode')}
                     >
-                      {shortenHash(state.txHash)}
-                    </a>
-                  ) : (
-                    <span className={resultStyles.detailMono}>{shortenHash(state.txHash)}</span>
+                      <Copy size={14} aria-hidden />
+                    </button>
+                  </dd>
+                </div>
+              ) : null}
+              <div className={resultStyles.detailRow}>
+                <dt>{t('payment.result.goodsTotalAmount')}</dt>
+                <dd>{renderDetailValue(formatUsdcDisplay(resultView?.goodsTotal ?? 0))}</dd>
+              </div>
+              <div className={resultStyles.detailRow}>
+                <dt>{t('payment.result.discountAmount')}</dt>
+                <dd
+                  className={
+                    (resultView?.discountTotal ?? 0) > 0 ? resultStyles.detailValueDiscount : undefined
+                  }
+                >
+                  {renderDetailValue(formatDiscount(resultView?.discountTotal ?? 0))}
+                </dd>
+              </div>
+              {showPlatformFeeRow ? (
+                <div className={resultStyles.detailRow}>
+                  <dt>{t('payment.result.platformFee')}</dt>
+                  <dd>
+                    {renderDetailValue(
+                      resultView != null &&
+                        (resultView.platformFeeDisplay > 0 || resultView.platformFeeUsdc > 0)
+                        ? resultView.platformFeeDisplaySymbol === 'USDC'
+                          ? formatUsdcDisplay(
+                              resultView.platformFeeDisplay || resultView.platformFeeUsdc,
+                            )
+                          : formatTokenDisplay(
+                              resultView.platformFeeDisplay,
+                              resultView.platformFeeDisplaySymbol,
+                            )
+                        : formatUsdcDisplay(0),
+                    )}
+                  </dd>
+                </div>
+              ) : null}
+              <div className={resultStyles.detailRow}>
+                <dt>{t('payment.result.gasFee')}</dt>
+                <dd>{renderDetailValue(formatUsdcDisplay(resultView?.gasFee ?? 0))}</dd>
+              </div>
+              <div className={`${resultStyles.detailRow} ${resultStyles.detailRowTotal}`}>
+                <dt>{t('payment.result.paidAmount')}</dt>
+                <dd className={resultStyles.detailValueAccent}>
+                  {renderDetailValue(
+                    formatTokenDisplay(
+                      resultView?.paidAmount ?? 0,
+                      resultView?.paidTokenSymbol ?? 'USDC',
+                    ),
                   )}
                 </dd>
               </div>
-            )}
-          </dl>
+              <div className={resultStyles.detailRow}>
+                <dt>{t('payment.result.paidAt')}</dt>
+                <dd>{renderDetailValue(formatPaidAt(resultView?.paidAt, locale))}</dd>
+              </div>
+              <div className={resultStyles.detailRow}>
+                <dt>{t('payment.result.txHash')}</dt>
+                <dd>
+                  {loading && !txHash ? (
+                    <Spin size="small" />
+                  ) : txHash ? (
+                    explorer ? (
+                      <a
+                        href={explorer}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={resultStyles.txLink}
+                        title={t('payment.result.viewExplorer')}
+                      >
+                        {shortenHash(txHash)}
+                      </a>
+                    ) : (
+                      <span className={resultStyles.detailMono}>{shortenHash(txHash)}</span>
+                    )
+                  ) : (
+                    <span className={resultStyles.detailMono}>—</span>
+                  )}
+                </dd>
+              </div>
+            </dl>
 
-          <div className={resultStyles.detailActions}>
-            <Button
-              type="primary"
-              icon={<ShoppingBag size={16} />}
-              onClick={() => navigateToMarketplace(navigate)}
-              className={resultStyles.primaryBtn}
-            >
-              {t('payment.result.continueShopping')}
-            </Button>
-            <Button
-              icon={<FileText size={16} />}
-              onClick={() => redirectToAdmin('orders')}
-              className={resultStyles.secondaryBtn}
-            >
-              {t('payment.result.viewOrders')}
-            </Button>
-            <Button
-              icon={<Share2 size={16} />}
-              onClick={handleShare}
-              className={resultStyles.secondaryBtn}
-            >
-              {t('payment.result.share')}
-            </Button>
-          </div>
+            <div className={resultStyles.detailActions}>
+              <Button
+                type="primary"
+                icon={<ShoppingBag size={16} />}
+                onClick={() => navigateToMarketplace(navigate)}
+                className={resultStyles.primaryBtn}
+              >
+                {t('payment.result.continueShopping')}
+              </Button>
+              <Button
+                icon={<FileText size={16} />}
+                onClick={() => redirectToAdmin('orders')}
+                className={resultStyles.secondaryBtn}
+              >
+                {t('payment.result.viewOrders')}
+              </Button>
+              <Button
+                icon={<Share2 size={16} />}
+                onClick={handleShare}
+                className={resultStyles.secondaryBtn}
+              >
+                {t('payment.result.share')}
+              </Button>
+            </div>
           </div>
         </section>
       </div>
 
       <div className={resultStyles.bodyZone}>
-        {state.items && state.items.length > 0 && (
-          <PaymentGlassCard className={`${resultStyles.resultCard} ${resultStyles.itemsCard}`}>
-            <div className={resultStyles.cardHeader}>
-              <Package size={18} strokeWidth={1.75} className={resultStyles.cardHeaderIcon} />
-              <div>
-                <h2 className={resultStyles.cardTitle}>{t('payment.result.orderedItems')}</h2>
-                <p className={resultStyles.cardSubtitle}>
-                  {t('payment.result.itemsCount', {
-                    count: state.items.length,
-                    defaultValue: `${state.items.length} 件商品`,
-                  })}
-                </p>
-              </div>
+        {displayItems.length > 0 && (
+          <section className={resultStyles.itemsSection} aria-labelledby="ordered-items-title">
+            <div className={resultStyles.itemsSectionHead}>
+              <h2 id="ordered-items-title" className={resultStyles.itemsSectionTitle}>
+                {t('payment.result.orderedItems')}
+              </h2>
+              <span className={resultStyles.itemsSectionCount}>
+                {t('payment.result.itemsCount', { count: displayItems.length })}
+              </span>
             </div>
-            <div className={resultStyles.orderItems}>
-              {state.items.map((item, index) => (
-                <div
-                  key={item.skuId}
-                  className={resultStyles.orderItem}
-                  style={{ '--item-delay': `${0.08 + index * 0.06}s` } as React.CSSProperties}
-                >
-                  <div className={resultStyles.orderItemThumb}>
+            <ul className={resultStyles.itemsPlainList}>
+              {displayItems.map((item) => (
+                <li key={item.skuId} className={resultStyles.itemsPlainRow}>
+                  <div className={resultStyles.itemsPlainThumb}>
                     <img
                       src={
                         resolveProductImageUrl(item.imageUrl, item.skuId)
                         || buildSampleProductImageUrl(item.skuId)
                       }
                       alt={item.productName}
-                      className={resultStyles.orderItemImg}
+                      className={resultStyles.itemsPlainImg}
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = buildSampleProductImageUrl(item.skuId);
                       }}
                     />
                   </div>
-                  <div className={resultStyles.orderItemInfo}>
-                    <h3 className={resultStyles.orderItemName}>{item.productName}</h3>
-                    {item.specText && (
-                      <p className={resultStyles.orderItemSpec}>{item.specText}</p>
-                    )}
-                    <div className={resultStyles.orderItemMeta}>
-                      <span className={resultStyles.orderItemQty}>×{item.quantity}</span>
-                      <span className={resultStyles.orderItemPrice}>
-                        {formatUsdcDisplay(item.subtotal)}
-                      </span>
-                    </div>
+                  <div className={resultStyles.itemsPlainBody}>
+                    <p className={resultStyles.itemsPlainName}>{item.productName}</p>
+                    {item.specText ? (
+                      <p className={resultStyles.itemsPlainSpec}>{item.specText}</p>
+                    ) : null}
+                    <p className={resultStyles.itemsPlainQty}>×{item.quantity}</p>
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
-          </PaymentGlassCard>
+            </ul>
+          </section>
         )}
 
         <section className={resultStyles.recommendSection} aria-labelledby="recommend-title">

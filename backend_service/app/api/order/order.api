@@ -26,7 +26,7 @@ service sapmall {
 	@handler ModifyOrder
 	post /modify (ModifyOrderReq) returns (BaseResp)
 
-	@doc "查询订单支付状态（前端轮询）。响应 Data：OrderStatusResp { orderStatus, paymentStatus, txHash }"
+	@doc "查询订单支付状态（前端轮询）。响应 Data：OrderStatusResp { orderStatus, paymentStatus, txHash, orderCode, payableAmount, payAmount, tokenSymbol, gasFeeUsdc }"
 	@handler GetOrderStatus
 	post /status (OrderStatusReq) returns (BaseResp)
 

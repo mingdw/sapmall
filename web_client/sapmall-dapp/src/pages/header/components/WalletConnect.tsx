@@ -22,7 +22,12 @@ import {
   WALLET_ROLE_ICON,
   WalletRoleCode,
 } from '../utils/walletRoleUtils';
-import { isChainMismatchError } from '../../../utils/wagmiChainMismatch';
+import { isChainMismatchError, isConnectorNotConnectedError } from '../../../utils/wagmiChainMismatch';
+import {
+  beginUserWalletDisconnect,
+  endUserWalletDisconnect,
+  isUserWalletDisconnecting,
+} from '../../../utils/walletDisconnectGuard';
 
 /** 与语言无关的错误码，供静默处理分支识别 */
 const WALLET_ERR_USER_REJECTED_SIGN = 'WALLET_ERR_USER_REJECTED_SIGN';
@@ -55,7 +60,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
 
   // Wagmi hooks
   const { status: connectStatus, error } = useConnect();
-  const { disconnect } = useDisconnect();
+  const { disconnectAsync } = useDisconnect();
   const { address, isConnected, chainId } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const { switchChain } = useSwitchChain();
@@ -170,6 +175,11 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
         setConnectionError(null);
         return;
       }
+
+      if (isConnectorNotConnectedError(error.message) || isUserWalletDisconnecting()) {
+        setConnectionError(null);
+        return;
+      }
       
       // 其他错误正常处理
       setConnectionError(error.message || t('walletConnect.connectionFailed'));
@@ -194,6 +204,9 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
 
   // 钱包连接成功后的处理
   const handleWalletConnected = async (walletAddress: string) => {
+    if (isUserWalletDisconnecting() || isDisconnecting) {
+      return;
+    }
     // 防止重复调用
     if (isConnecting || isProcessingConnection || signingRef.current) {
       console.log('正在处理连接中，跳过重复调用');
@@ -272,6 +285,14 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       
     } catch (error: any) {
       console.error('签名或登录失败:', error);
+
+      if (isConnectorNotConnectedError(error?.message) || isUserWalletDisconnecting()) {
+        setConnectionError(null);
+        setIsConnecting(false);
+        setIsProcessingConnection(false);
+        signingRef.current = false;
+        return;
+      }
       
       // 检查是否是授权相关错误
       const isAuthError =
@@ -339,18 +360,29 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   };
 
   // 处理断开连接
-  const handleDisconnect = () => {
+  const handleDisconnect = async () => {
+    beginUserWalletDisconnect();
+    setIsDisconnecting(true);
+    setIsConnecting(false);
+    setIsProcessingConnection(false);
+    setConnectionError(null);
+    setLastProcessedAddress(null);
+    signingRef.current = false;
+
     try {
-      // 先断开钱包连接
-      disconnect();
-      
-      // 然后清理状态
-      handleWalletDisconnected();
-      
-    } catch (error: any) {
+      await disconnectAsync();
+      await handleWalletDisconnected();
+    } catch (error: unknown) {
       console.error('断开连接处理失败:', error);
-      // 确保状态被清理
       logout();
+      setConnectionError(null);
+      setIsConnecting(false);
+      setIsProcessingConnection(false);
+    } finally {
+      window.setTimeout(() => {
+        setIsDisconnecting(false);
+        endUserWalletDisconnect();
+      }, 800);
     }
   };
 

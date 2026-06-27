@@ -32,4 +32,5 @@ service sapmall {
 	@doc "删除链上支付代币（软删）。路径参数：id；响应 Data：null"
 	@handler DeleteChainPaymentToken
 	delete /chain/payment-token/:id (DeleteChainPaymentTokenReq) returns (BaseResp)
+
 }

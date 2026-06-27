@@ -3,19 +3,27 @@ import { orderApi, OrderPaymentStatus, OrderStatusResp } from '../../../../servi
 import { ApiError } from '../../../../services/api/baseClient';
 
 const POLL_MS = 3000;
+const PAID_STATUS = 3;
+const CLOSED_STATUS = 4;
 
 function toPaymentStatus(resp: OrderStatusResp): OrderPaymentStatus {
   return {
     intentId: '',
-    orderCode: '',
+    orderCode: resp.orderCode ?? '',
     paymentStatus: resp.paymentStatus,
     txHash: resp.txHash,
-    confirmations: resp.paymentStatus === 3 ? 6 : 0,
+    failReason: resp.failReason,
+    confirmations: resp.paymentStatus === PAID_STATUS ? 6 : 0,
     requiredConfirmations: 6,
   };
 }
 
-export function usePaymentStatusPoll(orderCode: string | null, txHash: string | null, enabled: boolean) {
+export function usePaymentStatusPoll(
+  orderCode: string | null,
+  txHash: string | null,
+  chainId: number | undefined,
+  enabled: boolean,
+) {
   const [status, setStatus] = useState<OrderPaymentStatus | null>(null);
   const [polling, setPolling] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -23,7 +31,11 @@ export function usePaymentStatusPoll(orderCode: string | null, txHash: string | 
   const pollOnce = useCallback(async () => {
     if (!orderCode) return null;
     try {
-      const resp = await orderApi.getStatus({ orderCode, txHash: txHash || undefined });
+      const resp = await orderApi.getStatus({
+        orderCode,
+        txHash: txHash || undefined,
+        chainId: chainId ?? undefined,
+      });
       const next = toPaymentStatus(resp);
       setStatus(next);
       return next;
@@ -34,24 +46,40 @@ export function usePaymentStatusPoll(orderCode: string | null, txHash: string | 
       }
       throw err;
     }
-  }, [orderCode, txHash]);
+  }, [orderCode, txHash, chainId]);
 
   useEffect(() => {
     if (!enabled || !orderCode) {
       if (timerRef.current) clearInterval(timerRef.current);
       timerRef.current = null;
       setPolling(false);
+      setStatus(null);
       return;
     }
 
+    setStatus(null);
     setPolling(true);
-    pollOnce().catch(() => {});
+    let stopped = false;
 
-    timerRef.current = setInterval(() => {
-      pollOnce().catch(() => {});
-    }, POLL_MS);
+    const runPoll = () => {
+      pollOnce()
+        .then((next) => {
+          if (stopped || !next) return;
+          if (next.paymentStatus === PAID_STATUS || next.paymentStatus === CLOSED_STATUS) {
+            if (timerRef.current) clearInterval(timerRef.current);
+            timerRef.current = null;
+            setPolling(false);
+          }
+        })
+        .catch(() => {});
+    };
+
+    runPoll();
+
+    timerRef.current = setInterval(runPoll, POLL_MS);
 
     return () => {
+      stopped = true;
       if (timerRef.current) clearInterval(timerRef.current);
       timerRef.current = null;
       setPolling(false);

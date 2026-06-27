@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
-import { ArrowRightLeft, Wallet, ChevronDown, Receipt } from 'lucide-react';
+import { Wallet, ChevronDown, Receipt, CircleAlert } from 'lucide-react';
 import { OrderPreviewResult } from '../../../../services/api/orderApi';
 import type { PaymentIntentBundle } from '../../../../services/api/orderApi';
 import { isPaymentChain } from '../../../../config/paymentChains';
@@ -18,13 +17,12 @@ import { estimateGasFeeUsdc, isArcTestnetChain } from '../utils/estimateGasFee';
 import {
   calcPlatformFeeInToken,
   calcPlatformFeeUsdc,
+  calcPayAmountDueInToken,
   calcReferencePlatformFeeUsdc,
-  calcTotalDueInToken,
   calcTotalDueUsdc,
   NON_SAP_PAYMENT_FEE_RATE,
 } from '../utils/paymentFee';
-import { calcPayAmountInToken } from '../utils/paymentTokenRates';
-import PaymentMoney, { PaymentMoneyParts } from './PaymentMoney';
+import PaymentMoney from './PaymentMoney';
 import PaymentCardHeader from './PaymentCardHeader';
 import PaymentCurrencySelect from './PaymentCurrencySelect';
 import PaymentCurrencyRatePanel from './PaymentCurrencyRatePanel';
@@ -39,12 +37,14 @@ interface Props {
   preview: OrderPreviewResult;
   phase: PaymentPhase;
   errorKey: string | null;
+  errorDetail?: string | null;
   intent: PaymentIntentBundle | null;
   txHash: string | null;
   paymentMethod: PaymentMethod;
   onPaymentMethodChange: (method: PaymentMethod) => void;
   onPay: () => void;
   onContinuePay?: () => void;
+  canRetryPayment?: boolean;
   busy: boolean;
   contactValid: boolean;
 }
@@ -53,12 +53,14 @@ const CheckoutPayPanel: React.FC<Props> = ({
   preview,
   phase,
   errorKey,
+  errorDetail,
   intent,
   txHash,
   paymentMethod,
   onPaymentMethodChange,
   onPay,
   onContinuePay,
+  canRetryPayment = false,
   busy,
   contactValid,
 }) => {
@@ -68,6 +70,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
 
   const activeChainId = intent?.chainId ?? chainId;
   const tokenBalance = usePaymentTokenBalance(paymentMethod, activeChainId, address);
+  const usdcBalance = usePaymentTokenBalance('USDC', activeChainId, address);
 
   useEffect(() => {
     if (activeChainId == null) return;
@@ -82,21 +85,23 @@ const CheckoutPayPanel: React.FC<Props> = ({
   const showGasRow = gasFeeUsdc > 0 || isArcTestnetChain(activeChainId);
   const platformFeeUsdc = calcPlatformFeeUsdc(orderPayable, paymentMethod);
   const platformFeeInToken = calcPlatformFeeInToken(orderPayable, paymentMethod);
-  const gasFeeInToken = calcPayAmountInToken(gasFeeUsdc, paymentMethod);
   const referenceFeeUsdc = calcReferencePlatformFeeUsdc(orderPayable);
-  const payEquivInToken = calcTotalDueInToken(orderPayable, paymentMethod, gasFeeUsdc);
+  const isUsdcPayment = paymentMethod === 'USDC';
+  const payAmountDueInToken = calcPayAmountDueInToken(orderPayable, paymentMethod);
   const totalDueUsdc = calcTotalDueUsdc(orderPayable, paymentMethod, gasFeeUsdc);
+  const payEquivInToken = isUsdcPayment ? totalDueUsdc : payAmountDueInToken;
 
   const intentPayAmount = intent
     ? Number.parseFloat(formatUsdcFromRaw(intent.amount, intent.decimals))
     : null;
 
   const finalTotal =
-    paymentMethod === 'USDC' && intentPayAmount != null ? intentPayAmount : payEquivInToken;
+    isUsdcPayment && intentPayAmount != null ? intentPayAmount : payEquivInToken;
   const finalCurrency = paymentMethod;
 
-  const payAmountDue = payEquivInToken;
-  const isUsdcPayment = paymentMethod === 'USDC';
+  const payAmountDue = isUsdcPayment ? totalDueUsdc : payAmountDueInToken;
+  const gasFeeDue = Math.max(0, gasFeeUsdc);
+  const needsGasUsdc = !isUsdcPayment && gasFeeDue > 0;
 
   const tokenInsufficient =
     isConnected &&
@@ -105,39 +110,53 @@ const CheckoutPayPanel: React.FC<Props> = ({
     tokenBalance.configured &&
     tokenBalance.numeric + 1e-9 < payAmountDue;
 
-  const balanceSufficient =
-    !isUsdcPayment &&
+  const gasUsdcInsufficient =
+    needsGasUsdc &&
     isConnected &&
-    tokenBalance.configured &&
-    !tokenBalance.isLoading &&
-    tokenBalance.numeric + 1e-9 >= payAmountDue;
+    !usdcBalance.isLoading &&
+    usdcBalance.configured &&
+    usdcBalance.numeric + 1e-9 < gasFeeDue;
+
+  const gasUsdcSufficient =
+    needsGasUsdc &&
+    isConnected &&
+    usdcBalance.configured &&
+    !usdcBalance.isLoading &&
+    usdcBalance.numeric + 1e-9 >= gasFeeDue;
+
+  const hasSufficientBalances =
+    isUsdcPayment
+      ? !tokenInsufficient
+      : !tokenInsufficient && (!needsGasUsdc || gasUsdcSufficient);
 
   const networkOk =
     isConnected && isPaymentChain(chainId) && (!intent || chainId === intent.chainId);
 
   const canPayOnChain =
     phase === 'idle' &&
+    contactValid &&
     isConnected &&
     networkOk &&
     !busy &&
     isOnChainPaySupported(paymentMethod) &&
-    (paymentMethod === 'USDC' || isSapPayment(paymentMethod)) &&
     tokenBalance.configured &&
     !tokenBalance.isLoading &&
-    tokenBalance.numeric + 1e-9 >= payAmountDue;
+    tokenBalance.numeric + 1e-9 >= payAmountDue &&
+    hasSufficientBalances;
 
   const isAuthCancelled = phase === 'authCancelled';
   const isPayCancelled = phase === 'payCancelled';
+  const isPayError = phase === 'error' && errorKey === 'paymentFailed';
   const canContinuePayment =
-    Boolean(intent) &&
-    (isAuthCancelled || isPayCancelled) &&
+    canRetryPayment &&
     isConnected &&
     networkOk &&
     !busy &&
     isOnChainPaySupported(paymentMethod) &&
     tokenBalance.configured &&
     !tokenBalance.isLoading &&
-    tokenBalance.numeric + 1e-9 >= payAmountDue;
+    tokenBalance.numeric + 1e-9 >= payAmountDue &&
+    hasSufficientBalances;
 
   const canSubmit = canPayOnChain || canContinuePayment;
 
@@ -147,34 +166,49 @@ const CheckoutPayPanel: React.FC<Props> = ({
     ? t(`payment.pay.buttonBusy.${phase}`)
     : isAuthCancelled
       ? t('payment.pay.continueApprove')
-      : isPayCancelled
+      : isPayCancelled || isPayError
         ? t('payment.pay.continuePay')
         : t('payment.pay.confirmPay', { amount: payAmountDisplay, token: finalCurrency });
+
+  const showContactHint = !contactValid && phase === 'idle';
 
   const contextAlerts = useMemo(() => {
     const alerts: string[] = [];
     if (!isConnected) alerts.push(t('payment.pay.connectWallet'));
     else if (!networkOk) alerts.push(t('payment.pay.switchNetworkManual'));
-    if (!contactValid && phase === 'idle') alerts.push(t('payment.pay.contactRequired'));
     if (isSapPayment(paymentMethod) && !tokenBalance.configured && isConnected) {
       alerts.push(t('payment.pay.sapPayUnavailable'));
-    }
-    if (tokenInsufficient) {
-      alerts.push(
-        isUsdcPayment
-          ? t('payment.pay.usdcInsufficient')
-          : t('payment.pay.tokenInsufficient', {
-              token: paymentMethod,
-              need: payAmountDue.toFixed(2),
-              have: tokenBalance.numeric.toFixed(4),
-            }),
-      );
     }
     if (!isOnChainPaySupported(paymentMethod) && phase === 'idle') {
       alerts.push(t('payment.pay.tokenPayComingSoon', { token: paymentMethod }));
     }
     return alerts;
-  }, [contactValid, isConnected, isUsdcPayment, networkOk, paymentMethod, phase, payAmountDue, tokenBalance.configured, tokenBalance.numeric, tokenInsufficient, t]);
+  }, [
+    isConnected,
+    networkOk,
+    paymentMethod,
+    phase,
+    tokenBalance.configured,
+    t,
+  ]);
+
+  const balanceHintMessages = useMemo(() => {
+    const hints: string[] = [];
+    const pushUnique = (msg: string) => {
+      if (!hints.includes(msg)) hints.push(msg);
+    };
+    if (tokenInsufficient) {
+      pushUnique(
+        t('payment.pay.tokenInsufficient', {
+          token: isUsdcPayment ? 'USDC' : paymentMethod,
+        }),
+      );
+    }
+    if (gasUsdcInsufficient) {
+      pushUnique(t('payment.pay.tokenInsufficient', { token: 'USDC' }));
+    }
+    return hints;
+  }, [gasUsdcInsufficient, isUsdcPayment, paymentMethod, tokenInsufficient, t]);
 
   const totalSavings = isSapPayment(paymentMethod) ? referenceFeeUsdc : 0;
 
@@ -199,6 +233,20 @@ const CheckoutPayPanel: React.FC<Props> = ({
       </div>
 
       <dl className={styles.payBreakdownList}>
+        <div className={styles.payBreakdownRow}>
+          <dt>{t('payment.pay.availableBalance')}</dt>
+          <dd className={styles.payAvailableBalancesValue}>
+            {tokenBalance.isLoading && isConnected ? (
+              <Spin size="small" />
+            ) : (
+              <span className={styles.payAvailableBalanceItem}>
+                <span className={styles.payAvailableBalanceAmount}>{tokenBalance.formatted}</span>
+                <span className={styles.payAvailableBalanceUnit}>{tokenBalance.symbol}</span>
+              </span>
+            )}
+          </dd>
+        </div>
+
         <div className={styles.payBreakdownRow}>
           <dt>{t('payment.pay.orderPayable')}</dt>
           <dd>
@@ -236,7 +284,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
           <div className={styles.payBreakdownRow}>
             <dt>{t('payment.pay.estimatedGas')}</dt>
             <dd>
-              <PaymentMoney amount={gasFeeInToken} currency={paymentMethod} sign="+" size="sm" />
+              <PaymentMoney amount={gasFeeUsdc} currency="USDC" sign="+" size="sm" />
             </dd>
           </div>
         ) : null}
@@ -253,49 +301,6 @@ const CheckoutPayPanel: React.FC<Props> = ({
           </dd>
         </div>
       </dl>
-
-      <div
-        className={[
-          styles.payBalanceRow,
-          isUsdcPayment || balanceSufficient ? styles.payBalanceRowSufficient : '',
-          tokenInsufficient && !isUsdcPayment ? styles.payBalanceRowInsufficient : '',
-        ]
-          .filter(Boolean)
-          .join(' ')}
-      >
-        <span className={styles.payBalanceLabel}>
-          {t('payment.pay.tokenBalance', { token: paymentMethod })}
-          {!isUsdcPayment && balanceSufficient ? (
-            <span className={styles.payBalanceStatusOk}>{t('payment.pay.balanceSufficient')}</span>
-          ) : null}
-        </span>
-        <span className={styles.payBalanceValue}>
-          <PaymentMoneyParts
-            num={tokenBalance.formatted}
-            unit={tokenBalance.symbol}
-            size="sm"
-            className={styles.payBalanceAmount}
-          />
-        </span>
-      </div>
-
-      {tokenInsufficient && !isUsdcPayment ? (
-        <div className={styles.tokenInsufficientBlock}>
-          <p className={styles.tokenInsufficientText}>
-            {t('payment.pay.tokenInsufficient', {
-              token: paymentMethod,
-              need: payAmountDue.toFixed(2),
-              have: tokenBalance.numeric.toFixed(4),
-            })}
-          </p>
-          {isSapPayment(paymentMethod) ? (
-            <Link to="/exchange" className={styles.exchangeLinkBtn}>
-              <ArrowRightLeft size={14} aria-hidden />
-              {t('payment.pay.goExchange')}
-            </Link>
-          ) : null}
-        </div>
-      ) : null}
 
       {contextAlerts.length > 0 ? (
         <ul className={styles.payContextAlerts}>
@@ -326,6 +331,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
             <PaymentProgressTracker
               phase={phase}
               errorKey={errorKey}
+              errorDetail={errorDetail}
             />
           </div>
         ) : null}
@@ -337,6 +343,20 @@ const CheckoutPayPanel: React.FC<Props> = ({
             {t('payment.pay.totalSaving', { amount: totalSavings.toFixed(2) })}
           </p>
         ) : null}
+
+        {showContactHint ? (
+          <div className={styles.payContactHint} role="alert">
+            <CircleAlert size={15} strokeWidth={2} className={styles.payContactHintIcon} aria-hidden />
+            <span>{t('payment.pay.contactRequired')}</span>
+          </div>
+        ) : null}
+
+        {balanceHintMessages.map((msg) => (
+          <div key={msg} className={styles.payContactHint} role="alert">
+            <CircleAlert size={15} strokeWidth={2} className={styles.payContactHintIcon} aria-hidden />
+            <span>{msg}</span>
+          </div>
+        ))}
 
         <Button
           type="primary"

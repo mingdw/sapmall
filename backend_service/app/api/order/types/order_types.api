@@ -187,8 +187,19 @@ type (
 	}
 
 	OrderStatusResp {
-		OrderStatus   int64  `json:"orderStatus"`
-		PaymentStatus int64  `json:"paymentStatus"`
-		TxHash        string `json:"txHash,optional"`
+		OrderStatus       int64   `json:"orderStatus"`
+		PaymentStatus     int64   `json:"paymentStatus"`
+		TxHash            string  `json:"txHash,optional"`
+		OrderCode         string  `json:"orderCode,optional"`
+		TotalAmount       float64 `json:"totalAmount,optional"`       // 商品总金额（优惠前，USDC 计价）
+		DiscountAmount    float64 `json:"discountAmount,optional"`    // 优惠总金额（USDC 计价）
+		PayableAmount     float64 `json:"payableAmount,optional"`     // 商品应付（优惠后，USDC 计价）
+		PlatformFeeAmount float64 `json:"platformFeeAmount,optional"` // 平台费（USDC 计价）
+		PayAmount         float64 `json:"payAmount,optional"`         // 链上实付（支付币种数量）
+		TokenSymbol       string  `json:"tokenSymbol,optional"`       // 支付币种符号
+		ChainId           int64   `json:"chainId,optional"`
+		GasFeeUsdc        float64 `json:"gasFeeUsdc,optional"`        // Gas 费（USDC 计价，优先 actGasFee）
+		PaidAt            string  `json:"paidAt,optional"`            // 支付完成时间
+		FailReason        string  `json:"failReason,optional"`
 	}
 )

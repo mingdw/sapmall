@@ -40,3 +40,18 @@ export function isChainMismatchError(message: string | undefined): boolean {
 export function isRecoverableWalletChain(chainId: number): boolean {
   return isPaymentChain(chainId);
 }
+
+/** wagmi 在 connector 已断开时调用钱包方法 */
+export function isConnectorNotConnectedError(message: string | undefined): boolean {
+  if (!message) return false;
+  return message.includes('Connector not connected');
+}
+
+export function getWalletErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  return String(err);
+}
+
+export function isConnectorNotConnectedErrorFrom(err: unknown): boolean {
+  return isConnectorNotConnectedError(getWalletErrorMessage(err));
+}

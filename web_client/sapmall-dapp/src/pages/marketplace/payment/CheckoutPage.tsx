@@ -15,6 +15,7 @@ import { navigateToMarketplace } from '../paths';
 import MessageUtils from '../../../utils/messageUtils';
 import { buildCreateOrderPayload } from './utils/buildCreateOrderPayload';
 import { estimateGasFeeUsdc } from './utils/estimateGasFee';
+import { calcPlatformFeeUsdc } from './utils/paymentFee';
 import styles from './PaymentPage.module.scss';
 
 function isContactValid(contact: typeof EMPTY_CONTACT): boolean {
@@ -48,14 +49,31 @@ const CheckoutPage: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('USDC');
   const [buyerMessage, setBuyerMessage] = useState('');
 
-  const pollEnabled = payment.phase === 'confirming' && Boolean(payment.orderCode);
-  const { status: pollStatus } = usePaymentStatusPoll(payment.orderCode, payment.txHash, pollEnabled);
+  const pollChainId = payment.intent?.chainId ?? payment.chainId;
+  const pollEnabled =
+    Boolean(payment.orderCode) &&
+    (payment.phase === 'confirming' || Boolean(payment.txHash && payment.phase === 'paying'));
+  const { status: pollStatus } = usePaymentStatusPoll(
+    payment.orderCode,
+    payment.txHash,
+    pollChainId,
+    pollEnabled,
+  );
 
   const busy = ['submitting', 'intentLoading', 'approving', 'paying', 'confirming'].includes(payment.phase);
   const contactValid = isContactValid(contact);
 
   useEffect(() => {
-    if (pollStatus?.paymentStatus === 3 && payment.phase === 'confirming') {
+    const pollOrderCode = pollStatus?.orderCode?.trim();
+    const currentOrderCode = payment.orderCode?.trim();
+    const pollMatchesOrder =
+      !pollOrderCode || !currentOrderCode || pollOrderCode === currentOrderCode;
+
+    if (
+      pollStatus?.paymentStatus === 3 &&
+      payment.phase === 'confirming' &&
+      pollMatchesOrder
+    ) {
       payment.markSuccess();
       const code = pollStatus.orderCode || payment.orderCode;
       if (code) {
@@ -63,18 +81,29 @@ const CheckoutPage: React.FC = () => {
         navigate(`/marketplace/payment/result/${encodeURIComponent(code)}`, {
           replace: true,
           state: {
-            txHash: pollStatus.txHash ?? payment.txHash,
+            txHash: pollStatus.txHash?.trim() || payment.txHash || undefined,
             amount: payment.paidAmount ?? preview?.totalAmount,
             chainId,
             items: preview?.items,
             goodsAmount: preview?.totalAmount,
+            discountAmount: preview?.discountAmount,
+            platformFeeAmount: preview?.totalAmount != null
+              ? calcPlatformFeeUsdc(preview.totalAmount, paymentMethod)
+              : undefined,
+            payableAmount: preview?.totalAmount,
             gasFeeUsdc: estimateGasFeeUsdc(chainId),
+            tokenSymbol: payment.intent?.tokenSymbol ?? paymentMethod,
           },
         });
       }
     }
-    if (pollStatus?.paymentStatus === 4) {
-      payment.retry();
+    if (
+      pollStatus?.paymentStatus === 4 &&
+      payment.phase === 'confirming' &&
+      pollMatchesOrder &&
+      currentOrderCode
+    ) {
+      payment.markConfirmFailedFromPoll(pollStatus.failReason);
     }
   }, [pollStatus, payment, navigate, preview?.totalAmount]);
 
@@ -91,13 +120,20 @@ const CheckoutPage: React.FC = () => {
     navigateToMarketplace(navigate);
   }, [navigate, preview?.items, productCode]);
 
+  const handleRetryPayment = useCallback(async () => {
+    if (payment.phase === 'error' && payment.errorKey === 'paymentFailed') {
+      await payment.resumeAndContinue();
+      return;
+    }
+    await payment.continuePayment();
+  }, [payment]);
+
   const handlePay = async () => {
     if (!preview || !Number.isFinite(skuId) || !payment.address) return;
     if (
-      payment.intent &&
-      (payment.phase === 'authCancelled' || payment.phase === 'payCancelled')
+      payment.canRetryWithIntent(payment.phase, payment.errorKey)
     ) {
-      await payment.continuePayment();
+      await handleRetryPayment();
       return;
     }
     setContactTouched(true);
@@ -206,12 +242,14 @@ const CheckoutPage: React.FC = () => {
                 preview={preview}
                 phase={payment.phase}
                 errorKey={payment.errorKey}
+                errorDetail={payment.errorDetail}
                 intent={payment.intent}
                 txHash={payment.txHash}
                 paymentMethod={paymentMethod}
                 onPaymentMethodChange={setPaymentMethod}
                 onPay={handlePay}
-                onContinuePay={() => payment.continuePayment()}
+                onContinuePay={handleRetryPayment}
+                canRetryPayment={payment.canRetryWithIntent(payment.phase, payment.errorKey)}
                 busy={busy}
                 contactValid={contactValid}
               />

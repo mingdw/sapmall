@@ -29,7 +29,7 @@ export function isSapPayment(method: PaymentMethod): boolean {
   return method === 'SAP';
 }
 
-/** 当前仅 USDC / SAP 链上支付已接通；其余代币展示费率与金额预览 */
+/** USDC / SAP / EURC / cirBTC 链上支付已接通 */
 export function isOnChainPaySupported(method: PaymentMethod): boolean {
-  return method === 'USDC' || method === 'SAP';
+  return method === 'USDC' || method === 'SAP' || method === 'EURC' || method === 'cirBTC';
 }

@@ -2,7 +2,7 @@ import { ARC_TESTNET_CHAIN_ID } from './chains/arcTestnet';
 
 /** 已部署 PaymentRouter 地址（与 contract/deployments/*.json 对齐） */
 const PAYMENT_ROUTER_BY_CHAIN: Partial<Record<number, `0x${string}`>> = {
-  [ARC_TESTNET_CHAIN_ID]: '0x57131c68477a51b9194bd6394e0ee79123742f69',
+  [ARC_TESTNET_CHAIN_ID]: '0xa9af86f5ac67a270d52f0e0936623cb2e4a71a9b',
 };
 
 /** 解析 PaymentRouter 地址：env 优先，其次内置部署表 */

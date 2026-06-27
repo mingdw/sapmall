@@ -1,8 +1,10 @@
 package order
 
 import (
+	"crypto/rand"
 	"fmt"
 	"math"
+	"math/big"
 	"strconv"
 	"strings"
 	"time"
@@ -21,12 +23,13 @@ func normalizePayerAddress(addr string) (string, bool) {
 }
 
 func generateOrderCode() string {
-	// 作为 payOrder.orderRef，须 ≤64 字节
-	suffix := strings.ReplaceAll(uuid.NewString(), "-", "")
-	if len(suffix) > 16 {
-		suffix = suffix[:16]
+	// SP + yyyymmddhhmmss + 4 位随机数；作为 payOrder.orderRef，须 ≤64 字节
+	ts := time.Now().Format("20060102150405")
+	n, err := rand.Int(rand.Reader, big.NewInt(10000))
+	if err != nil {
+		n = big.NewInt(time.Now().UnixNano() % 10000)
 	}
-	return fmt.Sprintf("ORD%s", suffix)
+	return fmt.Sprintf("SP%s%04d", ts, n.Int64())
 }
 
 func generateIntentID() string {

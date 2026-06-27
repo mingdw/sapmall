@@ -59,10 +59,20 @@ func VerifyPaymentTx(ctx context.Context, rpcURL string, contractAddr string, tx
 		return nil, err
 	}
 
+	gasFeeUSDC := calcGasFeeUSDC(receipt)
+	if gasFeeUSDC == 0 {
+		if tx, _, txErr := client.TransactionByHash(scanCtx, hash); txErr == nil && tx != nil {
+			gasPrice := tx.GasPrice()
+			if gasPrice != nil && gasPrice.Sign() > 0 {
+				gasFeeUSDC = calcGasFeeFromUsedAndPrice(receipt.GasUsed, gasPrice)
+			}
+		}
+	}
+
 	return &VerifyResult{
 		Receipt:    receipt,
 		Event:      event,
-		GasFeeUSDC: calcGasFeeUSDC(receipt),
+		GasFeeUSDC: gasFeeUSDC,
 	}, nil
 }
 
@@ -119,16 +129,18 @@ func calcGasFeeUSDC(receipt *types.Receipt) float64 {
 		return 0
 	}
 
-	gasUsed := new(big.Int).SetUint64(receipt.GasUsed)
+	if receipt.EffectiveGasPrice != nil && receipt.EffectiveGasPrice.Sign() > 0 {
+		return calcGasFeeFromUsedAndPrice(receipt.GasUsed, receipt.EffectiveGasPrice)
+	}
+	return 0
+}
 
-	// EffectiveGasPrice：EIP-1559 交易中返回实际支付的 gas price（单位：USDC最小单位/ gas）
-	// 非 EIP-1559 交易或 RPC 未返回时可能为 nil
-	if receipt.EffectiveGasPrice == nil || receipt.EffectiveGasPrice.Sign() == 0 {
+func calcGasFeeFromUsedAndPrice(gasUsed uint64, gasPrice *big.Int) float64 {
+	if gasPrice == nil || gasPrice.Sign() == 0 || gasUsed == 0 {
 		return 0
 	}
 
-	// totalGasFee = gasUsed × effectiveGasPrice（单位：USDC 最小单位，18 decimals）
-	totalGasFee := new(big.Int).Mul(gasUsed, receipt.EffectiveGasPrice)
+	totalGasFee := new(big.Int).Mul(new(big.Int).SetUint64(gasUsed), gasPrice)
 
 	// 转换为 USDC：除以 10^18
 	decimalFactor := new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil)

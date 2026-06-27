@@ -88,7 +88,7 @@ func AsyncConfirmOrder(ctx context.Context, svcCtx *svc.ServiceContext, orderID 
 						return
 					}
 				}
-				setOrderPaid(ctx, svcCtx, orderID, paymentRepo, result.Receipt)
+				setOrderPaid(ctx, svcCtx, orderID, paymentRepo, result.Receipt, result.GasFeeUSDC)
 				return
 			}
 
@@ -98,7 +98,7 @@ func AsyncConfirmOrder(ctx context.Context, svcCtx *svc.ServiceContext, orderID 
 	}
 }
 
-func setOrderPaid(ctx context.Context, svcCtx *svc.ServiceContext, orderID int64, paymentRepo repository.OrderPaymentRepository, receipt *types.Receipt) {
+func setOrderPaid(ctx context.Context, svcCtx *svc.ServiceContext, orderID int64, paymentRepo repository.OrderPaymentRepository, receipt *types.Receipt, actGasFee float64) {
 	now := time.Now()
 	var blockNumber int64
 	if receipt != nil {
@@ -110,10 +110,11 @@ func setOrderPaid(ctx context.Context, svcCtx *svc.ServiceContext, orderID int64
 		pRepo := repository.NewOrderPaymentRepository(tx)
 
 		if err := oRepo.UpdateColumnsByID(ctx, orderID, map[string]interface{}{
-			"order_status":      OrderStatusPaid,
-			"order_status_desc": OrderStatusDesc(OrderStatusPaid),
-			"payment_status":    PaymentStatusPaid,
+			"order_status":        OrderStatusPaid,
+			"order_status_desc":   OrderStatusDesc(OrderStatusPaid),
+			"payment_status":      PaymentStatusPaid,
 			"payment_status_desc": PaymentStatusDesc(PaymentStatusPaid),
+			"act_gas_fee":         actGasFee,
 		}); err != nil {
 			return err
 		}
@@ -123,13 +124,15 @@ func setOrderPaid(ctx context.Context, svcCtx *svc.ServiceContext, orderID int64
 			"payment_status_desc": PaymentStatusDesc(PaymentStatusPaid),
 			"block_number":        blockNumber,
 			"confirmed_at":        now,
+			"paid_at":             now,
+			"act_gas_fee":         actGasFee,
 		})
 	})
 
 	if err != nil {
 		logx.WithContext(ctx).Errorf("async_confirm: set paid failed, orderID=%d err=%v", orderID, err)
 	} else {
-		logx.WithContext(ctx).Infof("async_confirm: order %d marked as paid, block=%d", orderID, blockNumber)
+		logx.WithContext(ctx).Infof("async_confirm: order %d marked as paid, block=%d gasFee=%.6f", orderID, blockNumber, actGasFee)
 	}
 }
 

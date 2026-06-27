@@ -167,6 +167,7 @@
       "currency": "Currency",
       "currencyAria": "Select payment currency",
       "orderPayable": "Order total",
+      "availableBalance": "Available balance",
       "feeSaving": "Fee waived",
       "finalTotal": "Amount to pay",
       "totalSaving": "Saved: {{amount}} USDC",
@@ -214,6 +215,7 @@
       "rateLine": "Rate",
       "payEquivLine": "Total in token",
       "payEquivValue": "≈ {{amount}} (order {{usdc}} USDC)",
+      "payEquivUsdcHint": "≈ {{amount}} USDC total (incl. gas)",
       "oracleDisclaimer": "Rates are public-market references, not on-chain quotes. Production will use oracle feeds.",
       "currencies": {
         "USDC": {
@@ -249,8 +251,10 @@
       "rateAsOf": "Market reference as of {{date}} (demo)",
       "feeWithToken": "Fee ({{token}})",
       "estimatedGas": "Est. gas",
-      "tokenInsufficient": "Insufficient {{token}} (need {{need}}, have {{have}})",
-      "usdcInsufficient": "Insufficient balance. Please top up or pay with another token.",
+      "tokenInsufficient": "{{token}} balance insufficient",
+      "usdcInsufficient": "Insufficient USDC balance",
+      "gasUsdcInsufficient": "Insufficient USDC balance",
+      "usdcGasBalance": "USDC balance (gas)",
       "balanceSufficient": "Sufficient",
       "continueApprove": "Continue approval",
       "continuePay": "Continue payment"
@@ -354,7 +358,10 @@
       "youMayAlsoLike": "You May Also Like",
       "recommendHint": "Handpicked for you",
       "viewAll": "View All",
-      "helpLink": "Need help? Visit Help Center"
+      "helpLink": "Need help? Visit Help Center",
+      "discountAmount": "Total discount",
+      "platformFee": "Platform fee",
+      "paidAt": "Paid at"
     },
     "brandName": "Sapphire Mall",
     "arcGasFreeNote": "Arc Testnet: 0 gas — welcome to try it"

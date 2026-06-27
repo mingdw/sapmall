@@ -1817,6 +1817,23 @@
   padding: 0.5rem 0;
   border-top: 1px solid rgba(71, 85, 105, 0.28);
   border-bottom: 1px solid rgba(71, 85, 105, 0.28);
+
+  .amountUnit {
+    font-size: 0.625rem;
+    font-weight: 500;
+  }
+
+  .amountSizeSm .amountUnit {
+    font-size: 0.5625rem;
+  }
+
+  .amountSizeMd .amountUnit {
+    font-size: 0.625rem;
+  }
+
+  .payAvailableBalanceUnit {
+    font-size: 0.625rem;
+  }
 }
 
 .payBreakdownRow {
@@ -1825,22 +1842,52 @@
   align-items: baseline;
   gap: 1rem;
   padding: 0.375rem 0;
-  font-size: 0.8125rem;
 
   dt {
     margin: 0;
-    color: #94a3b8;
+    font-size: 0.75rem;
     font-weight: 500;
+    line-height: 1.4;
+    color: #94a3b8;
   }
 
   dd {
     margin: 0;
     text-align: right;
   }
+
+  .feeRateTag {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #94a3b8;
+  }
+}
+
+.payAvailableBalancesValue {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.payAvailableBalanceItem {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.125rem;
+  white-space: nowrap;
+}
+
+.payAvailableBalanceAmount,
+.payAvailableBalanceUnit {
+  color: #34d399;
+  font-weight: 600;
 }
 
 .payBreakdownRowSaving {
   dt {
+    font-size: 0.75rem;
     color: #86efac;
   }
 
@@ -1857,8 +1904,9 @@
   border-top: 1px dashed rgba(71, 85, 105, 0.35);
 
   dt {
-    color: #e2e8f0;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #94a3b8;
   }
 
   dd .amountNum {
@@ -1970,6 +2018,23 @@
   margin-top: 0.25rem;
   padding-top: 0.75rem;
   border-top: 1px solid rgba(71, 85, 105, 0.35);
+}
+
+.payContactHint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  margin-bottom: 0.625rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: #f87171;
+  text-align: center;
+}
+
+.payContactHintIcon {
+  flex-shrink: 0;
+  color: #f87171;
 }
 
 .payFooterSavings {

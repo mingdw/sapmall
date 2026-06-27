@@ -167,6 +167,7 @@
       "currency": "支付币种",
       "currencyAria": "选择支付币种",
       "orderPayable": "应付总金额",
+      "availableBalance": "可用余额",
       "feeSaving": "手续费减免",
       "finalTotal": "付款总金额",
       "totalSaving": "共减: {{amount}} USDC",
@@ -214,6 +215,7 @@
       "rateLine": "兑换比率",
       "payEquivLine": "约合支付",
       "payEquivValue": "约 {{amount}}（订单 {{usdc}} USDC）",
+      "payEquivUsdcHint": "总计约 {{amount}} USDC（含 Gas）",
       "oracleDisclaimer": "比率为公开市场参考价，非链上即时报价；正式上线后将通过预言机实时获取。",
       "currencies": {
         "USDC": {
@@ -249,8 +251,10 @@
       "rateAsOf": "参考行情日期：{{date}}（演示数据）",
       "feeWithToken": "手续费 {{token}}",
       "estimatedGas": "预估 Gas",
-      "tokenInsufficient": "{{token}} 余额不足（需 {{need}}，当前 {{have}}）",
-      "usdcInsufficient": "余额不足，请充值或者使用其它代币支付",
+      "tokenInsufficient": "{{token}} 余额不足",
+      "usdcInsufficient": "USDC 余额不足",
+      "gasUsdcInsufficient": "USDC 余额不足",
+      "usdcGasBalance": "USDC 余额（Gas）",
       "balanceSufficient": "余额充足",
       "continueApprove": "继续授权支付",
       "continuePay": "继续支付"
@@ -360,7 +364,10 @@
       "youMayAlsoLike": "猜您喜欢",
       "recommendHint": "为你精选更多好物",
       "viewAll": "查看全部",
-      "helpLink": "需要帮助？访问帮助中心"
+      "helpLink": "需要帮助？访问帮助中心",
+      "discountAmount": "优惠总金额",
+      "platformFee": "平台费用",
+      "paidAt": "支付时间"
     },
     "brandName": "Sapphire Mall",
     "arcGasFreeNote": "Arc Testnet 网络 0 Gas，欢迎体验"

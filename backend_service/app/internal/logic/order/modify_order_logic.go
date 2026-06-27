@@ -21,10 +21,10 @@ import (
 )
 
 const (
-	orderActionCancel      = "cancel"
-	orderActionDelete      = "delete"
-	orderActionResumePay   = "resumePay"
-	orderActionConfirming  = "confirming"
+	orderActionCancel     = "cancel"
+	orderActionDelete     = "delete"
+	orderActionResumePay  = "resumePay"
+	orderActionConfirming = "confirming"
 )
 
 type ModifyOrderLogic struct {
@@ -130,11 +130,8 @@ func (l *ModifyOrderLogic) ModifyOrder(req *types.ModifyOrderReq) (resp *types.B
 }
 
 func (l *ModifyOrderLogic) cancelOrder(orderRow *model.Order, paymentRow *model.OrderPayment, updator string) *types.BaseResp {
-	if orderRow.PaymentStatus == PaymentStatusPaid {
-		return customererrors.ParamErrorResp("订单已支付，无法取消")
-	}
-	if orderRow.OrderStatus == OrderStatusCancelled {
-		return customererrors.ParamErrorResp("订单已取消")
+	if orderRow.PaymentStatus == PaymentStatusPaid && orderRow.OrderStatus == OrderStatusCancelled {
+		return nil
 	}
 
 	txErr := l.svcCtx.GormDB.WithContext(l.ctx).Transaction(func(tx *gorm.DB) error {
@@ -232,11 +229,28 @@ func (l *ModifyOrderLogic) resumePay(orderRow *model.Order, paymentRow *model.Or
 }
 
 func (l *ModifyOrderLogic) markConfirming(orderRow *model.Order, paymentRow *model.OrderPayment, txHash string, updator string) *types.BaseResp {
+	txHash = strings.TrimSpace(txHash)
+
+	// 已支付：幂等成功，不再重复触发确认
+	if orderRow.PaymentStatus == PaymentStatusPaid ||
+		orderRow.OrderStatus == OrderStatusPaid ||
+		orderRow.OrderStatus == OrderStatusToShip ||
+		orderRow.OrderStatus == OrderStatusShipped ||
+		orderRow.OrderStatus == OrderStatusCompleted {
+		return nil
+	}
+	if paymentRow.PaymentStatus == PaymentStatusClosed {
+		return customererrors.ParamErrorResp("订单已关闭")
+	}
+
+	// 已在链上确认中：幂等成功，仅补全 txHash
+	if orderRow.PaymentStatus == PaymentStatusConfirming ||
+		orderRow.OrderStatus == OrderStatusOnChainConfirming {
+		return l.idempotentConfirming(orderRow, paymentRow, txHash, updator)
+	}
+
 	if orderRow.OrderStatus != OrderStatusPendingPay {
 		return customererrors.ParamErrorResp("订单状态不支持此操作")
-	}
-	if orderRow.PaymentStatus == PaymentStatusPaid {
-		return customererrors.ParamErrorResp("订单已支付")
 	}
 
 	txErr := l.svcCtx.GormDB.WithContext(l.ctx).Transaction(func(tx *gorm.DB) error {
@@ -270,5 +284,38 @@ func (l *ModifyOrderLogic) markConfirming(orderRow *model.Order, paymentRow *mod
 		go AsyncConfirmOrder(l.ctx, l.svcCtx, orderRow.ID, txHash)
 	}
 
+	return nil
+}
+
+// idempotentConfirming 订单已在确认中时幂等处理：补全 txHash，不重复 AsyncConfirmOrder
+func (l *ModifyOrderLogic) idempotentConfirming(
+	orderRow *model.Order,
+	paymentRow *model.OrderPayment,
+	txHash string,
+	updator string,
+) *types.BaseResp {
+	existingTx := strings.TrimSpace(paymentRow.TxHash)
+	if txHash != "" && existingTx != "" && !strings.EqualFold(existingTx, txHash) {
+		return customererrors.ParamErrorResp("交易哈希与当前订单不一致")
+	}
+
+	needUpdateTx := txHash != "" && existingTx == ""
+	if !needUpdateTx {
+		return nil
+	}
+
+	txErr := l.svcCtx.GormDB.WithContext(l.ctx).Transaction(func(tx *gorm.DB) error {
+		paymentRepo := repository.NewOrderPaymentRepository(tx)
+		return paymentRepo.UpdateColumnsByOrderID(l.ctx, orderRow.ID, map[string]interface{}{
+			"tx_hash": txHash,
+			"updator": updator,
+		})
+	})
+	if txErr != nil {
+		l.Errorf("idempotent confirming update tx failed, id=%d, err=%v", orderRow.ID, txErr)
+		return customererrors.DatabaseErrorResp("更新交易哈希失败")
+	}
+
+	go AsyncConfirmOrder(l.ctx, l.svcCtx, orderRow.ID, txHash)
 	return nil
 }

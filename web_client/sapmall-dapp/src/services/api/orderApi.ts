@@ -48,6 +48,14 @@ export interface OrderInfo {
   orderStatusDesc?: string;
   paymentStatus: number;
   paymentStatusDesc?: string;
+  spuId?: number;
+  spuCode?: string;
+  skuId?: number;
+  skuCode?: string;
+  skuImgs?: string;
+  productName?: string;
+  productPrice?: number;
+  productQuantity?: number;
   totalAmount?: number;
   discountAmount?: number;
   payableAmount?: number;
@@ -57,9 +65,6 @@ export interface OrderInfo {
   payAmount?: number;
   realAmount?: number;
   expireAt?: string;
-  skuId?: number;
-  skuCode?: string;
-  productName?: string;
 }
 
 export interface OrderPaymentInfo {
@@ -81,6 +86,8 @@ export interface OrderPaymentInfo {
   confirmations?: number;
   requiredConfirmations?: number;
   expireAt?: string;
+  paidAt?: string;
+  confirmedAt?: string;
 }
 
 /** POST /api/order/create 请求体（与后端 CreateOrderReq 对齐） */
@@ -126,6 +133,25 @@ export interface OrderStatusResp {
   orderStatus: number;
   paymentStatus: number;
   txHash?: string;
+  orderCode?: string;
+  /** 商品总金额（优惠前，USDC 计价） */
+  totalAmount?: number;
+  /** 优惠总金额（USDC 计价） */
+  discountAmount?: number;
+  /** 商品应付（优惠后，USDC 计价） */
+  payableAmount?: number;
+  /** 平台费（USDC 计价） */
+  platformFeeAmount?: number;
+  /** 链上实付（支付币种数量） */
+  payAmount?: number;
+  tokenSymbol?: string;
+  chainId?: number;
+  /** Gas 费（USDC 计价） */
+  gasFeeUsdc?: number;
+  /** 支付完成时间（RFC3339） */
+  paidAt?: string;
+  /** 支付失败原因 */
+  failReason?: string;
 }
 
 export interface GetOrderResp {
@@ -156,6 +182,7 @@ export interface OrderPaymentStatus {
   txHash?: string;
   confirmations?: number;
   requiredConfirmations?: number;
+  failReason?: string;
 }
 
 /** 仅当 REACT_APP_ORDER_API_MOCK=true 时走 Mock */
@@ -176,11 +203,16 @@ const mockOrderStore = new Map<
 >();
 
 export function paymentToIntentBundle(payment: OrderPaymentInfo, orderCode: string): PaymentIntentBundle {
+  // 优先使用前端部署表中的 Router，避免库内旧地址导致授权到错误合约
+  const canonicalRouter = getPaymentRouterAddress(payment.chainId);
+  const contractAddress =
+    canonicalRouter ??
+    payment.contractAddress;
   return {
     intentId: payment.intentId,
     orderCode: payment.orderCode || orderCode,
     chainId: payment.chainId,
-    contractAddress: payment.contractAddress,
+    contractAddress,
     tokenAddress: payment.tokenAddress,
     tokenSymbol: payment.tokenSymbol,
     amount: payment.amountRaw,
@@ -317,12 +349,15 @@ export const orderApi = {
   },
 
   /** 修改订单状态（cancel/delete/resumePay/confirming） */
-  modify: async (params: { orderId?: number; orderCode?: string; action: string; txHash?: string }): Promise<void> => {
+  modify: async (
+    params: { orderId?: number; orderCode?: string; action: string; txHash?: string },
+    options?: { silent?: boolean },
+  ): Promise<void> => {
     if (isOrderApiMock()) {
       await delay(300);
       return;
     }
-    await baseClient.post('/api/order/modify', params);
+    await baseClient.post('/api/order/modify', params, { silent: options?.silent });
   },
 
   /** 查询订单支付状态（前端轮询） */
@@ -343,6 +378,14 @@ export const orderApi = {
         orderStatus: paymentStatus >= 3 ? 30 : paymentStatus === 2 ? 20 : 10,
         paymentStatus,
         txHash: entry.txHash,
+        orderCode: params.orderCode,
+        payableAmount: 6.7,
+        payAmount: entry.bundle
+          ? Number(entry.bundle.amount) / 10 ** entry.bundle.decimals
+          : 6.7,
+        tokenSymbol: entry.bundle?.tokenSymbol ?? 'USDC',
+        chainId: entry.bundle?.chainId,
+        gasFeeUsdc: 0.01,
       };
     }
     const response = await baseClient.post<OrderStatusResp>('/api/order/status', params);

@@ -1,64 +1,58 @@
-import { type Address, type PublicClient } from 'viem';
-import { erc20Abi } from 'viem';
+import { type PublicClient } from 'viem';
 import { ARC_TESTNET_CHAIN_ID } from '../../../../config/chains/arcTestnet';
 import { LINEA_SEPOLIA_CHAIN_ID } from '../../../../config/chains/lineaSepolia';
 import { BASE_SEPOLIA_CHAIN_ID } from '../../../../config/paymentChains';
-import { paymentRouterAbi } from '../../../../config/abis/paymentRouterAbi';
 
-/** 静态预估 Gas（fallback 用） */
-const STATIC_GAS_USDC: Record<number, number> = {
+/** 各链支付流程固定 Gas 上限（approve + payOrder，含 20% 余量，仅作 limit 与展示估算） */
+export const PAYMENT_GAS_LIMITS: Record<
+  number,
+  { approve: number; payOrder: number }
+> = {
+  [ARC_TESTNET_CHAIN_ID]: { approve: 100_000, payOrder: 400_000 },
+  [LINEA_SEPOLIA_CHAIN_ID]: { approve: 100_000, payOrder: 400_000 },
+  [BASE_SEPOLIA_CHAIN_ID]: { approve: 100_000, payOrder: 400_000 },
+};
+
+const DEFAULT_GAS_LIMITS = { approve: 100_000, payOrder: 400_000 };
+
+/** 各链静态 Gas 费展示（USDC 计价，不发起链上合约模拟） */
+const STATIC_GAS_FEE_USDC: Record<number, number> = {
   [ARC_TESTNET_CHAIN_ID]: 0.01,
   [LINEA_SEPOLIA_CHAIN_ID]: 0.05,
   [BASE_SEPOLIA_CHAIN_ID]: 0.04,
 };
 
-/** 预估链上 Gas（USDC 计价展示用，静态 fallback） */
+export function getPaymentGasLimits(chainId: number) {
+  return PAYMENT_GAS_LIMITS[chainId] ?? DEFAULT_GAS_LIMITS;
+}
+
+/** 预估链上 Gas（USDC 计价展示 / 创单 estGasFee，纯静态） */
 export function estimateGasFeeUsdc(chainId?: number): number {
-  if (chainId && chainId in STATIC_GAS_USDC) return STATIC_GAS_USDC[chainId];
+  if (chainId && chainId in STATIC_GAS_FEE_USDC) return STATIC_GAS_FEE_USDC[chainId];
   return 0.05;
+}
+
+/**
+ * 用固定 gas 单位 + 当前 gasPrice 估算费用（仅读 gasPrice，不做 estimateContractGas 模拟）
+ */
+export async function estimateGasFeeUsdcFromGasPrice(
+  publicClient: PublicClient,
+  chainId: number,
+  nativeTokenDecimals = 6,
+): Promise<number> {
+  const limits = getPaymentGasLimits(chainId);
+  try {
+    const gasPrice = await publicClient.getGasPrice();
+    const totalGas =
+      BigInt(Math.ceil((limits.approve + limits.payOrder) * 1.2));
+    const costWei = totalGas * gasPrice;
+    const divisor = 10n ** BigInt(nativeTokenDecimals);
+    return Number(costWei * 10000n / divisor) / 10000;
+  } catch {
+    return estimateGasFeeUsdc(chainId);
+  }
 }
 
 export function isArcTestnetChain(chainId?: number): boolean {
   return chainId === ARC_TESTNET_CHAIN_ID;
-}
-
-/** 链上实时预估 approve + payOrder 的 gas 费用（USDC 计价） */
-export async function estimateRealGasFeeUsdc(params: {
-  publicClient: PublicClient;
-  account: Address;
-  tokenAddress: Address;
-  routerAddress: Address;
-  intentId: string;
-  orderCode: string;
-  amount: bigint;
-  nativeTokenDecimals: number;
-}): Promise<number> {
-  const { publicClient, account, tokenAddress, routerAddress, intentId, orderCode, amount, nativeTokenDecimals } = params;
-
-  try {
-    const [approveGas, payGas, gasPrice] = await Promise.all([
-      publicClient.estimateContractGas({
-        address: tokenAddress,
-        abi: erc20Abi,
-        functionName: 'approve',
-        args: [routerAddress, amount],
-        account,
-      }),
-      publicClient.estimateContractGas({
-        address: routerAddress,
-        abi: paymentRouterAbi,
-        functionName: 'payOrder',
-        args: [intentId, orderCode, tokenAddress, amount],
-        account,
-      }),
-      publicClient.getGasPrice(),
-    ]);
-
-    const totalGas = (approveGas + payGas) * 120n / 100n;
-    const totalCostWei = totalGas * gasPrice;
-    const divisor = 10n ** BigInt(nativeTokenDecimals);
-    return Number(totalCostWei * 10000n / divisor) / 10000;
-  } catch {
-    return estimateGasFeeUsdc(params.publicClient.chain?.id);
-  }
 }

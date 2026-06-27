@@ -20,6 +20,11 @@ export function formatUsdcDisplay(amount: number): string {
   return `${amount.toFixed(2)} USDC`;
 }
 
+/** 支付币种金额展示（实付等） */
+export function formatTokenDisplay(amount: number, symbol: string): string {
+  return `${formatAmountNumber(amount, symbol)} ${symbol}`;
+}
+
 /** 链上余额展示（cirBTC 等高价资产需保留更多小数位） */
 export function formatTokenBalanceDisplay(amount: number, symbol: string): string {
   if (Number.isNaN(amount) || amount === 0) {

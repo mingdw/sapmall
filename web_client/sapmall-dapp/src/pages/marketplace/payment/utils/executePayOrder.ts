@@ -1,14 +1,18 @@
 import {
   erc20Abi,
+  BaseError,
+  ContractFunctionRevertedError,
   type Address,
   type Hash,
   type PublicClient,
   type WalletClient,
-  type Chain,
   UserRejectedRequestError,
 } from 'viem';
 import { paymentRouterAbi } from '../../../../config/abis/paymentRouterAbi';
+import { config } from '../../../../config/wagmi';
+import { getPaymentRouterAddress } from '../../../../config/paymentContracts';
 import type { PaymentIntentBundle } from '../../../../services/api/orderApi';
+import { getPaymentGasLimits } from './estimateGasFee';
 
 export type PayOrderErrorCode =
   | 'walletNotConnected'
@@ -49,6 +53,21 @@ function assertIntentBundle(bundle: PaymentIntentBundle) {
   return amount;
 }
 
+function resolvePaymentChain(chainId: number) {
+  return config.chains.find((c) => c.id === chainId);
+}
+
+function resolveCanonicalRouter(bundle: PaymentIntentBundle): Address {
+  const fromBundle = bundle.contractAddress as Address;
+  const canonical = getPaymentRouterAddress(bundle.chainId);
+  if (!canonical) return fromBundle;
+  if (fromBundle.toLowerCase() !== canonical.toLowerCase()) {
+    // 库内可能是旧 Router；链上授权须指向当前部署地址
+    return canonical;
+  }
+  return fromBundle;
+}
+
 async function waitReceipt(publicClient: PublicClient, hash: Hash) {
   const receipt = await publicClient.waitForTransactionReceipt({ hash, timeout: 120_000 });
   if (receipt.status === 'reverted') {
@@ -74,30 +93,15 @@ function isUserRejectedWalletError(err: unknown): boolean {
   return cause != null && isUserRejectedWalletError(cause);
 }
 
-async function estimateGasForContract(params: {
-  publicClient: PublicClient;
-  account: Address;
-  chain: Chain | undefined;
-  address: Address;
-  abi: typeof erc20Abi | typeof paymentRouterAbi;
-  functionName: string;
-  args: readonly unknown[];
-}): Promise<{ gas: bigint; gasPrice: bigint }> {
-  const { publicClient, account, chain, address, abi, functionName, args } = params;
-
-  const [gas, gasPrice] = await Promise.all([
-    publicClient.estimateContractGas({
-      address,
-      abi: abi as readonly unknown[],
-      functionName: functionName as 'approve' | 'payOrder',
-      args: args as readonly unknown[],
-      account,
-    }),
-    publicClient.getGasPrice(),
-  ]);
-
-  const buffer = (gas * 20n) / 100n;
-  return { gas: gas + buffer, gasPrice };
+function extractContractErrorMessage(err: unknown): string | undefined {
+  if (err instanceof BaseError) {
+    const reverted = err.walk((e) => e instanceof ContractFunctionRevertedError);
+    if (reverted instanceof ContractFunctionRevertedError) {
+      return reverted.reason ?? reverted.data?.errorName ?? reverted.shortMessage;
+    }
+    return err.shortMessage;
+  }
+  return err instanceof Error ? err.message : undefined;
 }
 
 /** approve（如需要）并调用 PaymentRouter.payOrder */
@@ -107,13 +111,20 @@ export async function executePayOrder(params: {
   bundle: PaymentIntentBundle;
   account: Address;
   onPhase?: (phase: 'approving' | 'paying') => void;
+  /** payOrder 交易已提交（拿到 hash）时回调，便于前端上报 confirming 并轮询 /status */
+  onPaySubmitted?: (hash: Hash) => void | Promise<void>;
 }): Promise<Hash> {
   const { walletClient, publicClient, bundle, account } = params;
   const amount = assertIntentBundle(bundle);
 
-  const router = bundle.contractAddress as Address;
+  const paymentChain = resolvePaymentChain(bundle.chainId);
+  if (!paymentChain) {
+    throw new PayOrderError('chainMismatch', '支付链未在钱包配置中启用');
+  }
+
+  const router = resolveCanonicalRouter(bundle);
   const token = bundle.tokenAddress as Address;
-  const chain = walletClient.chain;
+  const gasLimits = getPaymentGasLimits(bundle.chainId);
 
   const allowance = await publicClient.readContract({
     address: token,
@@ -128,25 +139,14 @@ export async function executePayOrder(params: {
       activeStage = 'approve';
       params.onPhase?.('approving');
 
-      const { gas, gasPrice } = await estimateGasForContract({
-        publicClient,
-        account,
-        chain,
-        address: token,
-        abi: erc20Abi,
-        functionName: 'approve',
-        args: [router, amount],
-      });
-
       const approveHash = await walletClient.writeContract({
         account,
-        chain,
+        chain: paymentChain,
         address: token,
         abi: erc20Abi,
         functionName: 'approve',
         args: [router, amount],
-        gas,
-        gasPrice,
+        gas: BigInt(gasLimits.approve),
       });
       await waitReceipt(publicClient, approveHash);
     }
@@ -154,26 +154,68 @@ export async function executePayOrder(params: {
     activeStage = 'pay';
     params.onPhase?.('paying');
 
-    const { gas, gasPrice } = await estimateGasForContract({
-      publicClient,
-      account,
-      chain,
+    let tokenSupported = false;
+    try {
+      tokenSupported = await publicClient.readContract({
+        address: router,
+        abi: paymentRouterAbi,
+        functionName: 'isTokenSupported',
+        args: [BigInt(bundle.chainId), token],
+      });
+    } catch {
+      throw new PayOrderError(
+        'paymentFailed',
+        'isTokenSupported reverted: PaymentRouter 地址无效或版本过旧',
+      );
+    }
+    if (!tokenSupported) {
+      throw new PayOrderError('paymentFailed', 'TokenNotSupported');
+    }
+
+    const tokenBalance = await publicClient.readContract({
+      address: token,
+      abi: erc20Abi,
+      functionName: 'balanceOf',
+      args: [account],
+    });
+    if (tokenBalance < amount) {
+      throw new PayOrderError('paymentFailed', 'ERC20: transfer amount exceeds balance');
+    }
+
+    const intentPaid = await publicClient.readContract({
       address: router,
       abi: paymentRouterAbi,
-      functionName: 'payOrder',
-      args: [bundle.intentId, bundle.orderCode, token, amount],
+      functionName: 'isIntentPaid',
+      args: [bundle.intentId],
     });
+    if (intentPaid) {
+      throw new PayOrderError('paymentFailed', 'IntentAlreadyPaid');
+    }
 
+    const allowanceBeforePay = await publicClient.readContract({
+      address: token,
+      abi: erc20Abi,
+      functionName: 'allowance',
+      args: [account, router],
+    });
+    if (allowanceBeforePay < amount) {
+      throw new PayOrderError(
+        'paymentFailed',
+        '代币授权额度不足，请重新点击继续支付并完成授权',
+      );
+    }
+
+    // 固定 gas limit + 钱包弹窗确认；不做 estimateContractGas 链上模拟
     const payHash = await walletClient.writeContract({
       account,
-      chain,
+      chain: paymentChain,
       address: router,
       abi: paymentRouterAbi,
       functionName: 'payOrder',
       args: [bundle.intentId, bundle.orderCode, token, amount],
-      gas,
-      gasPrice,
+      gas: BigInt(gasLimits.payOrder),
     });
+    await params.onPaySubmitted?.(payHash);
     await waitReceipt(publicClient, payHash);
     return payHash;
   } catch (err) {
@@ -181,6 +223,10 @@ export async function executePayOrder(params: {
     if (isUserRejectedWalletError(err)) {
       throw new PayOrderError('userRejected', undefined, activeStage);
     }
-    throw new PayOrderError('paymentFailed', err instanceof Error ? err.message : undefined);
+    throw new PayOrderError(
+      'paymentFailed',
+      extractContractErrorMessage(err) ?? 'paymentFailed',
+      activeStage,
+    );
   }
 }
