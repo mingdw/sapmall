@@ -7,7 +7,7 @@
 **🌐 多语言支持 | [English](README_EN.md) | [中文](README.md)**
 
 [![Platform](https://img.shields.io/badge/Platform-Web3-blue.svg)](https://web3js.org/)
-[![Blockchain](https://img.shields.io/badge/Blockchain-Ethereum-green.svg)](https://ethereum.org/)
+[![Blockchain](https://img.shields.io/badge/Blockchain-Arc-green.svg)](https://docs.arc.io/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Development-orange.svg)](https://github.com/your-username/sapmall)
 
@@ -19,7 +19,11 @@
 
 **Sapphire Mall** 是一个去中心化社区自驱动的虚拟商品交易平台。平台基于区块链技术构建，以社区治理为核心，通过 DAO 机制组织决策；采用 **ERC-20 代币 SAP** 作为生态通证，结合社区任务与治理激励，形成可审计、可参与的 Web3 虚拟商品交易与共治叙事。
 
-平台 **[深度集成 Bags](https://bags.fm/)（Solana）**，依托其 **项目 launch、Launch Intent 转化链路与开放 API / SDK**，使 **活动、营销与治理协作** 与 **主支付链路** **职权分离**：链上活动 **上线快、易传播**，主站 **EVM 订单与 SAP 经济** 保持稳定边界。活动规则以官方披露为准。
+**以 [Arc](https://docs.arc.io/) 为核心的稳定币支付**：商城结账深度集成 **Arc Testnet**，支持 **USDC、EURC、cirBTC** 等多种稳定币与链上资产支付；商品标价统一 **USDC 计价**，链上按所选代币实时换算并划转。依托 Arc **近秒级确认与低 Gas**，用户可在单链完成「选品—授权—支付—确认」全流程，同时保留 **SAP** 生态代币支付与手续费减免策略。
+
+**基于 Arc 的跨链支付**：在 Arc 结算层统一承接多来源资产——用户可选用美元稳定币（**USDC**）、欧元稳定币（**EURC**）、比特币映射资产（**cirBTC**）等跨链流入资产完成结账，无需在多条链之间手动桥接后再支付。后端 **PaymentRouter** 与 **SettlementVault** 统一路由支付 intent 与资金流，订单状态与链上 `PaymentPaid` 事件对齐，降低多资产用户的支付与对账成本。
+
+平台 **[深度集成 Bags](https://bags.fm/)（Solana）**，依托其 **项目 launch、Launch Intent 转化链路与开放 API / SDK**，使 **活动、营销与治理协作** 与 **主支付链路** **职权分离**：链上活动 **上线快、易传播**，主站 **Arc 稳定币订单与 SAP 经济** 保持稳定边界。活动规则以官方披露为准。
 
 **入口约定**：DApp 内 **所有活动、奖励及 Bags 相关说明与外链** 统一在 **`/rewards`（`rewards` 模块，顶栏「生态活动」）** 聚合；**`/marketplace` 商城** 仅承载 **选品与下单**，**不作为** 活动/奖励主入口（与 `docs/Bags_Activity_Marketing_PRD.md` 一致）。
 
@@ -29,6 +33,9 @@
 
 ### 🌟 核心特色
 
+- **⚡ Arc 深度集成**: DApp、PaymentRouter、链网络与 **Arc Testnet** 原生对接；**近秒级**链上确认、统一 intent 与结算 Vault，支付路径链上可审计、订单状态与事件同步
+- **💵 多稳定币支付**: Arc 上支持 **USDC / EURC / cirBTC** 及 **SAP** 等多币种结账，商城 **USDC 统一标价**，链上按汇率换算实付
+- **🌉 Arc 跨链支付**: 欧元、比特币等跨链资产在 **Arc 结算层** 统一完成支付，用户单钱包、单链即可完成多币种结账
 - **🏛️ 去中心化治理**: 基于 DAO 的社区决策与参数讨论（主叙事与 SAP 绑定）
 - **👥 社区自驱动**: 成员参与审核、仲裁与共建，贡献可激励
 - **🎯 虚拟商品专精**: 数字内容、软件工具、在线服务等虚拟商品交易场景
@@ -36,7 +43,7 @@
 - **💰 收益共享机制**: 平台价值与贡献者、金库与治理目标对齐（详见代币与 PRD 文档）
 - **🌍 全球化与多语言**: 中英文界面与文档，面向更广泛用户与开发者
 - **🔐 透明链上治理**: 关键决策与分配逻辑链上可审计、链下流程可对照文档
-- **🧩 集成 Bags 增长层**: 对接 **Bags（Solana）** 的 **launch、Launch Intent 与开放 API**，可 **快速搭建** 营销、拉新及后续可扩展场景，助力 **冷启动期用户与社区体量快速增长**；**产品入口** 统一在 **`/rewards`**，与 **EVM 商城结账** 分离；主站 **SAP** 仍为经济底座，活动与主支付 **边界清晰**
+
 
 ## 🏗️ 项目结构
 
@@ -78,15 +85,17 @@ sapmall/
 - **组件化与可维护性**: React 侧按页面与业务域拆分；原型侧便于快速迭代演示  
 - **国际化（i18n）**: DApp 等应用内置中英文文案，与文档双语策略一致  
 - **链上状态可读**: 钱包、网络、余额与关键操作反馈清晰，降低误操作成本  
-- **主路径与活动路径分流**: **商城（`/marketplace`）、兑换、DAO** 与 **`/rewards` 生态活动** 分区呈现；**活动/奖励/Bags 说明仅挂在 rewards**，商城首页 **不承担** 活动主入口，降低「参加活动」与「下单支付」混淆  
-
+- **Arc 支付动线**: 结算页支持多稳定币选择与 Gas 提示，链上确认状态可追踪  
+- **社区讨论与共建**: `/dao` 提供 **提案 / 讨论 / 活动** 三 Tab 聚合；支持话题分类与标签筛选、富文本发帖与回复、侧栏参与统计与「我参与的提案/讨论」快捷入口，连接钱包后可发起讨论与提案，形成可检索的社区议事空间  
+- **链上治理闭环**: 提案详情展示投票进度、规则说明与结果；支持发起治理提案、链上/模拟投票交互与委托说明；活动 Tab 承载社区议程与运营事件，治理动线与 SAP 持仓权重叙事一致（详见 `docs/PRD.md` 治理章节）  
+- **后台运营灌流**: **sapmall-admin** 承担商品上架、分类与属性配置、商家/KYC 审核、订单与平台看板等运营能力；商家发布并经审核的商品 **灌流至 DApp 商城** 展示，平台侧可配置类目与种子内容，支撑冷启动期的 **货架填充、社区话题与治理内容供给**，避免前台「空城」体验  
 ### 📱 主要页面与代码入口（按当前仓库结构）
 
 #### `sapmall-dapp`（用户端 DApp · React + Web3）
 
 | 路由 | 功能说明 | 源码路径 |
 |------|----------|----------|
-| `/marketplace` | 代币化商品商城：分类、筛选、浏览与购物动线（**不含** 活动/奖励主入口） | `web_client/sapmall-dapp/src/pages/marketplace/` |
+| `/marketplace` | 代币化商品商城：分类、筛选、浏览与 **Arc 多稳定币链上结账**（**不含** 活动/奖励主入口） | `web_client/sapmall-dapp/src/pages/marketplace/` |
 | `/exchange` | 兑换与资产相关能力展示 | `web_client/sapmall-dapp/src/pages/exchange/` |
 | `/rewards` | **生态活动**：活动、奖励、**Bags** 相关说明与外链的 **唯一聚合入口**（顶栏「生态活动」） | `web_client/sapmall-dapp/src/pages/rewards/` |
 | `/dao` | 社区参与 / DAO 相关界面 | `web_client/sapmall-dapp/src/pages/dao/` |
@@ -342,11 +351,6 @@ open design/prototypes/admin.html
 - **总供应量**: 100,000,000 SAP
 - **代币类型**: 功能型代币（Utility Token）
 
-### 核心机制
-- **流动性挖矿**: 用户提供流动性获得挖矿奖励
-- **手续费分成**: 平台手续费的70%分配给流动性提供者
-- **DAO治理**: SAP持有者可参与平台重大决策投票
-- **通缩机制**: 多重销毁机制保持代币稀缺性
 
 ## 🛠️ 技术架构
 
@@ -361,6 +365,7 @@ open design/prototypes/admin.html
 ### 智能合约技术
 - **开发框架**: Hardhat + TypeScript
 - **合约语言**: Solidity 0.8.19+
+- **支付合约**: Arc Testnet **PaymentRouter** / **SettlementVault**，支持多代币 intent 与 `PaymentPaid` 事件协议
 - **安全工具**: Slither + Mythril + OpenZeppelin
 - **升级机制**: OpenZeppelin Upgrades
 - **多签管理**: Gnosis Safe

@@ -7,7 +7,7 @@
 **🌐 Multi-language Support | [English](README_EN.md) | [中文](README.md)**
 
 [![Platform](https://img.shields.io/badge/Platform-Web3-blue.svg)](https://web3js.org/)
-[![Blockchain](https://img.shields.io/badge/Blockchain-Ethereum-green.svg)](https://ethereum.org/)
+[![Blockchain](https://img.shields.io/badge/Blockchain-Arc-green.svg)](https://docs.arc.io/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Development-orange.svg)](https://github.com/your-username/sapmall)
 
@@ -17,17 +17,32 @@
 
 ## 📋 Project Overview
 
-**Sapphire Mall** is a decentralized community-driven virtual goods trading platform. The platform is built on blockchain technology with community governance at its core, implementing a fully decentralized decision-making system through DAO mechanisms. The platform uses the self-issued ERC20 token SAP as the ecosystem token, rewarding community participation through contribution tasks and governance incentives, creating a Web3 virtual goods trading ecosystem that is jointly governed and benefited by community members.
+**Sapphire Mall** is a decentralized, community-driven virtual goods trading platform. Built on blockchain with **community governance** at its core and **DAO** mechanisms for decision-making, it uses the **ERC-20 token SAP** as the ecosystem token, combining community tasks and governance incentives into an auditable, participatory Web3 commerce and co-governance narrative.
+
+**Stablecoin payments on [Arc](https://docs.arc.io/)**: Checkout is deeply integrated with **Arc Testnet**, supporting **USDC, EURC, cirBTC**, and other on-chain assets. List prices are quoted in **USDC**; settlement converts and transfers in the payer’s chosen token in real time. With Arc’s **near-instant confirmation and low gas**, users complete browse → approve → pay → confirm on a single chain, while **SAP** payments and fee-discount policies remain available.
+
+**Cross-chain payments via Arc**: The Arc settlement layer unifies multi-source assets—users can pay with **USDC**, **EURC**, or bridged **cirBTC** without manually bridging on another chain before checkout. Backend **PaymentRouter** and **SettlementVault** route payment intents and funds; order state aligns with on-chain **`PaymentPaid`** events, reducing reconciliation cost for multi-asset payers.
+
+The platform **[integrates Bags](https://bags.fm/) (Solana)** for **project launch, Launch Intent flows, and open API / SDK**, keeping **campaigns, marketing, and governance collaboration** **separate from the main payment path**: on-chain campaigns **ship fast and spread easily**, while the main site keeps a stable boundary around **Arc stablecoin orders and the SAP economy**. Campaign rules follow official disclosures.
+
+**Entry convention**: In the DApp, **all campaigns, rewards, and Bags-related copy and outbound links** live under **`/rewards`** (top nav **Ecosystem**). **`/marketplace`** is **browse and checkout only**—not the primary entry for campaigns or rewards (see `docs/Bags_Activity_Marketing_PRD.md`).
+
+**Wallets and campaigns (user cost)**: Users who **only browse, buy, and use the SAP main path** need **only an EVM wallet**. **Bags ecosystem activities** run on **Bags (Solana)**; users must **connect a Solana wallet on Bags and approve as prompted** (the top-bar EVM login cannot substitute). **Non-participants are unaffected** and **dual wallets are not required**. Optional **EVM ↔ Solana binding** (Phase 2) is for on-site benefits and profiles—see PRD **§3.2**.
+
+**Bags developer resources**: [Docs](https://docs.bags.fm/) · [Developer portal](https://dev.bags.fm/login) · [TypeScript SDK (npm)](https://www.npmjs.com/package/@bagsfm/bags-sdk)
 
 ### 🌟 Core Features
 
-- **🏛️ Decentralized Governance**: Fully decentralized community governance system based on DAO mechanisms
-- **👥 Community-Driven**: Jointly decided, built, and benefited by community members
-- **🎯 Virtual Goods Specialization**: Focus on digital content, software tools, online services and other virtual goods trading
-- **💎 Contribution Incentives**: Reward community participation through tasks, arbitration, and governance
-- **💰 Revenue Sharing Mechanism**: Platform revenue automatically distributed to community contributors through smart contracts
-- **🌍 Global Community**: Multi-language support, building a global decentralized community
-- **🔐 Transparent On-chain Governance**: All governance decisions and revenue distribution are completely transparent and verifiable on-chain
+- **⚡ Deep Arc integration**: DApp, PaymentRouter, chain config, and **Arc Testnet** natively aligned; **near-instant** on-chain confirmation, unified intents and settlement vault, auditable payment path with order state synced to events
+- **💵 Multi-stablecoin checkout**: **USDC / EURC / cirBTC** and **SAP** on Arc; mall prices in **USDC**, on-chain settlement converted to the payment token
+- **🌉 Arc cross-chain payments**: Euro and Bitcoin-mapped assets settle on **Arc**; one wallet and one chain for multi-currency checkout
+- **🏛️ Decentralized governance**: DAO-based community decisions and parameter discussion (primary narrative tied to SAP)
+- **👥 Community-driven**: Members participate in review, arbitration, and co-building with incentivized contributions
+- **🎯 Virtual goods focus**: Digital content, software tools, online services, and similar virtual goods
+- **💎 Contribution incentives**: Tasks, arbitration, governance, and other participation channels with rewards
+- **💰 Value sharing**: Platform value aligned with contributors, treasury, and governance goals (see tokenomics and PRD)
+- **🌍 Global & multilingual**: Chinese and English UI and docs for users and developers
+- **🔐 Transparent on-chain governance**: Key decisions and allocation logic auditable on-chain; off-chain flows documented
 
 ## 🏗️ Project Structure
 
@@ -38,7 +53,7 @@ sapmall/
 │   ├── 📁 sapmall-admin/             # Admin Backend (React + TypeScript)
 │   ├── 📁 sapmall-dapp/              # DApp Application (React + Web3)
 │   └── 📁 sapmall-website/           # Official Website (React)
-├── 📁 env/                           # Environment Configuration
+├── 📁 env/                           # Environment config & one-click scripts
 │   └── 📁 dev/                       # Development Environment Docker Configuration
 ├── 📁 design/                        # Design Files
 │   ├── 📁 prototypes/                # Prototype Design
@@ -49,7 +64,8 @@ sapmall/
 │   ├── 📄 Tokenomics_Detailed.md     # Token Economics Model
 │   ├── 📄 Roadmap.md                 # Project Roadmap
 │   ├── 📄 User_Story_Map.md          # User Story Map
-│   └── 📄 Metrics_Framework.md       # Metrics Framework
+│   ├── 📄 Metrics_Framework.md       # Metrics Framework
+│   └── 📄 Bags_Activity_Marketing_PRD.md  # Bags campaigns & marketing (sub-domain PRD)
 ├── 📁 promit/                        # AI Agent Prompts
 ├── 📁 pic/                           # Image Resources
 ├── 📄 docker-compose.yml             # Docker Compose File
@@ -57,26 +73,53 @@ sapmall/
 └── 📄 README.md                      # Project Description
 ```
 
-## 🎨 Design Prototypes
+## 🎨 Design & Prototypes
 
-The project includes complete Web3 virtual goods trading platform interface prototypes with modern design style:
+The repo includes **runnable React frontends** (`web_client/`) and **high-fidelity HTML prototypes** (`design/prototypes/`): the former is the engineering mainline; the latter supports early interaction and visual alignment.
 
 ### 🎯 Design Features
-- **Responsive Design**: Perfect adaptation for desktop, tablet and mobile
-- **Dark Theme**: Visual style consistent with Web3 applications
-- **Interactive Effects**: Smooth user interaction experience
-- **Component-based**: Reusable UI component system
-- **Multi-language**: Complete Chinese and English bilingual support
 
-### 📱 Main Pages
+- **Responsive layout**: Desktop and mobile; key transaction paths complete main actions within one screen  
+- **Dark Web3 visual language**: High contrast, low glare, asset and status information first  
+- **Componentized & maintainable**: React pages split by domain; prototypes iterate quickly for demos  
+- **Internationalization (i18n)**: Chinese and English in the DApp, consistent with bilingual docs  
+- **Readable on-chain state**: Wallet, network, balance, and action feedback to reduce mistakes  
+- **Arc payment flow**: Checkout supports multi-stablecoin selection, gas hints, and trackable on-chain confirmation  
+- **Community discussion & co-building**: `/dao` aggregates **Proposals / Discussions / Events**; category and tag filters, rich-text posts and replies, sidebar participation stats, and quick links to proposals/discussions you joined; connect wallet to start discussions and proposals  
+- **On-chain governance loop**: Proposal detail with vote progress, rules, and results; create proposals, on-chain/simulated voting, delegation notes; Events tab for community agenda and ops—aligned with SAP-weight governance (see `docs/PRD.md`)  
+- **Admin content funneling**: **sapmall-admin** handles product listing, categories and attributes, merchant/KYC review, orders, and platform dashboard; approved merchant products **flow to the DApp marketplace**; platform ops can seed categories and content for cold-start **catalog, topics, and governance supply**  
 
-| Page | Function Description | File Path |
-|------|---------------------|-----------|
-| 🏠 **Official Website Homepage** | Platform introduction, data display, quick access | `design/prototypes/index.html` |
-| 🛒 **DApp Main Interface** | Product browsing, token exchange, governance & rewards center | `design/prototypes/dapp.html` |
-| ⚙️ **Admin Backend** | User management, product review, system configuration | `design/prototypes/admin.html` |
-| 📊 **Data Display** | Real-time data, statistical charts, platform overview | `design/prototypes/homepage.html` |
-| 👤 **User Management** | KYC review, permission assignment, data analysis | `design/prototypes/admin/user-management.html` |
+### 📱 Main Pages & Code Entry (current repo layout)
+
+#### `sapmall-dapp` (User DApp · React + Web3)
+
+| Route | Description | Source |
+|------|-------------|--------|
+| `/marketplace` | Tokenized mall: browse, filter, **Arc multi-stablecoin checkout** (**not** the campaigns/rewards hub) | `web_client/sapmall-dapp/src/pages/marketplace/` |
+| `/exchange` | Swap and asset-related UI | `web_client/sapmall-dapp/src/pages/exchange/` |
+| `/rewards` | **Ecosystem campaigns**: activities, rewards, **Bags** copy and links (**single hub**, top nav) | `web_client/sapmall-dapp/src/pages/rewards/` |
+| `/dao` | Community participation / DAO UI | `web_client/sapmall-dapp/src/pages/dao/` |
+| `/help` | Help center | `web_client/sapmall-dapp/src/pages/help/` |
+| `/admin` | Embedded **admin** (iframe, same-origin or configured Admin URL) | `web_client/sapmall-dapp/src/components/AdminIframeEmbedded.tsx` |
+| Global layout | Top nav, wallet connect, i18n | `web_client/sapmall-dapp/src/pages/header/`, `src/i18n/` |
+
+Routing: `web_client/sapmall-dapp/src/layout/ContentLayout.tsx`. Bags integration: `docs/Bags_Activity_Marketing_PRD.md`.
+
+#### `sapmall-admin` / `sapmall-website`
+
+| App | Description | Path |
+|------|-------------|------|
+| **sapmall-admin** | Platform and merchant operations (React + TS) | `web_client/sapmall-admin/` |
+| **sapmall-website** | Marketing site (React) | `web_client/sapmall-website/` |
+
+#### `design/prototypes` (HTML prototypes · design & demo)
+
+| Area | Description | Example paths |
+|------|-------------|---------------|
+| Website entry | Brand and landing | `design/prototypes/index.html`, `design/prototypes/homepage.html` |
+| DApp prototype kit | Marketplace, exchange, DAO, help, etc. (**`/rewards`** for campaigns in production) | `design/prototypes/dapp.html`; subpages in `design/prototypes/dapp/` |
+| Admin prototype kit | Dashboard, orders, users, merchants | `design/prototypes/admin.html`; subpages in `design/prototypes/admin/` |
+| Brand assets | Logo / favicon vectors | `design/prototypes/favicon.svg` (evolved into DApp `src/assets/logo-mark.svg`) |
 
 ## 🚀 Quick Start
 
@@ -328,6 +371,7 @@ open design/prototypes/admin.html
 ### Smart Contract Technology
 - **Development Framework**: Hardhat + TypeScript
 - **Contract Language**: Solidity 0.8.19+
+- **Payment contracts**: Arc Testnet **PaymentRouter** / **SettlementVault**, multi-token intents and **`PaymentPaid`** event protocol
 - **Security Tools**: Slither + Mythril + OpenZeppelin
 - **Upgrade Mechanism**: OpenZeppelin Upgrades
 - **Multi-signature Management**: Gnosis Safe
