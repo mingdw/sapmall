@@ -506,79 +506,64 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 The following are main page screenshots of the project for quick preview on GitHub:
 
+### 🏠 Homepage
 <p align="center">
-  <img src="pic/官网首页_zh_01.png" alt="Homepage (Chinese) 01" width="800" />
-  <br /><em>Homepage (Chinese) 01</em>
+  <img src="pic/new-pic-en/官网首页_en_01.png" alt="Homepage 01" width="800" />
+  <br /><em>Homepage - Brand Introduction</em>
 </p>
 <p align="center">
-  <img src="pic/官网首页_zh_02.png" alt="Homepage (Chinese) 02" width="800" />
-  <br /><em>Homepage (Chinese) 02</em>
+  <img src="pic/new-pic-en/官网首页_en_02.png" alt="Homepage 02" width="800" />
+  <br /><em>Homepage - Core Features</em>
 </p>
 <p align="center">
-  <img src="pic/官网首页_zh_03.png" alt="Homepage (Chinese) 03" width="800" />
-  <br /><em>Homepage (Chinese) 03</em>
+  <img src="pic/new-pic-en/官网首页_en_03.png" alt="Homepage 03" width="800" />
+  <br /><em>Homepage - Project Vision</em>
+</p>
+
+### 🛒 DApp Marketplace
+<p align="center">
+  <img src="pic/new-pic-en/商城首页-en.png" alt="Marketplace Homepage" width="800" />
+  <br /><em>Marketplace - Product Browsing & Categories</em>
 </p>
 <p align="center">
-  <img src="pic/官网首页_en_01.png" alt="Homepage (English) 01" width="800" />
-  <br /><em>Homepage (English) 01</em>
+  <img src="pic/new-pic-en/商品明细-en.png" alt="Product Detail" width="800" />
+  <br /><em>Product Detail - Product Info & Purchase</em>
 </p>
 <p align="center">
-  <img src="pic/官网首页_en_02.png" alt="Homepage (English) 02" width="800" />
-  <br /><em>Homepage (English) 02</em>
+  <img src="pic/new-pic-en/代币兑换-en.png" alt="Token Exchange" width="800" />
+  <br /><em>Token Exchange - SAP Token Swap</em>
 </p>
 <p align="center">
-  <img src="pic/官网首页_en_03.png" alt="Homepage (English) 03" width="800" />
-  <br /><em>Homepage (English) 03</em>
+  <img src="pic/new-pic-en/授权支付.png" alt="Authorize Payment" width="800" />
+  <br /><em>Authorize Payment - On-chain Payment Flow</em>
 </p>
 <p align="center">
-  <img src="pic/dapp_zh_商城首页_01.png" alt="DApp Mall Homepage (Chinese)" width="800" />
-  <br /><em>DApp Mall Homepage (Chinese)</em>
+  <img src="pic/new-pic-en/确认订单-en.png" alt="Order Confirmation" width="800" />
+  <br /><em>Order Confirmation - Verify Order Info</em>
 </p>
 <p align="center">
-  <img src="pic/dapp_商品明细.png" alt="DApp Product Detail" width="800" />
-  <br /><em>DApp Product Detail</em>
+  <img src="pic/new-pic-en/订单完成-en.png" alt="Order Complete" width="800" />
+  <br /><em>Order Complete - Transaction Finished</em>
+</p>
+
+### 🏛️ DAO Governance
+<p align="center">
+  <img src="pic/new-pic-en/社区参与首页-en.png" alt="Community Homepage" width="800" />
+  <br /><em>Community Homepage - Proposals & Discussions</em>
+</p>
+
+### 🎯 Ecosystem Activities
+<p align="center">
+  <img src="pic/new-pic-en/生态活动首页-en.png" alt="Ecosystem Activities" width="800" />
+  <br /><em>Ecosystem Activities - Bags Integration</em>
+</p>
+
+### 📚 Help Center
+<p align="center">
+  <img src="pic/new-pic-en/帮助中心-en.png" alt="Help Center" width="800" />
+  <br /><em>Help Center - User Guide</em>
 </p>
 <p align="center">
-  <img src="pic/dapp_zh_兑换.png" alt="DApp Exchange (Chinese)" width="800" />
-  <br /><em>DApp Exchange (Chinese)</em>
-</p>
-<p align="center">
-  <img src="pic/dao首页.png" alt="DAO Homepage" width="800" />
-  <br /><em>DAO Homepage</em>
-</p>
-<p align="center">
-  <img src="pic/dao投票.png" alt="DAO Voting" width="800" />
-  <br /><em>DAO Voting</em>
-</p>
-<p align="center">
-  <img src="pic/帮助中心.png" alt="Help Center" width="800" />
-  <br /><em>Help Center</em>
-</p>
-<p align="center">
-  <img src="pic/admin_01_普通用户的后台管理_01.png" alt="Admin - Regular User Management 01" width="800" />
-  <br /><em>Admin - Regular User Management 01</em>
-</p>
-<p align="center">
-  <img src="pic/admin_01_普通用户的后台管理_02.png" alt="Admin - Regular User Management 02" width="800" />
-  <br /><em>Admin - Regular User Management 02</em>
-</p>
-<p align="center">
-  <img src="pic/admin_普通用户.png" alt="Admin - Regular User" width="800" />
-  <br /><em>Admin - Regular User</em>
-</p>
-<p align="center">
-  <img src="pic/admin_02_商家用户后台管理_01.png" alt="Admin - Merchant User Management 01" width="800" />
-  <br /><em>Admin - Merchant User Management 01</em>
-</p>
-<p align="center">
-  <img src="pic/admin_02_商家用户后台管理_02.png" alt="Admin - Merchant User Management 02" width="800" />
-  <br /><em>Admin - Merchant User Management 02</em>
-</p>
-<p align="center">
-  <img src="pic/admin_02_商家用户后台管理_02admin_02_商家用户后台管理_03.png" alt="Admin - Merchant User Management 02-03" width="800" />
-  <br /><em>Admin - Merchant User Management 02-03</em>
-</p>
-<p align="center">
-  <img src="pic/admin_02_商家用户后台管理_02admin_03_系统管理员用户后台管理_03.png" alt="Admin - Merchant & System Admin Management 03" width="800" />
-  <br /><em>Admin - Merchant & System Admin Management 03</em>
+  <img src="pic/new-pic-en/在线客服-en.png" alt="Online Support" width="800" />
+  <br /><em>Online Support - Real-time Assistance</em>
 </p> 

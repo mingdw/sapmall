@@ -497,83 +497,90 @@ open design/prototypes/admin.html
 
 </div>
 
-## 🖼️ 项目原型图
+## 🖼️ 项目效果图
 
 项目主要页面截图如下，便于在 GitHub 上快速预览核心界面：
 
+### 🏠 官网首页
 <p align="center">
-  <img src="pic/官网首页_zh_01.png" alt="官网首页_zh_01" width="800" />
-  <br /><em>官网首页_zh_01</em>
+  <img src="pic/new-pic-zh/官网首页_zh_01.png" alt="官网首页_01" width="800" />
+  <br /><em>官网首页 - 品牌展示</em>
 </p>
 <p align="center">
-  <img src="pic/官网首页_zh_02.png" alt="官网首页_zh_02" width="800" />
-  <br /><em>官网首页_zh_02</em>
+  <img src="pic/new-pic-zh/官网首页_zh_02.png" alt="官网首页_02" width="800" />
+  <br /><em>官网首页 - 核心功能</em>
 </p>
 <p align="center">
-  <img src="pic/官网首页_zh_03.png" alt="官网首页_zh_03" width="800" />
-  <br /><em>官网首页_zh_03</em>
+  <img src="pic/new-pic-zh/官网首页_zh_03.png" alt="官网首页_03" width="800" />
+  <br /><em>官网首页 - 项目愿景</em>
+</p>
+
+### 🛒 DApp 商城
+<p align="center">
+  <img src="pic/new-pic-zh/商城首页-zh.png" alt="商城首页" width="800" />
+  <br /><em>商城首页 - 商品浏览与分类</em>
 </p>
 <p align="center">
-  <img src="pic/官网首页_en_01.png" alt="官网首页_en_01" width="800" />
-  <br /><em>官网首页_en_01</em>
+  <img src="pic/new-pic-zh/商品明细页面-zh.png" alt="商品明细" width="800" />
+  <br /><em>商品明细 - 商品详情与购买</em>
 </p>
 <p align="center">
-  <img src="pic/官网首页_en_02.png" alt="官网首页_en_02" width="800" />
-  <br /><em>官网首页_en_02</em>
+  <img src="pic/new-pic-zh/代币兑换-zh.png" alt="代币兑换" width="800" />
+  <br /><em>代币兑换 - SAP 代币兑换</em>
 </p>
 <p align="center">
-  <img src="pic/官网首页_en_03.png" alt="官网首页_en_03" width="800" />
-  <br /><em>官网首页_en_03</em>
+  <img src="pic/new-pic-zh/钱包支付-zh.png" alt="钱包支付" width="800" />
+  <br /><em>钱包支付 - 链上支付流程</em>
 </p>
 <p align="center">
-  <img src="pic/dapp_zh_商城首页_01.png" alt="dapp_zh_商城首页_01" width="800" />
-  <br /><em>dapp_zh_商城首页_01</em>
+  <img src="pic/new-pic-zh/订单确认-zh.png" alt="订单确认" width="800" />
+  <br /><em>订单确认 - 订单信息核实</em>
 </p>
 <p align="center">
-  <img src="pic/dapp_商品明细.png" alt="dapp_商品明细" width="800" />
-  <br /><em>dapp_商品明细</em>
+  <img src="pic/new-pic-zh/订单支付成功-zh.png" alt="订单支付成功" width="800" />
+  <br /><em>订单支付成功 - 交易完成</em>
+</p>
+
+### 🏛️ DAO 治理
+<p align="center">
+  <img src="pic/new-pic-zh/社区参与首页-zh.png" alt="社区参与首页" width="800" />
+  <br /><em>社区参与首页 - 提案与讨论</em>
 </p>
 <p align="center">
-  <img src="pic/dapp_zh_兑换.png" alt="dapp_zh_兑换" width="800" />
-  <br /><em>dapp_zh_兑换</em>
+  <img src="pic/new-pic-zh/提案治理-zh.png" alt="提案治理" width="800" />
+  <br /><em>提案治理 - 链上投票</em>
 </p>
 <p align="center">
-  <img src="pic/dao首页.png" alt="dao首页" width="800" />
-  <br /><em>dao首页</em>
+  <img src="pic/new-pic-zh/社区讨论-zh.png" alt="社区讨论" width="800" />
+  <br /><em>社区讨论 - 话题交流</em>
 </p>
 <p align="center">
-  <img src="pic/dao投票.png" alt="dao投票" width="800" />
-  <br /><em>dao投票</em>
+  <img src="pic/new-pic-zh/讨论明细-zh.png" alt="讨论明细" width="800" />
+  <br /><em>讨论明细 - 帖子详情</em>
+</p>
+
+### 🎯 生态活动
+<p align="center">
+  <img src="pic/new-pic-zh/生态活动首页-zh.png" alt="生态活动首页" width="800" />
+  <br /><em>生态活动首页 - Bags 活动聚合</em>
+</p>
+
+### 📚 帮助中心
+<p align="center">
+  <img src="pic/new-pic-zh/帮助中心-zh.png" alt="帮助中心" width="800" />
+  <br /><em>帮助中心 - 使用指南</em>
 </p>
 <p align="center">
-  <img src="pic/帮助中心.png" alt="帮助中心" width="800" />
-  <br /><em>帮助中心</em>
+  <img src="pic/new-pic-zh/在线客服-zh.png" alt="在线客服" width="800" />
+  <br /><em>在线客服 - 实时支持</em>
+</p>
+
+### ⚙️ 管理后台
+<p align="center">
+  <img src="pic/new-pic-zh/后台管理.png" alt="后台管理" width="800" />
+  <br /><em>后台管理 - 运营控制台</em>
 </p>
 <p align="center">
-  <img src="pic/admin_01_普通用户的后台管理_01.png" alt="admin_01_普通用户的后台管理_01" width="800" />
-  <br /><em>admin_01_普通用户的后台管理_01</em>
-</p>
-<p align="center">
-  <img src="pic/admin_01_普通用户的后台管理_02.png" alt="admin_01_普通用户的后台管理_02" width="800" />
-  <br /><em>admin_01_普通用户的后台管理_02</em>
-</p>
-<p align="center">
-  <img src="pic/admin_普通用户.png" alt="admin_普通用户" width="800" />
-  <br /><em>admin_普通用户</em>
-</p>
-<p align="center">
-  <img src="pic/admin_02_商家用户后台管理_01.png" alt="admin_02_商家用户后台管理_01" width="800" />
-  <br /><em>admin_02_商家用户后台管理_01</em>
-</p>
-<p align="center">
-  <img src="pic/admin_02_商家用户后台管理_02.png" alt="admin_02_商家用户后台管理_02" width="800" />
-  <br /><em>admin_02_商家用户后台管理_02</em>
-</p>
-<p align="center">
-  <img src="pic/admin_02_商家用户后台管理_02admin_02_商家用户后台管理_03.png" alt="admin_02_商家用户后台管理_02admin_02_商家用户后台管理_03" width="800" />
-  <br /><em>admin_02_商家用户后台管理_02admin_02_商家用户后台管理_03</em>
-</p>
-<p align="center">
-  <img src="pic/admin_02_商家用户后台管理_02admin_03_系统管理员用户后台管理_03.png" alt="admin_02_商家用户后台管理_02admin_03_系统管理员用户后台管理_03" width="800" />
-  <br /><em>admin_02_商家用户后台管理_02admin_03_系统管理员用户后台管理_03</em>
+  <img src="pic/new-pic-zh/后台管理-我的订单-zh.png" alt="我的订单" width="800" />
+  <br /><em>后台管理 - 订单管理</em>
 </p> 
