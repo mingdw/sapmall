@@ -69,60 +69,6 @@ export const CAMPAIGNS: Campaign[] = [
     cta: { type: 'internal', labelKey: 'join', href: '/dao' },
   },
   {
-    slug: 'bags-blindbox',
-    category: 'bags',
-    status: 'ongoing',
-    coverUrl:
-      'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=80&auto=format&fit=crop',
-    startAt: '2025-02-01T00:00:00.000Z',
-    endAt: new Date(Date.now() + 3 * 86400000).toISOString(),
-    rewardTypes: ['nft', 'coupon'],
-    participants: 1280,
-    walletHint: 'solana',
-    cta: {
-      type: 'bags_external',
-      labelKey: 'goBags',
-      href: 'https://bags.fm/',
-      external: true,
-    },
-  },
-  {
-    slug: 'bags-creator',
-    category: 'bags',
-    status: 'ongoing',
-    coverUrl:
-      'https://images.unsplash.com/photo-1642104704074-907c0698cbd9?w=800&q=80&auto=format&fit=crop',
-    startAt: '2025-03-10T00:00:00.000Z',
-    endAt: new Date(Date.now() + 10 * 86400000).toISOString(),
-    rewardTypes: ['nft', 'badge'],
-    hot: true,
-    participants: 560,
-    walletHint: 'solana',
-    cta: {
-      type: 'bags_external',
-      labelKey: 'creator',
-      href: 'https://bags.fm/',
-      external: true,
-    },
-  },
-  {
-    slug: 'summer-preview',
-    category: 'bags',
-    status: 'upcoming',
-    coverUrl:
-      'https://images.unsplash.com/photo-1518546308417-db642188de5b?w=800&q=80&auto=format&fit=crop',
-    startAt: new Date(Date.now() + 7 * 86400000).toISOString(),
-    endAt: new Date(Date.now() + 21 * 86400000).toISOString(),
-    rewardTypes: ['nft'],
-    walletHint: 'solana',
-    cta: {
-      type: 'bags_external',
-      labelKey: 'goBags',
-      href: 'https://bags.fm/',
-      external: true,
-    },
-  },
-  {
     slug: 'staking-preview',
     category: 'shopping',
     status: 'upcoming',
@@ -133,24 +79,6 @@ export const CAMPAIGNS: Campaign[] = [
     rewardTypes: ['badge', 'sap'],
     walletHint: 'evm',
     cta: { type: 'internal', labelKey: 'join', href: '/exchange?campaign=staking-preview' },
-  },
-  {
-    slug: 'spring-ended',
-    category: 'bags',
-    status: 'ended',
-    coverUrl:
-      'https://images.unsplash.com/photo-1614854262312-73fba7c9f783?w=800&q=80&auto=format&fit=crop',
-    startAt: '2025-01-01T00:00:00.000Z',
-    endAt: '2025-03-01T00:00:00.000Z',
-    rewardTypes: ['nft'],
-    participants: 5600,
-    walletHint: 'solana',
-    cta: {
-      type: 'bags_external',
-      labelKey: 'goBags',
-      href: 'https://bags.fm/',
-      external: true,
-    },
   },
 ];
 

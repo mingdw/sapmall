@@ -103,17 +103,6 @@
     }
   }
 
-  &[data-category='bags'] {
-    border-color: rgba(56, 189, 248, 0.28);
-
-    &:hover {
-      border-color: rgba(56, 189, 248, 0.5);
-    }
-
-    .featuredCategory {
-      color: #7dd3fc;
-    }
-  }
 }
 
 .featuredCover {

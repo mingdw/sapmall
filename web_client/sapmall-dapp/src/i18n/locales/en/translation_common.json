@@ -28,7 +28,8 @@
     "rewards": "Ecosystem",
     "exchange": "Exchange",
     "dao": "Community",
-    "help": "Help Center"
+    "help": "Help Center",
+    "rewardsDesc": "Campaigns & rewards hub"
   },
   "user": {
     "profile": "Profile",
@@ -103,7 +104,7 @@
     "wallet": "Wallet",
     "walletDesc": "Manage your digital assets",
     "rewards": "Ecosystem",
-    "rewardsDesc": "Campaigns & rewards; Bags participation uses Solana on their site",
+    "rewardsDesc": "Campaigns & rewards hub",
     "dao": "Community",
     "daoDesc": "Join governance, discussions, and community initiatives"
   },

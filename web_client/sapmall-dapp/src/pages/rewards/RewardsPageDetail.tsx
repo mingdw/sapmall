@@ -47,7 +47,6 @@ const RewardsPageDetail: React.FC = () => {
       referral: 0,
       task: 0,
       dao: 0,
-      bags: 0,
     };
     for (const campaign of CAMPAIGNS.filter((c) => c.status === activeTab)) {
       map[campaign.category] += 1;

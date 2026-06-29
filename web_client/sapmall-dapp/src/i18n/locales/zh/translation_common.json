@@ -28,7 +28,8 @@
     "rewards": "生态活动",
     "exchange": "兑换",
     "dao": "社区参与",
-    "help": "帮助中心"
+    "help": "帮助中心",
+    "rewardsDesc": "活动与奖励入口"
   },
   "user": {
     "profile": "个人资料",
@@ -103,7 +104,7 @@
     "wallet": "钱包",
     "walletDesc": "管理您的数字资产",
     "rewards": "生态活动",
-    "rewardsDesc": "活动与奖励入口；参与 Bags 需在对方站点使用 Solana",
+    "rewardsDesc": "活动与奖励入口",
     "dao": "DAO治理",
     "daoDesc": "参与社区决策和治理"
   },

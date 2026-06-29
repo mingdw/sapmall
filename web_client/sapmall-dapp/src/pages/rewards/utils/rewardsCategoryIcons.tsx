@@ -1,5 +1,4 @@
 import {
-  Box,
   Gift,
   Landmark,
   Pickaxe,
@@ -15,5 +14,4 @@ export const REWARDS_CATEGORY_ICON_MAP: Record<RewardsCategoryIcon, LucideIcon> 
   referral: UserPlus,
   task: Pickaxe,
   dao: Landmark,
-  bags: Box,
 };

@@ -23,13 +23,9 @@
 
 **Cross-chain payments via Arc**: The Arc settlement layer unifies multi-source assets—users can pay with **USDC**, **EURC**, or bridged **cirBTC** without manually bridging on another chain before checkout. Backend **PaymentRouter** and **SettlementVault** route payment intents and funds; order state aligns with on-chain **`PaymentPaid`** events, reducing reconciliation cost for multi-asset payers.
 
-The platform **[integrates Bags](https://bags.fm/) (Solana)** for **project launch, Launch Intent flows, and open API / SDK**, keeping **campaigns, marketing, and governance collaboration** **separate from the main payment path**: on-chain campaigns **ship fast and spread easily**, while the main site keeps a stable boundary around **Arc stablecoin orders and the SAP economy**. Campaign rules follow official disclosures.
+**Ecosystem campaigns & rewards**: In the DApp, **all campaign and reward information** lives under **`/rewards`** (top nav **Ecosystem**). **`/marketplace`** is **browse and checkout only**—not the primary entry for campaigns or rewards.
 
-**Entry convention**: In the DApp, **all campaigns, rewards, and Bags-related copy and outbound links** live under **`/rewards`** (top nav **Ecosystem**). **`/marketplace`** is **browse and checkout only**—not the primary entry for campaigns or rewards (see `docs/Bags_Activity_Marketing_PRD.md`).
-
-**Wallets and campaigns (user cost)**: Users who **only browse, buy, and use the SAP main path** need **only an EVM wallet**. **Bags ecosystem activities** run on **Bags (Solana)**; users must **connect a Solana wallet on Bags and approve as prompted** (the top-bar EVM login cannot substitute). **Non-participants are unaffected** and **dual wallets are not required**. Optional **EVM ↔ Solana binding** (Phase 2) is for on-site benefits and profiles—see PRD **§3.2**.
-
-**Bags developer resources**: [Docs](https://docs.bags.fm/) · [Developer portal](https://dev.bags.fm/login) · [TypeScript SDK (npm)](https://www.npmjs.com/package/@bagsfm/bags-sdk)
+**Wallet**: Browsing the mall, checkout, and the SAP main path require **only an EVM wallet**.
 
 ### 🌟 Core Features
 
@@ -64,8 +60,7 @@ sapmall/
 │   ├── 📄 Tokenomics_Detailed.md     # Token Economics Model
 │   ├── 📄 Roadmap.md                 # Project Roadmap
 │   ├── 📄 User_Story_Map.md          # User Story Map
-│   ├── 📄 Metrics_Framework.md       # Metrics Framework
-│   └── 📄 Bags_Activity_Marketing_PRD.md  # Bags campaigns & marketing (sub-domain PRD)
+│   └── 📄 Metrics_Framework.md       # Metrics Framework
 ├── 📁 promit/                        # AI Agent Prompts
 ├── 📁 pic/                           # Image Resources
 ├── 📄 docker-compose.yml             # Docker Compose File
@@ -97,13 +92,13 @@ The repo includes **runnable React frontends** (`web_client/`) and **high-fideli
 |------|-------------|--------|
 | `/marketplace` | Tokenized mall: browse, filter, **Arc multi-stablecoin checkout** (**not** the campaigns/rewards hub) | `web_client/sapmall-dapp/src/pages/marketplace/` |
 | `/exchange` | Swap and asset-related UI | `web_client/sapmall-dapp/src/pages/exchange/` |
-| `/rewards` | **Ecosystem campaigns**: activities, rewards, **Bags** copy and links (**single hub**, top nav) | `web_client/sapmall-dapp/src/pages/rewards/` |
+| `/rewards` | **Ecosystem campaigns**: activities and rewards (**hub**, top nav) | `web_client/sapmall-dapp/src/pages/rewards/` |
 | `/dao` | Community participation / DAO UI | `web_client/sapmall-dapp/src/pages/dao/` |
 | `/help` | Help center | `web_client/sapmall-dapp/src/pages/help/` |
 | `/admin` | Embedded **admin** (iframe, same-origin or configured Admin URL) | `web_client/sapmall-dapp/src/components/AdminIframeEmbedded.tsx` |
 | Global layout | Top nav, wallet connect, i18n | `web_client/sapmall-dapp/src/pages/header/`, `src/i18n/` |
 
-Routing: `web_client/sapmall-dapp/src/layout/ContentLayout.tsx`. Bags integration: `docs/Bags_Activity_Marketing_PRD.md`.
+Routing: `web_client/sapmall-dapp/src/layout/ContentLayout.tsx`.
 
 #### `sapmall-admin` / `sapmall-website`
 
@@ -555,7 +550,7 @@ The following are main page screenshots of the project for quick preview on GitH
 ### 🎯 Ecosystem Activities
 <p align="center">
   <img src="pic/new-pic-en/生态活动首页-en.png" alt="Ecosystem Activities" width="800" />
-  <br /><em>Ecosystem Activities - Bags Integration</em>
+  <br /><em>Ecosystem Activities - campaigns and rewards hub</em>
 </p>
 
 ### 📚 Help Center

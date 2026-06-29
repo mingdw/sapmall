@@ -15,11 +15,7 @@ const RewardsWalletNotice: React.FC = () => {
         <h2 id="rewards-wallet-notice" className={styles.walletNoticeTitle}>
           {t('rewards.walletNoticeTitle')}
         </h2>
-        <p className={styles.walletNoticeBody}>
-          <span>{t('rewards.walletNoticeLine1')}</span>
-          <span>{t('rewards.walletNoticeLine2')}</span>
-          <span>{t('rewards.walletNoticeLine3')}</span>
-        </p>
+        <p className={styles.walletNoticeBody}>{t('rewards.walletNoticeBody')}</p>
       </div>
     </section>
   );

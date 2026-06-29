@@ -1,25 +1,25 @@
 # Sapphire Mall · 分镜 AI 提示词与素材清单（工具包）
 
 > **用途**：为宣传片 / 教程短片 / 投放素材生成 **分镜表 + 单帧 AI 绘图提示词 + 视频工具提示**，并列出需准备的 **图片、脚本、文档**。  
-> **状态**：**已定稿一版 3 分钟说明片** — 见 `docs/storyboard/SapphireMall_Bags_Integration_3min.md` 与 `docs/scripts/SapphireMall_Bags_Integration_3min_voiceover.md`。下列 §0 保留作 **后续新成片** 复用模板。
+> **状态**：下列 §0 为 **新成片** 复用模板；成片定稿后请将分镜与旁白写入 `docs/storyboard/` 与 `docs/scripts/`。
 
 ---
 
-## 0. 制片确认表（模板 · 当前项目已填）
+## 0. 制片确认表（模板 · 新开项目时填写）
 
-| # | 问题 | 当前成片取值 |
+| # | 问题 | 您的选择 |
 |---|------|----------------|
-| A | **成片类型** | 项目特点 + **Bags 集成价值** + 现有功能 **概念**展示 |
-| B | **时长** | **约 180s（3:00）**，叙事旁白为主 |
-| C | **画幅** | **16:9** |
-| D | **视觉风格** | **暗色 Web3 + 虚构 UI**，贴近 `design/specs/Design_Spec.md` |
-| E | **语言** | 旁白 **中文**；字幕 **中英双语** |
-| F | **界面来源** | **无真实录屏**；**占位图 / AI 静帧** |
-| G | **Bags 标识** | **必要镜次露出**（镜 09 建议后期叠 **官方 Logo**） |
-| H | **人设** | **无人物** |
-| I | **交付物** | **静帧 prompt + motion prompt + 旁白脚本**（均已写入上述两文件） |
+| A | **成片类型** | 项目特点 + 现有功能 **概念**展示 |
+| B | **时长** | 例：约 180s（3:00） |
+| C | **画幅** | 16:9 / 9:16 等 |
+| D | **视觉风格** | 暗色 Web3 + 虚构 UI，贴近 `design/specs/Design_Spec.md` |
+| E | **语言** | 旁白中文；字幕中英双语等 |
+| F | **界面来源** | 无真实录屏 / 占位图 / AI 静帧 / 工程录屏 |
+| G | **品牌标识** | 是否露出 Sapphire Mall Logo 及镜次 |
+| H | **人设** | 无人物 / 出镜讲解等 |
+| I | **交付物** | 静帧 prompt + motion prompt + 旁白脚本等 |
 
-**新开项目时**：复制本表空白「您的选择」列另行填写。
+**新开项目时**：复制本表另行填写「您的选择」列。
 
 ---
 
@@ -29,9 +29,9 @@
 
 | 材料 | 路径或说明 | 用途 |
 |------|------------|------|
-| 叙事与边界 | `README.md`、`docs/Bags_Activity_Marketing_PRD.md` | 口径：主站 EVM / 活动与 Bags / 非人人双钱包 |
+| 叙事与边界 | `README.md`、`docs/PRD.md` | 口径：主站 EVM、商城与生态活动入口分离 |
 | 视觉规范摘录 | `design/specs/Design_Spec.md`（色彩、组件气质） | 统一蓝紫渐变、暗色 Web3、玻璃拟态等关键词 |
-| **旁白脚本 v1** | 新建 `docs/scripts/<成片名>_voiceover.md`（建议） | 按镜头拆句，标注秒数 |
+| **旁白脚本** | 新建 `docs/scripts/<成片名>_voiceover.md`（建议） | 按镜头拆句，标注秒数 |
 | **分镜表终稿** | 本文 §4 复制为新文件 `docs/storyboard/<成片名>_shots.md` | 制片与甲方对齐 |
 
 ### 1.2 图片与品牌素材
@@ -41,7 +41,6 @@
 | Logo / 字标 | `design/prototypes/favicon.svg`、`web_client/sapmall-dapp/src/assets/logo-mark.svg` | 尾板、角标、参考图垫图（img2img） |
 | UI 截图（若选真实界面） | 自建 `design/storyboard/refs/screenshots/*.png` | 控制布局；注意脱敏测试地址 |
 | 氛围参考 mood board | 自建 `design/storyboard/refs/mood/*.jpg` | 统一光影与饱和度 |
-| （可选）第三方 | Bags 官方品牌规范 **若对外投放需自行取得授权** | 仅在与 §0-G 一致时使用 |
 
 ### 1.3 工程与录屏（可选）
 
@@ -94,10 +93,10 @@
 [CONSISTENCY] same color palette as previous shot, maintain layout silhouette
 ```
 
-### 3.3 「生态活动 / Rewards」专用叙事镜头（与 PRD 一致）
+### 3.3 「生态活动 / Rewards」专用叙事镜头
 
 ```text
-[SUBJECT] split visual metaphor: left panel labeled abstract "EVM checkout flow" with shopping cart icon; right panel labeled abstract "Solana activity external link" with arrow pointing to separate portal frame — educational infographic, not a real Bags screenshot
+[SUBJECT] split visual metaphor: left panel labeled abstract "EVM checkout flow" with shopping cart icon; right panel labeled abstract "ecosystem campaigns hub" with rewards badge icons — educational infographic, fictional UI only
 [CAPTION SPACE] bottom third clean for subtitles
 ```
 
@@ -115,7 +114,7 @@
 
 ## 5. 文档产出流程建议
 
-1. **填 §0 确认表** → 定时长、风格、语言、是否露 Bags。  
+1. **填 §0 确认表** → 定时长、风格、语言、品牌露出镜次。  
 2. 写 **`voiceover.md`**（旁白按句对齐秒数）。  
 3. 填 **§4 分镜表**，每镜一条完整 **§3.1** prompt（可中英各一版若工具对中文支持弱）。  
 4. 出 **关键帧** → 审阅 → 再跑视频 motion prompt 或剪辑包装。  
@@ -125,7 +124,7 @@
 
 ## 6. 相关仓库文件
 
-- 产品设计口径：`docs/Bags_Activity_Marketing_PRD.md`、`README.md`  
+- 产品设计口径：`docs/PRD.md`、`README.md`  
 - 视觉规范：`design/specs/Design_Spec.md`  
 - DApp 文案参考：`web_client/sapmall-dapp/src/i18n/locales/zh|en/translation.json`（`rewards.*`）
 

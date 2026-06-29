@@ -29,13 +29,6 @@
     }
   }
 
-  &[data-category='bags'] {
-    border-color: rgba(56, 189, 248, 0.22);
-
-    &:hover {
-      border-color: rgba(56, 189, 248, 0.45);
-    }
-  }
 }
 
 .hotBadge {
@@ -191,9 +184,6 @@
     opacity: 0.72;
   }
 
-  &[data-category='bags']:hover {
-    border-color: rgba(56, 189, 248, 0.22);
-  }
 }
 
 .coverMinimal {

@@ -1,64 +1,59 @@
 {
   "rewards": {
     "title": "Ecosystem",
-    "intro": "Campaigns, rewards, and Bags links are aggregated here. Use your connected EVM wallet for shopping and checkout; more features will ship iteratively.",
-    "walletExplainer": "Shopping-only users only need an EVM wallet. If you join on-chain activities on Bags, you will connect a Solana wallet on bags.fm and approve prompts there—it is separate from the EVM login and cannot replace it. Skip Solana if you skip these activities.",
-    "plannedHint": "Task claims and reward summaries are on the roadmap; keep contributing via DAO and community programs—we will surface benefits here when ready.",
+    "intro": "Official campaigns and rewards are aggregated here. Use your connected EVM wallet for shopping and checkout; more features will ship iteratively.",
+    "walletExplainer": "Shopping and checkout on Sapphire Mall only require an EVM wallet (e.g. MetaMask).",
+    "plannedHint": "Task claims and reward summaries are on the roadmap. You can still earn contribution via DAO votes and community tasks until launch.",
     "badgeHub": "Rewards Hub",
-    "heroSubtitle": "Official campaigns, Bags partnerships, and community rewards—earn contribution points, limited NFTs, and platform perks.",
+    "heroSubtitle": "Official campaigns and community rewards—earn contribution points, limited NFTs, and platform perks.",
     "walletNoticeTitle": "Before you participate",
-    "walletNoticeLine1": "1. Shopping and checkout on Sapphire Mall only require an EVM wallet (e.g. MetaMask).",
-    "walletNoticeLine2": "2. For on-chain programs on Bags, connect a Solana wallet on bags.fm and approve prompts there.",
-    "walletNoticeLine3": "3. EVM and Solana sessions are independent and cannot replace each other. Skip Solana if you skip Bags-only activities.",
-    "tabListAria": "Filter campaigns by status",
+    "walletNoticeBody": "Connect an EVM wallet (e.g. MetaMask) to shop and join on-site campaigns. Rules and rewards are shown on each campaign page.",
+    "tabListAria": "Campaign status filter",
     "tabs": {
-      "ongoing": "Live ({{count}})",
+      "ongoing": "Ongoing ({{count}})",
       "upcoming": "Upcoming ({{count}})",
-      "ended": "Ended ({{count}})"
+      "ended": "Ended"
     },
     "sortLabel": "Sort",
-    "sortLatest": "Newest",
-    "sortReward": "Participants",
+    "sortLatest": "Latest",
+    "sortReward": "Highest reward",
     "sortDeadline": "Deadline",
-    "empty": "No campaigns in this tab",
+    "empty": "No campaigns in this category",
     "filterAll": "All",
     "categoryFilterLabel": "Category",
     "categories": {
-      "shopping": "Shopping",
-      "bags": "Bags",
-      "dao": "DAO",
-      "task": "Tasks",
+      "shopping": "Shopping rewards",
+      "dao": "DAO governance",
+      "task": "Node tasks",
       "newbie": "New users",
-      "referral": "Referral"
+      "referral": "Referrals"
     },
     "status": {
-      "ongoing": "Live",
-      "upcoming": "Soon",
+      "ongoing": "Ongoing",
+      "upcoming": "Upcoming",
       "ended": "Ended"
     },
     "participants": "{{count}} joined",
-    "longTerm": "Ongoing",
+    "longTerm": "Long-running",
     "endedCountdown": "Ended",
     "hot": "HOT",
     "cta": {
-      "goBags": "Open on Bags",
       "join": "Join now",
       "viewTasks": "View tasks",
       "claim": "Claim",
-      "invite": "Invite",
-      "creator": "Creator program"
+      "invite": "Invite friends"
     },
     "campaignDetail": {
       "back": "Back to campaigns",
       "viewDetail": "View details",
       "rules": "Rules",
       "steps": "How to join",
-      "rewards": "Reward types",
-      "period": "Duration",
+      "rewards": "Rewards",
+      "period": "Period",
       "participants": "Participants",
       "notFound": "Campaign not found—it may have ended or the link is invalid.",
       "claimSuccess": "Claim recorded (demo). Head to the marketplace to use your perk.",
-      "alreadyClaimed": "Claimed"
+      "alreadyClaimed": "Already claimed"
     },
     "rewardTypes": {
       "sap": "SAP tokens",
@@ -68,189 +63,131 @@
       "badge": "Ecosystem badge"
     },
     "walletHints": {
-      "evm": "This campaign requires an EVM wallet (e.g. MetaMask) on Sapphire Mall.",
-      "solana": "Join on Bags with a Solana wallet—separate from your EVM session on the mall.",
-      "evm_optional": "Connect an EVM wallet to track task progress; some node tasks can be previewed without it."
+      "evm": "Use an EVM wallet (e.g. MetaMask) on Sapphire Mall to participate or claim.",
+      "evm_optional": "An EVM wallet is recommended to track contribution; some tasks can be browsed without connecting."
     },
     "campaigns": {
       "newbie-wallet": {
-        "title": "First wallet connection perk",
-        "desc": "New users who connect an EVM wallet and pass verification receive a 10 USDT first-order voucher.",
+        "title": "First wallet connect bonus",
+        "desc": "New users who connect an EVM wallet and complete verification receive a 10 USDT-equivalent voucher.",
         "rules": [
-          "For new Sapphire Mall accounts only; one claim per user.",
-          "Requires an EVM wallet and identity verification.",
+          "For new Sapphire Mall users who have not claimed this perk before.",
+          "Requires an EVM wallet and platform verification.",
           "Voucher expires 7 days after claim and is non-transferable."
         ],
         "steps": [
           "Connect MetaMask or another EVM wallet and sign in.",
-          "Complete identity verification in account settings.",
-          "Return here to claim, then apply the voucher at checkout."
+          "Complete verification in account settings.",
+          "Return here to claim, then use the voucher when you shop."
         ]
       },
       "sap-pay-bonus": {
-        "title": "SAP checkout bonus",
-        "desc": "Pay with SAP for extra fee rebates and spend-back rewards during the promo window.",
+        "title": "SAP payment cashback",
+        "desc": "Pay mall orders with SAP for extra fee discounts and cashback during the campaign window.",
         "rules": [
-          "Only orders paid with SAP during the campaign count.",
-          "Rebates are paid in SAP; rates shown at checkout apply.",
-          "Wash trading or abuse voids eligibility."
+          "Orders paid with SAP during the campaign count toward cashback.",
+          "Rewards are issued in SAP; caps and rates are shown on the campaign page.",
+          "Abuse or suspicious volume may void eligibility."
         ],
         "steps": [
-          "Hold enough SAP in your connected wallet.",
-          "Shop on the marketplace and choose SAP at payment.",
-          "Rebates appear instantly in this demo; production uses backend settlement."
+          "Ensure your wallet holds enough SAP.",
+          "Shop and choose SAP at checkout.",
+          "Cashback appears on the order or account after payment (demo timing)."
         ]
       },
       "referral": {
-        "title": "Sapphire referral partner",
-        "desc": "Invite friends to complete their first trade—earn 20% of their lifetime trading fees.",
+        "title": "Sapphire referral partner program",
+        "desc": "Invite friends to complete their first trade on Sapphire Mall and earn 20% of their lifetime fees.",
         "rules": [
           "Invitees must register via your link and complete a qualifying first trade.",
-          "Commission rate is fixed at 20% per settlement cycle.",
-          "Self-referrals and fraud are prohibited."
+          "Commission is 20% and paid on the platform schedule.",
+          "Self-referrals and fake signups are prohibited."
         ],
         "steps": [
           "Get your referral link from the help center.",
-          "Share it and guide friends through signup.",
-          "Commissions accrue after their first trade (demo)."
+          "Share it and help friends register and trade.",
+          "Commission accrues after their first qualifying trade (demo)."
         ]
       },
       "node-mining": {
-        "title": "Contribution mining",
-        "desc": "Complete daily sharing and review tasks to grow contribution tiers and unlock fee discounts.",
+        "title": "Node contribution mining",
+        "desc": "Complete daily and purchase tasks to grow contribution score—higher tiers unlock bigger fee discounts.",
         "rules": [
-          "Daily caps apply; duplicate spam does not count.",
-          "Contribution points apply only to this program—not a global wallet.",
-          "Tier benefits activate next settlement cycle."
+          "Daily tasks have caps; duplicate low-value actions do not count.",
+          "Scores apply to this campaign tier only.",
+          "Tier perks apply after the next settlement cycle."
         ],
         "steps": [
-          "Open DAO / community tasks for today's quests.",
-          "Finish sharing, reviews, or listed interactions.",
-          "Check your tier and fee discount details."
+          "Open DAO / community tasks.",
+          "Finish the listed community actions.",
+          "Review your tier and fee discount summary."
         ]
       },
       "dao-may": {
-        "title": "May governance vote",
-        "desc": "Vote on next-quarter virtual goods categories. Participants share a 5,000 SAP reward pool.",
+        "title": "May community governance vote",
+        "desc": "Vote on next-quarter upgrades and catalog priorities. Active voters share a 5,000 SAP reward pool.",
         "rules": [
-          "Valid governance weight required; see DAO page for thresholds.",
+          "Voting weight rules are shown on the DAO page.",
           "One vote per address per proposal.",
-          "Rewards ship within 7 business days after close (demo)."
+          "Rewards ship within 7 business days after voting ends (demo)."
         ],
         "steps": [
           "Connect an EVM wallet and open DAO governance.",
-          "Read the proposal and pick an option.",
-          "Submit your vote per the DAO flow."
-        ]
-      },
-      "bags-blindbox": {
-        "title": "Bags collab mystery box on Solana",
-        "desc": "Connect a Solana wallet on Bags to claim your Web3 blind box—badges and shop vouchers inside.",
-        "rules": [
-          "Runs on Bags only; Solana wallet required.",
-          "Box contents and rarity are shown on Bags.",
-          "Sapphire Mall never custodies Solana keys or assets."
-        ],
-        "steps": [
-          "Tap Open on Bags to visit bags.fm.",
-          "Connect Solana and approve prompts.",
-          "View claimed boxes in your Bags account."
-        ]
-      },
-      "bags-creator": {
-        "title": "Bags creator week: NFT mint",
-        "desc": "Launch your art project on Bags with traffic support and secondary liquidity narratives from Sapphire Mall.",
-        "rules": [
-          "Creators must mint through Bags workflows.",
-          "Submissions must meet content guidelines.",
-          "Promo slots are limited and subject to review."
-        ],
-        "steps": [
-          "Create a creator profile on Bags with Solana connected.",
-          "Upload work and mint your NFT.",
-          "Submit the support application on Bags."
-        ]
-      },
-      "summer-preview": {
-        "title": "Summer ecosystem teaser",
-        "desc": "Multi-chain creators meet Bags Launch—details drop before go-live.",
-        "rules": [
-          "Teaser only—claims not open yet.",
-          "Full rules update when the campaign goes live.",
-          "Watch official announcements for the start time."
-        ],
-        "steps": [
-          "Bookmark this page or subscribe to alerts (demo).",
-          "Return when live for full rules.",
-          "Join on Bags following the published flow."
+          "Read the proposal and cast your vote.",
+          "Track results on the DAO page."
         ]
       },
       "staking-preview": {
-        "title": "Exchange & staking preview week",
-        "desc": "Preview exchange flows and task systems—complete the survey for an early badge raffle.",
+        "title": "Exchange staking preview",
+        "desc": "Staking and yield views are coming to the exchange module—stay tuned.",
         "rules": [
-          "Survey and docs only during teaser; staking ships later.",
-          "Early badges are limited and raffled.",
-          "EVM wallet required to submit the survey."
+          "Preview only; final staking rules ship in a later release.",
+          "Slots may be limited when live.",
+          "EVM wallet required to register interest."
         ],
         "steps": [
-          "Visit Exchange to learn the SAP swap flow.",
-          "Connect wallet and finish the preview survey.",
-          "Wait for go-live to claim badges."
-        ]
-      },
-      "spring-ended": {
-        "title": "Spring Bags airdrop (closed)",
-        "desc": "Thanks for participating—watch this page for the next season.",
-        "rules": [
-          "Campaign closed; no new entries.",
-          "Past claims remain visible on Bags.",
-          "Next season will be announced separately."
-        ],
-        "steps": [
-          "No action needed—event is over.",
-          "Check Bags for historical claims.",
-          "Follow this hub for upcoming campaigns."
+          "Visit the exchange page to learn SAP swaps.",
+          "Connect wallet and register interest (demo).",
+          "Return when the feature launches."
         ]
       }
     },
-    "futureTitle": "Roadmap",
-    "futureDesc": "Automated task claims and reward summaries are in development. Keep contributing via DAO votes and community quests—points will reconcile when the modules launch.",
-    "featureTodo": "Smart tasks",
-    "featureTodoDesc": "Automated tracking and payouts",
-    "featureLeaderboard": "Leaderboards",
-    "featureLeaderboardDesc": "Highlight top contributors with bonus drops",
-    "subscribeTitle": "Get alerts",
-    "subscribeDesc": "Leave your email for campaign and airdrop alerts (demo).",
+    "futureTitle": "Coming soon",
+    "futureDesc": "Task claims and automated reward summaries are in development. Keep earning via DAO votes and community tasks until launch.",
+    "featureTodo": "Smart task system",
+    "featureTodoDesc": "Automated task tracking and payouts",
+    "featureLeaderboard": "Leaderboard",
+    "featureLeaderboardDesc": "Top contributors earn extra drops",
+    "subscribeTitle": "Subscribe to updates",
+    "subscribeDesc": "Get email alerts for new campaigns and drops (demo).",
     "subscribePlaceholder": "youremail@web3.com",
     "subscribeButton": "Subscribe",
     "subscribeToast": "Subscriptions are coming soon—thanks for your interest.",
-    "scrollTopAria": "Scroll to top",
-    "heroHint": "Connect an EVM wallet for on-site campaigns. Bags partners require Solana on bags.fm — the two are separate.",
-    "statsAria": "Campaign overview",
+    "scrollTopAria": "Back to top",
+    "heroHint": "Connect an EVM wallet to join on-site campaigns and checkout.",
+    "statsAria": "Campaign stats",
     "stats": {
-      "ongoing": "Live now",
-      "upcoming": "Starting soon",
+      "ongoing": "Ongoing",
+      "upcoming": "Upcoming",
       "participants": "Total participants",
       "endingSoon": "Ending in 7 days"
     },
     "featuredTitle": "Featured",
     "featuredHint": "Hot or ending soon",
-    "heroQuickOngoing": "Trending now",
+    "heroQuickOngoing": "Ongoing now",
     "heroQuickNewbie": "New user perks",
-    "heroQuickBags": "Bags collabs",
-    "listSectionTitle": "Browse all campaigns",
-    "listSectionHint": "Filter by status and category, tap for details",
+    "heroQuickDao": "DAO governance",
+    "listSectionTitle": "All campaigns",
+    "listSectionHint": "Filter by status and category",
     "daysLeft": "{{count}} days left",
     "progressLabel": "Timeline",
     "emptyReset": "Show all categories",
-    "sidebarAria": "Rewards sidebar",
-    "myActivityTitle": "My participation (demo)",
-    "myActivityEmpty": "Claimed campaigns appear here (local demo only).",
+    "sidebarAria": "Campaign sidebar",
+    "myActivityTitle": "My activity (demo)",
+    "myActivityEmpty": "Claims will appear here after you join campaigns (demo data).",
     "quickLinksTitle": "Quick links",
     "walletChip": {
       "evm": "EVM wallet",
-      "solana": "Solana · Bags",
       "evmOptional": "EVM recommended"
     }
   }

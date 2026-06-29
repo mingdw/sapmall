@@ -19,7 +19,7 @@ const RewardsHeroSection: React.FC<Props> = ({ onQuickFilter }) => {
   const quickFilters: { key: string; label: string; payload: QuickFilterPayload }[] = [
     { key: 'ongoing', label: t('rewards.heroQuickOngoing'), payload: { tab: 'ongoing' } },
     { key: 'newbie', label: t('rewards.heroQuickNewbie'), payload: { tab: 'ongoing', category: 'newbie' } },
-    { key: 'bags', label: t('rewards.heroQuickBags'), payload: { tab: 'ongoing', category: 'bags' } },
+    { key: 'dao', label: t('rewards.heroQuickDao'), payload: { tab: 'ongoing', category: 'dao' } },
   ];
 
   return (

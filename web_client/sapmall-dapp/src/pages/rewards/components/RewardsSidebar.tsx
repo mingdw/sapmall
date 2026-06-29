@@ -41,11 +41,7 @@ const RewardsSidebar: React.FC = () => {
         <h2 id="rewards-wallet-notice" className={styles.panelTitle}>
           {t('rewards.walletNoticeTitle')}
         </h2>
-        <ul className={styles.walletList}>
-          <li>{t('rewards.walletNoticeLine1')}</li>
-          <li>{t('rewards.walletNoticeLine2')}</li>
-          <li>{t('rewards.walletNoticeLine3')}</li>
-        </ul>
+        <p className={styles.panelHint}>{t('rewards.walletNoticeBody')}</p>
         {!isConnected ? (
           <div className={styles.connectWrap}>
             <ConnectButton />

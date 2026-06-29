@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { getCampaignBySlug } from './mocks/campaigns.mock';
 import { rewardsHomePath } from './utils/campaignNavigation';
 import { isCampaignClaimed, markCampaignClaimed } from './utils/mockParticipation';
-import { openBagsOutbound } from './utils/rewardsOutboundUrls';
 import type { CampaignCta } from './types';
 import styles from './RewardsPageDetail.module.scss';
 
@@ -52,11 +51,6 @@ const RewardsCampaignPage: React.FC = () => {
       markCampaignClaimed(campaign.slug);
       setClaimed(true);
       setClaimMessage(t('rewards.campaignDetail.claimSuccess'));
-      return;
-    }
-
-    if (campaign.cta.type === 'bags_external' && campaign.cta.href) {
-      openBagsOutbound(campaign.cta.href);
       return;
     }
 
@@ -159,9 +153,6 @@ const RewardsCampaignPage: React.FC = () => {
               {campaign.cta.type === 'mock_claim' && claimed
                 ? t('rewards.campaignDetail.alreadyClaimed')
                 : ctaLabel}
-              {campaign.cta.type === 'bags_external' ? (
-                <ExternalLink size={16} strokeWidth={2.25} aria-hidden />
-              ) : null}
             </button>
           </div>
           {claimMessage ? <p className={styles.claimToast}>{claimMessage}</p> : null}
@@ -172,4 +163,3 @@ const RewardsCampaignPage: React.FC = () => {
 };
 
 export default RewardsCampaignPage;
-

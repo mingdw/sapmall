@@ -5,8 +5,7 @@ export type RewardsCategoryIcon =
   | 'newbie'
   | 'referral'
   | 'task'
-  | 'dao'
-  | 'bags';
+  | 'dao';
 
 export const REWARDS_CATEGORY_CATALOG: ReadonlyArray<{
   category: CampaignCategory;
@@ -17,5 +16,4 @@ export const REWARDS_CATEGORY_CATALOG: ReadonlyArray<{
   { category: 'referral', icon: 'referral' },
   { category: 'task', icon: 'task' },
   { category: 'dao', icon: 'dao' },
-  { category: 'bags', icon: 'bags' },
 ];

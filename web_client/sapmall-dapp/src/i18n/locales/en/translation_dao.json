@@ -147,7 +147,7 @@
         },
         "e5": {
           "title": "Recap: April ecosystem AMA highlights",
-          "excerpt": "NFT review SLA, multilingual docs, and Bags partnership—replay and transcript on the forum.",
+          "excerpt": "NFT review SLA, multilingual docs, and ecosystem partnerships—replay and transcript on the forum.",
           "publishedAt": "May 2, 2026"
         },
         "e6": {
@@ -626,7 +626,7 @@
           "Q2 governance module iterations and delegation UX",
           "Timing and on-chain reporting for the 20% SAP buyback",
           "Grant Season 2 categories and review workflow",
-          "Bags partnership and multi-chain milestone updates"
+          "Multi-chain milestone updates"
         ],
         "h2": "How to join",
         "p2": "Live on Discord voice; a transcript and replay link will be published within 48 hours after the session.",
@@ -666,7 +666,7 @@
         "callout": "See the forum announcement for the full parameter table."
       },
       "e5": {
-        "intro": "April AMA highlights cover NFT listing review, localization docs, and Bags partnership progress.",
+        "intro": "April AMA highlights cover NFT listing review, localization docs, and ecosystem partnership progress.",
         "coverAlt": "April AMA recap",
         "h1": "Recap",
         "p1": "Replay and transcript are on the forum for members in other time zones.",

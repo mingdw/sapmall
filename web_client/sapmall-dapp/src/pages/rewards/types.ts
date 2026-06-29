@@ -1,11 +1,10 @@
-/** 平台官方活动分类（含 Bags 外链） */
+/** 平台官方活动分类 */
 export type CampaignCategory =
   | 'shopping'
   | 'newbie'
   | 'referral'
   | 'task'
-  | 'dao'
-  | 'bags';
+  | 'dao';
 
 export type CampaignCategoryFilter = CampaignCategory | 'all';
 
@@ -13,9 +12,9 @@ export type CampaignStatus = 'upcoming' | 'ongoing' | 'ended';
 
 export type RewardType = 'sap' | 'coupon' | 'nft' | 'fee_discount' | 'badge';
 
-export type CampaignWalletHint = 'evm' | 'solana' | 'evm_optional';
+export type CampaignWalletHint = 'evm' | 'evm_optional';
 
-export type CampaignCtaType = 'internal' | 'bags_external' | 'mock_claim';
+export type CampaignCtaType = 'internal' | 'mock_claim';
 
 export interface CampaignCta {
   type: CampaignCtaType;

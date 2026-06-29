@@ -23,13 +23,9 @@
 
 **基于 Arc 的跨链支付**：在 Arc 结算层统一承接多来源资产——用户可选用美元稳定币（**USDC**）、欧元稳定币（**EURC**）、比特币映射资产（**cirBTC**）等跨链流入资产完成结账，无需在多条链之间手动桥接后再支付。后端 **PaymentRouter** 与 **SettlementVault** 统一路由支付 intent 与资金流，订单状态与链上 `PaymentPaid` 事件对齐，降低多资产用户的支付与对账成本。
 
-平台 **[深度集成 Bags](https://bags.fm/)（Solana）**，依托其 **项目 launch、Launch Intent 转化链路与开放 API / SDK**，使 **活动、营销与治理协作** 与 **主支付链路** **职权分离**：链上活动 **上线快、易传播**，主站 **Arc 稳定币订单与 SAP 经济** 保持稳定边界。活动规则以官方披露为准。
+**生态活动与奖励**：DApp 内 **活动、奖励相关说明** 统一在 **`/rewards`（`rewards` 模块，顶栏「生态活动」）** 聚合；**`/marketplace` 商城** 仅承载 **选品与下单**，**不作为** 活动/奖励主入口。
 
-**入口约定**：DApp 内 **所有活动、奖励及 Bags 相关说明与外链** 统一在 **`/rewards`（`rewards` 模块，顶栏「生态活动」）** 聚合；**`/marketplace` 商城** 仅承载 **选品与下单**，**不作为** 活动/奖励主入口（与 `docs/Bags_Activity_Marketing_PRD.md` 一致）。
-
-**钱包与活动（用户成本）**：**只逛商城、下单与使用 SAP 主链路**的用户 **仅需 EVM 钱包**。**参与 Bags 生态活动**时，链上环节在 **Bags（Solana）** 完成，用户需在 Bags 页面 **连接 Solana 钱包并按提示授权**（无法用顶栏 EVM 登录替代）；**不参与活动则不受影响**，也 **不要求**人人持有双钱包。自愿 **EVM ↔ Solana 绑定**（二期）仅用于站内权益与画像，详见 PRD **§3.2**。
-
-**Bags 开发者资源**：[文档](https://docs.bags.fm/) · [开发者门户](https://dev.bags.fm/login) · [TypeScript SDK（npm）](https://www.npmjs.com/package/@bagsfm/bags-sdk)
+**钱包**：浏览商城、下单与使用 SAP 主链路仅需连接 **EVM 钱包**。
 
 ### 🌟 核心特色
 
@@ -66,7 +62,6 @@ sapmall/
 │   ├── 📄 Roadmap.md                 # 项目路线图
 │   ├── 📄 User_Story_Map.md          # 用户故事地图
 │   ├── 📄 Metrics_Framework.md       # 指标框架
-│   └── 📄 Bags_Activity_Marketing_PRD.md  # Bags 活动与营销集成（子域 PRD）
 ├── 📁 promit/                        # AI Agent提示词
 ├── 📁 pic/                           # 图片资源
 ├── 📄 docker-compose.yml             # Docker编排文件
@@ -97,13 +92,13 @@ sapmall/
 |------|----------|----------|
 | `/marketplace` | 代币化商品商城：分类、筛选、浏览与 **Arc 多稳定币链上结账**（**不含** 活动/奖励主入口） | `web_client/sapmall-dapp/src/pages/marketplace/` |
 | `/exchange` | 兑换与资产相关能力展示 | `web_client/sapmall-dapp/src/pages/exchange/` |
-| `/rewards` | **生态活动**：活动、奖励、**Bags** 相关说明与外链的 **唯一聚合入口**（顶栏「生态活动」） | `web_client/sapmall-dapp/src/pages/rewards/` |
+| `/rewards` | **生态活动**：活动、奖励的 **聚合入口**（顶栏「生态活动」） | `web_client/sapmall-dapp/src/pages/rewards/` |
 | `/dao` | 社区参与 / DAO 相关界面 | `web_client/sapmall-dapp/src/pages/dao/` |
 | `/help` | 帮助中心 | `web_client/sapmall-dapp/src/pages/help/` |
 | `/admin` | 内嵌 **管理后台**（iframe，同源或配置后的 Admin 地址） | `web_client/sapmall-dapp/src/components/AdminIframeEmbedded.tsx` |
 | 全局布局 | 顶栏导航、钱包连接、多语言切换 | `web_client/sapmall-dapp/src/pages/header/`、`src/i18n/` |
 
-路由配置见：`web_client/sapmall-dapp/src/layout/ContentLayout.tsx`。活动与 Bags 集成的产品约定见：`docs/Bags_Activity_Marketing_PRD.md`。
+路由配置见：`web_client/sapmall-dapp/src/layout/ContentLayout.tsx`。
 
 #### `sapmall-admin` / `sapmall-website`
 
@@ -562,7 +557,7 @@ open design/prototypes/admin.html
 ### 🎯 生态活动
 <p align="center">
   <img src="pic/new-pic-zh/生态活动首页-zh.png" alt="生态活动首页" width="800" />
-  <br /><em>生态活动首页 - Bags 活动聚合</em>
+  <br /><em>生态活动首页 - 活动与奖励聚合</em>
 </p>
 
 ### 📚 帮助中心
