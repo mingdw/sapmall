@@ -13,6 +13,7 @@ import './i18n';
 import './styles/dapp-common.css';
 import Layout from './layout/Layout';
 import { useCategoryStore } from './store/categoryStore';
+import { useChainConfigInit } from './hooks/useChainConfigInit';
 import '@rainbow-me/rainbowkit/styles.css';
 
 // 创建React Query客户端
@@ -21,6 +22,9 @@ const queryClient = new QueryClient();
 const App: React.FC = () => {
   const { i18n } = useTranslation();
   const clearCache = useCategoryStore((s) => s.clearCache);
+
+  // 初始化链配置
+  useChainConfigInit();
   
   // 根据当前语言选择对应的 Ant Design 语言包
   const antdLocale = i18n.language === 'en' ? enUS : zhCN;

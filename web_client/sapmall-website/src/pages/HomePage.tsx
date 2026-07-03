@@ -1,32 +1,98 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  Rocket,
+  BookOpen,
+  Play,
+  Globe,
+  CheckCircle,
+  Heart,
+  Eye,
+  Percent,
+  Shield,
+  Users,
+  Coins,
+  Vote,
+  Layers,
+  TrendingUp,
+  Lightbulb,
+  Handshake,
+  Mail,
+  Headphones,
+  Menu as MenuIcon,
+  Target,
+  ExternalLink,
+  Send,
+  MessageCircle,
+  Code2,
+  X,
+  type LucideIcon,
+} from 'lucide-react';
 import SEO from '../components/SEO';
+import RevealOnScroll from '../components/RevealOnScroll';
 import logoMarkSrc from '../assets/logo-mark.svg';
-import { 
-  faRocket, 
-  faBook, 
-  faPlay, 
-  faGlobe, 
-  faCheckCircle, 
-  faHeart, 
-  faEye, 
-  faPercentage, 
-  faShieldAlt, 
-  faUsers, 
-  faCoins, 
-  faVoteYea, 
-  faLayerGroup, 
-  faChartLine, 
-  faLightbulb, 
-  faHandshake, 
-  faEnvelope, 
-  faHeadset,
-  faBars,
-  faBullseye
-} from '@fortawesome/free-solid-svg-icons';
-import { faTelegram, faDiscord, faTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
 import i18n from '../i18n';
+
+type ActionButtonProps = {
+  icon: LucideIcon;
+  children: React.ReactNode;
+  variant?: 'primary' | 'outline-accent' | 'outline-muted';
+  size?: 'md' | 'lg';
+  onClick?: () => void;
+  className?: string;
+};
+
+const ActionButton: React.FC<ActionButtonProps> = ({
+  icon: Icon,
+  children,
+  variant = 'primary',
+  size = 'md',
+  onClick,
+  className = '',
+}) => {
+  const iconSize = size === 'lg' ? 18 : 16;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`action-btn action-btn--${variant} action-btn--${size} ${className}`.trim()}
+    >
+      <span className="action-btn__icon" aria-hidden>
+        <Icon size={iconSize} strokeWidth={1.75} />
+      </span>
+      <span className="action-btn__label">{children}</span>
+    </button>
+  );
+};
+
+type FeatureCardProps = {
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+  highlight: string;
+  spanClass?: string;
+  delay?: number;
+};
+
+const FeatureCard: React.FC<FeatureCardProps> = ({
+  icon: Icon,
+  title,
+  desc,
+  highlight,
+  spanClass = 'bento-span-6',
+  delay = 0,
+}) => (
+  <RevealOnScroll delay={delay} className={spanClass}>
+    <div className="surface-card feature-card h-full">
+      <div className="icon-box icon-box--lg mb-5">
+        <Icon size={22} strokeWidth={1.75} />
+      </div>
+      <h3 className="text-xl font-semibold mb-3 text-[var(--color-text)]">{title}</h3>
+      <p className="text-[var(--color-text-secondary)] leading-relaxed grow">{desc}</p>
+      <div className="feature-highlight">{highlight}</div>
+    </div>
+  </RevealOnScroll>
+);
 
 const HomePage: React.FC = () => {
   const { t } = useTranslation();
@@ -37,17 +103,16 @@ const HomePage: React.FC = () => {
     tvl: 0,
     users: 0,
     transactions: 0,
-    apy: 0
+    apy: 0,
   });
 
-  // 统计数据动画
   useEffect(() => {
     const animateCounters = () => {
       const targetStats = {
-        tvl: 125000,
-        users: 8500,
-        transactions: 45000,
-        apy: 15
+        tvl: 124800,
+        users: 8472,
+        transactions: 44830,
+        apy: 14,
       };
 
       const duration = 2000;
@@ -58,12 +123,12 @@ const HomePage: React.FC = () => {
       const timer = setInterval(() => {
         step++;
         const progress = step / steps;
-        
+
         setStats({
           tvl: Math.floor(targetStats.tvl * progress),
           users: Math.floor(targetStats.users * progress),
           transactions: Math.floor(targetStats.transactions * progress),
-          apy: Math.floor(targetStats.apy * progress)
+          apy: Math.floor(targetStats.apy * progress),
         });
 
         if (step >= steps) {
@@ -77,7 +142,6 @@ const HomePage: React.FC = () => {
   }, []);
 
   const launchDApp = () => {
-    console.log('Launching DApp...');
     window.open('http://localhost:7102', '_blank');
   };
 
@@ -91,578 +155,502 @@ const HomePage: React.FC = () => {
     setLanguageDropdownVisible(false);
   };
 
+  const brandBlock = (
+    <div className="flex items-center gap-3">
+      <div className="logo-wrap">
+        <img src={logoMarkSrc} alt="Sapphire Mall" />
+      </div>
+      <div>
+        <div className="brand-name">Sapphire Mall</div>
+        <div className="brand-tagline">{t('brand.tagline')}</div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <SEO />
-      <div className="min-h-screen text-white" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>
-        {/* Navigation */}
-      <nav className="bg-gray-900/80 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-50">
-        <div className="mx-auto px-6 py-4" style={{ width: '90%' }}>
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10 ring-1 ring-white/15 bg-gray-900/60">
-                <img src={logoMarkSrc} alt="" className="w-full h-full object-contain p-0.5" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</h1>
-                <p className="text-xs text-gray-400">Web3虚拟商品交易平台</p>
-              </div>
-            </div>
+      <div className="site-page">
+        {/* 导航 */}
+        <nav className="site-nav">
+          <div className="site-container py-4">
+            <div className="flex items-center justify-between gap-4">
+              {brandBlock}
 
-            {/* Navigation Links */}
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#home" className="nav-link text-gray-300 hover:text-sapphire-400">{t('nav.home')}</a>
-              <a href="#core-values" className="nav-link text-gray-300 hover:text-sapphire-400">{t('nav.coreValues')}</a>
-              <a href="#features" className="nav-link text-gray-300 hover:text-sapphire-400">{t('nav.features')}</a>
-              <a href="#about" className="nav-link text-gray-300 hover:text-sapphire-400">{t('nav.about')}</a>
-              <a href="#docs" className="nav-link text-gray-300 hover:text-sapphire-400">{t('nav.docs')}</a>
-            </div>
+              <div className="hidden md:flex items-center gap-8">
+                <a href="#home" className="nav-link">{t('nav.home')}</a>
+                <a href="#core-values" className="nav-link">{t('nav.coreValues')}</a>
+                <a href="#features" className="nav-link">{t('nav.features')}</a>
+                <a href="#about" className="nav-link">{t('nav.about')}</a>
+                <a href="#docs" className="nav-link">{t('nav.docs')}</a>
+              </div>
 
-            {/* Right Side */}
-            <div className="flex items-center space-x-4">
-              {/* Language Switch */}
-              <div className="language-dropdown">
-                <button 
-                  onClick={toggleLanguageDropdown} 
-                  className="flex items-center space-x-2 text-gray-300 hover:text-sapphire-400 transition-colors"
-                >
-                  <FontAwesomeIcon icon={faGlobe} />
-                  <span>{currentLang === 'zh' ? t('language.zh') : t('language.en')}</span>
-                  <FontAwesomeIcon icon={faCheckCircle} className="text-xs" />
-                </button>
-                <div className={`dropdown-menu ${languageDropdownVisible ? 'show' : ''}`}>
-                  <button 
-                    onClick={() => switchLanguage('zh')} 
-                    className="w-full text-left px-4 py-2 hover:bg-gray-700 transition-colors"
-                  >
-                    <FontAwesomeIcon icon={faCheckCircle} className="text-sapphire-400 mr-2" style={{ opacity: currentLang === 'zh' ? 1 : 0 }} />
-                    {t('language.zh')}
+              <div className="flex items-center gap-3">
+                <div className="language-dropdown">
+                  <button type="button" onClick={toggleLanguageDropdown} className="lang-trigger">
+                    <Globe size={15} strokeWidth={1.75} />
+                    <span>{currentLang === 'zh' ? t('language.zh') : t('language.en')}</span>
                   </button>
-                  <button 
-                    onClick={() => switchLanguage('en')} 
-                    className="w-full text-left px-4 py-2 hover:bg-gray-700 transition-colors"
-                  >
-                    <FontAwesomeIcon icon={faCheckCircle} className="text-sapphire-400 mr-2" style={{ opacity: currentLang === 'en' ? 1 : 0 }} />
-                    {t('language.en')}
-                  </button>
+                  <div className={`dropdown-menu ${languageDropdownVisible ? 'show' : ''}`}>
+                    <button type="button" onClick={() => switchLanguage('zh')} className="dropdown-item">
+                      <CheckCircle
+                        size={14}
+                        className="mr-2 text-brand-500"
+                        style={{ opacity: currentLang === 'zh' ? 1 : 0 }}
+                      />
+                      {t('language.zh')}
+                    </button>
+                    <button type="button" onClick={() => switchLanguage('en')} className="dropdown-item">
+                      <CheckCircle
+                        size={14}
+                        className="mr-2 text-brand-500"
+                        style={{ opacity: currentLang === 'en' ? 1 : 0 }}
+                      />
+                      {t('language.en')}
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              {/* Launch App Button */}
-              <button 
-                onClick={launchDApp} 
-                className="launch-btn"
-              >
-                <FontAwesomeIcon icon={faRocket} className="mr-2" />
-                {t('nav.launchApp')}
-              </button>
+                <button type="button" onClick={launchDApp} className="launch-btn hidden sm:inline-flex">
+                  <span className="launch-btn__icon" aria-hidden>
+                    <Rocket size={15} strokeWidth={1.75} />
+                  </span>
+                  <span className="launch-btn__label">{t('nav.launchApp')}</span>
+                </button>
 
-              {/* Mobile Menu Button */}
-              <div className="md:hidden">
-                <button 
+                <button
+                  type="button"
                   onClick={() => setMobileMenuVisible(true)}
-                  className="text-gray-300 hover:text-sapphire-400"
+                  className="md:hidden p-2 text-[var(--color-text-secondary)] hover:text-brand-500 transition-colors"
+                  aria-label={t('nav.menu')}
                 >
-                  <FontAwesomeIcon icon={faBars} className="text-xl" />
+                  <MenuIcon size={22} strokeWidth={1.75} />
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      </nav>
+        </nav>
 
-      {/* Hero Section */}
-      <section id="home" className="py-20 hero-gradient">
-        <div className="mx-auto px-6" style={{ width: '90%' }}>
-          <div className="max-w-6xl mx-auto">
-            {/* Main Hero Content */}
-            <div className="text-center mb-16">
-              <h1 className="text-5xl md:text-7xl font-bold mb-6">
-                {t('hero.title')}
-              </h1>
-              <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-                {t('hero.subtitle')}
-              </p>
-              
-              {/* Platform Positioning */}
-              <div className="flex flex-wrap justify-center gap-4 mb-10">
-                <span className="bg-sapphire-500/20 text-sapphire-300 px-4 py-2 rounded-full text-sm font-medium">{t('hero.features.revenueSharing')}</span>
-                <span className="bg-purple-500/20 text-purple-300 px-4 py-2 rounded-full text-sm font-medium">{t('hero.features.daoGovernance')}</span>
-                <span className="bg-green-500/20 text-green-300 px-4 py-2 rounded-full text-sm font-medium">{t('hero.features.multiChain')}</span>
-                <span className="bg-yellow-500/20 text-yellow-300 px-4 py-2 rounded-full text-sm font-medium">{t('hero.features.globalService')}</span>
-              </div>
-              
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-                <button 
-                  onClick={launchDApp}
-                  className="bg-gradient-to-r from-sapphire-500 to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:from-sapphire-600 hover:to-purple-700 transition-all duration-300 transform hover:translateY(-2px) hover:shadow-lg"
-                >
-                  <FontAwesomeIcon icon={faRocket} className="mr-2" />
-                  {t('hero.buttons.startTrading')}
-                </button>
-                <button className="border border-sapphire-500 text-sapphire-400 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-sapphire-500 hover:text-white transition-all duration-300">
-                  <FontAwesomeIcon icon={faBook} className="mr-2" />
-                  {t('hero.buttons.readWhitepaper')}
-                </button>
-                <button className="border border-gray-500 text-gray-300 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-500 hover:text-white transition-all duration-300">
-                  <FontAwesomeIcon icon={faPlay} className="mr-2" />
-                  {t('hero.buttons.watchDemo')}
-                </button>
-              </div>
-            </div>
+        {/* Hero：左文右数据，打破居中模板 */}
+        <section id="home" className="hero-section">
+          <div className="site-container relative">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              <RevealOnScroll>
+                <p className="hero-eyebrow">Sapphire Mall</p>
+                <h1 className="hero-title">{t('hero.title')}</h1>
+                <p className="hero-subtitle">{t('hero.subtitle')}</p>
 
-            {/* Platform Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-              <div className="text-center bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
-                <div className="text-3xl font-bold text-sapphire-400 stats-counter mb-2">${stats.tvl.toLocaleString()}</div>
-                <div className="text-sm text-gray-400">{t('stats.tvl')}</div>
-                <div className="text-xs text-green-400 mt-1">{t('stats.tvlChange')}</div>
-              </div>
-              <div className="text-center bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
-                <div className="text-3xl font-bold text-purple-400 stats-counter mb-2">{stats.users.toLocaleString()}</div>
-                <div className="text-sm text-gray-400">{t('stats.activeUsers')}</div>
-                <div className="text-xs text-green-400 mt-1">{t('stats.usersChange')}</div>
-              </div>
-              <div className="text-center bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
-                <div className="text-3xl font-bold text-green-400 stats-counter mb-2">{stats.transactions.toLocaleString()}</div>
-                <div className="text-sm text-gray-400">{t('stats.transactions')}</div>
-                <div className="text-xs text-green-400 mt-1">{t('stats.transactionsChange')}</div>
-              </div>
-              <div className="text-center bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700">
-                <div className="text-3xl font-bold text-yellow-400 stats-counter mb-2">{stats.apy}%</div>
-                <div className="text-sm text-gray-400">{t('stats.apy')}</div>
-                <div className="text-xs text-sapphire-400 mt-1">{t('stats.contributorRewards')}</div>
-              </div>
+                <div className="flex flex-wrap gap-2 mb-8">
+                  <span className="chip">{t('hero.features.revenueSharing')}</span>
+                  <span className="chip">{t('hero.features.daoGovernance')}</span>
+                  <span className="chip">{t('hero.features.multiChain')}</span>
+                  <span className="chip">{t('hero.features.globalService')}</span>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <ActionButton icon={Rocket} variant="primary" size="lg" onClick={launchDApp}>
+                    {t('hero.buttons.startTrading')}
+                  </ActionButton>
+                  <ActionButton icon={BookOpen} variant="outline-accent" size="lg">
+                    {t('hero.buttons.readWhitepaper')}
+                  </ActionButton>
+                  <ActionButton icon={Play} variant="outline-muted" size="lg">
+                    {t('hero.buttons.watchDemo')}
+                  </ActionButton>
+                </div>
+              </RevealOnScroll>
+
+              <RevealOnScroll delay={120}>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="stat-card">
+                    <div className="text-2xl md:text-3xl stats-counter mb-1">
+                      ${stats.tvl.toLocaleString()}
+                    </div>
+                    <div className="text-sm text-[var(--color-text-secondary)]">{t('stats.tvl')}</div>
+                    <div className="text-xs text-brand-600 mt-1">{t('stats.tvlChange')}</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="text-2xl md:text-3xl stats-counter mb-1">
+                      {stats.users.toLocaleString()}
+                    </div>
+                    <div className="text-sm text-[var(--color-text-secondary)]">{t('stats.activeUsers')}</div>
+                    <div className="text-xs text-brand-600 mt-1">{t('stats.usersChange')}</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="text-2xl md:text-3xl stats-counter mb-1">
+                      {stats.transactions.toLocaleString()}
+                    </div>
+                    <div className="text-sm text-[var(--color-text-secondary)]">{t('stats.transactions')}</div>
+                    <div className="text-xs text-brand-600 mt-1">{t('stats.transactionsChange')}</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="text-2xl md:text-3xl stats-counter mb-1">{stats.apy}%</div>
+                    <div className="text-sm text-[var(--color-text-secondary)]">{t('stats.apy')}</div>
+                    <div className="text-xs text-brand-600 mt-1">{t('stats.contributorRewards')}</div>
+                  </div>
+                </div>
+              </RevealOnScroll>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Core Values Section */}
-      <section id="core-values" className="py-20 bg-gray-900/50">
-        <div className="mx-auto px-6" style={{ width: '90%' }}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">{t('coreValues.title')}</h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              {t('coreValues.subtitle')}
-            </p>
-          </div>
+        {/* 核心价值 */}
+        <section id="core-values" className="section-muted section-padding">
+          <div className="site-container">
+            <RevealOnScroll className="mb-14 max-w-2xl">
+              <p className="section-eyebrow">{t('nav.coreValues')}</p>
+              <h2 className="section-title">{t('coreValues.title')}</h2>
+              <p className="section-desc">{t('coreValues.subtitle')}</p>
+            </RevealOnScroll>
 
-          {/* Mission & Vision */}
-          <div className="grid md:grid-cols-2 gap-12 mb-16">
-            <div className="core-mission-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
-              <div className="core-mission-icon w-16 h-16 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center mb-6">
-                <FontAwesomeIcon icon={faBullseye} className="text-white text-2xl" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">{t('coreValues.mission.title')}</h3>
-              <p className="text-gray-300 mb-6">
-                {t('coreValues.mission.content')}
-              </p>
-              <div className="flex items-center space-x-2 text-sapphire-400">
-                <FontAwesomeIcon icon={faHeart} />
-                <span className="font-semibold">{t('coreValues.mission.tagline')}</span>
-              </div>
+            <div className="grid md:grid-cols-2 gap-6 mb-12">
+              <RevealOnScroll delay={0}>
+                <div className="surface-card h-full">
+                  <div className="icon-box icon-box--lg mb-5">
+                    <Target size={22} strokeWidth={1.75} />
+                  </div>
+                  <h3 className="text-2xl font-semibold mb-4">{t('coreValues.mission.title')}</h3>
+                  <p className="text-[var(--color-text-secondary)] leading-relaxed mb-6">
+                    {t('coreValues.mission.content')}
+                  </p>
+                  <div className="flex items-center gap-2 text-brand-600 font-medium text-sm">
+                    <Heart size={16} strokeWidth={1.75} />
+                    <span>{t('coreValues.mission.tagline')}</span>
+                  </div>
+                </div>
+              </RevealOnScroll>
+
+              <RevealOnScroll delay={80}>
+                <div className="surface-card h-full">
+                  <div className="icon-box icon-box--lg mb-5">
+                    <Eye size={22} strokeWidth={1.75} />
+                  </div>
+                  <h3 className="text-2xl font-semibold mb-4">{t('coreValues.vision.title')}</h3>
+                  <p className="text-[var(--color-text-secondary)] leading-relaxed mb-6">
+                    {t('coreValues.vision.content')}
+                  </p>
+                  <div className="flex items-center gap-2 text-brand-600 font-medium text-sm">
+                    <TrendingUp size={16} strokeWidth={1.75} />
+                    <span>{t('coreValues.vision.tagline')}</span>
+                  </div>
+                </div>
+              </RevealOnScroll>
             </div>
 
-            <div className="core-mission-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
-              <div className="core-mission-icon w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mb-6">
-                <FontAwesomeIcon icon={faEye} className="text-white text-2xl" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">{t('coreValues.vision.title')}</h3>
-              <p className="text-gray-300 mb-6">
-                {t('coreValues.vision.content')}
-              </p>
-              <div className="flex items-center space-x-2 text-purple-400">
-                <FontAwesomeIcon icon={faRocket} />
-                <span className="font-semibold">{t('coreValues.vision.tagline')}</span>
-              </div>
-            </div>
-          </div>
+            <RevealOnScroll className="mb-10">
+              <h3 className="text-2xl font-semibold">{t('coreValues.advantages.title')}</h3>
+            </RevealOnScroll>
 
-          {/* Core Advantages */}
-          <div className="mb-16">
-            <h3 className="text-3xl font-bold text-center mb-12">{t('coreValues.advantages.title')}</h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="core-advantage-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700 text-center">
-                <div className="core-advantage-icon w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faPercentage} className="text-white text-xl" />
-                </div>
-                <h4 className="font-bold mb-2">{t('coreValues.advantages.revenueSharing.title')}</h4>
-                <p className="text-gray-400 text-sm">{t('coreValues.advantages.revenueSharing.desc')}</p>
-              </div>
-              <div className="core-advantage-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700 text-center">
-                <div className="core-advantage-icon w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faShieldAlt} className="text-white text-xl" />
-                </div>
-                <h4 className="font-bold mb-2">{t('coreValues.advantages.security.title')}</h4>
-                <p className="text-gray-400 text-sm">{t('coreValues.advantages.security.desc')}</p>
-              </div>
-              <div className="core-advantage-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700 text-center">
-                <div className="core-advantage-icon w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faUsers} className="text-white text-xl" />
-                </div>
-                <h4 className="font-bold mb-2">{t('coreValues.advantages.governance.title')}</h4>
-                <p className="text-gray-400 text-sm">{t('coreValues.advantages.governance.desc')}</p>
-              </div>
-              <div className="core-advantage-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-6 border border-gray-700 text-center">
-                <div className="core-advantage-icon w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faGlobe} className="text-white text-xl" />
-                </div>
-                <h4 className="font-bold mb-2">{t('coreValues.advantages.ecosystem.title')}</h4>
-                <p className="text-gray-400 text-sm">{t('coreValues.advantages.ecosystem.desc')}</p>
-              </div>
+            <div className="grid sm:grid-cols-2 gap-5 mb-12">
+              {[
+                { icon: Percent, title: t('coreValues.advantages.revenueSharing.title'), desc: t('coreValues.advantages.revenueSharing.desc') },
+                { icon: Shield, title: t('coreValues.advantages.security.title'), desc: t('coreValues.advantages.security.desc') },
+                { icon: Users, title: t('coreValues.advantages.governance.title'), desc: t('coreValues.advantages.governance.desc') },
+                { icon: Globe, title: t('coreValues.advantages.ecosystem.title'), desc: t('coreValues.advantages.ecosystem.desc') },
+              ].map((item, index) => (
+                <RevealOnScroll key={item.title} delay={index * 60}>
+                  <div className="surface-card flex gap-4 items-start">
+                    <div className="icon-box">
+                      <item.icon size={20} strokeWidth={1.75} />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1">{item.title}</h4>
+                      <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                </RevealOnScroll>
+              ))}
             </div>
-          </div>
 
-          {/* Business Background */}
-          <div className="core-business-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
-            <h3 className="text-2xl font-bold mb-6">{t('coreValues.business.title')}</h3>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="core-business-section">
-                <h4 className="text-lg font-semibold text-sapphire-400 mb-3">{t('coreValues.business.opportunity.title')}</h4>
-                <ul className="text-gray-300 space-y-2 text-sm">
-                  {(t('coreValues.business.opportunity.items', { returnObjects: true }) as string[]).map((item: string, index: number) => (
-                    <li key={index}>{item}</li>
+            <RevealOnScroll>
+              <div className="surface-card">
+                <h3 className="text-xl font-semibold mb-8">{t('coreValues.business.title')}</h3>
+                <div className="grid md:grid-cols-3 gap-8 md:gap-10">
+                  {[
+                    { title: t('coreValues.business.opportunity.title'), items: t('coreValues.business.opportunity.items', { returnObjects: true }) as string[] },
+                    { title: t('coreValues.business.advantages.title'), items: t('coreValues.business.advantages.items', { returnObjects: true }) as string[] },
+                    { title: t('coreValues.business.roadmap.title'), items: t('coreValues.business.roadmap.items', { returnObjects: true }) as string[] },
+                  ].map((block) => (
+                    <div key={block.title}>
+                      <h4 className="text-sm font-semibold uppercase tracking-wide text-brand-600 mb-4">
+                        {block.title}
+                      </h4>
+                      <ul className="space-y-2 text-sm text-[var(--color-text-secondary)]">
+                        {block.items.map((item) => (
+                          <li key={item} className="flex gap-2">
+                            <span className="text-brand-500 mt-1.5 shrink-0">·</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
-              <div className="core-business-section">
-                <h4 className="text-lg font-semibold text-sapphire-400 mb-3">{t('coreValues.business.advantages.title')}</h4>
-                <ul className="text-gray-300 space-y-2 text-sm">
-                  {(t('coreValues.business.advantages.items', { returnObjects: true }) as string[]).map((item: string, index: number) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="core-business-section">
-                <h4 className="text-lg font-semibold text-sapphire-400 mb-3">{t('coreValues.business.roadmap.title')}</h4>
-                <ul className="text-gray-300 space-y-2 text-sm">
-                  {(t('coreValues.business.roadmap.items', { returnObjects: true }) as string[]).map((item: string, index: number) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              </div>
+            </RevealOnScroll>
+          </div>
+        </section>
+
+        {/* 平台功能：Bento 不对称网格 */}
+        <section id="features" className="section-padding">
+          <div className="site-container">
+            <RevealOnScroll className="mb-14 max-w-2xl">
+              <p className="section-eyebrow">{t('nav.features')}</p>
+              <h2 className="section-title">{t('features.title')}</h2>
+              <p className="section-desc">{t('features.subtitle')}</p>
+            </RevealOnScroll>
+
+            <div className="bento-grid">
+              <FeatureCard
+                spanClass="bento-span-7"
+                icon={Coins}
+                title={t('features.contributionRewards.title')}
+                desc={t('features.contributionRewards.desc')}
+                highlight={t('features.contributionRewards.highlight')}
+                delay={0}
+              />
+              <FeatureCard
+                spanClass="bento-span-5"
+                icon={Vote}
+                title={t('features.daoGovernance.title')}
+                desc={t('features.daoGovernance.desc')}
+                highlight={t('features.daoGovernance.highlight')}
+                delay={60}
+              />
+              <FeatureCard
+                spanClass="bento-span-6"
+                icon={Globe}
+                title={t('features.globalMarketplace.title')}
+                desc={t('features.globalMarketplace.desc')}
+                highlight={t('features.globalMarketplace.highlight')}
+                delay={120}
+              />
+              <FeatureCard
+                spanClass="bento-span-6"
+                icon={Shield}
+                title={t('features.secureTrading.title')}
+                desc={t('features.secureTrading.desc')}
+                highlight={t('features.secureTrading.highlight')}
+                delay={180}
+              />
+              <FeatureCard
+                spanClass="bento-span-6"
+                icon={Layers}
+                title={t('features.multiAsset.title')}
+                desc={t('features.multiAsset.desc')}
+                highlight={t('features.multiAsset.highlight')}
+                delay={240}
+              />
+              <FeatureCard
+                spanClass="bento-span-6"
+                icon={TrendingUp}
+                title={t('features.analytics.title')}
+                desc={t('features.analytics.desc')}
+                highlight={t('features.analytics.highlight')}
+                delay={300}
+              />
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20">
-        <div className="mx-auto px-6" style={{ width: '90%' }}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">{t('features.title')}</h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              {t('features.subtitle')}
-            </p>
-          </div>
+        {/* 关于我们 */}
+        <section id="about" className="section-muted section-padding">
+          <div className="site-container">
+            <RevealOnScroll className="mb-14 text-center mx-auto max-w-2xl">
+              <p className="section-eyebrow">{t('nav.about')}</p>
+              <h2 className="section-title">{t('about.title')}</h2>
+              <p className="section-desc mx-auto">{t('about.subtitle')}</p>
+            </RevealOnScroll>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-            {/* Feature 1: Contribution Rewards */}
-            <div className="feature-card gradient-border">
-              <div className="gradient-border-content">
-                <div className="w-16 h-16 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-lg flex items-center justify-center mb-6">
-                  <FontAwesomeIcon icon={faCoins} className="text-white text-2xl" />
-                </div>
-                <h3 className="text-xl font-bold mb-4">{t('features.contributionRewards.title')}</h3>
-                <p className="text-gray-400 mb-4 grow">
-                  {t('features.contributionRewards.desc')}
-                </p>
-                <div className="text-sapphire-400 font-semibold">{t('features.contributionRewards.highlight')}</div>
-              </div>
-            </div>
-
-            {/* Feature 2: DAO Governance */}
-            <div className="feature-card gradient-border">
-              <div className="gradient-border-content">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center mb-6">
-                  <FontAwesomeIcon icon={faVoteYea} className="text-white text-2xl" />
-                </div>
-                <h3 className="text-xl font-bold mb-4">{t('features.daoGovernance.title')}</h3>
-                <p className="text-gray-400 mb-4 grow">
-                  {t('features.daoGovernance.desc')}
-                </p>
-                <div className="text-purple-400 font-semibold">{t('features.daoGovernance.highlight')}</div>
-              </div>
-            </div>
-
-            {/* Feature 3: Global Marketplace */}
-            <div className="feature-card gradient-border">
-              <div className="gradient-border-content">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mb-6">
-                  <FontAwesomeIcon icon={faGlobe} className="text-white text-2xl" />
-                </div>
-                <h3 className="text-xl font-bold mb-4">{t('features.globalMarketplace.title')}</h3>
-                <p className="text-gray-400 mb-4 grow">
-                  {t('features.globalMarketplace.desc')}
-                </p>
-                <div className="text-green-400 font-semibold">{t('features.globalMarketplace.highlight')}</div>
-              </div>
-            </div>
-
-            {/* Feature 4: Secure Trading */}
-            <div className="feature-card gradient-border">
-              <div className="gradient-border-content">
-                <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-lg flex items-center justify-center mb-6">
-                  <FontAwesomeIcon icon={faShieldAlt} className="text-white text-2xl" />
-                </div>
-                <h3 className="text-xl font-bold mb-4">{t('features.secureTrading.title')}</h3>
-                <p className="text-gray-400 mb-4 grow">
-                  {t('features.secureTrading.desc')}
-                </p>
-                <div className="text-yellow-400 font-semibold">{t('features.secureTrading.highlight')}</div>
-              </div>
-            </div>
-
-            {/* Feature 5: Multi-Asset Support */}
-            <div className="feature-card gradient-border">
-              <div className="gradient-border-content">
-                <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center mb-6">
-                  <FontAwesomeIcon icon={faLayerGroup} className="text-white text-2xl" />
-                </div>
-                <h3 className="text-xl font-bold mb-4">{t('features.multiAsset.title')}</h3>
-                <p className="text-gray-400 mb-4 grow">
-                  {t('features.multiAsset.desc')}
-                </p>
-                <div className="text-red-400 font-semibold">{t('features.multiAsset.highlight')}</div>
-              </div>
-            </div>
-
-            {/* Feature 6: Advanced Analytics */}
-            <div className="feature-card gradient-border">
-              <div className="gradient-border-content">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center mb-6">
-                  <FontAwesomeIcon icon={faChartLine} className="text-white text-2xl" />
-                </div>
-                <h3 className="text-xl font-bold mb-4">{t('features.analytics.title')}</h3>
-                <p className="text-gray-400 mb-4 grow">
-                  {t('features.analytics.desc')}
-                </p>
-                <div className="text-indigo-400 font-semibold">{t('features.analytics.highlight')}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-20 bg-gray-900/50">
-        <div className="mx-auto px-6" style={{ width: '90%' }}>
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-4">{t('about.title')}</h2>
-              <p className="text-xl text-gray-400">
-                {t('about.subtitle')}
-              </p>
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
-              <div>
-                <h3 className="text-3xl font-bold mb-6">{t('about.team.title')}</h3>
-                <p className="text-gray-300 mb-6 leading-relaxed">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-16">
+              <RevealOnScroll>
+                <h3 className="text-2xl font-semibold mb-5">{t('about.team.title')}</h3>
+                <p className="text-[var(--color-text-secondary)] leading-relaxed mb-8">
                   {t('about.team.content')}
                 </p>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <FontAwesomeIcon icon={faCheckCircle} className="text-sapphire-400 mt-1" />
-                    <div>
-                      <h4 className="font-semibold">{t('about.team.expertise.title')}</h4>
-                      <p className="text-sm text-gray-400">{t('about.team.expertise.desc')}</p>
+                <div className="space-y-5">
+                  {[
+                    { title: t('about.team.expertise.title'), desc: t('about.team.expertise.desc') },
+                    { title: t('about.team.experience.title'), desc: t('about.team.experience.desc') },
+                    { title: t('about.team.vision.title'), desc: t('about.team.vision.desc') },
+                  ].map((item) => (
+                    <div key={item.title} className="flex gap-3">
+                      <CheckCircle size={18} className="text-brand-500 mt-0.5 shrink-0" strokeWidth={1.75} />
+                      <div>
+                        <h4 className="font-semibold mb-0.5">{item.title}</h4>
+                        <p className="text-sm text-[var(--color-text-secondary)]">{item.desc}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <FontAwesomeIcon icon={faCheckCircle} className="text-sapphire-400 mt-1" />
-                    <div>
-                      <h4 className="font-semibold">{t('about.team.experience.title')}</h4>
-                      <p className="text-sm text-gray-400">{t('about.team.experience.desc')}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <FontAwesomeIcon icon={faCheckCircle} className="text-sapphire-400 mt-1" />
-                    <div>
-                      <h4 className="font-semibold">{t('about.team.vision.title')}</h4>
-                      <p className="text-sm text-gray-400">{t('about.team.vision.desc')}</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              </div>
+              </RevealOnScroll>
 
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&h=400&fit=crop&crop=center" 
-                  alt="Web3 Technology" 
-                  className="rounded-xl shadow-2xl w-full"
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-sapphire-500/20 to-purple-500/20 rounded-xl"></div>
-                
-                {/* Floating Stats */}
-                <div className="absolute -top-4 -right-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 border border-gray-700">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-sapphire-400">100+</div>
-                    <div className="text-xs text-gray-400">{t('about.stats.projects')}</div>
+              <RevealOnScroll delay={100}>
+                <div className="about-image-wrap">
+                  <img
+                    src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=600&h=400&fit=crop&crop=center"
+                    alt="Web3 Technology"
+                  />
+                  <div className="about-float-stat -top-3 -right-3 md:top-4 md:right-4">
+                    <div className="text-xl font-bold stats-counter">100+</div>
+                    <div className="text-xs text-[var(--color-text-secondary)]">{t('about.stats.projects')}</div>
+                  </div>
+                  <div className="about-float-stat -bottom-3 -left-3 md:bottom-4 md:left-4">
+                    <div className="text-xl font-bold stats-counter">24/7</div>
+                    <div className="text-xs text-[var(--color-text-secondary)]">{t('about.stats.support')}</div>
                   </div>
                 </div>
-                <div className="absolute -bottom-4 -left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 border border-gray-700">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-400">24/7</div>
-                    <div className="text-xs text-gray-400">{t('about.stats.support')}</div>
-                  </div>
-                </div>
-              </div>
+              </RevealOnScroll>
             </div>
 
-            {/* Company Values */}
-            <div className="grid md:grid-cols-3 gap-8 mb-16">
-              <div className="about-value-card text-center">
-                <div className="about-value-icon w-16 h-16 bg-gradient-to-br from-sapphire-500 to-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faLightbulb} className="text-white text-xl" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">{t('about.values.innovation.title')}</h3>
-                <p className="text-gray-400">{t('about.values.innovation.desc')}</p>
-              </div>
-              <div className="about-value-card text-center">
-                <div className="about-value-icon w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faHandshake} className="text-white text-xl" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">{t('about.values.userFirst.title')}</h3>
-                <p className="text-gray-400">{t('about.values.userFirst.desc')}</p>
-              </div>
-              <div className="about-value-card text-center">
-                <div className="about-value-icon w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <FontAwesomeIcon icon={faHeart} className="text-white text-xl" />
-                </div>
-                <h3 className="text-xl font-semibold mb-3">{t('about.values.community.title')}</h3>
-                <p className="text-gray-400">{t('about.values.community.desc')}</p>
-              </div>
+            <div className="grid md:grid-cols-3 gap-6 mb-16">
+              {[
+                { icon: Lightbulb, title: t('about.values.innovation.title'), desc: t('about.values.innovation.desc') },
+                { icon: Handshake, title: t('about.values.userFirst.title'), desc: t('about.values.userFirst.desc') },
+                { icon: Heart, title: t('about.values.community.title'), desc: t('about.values.community.desc') },
+              ].map((item, index) => (
+                <RevealOnScroll key={item.title} delay={index * 70}>
+                  <div className="surface-card text-center h-full">
+                    <div className="icon-box icon-box--lg mx-auto mb-4">
+                      <item.icon size={20} strokeWidth={1.75} />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                    <p className="text-sm text-[var(--color-text-secondary)]">{item.desc}</p>
+                  </div>
+                </RevealOnScroll>
+              ))}
             </div>
 
-            {/* Contact Information */}
-            <div className="about-main-card bg-gray-800/30 backdrop-blur-sm rounded-xl p-8 border border-gray-700">
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold mb-4">{t('about.contact.title')}</h3>
-                <p className="text-gray-400">
-                  {t('about.contact.subtitle')}
-                </p>
-              </div>
+            <RevealOnScroll>
+              <div className="surface-card">
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-semibold mb-3">{t('about.contact.title')}</h3>
+                  <p className="text-[var(--color-text-secondary)]">{t('about.contact.subtitle')}</p>
+                </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div className="about-contact-item text-center p-4">
-                  <div className="about-contact-icon w-12 h-12 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <FontAwesomeIcon icon={faEnvelope} className="text-white" />
-                  </div>
-                  <h4 className="font-semibold mb-2">{t('about.contact.business.title')}</h4>
-                  <p className="text-gray-400 text-sm">{t('about.contact.business.email')}</p>
+                <div className="contact-grid mb-8">
+                  {[
+                    { icon: Mail, title: t('about.contact.business.title'), detail: t('about.contact.business.email') },
+                    { icon: Headphones, title: t('about.contact.support.title'), detail: t('about.contact.support.email') },
+                    { icon: Send, title: t('about.contact.telegram.title'), detail: t('about.contact.telegram.handle') },
+                    { icon: MessageCircle, title: t('about.contact.discord.title'), detail: t('about.contact.discord.community') },
+                  ].map((item) => (
+                    <div key={item.title} className="contact-item text-center">
+                      <div className="icon-box mx-auto mb-3">
+                        <item.icon size={18} strokeWidth={1.75} />
+                      </div>
+                      <h4 className="font-semibold text-sm mb-1">{item.title}</h4>
+                      <p className="text-xs text-[var(--color-text-secondary)]">{item.detail}</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="about-contact-item text-center p-4">
-                  <div className="about-contact-icon w-12 h-12 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <FontAwesomeIcon icon={faHeadset} className="text-white" />
-                  </div>
-                  <h4 className="font-semibold mb-2">{t('about.contact.support.title')}</h4>
-                  <p className="text-gray-400 text-sm">{t('about.contact.support.email')}</p>
-                </div>
-                <div className="about-contact-item text-center p-4">
-                  <div className="about-contact-icon w-12 h-12 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <FontAwesomeIcon icon={faTelegram} className="text-white" />
-                  </div>
-                  <h4 className="font-semibold mb-2">{t('about.contact.telegram.title')}</h4>
-                  <p className="text-gray-400 text-sm">{t('about.contact.telegram.handle')}</p>
-                </div>
-                <div className="about-contact-item text-center p-4">
-                  <div className="about-contact-icon w-12 h-12 bg-gradient-to-br from-sapphire-500 to-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <FontAwesomeIcon icon={faDiscord} className="text-white" />
-                  </div>
-                  <h4 className="font-semibold mb-2">{t('about.contact.discord.title')}</h4>
-                  <p className="text-gray-400 text-sm">{t('about.contact.discord.community')}</p>
-                </div>
-              </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button 
-                  onClick={launchDApp}
-                  className="bg-gradient-to-r from-sapphire-500 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-sapphire-600 hover:to-purple-700 transition-all duration-300"
-                >
-                  <FontAwesomeIcon icon={faRocket} className="mr-2" />
-                  {t('about.contact.buttons.startNow')}
-                </button>
-                <button className="border border-gray-500 text-gray-300 px-8 py-3 rounded-lg font-semibold hover:bg-gray-500 hover:text-white transition-all duration-300">
-                  <FontAwesomeIcon icon={faTelegram} className="mr-2" />
-                  {t('about.contact.buttons.joinCommunity')}
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <ActionButton icon={Rocket} variant="primary" onClick={launchDApp}>
+                    {t('about.contact.buttons.startNow')}
+                  </ActionButton>
+                  <ActionButton icon={Send} variant="outline-muted">
+                    {t('about.contact.buttons.joinCommunity')}
+                  </ActionButton>
+                </div>
               </div>
-            </div>
+            </RevealOnScroll>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 border-t border-gray-700 py-12">
-        <div className="mx-auto px-6" style={{ width: '90%' }}>
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-3 mb-6">
-              <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 shadow-lg shadow-cyan-500/10 ring-1 ring-white/15 bg-gray-900/60">
-                <img src={logoMarkSrc} alt="" className="w-full h-full object-contain p-0.5" />
+        {/* 文档与资源 */}
+        <section id="docs" className="section-padding border-t border-[var(--color-border)]">
+          <div className="site-container">
+            <RevealOnScroll className="max-w-2xl mb-10">
+              <p className="section-eyebrow">{t('nav.docs')}</p>
+              <h2 className="section-title">{t('docsSection.title')}</h2>
+              <p className="section-desc">{t('docsSection.subtitle')}</p>
+            </RevealOnScroll>
+            <RevealOnScroll delay={80}>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <ActionButton icon={BookOpen} variant="outline-accent" size="lg">
+                  {t('docsSection.whitepaper')}
+                </ActionButton>
+                <ActionButton icon={Rocket} variant="primary" size="lg" onClick={launchDApp}>
+                  {t('docsSection.launchDapp')}
+                </ActionButton>
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-sapphire-400 to-purple-400 bg-clip-text text-transparent">Sapphire Mall</span>
+            </RevealOnScroll>
+          </div>
+        </section>
+
+        {/* 页脚 */}
+        <footer className="site-footer">
+          <div className="site-container text-center">
+            <div className="flex items-center justify-center gap-3 mb-5">
+              <div className="logo-wrap w-8 h-8">
+                <img src={logoMarkSrc} alt="Sapphire Mall" />
+              </div>
+              <span className="brand-name">Sapphire Mall</span>
             </div>
-            <p className="text-gray-400 mb-6">
+            <p className="text-[var(--color-text-secondary)] mb-6 max-w-md mx-auto">
               {t('footer.tagline')}
             </p>
-            <div className="flex justify-center space-x-6 mb-6">
-              <button className="text-gray-400 hover:text-sapphire-400 transition-colors">
-                <FontAwesomeIcon icon={faTwitter} className="text-xl" />
-              </button>
-              <button className="text-gray-400 hover:text-sapphire-400 transition-colors">
-                <FontAwesomeIcon icon={faTelegram} className="text-xl" />
-              </button>
-              <button className="text-gray-400 hover:text-sapphire-400 transition-colors">
-                <FontAwesomeIcon icon={faDiscord} className="text-xl" />
-              </button>
-              <button className="text-gray-400 hover:text-sapphire-400 transition-colors">
-                <FontAwesomeIcon icon={faGithub} className="text-xl" />
-              </button>
+            <div className="flex justify-center gap-3 mb-6">
+              {[ExternalLink, Send, MessageCircle, Code2].map((Icon, i) => (
+                <button key={i} type="button" className="footer-social-btn" aria-label="social">
+                  <Icon size={18} strokeWidth={1.75} />
+                </button>
+              ))}
             </div>
-            <p className="text-sm text-gray-500">
-              {t('footer.copyright')}
-            </p>
+            <p className="text-sm text-[var(--color-text-muted)]">{t('footer.copyright')}</p>
           </div>
-        </div>
-      </footer>
+        </footer>
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuVisible && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden">
-          <div className="fixed right-0 top-0 h-full w-80 bg-gray-900 p-6">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-xl font-bold">{t('nav.menu')}</h2>
-              <button 
-                onClick={() => setMobileMenuVisible(false)}
-                className="text-gray-400 hover:text-white"
-              >
-                <FontAwesomeIcon icon={faCheckCircle} className="text-xl" />
-              </button>
+        {/* 移动端菜单 */}
+        {mobileMenuVisible && (
+          <>
+            <div
+              className="mobile-overlay md:hidden"
+              onClick={() => setMobileMenuVisible(false)}
+              aria-hidden
+            />
+            <div className="mobile-drawer md:hidden">
+              <div className="flex justify-between items-center mb-8">
+                <span className="font-semibold">{t('nav.menu')}</span>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuVisible(false)}
+                  className="p-1 text-[var(--color-text-secondary)] hover:text-brand-500"
+                  aria-label="close menu"
+                >
+                  <X size={22} strokeWidth={1.75} />
+                </button>
+              </div>
+              <nav>
+                {[
+                  { href: '#home', label: t('nav.home') },
+                  { href: '#core-values', label: t('nav.coreValues') },
+                  { href: '#features', label: t('nav.features') },
+                  { href: '#about', label: t('nav.about') },
+                  { href: '#docs', label: t('nav.docs') },
+                ].map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="mobile-nav-link"
+                    onClick={() => setMobileMenuVisible(false)}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+              <div className="mt-8">
+                <button type="button" onClick={launchDApp} className="launch-btn action-btn--block w-full">
+                  <span className="launch-btn__icon" aria-hidden>
+                    <Rocket size={15} strokeWidth={1.75} />
+                  </span>
+                  <span className="launch-btn__label">{t('nav.launchApp')}</span>
+                </button>
+              </div>
             </div>
-            <nav className="space-y-4">
-              <a href="#home" className="block text-gray-300 hover:text-sapphire-400 py-2">{t('nav.home')}</a>
-              <a href="#core-values" className="block text-gray-300 hover:text-sapphire-400 py-2">{t('nav.coreValues')}</a>
-              <a href="#features" className="block text-gray-300 hover:text-sapphire-400 py-2">{t('nav.features')}</a>
-              <a href="#about" className="block text-gray-300 hover:text-sapphire-400 py-2">{t('nav.about')}</a>
-              <a href="#docs" className="block text-gray-300 hover:text-sapphire-400 py-2">{t('nav.docs')}</a>
-            </nav>
-            <div className="mt-8">
-              <button 
-                onClick={launchDApp}
-                className="w-full bg-gradient-to-r from-sapphire-500 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold"
-              >
-                <FontAwesomeIcon icon={faRocket} className="mr-2" />
-                {t('nav.launchApp')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          </>
+        )}
       </div>
     </>
   );

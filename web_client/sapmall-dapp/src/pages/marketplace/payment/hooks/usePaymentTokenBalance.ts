@@ -16,7 +16,7 @@ function getPaymentTokenConfig(
   chainId?: number,
 ): WalletErc20Config | undefined {
   if (method === 'USDC') return getUsdcTokenConfig(chainId);
-  if (isSapPayment(method)) return getSapTokenConfig();
+  if (isSapPayment(method)) return getSapTokenConfig(chainId);
   return getArcPaymentTokenConfig(method, chainId);
 }
 

@@ -8,6 +8,9 @@
     "launchApp": "Launch App",
     "menu": "Menu"
   },
+  "brand": {
+    "tagline": "Web3 Virtual Goods Marketplace"
+  },
   "language": {
     "zh": "中文",
     "en": "English"
@@ -195,6 +198,12 @@
       "projects": "Project Experience",
       "support": "Technical Support"
     }
+  },
+  "docsSection": {
+    "title": "Documentation & Resources",
+    "subtitle": "Whitepaper, app entry, and developer materials",
+    "whitepaper": "Read Whitepaper",
+    "launchDapp": "Open DApp"
   },
   "footer": {
     "tagline": "The future of Web3 virtual goods trading",

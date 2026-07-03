@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Button, Space, Collapse, Empty, Switch, Tooltip, Descriptions, Input, InputNumber, message, Modal, Form } from 'antd';
 import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  DownOutlined,
-  EyeOutlined,
-} from '@ant-design/icons';
+  Plus,
+  PenLine,
+  Trash2,
+  ChevronDown,
+  Eye,
+} from 'lucide-react';
 import AttributeList from './AttributeList';
 import AdminModal from '../../../../components/common/AdminModal';
 import { attributeGroupApi, SaveAttributeGroupReq } from '../../../../services/api/attributeGroupApi';
@@ -293,7 +293,7 @@ const AttributeGroupList: React.FC<AttributeGroupListProps> = ({
         <Button
           type="primary"
           size="small"
-          icon={<PlusOutlined />}
+          icon={<Plus size={16} />}
           onClick={handleAddGroup}
         >
           添加属性组
@@ -304,7 +304,7 @@ const AttributeGroupList: React.FC<AttributeGroupListProps> = ({
         <Collapse
           className={styles.collapse}
           expandIcon={({ isActive }) => (
-            <DownOutlined rotate={isActive ? 180 : 0} />
+            <ChevronDown size={16} style={{ transform: isActive ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
           )}
           ghost
         >
@@ -328,7 +328,7 @@ const AttributeGroupList: React.FC<AttributeGroupListProps> = ({
                         <Button
                           type="text"
                           size="small"
-                          icon={<EyeOutlined />}
+                          icon={<Eye size={16} />}
                           title="查看详情"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -338,7 +338,7 @@ const AttributeGroupList: React.FC<AttributeGroupListProps> = ({
                         <Button
                           type="text"
                           size="small"
-                          icon={<EditOutlined />}
+                          icon={<PenLine size={16} />}
                           title="编辑"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -349,7 +349,7 @@ const AttributeGroupList: React.FC<AttributeGroupListProps> = ({
                           type="text"
                           size="small"
                           danger
-                          icon={<DeleteOutlined />}
+                          icon={<Trash2 size={16} />}
                           title="删除"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -428,7 +428,7 @@ const AttributeGroupList: React.FC<AttributeGroupListProps> = ({
           <Button
             type="primary"
             size="small"
-            icon={<PlusOutlined />}
+            icon={<Plus size={16} />}
             onClick={handleAddGroup}
           >
             添加第一个属性组

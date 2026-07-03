@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Table, Button, Space, Tag, Switch, message, Modal, Form, Input, InputNumber, Select, Empty } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { Plus, PenLine, Trash2, Eye } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import AdminModal from '../../../../components/common/AdminModal';
 import { attributeApi, SaveAttributeReq } from '../../../../services/api/attributeApi';
@@ -261,14 +261,14 @@ const AttributeList: React.FC<AttributeListProps> = ({
           <Button
             type="text"
             size="small"
-            icon={<EyeOutlined />}
+            icon={<Eye size={16} />}
             title="查看详情"
             onClick={() => handleViewAttribute(record)}
           />
           <Button
             type="text"
             size="small"
-            icon={<EditOutlined />}
+            icon={<PenLine size={16} />}
             title="编辑"
             onClick={() => handleEditAttribute(record)}
           />
@@ -276,7 +276,7 @@ const AttributeList: React.FC<AttributeListProps> = ({
             type="text"
             size="small"
             danger
-            icon={<DeleteOutlined />}
+            icon={<Trash2 size={16} />}
             title="删除"
             onClick={() => handleDeleteAttribute(record)}
           />
@@ -292,7 +292,7 @@ const AttributeList: React.FC<AttributeListProps> = ({
         <Button
           type="primary"
           size="small"
-          icon={<PlusOutlined />}
+          icon={<Plus size={16} />}
           onClick={handleAddAttribute}
         >
           添加属性
@@ -317,7 +317,7 @@ const AttributeList: React.FC<AttributeListProps> = ({
           <Button
             type="primary"
             size="small"
-            icon={<PlusOutlined />}
+            icon={<Plus size={16} />}
             onClick={handleAddAttribute}
           >
             添加第一个属性

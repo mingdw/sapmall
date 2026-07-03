@@ -111,7 +111,7 @@ INSERT INTO `sys_chain_network` (
   5042002, 'arc_testnet', 'Arc Testnet', 'https://rpc.testnet.arc.network', 'https://testnet.arcscan.app', 'USDC',
   '0x8569c81a0f1cb4cc7ceedda24e586fba8ffe2485',
   '0xa9af86f5ac67a270d52f0e0936623cb2e4a71a9b',
-  '0x568ac7ec3ee1c5b72134b17e537c6db87aff839d',
+  '0xf5137b68cdc765261ac6a39819c0c1b55bc6a111',
   'CHAIN_SIGNER_ARC_TESTNET', 1, 20, 0, 'wallet_ui:switchable', 'system', 'system'
 ),
 (
@@ -153,11 +153,14 @@ INSERT INTO `sys_chain_payment_token` (
   `chain_id`, `symbol`, `display_name`, `contract_address`, `decimals`, `config_key`,
   `sync_status`, `sort`, `status`, `creator`, `updator`
 ) VALUES
--- Linea Sepolia（支付链）
+-- Linea Sepolia（支付链；SAP 合约暂用 Arc 地址占位，待各链部署后更新）
+(59141, 'SAP', 'SAP', '0x55f95bfd9d2c7ceba63e0124471b28043813e24e', 18, 'payment.token.sap', 0, 5, 0, 'system', 'system'),
 (59141, 'USDC', 'USDC', '0xfece4462d57bd51a6a552365a011b95f0e16d9b7', 6, 'payment.token.usdc', 0, 10, 0, 'system', 'system'),
 -- Arc Testnet（支付链）
+(5042002, 'SAP', 'SAP', '0x55f95bfd9d2c7ceba63e0124471b28043813e24e', 18, 'payment.token.sap', 0, 5, 0, 'system', 'system'),
 (5042002, 'USDC', 'USDC', '0x3600000000000000000000000000000000000000', 6, 'payment.token.usdc', 0, 10, 0, 'system', 'system'),
 (5042002, 'EURC', 'EURC', '0x89b50855aa3be2f677cd6303cec089b5f319d72a', 6, 'payment.token.eurc', 0, 20, 0, 'system', 'system'),
 (5042002, 'cirBTC', 'cirBTC', '0xf0c4a4ce82a5746abaad9425360ab04fbba432bf', 8, 'payment.token.cirbtc', 0, 30, 0, 'system', 'system'),
--- Base Sepolia（支付链）
+-- Base Sepolia（支付链；SAP 合约暂用 Arc 地址占位，待各链部署后更新）
+(84532, 'SAP', 'SAP', '0x55f95bfd9d2c7ceba63e0124471b28043813e24e', 18, 'payment.token.sap', 0, 5, 0, 'system', 'system'),
 (84532, 'USDC', 'USDC', '0x036cbd53842c542663c028d8e0b8708ff7dd4b7', 6, 'payment.token.usdc', 0, 10, 0, 'system', 'system');

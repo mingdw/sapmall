@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Empty, Spin } from 'antd';
-import { ArrowLeftOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ArrowLeft, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { resolveProductDetailError } from '../utils/resolveProductDetailError';
 import styles from '../ProductDetailPage.module.scss';
@@ -71,7 +71,7 @@ const ProductDetailStateView: React.FC<ProductDetailStateViewProps> = (props) =>
             <div className={styles.stateActions}>
               <Button
                 type="text"
-                icon={<ArrowLeftOutlined />}
+                icon={<ArrowLeft size={16} />}
                 className={styles.backBtn}
                 onClick={onGoBack}
               >
@@ -80,7 +80,7 @@ const ProductDetailStateView: React.FC<ProductDetailStateViewProps> = (props) =>
               <Button
                 type="primary"
                 size="large"
-                icon={<ReloadOutlined />}
+                icon={<RefreshCw size={16} />}
                 loading={retrying}
                 onClick={handleRetry}
                 className={styles.retryBtn}

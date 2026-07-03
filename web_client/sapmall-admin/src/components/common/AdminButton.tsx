@@ -1,11 +1,12 @@
 import React from 'react';
+import { Loader2 } from 'lucide-react';
 import styles from './AdminButton.module.scss';
 
 interface AdminButtonProps {
   children: React.ReactNode;
   variant?: 'primary' | 'outline' | 'danger' | 'warning' | 'query' | 'reset' | 'add' | 'delete' | 'export' | 'save' | 'next' | 'cancel' | 'draft' | 'prev' | 'edit' | 'view' | 'confirm' | 'back' | 'submit';
   size?: 'sm' | 'md' | 'xs';
-  icon?: string;
+  icon?: React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
   loading?: boolean;
@@ -39,8 +40,8 @@ const AdminButton: React.FC<AdminButtonProps> = ({
       onClick={onClick}
       disabled={disabled || loading}
     >
-      {loading && <i className="fas fa-spinner fa-spin"></i>}
-      {!loading && icon && <i className={icon}></i>}
+      {loading && <Loader2 size={14} className="animate-spin" />}
+      {!loading && icon}
       {children}
     </button>
   );

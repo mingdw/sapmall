@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Trash2, ChevronUp, ChevronDown } from 'lucide-react';
 import styles from './MarketPlacePageDetail.module.scss';
 import { productApiService } from '../../services/api/productApiService';
 import { CategoryTreeResp, AttrGroupResp } from '../../services/types/categoryTypes';
@@ -518,7 +519,7 @@ const MarketPlacePageDetail: React.FC = () => {
                               className={styles.clearBtn}
                               onClick={clearAllFilters}
                             >
-                              <i className="fas fa-trash" aria-hidden />
+                              <Trash2 size={16} aria-hidden="true" />
                               {t('marketplacePage.clearFilters')}
                             </button>
                           )}
@@ -577,7 +578,7 @@ const MarketPlacePageDetail: React.FC = () => {
                                   className={styles.clearBtn}
                                   onClick={clearAllFilters}
                                 >
-                                  <i className="fas fa-trash" aria-hidden />
+                              <Trash2 size={16} aria-hidden="true" />
                                   {t('marketplacePage.clearFilters')}
                                 </button>
                               )}
@@ -587,7 +588,7 @@ const MarketPlacePageDetail: React.FC = () => {
                                 onClick={() => setShowMoreFilters(false)}
                               >
                                 {t('marketplacePage.collapseFilters')}
-                                <i className="fas fa-chevron-up" aria-hidden />
+                                <ChevronUp size={16} aria-hidden="true" />
                               </button>
                             </div>
                           )}
@@ -675,7 +676,7 @@ const MarketPlacePageDetail: React.FC = () => {
                         className={styles.loadMoreCategoriesLink}
                       >
                         <span>{t('marketplacePage.loadMoreCategories')}</span>
-                        <i className="fas fa-chevron-down" aria-hidden />
+                        <ChevronDown size={16} aria-hidden="true" />
                       </button>
                     </div>
                   )}

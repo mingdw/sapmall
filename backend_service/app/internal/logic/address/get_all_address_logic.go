@@ -68,8 +68,6 @@ func (l *GetAllAddressLogic) GetAllAddress(req *types.AddressListRequest) (resp 
 	sortAddressTree(response.Addresses)
 
 	return response, nil
-
-	return
 }
 
 // 结构体转换 model -> types

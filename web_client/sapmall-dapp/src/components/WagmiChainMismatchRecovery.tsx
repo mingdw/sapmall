@@ -9,6 +9,7 @@ import {
   parseChainMismatchMessage,
 } from '../utils/wagmiChainMismatch';
 import { isUserWalletDisconnecting } from '../utils/walletDisconnectGuard';
+import { isUserWalletChainSwitching } from '../utils/walletChainSwitchGuard';
 
 async function readConnectorChainId(
   connector: NonNullable<ReturnType<typeof useAccount>['connector']>,
@@ -44,7 +45,7 @@ export function WagmiChainMismatchRecovery() {
 
   const trySyncToWalletChain = useCallback(
     async (targetChainId: number, reason: string) => {
-      if (isUserWalletDisconnecting()) return;
+      if (isUserWalletDisconnecting() || isUserWalletChainSwitching()) return;
       if (!isRecoverableWalletChain(targetChainId)) return;
       const attemptKey = `${reason}:${targetChainId}`;
       if (recoveringRef.current || lastAttemptKeyRef.current === attemptKey) return;
@@ -60,7 +61,7 @@ export function WagmiChainMismatchRecovery() {
         }
         console.warn('[WagmiChainMismatchRecovery] switchChain failed, reconnecting…', switchError);
         try {
-          if (isUserWalletDisconnecting()) return;
+          if (isUserWalletDisconnecting() || isUserWalletChainSwitching()) return;
           const activeConnector = connector;
           await disconnectAsync();
           if (activeConnector && !isUserWalletDisconnecting()) {
@@ -95,14 +96,14 @@ export function WagmiChainMismatchRecovery() {
   }, [connectError, trySyncToWalletChain]);
 
   useEffect(() => {
-    if (!isConnected || !connector || isUserWalletDisconnecting()) return;
+    if (!isConnected || !connector || isUserWalletDisconnecting() || isUserWalletChainSwitching()) return;
 
     let cancelled = false;
     void (async () => {
       try {
         const connectorChainId = await readConnectorChainId(connector);
         if (connectorChainId == null) return;
-        if (cancelled || isUserWalletDisconnecting()) return;
+        if (cancelled || isUserWalletDisconnecting() || isUserWalletChainSwitching()) return;
         if (connectorChainId === chainId) return;
         if (!isRecoverableWalletChain(connectorChainId)) return;
         await trySyncToWalletChain(connectorChainId, 'connected-sync');

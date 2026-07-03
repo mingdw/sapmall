@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Menu as MenuIcon, Globe, ChevronDown, X, Wallet } from 'lucide-react';
 import logoMarkSrc from '../../assets/logo-mark.svg';
 import WalletConnect from './components/WalletConnect';
 
@@ -126,7 +127,7 @@ const HeaderPageDetail: React.FC = () => {
             className="md:hidden text-gray-300 hover:text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            <i className="fas fa-bars text-xl"></i>
+            <MenuIcon size={20} />
           </button>
 
           {/* 右侧控制区域 */}
@@ -137,9 +138,9 @@ const HeaderPageDetail: React.FC = () => {
                 className="flex items-center space-x-2 text-gray-300 hover:text-blue-400 transition-colors font-semibold"
                 onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
               >
-                <i className="fas fa-globe"></i>
+                <Globe size={16} />
                 <span>{i18n.language === 'zh' ? '中文' : 'English'}</span>
-                <i className="fas fa-chevron-down text-xs"></i>
+                <ChevronDown size={12} />
               </button>
               <div className={`absolute right-0 top-full mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl min-w-[120px] z-50 transition-all duration-300 ${
                 languageMenuOpen 
@@ -195,7 +196,7 @@ const HeaderPageDetail: React.FC = () => {
                     onClick={() => setMobileMenuOpen(false)}
                     className="text-gray-400 hover:text-white"
                   >
-                    <i className="fas fa-times"></i>
+                    <X size={16} />
                   </button>
                 </div>
                 
@@ -224,7 +225,7 @@ const HeaderPageDetail: React.FC = () => {
                     className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <i className="fas fa-wallet"></i>
+                    <Wallet size={16} />
                     <span>连接钱包</span>
                   </button>
                 </div>

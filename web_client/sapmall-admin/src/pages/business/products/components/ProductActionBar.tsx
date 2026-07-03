@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, Space } from 'antd';
 import {
-  DeleteOutlined,
-  DownloadOutlined,
-  StopOutlined,
-} from '@ant-design/icons';
+  Trash2,
+  Download,
+  OctagonMinus,
+} from 'lucide-react';
 import styles from '../ProductManagement.module.scss';
 
 interface ProductActionBarProps {
@@ -24,7 +24,7 @@ const ProductActionBar: React.FC<ProductActionBarProps> = ({
     <Space size={6} wrap>
       <Button
         danger
-        icon={<DeleteOutlined />}
+        icon={<Trash2 size={16} />}
         disabled={selectedCount === 0}
         onClick={onBatchDelete}
         className={styles.batchActionBtn}
@@ -33,7 +33,7 @@ const ProductActionBar: React.FC<ProductActionBarProps> = ({
       </Button>
       <Button
         type="default"
-        icon={<StopOutlined />}
+        icon={<OctagonMinus size={16} />}
         onClick={onBatchDeactivate}
         disabled={selectedCount === 0}
         className={styles.batchActionBtn}
@@ -42,7 +42,7 @@ const ProductActionBar: React.FC<ProductActionBarProps> = ({
       </Button>
       <Button
         type="default"
-        icon={<DownloadOutlined />}
+        icon={<Download size={16} />}
         onClick={onExport}
         className={styles.batchActionBtn}
       >

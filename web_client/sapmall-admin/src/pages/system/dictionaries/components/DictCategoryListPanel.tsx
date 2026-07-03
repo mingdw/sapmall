@@ -1,5 +1,5 @@
 import React from 'react';
-import { SearchOutlined } from '@ant-design/icons';
+import { Search } from 'lucide-react';
 import { Empty, Input, Spin, Tooltip } from 'antd';
 import AdminButton from '../../../../components/common/AdminButton';
 import { getDictCategoryTypeLabel, type DictCategoryInfo } from '../../../../services/api/dictionaryApi';
@@ -49,7 +49,7 @@ const DictCategoryListPanel: React.FC<DictCategoryListPanelProps> = ({
             allowClear
             placeholder="搜索类目 code/名称"
             onChange={(e) => onKeywordChange(e.target.value)}
-            suffix={<SearchOutlined onClick={onSearch} style={{ cursor: 'pointer', color: '#ffffff' }} />}
+            suffix={<Search size={16} onClick={onSearch} style={{ cursor: 'pointer', color: '#ffffff' }} />}
           />
           <AdminButton
             variant="primary"

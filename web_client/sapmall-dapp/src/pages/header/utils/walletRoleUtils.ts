@@ -1,3 +1,6 @@
+import { Shield, Store, ShoppingBag } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+
 export type WalletRoleCode = 'R0001' | 'R0002' | 'R0003';
 
 export const WALLET_ROLE_ORDER: WalletRoleCode[] = ['R0001', 'R0002', 'R0003'];
@@ -14,10 +17,10 @@ export const WALLET_ROLE_BADGE_CLASS: Record<WalletRoleCode, string> = {
   R0003: 'roleBadgeBuyer',
 };
 
-export const WALLET_ROLE_ICON: Record<WalletRoleCode, string> = {
-  R0001: 'fa-shield-alt',
-  R0002: 'fa-store',
-  R0003: 'fa-shopping-bag',
+export const WALLET_ROLE_ICON: Record<WalletRoleCode, LucideIcon> = {
+  R0001: Shield,
+  R0002: Store,
+  R0003: ShoppingBag,
 };
 
 export function resolveWalletRoleCodes(roles?: string[]): WalletRoleCode[] {

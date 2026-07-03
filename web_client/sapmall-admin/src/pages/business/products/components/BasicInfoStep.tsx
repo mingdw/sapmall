@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Select, InputNumber, Row, Col, Upload } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Plus } from 'lucide-react';
 import type { FormInstance } from 'antd';
 import type { ProductSPU } from '../types';
 import { parseImageUrls } from './ProductForm.utils';
@@ -179,7 +179,7 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
             <Upload {...mainImageUploadProps} disabled={disabled}>
               {mainImageFileList.length < 1 && (
                 <div>
-                  <PlusOutlined style={{ color: '#e2e8f0' }} />
+                  <Plus size={16} style={{ color: '#e2e8f0' }} />
                   <div style={{ marginTop: 8, color: '#94a3b8' }}>上传主图</div>
                   <small style={{ color: '#64748b' }}>建议800x800px</small>
                 </div>
@@ -192,7 +192,7 @@ const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
             <Upload {...additionalImageUploadProps} disabled={disabled}>
               {additionalImageFileList.length < 8 && (
                 <div>
-                  <PlusOutlined style={{ color: '#e2e8f0' }} />
+                  <Plus size={16} style={{ color: '#e2e8f0' }} />
                   <div style={{ marginTop: 8, color: '#94a3b8' }}>添加图片</div>
                 </div>
               )}

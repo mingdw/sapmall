@@ -13,10 +13,10 @@ import {
   Tooltip,
 } from 'antd';
 import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from '@ant-design/icons';
+  Plus,
+  PenLine,
+  Trash2,
+} from 'lucide-react';
 import AdminCard from '../../../components/common/AdminCard';
 import { productApi } from '../../../services/api/productApi';
 import type { ProductSPU, ProductListParams, ProductDetailResp } from './types';
@@ -610,7 +610,7 @@ const ProductManagement: React.FC = () => {
           <Button
             type="link"
             size="small"
-            icon={<EditOutlined />}
+            icon={<PenLine size={16} />}
             onClick={() => handleEdit(record)}
           >
             编辑
@@ -625,7 +625,7 @@ const ProductManagement: React.FC = () => {
               type="link"
               size="small"
               danger
-              icon={<DeleteOutlined />}
+              icon={<Trash2 size={16} />}
             >
               删除
             </Button>

@@ -37,6 +37,7 @@ contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeab
         string indexed intentId,
         string indexed orderRef,
         address indexed payer,
+        address seller,
         address token,
         uint256 amount,
         uint256 timestamp
@@ -95,10 +96,12 @@ contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeab
     function payOrder(
         string calldata intentId,
         string calldata orderRef,
+        address seller,
         address token,
         uint256 amount
     ) external whenNotPaused nonReentrant {
         _validateIntentAndOrderRef(intentId, orderRef);
+        if (seller == address(0)) revert ZeroAddress();
         if (amount == 0) revert ZeroAmount();
 
         if (!supportedTokens[block.chainid][token].isActive) {
@@ -111,9 +114,9 @@ contract PaymentRouter is Initializable, UUPSUpgradeable, AccessControlUpgradeab
         _paidIntents[intentHash] = true;
 
         IERC20(token).safeTransferFrom(_msgSender(), address(settlementVault), amount);
-        settlementVault.depositFromRouter(intentId, orderRef, _msgSender(), token, amount);
+        settlementVault.depositFromRouter(intentId, orderRef, _msgSender(), seller, token, amount);
 
-        emit PaymentPaid(intentId, orderRef, _msgSender(), token, amount, block.timestamp);
+        emit PaymentPaid(intentId, orderRef, _msgSender(), seller, token, amount, block.timestamp);
     }
 
     function setSettlementVault(address settlementVault_) external onlyRole(DEFAULT_ADMIN_ROLE) {

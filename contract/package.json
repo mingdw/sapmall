@@ -13,6 +13,8 @@
     "setup:payment-config:arc": "hardhat run scripts/setup-payment-config.ts --network arcTestnet",
     "deploy:payment:arc": "hardhat run scripts/deploy-payment.ts --network arcTestnet",
     "deploy:payment:arc:full": "hardhat run scripts/deploy-payment-arc.ts --network arcTestnet",
+    "deploy:payment:v2:arc": "hardhat run scripts/deploy-payment-v2.ts --network arcTestnet",
+    "deploy:payment:v2:linea-sepolia": "hardhat run scripts/deploy-payment-v2.ts --network lineaSepolia",
     "deploy:payment:linea-sepolia": "hardhat run scripts/deploy-payment.ts --network lineaSepolia",
     "deploy:platform-config:sepolia": "hardhat run scripts/deploy-platform-config.ts --network sepolia",
     "smoke:platform-config:sepolia": "hardhat run scripts/sepolia-smoke-platform-config.ts --network sepolia",
@@ -28,6 +30,7 @@
   "license": "ISC",
   "devDependencies": {
     "@nomicfoundation/hardhat-ignition": "^3.1.2",
+    "@nomicfoundation/hardhat-ignition-viem": "^3.1.6",
     "@nomicfoundation/hardhat-toolbox-viem": "^5.0.4",
     "@types/node": "^22.19.17",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",

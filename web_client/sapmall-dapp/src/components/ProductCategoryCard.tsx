@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { ArrowLeft, ArrowRight, Search } from 'lucide-react';
 import { Product } from '../services/types/productTypes';
 import ProductDetailComponent from './ProductCard';
 import MarketplacePagination from '../pages/marketplace/components/MarketplacePagination';
@@ -80,7 +81,7 @@ const ProductCategoryComponent: React.FC<ProductCategoryComponentProps> = ({
               className={styles.categoryMainIcon}
               style={categoryPlainIconStyle(iconTheme)}
             >
-              <i className={iconTheme.icon} aria-hidden />
+              {(() => { const CategoryIcon = iconTheme.icon; return <CategoryIcon size={16} aria-hidden="true" />; })()}
             </span>
             <h3 className={styles.categoryMainTitleText}>{categoryName}</h3>
           </div>
@@ -91,10 +92,7 @@ const ProductCategoryComponent: React.FC<ProductCategoryComponentProps> = ({
               onClick={handleMoreClick}
             >
               <span>{showPagination ? t('marketplacePage.backToMall') : t('marketplacePage.more')}</span>
-              <i
-                className={`fas ${showPagination ? 'fa-arrow-left' : 'fa-arrow-right'}`}
-                aria-hidden
-              />
+              {showPagination ? <ArrowLeft size={14} aria-hidden="true" /> : <ArrowRight size={14} aria-hidden="true" />}
             </button>
           )}
         </div>
@@ -137,7 +135,7 @@ const ProductCategoryComponent: React.FC<ProductCategoryComponentProps> = ({
       ) : (
         <div className="text-center py-12">
           <div className="text-gray-400 text-lg mb-4">
-            <i className="fas fa-search text-4xl mb-4 block"></i>
+            <Search size={36} className="text-4xl mb-4 block" />
             <p>{t('marketplacePage.noProducts')}</p>
             <p className="text-sm mt-2">{t('marketplacePage.tryOtherFilters')}</p>
           </div>

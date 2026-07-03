@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Input, InputNumber, Table, Space, Tag, Upload, Image, Popover, Button, Popconfirm } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { UploadFile } from 'antd';
-import { PlusOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { Plus, Trash2, Eye } from 'lucide-react';
 import AdminButton from '../../../../components/common/AdminButton';
 import styles from './SKUManager.module.scss';
 
@@ -326,7 +326,7 @@ const SKUManager: React.FC<SKUManagerProps> = ({
                           type="button"
                           title="删除图片"
                         >
-                          <DeleteOutlined />
+                          <Trash2 size={14} />
                         </button>
                       )}
                     </div>
@@ -353,7 +353,7 @@ const SKUManager: React.FC<SKUManagerProps> = ({
                 className={styles.addImageBtn}
               >
                 <button type="button" className={styles.addImageButton}>
-                  <PlusOutlined />
+                  <Plus size={14} />
                   <span>添加</span>
                 </button>
               </Upload>
@@ -432,7 +432,7 @@ const SKUManager: React.FC<SKUManagerProps> = ({
               type="link"
               size="small"
               danger
-              icon={<DeleteOutlined />}
+              icon={<Trash2 size={16} />}
               disabled={disabled}
               className={styles.deleteBtn}
             >

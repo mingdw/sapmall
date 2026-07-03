@@ -1,11 +1,11 @@
 import React from 'react';
 import { Tree, Button, Space, Tooltip, ConfigProvider, Form, Input, InputNumber, message } from 'antd';
 import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  EyeOutlined,
-} from '@ant-design/icons';
+  Plus,
+  PenLine,
+  Trash2,
+  Eye,
+} from 'lucide-react';
 import type { DataNode } from 'antd/es/tree';
 import AdminModal from '../../../../components/common/AdminModal';
 import { SaveCategoryReq } from '../../../../services/api/categoryApi';
@@ -182,7 +182,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
               <Button
                 type="text"
                 size="small"
-                icon={<EyeOutlined />}
+                icon={<Eye size={16} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   openModal('view', category);
@@ -193,7 +193,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
               <Button
                 type="text"
                 size="small"
-                icon={<PlusOutlined />}
+                icon={<Plus size={16} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   openModal('add', category);
@@ -204,7 +204,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
               <Button
                 type="text"
                 size="small"
-                icon={<EditOutlined />}
+                icon={<PenLine size={16} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   openModal('edit', category);
@@ -216,7 +216,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
                 type="text"
                 size="small"
                 danger
-                icon={<DeleteOutlined />}
+                icon={<Trash2 size={16} />}
                 onClick={(e) => {
                   e.stopPropagation();
                   onDelete(category);
@@ -265,7 +265,7 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
         <Button
           type="primary"
           size="small"
-          icon={<PlusOutlined />}
+          icon={<Plus size={16} />}
           onClick={() => openModal('add', null)}
           className={styles.addButton}
         >

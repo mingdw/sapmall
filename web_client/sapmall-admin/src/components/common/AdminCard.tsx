@@ -3,11 +3,11 @@ import styles from './AdminCard.module.scss';
 
 interface AdminCardProps {
   title?: string;
-  icon?: string;
+  icon?: React.ReactNode;
   actions?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
-  showHeader?: boolean; // 新增：是否显示标题部分，默认为true
+  showHeader?: boolean;
 }
 
 const AdminCard: React.FC<AdminCardProps> = ({
@@ -26,7 +26,7 @@ const AdminCard: React.FC<AdminCardProps> = ({
             <div className={styles.governanceHeaderRow}>
               {title && (
                 <h3 className={styles.adminSectionTitle}>
-                  {icon && <i className={icon}></i>}
+                  {icon && <span className={styles.adminSectionIcon}>{icon}</span>}
                   {title}
                 </h3>
               )}

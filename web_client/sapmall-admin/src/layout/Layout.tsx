@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Layout as AntLayout, Menu, Button, Dropdown, Avatar } from 'antd';
 import { 
-  DashboardOutlined, 
-  UserOutlined, 
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  GlobalOutlined
-} from '@ant-design/icons';
+  LayoutDashboard, 
+  User, 
+  PanelLeftClose,
+  PanelLeftOpen,
+  Globe
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const { Header: AntHeader, Sider, Content } = AntLayout;
@@ -22,7 +22,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const menuItems = [
     {
       key: '/dashboard',
-      icon: <DashboardOutlined />,
+      icon: <LayoutDashboard size={16} />,
       label: t('navigation.dashboard'),
     },
   ];
@@ -62,7 +62,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <AntHeader className="bg-white px-4 flex items-center justify-between shadow-sm">
           <Button
             type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            icon={collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
             onClick={() => setCollapsed(!collapsed)}
             className="text-lg"
           />
@@ -74,11 +74,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               }}
               placement="bottomRight"
             >
-              <Button type="text" icon={<GlobalOutlined />}>
+              <Button type="text" icon={<Globe size={16} />}>
                 {i18n.language === 'zh' ? '中文' : 'English'}
               </Button>
             </Dropdown>
-            <Avatar icon={<UserOutlined />} />
+            <Avatar icon={<User size={16} />} />
           </div>
         </AntHeader>
         <Content className="p-6 bg-gray-50">

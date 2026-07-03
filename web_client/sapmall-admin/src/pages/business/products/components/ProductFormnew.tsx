@@ -7,7 +7,7 @@ import {
   Upload,
   Spin,
 } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Plus } from 'lucide-react';
 import type { UploadFile, UploadProps } from 'antd';
 import type { 
   ProductDetailResp, 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { HomeOutlined, ReloadOutlined, RocketOutlined } from '@ant-design/icons';
+import { Home, RefreshCw, Rocket } from 'lucide-react';
 
 interface NotFoundProps {
   componentName?: string;
@@ -73,14 +73,14 @@ const NotFound: React.FC<NotFoundProps> = ({
           <div className="action-buttons">
             <Button 
               type="primary" 
-              icon={<HomeOutlined />} 
+              icon={<Home size={16} />} 
               onClick={onGoHome}
               className="web3-button primary"
             >
               返回首页
             </Button>
             <Button 
-              icon={<ReloadOutlined />} 
+              icon={<RefreshCw size={16} />} 
               onClick={onRefresh}
               className="web3-button secondary"
             >
@@ -90,7 +90,7 @@ const NotFound: React.FC<NotFoundProps> = ({
           
           <div className="coming-soon-footer">
             <div className="footer-icon">
-              <RocketOutlined />
+              <Rocket size={16} />
             </div>
             <span>敬请期待更多精彩功能</span>
           </div>

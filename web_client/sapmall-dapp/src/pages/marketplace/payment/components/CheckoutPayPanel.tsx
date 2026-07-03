@@ -8,9 +8,11 @@ import type { PaymentIntentBundle } from '../../../../services/api/orderApi';
 import { isPaymentChain } from '../../../../config/paymentChains';
 import {
   getAvailablePaymentCurrencies,
+  getDefaultPaymentCurrency,
   isOnChainPaySupported,
   isSapPayment,
 } from '../../../../config/paymentCurrencies';
+import { useChainConfigStore } from '../../../../store/chainConfigStore';
 import { usePaymentTokenBalance } from '../hooks/usePaymentTokenBalance';
 import { formatUsdcFromRaw, formatAmountNumber } from '../utils/formatPaymentAmount';
 import { estimateGasFeeUsdc, isArcTestnetChain } from '../utils/estimateGasFee';
@@ -69,16 +71,25 @@ const CheckoutPayPanel: React.FC<Props> = ({
   const [detailExpanded, setDetailExpanded] = useState(true);
 
   const activeChainId = intent?.chainId ?? chainId;
+  const chainConfigLoaded = useChainConfigStore((s) => s.loaded);
+  const paymentTokenKey = useChainConfigStore((s) => {
+    if (activeChainId == null) return '';
+    return s
+      .getPaymentTokens(activeChainId)
+      .map((token) => token.symbol)
+      .join('|');
+  });
   const tokenBalance = usePaymentTokenBalance(paymentMethod, activeChainId, address);
   const usdcBalance = usePaymentTokenBalance('USDC', activeChainId, address);
 
   useEffect(() => {
     if (activeChainId == null) return;
     const available = getAvailablePaymentCurrencies(activeChainId);
+    if (available.length === 0) return;
     if (!available.includes(paymentMethod)) {
-      onPaymentMethodChange(available[0]);
+      onPaymentMethodChange(getDefaultPaymentCurrency(activeChainId));
     }
-  }, [activeChainId, onPaymentMethodChange, paymentMethod]);
+  }, [activeChainId, chainConfigLoaded, paymentTokenKey, onPaymentMethodChange, paymentMethod]);
 
   const orderPayable = preview.totalAmount;
   const gasFeeUsdc = estimateGasFeeUsdc(activeChainId);
@@ -105,7 +116,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
 
   const tokenInsufficient =
     isConnected &&
-    isOnChainPaySupported(paymentMethod) &&
+    isOnChainPaySupported(paymentMethod, activeChainId) &&
     !tokenBalance.isLoading &&
     tokenBalance.configured &&
     tokenBalance.numeric + 1e-9 < payAmountDue;
@@ -138,7 +149,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
     isConnected &&
     networkOk &&
     !busy &&
-    isOnChainPaySupported(paymentMethod) &&
+    isOnChainPaySupported(paymentMethod, activeChainId) &&
     tokenBalance.configured &&
     !tokenBalance.isLoading &&
     tokenBalance.numeric + 1e-9 >= payAmountDue &&
@@ -152,7 +163,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
     isConnected &&
     networkOk &&
     !busy &&
-    isOnChainPaySupported(paymentMethod) &&
+    isOnChainPaySupported(paymentMethod, activeChainId) &&
     tokenBalance.configured &&
     !tokenBalance.isLoading &&
     tokenBalance.numeric + 1e-9 >= payAmountDue &&
@@ -179,7 +190,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
     if (isSapPayment(paymentMethod) && !tokenBalance.configured && isConnected) {
       alerts.push(t('payment.pay.sapPayUnavailable'));
     }
-    if (!isOnChainPaySupported(paymentMethod) && phase === 'idle') {
+    if (!isOnChainPaySupported(paymentMethod, activeChainId) && phase === 'idle') {
       alerts.push(t('payment.pay.tokenPayComingSoon', { token: paymentMethod }));
     }
     return alerts;

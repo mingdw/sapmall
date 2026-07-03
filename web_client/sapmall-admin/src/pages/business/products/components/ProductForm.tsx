@@ -12,8 +12,8 @@ import {
   Space,
 } from 'antd';
 import {
-  PlusOutlined,
-} from '@ant-design/icons';
+  Plus,
+} from 'lucide-react';
 import type { UploadFile, UploadProps } from 'antd';
 import { productApi } from '../../../../services/api/productApi';
 import type { ProductSPU, ProductSKU, SaveProductReq, ProductDetailResp, ProductAttrsInfo, ProductAttrParamInfo, ProductDetailInfo } from '../types';
@@ -1460,7 +1460,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
                   <Upload {...mainImageUploadProps} disabled={isViewMode}>
                     {mainImageFileList.length < 1 && (
                       <div>
-                        <PlusOutlined style={{ color: '#e2e8f0' }} />
+                        <Plus size={16} style={{ color: '#e2e8f0' }} />
                         <div style={{ marginTop: 8, color: '#94a3b8' }}>上传主图</div>
                         <small style={{ color: '#64748b' }}>建议800x800px</small>
                       </div>
@@ -1473,7 +1473,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onCancel, onSuccess,
                   <Upload {...additionalImageUploadProps} disabled={isViewMode}>
                     {additionalImageFileList.length < 8 && (
                       <div>
-                        <PlusOutlined style={{ color: '#e2e8f0' }} />
+                        <Plus size={16} style={{ color: '#e2e8f0' }} />
                         <div style={{ marginTop: 8, color: '#94a3b8' }}>添加图片</div>
                       </div>
                     )}

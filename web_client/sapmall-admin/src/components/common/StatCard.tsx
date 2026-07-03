@@ -1,10 +1,11 @@
 import React from 'react';
+import { TrendingUp } from 'lucide-react';
 import styles from './StatCard.module.scss';
 
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: string;
+  icon: React.ReactNode;
   trend?: {
     value: string;
     type: 'positive' | 'negative' | 'neutral';
@@ -24,14 +25,14 @@ const StatCard: React.FC<StatCardProps> = ({
   return (
     <div className={`${styles.dashboardStatCard} ${styles[`stat${variant.charAt(0).toUpperCase() + variant.slice(1)}`]} ${className}`}>
       <div className={styles.statIcon}>
-        <i className={icon}></i>
+        {icon}
       </div>
       <div className={styles.statContent}>
         <div className={styles.statValueRow}>
           <h3>{typeof value === 'number' ? value.toLocaleString() : value}</h3>
           {trend && (
             <div className={`${styles.statTrend} ${styles[trend.type]}`}>
-              <i className="fas fa-arrow-up"></i>
+              <TrendingUp size={12} />
               <span>{trend.value}</span>
             </div>
           )}

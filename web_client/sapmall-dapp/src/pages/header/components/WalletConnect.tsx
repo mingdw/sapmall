@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal } from 'antd';
-import { useConnect, useDisconnect, useAccount, useSignMessage, useSwitchChain } from 'wagmi';
-import { Copy } from 'lucide-react';
+import { useConnect, useDisconnect, useAccount, useSignMessage, useSwitchChain, useChainId } from 'wagmi';
+import { Copy, Wallet, RefreshCw, X, ChevronDown, User, ShoppingCart, Heart, Package, RotateCcw, Settings, LogOut, Check } from 'lucide-react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { commonApiService } from '../../../services/api/commonApiService';
 import { useUserStore } from '../../../store/userStore';
@@ -10,7 +10,9 @@ import MessageUtils from '../../../utils/messageUtils';
 import { userApiService } from '../../../services/api/userApiService';
 import styles from './WalletConnect.module.scss';
 import { UserStatus } from '../../../services/types/userTypes';
-import { WALLET_UI_NETWORKS, isWalletNetworkSwitchable } from '../../../config/walletUiNetworks';
+import { buildWalletUiNetworks, isWalletNetworkSwitchable, resolveCurrentWalletNetwork } from '../../../config/walletUiNetworks';
+import { config } from '../../../config/wagmi';
+import { useChainConfigStore } from '../../../store/chainConfigStore';
 import ChainNetworkIcon from './ChainNetworkIcon';
 import WalletBalancePanel from './WalletBalancePanel';
 import { ARC_TESTNET_CHAIN_ID } from '../../../config/chains/arcTestnet';
@@ -28,6 +30,10 @@ import {
   endUserWalletDisconnect,
   isUserWalletDisconnecting,
 } from '../../../utils/walletDisconnectGuard';
+import {
+  beginUserWalletChainSwitch,
+  endUserWalletChainSwitch,
+} from '../../../utils/walletChainSwitchGuard';
 
 /** 与语言无关的错误码，供静默处理分支识别 */
 const WALLET_ERR_USER_REJECTED_SIGN = 'WALLET_ERR_USER_REJECTED_SIGN';
@@ -61,9 +67,10 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   // Wagmi hooks
   const { status: connectStatus, error } = useConnect();
   const { disconnectAsync } = useDisconnect();
-  const { address, isConnected, chainId } = useAccount();
+  const { address, isConnected } = useAccount();
+  const chainId = useChainId();
   const { signMessageAsync } = useSignMessage();
-  const { switchChain } = useSwitchChain();
+  const { switchChainAsync } = useSwitchChain();
   const isPending = connectStatus === 'pending';
 
   // Zustand store
@@ -394,15 +401,18 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     }
   };
 
-  const networks = WALLET_UI_NETWORKS.map((network) => ({
-    ...network,
-    name: t(`walletConnect.networks.${network.nameKey}`),
-  }));
+  const chainConfigLoaded = useChainConfigStore((s) => s.loaded);
+  const chainConfigList = useChainConfigStore((s) => s.chains);
 
-  // 获取当前网络信息
-  const getCurrentNetwork = () => {
-    return networks.find(network => network.id === chainId) || networks[0];
-  };
+  const networks = useMemo(
+    () => buildWalletUiNetworks(t),
+    [t, chainConfigLoaded, chainConfigList],
+  );
+
+  const currentNetwork = useMemo(
+    () => resolveCurrentWalletNetwork(chainId, networks),
+    [chainId, networks],
+  );
 
   // 处理网络切换
   const handleNetworkSwitch = async (targetChainId: number) => {
@@ -410,13 +420,20 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       MessageUtils.info(t('walletConnect.networkViewOnly'));
       return;
     }
+    beginUserWalletChainSwitch();
     try {
-      await switchChain({ chainId: targetChainId });
+      await switchChainAsync({
+        chainId: targetChainId as (typeof config.chains)[number]['id'],
+      });
       setShowNetworkMenu(false);
       MessageUtils.success(t('walletConnect.networkSwitchSuccess'));
     } catch (error: any) {
       console.error('网络切换失败:', error);
       MessageUtils.error(t('walletConnect.networkSwitchFail', { message: error?.message ?? '' }));
+    } finally {
+      window.setTimeout(() => {
+        endUserWalletChainSwitch();
+      }, 1500);
     }
   };
 
@@ -461,7 +478,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   if (!ready) {
     return (
       <Button loading>
-        <i className="fas fa-wallet mr-2"></i>
+        <Wallet size={16} className="mr-2" />
         {t('common.loading')}
       </Button>
     );
@@ -487,7 +504,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
             >
               <Button
                 type="primary"
-                icon={<i className="fas fa-wallet"></i>}
+                icon={<Wallet size={16} />}
                 onClick={openConnectModal}
                 loading={isPending || isConnecting}
               >
@@ -509,14 +526,14 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
           <Button 
             onClick={() => handleWalletConnected(address!)} 
             type="primary"
-            icon={<i className="fas fa-redo"></i>}
+            icon={<RefreshCw size={16} />}
           >
             {t('walletConnect.retryConnect')}
           </Button>
           <Button 
             onClick={() => handleDisconnect()} 
             type="default"
-            icon={<i className="fas fa-times"></i>}
+            icon={<X size={16} />}
           >
             {t('common.cancel')}
           </Button>
@@ -528,7 +545,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     if (isProcessingConnection) {
       return (
         <Button loading>
-          <i className="fas fa-wallet mr-2"></i>
+          <Wallet size={16} className="mr-2" />
           {t('walletConnect.connecting')}
         </Button>
       );
@@ -553,7 +570,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
             >
               <Button
                 type="primary"
-                icon={<i className="fas fa-wallet"></i>}
+                icon={<Wallet size={16} />}
                 onClick={openConnectModal}
                 loading={isPending || isConnecting}
               >
@@ -578,7 +595,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
           title={t(WALLET_ROLE_I18N_KEY[roleCode])}
           aria-label={t(WALLET_ROLE_I18N_KEY[roleCode])}
         >
-          <i className={`fas ${WALLET_ROLE_ICON[roleCode]}`} aria-hidden />
+          {(() => { const RoleIcon = WALLET_ROLE_ICON[roleCode]; return <RoleIcon size={14} aria-hidden="true" />; })()}
         </span>
       ))}
     </div>
@@ -594,12 +611,12 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
           className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors"
         >
           <ChainNetworkIcon
-            chainId={getCurrentNetwork().id}
-            alt={getCurrentNetwork().name}
+            chainId={currentNetwork.id}
+            alt={currentNetwork.name}
             className={styles.networkIcon}
           />
-          <span className="text-sm">{getCurrentNetwork().name}</span>
-          <i className="fas fa-chevron-down text-xs"></i>
+          <span className="text-sm">{currentNetwork.name}</span>
+          <ChevronDown size={12} />
         </button>
         <div className={`${styles.dropdown} ${showNetworkMenu ? styles.show : ''} absolute right-0 top-full mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl min-w-[150px] z-50`}>
           <div className="py-2">
@@ -632,8 +649,8 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
                     {t('walletConnect.networkBadgeView')}
                   </span>
                 )}
-                {network.id === chainId && (
-                  <i className={`fas fa-check text-sapphire-400 ${canSwitch ? 'ml-auto' : ''}`}></i>
+                {Number(network.id) === Number(chainId) && (
+                  <Check size={14} className={`text-sapphire-400 ${canSwitch ? 'ml-auto' : ''}`} />
                 )}
               </button>
             );
@@ -652,7 +669,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
           <span className="text-sm">
             {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : t('walletConnect.unknownAddress')}
           </span>
-          <i className="fas fa-chevron-down text-xs"></i>
+          <ChevronDown size={12} />
         </button>
         <div
           className={`${styles.dropdown} ${styles.userDropdownPanel} ${showUserDropdown ? styles.show : ''} ${styles.userDropdownShell}`}
@@ -701,7 +718,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               className={styles.userMenuBtn}
               data-menu="profile"
             >
-              <i className="fas fa-user" />
+              <User size={16} />
               <span>{t('user.profile')}</span>
             </button>
 
@@ -715,7 +732,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               data-menu="cart"
             >
               <span className={styles.userMenuBtnMain}>
-                <i className="fas fa-shopping-cart" />
+                <ShoppingCart size={16} />
                 <span>{t('user.cart')}</span>
               </span>
               <span className={`${styles.userMenuBadge} ${styles.userMenuBadgeRed}`}>3</span>
@@ -731,7 +748,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               data-menu="favorites"
             >
               <span className={styles.userMenuBtnMain}>
-                <i className="fas fa-heart" />
+                <Heart size={16} />
                 <span>{t('user.favorites')}</span>
               </span>
               <span className={`${styles.userMenuBadge} ${styles.userMenuBadgePink}`}>8</span>
@@ -748,7 +765,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               className={styles.userMenuBtn}
               data-menu="orders"
             >
-              <i className="fas fa-box" />
+              <Package size={16} />
               <span>{t('user.orders')}</span>
             </button>
 
@@ -761,7 +778,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               className={styles.userMenuBtn}
               data-menu="history"
             >
-              <i className="fas fa-history" />
+              <RotateCcw size={16} />
               <span>{t('user.history')}</span>
             </button>
 
@@ -776,7 +793,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               className={styles.userMenuBtn}
               data-menu="settings"
             >
-              <i className="fas fa-cog" />
+              <Settings size={16} />
               <span>{t('user.settings')}</span>
             </button>
 
@@ -789,7 +806,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               className={`${styles.userMenuBtn} ${styles.userMenuBtnDanger}`}
               data-menu="disconnect"
             >
-              <i className="fas fa-sign-out-alt" />
+              <LogOut size={16} />
               <span>{t('user.disconnect')}</span>
             </button>
           </div>
@@ -809,7 +826,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
         <div className={styles.modalBody}>
           <div className={styles.modalHero}>
             <div className={styles.modalAvatar} aria-hidden>
-              <i className="fas fa-user" />
+              <User size={16} />
             </div>
             <div className={styles.modalHeroText}>
               <div className={styles.modalNameRow}>
@@ -869,7 +886,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
               {t('walletConnect.copyAddress')}
             </button>
             <button type="button" className={styles.modalBtnDanger} onClick={handleDisconnect}>
-              <i className="fas fa-sign-out-alt" aria-hidden />
+              <LogOut size={15} aria-hidden="true" />
               {t('user.disconnect')}
             </button>
           </div>

@@ -1,0 +1,29 @@
+﻿No contracts to compile
+Running node:test tests
+
+  SAPSwapRouter - Treasury
+    基本功能
+node.exe : An unexpected error occurred:
+所在位置 行:1 字符: 1
++ & "D:\Program Files\nodejs/node.exe" "D:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (An unexpected error occurred::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+TypeError: Cannot read properties of undefined (reading 'toString')
+    at formatFailureIndex (D:\sapmallworkspace\sapmall\contract\node_modules\@nomicfoundation\hardhat-node-test-reporte
+r\src\formatting.ts:147:16)
+    at formatFailureReason (D:\sapmallworkspace\sapmall\contract\node_modules\@nomicfoundation\hardhat-node-test-report
+er\src\formatting.ts:84:8)
+    at <anonymous> (D:\sapmallworkspace\sapmall\contract\node_modules\@nomicfoundation\hardhat-node-test-reporter\src\r
+eporter.ts:264:47)
+    at AsyncGenerator.next (<anonymous>)
+    at nextAsync (node:internal/streams/from:182:48)
+    at readable._read (node:internal/streams/from:57:9)
+    at Readable.read (node:internal/streams/readable:739:12)
+    at d._read (node:internal/streams/compose:201:28)
+    at Duplexify.<anonymous> (node:internal/streams/compose:191:11)
+    at Duplexify.emit (node:events:519:28)
+
+If you think this is a bug in Hardhat, please report it here: https://hardhat.org/report-bug

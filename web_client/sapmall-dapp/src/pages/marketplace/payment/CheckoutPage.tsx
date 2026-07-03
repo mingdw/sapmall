@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowRightOutlined } from '@ant-design/icons';
+import { ArrowRight } from 'lucide-react';
 import { Button, Result, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { useAccount } from 'wagmi';
 import { useCheckoutPreview } from './hooks/useCheckoutPreview';
 import { useOrderPayment } from './hooks/useOrderPayment';
 import { usePaymentStatusPoll } from './hooks/usePaymentStatusPoll';
@@ -10,7 +11,13 @@ import CheckoutOrderSummary from './components/CheckoutOrderSummary';
 import CheckoutContactFields from './components/CheckoutContactFields';
 import CheckoutPayPanel from './components/CheckoutPayPanel';
 import { EMPTY_CONTACT, PaymentMethod } from './types/paymentTypes';
-import { isOnChainPaySupported, isSapPayment } from '../../../config/paymentCurrencies';
+import {
+  getAvailablePaymentCurrencies,
+  getDefaultPaymentCurrency,
+  isOnChainPaySupported,
+  isSapPayment,
+} from '../../../config/paymentCurrencies';
+import { useChainConfigStore } from '../../../store/chainConfigStore';
 import { navigateToMarketplace } from '../paths';
 import MessageUtils from '../../../utils/messageUtils';
 import { buildCreateOrderPayload } from './utils/buildCreateOrderPayload';
@@ -44,10 +51,31 @@ const CheckoutPage: React.FC = () => {
   });
 
   const payment = useOrderPayment();
+  const { chainId: walletChainId } = useAccount();
+  const chainConfigLoaded = useChainConfigStore((s) => s.loaded);
+  const paymentTokenKey = useChainConfigStore((s) => {
+    if (walletChainId == null) return '';
+    return s
+      .getPaymentTokens(walletChainId)
+      .map((token) => token.symbol)
+      .join('|');
+  });
   const [contact, setContact] = useState(EMPTY_CONTACT);
   const [contactTouched, setContactTouched] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('USDC');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(() =>
+    getDefaultPaymentCurrency(),
+  );
   const [buyerMessage, setBuyerMessage] = useState('');
+
+  useEffect(() => {
+    const activeChainId = payment.intent?.chainId ?? walletChainId;
+    if (activeChainId == null) return;
+    const available = getAvailablePaymentCurrencies(activeChainId);
+    if (available.length === 0) return;
+    setPaymentMethod((prev) =>
+      available.includes(prev) ? prev : getDefaultPaymentCurrency(activeChainId),
+    );
+  }, [walletChainId, payment.intent?.chainId, chainConfigLoaded, paymentTokenKey]);
 
   const pollChainId = payment.intent?.chainId ?? payment.chainId;
   const pollEnabled =
@@ -142,7 +170,7 @@ const CheckoutPage: React.FC = () => {
       MessageUtils.info(t('payment.pay.sapPayComingSoon'));
       return;
     }
-    if (!isOnChainPaySupported(paymentMethod)) {
+    if (!isOnChainPaySupported(paymentMethod, payment.chainId ?? walletChainId)) {
       MessageUtils.info(t('payment.pay.tokenPayComingSoon', { token: paymentMethod }));
       return;
     }
@@ -190,7 +218,7 @@ const CheckoutPage: React.FC = () => {
             </h1>
             <Button
               type="text"
-              icon={<ArrowRightOutlined />}
+              icon={<ArrowRight size={16} />}
               iconPosition="end"
               className={styles.backBtn}
               onClick={handleBack}

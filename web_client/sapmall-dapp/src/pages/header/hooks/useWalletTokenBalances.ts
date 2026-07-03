@@ -34,7 +34,7 @@ export function useWalletTokenBalances(
   address?: `0x${string}`,
 ) {
   const nativeCurrency = getChainNativeCurrency(chainId);
-  const sapConfig = getSapTokenConfig();
+  const sapConfig = getSapTokenConfig(chainId);
 
   const nativeQuery = useBalance({
     address,

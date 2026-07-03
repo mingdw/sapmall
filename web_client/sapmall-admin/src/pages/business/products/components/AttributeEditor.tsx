@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Input, Button, Space, Table, message } from 'antd';
-import { PlusOutlined, DeleteOutlined, EditOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { Plus, Trash2, PenLine, Check, X } from 'lucide-react';
 import AdminButton from '../../../../components/common/AdminButton';
 import styles from './AttributeEditor.module.scss';
 
@@ -225,7 +225,7 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
               <Button
                 type="link"
                 size="small"
-                icon={<CheckOutlined />}
+                icon={<Check size={16} />}
                 onClick={() => saveEdit(index)}
                 className={styles.saveBtn}
                 disabled={!editingRow?.key.trim() || !editingRow?.value.trim()}
@@ -235,7 +235,7 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
               <Button
                 type="link"
                 size="small"
-                icon={<CloseOutlined />}
+                icon={<X size={16} />}
                 onClick={() => cancelEdit(index)}
                 className={styles.cancelBtn}
               >
@@ -250,7 +250,7 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
             <Button
               type="link"
               size="small"
-              icon={<EditOutlined />}
+              icon={<PenLine size={16} />}
               onClick={() => startEdit(index)}
               className={styles.editBtn}
               disabled={disabled}
@@ -261,7 +261,7 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
               type="link"
               size="small"
               danger
-              icon={<DeleteOutlined />}
+              icon={<Trash2 size={16} />}
               onClick={() => removeAttribute(index)}
               className={styles.deleteBtn}
               disabled={disabled}
@@ -336,7 +336,7 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
                 <Button
                   type="link"
                   size="small"
-                  icon={<CheckOutlined />}
+                  icon={<Check size={16} />}
                   onClick={() => saveEdit(index)}
                   className={styles.saveBtn}
                   disabled={!editingRow?.key.trim() || !editingRow?.value.trim()}
@@ -346,7 +346,7 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
                 <Button
                   type="link"
                   size="small"
-                  icon={<CloseOutlined />}
+                  icon={<X size={16} />}
                   onClick={() => cancelEdit(index)}
                   className={styles.cancelBtn}
                 >
@@ -361,7 +361,7 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
               <Button
                 type="link"
                 size="small"
-                icon={<EditOutlined />}
+                icon={<PenLine size={16} />}
                 onClick={() => startEdit(index)}
                 className={styles.editBtn}
                 disabled={disabled}
@@ -372,7 +372,7 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
                 type="link"
                 size="small"
                 danger
-                icon={<DeleteOutlined />}
+                icon={<Trash2 size={16} />}
                 onClick={() => removeAttribute(index)}
                 className={styles.deleteBtn}
                 disabled={disabled}
@@ -399,7 +399,7 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
               <div className={styles.emptyAction}>
                 <Button
                   type="primary"
-                  icon={<PlusOutlined />}
+                  icon={<Plus size={16} />}
                   onClick={addAttribute}
                   className={styles.addButtonEmpty}
                 >
@@ -428,7 +428,7 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
                 <Button
                   type="text"
                   size="small"
-                  icon={<PlusOutlined />}
+                  icon={<Plus size={16} />}
                   onClick={addAttribute}
                   className={styles.addButton}
                 >
@@ -547,7 +547,7 @@ const AttributeEditor: React.FC<AttributeEditorProps> = ({
                   type="button"
                   title="删除"
                 >
-                  <DeleteOutlined />
+                  <Trash2 size={14} />
                 </button>
               )}
             </div>

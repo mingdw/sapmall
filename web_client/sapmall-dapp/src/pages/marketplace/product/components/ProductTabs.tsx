@@ -6,17 +6,17 @@ import {
   Tabs,
 } from 'antd';
 import {
-  CheckCircleOutlined,
-  CustomerServiceOutlined,
-  FileTextOutlined,
-  MessageOutlined,
-  SafetyCertificateOutlined,
-  SafetyOutlined,
-  StarFilled,
-  TableOutlined,
-  ThunderboltOutlined,
-  UndoOutlined,
-} from '@ant-design/icons';
+  CheckCircle,
+  Headphones,
+  FileText,
+  MessageSquare,
+  ShieldCheck,
+  Shield,
+  Star,
+  Table,
+  Zap,
+  Undo2,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProductDetailView } from '../types/productDetailTypes';
 import { MOCK_REVIEWS } from '../mocks/reviews.mock';
@@ -112,25 +112,25 @@ const DEFAULT_SERVICE_META: Array<{
   tone: ServiceIconTone;
   icon: React.ReactNode;
 }> = [
-  { tone: 'green', icon: <SafetyCertificateOutlined /> },
-  { tone: 'blue', icon: <CheckCircleOutlined /> },
-  { tone: 'purple', icon: <ThunderboltOutlined /> },
-  { tone: 'orange', icon: <CustomerServiceOutlined /> },
+  { tone: 'green', icon: <ShieldCheck size={16} /> },
+  { tone: 'blue', icon: <CheckCircle size={16} /> },
+  { tone: 'purple', icon: <Zap size={16} /> },
+  { tone: 'orange', icon: <Headphones size={16} /> },
 ];
 
 function resolveServiceIcon(iconHint: string | undefined, index: number) {
   const hint = (iconHint || '').toLowerCase();
   if (hint.includes('shield') || hint.includes('safety') || hint.includes('正品')) {
-    return { tone: 'green' as const, icon: <SafetyOutlined /> };
+    return { tone: 'green' as const, icon: <Shield size={16} /> };
   }
   if (hint.includes('undo') || hint.includes('return') || hint.includes('退')) {
-    return { tone: 'blue' as const, icon: <UndoOutlined /> };
+    return { tone: 'blue' as const, icon: <Undo2 size={16} /> };
   }
   if (hint.includes('truck') || hint.includes('delivery') || hint.includes('交付')) {
-    return { tone: 'purple' as const, icon: <ThunderboltOutlined /> };
+    return { tone: 'purple' as const, icon: <Zap size={16} /> };
   }
   if (hint.includes('headset') || hint.includes('support') || hint.includes('客服')) {
-    return { tone: 'orange' as const, icon: <CustomerServiceOutlined /> };
+    return { tone: 'orange' as const, icon: <Headphones size={16} /> };
   }
   return DEFAULT_SERVICE_META[index % DEFAULT_SERVICE_META.length];
 }
@@ -297,7 +297,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ product }) => {
       key: 'detail',
       label: (
         <TabLabel
-          icon={<FileTextOutlined />}
+          icon={<FileText size={16} />}
           text={t('productDetail.tabDetail')}
         />
       ),
@@ -345,7 +345,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ product }) => {
                 />
               ) : (
                 <div className={styles.detailEmpty}>
-                  <FileTextOutlined className={styles.detailEmptyIcon} />
+                  <FileText size={32} className={styles.detailEmptyIcon} />
                   <p className={styles.detailEmptyText}>
                     {t('productDetail.detailContentEmpty')}
                   </p>
@@ -362,7 +362,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ product }) => {
       key: 'specs',
       label: (
         <TabLabel
-          icon={<TableOutlined />}
+          icon={<Table size={16} />}
           text={t('productDetail.tabSpecs')}
         />
       ),
@@ -401,7 +401,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ product }) => {
       key: 'reviews',
       label: (
         <TabLabel
-          icon={<MessageOutlined />}
+          icon={<MessageSquare size={16} />}
           text={t('productDetail.tabReviews')}
           badge={reviewCount}
         />
@@ -410,7 +410,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ product }) => {
         <div className={styles.tabPaneBody}>
           <div className={styles.reviewsSummary}>
             <div className={styles.reviewsSummaryScore}>
-              <StarFilled className={styles.reviewsSummaryStar} />
+              <Star size={16} fill="currentColor" className={styles.reviewsSummaryStar} />
               <span className={styles.reviewsSummaryValue}>
                 {product.rating.toFixed(1)}
               </span>
@@ -463,7 +463,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ product }) => {
       key: 'service',
       label: (
         <TabLabel
-          icon={<SafetyCertificateOutlined />}
+          icon={<ShieldCheck size={16} />}
           text={t('productDetail.tabService')}
         />
       ),

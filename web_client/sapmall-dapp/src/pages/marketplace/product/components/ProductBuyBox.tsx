@@ -6,14 +6,13 @@ import {
   message,
 } from 'antd';
 import {
-  ShoppingCartOutlined,
-  HeartOutlined,
-  HeartFilled,
-  ThunderboltOutlined,
-  ShareAltOutlined,
-  MinusOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
+  ShoppingCart,
+  Heart,
+  Zap,
+  Share2,
+  Minus,
+  Plus,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProductDetailView, ProductSkuView } from '../types/productDetailTypes';
 import { formatUsdc, formatSap, formatDualPrice, calcDiscountPercent } from '../utils/priceDisplay';
@@ -230,7 +229,7 @@ const ProductBuyBox: React.FC<ProductBuyBoxProps> = ({
             <Button
               type="text"
               size="small"
-              icon={<MinusOutlined />}
+              icon={<Minus size={16} />}
               onClick={() => handleQuantityChange(-1)}
               disabled={quantity <= 1}
               className={styles.qtyBtn}
@@ -239,7 +238,7 @@ const ProductBuyBox: React.FC<ProductBuyBoxProps> = ({
             <Button
               type="text"
               size="small"
-              icon={<PlusOutlined />}
+              icon={<Plus size={16} />}
               onClick={() => handleQuantityChange(1)}
               disabled={quantity >= maxQty}
               className={styles.qtyBtn}
@@ -258,14 +257,14 @@ const ProductBuyBox: React.FC<ProductBuyBoxProps> = ({
         <div className={styles.mainButtonsRow}>
         <Button
             type="primary"
-            icon={<ThunderboltOutlined />}
+            icon={<Zap size={16} />}
             onClick={handleBuy}
             className={styles.buyNowBtnCompact}
           >
             {t('productDetail.buyNow')}
           </Button>
           <Button
-            icon={<ShoppingCartOutlined />}
+            icon={<ShoppingCart size={16} />}
             loading={cartLoading}
             onClick={handleAddCart}
             className={styles.cartBtnCompact}
@@ -275,14 +274,14 @@ const ProductBuyBox: React.FC<ProductBuyBoxProps> = ({
           <div className={styles.iconButtonsRow}>
             <Button
               type="text"
-              icon={isFavorited ? <HeartFilled /> : <HeartOutlined />}
+              icon={<Heart size={16} fill={isFavorited ? 'currentColor' : 'none'} />}
               onClick={onToggleFavorite}
               className={styles.iconBtn}
               title="收藏"
             />
             <Button
               type="text"
-              icon={<ShareAltOutlined />}
+              icon={<Share2 size={16} />}
               onClick={handleShare}
               className={styles.iconBtn}
               title="分享"

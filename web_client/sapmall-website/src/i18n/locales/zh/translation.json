@@ -8,6 +8,9 @@
     "launchApp": "启动应用",
     "menu": "菜单"
   },
+  "brand": {
+    "tagline": "Web3虚拟商品交易平台"
+  },
   "language": {
     "zh": "中文",
     "en": "English"
@@ -195,6 +198,12 @@
       "projects": "项目经验",
       "support": "技术支持"
     }
+  },
+  "docsSection": {
+    "title": "文档与资源",
+    "subtitle": "白皮书、应用入口与开发者资料",
+    "whitepaper": "阅读白皮书",
+    "launchDapp": "进入 DApp"
   },
   "footer": {
     "tagline": "Web3虚拟商品交易的未来",

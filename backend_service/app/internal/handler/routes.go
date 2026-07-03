@@ -19,97 +19,7 @@ import (
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
-			[]rest.Route{
-				{
-					// 保存属性（新增/编辑）
-					Method:  http.MethodPost,
-					Path:    "/attr",
-					Handler: admin.SaveAttrHandler(serverCtx),
-				},
-				{
-					// 删除属性
-					Method:  http.MethodDelete,
-					Path:    "/attr/:id",
-					Handler: admin.DeleteAttrHandler(serverCtx),
-				},
-				{
-					// 保存属性组（新增/编辑）
-					Method:  http.MethodPost,
-					Path:    "/attrGroup",
-					Handler: admin.SaveAttrGroupHandler(serverCtx),
-				},
-				{
-					// 删除属性组
-					Method:  http.MethodDelete,
-					Path:    "/attrGroup/:id",
-					Handler: admin.DeleteAttrGroupHandler(serverCtx),
-				},
-				{
-					// 保存目录（新增/编辑）
-					Method:  http.MethodPost,
-					Path:    "/category",
-					Handler: admin.SaveCategoryHandler(serverCtx),
-				},
-				{
-					// 删除目录
-					Method:  http.MethodDelete,
-					Path:    "/category/:id",
-					Handler: admin.DeleteCategoryHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/admin"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
-			[]rest.Route{
-				{
-					// 新增/修改区块链网络配置。请求：SaveChainNetworkReq（id 为空或 0 为新增）；响应 Data：null
-					Method:  http.MethodPost,
-					Path:    "/chain/network",
-					Handler: admin.SaveChainNetworkHandler(serverCtx),
-				},
-				{
-					// 删除区块链网络配置（软删，并软删该链下全部支付代币）。路径参数：id；响应 Data：null
-					Method:  http.MethodDelete,
-					Path:    "/chain/network/:id",
-					Handler: admin.DeleteChainNetworkHandler(serverCtx),
-				},
-				{
-					// 查询区块链网络配置列表（含各链支付代币）。请求：ListChainNetworkReq；响应 Data：ListChainNetworkResp { list: ChainNetworkInfo[], total }，每条 ChainNetworkInfo 含 paymentTokens
-					Method:  http.MethodPost,
-					Path:    "/chain/network/list",
-					Handler: admin.ListChainNetworkHandler(serverCtx),
-				},
-				{
-					// 新增/修改链上支付代币。请求：SaveChainPaymentTokenReq（id 为空或 0 为新增）；响应 Data：null
-					Method:  http.MethodPost,
-					Path:    "/chain/payment-token",
-					Handler: admin.SaveChainPaymentTokenHandler(serverCtx),
-				},
-				{
-					// 删除链上支付代币（软删）。路径参数：id；响应 Data：null
-					Method:  http.MethodDelete,
-					Path:    "/chain/payment-token/:id",
-					Handler: admin.DeleteChainPaymentTokenHandler(serverCtx),
-				},
-				{
-					// 查询链上支付代币列表（按需刷新/独立查询）。请求：ListChainPaymentTokenReq；响应 Data：ListChainPaymentTokenResp { list, total }
-					Method:  http.MethodPost,
-					Path:    "/chain/payment-token/list",
-					Handler: admin.ListChainPaymentTokenHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/api/admin"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 获取商品详情（聚合所有信息：SPU、属性、SKU、详情）
@@ -154,7 +64,97 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Route{
+				{
+					// 新增/修改区块链网络配置。请求：SaveChainNetworkReq（id 为空或 0 为新增）；响应 Data：null
+					Method:  http.MethodPost,
+					Path:    "/chain/network",
+					Handler: admin.SaveChainNetworkHandler(serverCtx),
+				},
+				{
+					// 删除区块链网络配置（软删，并软删该链下全部支付代币）。路径参数：id；响应 Data：null
+					Method:  http.MethodDelete,
+					Path:    "/chain/network/:id",
+					Handler: admin.DeleteChainNetworkHandler(serverCtx),
+				},
+				{
+					// 查询区块链网络配置列表（含各链支付代币）。请求：ListChainNetworkReq；响应 Data：ListChainNetworkResp { list: ChainNetworkInfo[], total }，每条 ChainNetworkInfo 含 paymentTokens
+					Method:  http.MethodPost,
+					Path:    "/chain/network/list",
+					Handler: admin.ListChainNetworkHandler(serverCtx),
+				},
+				{
+					// 新增/修改链上支付代币。请求：SaveChainPaymentTokenReq（id 为空或 0 为新增）；响应 Data：null
+					Method:  http.MethodPost,
+					Path:    "/chain/payment-token",
+					Handler: admin.SaveChainPaymentTokenHandler(serverCtx),
+				},
+				{
+					// 删除链上支付代币（软删）。路径参数：id；响应 Data：null
+					Method:  http.MethodDelete,
+					Path:    "/chain/payment-token/:id",
+					Handler: admin.DeleteChainPaymentTokenHandler(serverCtx),
+				},
+				{
+					// 查询链上支付代币列表（按需刷新/独立查询）。请求：ListChainPaymentTokenReq；响应 Data：ListChainPaymentTokenResp { list, total }
+					Method:  http.MethodPost,
+					Path:    "/chain/payment-token/list",
+					Handler: admin.ListChainPaymentTokenHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/admin"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Route{
+				{
+					// 保存属性（新增/编辑）
+					Method:  http.MethodPost,
+					Path:    "/attr",
+					Handler: admin.SaveAttrHandler(serverCtx),
+				},
+				{
+					// 删除属性
+					Method:  http.MethodDelete,
+					Path:    "/attr/:id",
+					Handler: admin.DeleteAttrHandler(serverCtx),
+				},
+				{
+					// 保存属性组（新增/编辑）
+					Method:  http.MethodPost,
+					Path:    "/attrGroup",
+					Handler: admin.SaveAttrGroupHandler(serverCtx),
+				},
+				{
+					// 删除属性组
+					Method:  http.MethodDelete,
+					Path:    "/attrGroup/:id",
+					Handler: admin.DeleteAttrGroupHandler(serverCtx),
+				},
+				{
+					// 保存目录（新增/编辑）
+					Method:  http.MethodPost,
+					Path:    "/category",
+					Handler: admin.SaveCategoryHandler(serverCtx),
+				},
+				{
+					// 删除目录
+					Method:  http.MethodDelete,
+					Path:    "/category/:id",
+					Handler: admin.DeleteCategoryHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/admin"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 新增/修改系统参数
@@ -241,7 +241,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 获取导航目录结构
@@ -254,6 +254,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/:wallet_address/nonce",
 					Handler: common.GetNonceByAddressHandler(serverCtx),
+				},
+				{
+					// 获取链配置信息（含支持的支付代币，无需授权）
+					Method:  http.MethodGet,
+					Path:    "/chain_config",
+					Handler: common.GetChainConfigHandler(serverCtx),
 				},
 				{
 					// 健康检查
@@ -280,7 +286,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 按订单号查询订单及支付结果（供结果页轮询）。响应 Data：GetOrderResp { order, payment, promotions, delivery }
@@ -301,13 +307,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: order.ListOrderHandler(serverCtx),
 				},
 				{
-					// 订单修改。action：cancel 取消 | delete 软删除 | resumePay 继续支付；请求：ModifyOrderReq
+					// 订单修改。action：cancel 取消 | delete 软删除 | resumePay 继续支付 | confirming 标记链上确认中
 					Method:  http.MethodPost,
 					Path:    "/modify",
 					Handler: order.ModifyOrderHandler(serverCtx),
 				},
 				{
-					// 查询订单支付状态（前端轮询）。响应 Data：OrderStatusResp { orderStatus, paymentStatus, txHash }
+					// 查询订单支付状态（前端轮询）。响应 Data：OrderStatusResp { orderStatus, paymentStatus, txHash, orderCode, payableAmount, payAmount, tokenSymbol, gasFeeUsdc }
 					Method:  http.MethodPost,
 					Path:    "/status",
 					Handler: order.GetOrderStatusHandler(serverCtx),
@@ -319,7 +325,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 查询产品详细信息
@@ -340,7 +346,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 查询用户的申请单

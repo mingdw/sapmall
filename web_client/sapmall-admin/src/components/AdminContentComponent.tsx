@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Button } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { CircleHelp } from 'lucide-react';
 import ComponentMapper from './ComponentMapper';
 import { CategoryTreeResp } from '../services/types/categoryTypes';
 import './AdminContentComponent.css';
@@ -132,7 +132,7 @@ const AdminContentComponent: React.FC<AdminContentComponentProps> = ({
             <Button 
               type="link" 
               size="small"
-              icon={<QuestionCircleOutlined />}
+              icon={<CircleHelp size={16} />}
               onClick={handleHelpClick}
               className="admin-content-help-btn"
             >

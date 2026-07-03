@@ -170,29 +170,52 @@
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 0.5rem;
-  color: #94a3b8;
-  background: rgba(15, 23, 42, 0.5);
-  border: 1px solid rgba(71, 85, 105, 0.45);
   text-decoration: none;
-  transition:
-    color 0.2s ease,
-    border-color 0.2s ease,
-    background 0.2s ease;
+  background: transparent;
+  border: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
 
-  i {
-    font-size: 0.95rem;
-    line-height: 1;
-  }
-
-  &:hover {
-    color: #fff;
-    border-color: rgba(129, 140, 248, 0.5);
-    background: rgba(79, 70, 229, 0.28);
+  svg {
+    width: 1rem;
+    height: 1rem;
+    display: block;
   }
 
   &:focus-visible {
     outline: 2px solid rgba(165, 180, 252, 0.75);
     outline-offset: 2px;
+  }
+
+  &[data-brand='twitter'] {
+    color: #1d9bf0;
+
+    &:hover {
+      color: #71c4f8;
+    }
+  }
+
+  &[data-brand='github'] {
+    color: #e6edf3;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
+  &[data-brand='telegram'] {
+    color: #229ed9;
+
+    &:hover {
+      color: #5cb8ea;
+    }
+  }
+
+  &[data-brand='youtube'] {
+    color: #ff0000;
+
+    &:hover {
+      color: #ff4d4d;
+    }
   }
 }
 

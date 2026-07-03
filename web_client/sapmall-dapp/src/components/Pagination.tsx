@@ -1,4 +1,5 @@
 import React from 'react';
+import { ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from 'lucide-react';
 import styles from './Pagination.module.scss';
 
 interface PaginationProps {
@@ -97,7 +98,7 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={currentPage === 1}
           title="第一页"
         >
-          <i className="fas fa-angle-double-left"></i>
+          <ChevronsLeft size={16} />
         </button>
 
         {/* 上一页 */}
@@ -107,7 +108,7 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={currentPage === 1}
           title="上一页"
         >
-          <i className="fas fa-angle-left"></i>
+          <ChevronLeft size={16} />
         </button>
 
         {/* 页码 */}
@@ -137,7 +138,7 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={currentPage === totalPages}
           title="下一页"
         >
-          <i className="fas fa-angle-right"></i>
+          <ChevronRight size={16} />
         </button>
 
         {/* 最后一页 */}
@@ -147,7 +148,7 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled={currentPage === totalPages}
           title="最后一页"
         >
-          <i className="fas fa-angle-double-right"></i>
+          <ChevronsRight size={16} />
         </button>
       </div>
 

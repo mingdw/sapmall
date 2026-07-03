@@ -1,6 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faGithub,
+  faTelegram,
+  faTwitter,
+  faYoutube,
+} from '@fortawesome/free-brands-svg-icons';
 import type { LucideIcon } from 'lucide-react';
 import {
   ArrowUpRight,
@@ -49,12 +57,17 @@ const DEV_LINKS: ExternalLink[] = [
   { kind: 'external', href: 'https://github.com', labelKey: 'footer.dev.opensource', icon: GitBranch },
 ];
 
-const SOCIAL_LINKS = [
-  { href: 'https://twitter.com', label: 'Twitter', iconClass: 'fab fa-twitter' },
-  { href: 'https://github.com', label: 'GitHub', iconClass: 'fab fa-github' },
-  { href: 'https://t.me', label: 'Telegram', iconClass: 'fab fa-telegram' },
-  { href: 'https://youtube.com', label: 'YouTube', iconClass: 'fab fa-youtube' },
-] as const;
+const SOCIAL_LINKS: {
+  href: string;
+  label: string;
+  icon: IconDefinition;
+  brand: 'twitter' | 'github' | 'telegram' | 'youtube';
+}[] = [
+  { href: 'https://twitter.com', label: 'Twitter', icon: faTwitter, brand: 'twitter' },
+  { href: 'https://github.com', label: 'GitHub', icon: faGithub, brand: 'github' },
+  { href: 'https://t.me', label: 'Telegram', icon: faTelegram, brand: 'telegram' },
+  { href: 'https://youtube.com', label: 'YouTube', icon: faYoutube, brand: 'youtube' },
+];
 
 type LinkColumnProps = {
   titleKey: string;
@@ -156,13 +169,14 @@ const FooterPageDetail: React.FC = () => {
                   <a
                     key={social.label}
                     className={styles.socialLink}
+                    data-brand={social.brand}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
                     role="listitem"
                   >
-                    <i className={social.iconClass} aria-hidden />
+                    <FontAwesomeIcon icon={social.icon} aria-hidden />
                   </a>
                 ))}
               </div>

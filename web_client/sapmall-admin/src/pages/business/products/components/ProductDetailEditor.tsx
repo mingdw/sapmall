@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Tabs, Button, Space, Dropdown, message } from 'antd';
 import type { MenuProps, TabsProps } from 'antd';
-import { EyeOutlined, EditOutlined, FileTextOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Eye, PenLine, FileText, RefreshCw } from 'lucide-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import type { ProductDetailInfo } from '../types';
@@ -241,7 +241,7 @@ const ProductDetailEditor: React.FC<ProductDetailEditorProps> = ({
           <Button
             type="text"
             size="small"
-            icon={isPreview ? <EditOutlined /> : <EyeOutlined />}
+            icon={isPreview ? <PenLine size={16} /> : <Eye size={16} />}
             onClick={() => togglePreview(type)}
             disabled={disabled}
             className={styles.actionButton}
@@ -257,7 +257,7 @@ const ProductDetailEditor: React.FC<ProductDetailEditorProps> = ({
               <Button
                 type="text"
                 size="small"
-                icon={<FileTextOutlined />}
+                icon={<FileText size={16} />}
                 disabled={disabled}
                 className={styles.actionButton}
               >
@@ -268,7 +268,7 @@ const ProductDetailEditor: React.FC<ProductDetailEditorProps> = ({
           <Button
             type="text"
             size="small"
-            icon={<ReloadOutlined />}
+            icon={<RefreshCw size={16} />}
             onClick={() => handleClear(type)}
             disabled={disabled}
             className={styles.actionButton}

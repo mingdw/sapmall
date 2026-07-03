@@ -59,4 +59,39 @@ type (
 	GetCategoryTreeReq {
 		CategoryType int `path:"category_type"`
 	}
+
+	// ========== 链配置公共类型 ==========
+
+	// 公共：支付代币信息（前端所需字段）
+	CommonPaymentTokenInfo {
+		Symbol          string `json:"symbol"`
+		DisplayName     string `json:"displayName,optional"`
+		ContractAddress string `json:"contractAddress"`
+		Decimals        int64  `json:"decimals"`
+		Sort            int64  `json:"sort"`
+	}
+
+	// 公共：链网络信息（不含敏感字段如 signerKeyRef）
+	CommonChainNetworkInfo {
+		ChainID                int64                      `json:"chainId"`
+		Code                   string                     `json:"code"`
+		Name                   string                     `json:"name"`
+		RpcURL                 string                     `json:"rpcUrl,optional"`
+		ExplorerURL            string                     `json:"explorerUrl,optional"`
+		NativeSymbol           string                     `json:"nativeSymbol,optional"`
+		PlatformConfigAddress  string                     `json:"platformConfigAddress,optional"`
+		PaymentRouterAddress   string                     `json:"paymentRouterAddress,optional"`
+		SettlementVaultAddress string                     `json:"settlementVaultAddress,optional"`
+		Sort                   int64                      `json:"sort"`
+		Status                 int64                      `json:"status"`
+		PaymentTokens          []CommonPaymentTokenInfo   `json:"paymentTokens,optional"`
+	}
+
+	// 获取链配置请求（无参数，返回所有链；status=0 可切换/支付，status=1 仅展示）
+	GetChainConfigReq {}
+
+	// 获取链配置响应
+	GetChainConfigResp {
+		List []CommonChainNetworkInfo `json:"list"`
+	}
 )

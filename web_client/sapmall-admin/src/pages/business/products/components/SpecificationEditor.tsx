@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Input, Button, Space, Dropdown, Tag, InputRef, Table, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { PlusOutlined, DeleteOutlined, CloseOutlined, DownOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons';
+import { Plus, Trash2, X, ChevronDown, Check, PenLine } from 'lucide-react';
 import type { MenuProps } from 'antd';
 import { 
   DEFAULT_SPECIFICATION_TEMPLATES, 
@@ -467,7 +467,7 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
                       userSelect: 'none'
                     } as React.CSSProperties}
                   >
-                    <PlusOutlined /> 添加值
+                    <Plus size={14} /> 添加值
                   </Tag>
                 )
               )}
@@ -488,7 +488,7 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
                 type="link"
                 size="small"
                 danger
-                icon={<DeleteOutlined />}
+                icon={<Trash2 size={16} />}
                 onClick={() => removeSpecification(index)}
                 className={styles.deleteBtn}
               >
@@ -518,7 +518,7 @@ const SpecificationEditor: React.FC<SpecificationEditorProps> = ({
                 overlayClassName={styles.templateDropdown}
               >
                 <button className={styles.softButton}>
-                  从模板添加 <DownOutlined />
+                  从模板添加 <ChevronDown size={14} />
                 </button>
               </Dropdown>
             )}

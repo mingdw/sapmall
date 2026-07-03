@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Button, Spin, Result } from 'antd';
-import { ArrowLeftOutlined, ReloadOutlined, HomeOutlined } from '@ant-design/icons';
+import { ArrowLeft, RefreshCw, Home } from 'lucide-react';
 import { useUserStore } from '../store/userStore';
 import { useAccount } from 'wagmi';
 import { x1Testnet } from 'wagmi/chains';
@@ -180,13 +180,13 @@ const AdminIframeEmbedded: React.FC = () => {
               <div key="buttons" className="flex gap-3 justify-center">
                 <Button 
                   type="primary" 
-                  icon={<ReloadOutlined />}
+                  icon={<RefreshCw size={16} />}
                   onClick={handleRetry}
                 >
                   重试
                 </Button>
                 <Button 
-                  icon={<ArrowLeftOutlined />}
+                  icon={<ArrowLeft size={16} />}
                   onClick={handleBackToDapp}
                 >
                   返回

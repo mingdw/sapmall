@@ -1,39 +1,50 @@
-import { ARC_TESTNET_CHAIN_ID } from './chains/arcTestnet';
-import { LINEA_SEPOLIA_CHAIN_ID } from './chains/lineaSepolia';
+import { useChainConfigStore } from '../store/chainConfigStore';
 
-/** Base Sepolia testnet */
+/** 可切换/支付链（后端 status=0） */
+function getSwitchableChains() {
+  const store = useChainConfigStore.getState();
+  if (!store.loaded) return null;
+  return store.chains.filter((c) => c.status === 0);
+}
+
+/** 支付链 ID 列表（从后端配置获取，仅 status=0） */
+export function getPaymentChainIds(): number[] {
+  const switchable = getSwitchableChains();
+  if (switchable) return switchable.map((c) => c.chainId);
+  return [...PAYMENT_CHAIN_IDS];
+}
+
+// 兼容旧代码的常量导出（在 store 加载前使用）
 export const BASE_SEPOLIA_CHAIN_ID = 84532;
 
-/** 商城支付可用链（与导航栏可切换网络一致） */
-export const PAYMENT_CHAIN_IDS: readonly number[] = [
-  LINEA_SEPOLIA_CHAIN_ID,
-  BASE_SEPOLIA_CHAIN_ID,
-  ARC_TESTNET_CHAIN_ID,
-];
+// 保留旧的常量用于兼容，但优先使用 store
+const FALLBACK_CHAIN_IDS = [59141, 84532, 5042002];
 
-export const DEFAULT_PAYMENT_CHAIN_ID = LINEA_SEPOLIA_CHAIN_ID;
+export const PAYMENT_CHAIN_IDS: readonly number[] = FALLBACK_CHAIN_IDS;
+export const DEFAULT_PAYMENT_CHAIN_ID = 59141;
 
 export function isPaymentChain(chainId?: number): boolean {
-  return chainId != null && (PAYMENT_CHAIN_IDS as readonly number[]).includes(chainId);
+  if (chainId == null) return false;
+  const switchable = getSwitchableChains();
+  if (switchable) {
+    return switchable.some((c) => c.chainId === chainId);
+  }
+  return (PAYMENT_CHAIN_IDS as readonly number[]).includes(chainId);
 }
 
 export function getPaymentChainLabel(chainId: number): string {
-  if (chainId === LINEA_SEPOLIA_CHAIN_ID) return 'Linea Sepolia';
-  if (chainId === BASE_SEPOLIA_CHAIN_ID) return 'Base Sepolia';
-  if (chainId === ARC_TESTNET_CHAIN_ID) return 'Arc Testnet';
+  const store = useChainConfigStore.getState();
+  const chain = store.getChainByChainId(chainId);
+  if (chain) return chain.name;
+
+  // 降级
+  if (chainId === 59141) return 'Linea Sepolia';
+  if (chainId === 84532) return 'Base Sepolia';
+  if (chainId === 5042002) return 'Arc Testnet';
   return `Chain ${chainId}`;
 }
 
 export function getTxExplorerUrl(chainId: number, txHash: string): string | undefined {
-  const hash = txHash.startsWith('0x') ? txHash : `0x${txHash}`;
-  if (chainId === LINEA_SEPOLIA_CHAIN_ID) {
-    return `https://sepolia.lineascan.build/tx/${hash}`;
-  }
-  if (chainId === ARC_TESTNET_CHAIN_ID) {
-    return `https://testnet.arcscan.app/tx/${hash}`;
-  }
-  if (chainId === BASE_SEPOLIA_CHAIN_ID) {
-    return `https://sepolia.basescan.org/tx/${hash}`;
-  }
-  return undefined;
+  const store = useChainConfigStore.getState();
+  return store.getExplorerUrl(chainId, txHash);
 }

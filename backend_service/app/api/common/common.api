@@ -28,4 +28,8 @@ service sapmall {
 	@doc "获取导航目录结构"
 	@handler GetCategoryTree
 	get /:category_type/categories (GetCategoryTreeReq) returns (BaseResp)
+
+	@doc "获取链配置信息（含支持的支付代币，无需授权）"
+	@handler GetChainConfig
+	get /chain_config (GetChainConfigReq) returns (BaseResp)
 }

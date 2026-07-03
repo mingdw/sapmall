@@ -5,7 +5,7 @@ interface SystemStatusCardProps {
   name: string;
   status: 'healthy' | 'warning' | 'error';
   detail: string;
-  icon: string;
+  icon: React.ReactNode;
   className?: string;
 }
 
@@ -32,7 +32,7 @@ const SystemStatusCard: React.FC<SystemStatusCardProps> = ({
   return (
     <div className={`${styles.systemStatusCard} ${styles[`status${status.charAt(0).toUpperCase() + status.slice(1)}`]} ${className}`}>
       <div className={styles.statusIcon}>
-        <i className={`fas fa-${icon}`}></i>
+        {icon}
       </div>
       <div className={styles.statusContent}>
         <h4>{name}</h4>

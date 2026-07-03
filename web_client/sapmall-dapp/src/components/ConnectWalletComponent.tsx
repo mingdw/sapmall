@@ -1,5 +1,6 @@
 import React from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ArrowLeft, Wallet, Plug, TriangleAlert, UserCircle, Smartphone, Coins, Shield, Info } from 'lucide-react';
 import styles from './ConnectWalletComponent.module.scss';
 
 interface ConnectWalletComponentProps {
@@ -35,7 +36,7 @@ const ConnectWalletComponent: React.FC<ConnectWalletComponentProps> = ({
             className={styles.backButton}
             onClick={onBack}
           >
-            <i className="fas fa-arrow-left"></i>
+            <ArrowLeft size={16} />
             <span>返回</span>
           </button>
         )}
@@ -43,7 +44,7 @@ const ConnectWalletComponent: React.FC<ConnectWalletComponentProps> = ({
         {/* 钱包图标 */}
         <div className={styles.walletIcon}>
           <div className={styles.iconContainer}>
-            <i className="fas fa-wallet"></i>
+            <Wallet size={24} />
             <div className={styles.iconGlow}></div>
           </div>
         </div>
@@ -92,7 +93,7 @@ const ConnectWalletComponent: React.FC<ConnectWalletComponentProps> = ({
                           onClick={openConnectModal} 
                           className={styles.connectButton}
                         >
-                          <i className="fas fa-plug"></i>
+                          <Plug size={16} />
                           <span>连接钱包</span>
                           <div className={styles.buttonGlow}></div>
                         </button>
@@ -105,7 +106,7 @@ const ConnectWalletComponent: React.FC<ConnectWalletComponentProps> = ({
                           onClick={openChainModal} 
                           className={styles.switchChainButton}
                         >
-                          <i className="fas fa-exclamation-triangle"></i>
+                          <TriangleAlert size={16} />
                           <span>切换网络</span>
                         </button>
                       );
@@ -116,7 +117,7 @@ const ConnectWalletComponent: React.FC<ConnectWalletComponentProps> = ({
                         onClick={openAccountModal} 
                         className={styles.accountButton}
                       >
-                        <i className="fas fa-user-circle"></i>
+                        <UserCircle size={16} />
                         <span>查看账户</span>
                       </button>
                     );
@@ -132,19 +133,19 @@ const ConnectWalletComponent: React.FC<ConnectWalletComponentProps> = ({
           <p className={styles.supportedTitle}>支持的钱包</p>
           <div className={styles.walletList}>
             <div className={styles.walletItem}>
-              <i className="fab fa-ethereum"></i>
+              <span className="text-lg">&#x39E;</span>
               <span>MetaMask</span>
             </div>
             <div className={styles.walletItem}>
-              <i className="fas fa-mobile-alt"></i>
+              <Smartphone size={16} />
               <span>WalletConnect</span>
             </div>
             <div className={styles.walletItem}>
-              <i className="fas fa-coins"></i>
+              <Coins size={16} />
               <span>Coinbase</span>
             </div>
             <div className={styles.walletItem}>
-              <i className="fas fa-shield-alt"></i>
+              <Shield size={16} />
               <span>Trust Wallet</span>
             </div>
           </div>
@@ -152,7 +153,7 @@ const ConnectWalletComponent: React.FC<ConnectWalletComponentProps> = ({
 
         {/* 底部提示 */}
         <div className={styles.footerTip}>
-          <i className="fas fa-info-circle"></i>
+          <Info size={16} />
           <span>连接钱包后即可开始使用所有功能</span>
         </div>
       </div>

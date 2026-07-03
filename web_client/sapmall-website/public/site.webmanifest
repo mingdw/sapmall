@@ -1,11 +1,11 @@
 {
   "name": "Sapphire Mall - Web3 Virtual Goods Trading Platform",
   "short_name": "Sapphire Mall",
-  "description": "全球领先的Web3虚拟商品交易平台，通过创新的流动性质押机制、DAO治理和多元化资产支持，为用户提供安全、高效、收益丰厚的交易体验。",
+  "description": "Web3 virtual goods marketplace with contribution rewards, DAO governance, and multi-chain support.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#3b82f6",
+  "background_color": "#f7f6f3",
+  "theme_color": "#149eca",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -36,7 +36,11 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["finance", "business", "productivity"],
+  "categories": [
+    "finance",
+    "business",
+    "productivity"
+  ],
   "lang": "zh-CN",
   "dir": "ltr",
   "scope": "/",

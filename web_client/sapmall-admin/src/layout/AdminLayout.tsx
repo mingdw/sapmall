@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Layout as AntLayout, Menu, Button, Typography, Spin } from 'antd';
 import { 
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  ReloadOutlined
-} from '@ant-design/icons';
+  PanelLeftClose,
+  PanelLeftOpen,
+  RefreshCw
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { IframeParams } from '../types';
 import { useIframeParams } from '../hooks/useIframeParams';
@@ -214,7 +214,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
             </Text>
             <Button 
               type="primary" 
-              icon={<ReloadOutlined />}
+              icon={<RefreshCw size={16} />}
               onClick={refreshMenus}
               size="small"
             >

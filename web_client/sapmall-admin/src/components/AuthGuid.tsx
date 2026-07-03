@@ -1,6 +1,6 @@
 import React, { useEffect, useState, ReactNode } from 'react';
 import { Spin, Alert, Button, Result } from 'antd';
-import { ExclamationCircleOutlined, ReloadOutlined } from '@ant-design/icons';
+import { CircleAlert, RefreshCw } from 'lucide-react';
 import { useUserStore } from '../store/userStore';
 import { userApi } from '../services/api/userApi';
 import { IframeParams } from '../types';
@@ -150,7 +150,7 @@ const AuthGuid: React.FC<AuthGuidProps> = ({
             message="认证失败"
             description={authState.error}
             type="error"
-            icon={<ExclamationCircleOutlined />}
+            icon={<CircleAlert size={16} />}
             action={
               <Button size="small" danger onClick={handleRetry}>
                 重试
@@ -176,7 +176,7 @@ const AuthGuid: React.FC<AuthGuidProps> = ({
           title="未登录"
           subTitle="请先登录后再访问此页面"
           extra={
-            <Button type="primary" onClick={handleRetry} icon={<ReloadOutlined />}>
+            <Button type="primary" onClick={handleRetry} icon={<RefreshCw size={16} />}>
               重新检查
             </Button>
           }
@@ -198,7 +198,7 @@ const AuthGuid: React.FC<AuthGuidProps> = ({
           title="权限不足"
           subTitle={`您没有访问此页面的权限${requiredRole ? `（需要 ${requiredRole} 权限）` : ''}`}
           extra={
-            <Button type="primary" onClick={handleRetry} icon={<ReloadOutlined />}>
+            <Button type="primary" onClick={handleRetry} icon={<RefreshCw size={16} />}>
               重新检查
             </Button>
           }

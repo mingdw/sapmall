@@ -1,14 +1,14 @@
 {
   "network": "arcTestnet",
   "chainId": 5042002,
-  "deployedAt": "2026-06-25T04:23:04.669Z",
+  "deployedAt": "2026-07-03T02:09:38.417Z",
   "deployer": "0x276c145eb3c7f1017e00d4bee7fbaca88531ab40",
   "admin": "0x276c145EB3C7F1017E00D4Bee7FBAca88531Ab40",
-  "settlementVault": "0x568ac7ec3ee1c5b72134b17e537c6db87aff839d",
+  "settlementVault": "0xf5137b68cdc765261ac6a39819c0c1b55bc6a111",
   "paymentRouter": "0xa9af86f5ac67a270d52f0e0936623cb2e4a71a9b",
-  "paymentRouterImplementation": "0x143f171a239f0d1bf8db6dae472782ba02c73fb6",
-  "platformConfig": "0x8569c81a0f1cb4cc7ceedda24e586fba8ffe2485",
-  "platformConfigImplementation": "0x20aa517be21ec2f823b86834296cb80a963ebda6",
+  "paymentRouterImplementation": "0x8cdfc9662263362ddb7d8341b5dc32ea92b5c298",
+  "platformConfig": "0x0000000000000000000000000000000000000000",
+  "platformConfigImplementation": "0x0000000000000000000000000000000000000000",
   "paymentConfig": {
     "paymentToken": "0x3600000000000000000000000000000000000000",
     "chainId": 5042002

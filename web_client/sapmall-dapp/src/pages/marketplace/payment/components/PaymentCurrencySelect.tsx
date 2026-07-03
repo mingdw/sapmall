@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { getAvailablePaymentCurrencies, isSapPayment } from '../../../../config/paymentCurrencies';
+import { getAvailablePaymentCurrencies, getDefaultPaymentCurrency, isSapPayment } from '../../../../config/paymentCurrencies';
+import { useChainConfigStore } from '../../../../store/chainConfigStore';
 import { PaymentMethod } from '../types/paymentTypes';
 import PaymentTokenIcon from './PaymentTokenIcon';
 import styles from '../PaymentPage.module.scss';
@@ -53,6 +54,14 @@ function resolveCurrencyLabel(method: PaymentMethod, t: (key: string) => string)
 const PaymentCurrencySelect: React.FC<Props> = ({ chainId, value, onChange, disabled }) => {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
+  const chainConfigLoaded = useChainConfigStore((s) => s.loaded);
+  const paymentTokenKey = useChainConfigStore((s) => {
+    if (chainId == null) return '';
+    return s
+      .getPaymentTokens(chainId)
+      .map((token) => token.symbol)
+      .join('|');
+  });
 
   const { stables, sapMethods } = useMemo(() => {
     const all = getAvailablePaymentCurrencies(chainId);
@@ -60,7 +69,7 @@ const PaymentCurrencySelect: React.FC<Props> = ({ chainId, value, onChange, disa
       stables: all.filter((m) => !isSapPayment(m)),
       sapMethods: all.filter(isSapPayment),
     };
-  }, [chainId]);
+  }, [chainId, chainConfigLoaded, paymentTokenKey]);
 
   useEffect(() => {
     setExpanded(false);

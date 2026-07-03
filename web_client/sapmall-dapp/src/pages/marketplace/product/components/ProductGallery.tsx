@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { SearchOutlined } from '@ant-design/icons';
+import { Search } from 'lucide-react';
 import { Image } from 'antd';
 import styles from '../ProductDetailPage.module.scss';
 
@@ -218,7 +218,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({ images, alt }) => {
               src={src}
               alt={alt}
               className={styles.galleryPreviewImg}
-              preview={{ mask: <SearchOutlined /> }}
+              preview={{ mask: <Search size={16} /> }}
               draggable={false}
             />
           )}
@@ -236,7 +236,7 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({ images, alt }) => {
 
           {isDesktop && (
             <span className={styles.zoomHint} aria-hidden>
-              <SearchOutlined />
+              <Search size={16} />
             </span>
           )}
 

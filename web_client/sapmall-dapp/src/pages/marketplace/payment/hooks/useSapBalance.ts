@@ -4,7 +4,7 @@ import { useReadContract } from 'wagmi';
 import { getSapTokenConfig } from '../../../../config/walletTokens';
 
 export function useSapBalance(chainId?: number, address?: `0x${string}`) {
-  const config = getSapTokenConfig();
+  const config = getSapTokenConfig(chainId);
   const query = useReadContract({
     address: config?.address,
     abi: erc20Abi,

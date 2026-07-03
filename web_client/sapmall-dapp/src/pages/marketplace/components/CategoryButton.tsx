@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import styles from './CategoryButton.module.scss';
 import {
   categoryPlainIconStyle,
@@ -20,14 +21,17 @@ const CategoryPlainIcon: React.FC<{
   size?: 'sm' | 'md';
   active?: boolean;
   tier?: CategoryIconThemeTier;
-}> = ({ theme, size = 'md', active = false, tier = 'primary' }) => (
-  <span
-    className={`${styles.categoryPlainIcon} ${size === 'sm' ? styles.categoryPlainIconSm : ''}`}
-    style={categoryPlainIconStyle(theme, { tier, active })}
-  >
-    <i className={theme.icon} aria-hidden />
-  </span>
-);
+}> = ({ theme, size = 'md', active = false, tier = 'primary' }) => {
+  const Icon = theme.icon;
+  return (
+    <span
+      className={`${styles.categoryPlainIcon} ${size === 'sm' ? styles.categoryPlainIconSm : ''}`}
+      style={categoryPlainIconStyle(theme, { tier, active })}
+    >
+      <Icon size={size === 'sm' ? 14 : 16} aria-hidden="true" />
+    </span>
+  );
+};
 
 interface SubMenuProps {
   children: CategoryNode[];
@@ -67,7 +71,7 @@ const SubMenu: React.FC<SubMenuProps> = ({
               <CategoryPlainIcon theme={theme} size="sm" tier="submenu" />
               <span className={styles.subMenuLabel}>{child.name}</span>
               {child.children && child.children.length > 0 && (
-                <i className={`fas fa-chevron-right ${styles.subMenuChevron}`} aria-hidden />
+                <ChevronRight size={12} className={styles.subMenuChevron} aria-hidden="true" />
               )}
             </a>
 
@@ -129,7 +133,7 @@ const CategoryButton: React.FC<CategoryButtonProps> = ({
         <CategoryPlainIcon theme={theme} active={isActive} />
         <span className={styles.categoryLabel}>{category.name}</span>
         {category.children && category.children.length > 0 && (
-          <i className={`fas fa-chevron-down ${styles.categoryChevron}`} aria-hidden />
+          <ChevronDown size={14} className={styles.categoryChevron} aria-hidden="true" />
         )}
       </div>
 

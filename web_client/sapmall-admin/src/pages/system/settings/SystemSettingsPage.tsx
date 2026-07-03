@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Empty, Form, Input, InputNumber, List, Popconfirm, Select, Spin, Switch, Tooltip } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Search } from 'lucide-react';
 import AdminCard from '../../../components/common/AdminCard';
 import AdminButton from '../../../components/common/AdminButton';
 import AdminModal from '../../../components/common/AdminModal';
@@ -414,7 +414,7 @@ const SystemSettingsPage: React.FC = () => {
               allowClear
               size="small"
               className={styles.filterInput}
-              prefix={<SearchOutlined className={styles.searchIcon} />}
+              prefix={<Search size={16} className={styles.searchIcon} />}
               placeholder="输入 config_key 或 config_name 搜索"
               value={filters.keyword}
               onChange={(event) => handleFilterChange({ keyword: event.target.value })}

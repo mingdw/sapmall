@@ -4,7 +4,7 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import locale from 'antd/locale/zh_CN';
-import { CalendarOutlined } from '@ant-design/icons';
+import { Calendar } from 'lucide-react';
 import AdminButton from '../../../../components/common/AdminButton';
 import { ORDER_STATUS_OPTIONS, ORDER_STATUS_TAG_COLORS, ORDER_STATUS } from '../constants';
 import styles from '../PersonalOrderManager.module.scss';
@@ -95,7 +95,7 @@ const OrderFilterBar: React.FC<OrderFilterBarProps> = ({
             format="YYYY-MM-DD"
             allowEmpty={[true, true]}
             placeholder={['开始日期', '结束日期']}
-            suffixIcon={<CalendarOutlined className={styles.datePickerIcon} />}
+            suffixIcon={<Calendar size={16} className={styles.datePickerIcon} />}
           />
         </div>
 
