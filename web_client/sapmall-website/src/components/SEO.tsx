@@ -53,8 +53,8 @@ const SEO: React.FC<SEOProps> = ({
     ],
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+1-555-0123",
       "contactType": "customer service",
+      "email": "support@sapphiremall.com",
       "availableLanguage": ["English", "Chinese"]
     },
     "address": {

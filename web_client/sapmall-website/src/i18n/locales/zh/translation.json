@@ -4,9 +4,10 @@
     "coreValues": "核心价值",
     "features": "平台功能",
     "about": "关于我们",
-    "docs": "文档",
+    "support": "支持",
     "launchApp": "启动应用",
-    "menu": "菜单"
+    "menu": "菜单",
+    "roadmap": "产品路线图"
   },
   "brand": {
     "tagline": "Web3虚拟商品交易平台"
@@ -38,7 +39,8 @@
     "contributorRewards": "贡献者奖励",
     "tvlChange": "↗ 24h +12.5%",
     "usersChange": "↗ 30d +45%",
-    "transactionsChange": "↗ 7d +18%"
+    "transactionsChange": "↗ 7d +18%",
+    "disclaimer": "仅为预览展示的示例数据"
   },
   "coreValues": {
     "title": "核心价值",
@@ -135,11 +137,39 @@
       "title": "高级分析",
       "desc": "实时市场数据、价格分析和交易洞察，帮助您做出明智决策。",
       "highlight": "数据驱动"
+    },
+    "subsections": {
+      "howItWorks": {
+        "title": "如何使用",
+        "subtitle": "从浏览商品到链上确认，三步完成交易。"
+      },
+      "capabilities": {
+        "title": "核心能力",
+        "subtitle": "交易、治理、数据分析与多资产支持，一体化平台体验。"
+      },
+      "networks": {
+        "title": "支持网络与代币",
+        "subtitle": "多链测试网支付，与 DApp 链配置保持一致。"
+      },
+      "trust": {
+        "title": "安全与透明",
+        "subtitle": "链上结算，合约可审计，流程公开可查。"
+      }
     }
   },
   "about": {
     "title": "关于我们",
     "subtitle": "构建虚拟商品交易的未来，赋能Web3生态发展",
+    "subsections": {
+      "team": {
+        "title": "团队介绍",
+        "subtitle": "深耕 Web3 的全球化产品与技术团队"
+      },
+      "values": {
+        "title": "我们的价值观",
+        "subtitle": "驱动平台创新与社区共建的核心理念"
+      }
+    },
     "team": {
       "title": "团队介绍",
       "content": "Sapphire Mall由一支经验丰富的Web3团队打造，团队成员来自知名科技公司和区块链项目，在去中心化金融、智能合约开发、产品设计和全球化运营方面拥有丰富经验。我们致力于通过技术创新解决传统虚拟商品交易的痛点。",
@@ -203,10 +233,205 @@
     "title": "文档与资源",
     "subtitle": "白皮书、应用入口与开发者资料",
     "whitepaper": "阅读白皮书",
-    "launchDapp": "进入 DApp"
+    "launchDapp": "进入 DApp",
+    "cards": {
+      "whitepaper": {
+        "title": "白皮书",
+        "desc": "代币经济、治理与平台设计。"
+      },
+      "help": {
+        "title": "帮助中心",
+        "desc": "钱包、支付与故障排除指南。"
+      },
+      "github": {
+        "title": "GitHub",
+        "desc": "开源仓库与开发者资源。"
+      },
+      "audit": {
+        "title": "安全与审计",
+        "desc": "合约地址与审计报告。"
+      }
+    }
   },
   "footer": {
     "tagline": "Web3虚拟商品交易的未来",
-    "copyright": "© 2025 Sapphire Mall. 保留所有权利。"
+    "copyright": "© 2026 Sapphire Mall. 保留所有权利。",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "social": {
+      "twitter": "Twitter",
+      "telegram": "Telegram",
+      "discord": "Discord",
+      "github": "GitHub"
+    },
+    "quickNav": "快速导航",
+    "followUs": "关注我们",
+    "socialAria": "社交媒体链接",
+    "legalAria": "法律信息",
+    "cookie": "Cookie 政策"
+  },
+  "common": {
+    "comingSoon": "即将上线",
+    "exampleData": "以下为演示用示例数据",
+    "skipToContent": "跳到主要内容",
+    "step": "步骤"
+  },
+  "howItWorks": {
+    "title": "三步完成交易",
+    "subtitle": "从浏览商品到链上确认，流程清晰可追踪。",
+    "steps": [
+      {
+        "title": "浏览并选购",
+        "desc": "在商城浏览虚拟商品，选择 SKU，在结算前确认价格与库存。"
+      },
+      {
+        "title": "钱包支付",
+        "desc": "连接 Web3 钱包，在对应网络上使用 USDC、SAP 等支持的代币完成支付。"
+      },
+      {
+        "title": "链上确认",
+        "desc": "PaymentRouter 记录链上支付；平台监听事件后更新订单状态。"
+      }
+    ],
+    "previewCaption": "点击左侧步骤预览对应界面 — 启动 DApp 体验完整功能。",
+    "previewSteps": {
+      "browse": "Sapphire Mall 商城首页 — 浏览与选购商品",
+      "pay": "钱包支付 — 授权并使用 USDC、SAP 等代币付款",
+      "confirm": "订单支付成功 — 链上确认完成"
+    }
+  },
+  "networks": {
+    "title": "支持的网络与代币",
+    "subtitle": "与 DApp 链配置一致，当前支持多条测试网支付。",
+    "chainsLabel": "支付网络",
+    "tokensLabel": "支付代币",
+    "tokensNote": "在左侧选择网络，查看该链支持的支付代币。",
+    "tokensFor": "{{network}} 支持的代币",
+    "pendingLabel": "待加入网络",
+    "pendingBadge": "待加入"
+  },
+  "roadmap": {
+    "title": "产品路线图",
+    "subtitle": "以下里程碑会随生态进展调整。",
+    "phases": [
+      {
+        "period": "2026 Q1",
+        "title": "核心商城",
+        "items": [
+          "测试网上线",
+          "多代币结算",
+          "订单状态同步"
+        ]
+      },
+      {
+        "period": "2026 Q2",
+        "title": "生态扩展",
+        "items": [
+          "更多链支持",
+          "SAP 效用扩展",
+          "创作者工具"
+        ]
+      },
+      {
+        "period": "2026 Q3",
+        "title": "社区与移动端",
+        "items": [
+          "DAO 治理推进",
+          "移动友好流程",
+          "多区域支持"
+        ]
+      }
+    ]
+  },
+  "faq": {
+    "title": "常见问题",
+    "subtitle": "连接钱包前，先看这些说明。",
+    "items": [
+      {
+        "q": "支持哪些钱包？",
+        "a": "支持 DApp 所接入的 WalletConnect / 浏览器注入钱包（如 MetaMask）。"
+      },
+      {
+        "q": "可以用哪些代币支付？",
+        "a": "支付链上支持 USDC、SAP；Arc Testnet 在配置可用时还支持 EURC、cirBTC。"
+      },
+      {
+        "q": "SAP 支付是否已开放？",
+        "a": "SAP 已在支付界面展示；链上 SAP 结算逐步开放，测试阶段建议使用 USDC。"
+      },
+      {
+        "q": "贡献者分成如何运作？",
+        "a": "活跃贡献者按已公布的代币经济规则分享平台费用，详见白皮书。"
+      },
+      {
+        "q": "遇到问题去哪里？",
+        "a": "请使用帮助中心、下方文档链接，或在「支持」区域联系我们。"
+      }
+    ]
+  },
+  "trust": {
+    "title": "安全与透明",
+    "subtitle": "链上结算，合约可审计。",
+    "badges": [
+      {
+        "title": "PaymentRouter",
+        "desc": "链上支付意图，事件驱动订单同步"
+      },
+      {
+        "title": "多链架构",
+        "desc": "通过平台链配置灵活扩展网络"
+      },
+      {
+        "title": "开放文档",
+        "desc": "GitHub 提供开发者指南与合约说明"
+      }
+    ],
+    "eyebrow": "安全"
+  },
+  "partners": {
+    "title": "生态网络",
+    "subtitle": "我们构建与集成的底层网络。",
+    "items": [
+      "Arc Network",
+      "Linea",
+      "Base",
+      "Ethereum"
+    ],
+    "eyebrow": "生态"
+  },
+  "newsletter": {
+    "title": "订阅动态",
+    "subtitle": "产品发布、治理投票与网络扩展资讯。",
+    "placeholder": "you@example.com",
+    "button": "订阅",
+    "success": "感谢订阅，我们会及时通知您。",
+    "privacyNote": "不发垃圾邮件，可随时取消订阅。",
+    "invalidEmail": "请输入有效的邮箱地址。"
+  },
+  "legal": {
+    "privacyTitle": "隐私政策",
+    "privacyBody": "我们仅收集运营商城与改进产品所必需的信息。交易使用的钱包地址会记录在链上；您提供的联系方式仅用于订单支持。我们不会出售个人数据。如有疑问请联系 support@sapphiremall.com。",
+    "termsTitle": "服务条款",
+    "termsBody": "使用 Sapphire Mall 即表示您理解在公链上交易需自行承担风险。虚拟商品受卖家条款与适用法律约束。平台仅提供基础设施，用户资金流转遵循智能合约与公开文档中的说明。",
+    "cookieTitle": "Cookie 政策",
+    "cookieBody": "我们使用必要的 Cookie 与本地存储以记住语言偏好并提升站点性能，不使用第三方广告 Cookie。您可随时通过浏览器设置清除 Cookie。"
+  },
+  "support": {
+    "title": "支持",
+    "subtitle": "查找常见问题解答、文档资源，以及联系团队的方式。",
+    "subsections": {
+      "faq": {
+        "title": "常见问题",
+        "subtitle": "连接钱包前，先看这些说明。"
+      },
+      "docs": {
+        "title": "文档与资源",
+        "subtitle": "查阅白皮书了解平台经济与治理设计，通过帮助中心解决钱包与支付问题，或在 GitHub 获取开源代码与安全审计材料。"
+      },
+      "contact": {
+        "title": "联系我们",
+        "subtitle": "商务合作、技术支持与社区渠道。"
+      }
+    }
   }
 }

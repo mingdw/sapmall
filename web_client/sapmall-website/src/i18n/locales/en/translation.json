@@ -4,9 +4,10 @@
     "coreValues": "Core Values",
     "features": "Platform Features",
     "about": "About Us",
-    "docs": "Documentation",
+    "support": "Support",
     "launchApp": "Launch App",
-    "menu": "Menu"
+    "menu": "Menu",
+    "roadmap": "Product Roadmap"
   },
   "brand": {
     "tagline": "Web3 Virtual Goods Marketplace"
@@ -38,7 +39,8 @@
     "contributorRewards": "Contributor Rewards",
     "tvlChange": "↗ 24h +12.5%",
     "usersChange": "↗ 30d +45%",
-    "transactionsChange": "↗ 7d +18%"
+    "transactionsChange": "↗ 7d +18%",
+    "disclaimer": "Sample data for preview only"
   },
   "coreValues": {
     "title": "Core Values",
@@ -106,6 +108,24 @@
   "features": {
     "title": "Platform Features",
     "subtitle": "Discover the powerful features that make Sapphire Mall the leading Web3 virtual goods trading platform",
+    "subsections": {
+      "howItWorks": {
+        "title": "How it works",
+        "subtitle": "From browsing to on-chain settlement in three clear steps."
+      },
+      "capabilities": {
+        "title": "Core capabilities",
+        "subtitle": "Trading, governance, analytics, and multi-asset support in one platform."
+      },
+      "networks": {
+        "title": "Supported networks & tokens",
+        "subtitle": "Multi-chain payments on testnets today, aligned with the DApp chain configuration."
+      },
+      "trust": {
+        "title": "Security & transparency",
+        "subtitle": "Built with on-chain settlement and auditable smart contracts."
+      }
+    },
     "contributionRewards": {
       "title": "Contribution Rewards",
       "desc": "Complete community tasks, audits, and governance activities to earn SAP tokens and platform privileges.",
@@ -140,6 +160,16 @@
   "about": {
     "title": "About Us",
     "subtitle": "Building the Future of Virtual Goods Trading, Empowering Web3 Ecosystem Development",
+    "subsections": {
+      "team": {
+        "title": "Our Team",
+        "subtitle": "A global product and engineering team rooted in Web3"
+      },
+      "values": {
+        "title": "Our Values",
+        "subtitle": "Core principles that guide innovation and community co-creation"
+      }
+    },
     "team": {
       "title": "Team Introduction",
       "content": "Sapphire Mall is built by an experienced Web3 team, with members from renowned technology companies and blockchain projects, possessing rich experience in decentralized finance, smart contract development, product design, and global operations. We are committed to solving the pain points of traditional virtual goods trading through technological innovation.",
@@ -203,10 +233,205 @@
     "title": "Documentation & Resources",
     "subtitle": "Whitepaper, app entry, and developer materials",
     "whitepaper": "Read Whitepaper",
-    "launchDapp": "Open DApp"
+    "launchDapp": "Open DApp",
+    "cards": {
+      "whitepaper": {
+        "title": "Whitepaper",
+        "desc": "Tokenomics, governance, and platform design."
+      },
+      "help": {
+        "title": "Help center",
+        "desc": "Wallet, payment, and troubleshooting guides."
+      },
+      "github": {
+        "title": "GitHub",
+        "desc": "Open-source repositories and developer resources."
+      },
+      "audit": {
+        "title": "Security & audit",
+        "desc": "Contract addresses and audit reports."
+      }
+    }
   },
   "footer": {
     "tagline": "The future of Web3 virtual goods trading",
-    "copyright": "© 2025 Sapphire Mall. All rights reserved."
+    "quickNav": "Quick links",
+    "followUs": "Follow us",
+    "socialAria": "Social media links",
+    "legalAria": "Legal links",
+    "copyright": "© 2026 Sapphire Mall. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookie": "Cookie Policy",
+    "social": {
+      "twitter": "Twitter",
+      "telegram": "Telegram",
+      "discord": "Discord",
+      "github": "GitHub"
+    }
+  },
+  "common": {
+    "comingSoon": "Coming soon",
+    "exampleData": "Sample metrics for demonstration",
+    "skipToContent": "Skip to main content",
+    "step": "Step"
+  },
+  "howItWorks": {
+    "title": "How Sapphire Mall works",
+    "subtitle": "From browsing to on-chain settlement in three clear steps.",
+    "steps": [
+      {
+        "title": "Browse & select",
+        "desc": "Explore virtual goods in the marketplace, pick a SKU, and review pricing before checkout."
+      },
+      {
+        "title": "Pay with your wallet",
+        "desc": "Connect a Web3 wallet and pay with USDC, SAP, or other supported tokens on your chosen network."
+      },
+      {
+        "title": "Confirm on-chain",
+        "desc": "PaymentRouter records the order on-chain; the platform updates order status after confirmation."
+      }
+    ],
+    "previewCaption": "Click a step to preview the DApp screen — launch the app for the full experience.",
+    "previewSteps": {
+      "browse": "Sapphire Mall marketplace — browse and select products",
+      "pay": "Wallet payment — authorize and pay with USDC or SAP",
+      "confirm": "Order confirmed — on-chain payment successful"
+    }
+  },
+  "networks": {
+    "title": "Supported networks & tokens",
+    "subtitle": "Multi-chain payments on testnets today, aligned with the DApp chain configuration.",
+    "chainsLabel": "Payment networks",
+    "tokensLabel": "Payment tokens",
+    "tokensFor": "Tokens on {{network}}",
+    "tokensNote": "Select a network on the left to see supported payment tokens.",
+    "pendingLabel": "Coming soon",
+    "pendingBadge": "Soon"
+  },
+  "roadmap": {
+    "title": "Product roadmap",
+    "subtitle": "Where we are headed — milestones may adjust as the ecosystem evolves.",
+    "phases": [
+      {
+        "period": "Q1 2026",
+        "title": "Core marketplace",
+        "items": [
+          "Mainnet/testnet launch",
+          "Multi-token checkout",
+          "Order status sync"
+        ]
+      },
+      {
+        "period": "Q2 2026",
+        "title": "Ecosystem expansion",
+        "items": [
+          "Additional chains",
+          "SAP utility expansion",
+          "Creator tools"
+        ]
+      },
+      {
+        "period": "Q3 2026",
+        "title": "Community & mobile",
+        "items": [
+          "DAO governance rollout",
+          "Mobile-friendly flows",
+          "Regional support"
+        ]
+      }
+    ]
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "subtitle": "Quick answers before you connect your wallet.",
+    "items": [
+      {
+        "q": "Which wallets are supported?",
+        "a": "Any wallet compatible with WalletConnect / injected providers supported by our DApp (e.g. MetaMask)."
+      },
+      {
+        "q": "Which tokens can I pay with?",
+        "a": "USDC and SAP are supported on payment chains; Arc Testnet also supports EURC and cirBTC where configured."
+      },
+      {
+        "q": "Is SAP payment live?",
+        "a": "SAP is listed in the payment UI; on-chain SAP checkout is rolling out — USDC is recommended for production tests."
+      },
+      {
+        "q": "How does contributor revenue sharing work?",
+        "a": "Active contributors earn a share of platform fees according to published tokenomics — see the whitepaper for details."
+      },
+      {
+        "q": "Where can I get help?",
+        "a": "Use the Help center, documentation links below, or contact us in the Support section."
+      }
+    ]
+  },
+  "trust": {
+    "title": "Security & transparency",
+    "subtitle": "Built with on-chain settlement and auditable smart contracts.",
+    "badges": [
+      {
+        "title": "PaymentRouter",
+        "desc": "On-chain payment intents with event-based order sync"
+      },
+      {
+        "title": "Multi-chain",
+        "desc": "Configurable networks via platform chain registry"
+      },
+      {
+        "title": "Open docs",
+        "desc": "Developer guides and contract references on GitHub"
+      }
+    ],
+    "eyebrow": "Security"
+  },
+  "support": {
+    "title": "Support",
+    "subtitle": "Find answers, documentation, and ways to reach our team.",
+    "subsections": {
+      "faq": {
+        "title": "Frequently asked questions",
+        "subtitle": "Quick answers before you connect your wallet."
+      },
+      "docs": {
+        "title": "Documentation & resources",
+        "subtitle": "Read the whitepaper for tokenomics and governance, use the help center for wallet and payment guides, or find open-source code and audit materials on GitHub."
+      },
+      "contact": {
+        "title": "Contact us",
+        "subtitle": "Business inquiries, technical support, and community channels."
+      }
+    }
+  },
+  "partners": {
+    "title": "Ecosystem",
+    "subtitle": "Integrations and networks we build on.",
+    "items": [
+      "Arc Network",
+      "Linea",
+      "Base",
+      "Ethereum"
+    ],
+    "eyebrow": "Ecosystem"
+  },
+  "newsletter": {
+    "title": "Stay updated",
+    "subtitle": "Product releases, governance votes, and network expansions.",
+    "placeholder": "you@example.com",
+    "button": "Subscribe",
+    "success": "Thanks — we will keep you posted.",
+    "privacyNote": "No spam. Unsubscribe anytime.",
+    "invalidEmail": "Please enter a valid email address."
+  },
+  "legal": {
+    "privacyTitle": "Privacy Policy",
+    "privacyBody": "We collect only what is needed to operate the marketplace and improve the product. Wallet addresses used for transactions are recorded on-chain; contact details you provide are used for order support. We do not sell personal data. For questions, contact support@sapphiremall.com.",
+    "termsTitle": "Terms of Service",
+    "termsBody": "By using Sapphire Mall you agree to transact at your own risk on public blockchains. Virtual goods are subject to seller terms and applicable laws. The platform provides infrastructure only and does not custody user funds beyond smart-contract flows described in our documentation.",
+    "cookieTitle": "Cookie Policy",
+    "cookieBody": "We use essential cookies and local storage to remember language preferences and improve site performance. We do not use third-party advertising cookies. You can clear cookies via your browser settings at any time."
   }
 }
