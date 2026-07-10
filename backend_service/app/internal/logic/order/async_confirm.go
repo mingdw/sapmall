@@ -110,8 +110,8 @@ func setOrderPaid(ctx context.Context, svcCtx *svc.ServiceContext, orderID int64
 		pRepo := repository.NewOrderPaymentRepository(tx)
 
 		if err := oRepo.UpdateColumnsByID(ctx, orderID, map[string]interface{}{
-			"order_status":        OrderStatusPaid,
-			"order_status_desc":   OrderStatusDesc(OrderStatusPaid),
+			"order_status":        OrderStatusToShip,
+			"order_status_desc":   OrderStatusDesc(OrderStatusToShip),
 			"payment_status":      PaymentStatusPaid,
 			"payment_status_desc": PaymentStatusDesc(PaymentStatusPaid),
 			"act_gas_fee":         actGasFee,
@@ -119,14 +119,18 @@ func setOrderPaid(ctx context.Context, svcCtx *svc.ServiceContext, orderID int64
 			return err
 		}
 
-		return pRepo.UpdateColumnsByOrderID(ctx, orderID, map[string]interface{}{
+		if err := pRepo.UpdateColumnsByOrderID(ctx, orderID, map[string]interface{}{
 			"payment_status":      PaymentStatusPaid,
 			"payment_status_desc": PaymentStatusDesc(PaymentStatusPaid),
 			"block_number":        blockNumber,
 			"confirmed_at":        now,
 			"paid_at":             now,
 			"act_gas_fee":         actGasFee,
-		})
+		}); err != nil {
+			return err
+		}
+
+		return EnsurePendingLogisticsOnPaid(ctx, tx, orderID, "async_confirm")
 	})
 
 	if err != nil {

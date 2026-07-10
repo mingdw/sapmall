@@ -46,7 +46,7 @@ func parseOptionalDate(value string, endOfDay bool) (*time.Time, error) {
 	return nil, err
 }
 
-func toAdminOrderSummary(o *model.Order, payment *model.OrderPayment) types.AdminOrderSummary {
+func toAdminOrderSummary(o *model.Order, payment *model.OrderPayment, chainName string) types.AdminOrderSummary {
 	item := types.AdminOrderSummary{
 		Id:                o.ID,
 		OrderCode:         o.OrderCode,
@@ -59,6 +59,9 @@ func toAdminOrderSummary(o *model.Order, payment *model.OrderPayment) types.Admi
 		PayAmount:         o.PayAmount,
 		RealAmount:        o.RealAmount,
 		Currency:          o.Currency,
+		SettleCurrency:    o.SettleCurrency,
+		PlatformFeeAmount: o.PlatformFeeAmount,
+		ActGasFee:         o.ActGasFee,
 		OrderStatus:       int64(o.OrderStatus),
 		OrderStatusDesc:   o.OrderStatusDesc,
 		PaymentStatus:     int64(o.PaymentStatus),
@@ -69,6 +72,18 @@ func toAdminOrderSummary(o *model.Order, payment *model.OrderPayment) types.Admi
 	}
 	if payment != nil {
 		item.PayerAddress = payment.PayerAddress
+		item.ChainId = payment.ChainId
+		item.TokenSymbol = payment.TokenSymbol
+		if !payment.ConfirmedAt.IsZero() {
+			item.ConfirmedAt = FormatTimeRFC3339(payment.ConfirmedAt)
+		}
+		// 如果主表 settle_currency 为空，用 payment.token_symbol 兜底
+		if item.SettleCurrency == "" {
+			item.SettleCurrency = payment.TokenSymbol
+		}
+	}
+	if chainName != "" {
+		item.ChainName = chainName
 	}
 	return item
 }

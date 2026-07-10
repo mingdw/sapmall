@@ -3,6 +3,7 @@ import type { ApiResponse } from '../types/baseTypes';
 
 export interface ChainNetworkInfo {
   id: number;
+  projectId?: string;          // 项目ID
   chainId: number;
   code: string;
   name: string;
@@ -10,13 +11,31 @@ export interface ChainNetworkInfo {
   wsUrl?: string;
   explorerUrl?: string;
   nativeSymbol?: string;
+  // 链特性配置
+  blockTime: number;           // 平均出块时间(秒)
+  safeConfirmations: number;   // 安全确认区块数
+  // 合约地址
   platformConfigAddress?: string;
   paymentRouterAddress?: string;
   settlementVaultAddress?: string;
+  swapRouterAddress?: string;
   signerKeyRef?: string;
-  listenerEnabled: number;
-  listenerStartBlock: number;
-  listenerLastBlock: number;
+  // Swap 监听器配置
+  swapListenerEnabled: number;
+  swapListenerPollInterval: number;
+  swapListenerStartBlock: number;
+  swapListenerLastBlock: number;
+  // Config 监听器配置
+  configListenerEnabled: number;
+  configListenerPollInterval: number;
+  configListenerStartBlock: number;
+  configListenerLastBlock: number;
+  // Payment 监听器配置
+  paymentListenerEnabled: number;
+  paymentListenerPollInterval: number;
+  paymentListenerStartBlock: number;
+  paymentListenerLastBlock: number;
+  // 其他
   sort: number;
   status: number;
   remark?: string;
@@ -63,6 +82,7 @@ export interface ListChainNetworkResp {
 
 export interface SaveChainNetworkReq {
   id?: number;
+  projectId?: string;          // 项目ID
   chainId: number;
   code: string;
   name: string;
@@ -70,13 +90,28 @@ export interface SaveChainNetworkReq {
   wsUrl?: string;
   explorerUrl?: string;
   nativeSymbol?: string;
+  // 链特性配置
+  blockTime?: number;
+  safeConfirmations?: number;
+  // 合约地址
   platformConfigAddress?: string;
   paymentRouterAddress?: string;
   settlementVaultAddress?: string;
+  swapRouterAddress?: string;
   signerKeyRef?: string;
-  listenerEnabled?: number;
-  listenerStartBlock?: number;
-  listenerLastBlock?: number;
+  // Swap 监听器配置
+  swapListenerEnabled?: number;
+  swapListenerPollInterval?: number;
+  swapListenerStartBlock?: number;
+  // Config 监听器配置
+  configListenerEnabled?: number;
+  configListenerPollInterval?: number;
+  configListenerStartBlock?: number;
+  // Payment 监听器配置
+  paymentListenerEnabled?: number;
+  paymentListenerPollInterval?: number;
+  paymentListenerStartBlock?: number;
+  // 其他
   sort?: number;
   status?: number;
   remark?: string;
@@ -122,9 +157,7 @@ const chainApi = {
     return baseClient.delete<null>(`/api/admin/chain/network/${id}`);
   },
 
-  listChainPaymentToken: async (
-    payload: ListChainPaymentTokenReq,
-  ): Promise<ApiResponse<ListChainPaymentTokenResp>> => {
+  listChainPaymentToken: async (payload: ListChainPaymentTokenReq): Promise<ApiResponse<ListChainPaymentTokenResp>> => {
     return baseClient.post<ListChainPaymentTokenResp>('/api/admin/chain/payment-token/list', payload);
   },
 

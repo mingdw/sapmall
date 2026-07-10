@@ -101,11 +101,19 @@ func (l *GetOrderLogic) GetOrder(req *types.GetOrderReq) (resp *types.BaseResp, 
 
 	respData := types.GetOrderResp{
 		Order:      toOrderInfo(orderRow),
-		Payment:    toOrderPaymentInfo(&paymentRow),
+		Payment:    toOrderPaymentInfo(&paymentRow, l.platformSellerAddress()),
 		Promotions: toPromotionItems(promotionRows),
 	}
 	if hasDelivery {
 		respData.Delivery = delivery
 	}
 	return customererrors.SuccessData(respData), nil
+}
+
+func (l *GetOrderLogic) platformSellerAddress() string {
+	addr, err := resolvePlatformSellerAddress(l.svcCtx.Config.OrderPayment.PlatformSellerAddress)
+	if err != nil {
+		return ""
+	}
+	return addr
 }

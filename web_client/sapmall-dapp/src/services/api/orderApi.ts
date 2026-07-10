@@ -88,9 +88,12 @@ export interface OrderPaymentInfo {
   expireAt?: string;
   paidAt?: string;
   confirmedAt?: string;
+  failReason?: string;
+  /** payOrder 卖家地址 */
+  sellerAddress?: string;
 }
 
-/** POST /api/order/create 请求体（与后端 CreateOrderReq 对齐） */
+/** POST /api/order/create 请求体（与后端 CreateOrderReq / sys_order 对齐） */
 export interface CreateOrderReq {
   skuId: number;
   skuCode?: string;
@@ -99,15 +102,18 @@ export interface CreateOrderReq {
   productName?: string;
   productPrice?: number;
   quantity: number;
+  /** 商品行小计 → sys_order.total_amount */
   totalAmount?: number;
   productRemark?: string;
   payerAddress: string;
   chainId?: number;
   tokenSymbol?: string;
   promotions?: OrderPromotionItem[];
+  /** 促销金额 → sys_order.discount_amount */
   discountAmount: number;
   payableAmount: number;
   platformFeeAmount: number;
+  /** 预估 Gas → sys_order.est_gas_fee */
   estGasFee: number;
   payAmount: number;
   currency?: string;
@@ -173,6 +179,8 @@ export interface PaymentIntentBundle {
   decimals: number;
   expireAt: string;
   payerAddress: string;
+  /** payOrder 卖家地址 */
+  sellerAddress: string;
 }
 
 export interface OrderPaymentStatus {
@@ -219,6 +227,7 @@ export function paymentToIntentBundle(payment: OrderPaymentInfo, orderCode: stri
     decimals: payment.tokenDecimals,
     expireAt: payment.expireAt ?? '',
     payerAddress: payment.payerAddress,
+    sellerAddress: payment.sellerAddress ?? '',
   };
 }
 
@@ -248,6 +257,9 @@ function mockIntentBundle(orderCode: string, payAmount: number, payerAddress: st
     decimals,
     expireAt,
     payerAddress,
+    sellerAddress:
+      process.env.REACT_APP_PLATFORM_SELLER_ADDRESS?.trim() ||
+      '0x276c145EB3C7F1017E00D4Bee7FBAca88531Ab40',
   };
 }
 

@@ -10,6 +10,7 @@ import (
 	common "sapphire-mall/app/internal/handler/common"
 	order "sapphire-mall/app/internal/handler/order"
 	product "sapphire-mall/app/internal/handler/product"
+	swap "sapphire-mall/app/internal/handler/swap"
 	user "sapphire-mall/app/internal/handler/user"
 	"sapphire-mall/app/internal/svc"
 
@@ -381,5 +382,32 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/user"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Route{
+				{
+					// 创建兑换记录（用户点击兑换时调用，状态为待处理）
+					Method:  http.MethodPost,
+					Path:    "/create",
+					Handler: swap.CreateSwapHandler(serverCtx),
+				},
+				{
+					// 更新兑换状态（授权通过后更新为处理中）
+					Method:  http.MethodPost,
+					Path:    "/update",
+					Handler: swap.UpdateSwapHandler(serverCtx),
+				},
+				{
+					// 查询兑换状态（前端轮询）
+					Method:  http.MethodPost,
+					Path:    "/status",
+					Handler: swap.GetSwapStatusHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/swap"),
 	)
 }

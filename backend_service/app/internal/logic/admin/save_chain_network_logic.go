@@ -44,9 +44,6 @@ func (l *SaveChainNetworkLogic) SaveChainNetwork(req *types.SaveChainNetworkReq)
 	if req.Status != 0 && req.Status != 1 {
 		return customererrors.ParamErrorResp("状态仅支持0或1"), nil
 	}
-	if req.ListenerEnabled != 0 && req.ListenerEnabled != 1 {
-		return customererrors.ParamErrorResp("listenerEnabled仅支持0或1"), nil
-	}
 
 	networkRepo := repository.NewChain_networkRepository(l.svcCtx.GormDB)
 
@@ -77,24 +74,48 @@ func (l *SaveChainNetworkLogic) SaveChainNetwork(req *types.SaveChainNetworkReq)
 			nativeSymbol = "ETH"
 		}
 
+		blockTime := int(req.BlockTime)
+		if blockTime <= 0 {
+			blockTime = 12
+		}
+
+		safeConfirmations := int(req.SafeConfirmations)
+		if safeConfirmations <= 0 {
+			safeConfirmations = 12
+		}
+
 		updates := map[string]interface{}{
-			"code":                     code,
-			"name":                     name,
-			"rpc_url":                  strings.TrimSpace(req.RpcURL),
-			"ws_url":                   strings.TrimSpace(req.WsURL),
-			"explorer_url":             strings.TrimSpace(req.ExplorerURL),
-			"native_symbol":            nativeSymbol,
-			"platform_config_address":  strings.TrimSpace(req.PlatformConfigAddress),
-			"payment_router_address":   strings.TrimSpace(req.PaymentRouterAddress),
-			"settlement_vault_address": strings.TrimSpace(req.SettlementVaultAddress),
-			"signer_key_ref":           strings.TrimSpace(req.SignerKeyRef),
-			"listener_enabled":         int(req.ListenerEnabled),
-			"listener_start_block":     req.ListenerStartBlock,
-			"listener_last_block":      req.ListenerLastBlock,
-			"sort":                     int(req.Sort),
-			"status":                   int(req.Status),
-			"remark":                   req.Remark,
-			"updator":                  chainOperator,
+			"project_id":                    strings.TrimSpace(req.ProjectID),
+			"code":                          code,
+			"name":                          name,
+			"rpc_url":                       strings.TrimSpace(req.RpcURL),
+			"ws_url":                        strings.TrimSpace(req.WsURL),
+			"explorer_url":                  strings.TrimSpace(req.ExplorerURL),
+			"native_symbol":                 nativeSymbol,
+			"block_time":                    blockTime,
+			"safe_confirmations":            safeConfirmations,
+			"platform_config_address":       strings.TrimSpace(req.PlatformConfigAddress),
+			"payment_router_address":        strings.TrimSpace(req.PaymentRouterAddress),
+			"settlement_vault_address":      strings.TrimSpace(req.SettlementVaultAddress),
+			"swap_router_address":           strings.TrimSpace(req.SwapRouterAddress),
+			"signer_key_ref":                strings.TrimSpace(req.SignerKeyRef),
+			// Swap 监听器配置
+			"swap_listener_enabled":         int(req.SwapListenerEnabled),
+			"swap_listener_poll_interval":   int(req.SwapListenerPollInterval),
+			"swap_listener_start_block":     req.SwapListenerStartBlock,
+			// Config 监听器配置
+			"config_listener_enabled":       int(req.ConfigListenerEnabled),
+			"config_listener_poll_interval": int(req.ConfigListenerPollInterval),
+			"config_listener_start_block":   req.ConfigListenerStartBlock,
+			// Payment 监听器配置
+			"payment_listener_enabled":       int(req.PaymentListenerEnabled),
+			"payment_listener_poll_interval": int(req.PaymentListenerPollInterval),
+			"payment_listener_start_block":   req.PaymentListenerStartBlock,
+			// 其他
+			"sort":    int(req.Sort),
+			"status":  int(req.Status),
+			"remark":  req.Remark,
+			"updator": chainOperator,
 		}
 		if updateErr := networkRepo.UpdateColumnsByID(l.ctx, req.ID, updates); updateErr != nil {
 			l.Errorf("update chain network failed, id=%d, err=%v", req.ID, updateErr)
@@ -121,12 +142,18 @@ func (l *SaveChainNetworkLogic) SaveChainNetwork(req *types.SaveChainNetworkReq)
 		nativeSymbol = "ETH"
 	}
 
-	listenerEnabled := 1
-	if req.ListenerEnabled == 0 || req.ListenerEnabled == 1 {
-		listenerEnabled = int(req.ListenerEnabled)
+	blockTime := int(req.BlockTime)
+	if blockTime <= 0 {
+		blockTime = 12
+	}
+
+	safeConfirmations := int(req.SafeConfirmations)
+	if safeConfirmations <= 0 {
+		safeConfirmations = 12
 	}
 
 	createModel := &model.Chain_network{
+		ProjectID:              strings.TrimSpace(req.ProjectID),
 		ChainId:                int(req.ChainID),
 		Code:                   code,
 		Name:                   name,
@@ -134,13 +161,13 @@ func (l *SaveChainNetworkLogic) SaveChainNetwork(req *types.SaveChainNetworkReq)
 		WsUrl:                  strings.TrimSpace(req.WsURL),
 		ExplorerUrl:            strings.TrimSpace(req.ExplorerURL),
 		NativeSymbol:           nativeSymbol,
+		BlockTime:              blockTime,
+		SafeConfirmations:      safeConfirmations,
 		PlatformConfigAddress:  strings.TrimSpace(req.PlatformConfigAddress),
 		PaymentRouterAddress:   strings.TrimSpace(req.PaymentRouterAddress),
 		SettlementVaultAddress: strings.TrimSpace(req.SettlementVaultAddress),
+		SwapRouterAddress:      strings.TrimSpace(req.SwapRouterAddress),
 		SignerKeyRef:           strings.TrimSpace(req.SignerKeyRef),
-		ListenerEnabled:        listenerEnabled,
-		ListenerStartBlock:     req.ListenerStartBlock,
-		ListenerLastBlock:      req.ListenerLastBlock,
 		Sort:                   int(req.Sort),
 		Status:                 int(req.Status),
 		Remark:                 req.Remark,

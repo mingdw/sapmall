@@ -2,7 +2,7 @@ import { useChainConfigStore, type PaymentToken } from '../store/chainConfigStor
 import type { PaymentMethod } from '../pages/marketplace/payment/types/paymentTypes';
 import { ARC_TESTNET_CHAIN_ID } from './chains/arcTestnet';
 import { LINEA_SEPOLIA_CHAIN_ID } from './chains/lineaSepolia';
-import { BASE_SEPOLIA_CHAIN_ID, isPaymentChain } from './paymentChains';
+import { BASE_SEPOLIA_CHAIN_ID } from './paymentChains';
 
 /** 链配置未加载时的降级币种列表 */
 const FALLBACK_PAYMENT_CURRENCIES: Partial<Record<number, PaymentMethod[]>> = {
@@ -12,7 +12,7 @@ const FALLBACK_PAYMENT_CURRENCIES: Partial<Record<number, PaymentMethod[]>> = {
 };
 
 function getFallbackPaymentCurrencies(chainId: number): PaymentMethod[] {
-  return FALLBACK_PAYMENT_CURRENCIES[chainId] ?? ['SAP'];
+  return FALLBACK_PAYMENT_CURRENCIES[chainId] ?? ['USDC'];
 }
 
 function normalizePaymentSymbols(tokens: PaymentToken[]): PaymentMethod[] {
@@ -27,40 +27,27 @@ function normalizePaymentSymbols(tokens: PaymentToken[]): PaymentMethod[] {
   return result;
 }
 
-/** 支付链上保证 SAP 出现在可选列表（平台代币；后端未配置时亦展示） */
-function ensureSapOnPaymentChain(chainId: number, symbols: PaymentMethod[]): PaymentMethod[] {
-  if (!isPaymentChain(chainId)) return symbols;
-  if (symbols.includes('SAP')) return symbols;
-  return [...symbols, 'SAP'];
-}
-
 /**
- * 获取指定链可用的支付币种列表
- * 优先从后端链配置获取，降级到硬编码；支付链始终包含 SAP
+ * 获取指定链可选支付币种（与 sys_chain_payment_token.status=0 启用项一致，由后端过滤）
  */
 export function getAvailablePaymentCurrencies(chainId?: number): PaymentMethod[] {
-  if (chainId == null) return ['SAP'];
+  if (chainId == null) return ['USDC'];
 
   const store = useChainConfigStore.getState();
   const tokens = store.getPaymentTokens(chainId);
 
-  let symbols: PaymentMethod[];
-  if (store.loaded && tokens.length > 0) {
-    symbols = normalizePaymentSymbols(tokens);
-  } else if (!store.loaded) {
-    symbols = getFallbackPaymentCurrencies(chainId);
-  } else {
-    symbols = getFallbackPaymentCurrencies(chainId);
+  if (store.loaded) {
+    return normalizePaymentSymbols(tokens);
   }
 
-  return ensureSapOnPaymentChain(chainId, symbols);
+  return getFallbackPaymentCurrencies(chainId);
 }
 
 /** 默认支付币种：优先 USDC，否则取列表首项 */
 export function getDefaultPaymentCurrency(chainId?: number): PaymentMethod {
   const available = getAvailablePaymentCurrencies(chainId);
   if (available.includes('USDC')) return 'USDC';
-  return available[0] ?? 'SAP';
+  return available[0] ?? 'USDC';
 }
 
 export function isPaymentCurrencyAvailable(chainId: number, method: PaymentMethod): boolean {
@@ -71,16 +58,20 @@ export function isSapPayment(method: PaymentMethod): boolean {
   return method === 'SAP';
 }
 
+function hasPayableContractAddress(token?: PaymentToken): boolean {
+  return Boolean(token?.contractAddress?.trim());
+}
+
 /**
- * 判断某链上某币种是否支持链上支付（需有合约地址）
+ * 判断某链上某币种是否支持链上支付：
+ * 须在链配置启用代币列表中，且已配置合约地址（与 sys_chain_payment_token 一致）
  */
 export function isOnChainPaySupported(method: PaymentMethod, chainId?: number): boolean {
   const store = useChainConfigStore.getState();
 
   if (chainId != null) {
     const token = store.getTokenConfig(chainId, method);
-    if (token?.contractAddress) return true;
-    if (isSapPayment(method) && isPaymentChain(chainId)) return true;
+    if (hasPayableContractAddress(token)) return true;
     if (!store.loaded) {
       return getFallbackPaymentCurrencies(chainId).includes(method);
     }
@@ -88,7 +79,11 @@ export function isOnChainPaySupported(method: PaymentMethod, chainId?: number): 
   }
 
   return store.chains.some((chain) =>
-    chain.paymentTokens.some((t) => t.symbol === method && t.contractAddress !== ''),
+    chain.paymentTokens.some(
+      (t) =>
+        t.symbol.trim().toUpperCase() === method.trim().toUpperCase() &&
+        hasPayableContractAddress(t),
+    ),
   );
 }
 

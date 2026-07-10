@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { getAvailablePaymentCurrencies, getDefaultPaymentCurrency, isSapPayment } from '../../../../config/paymentCurrencies';
+import { getAvailablePaymentCurrencies, isSapPayment, isOnChainPaySupported } from '../../../../config/paymentCurrencies';
 import { useChainConfigStore } from '../../../../store/chainConfigStore';
 import { PaymentMethod } from '../types/paymentTypes';
 import PaymentTokenIcon from './PaymentTokenIcon';
@@ -104,7 +104,11 @@ const PaymentCurrencySelect: React.FC<Props> = ({ chainId, value, onChange, disa
             <span className={styles.payCurrencyName}>{resolveCurrencyLabel(method, t)}</span>
             {variant === 'sap' ? (
               <>
-                <span className={styles.payCurrencyBadge}>{t('payment.pay.sapFeeBadge')}</span>
+                {!isOnChainPaySupported(method, chainId) ? (
+                  <span className={styles.payCurrencyBadgeMuted}>{t('payment.pay.sapComingSoonBadge')}</span>
+                ) : (
+                  <span className={styles.payCurrencyBadge}>{t('payment.pay.sapFeeBadge')}</span>
+                )}
                 <span className={styles.payCurrencyPlatformTag}>{t('payment.pay.sapSectionLabel')}</span>
               </>
             ) : null}

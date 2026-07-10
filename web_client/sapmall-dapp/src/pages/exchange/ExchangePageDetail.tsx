@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
 import { baseClient } from '../../services/api/baseClient';
+import { useChainConfigStore } from '../../store/chainConfigStore';
 import i18n from '../../i18n';
 import ParticleBackground from './components/ParticleBackground';
 import SwapCard from './components/SwapCard';
@@ -12,6 +13,7 @@ import MarketStats from './components/MarketStats';
 import PriceChart from './components/PriceChart';
 import RecentTransactions from './components/RecentTransactions';
 import SapTokenVisual from './components/SapTokenVisual';
+import TokenIcon from './components/TokenIcon';
 import styles from './ExchangePageDetail.module.scss';
 
 type ExchangeTab = 'swap' | 'merchantDeposit';
@@ -48,7 +50,28 @@ class ErrorBoundary extends React.Component<
 const ExchangePageDetail: React.FC = () => {
   const { t, ready } = useTranslation();
   const [searchParams] = useSearchParams();
-  const { isConnected } = useAccount();
+  const { isConnected, chainId } = useAccount();
+  const chainConfigStore = useChainConfigStore();
+
+  // 从链配置获取当前链支持的支付代币（排除 SAP，SAP 是输出代币）
+  const supportedCoins = useMemo(() => {
+    if (!chainId) return [];
+    const tokens = chainConfigStore.getPaymentTokens(chainId);
+    return tokens
+      .filter((token) => token.symbol.toUpperCase() !== 'SAP')
+      .map((token) => token.symbol);
+  }, [chainId, chainConfigStore]);
+  // 当前选中的支付代币（提升到父组件，供 SwapCard / SapTokenVisual / MarketStats 共享）
+  const [fromToken, setFromToken] = useState('');
+
+  // 默认选第一个可用代币（优先 USDC）
+  useEffect(() => {
+    if (supportedCoins.length > 0 && !supportedCoins.includes(fromToken)) {
+      const usdc = supportedCoins.find((s) => s.toUpperCase() === 'USDC');
+      setFromToken(usdc || supportedCoins[0]);
+    }
+  }, [supportedCoins, fromToken]);
+
   const [activeTab, setActiveTab] = useState<ExchangeTab>('swap');
   const [depositProcessing, setDepositProcessing] = useState(false);
   const [depositPaid, setDepositPaid] = useState(false);
@@ -246,7 +269,7 @@ const ExchangePageDetail: React.FC = () => {
         <div className="flex flex-col xl:flex-row gap-6 items-start max-w-[1440px] mx-auto">
           <div className="flex flex-col gap-5 w-full xl:w-[280px] xl:flex-shrink-0">
             <div className={`rounded-3xl p-6 ${styles.panelCard}`}>
-              <SapTokenVisual />
+              <SapTokenVisual tokenSymbol={fromToken} />
             </div>
 
             <div className={`rounded-3xl p-6 ${styles.panelCard}`}>
@@ -306,6 +329,8 @@ const ExchangePageDetail: React.FC = () => {
                   onSwapSuccess={handleSwapSuccess}
                   disabled={!canOperateSwap}
                   disabledReason={t('exchange.swap.disabledReason')}
+                  fromToken={fromToken}
+                  onFromTokenChange={setFromToken}
                 />
               </ErrorBoundary>
             ) : (
@@ -374,23 +399,9 @@ const ExchangePageDetail: React.FC = () => {
             <div className={`w-full max-w-[520px] rounded-2xl p-4 ${styles.stableCoinPanel}`}>
               <p className="text-xs text-muted-foreground mb-3 text-center">{t('exchange.supportedCoins')}</p>
               <div className="flex items-center justify-center gap-6">
-                {['USDT', 'USDC', 'BUSD', 'DAI', 'BNB', 'SOL'].map((coin) => (
+                {supportedCoins.map((coin) => (
                   <div key={coin} className="flex flex-col items-center gap-1.5">
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold ${styles.coinIcon} ${
-                      coin === 'USDT'
-                        ? styles.coinUsdt
-                        : coin === 'USDC'
-                          ? styles.coinUsdc
-                          : coin === 'BUSD'
-                            ? styles.coinBusd
-                            : coin === 'DAI'
-                              ? styles.coinDai
-                              : coin === 'BNB'
-                                ? styles.coinBusd
-                                : styles.coinUsdc
-                    }`}>
-                      {coin === 'USDT' ? '₮' : coin === 'USDC' ? '◎' : coin === 'BUSD' ? 'B' : coin === 'DAI' ? '◇' : coin === 'BNB' ? '◆' : '✦'}
-                    </div>
+                    <TokenIcon symbol={coin} size={36} />
                     <span className="text-xs text-muted-foreground">{coin}</span>
                   </div>
                 ))}

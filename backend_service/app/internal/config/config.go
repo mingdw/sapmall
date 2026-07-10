@@ -40,6 +40,10 @@ type Config struct {
 		ContractAddress  string
 		IntentExpireMins int64
 	}
+	// OrderPayment 商城订单链上支付（payOrder seller 等）
+	OrderPayment struct {
+		PlatformSellerAddress string // 平台收款/卖家钱包（SettlementVault 放款地址）
+	}
 	// ChainMonitor 仅保留管理端等场景写链所需的 JSON-RPC 地址（如同步平台配置到合约）。
 	ChainMonitor struct {
 		RPCURL string

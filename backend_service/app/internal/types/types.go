@@ -4,26 +4,32 @@
 package types
 
 type AdminOrderSummary struct {
-	Id                int64   `json:"id"`
-	OrderCode         string  `json:"orderCode"`
-	UserId            int64   `json:"userId"`
-	UserCode          string  `json:"userCode,optional"`
-	ProductName       string  `json:"productName,optional"`
-	ProductQuantity   int64   `json:"productQuantity,optional"`
-	ProductTotal      float64 `json:"productTotal,optional"`
-	SkuImgs           string  `json:"skuImgs,optional"`
-	TotalAmount       float64 `json:"totalAmount,optional"` // 商品总金额（优惠前）
-	RealAmount        float64 `json:"realAmount,optional"`  // 实付金额
-	PayAmount         float64 `json:"payAmount,optional"`
-	Currency          string  `json:"currency,optional"`
-	OrderStatus       int64   `json:"orderStatus"`
-	OrderStatusDesc   string  `json:"orderStatusDesc,optional"`
-	PaymentStatus     int64   `json:"paymentStatus"`
-	PaymentStatusDesc string  `json:"paymentStatusDesc,optional"`
-	PayerAddress      string  `json:"payerAddress,optional"`
-	OrderDate         string  `json:"orderDate,optional"`
-	ExpireAt          string  `json:"expireAt,optional"`
-	CreatedAt         string  `json:"createdAt,optional"`
+Id                int64   `json:"id"`
+OrderCode         string  `json:"orderCode"`
+UserId            int64   `json:"userId"`
+UserCode          string  `json:"userCode,optional"`
+ProductName       string  `json:"productName,optional"`
+ProductQuantity   int64   `json:"productQuantity,optional"`
+TotalAmount       float64 `json:"totalAmount,optional"`
+SkuImgs           string  `json:"skuImgs,optional"`
+RealAmount        float64 `json:"realAmount,optional"`  // 实付金额
+PayAmount         float64 `json:"payAmount,optional"`
+Currency          string  `json:"currency,optional"`         // 计价币种
+SettleCurrency    string  `json:"settleCurrency,optional"`   // 结算币种
+PlatformFeeAmount float64 `json:"platformFeeAmount,optional"` // 平台手续费
+ActGasFee         float64 `json:"actGasFee,optional"`           // 实际Gas费
+ChainId           int64   `json:"chainId,optional"`           // 链 ID
+ChainName         string  `json:"chainName,optional"`         // 链名称
+TokenSymbol       string  `json:"tokenSymbol,optional"`       // 支付代币符号
+ConfirmedAt       string  `json:"confirmedAt,optional"`       // 链上确认时间
+OrderStatus       int64   `json:"orderStatus"`
+OrderStatusDesc   string  `json:"orderStatusDesc,optional"`
+PaymentStatus     int64   `json:"paymentStatus"`
+PaymentStatusDesc string  `json:"paymentStatusDesc,optional"`
+PayerAddress      string  `json:"payerAddress,optional"`
+OrderDate         string  `json:"orderDate,optional"`
+ExpireAt          string  `json:"expireAt,optional"`
+CreatedAt         string  `json:"createdAt,optional"`
 }
 
 type ApplyMerchantCertReq struct {
@@ -48,6 +54,7 @@ type BatchUploadFileResp struct {
 
 type ChainNetworkInfo struct {
 	ID                     int64                   `json:"id"`
+	ProjectID              string                  `json:"projectId,optional"`
 	ChainID                int64                   `json:"chainId"`
 	Code                   string                  `json:"code"`
 	Name                   string                  `json:"name"`
@@ -55,21 +62,37 @@ type ChainNetworkInfo struct {
 	WsURL                  string                  `json:"wsUrl,optional"`
 	ExplorerURL            string                  `json:"explorerUrl,optional"`
 	NativeSymbol           string                  `json:"nativeSymbol,optional"`
+	BlockTime              int64                   `json:"blockTime"`
+	SafeConfirmations      int64                   `json:"safeConfirmations"`
 	PlatformConfigAddress  string                  `json:"platformConfigAddress,optional"`
 	PaymentRouterAddress   string                  `json:"paymentRouterAddress,optional"`
 	SettlementVaultAddress string                  `json:"settlementVaultAddress,optional"`
+	SwapRouterAddress      string                  `json:"swapRouterAddress,optional"`
 	SignerKeyRef           string                  `json:"signerKeyRef,optional"`
-	ListenerEnabled        int64                   `json:"listenerEnabled"`
-	ListenerStartBlock     int64                   `json:"listenerStartBlock"`
-	ListenerLastBlock      int64                   `json:"listenerLastBlock"`
-	Sort                   int64                   `json:"sort"`
-	Status                 int64                   `json:"status"`
-	Remark                 string                  `json:"remark,optional"`
-	PaymentTokens          []ChainPaymentTokenInfo `json:"paymentTokens,optional"` // list 接口嵌套返回
-	CreatedAt              string                  `json:"createdAt,optional"`
-	UpdatedAt              string                  `json:"updatedAt,optional"`
-	Creator                string                  `json:"creator,optional"`
-	Updator                string                  `json:"updator,optional"`
+	// Swap 监听器配置
+	SwapListenerEnabled      int64 `json:"swapListenerEnabled"`
+	SwapListenerPollInterval int64 `json:"swapListenerPollInterval"`
+	SwapListenerStartBlock   int64 `json:"swapListenerStartBlock"`
+	SwapListenerLastBlock    int64 `json:"swapListenerLastBlock"`
+	// Config 监听器配置
+	ConfigListenerEnabled      int64 `json:"configListenerEnabled"`
+	ConfigListenerPollInterval int64 `json:"configListenerPollInterval"`
+	ConfigListenerStartBlock   int64 `json:"configListenerStartBlock"`
+	ConfigListenerLastBlock    int64 `json:"configListenerLastBlock"`
+	// Payment 监听器配置
+	PaymentListenerEnabled      int64 `json:"paymentListenerEnabled"`
+	PaymentListenerPollInterval int64 `json:"paymentListenerPollInterval"`
+	PaymentListenerStartBlock   int64 `json:"paymentListenerStartBlock"`
+	PaymentListenerLastBlock    int64 `json:"paymentListenerLastBlock"`
+	// 其他
+	Sort          int64                   `json:"sort"`
+	Status        int64                   `json:"status"`
+	Remark        string                  `json:"remark,optional"`
+	PaymentTokens []ChainPaymentTokenInfo `json:"paymentTokens,optional"`
+	CreatedAt     string                  `json:"createdAt,optional"`
+	UpdatedAt     string                  `json:"updatedAt,optional"`
+	Creator       string                  `json:"creator,optional"`
+	Updator       string                  `json:"updator,optional"`
 }
 
 type ChainPaymentTokenInfo struct {
@@ -100,9 +123,10 @@ type CommonChainNetworkInfo struct {
 	RpcURL                 string                   `json:"rpcUrl,optional"`
 	ExplorerURL            string                   `json:"explorerUrl,optional"`
 	NativeSymbol           string                   `json:"nativeSymbol,optional"`
-	PlatformConfigAddress  string                   `json:"platformConfigAddress,optional"`
-	PaymentRouterAddress   string                   `json:"paymentRouterAddress,optional"`
-	SettlementVaultAddress string                   `json:"settlementVaultAddress,optional"`
+	PlatformConfigAddress  string                    `json:"platformConfigAddress,optional"`
+	PaymentRouterAddress   string                    `json:"paymentRouterAddress,optional"`
+	SettlementVaultAddress string                    `json:"settlementVaultAddress,optional"`
+	SwapRouterAddress      string                    `json:"swapRouterAddress,optional"`
 	Sort                   int64                    `json:"sort"`
 	Status                 int64                    `json:"status"`
 	PaymentTokens          []CommonPaymentTokenInfo `json:"paymentTokens,optional"`
@@ -117,32 +141,29 @@ type CommonPaymentTokenInfo struct {
 }
 
 type CreateOrderReq struct {
-	SkuId                   int64                `json:"skuId"`
-	SkuCode                 string               `json:"skuCode,optional"`
-	SkuImgs                 string               `json:"skuImgs,optional"` // sku_imgs
-	SpuId                   int64                `json:"spuId,optional"`
-	SpuCode                 string               `json:"spuCode,optional"`
-	ProductName             string               `json:"productName,optional"`
-	ProductPrice            float64              `json:"productPrice,optional"`
-	Quantity                int64                `json:"quantity"` // product_quantity
-	ProductTotal            float64              `json:"productTotal,optional"`
-	ProductRemark           string               `json:"productRemark,optional"`
-	PayerAddress            string               `json:"payerAddress"`
-	ChainId                 int64                `json:"chainId,optional"`
-	TokenSymbol             string               `json:"tokenSymbol,optional"` // 默认 USDC
-	SaleSubtotal            float64              `json:"saleSubtotal,optional"`
-	Promotions              []OrderPromotionItem `json:"promotions,optional"`
-	PromotionDiscountAmount float64              `json:"promotionDiscountAmount"`
-	DiscountAmount          float64              `json:"discountAmount,optional"` // 优惠金额（兼容旧逻辑）
-	TotalAmount             float64              `json:"totalAmount,optional"`    // 商品总金额（兼容旧逻辑）
-	PayableAmount           float64              `json:"payableAmount"`
-	PlatformFeeAmount       float64              `json:"platformFeeAmount"`
-	EstimatedGasFee         float64              `json:"estimatedGasFee"`
-	EstGasFee               float64              `json:"estGasFee,optional"` // 预估Gas费（兼容旧逻辑）
-	PayAmount               float64              `json:"payAmount"`
-	Currency                string               `json:"currency,optional"`
-	OrderRemark             string               `json:"orderRemark,optional"` // buyerMessage
-	Delivery                OrderDeliveryInput   `json:"delivery,optional"`
+	SkuId             int64                `json:"skuId"`
+	SkuCode           string               `json:"skuCode,optional"`
+	SkuImgs           string               `json:"skuImgs,optional"` // sku_imgs
+	SpuId             int64                `json:"spuId,optional"`
+	SpuCode           string               `json:"spuCode,optional"`
+	ProductName       string               `json:"productName,optional"`
+	ProductPrice      float64              `json:"productPrice,optional"`
+	Quantity          int64                `json:"quantity"` // product_quantity
+	TotalAmount       float64              `json:"totalAmount,optional"` // total_amount 商品行小计
+	ProductRemark     string               `json:"productRemark,optional"`
+	PayerAddress      string               `json:"payerAddress"`
+	ChainId           int64                `json:"chainId,optional"`
+	TokenSymbol       string               `json:"tokenSymbol,optional"` // 默认 USDC
+	Promotions        []OrderPromotionItem `json:"promotions,optional"`
+	DiscountAmount    float64              `json:"discountAmount"` // discount_amount 促销金额
+	PayableAmount     float64              `json:"payableAmount"`
+	PlatformFeeAmount float64              `json:"platformFeeAmount"`
+	EstGasFee         float64              `json:"estGasFee"` // est_gas_fee
+PayAmount         float64              `json:"payAmount"`
+Currency          string               `json:"currency,optional"`
+SettleCurrency    string               `json:"settleCurrency,optional"` // 结算币种
+OrderRemark       string               `json:"orderRemark,optional"` // buyerMessage
+	Delivery          OrderDeliveryInput   `json:"delivery,optional"`
 }
 
 type CreateOrderResp struct {
@@ -608,36 +629,33 @@ type OrderDeliveryInput struct {
 }
 
 type OrderInfo struct {
-	OrderCode               string  `json:"orderCode"`
-	SpuId                   int64   `json:"spuId,optional"`           // spu_id
-	SpuCode                 string  `json:"spuCode,optional"`         // spu_code
-	SkuId                   int64   `json:"skuId,optional"`           // sku_id
-	SkuCode                 string  `json:"skuCode,optional"`         // sku_code
-	SkuImgs                 string  `json:"skuImgs,optional"`         // sku_imgs
-	ProductName             string  `json:"productName,optional"`     // product_name
-	ProductPrice            float64 `json:"productPrice,optional"`    // product_price
-	ProductQuantity         int64   `json:"productQuantity,optional"` // product_quantity
-	ProductTotal            float64 `json:"productTotal,optional"`    // product_total
-	ProductRemark           string  `json:"productRemark,optional"`   // product_remark
-	TotalAmount             float64 `json:"totalAmount,optional"`     // 商品总金额（优惠前）
-	OrderStatus             int64   `json:"orderStatus"`              // order_status：10待支付 30已支付 40待发货 50已发货 60已完成 70已取消 80已过期 90支付失败
-	OrderStatusDesc         string  `json:"orderStatusDesc,optional"`
-	PaymentStatus           int64   `json:"paymentStatus"` // payment_status（冗余）：1未支付 2链上确认中 3已支付 4已关闭
-	PaymentStatusDesc       string  `json:"paymentStatusDesc,optional"`
-	OrderDate               string  `json:"orderDate,optional"` // order_date RFC3339
-	Currency                string  `json:"currency,optional"`  // 默认 USDC
-	SaleSubtotal            float64 `json:"saleSubtotal,optional"`
-	PromotionDiscountAmount float64 `json:"promotionDiscountAmount,optional"`
-	DiscountAmount          float64 `json:"discountAmount,optional"`  // 优惠金额（兼容旧逻辑）
-	PayableAmount           float64 `json:"payableAmount,optional"`
-	PlatformFeeAmount       float64 `json:"platformFeeAmount,optional"`
-	EstimatedGasFee         float64 `json:"estimatedGasFee,optional"`
-	EstGasFee               float64 `json:"estGasFee,optional"` // 预估Gas费（兼容旧逻辑）
-	PayAmount               float64 `json:"payAmount,optional"`
-	RealAmount              float64 `json:"realAmount,optional"`  // 实付金额
-	ActGasFee               float64 `json:"actGasFee,optional"`  // 实际Gas费
-	OrderRemark             string  `json:"orderRemark,optional"` // order_remark / 买家留言
-	ExpireAt                string  `json:"expireAt,optional"`    // 订单支付超时 order.expire_at
+	OrderCode         string  `json:"orderCode"`
+	SpuId             int64   `json:"spuId,optional"`           // spu_id
+	SpuCode           string  `json:"spuCode,optional"`         // spu_code
+	SkuId             int64   `json:"skuId,optional"`           // sku_id
+	SkuCode           string  `json:"skuCode,optional"`         // sku_code
+	SkuImgs           string  `json:"skuImgs,optional"`         // sku_imgs
+	ProductName       string  `json:"productName,optional"`     // product_name
+	ProductPrice      float64 `json:"productPrice,optional"`    // product_price
+	ProductQuantity   int64   `json:"productQuantity,optional"` // product_quantity
+	TotalAmount       float64 `json:"totalAmount,optional"`     // total_amount 商品行小计
+	ProductRemark     string  `json:"productRemark,optional"`   // product_remark
+	OrderStatus       int64   `json:"orderStatus"`              // order_status：10待支付 30已支付 40待发货 50已发货 60已完成 70已取消 80已过期 90支付失败
+	OrderStatusDesc   string  `json:"orderStatusDesc,optional"`
+	PaymentStatus     int64   `json:"paymentStatus"` // payment_status（冗余）：1未支付 2链上确认中 3已支付 4已关闭
+	PaymentStatusDesc string  `json:"paymentStatusDesc,optional"`
+	OrderDate         string  `json:"orderDate,optional"` // order_date RFC3339
+Currency          string  `json:"currency,optional"`              // 计价币种，默认 USDC
+SettleCurrency    string  `json:"settleCurrency,optional"`          // 结算币种
+DiscountAmount    float64 `json:"discountAmount,optional"` // discount_amount 促销金额
+PayableAmount     float64 `json:"payableAmount,optional"`
+	PlatformFeeAmount float64 `json:"platformFeeAmount,optional"`
+	EstGasFee         float64 `json:"estGasFee,optional"` // est_gas_fee
+	ActGasFee         float64 `json:"actGasFee,optional"` // act_gas_fee
+	PayAmount         float64 `json:"payAmount,optional"`
+	RealAmount        float64 `json:"realAmount,optional"`  // real_amount
+	OrderRemark       string  `json:"orderRemark,optional"` // order_remark / 买家留言
+	ExpireAt          string  `json:"expireAt,optional"`    // 订单支付超时 order.expire_at
 }
 
 type OrderPaymentInfo struct {
@@ -661,9 +679,10 @@ type OrderPaymentInfo struct {
 	PaidAt                string  `json:"paidAt,optional"`
 	ConfirmedAt           string  `json:"confirmedAt,optional"`
 	FailReason            string  `json:"failReason,optional"`
-	EstGasFee             float64 `json:"estGasFee,optional"`   // 预估Gas费
-	ActGasFee             float64 `json:"actGasFee,optional"`  // 实际Gas费
-	ActualGasFee          float64 `json:"actualGasFee,optional"` // 实际 GAS 费（兼容旧逻辑）
+	SellerAddress         string  `json:"sellerAddress,optional"` // payOrder 卖家地址
+	EstGasFee             float64 `json:"estGasFee,optional"`     // 预估Gas费
+	ActGasFee             float64 `json:"actGasFee,optional"`     // 实际Gas费
+	ActualGasFee          float64 `json:"actualGasFee,optional"`  // 实际 GAS 费（兼容旧逻辑）
 }
 
 type OrderPromotionItem struct {
@@ -913,6 +932,7 @@ type SaveCategoryReq struct {
 
 type SaveChainNetworkReq struct {
 	ID                     int64  `json:"id,optional"` // 空或 0 新增
+	ProjectID              string `json:"projectId,optional"`
 	ChainID                int64  `json:"chainId"`     // 新增必填，更新不可改
 	Code                   string `json:"code"`
 	Name                   string `json:"name"`
@@ -920,16 +940,29 @@ type SaveChainNetworkReq struct {
 	WsURL                  string `json:"wsUrl,optional"`
 	ExplorerURL            string `json:"explorerUrl,optional"`
 	NativeSymbol           string `json:"nativeSymbol,optional"`
+	BlockTime              int64  `json:"blockTime,optional"`          // 平均出块时间(秒)
+	SafeConfirmations      int64  `json:"safeConfirmations,optional"` // 安全确认区块数
 	PlatformConfigAddress  string `json:"platformConfigAddress,optional"`
 	PaymentRouterAddress   string `json:"paymentRouterAddress,optional"`
 	SettlementVaultAddress string `json:"settlementVaultAddress,optional"`
+	SwapRouterAddress      string `json:"swapRouterAddress,optional"`
 	SignerKeyRef           string `json:"signerKeyRef,optional"`
-	ListenerEnabled        int64  `json:"listenerEnabled,optional"`
-	ListenerStartBlock     int64  `json:"listenerStartBlock,optional"`
-	ListenerLastBlock      int64  `json:"listenerLastBlock,optional"`
-	Sort                   int64  `json:"sort,optional"`
-	Status                 int64  `json:"status,optional"`
-	Remark                 string `json:"remark,optional"`
+	// Swap 监听器配置
+	SwapListenerEnabled      int64 `json:"swapListenerEnabled,optional"`
+	SwapListenerPollInterval int64 `json:"swapListenerPollInterval,optional"`
+	SwapListenerStartBlock   int64 `json:"swapListenerStartBlock,optional"`
+	// Config 监听器配置
+	ConfigListenerEnabled      int64 `json:"configListenerEnabled,optional"`
+	ConfigListenerPollInterval int64 `json:"configListenerPollInterval,optional"`
+	ConfigListenerStartBlock   int64 `json:"configListenerStartBlock,optional"`
+	// Payment 监听器配置
+	PaymentListenerEnabled      int64 `json:"paymentListenerEnabled,optional"`
+	PaymentListenerPollInterval int64 `json:"paymentListenerPollInterval,optional"`
+	PaymentListenerStartBlock   int64 `json:"paymentListenerStartBlock,optional"`
+	// 其他
+	Sort     int64  `json:"sort,optional"`
+	Status   int64  `json:"status,optional"`
+	Remark   string `json:"remark,optional"`
 }
 
 type SaveChainPaymentTokenReq struct {
@@ -1064,4 +1097,54 @@ type VersionResp struct {
 	BuildTime string `json:"build_time"`
 	GitCommit string `json:"git_commit"`
 	GoVersion string `json:"go_version"`
+}
+
+// ========== Swap 兑换相关类型 ==========
+
+type CreateSwapReq struct {
+	ChainId         int64  `json:"chainId"`
+	RouterAddress   string `json:"routerAddress"`
+	TokenInSymbol   string `json:"tokenInSymbol"`
+	TokenInAddress  string `json:"tokenInAddress"`
+	TokenInDecimals int64  `json:"tokenInDecimals,optional"`
+	AmountIn        string `json:"amountIn"`
+	AmountInRaw     string `json:"amountInRaw"`
+	AmountOut       string `json:"amountOut,optional"`
+	AmountOutRaw    string `json:"amountOutRaw,optional"`
+	FeeRaw          string `json:"feeRaw,optional"`
+	MinAmountOutRaw string `json:"minAmountOutRaw,optional"`
+	Direction       int64  `json:"direction,optional"`
+}
+
+type CreateSwapResp struct {
+	SwapId        int64  `json:"swapId"`
+	BusinessCode  string `json:"businessCode"`
+	ProcessStatus int64  `json:"processStatus"`
+}
+
+type UpdateSwapReq struct {
+	SwapId int64  `json:"swapId"`
+	TxHash string `json:"txHash,optional"`
+}
+
+type UpdateSwapResp struct {
+	SwapId        int64  `json:"swapId"`
+	ProcessStatus int64  `json:"processStatus"`
+}
+
+type GetSwapStatusReq struct {
+	SwapId int64 `json:"swapId"`
+}
+
+type GetSwapStatusResp struct {
+	SwapId            int64  `json:"swapId"`
+	BusinessCode      string `json:"businessCode"`
+	ProcessStatus     int64  `json:"processStatus"`
+	ProcessStatusDesc string `json:"processStatusDesc"`
+	TxHash            string `json:"txHash,optional"`
+	BlockNumber       int64  `json:"blockNumber,optional"`
+	EventPayload      string `json:"eventPayload,optional"`
+	ErrorMsg          string `json:"errorMsg,optional"`
+	CreatedAt         string `json:"createdAt,optional"`
+	UpdatedAt         string `json:"updatedAt,optional"`
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Modal } from 'antd';
+import { Modal } from 'antd';
 import { useConnect, useDisconnect, useAccount, useSignMessage, useSwitchChain, useChainId } from 'wagmi';
 import { Copy, Wallet, RefreshCw, X, ChevronDown, User, ShoppingCart, Heart, Package, RotateCcw, Settings, LogOut, Check } from 'lucide-react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -34,6 +34,12 @@ import {
   beginUserWalletChainSwitch,
   endUserWalletChainSwitch,
 } from '../../../utils/walletChainSwitchGuard';
+import headerControlStyles from '../HeaderControl.module.scss';
+import {
+  HEADER_CTRL_ICON_SIZE,
+  HEADER_CTRL_ICON_STROKE,
+  HEADER_CTRL_CHEVRON_SIZE,
+} from '../headerControlButton';
 
 /** 与语言无关的错误码，供静默处理分支识别 */
 const WALLET_ERR_USER_REJECTED_SIGN = 'WALLET_ERR_USER_REJECTED_SIGN';
@@ -474,14 +480,33 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   };
 
 
+  // 渲染「连接钱包」主按钮
+  const renderConnectButton = (
+    onClick: () => void,
+    loading = false,
+    label = t('walletConnect.connectWallet'),
+  ) => (
+    <button
+      type="button"
+      className={headerControlStyles.launchBtn}
+      onClick={onClick}
+      disabled={loading}
+      aria-busy={loading}
+    >
+      {loading ? (
+        <span className={headerControlStyles.launchBtnSpinner} aria-hidden />
+      ) : (
+        <span className={headerControlStyles.launchBtnIcon}>
+          <Wallet size={HEADER_CTRL_ICON_SIZE} strokeWidth={HEADER_CTRL_ICON_STROKE} aria-hidden />
+        </span>
+      )}
+      <span className={headerControlStyles.launchBtnLabel}>{label}</span>
+    </button>
+  );
+
   // 如果i18n还没有准备好，显示加载状态
   if (!ready) {
-    return (
-      <Button loading>
-        <Wallet size={16} className="mr-2" />
-        {t('common.loading')}
-      </Button>
-    );
+    return renderConnectButton(() => undefined, true, t('common.loading'));
   }
 
   // 如果未连接，显示连接按钮
@@ -502,14 +527,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
                 },
               })}
             >
-              <Button
-                type="primary"
-                icon={<Wallet size={16} />}
-                onClick={openConnectModal}
-                loading={isPending || isConnecting}
-              >
-                {t('walletConnect.connectWallet')}
-              </Button>
+              {renderConnectButton(openConnectModal, isPending || isConnecting)}
             </div>
           );
         }}
@@ -522,33 +540,32 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     // 如果有连接错误，显示重试按钮
     if (connectionError) {
       return (
-        <div className="flex items-center space-x-2">
-          <Button 
-            onClick={() => handleWalletConnected(address!)} 
-            type="primary"
-            icon={<RefreshCw size={16} />}
+        <div className={headerControlStyles.headerControlActions}>
+          <button
+            type="button"
+            className={headerControlStyles.launchBtn}
+            onClick={() => handleWalletConnected(address!)}
           >
-            {t('walletConnect.retryConnect')}
-          </Button>
-          <Button 
-            onClick={() => handleDisconnect()} 
-            type="default"
-            icon={<X size={16} />}
+            <span className={headerControlStyles.launchBtnIcon}>
+              <RefreshCw size={HEADER_CTRL_ICON_SIZE} strokeWidth={HEADER_CTRL_ICON_STROKE} aria-hidden />
+            </span>
+            <span className={headerControlStyles.launchBtnLabel}>{t('walletConnect.retryConnect')}</span>
+          </button>
+          <button
+            type="button"
+            className={headerControlStyles.langTrigger}
+            onClick={() => handleDisconnect()}
           >
-            {t('common.cancel')}
-          </Button>
+            <X size={HEADER_CTRL_ICON_SIZE} strokeWidth={HEADER_CTRL_ICON_STROKE} aria-hidden />
+            <span>{t('common.cancel')}</span>
+          </button>
         </div>
       );
     }
     
     // 如果正在处理连接，显示加载状态
     if (isProcessingConnection) {
-      return (
-        <Button loading>
-          <Wallet size={16} className="mr-2" />
-          {t('walletConnect.connecting')}
-        </Button>
-      );
+      return renderConnectButton(() => undefined, true, t('walletConnect.connecting'));
     }
     
     // 如果钱包已连接但用户未登录，且不在处理中，显示连接钱包按钮
@@ -568,14 +585,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
                 },
               })}
             >
-              <Button
-                type="primary"
-                icon={<Wallet size={16} />}
-                onClick={openConnectModal}
-                loading={isPending || isConnecting}
-              >
-                {t('walletConnect.connectWallet')}
-              </Button>
+              {renderConnectButton(openConnectModal, isPending || isConnecting)}
             </div>
           );
         }}
@@ -603,20 +613,23 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
 
   // 如果已连接，显示用户信息区域（完全按照原型页面布局）
   return (
-    <div className="flex items-center space-x-3">
+    <div className={headerControlStyles.headerControlGroup}>
       {/* 网络切换下拉 - 完全按照原型实现 */}
       <div className="relative">
-        <button 
+        <button
+          type="button"
           onClick={() => setShowNetworkMenu(!showNetworkMenu)}
-          className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors"
+          className={headerControlStyles.langTrigger}
+          aria-expanded={showNetworkMenu}
+          aria-haspopup="listbox"
         >
           <ChainNetworkIcon
             chainId={currentNetwork.id}
             alt={currentNetwork.name}
             className={styles.networkIcon}
           />
-          <span className="text-sm">{currentNetwork.name}</span>
-          <ChevronDown size={12} />
+          <span>{currentNetwork.name}</span>
+          <ChevronDown size={HEADER_CTRL_CHEVRON_SIZE} strokeWidth={HEADER_CTRL_ICON_STROKE} />
         </button>
         <div className={`${styles.dropdown} ${showNetworkMenu ? styles.show : ''} absolute right-0 top-full mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl min-w-[150px] z-50`}>
           <div className="py-2">
@@ -661,15 +674,18 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       
       {/* 用户菜单 - 完全按照原型实现 */}
       <div className="relative">
-        <button 
+        <button
+          type="button"
           onClick={() => setShowUserDropdown(!showUserDropdown)}
-          className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors"
+          className={headerControlStyles.langTrigger}
+          aria-expanded={showUserDropdown}
+          aria-haspopup="menu"
         >
-          <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-blue-500 rounded-full"></div>
-          <span className="text-sm">
+          <User size={HEADER_CTRL_ICON_SIZE} strokeWidth={HEADER_CTRL_ICON_STROKE} aria-hidden />
+          <span>
             {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : t('walletConnect.unknownAddress')}
           </span>
-          <ChevronDown size={12} />
+          <ChevronDown size={HEADER_CTRL_CHEVRON_SIZE} strokeWidth={HEADER_CTRL_ICON_STROKE} />
         </button>
         <div
           className={`${styles.dropdown} ${styles.userDropdownPanel} ${showUserDropdown ? styles.show : ''} ${styles.userDropdownShell}`}

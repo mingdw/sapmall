@@ -1,0 +1,64 @@
+syntax = "v1"
+
+info(
+    title: "swap types"
+    desc: "swap api types"
+    author: "sapmall"
+    version: "v0.1"
+)
+
+type (
+    // 创建兑换记录请求（用户点击兑换时调用）
+    CreateSwapReq {
+        ChainId         int64  `json:"chainId"`                    // 链ID
+        RouterAddress   string `json:"routerAddress"`              // SAPSwapRouter 合约地址
+        TokenInSymbol   string `json:"tokenInSymbol"`              // 输入代币符号
+        TokenInAddress  string `json:"tokenInAddress"`             // 输入代币合约地址
+        TokenInDecimals int64  `json:"tokenInDecimals,optional"`   // 输入代币精度，默认6
+        AmountIn        string `json:"amountIn"`                   // 输入金额（人类可读）
+        AmountInRaw     string `json:"amountInRaw"`                // 输入金额（链上最小单位）
+        AmountOut       string `json:"amountOut,optional"`         // 预期输出金额（人类可读）
+        AmountOutRaw    string `json:"amountOutRaw,optional"`      // 预期输出金额（链上最小单位）
+        FeeRaw          string `json:"feeRaw,optional"`            // 手续费（链上最小单位）
+        MinAmountOutRaw string `json:"minAmountOutRaw,optional"`   // 最小输出金额（滑点保护）
+        Direction       int64  `json:"direction,optional"`         // 兑换方向：0=稳定币→SAP 1=SAP→稳定币，默认0
+    }
+
+    // 创建兑换记录响应
+    CreateSwapResp {
+        SwapId       int64  `json:"swapId"`       // sys_chain_event.id
+        BusinessCode string `json:"businessCode"` // 业务编码
+        ProcessStatus int64 `json:"processStatus"` // 处理状态：0待处理
+    }
+
+    // 更新兑换状态请求（授权通过后调用）
+    UpdateSwapReq {
+        SwapId   int64  `json:"swapId"`              // 兑换记录ID
+        TxHash   string `json:"txHash,optional"`     // 交易哈希（如有）
+    }
+
+    // 更新兑换状态响应
+    UpdateSwapResp {
+        SwapId        int64  `json:"swapId"`
+        ProcessStatus int64  `json:"processStatus"`
+    }
+
+    // 查询兑换状态请求
+    GetSwapStatusReq {
+        SwapId int64 `json:"swapId"` // 兑换记录ID
+    }
+
+    // 查询兑换状态响应
+    GetSwapStatusResp {
+        SwapId         int64  `json:"swapId"`
+        BusinessCode   string `json:"businessCode"`
+        ProcessStatus  int64  `json:"processStatus"`  // 0待处理 1处理中 2处理成功 3处理失败 4其它
+        ProcessStatusDesc string `json:"processStatusDesc"`
+        TxHash         string `json:"txHash,optional"`
+        BlockNumber    int64  `json:"blockNumber,optional"`
+        EventPayload   string `json:"eventPayload,optional"`  // 兑换详情JSON
+        ErrorMsg       string `json:"errorMsg,optional"`
+        CreatedAt      string `json:"createdAt,optional"`
+        UpdatedAt      string `json:"updatedAt,optional"`
+    }
+)

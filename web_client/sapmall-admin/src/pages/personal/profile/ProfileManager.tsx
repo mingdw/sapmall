@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, Button, Tag, Tooltip } from 'antd';
+import { Button, Tag, Tooltip } from 'antd';
 import MessageUtils from '../../../utils/messageUtils';
 import type { KycSubmitPayload, MerchantDepositIntent, ProfileData } from './types';
 import ProfileSectionList from './components/ProfileSectionList';
@@ -348,8 +348,6 @@ const ProfileManager: React.FC = () => {
 
   return (
     <div className={styles.profileManager}>
-      {initializing && <Alert className={styles.unsavedAlert} type="info" showIcon message="正在加载用户信息..." />}
-
       <section className={styles.overviewCard}>
         <div className={styles.overviewMain}>
           <div className={styles.avatarBox}>

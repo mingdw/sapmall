@@ -37,10 +37,11 @@ type (
 		WsURL                  string                  `json:"wsUrl,optional"`
 		ExplorerURL            string                  `json:"explorerUrl,optional"`
 		NativeSymbol           string                  `json:"nativeSymbol,optional"`
-		PlatformConfigAddress  string                  `json:"platformConfigAddress,optional"`
-		PaymentRouterAddress   string                  `json:"paymentRouterAddress,optional"`
-		SettlementVaultAddress string                  `json:"settlementVaultAddress,optional"`
-		SignerKeyRef           string                  `json:"signerKeyRef,optional"`
+		PlatformConfigAddress  string                   `json:"platformConfigAddress,optional"`
+		PaymentRouterAddress   string                   `json:"paymentRouterAddress,optional"`
+		SettlementVaultAddress string                   `json:"settlementVaultAddress,optional"`
+		SwapRouterAddress      string                   `json:"swapRouterAddress,optional"`
+		SignerKeyRef           string                   `json:"signerKeyRef,optional"`
 		ListenerEnabled        int64                   `json:"listenerEnabled"`
 		ListenerStartBlock     int64                   `json:"listenerStartBlock"`
 		ListenerLastBlock      int64                   `json:"listenerLastBlock"`
@@ -80,6 +81,7 @@ type (
 		PlatformConfigAddress  string `json:"platformConfigAddress,optional"`
 		PaymentRouterAddress   string `json:"paymentRouterAddress,optional"`
 		SettlementVaultAddress string `json:"settlementVaultAddress,optional"`
+		SwapRouterAddress      string `json:"swapRouterAddress,optional"`
 		SignerKeyRef           string `json:"signerKeyRef,optional"`
 		ListenerEnabled        int64  `json:"listenerEnabled,optional"`
 		ListenerStartBlock     int64  `json:"listenerStartBlock,optional"`

@@ -77,25 +77,35 @@ const SectionFormItem: React.FC<{
   </Form.Item>
 );
 
+const SECTION_ICON_COLORS: Record<string, string> = {
+  'fa-shield-alt': styles.cardIconShield,
+  'fa-user-circle': styles.cardIconUser,
+  'fa-address-book': styles.cardIconContact,
+  'fa-history': styles.cardIconHistory,
+};
+
 const SectionCard: React.FC<{
   icon: string;
   title: string;
   subtitle: string;
   children: React.ReactNode;
-}> = ({ icon, title, subtitle, children }) => (
-  <section className={styles.infoCard}>
-    <div className={styles.cardHeader}>
-      <div className={styles.cardTitleRow}>
-        <div className={styles.cardTitle}>
-          <i className={`fas ${icon}`}></i>
-          <span>{title}</span>
+}> = ({ icon, title, subtitle, children }) => {
+  const iconColorClass = SECTION_ICON_COLORS[icon] || '';
+  return (
+    <section className={styles.infoCard}>
+      <div className={styles.cardHeader}>
+        <div className={styles.cardTitleRow}>
+          <div className={styles.cardTitle}>
+            <i className={`fas ${icon} ${iconColorClass}`}></i>
+            <span>{title}</span>
+          </div>
+          <div className={styles.cardSubtitle}>{subtitle}</div>
         </div>
-        <div className={styles.cardSubtitle}>{subtitle}</div>
       </div>
-    </div>
-    <div className={styles.cardBody}>{children}</div>
-  </section>
-);
+      <div className={styles.cardBody}>{children}</div>
+    </section>
+  );
+};
 
 const getGenderText = (gender: ProfileGender): string => {
   if (gender === 'male') return '男';
@@ -359,18 +369,9 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
       : profile.kycStatus === 'pending'
       ? styles.authStatusPending
       : styles.authStatusDanger;
-  const kycStatusIcon =
-    profile.kycStatus === 'verified'
-      ? 'fas fa-check-circle'
-      : profile.kycStatus === 'pending'
-      ? 'fas fa-clock'
-      : 'fas fa-times-circle';
-
   const securityEnabled = profile.emailVerified && profile.phoneVerified;
   const securityStatusClass = securityEnabled ? styles.authStatusSuccess : styles.authStatusDanger;
   const securityStatusText = securityEnabled ? '已启用保护' : '未启用保护';
-  const securityStatusIcon = securityEnabled ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle';
-
   const merchantMeta = getMerchantStatusMeta(profile.merchantDepositStatus);
   const isMerchantNotApplied = profile.merchantDepositStatus === 'not_applied';
   const merchantActionText = isMerchantNotApplied ? '申请成为商家' : '查看申请单';
@@ -411,7 +412,6 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
             description="身份实名与证件信息审核"
             statusNode={
               <span className={`${styles.labelStatusPill} ${kycStatusClass}`}>
-                <i className={kycStatusIcon}></i>
                 {getKycText(profile.kycStatus)}
               </span>
             }
@@ -477,7 +477,6 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
             description="账户安全保护机制状态"
             statusNode={
               <span className={`${styles.labelStatusPill} ${securityStatusClass}`}>
-                <i className={securityStatusIcon}></i>
                 {securityStatusText}
               </span>
             }
@@ -499,7 +498,6 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
             description="商家身份审核与资质认证"
             statusNode={
               <span className={`${styles.labelStatusPill} ${merchantMeta.className}`}>
-                <i className={merchantMeta.icon}></i>
                 {merchantMeta.text}
               </span>
             }

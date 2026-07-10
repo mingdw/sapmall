@@ -22,6 +22,7 @@ export interface ChainNetwork {
   platformConfigAddress: string;
   paymentRouterAddress: string;
   settlementVaultAddress: string;
+  swapRouterAddress: string;
   sort: number;
   status: number;
   paymentTokens: PaymentToken[];

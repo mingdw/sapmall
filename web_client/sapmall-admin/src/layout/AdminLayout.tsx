@@ -12,6 +12,7 @@ import { useMenuData } from '../hooks/useMenuData';
 import { useCategoryStore } from '../store/categoryStore';
 import { CategoryTreeResp } from '../services/types/categoryTypes';
 import AdminContentComponent from '../components/AdminContentComponent';
+import { normalizeFaIcon } from '../utils';
 
 
 const { Header: AntHeader, Sider, Content } = AntLayout;
@@ -88,6 +89,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
         categories:    ['categories', 'platform/categories'],
         dictionaries:  ['dictionaries', 'system/dictionaries'],
         chainnet:      ['chainnet', 'system/chainnet'],
+        smart:         ['smart', 'contract/smart'],
+        balance:       ['balance', 'assets/balance'],
+        rewards:       ['rewards', 'assets/rewards'],
+        transactions:  ['transactions', 'assets/transactions'],
+        addresses:     ['addresses', 'trading/addresses'],
       };
       const normalizedTarget = normalizeMenuValue(targetMenu);
       const candidates = new Set<string>([
@@ -181,7 +187,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
     return menus.map(menu => ({
       key: menu.id.toString(),
       label: menu.name,
-      icon: menu.icon ? <i className={menu.icon}></i> : null,
+      icon: menu.icon ? <i className={normalizeFaIcon(menu.icon)}></i> : null,
       children: menu.children && menu.children.length > 0 
         ? buildMenuItems(menu.children)
         : undefined,
@@ -230,7 +236,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
         {menuTree.map((menuGroup, groupIndex) => (
           <div key={groupIndex} className="menu-group">
             <div className="menu-group-title">
-              <i className={menuGroup.icon || 'fas fa-folder'}></i>
+              <i className={normalizeFaIcon(menuGroup.icon, 'fa-folder')}></i>
               {!collapsed && <span>{menuGroup.name}</span>}
             </div>
             <div className="menu-group-content">
@@ -241,7 +247,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
                   onClick={() => handleMenuClick(menuItem)}
                 >
                   <div className="menu-item-content">
-                    <i className={menuItem.icon || 'fas fa-circle'}></i>
+                    <i className={normalizeFaIcon(menuItem.icon, 'fa-circle')}></i>
                     {!collapsed && <span>{menuItem.name}</span>}
                   </div>
                 </div>

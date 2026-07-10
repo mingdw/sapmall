@@ -172,6 +172,7 @@
       "finalTotal": "Amount to pay",
       "totalSaving": "Saved: {{amount}} USDC",
       "sapFeeBadge": "3% fee off",
+      "sapComingSoonBadge": "Coming soon",
       "sapFeeHint": "Available on all networks · no 0.3% fee",
       "goodsAmount": "Items",
       "discount": "Discount",
@@ -311,7 +312,11 @@
       "error": "Payment not completed",
       "txHash": "Transaction",
       "viewExplorer": "View on explorer",
-      "expireHint": "Complete payment before {{time}}"
+      "expireHint": "Complete payment before {{time}}",
+      "pollExhaustedHint": "Auto polling has ended. If the status hasn't updated, you can confirm payment manually.",
+      "chainCongested": "The network is congested. Please try again later.",
+      "manualConfirmFailed": "Unable to check payment status right now. Please try again later.",
+      "manualConfirmCooldown": "Try again in {{seconds}}s"
     },
     "errors": {
       "invalidParams": "Invalid link. Please start checkout from the product page again.",
@@ -325,7 +330,8 @@
     "actions": {
       "retry": "Retry",
       "backToMall": "Back to marketplace",
-      "backToPrevious": "Go back"
+      "backToPrevious": "Go back",
+      "manualConfirmStatus": "Confirm status manually"
     },
     "result": {
       "breadcrumb": "Payment result",

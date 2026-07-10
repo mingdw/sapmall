@@ -32,6 +32,7 @@ export interface OrderInfo {
   paymentStatusDesc?: string;
   orderDate?: string;
   currency?: string;
+  settleCurrency?: string;
   discountAmount?: number;
   payableAmount?: number;
   platformFeeAmount?: number;
@@ -80,6 +81,13 @@ export interface OrderSummary {
   payAmount?: number;
   realAmount?: number;
   currency?: string;
+  settleCurrency?: string;
+  platformFeeAmount?: number;
+  actGasFee?: number;
+  chainId?: number;
+  chainName?: string;
+  tokenSymbol?: string;
+  confirmedAt?: string;
   orderStatus: number;
   orderStatusDesc?: string;
   paymentStatus: number;

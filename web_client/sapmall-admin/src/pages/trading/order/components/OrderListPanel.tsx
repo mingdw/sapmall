@@ -155,22 +155,73 @@ const OrderListPanel: React.FC<Props> = ({
     {
       title: '订单总金额',
       dataIndex: 'totalAmount',
-      width: 120,
-      render: (amount: number, record) => (
-        <span className={styles.amountRed}>
-          {amount != null ? `${amount.toFixed(2)} ${record.currency || 'USDC'}` : '—'}
-        </span>
-      ),
+      width: 140,
+      render: (amount: number, record) => {
+        if (amount == null) return <span className={styles.mutedText}>—</span>;
+        return (
+          <span>
+            <span className={styles.amountRed}>{amount.toFixed(2)}</span>
+            <span className={styles.currencyUnit}>{record.currency || 'USDC'}</span>
+          </span>
+        );
+      },
     },
     {
       title: '实付金额',
       dataIndex: 'payAmount',
+      width: 140,
+      render: (amount: number, record) => {
+        if (amount == null) return <span className={styles.mutedText}>—</span>;
+        const currency = record.settleCurrency || record.tokenSymbol || record.currency || 'USDC';
+        return (
+          <span>
+            <span className={styles.amountRed}>{amount.toFixed(2)}</span>
+            <span className={styles.currencyUnit}>{currency}</span>
+          </span>
+        );
+      },
+    },
+    {
+      title: '手续费',
+      dataIndex: 'platformFeeAmount',
       width: 120,
-      render: (amount: number, record) => (
-        <span className={styles.amountRed}>
-          {amount != null ? `${amount.toFixed(2)} ${record.currency || 'USDC'}` : '—'}
-        </span>
-      ),
+      render: (amount: number, record) => {
+        if (amount == null) return <span className={styles.mutedText}>—</span>;
+        return (
+          <span>
+            <span className={styles.amountRed}>{amount.toFixed(2)}</span>
+            <span className={styles.currencyUnit}>{record.currency || 'USDC'}</span>
+          </span>
+        );
+      },
+    },
+    {
+      title: '实际Gas',
+      dataIndex: 'actGasFee',
+      width: 120,
+      render: (amount: number, record) => {
+        if (amount == null) return <span className={styles.mutedText}>—</span>;
+        const currency = record.settleCurrency || record.tokenSymbol || record.currency || 'USDC';
+        return (
+          <span>
+            <span className={styles.amountRed}>{amount.toFixed(2)}</span>
+            <span className={styles.currencyUnit}>{currency}</span>
+          </span>
+        );
+      },
+    },
+    {
+      title: '链',
+      key: 'chain',
+      width: 100,
+      render: (_: unknown, record) =>
+        record.chainName ? (
+          <Tooltip title={`ChainID: ${record.chainId}`}>
+            <span className={styles.mutedText}>{record.chainName}</span>
+          </Tooltip>
+        ) : (
+          <span className={styles.mutedText}>—</span>
+        ),
     },
     {
       title: '支付状态',
@@ -195,6 +246,12 @@ const OrderListPanel: React.FC<Props> = ({
       render: (_: unknown, record) => (
         <CountdownCell orderDate={record.orderDate} orderStatus={record.orderStatus} />
       ),
+    },
+    {
+      title: '确认时间',
+      dataIndex: 'confirmedAt',
+      width: 168,
+      render: (v: string) => <span className={styles.mutedText}>{formatDateTime(v)}</span>,
     },
     {
       title: '支付钱包',
@@ -243,7 +300,7 @@ const OrderListPanel: React.FC<Props> = ({
             columns={columns}
             dataSource={list}
             pagination={pagination}
-            scroll={{ x: 1100 }}
+            scroll={{ x: 1700 }}
             locale={{
               emptyText: <span className={styles.tableEmptyText}>暂无订单数据</span>,
             }}

@@ -6,7 +6,7 @@ interface AdminButtonProps {
   children: React.ReactNode;
   variant?: 'primary' | 'outline' | 'danger' | 'warning' | 'query' | 'reset' | 'add' | 'delete' | 'export' | 'save' | 'next' | 'cancel' | 'draft' | 'prev' | 'edit' | 'view' | 'confirm' | 'back' | 'submit';
   size?: 'sm' | 'md' | 'xs';
-  icon?: React.ReactNode;
+  icon?: string | React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
   loading?: boolean;
@@ -41,7 +41,7 @@ const AdminButton: React.FC<AdminButtonProps> = ({
       disabled={disabled || loading}
     >
       {loading && <Loader2 size={14} className="animate-spin" />}
-      {!loading && icon}
+      {!loading && (typeof icon === 'string' ? <i className={icon} /> : icon)}
       {children}
     </button>
   );

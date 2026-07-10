@@ -1,60 +1,195 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ArrowUpDown, ChevronDown, Settings, RefreshCw, Info, Zap, Shield } from 'lucide-react';
+import { useAccount, useReadContract } from 'wagmi';
+import { erc20Abi, formatUnits } from 'viem';
+import { ArrowDown, ArrowUp, ChevronDown, Settings, RefreshCw, Info, Zap, Shield } from 'lucide-react';
 import TokenIcon from './TokenIcon';
 import styles from '../ExchangePageDetail.module.scss';
-
-const SUPPORTED_TOKENS = ['USDT', 'USDC', 'BUSD', 'DAI', 'BNB', 'SOL'];
-const RATES: Record<string, number> = {
-  USDT: 2.85,
-  USDC: 2.84,
-  BUSD: 2.83,
-  DAI: 2.82,
-  BNB: 1680,
-  SOL: 420,
-};
+import { useChainConfigStore } from '../../../store/chainConfigStore';
+import { useSwapQuote } from '../hooks/useSwapQuote';
+import { useExchangeTokenBalance } from '../hooks/useExchangeTokenBalance';
+import { useSwapExecution } from '../hooks/useSwapExecution';
+import { useSwapRouterAddress } from '../hooks/useSwapRouterAddress';
+import { useExchangeTokenConfig } from '../hooks/useExchangeTokenConfig';
 
 interface SwapCardProps {
   onSwapSuccess?: (amount: string) => void;
   disabled?: boolean;
-  /** 未传时由组件内 i18n 默认文案填充 */
   disabledReason?: string;
+  /** 当前选中的支付代币符号，由父组件统一管理 */
+  fromToken: string;
+  /** 切换支付代币时的回调 */
+  onFromTokenChange: (token: string) => void;
 }
 
 export default function SwapCard({
   onSwapSuccess = () => {},
   disabled = false,
   disabledReason,
+  fromToken,
+  onFromTokenChange,
 }: SwapCardProps) {
   const { t, ready } = useTranslation();
-  const resolvedReason = disabledReason ?? t('exchange.swap.disabledReason');
-  const [fromToken, setFromToken] = useState('USDT');
+  const { address, chainId, isConnected } = useAccount();
+  const store = useChainConfigStore();
+
+  // 从链配置获取当前链支持的支付代币（排除 SAP）
+  const availableTokens = useMemo(() => {
+    if (!chainId) return [];
+    const tokens = store.getPaymentTokens(chainId);
+    return tokens
+      .filter((token) => token.symbol.toUpperCase() !== 'SAP')
+      .map((token) => token.symbol);
+  }, [chainId, store]);
+
   const [fromAmount, setFromAmount] = useState('');
+  const [toAmount, setToAmount] = useState('');
+  const [activeField, setActiveField] = useState<'from' | 'to'>('from');
   const [showFromDropdown, setShowFromDropdown] = useState(false);
   const [slippage, setSlippage] = useState('0.5');
   const [showSettings, setShowSettings] = useState(false);
-  const [isSwapping, setIsSwapping] = useState(false);
-  const [swapDone, setSwapDone] = useState(false);
 
-  const rate = RATES[fromToken] || 2.85;
-  const toAmount = fromAmount ? (parseFloat(fromAmount) * rate).toFixed(4) : '';
+  // ── 独立汇率查询（固定 1 单位，始终可用，不依赖 fromAmount）──
+  const { rate: baseRate } = useSwapQuote({
+    tokenSymbol: fromToken,
+    amountIn: '1',
+  });
+
+  // ── 实际报价查询（以 fromAmount 为输入，返回精确 amountOut + fee）──
+  const { amountOut, fee, isLoading: quoteLoading, isError: quoteError } = useSwapQuote({
+    tokenSymbol: fromToken,
+    amountIn: fromAmount,
+  });
+
+  const { formattedBalance, isLoading: balanceLoading } = useExchangeTokenBalance(fromToken);
+
+  // ── 读取用户 SAP 代币余额（展示在获得卡片右上角） ──
+  const sapTokenConfig = useExchangeTokenConfig('SAP');
+  const { data: sapBalanceRaw, isLoading: sapBalanceLoading } = useReadContract({
+    address: sapTokenConfig?.address,
+    abi: erc20Abi,
+    functionName: 'balanceOf',
+    args: address && sapTokenConfig ? [address] : undefined,
+    query: {
+      enabled: !!address && !!sapTokenConfig,
+      refetchInterval: 10_000,
+    },
+    chainId,
+  });
+  const sapFormattedBalance = sapBalanceRaw && sapTokenConfig
+    ? Number(formatUnits(sapBalanceRaw, sapTokenConfig.decimals)).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    : '0.00';
+
+  // ── 预获取 allowance，避免 execute 时阻塞 RPC 调用 ──
+  const routerAddress = useSwapRouterAddress();
+  const tokenConfig = useExchangeTokenConfig(fromToken);
+  const { data: prefetchedAllowance } = useReadContract({
+    address: tokenConfig?.address,
+    abi: erc20Abi,
+    functionName: 'allowance',
+    args: address && tokenConfig ? [address, routerAddress!] : undefined,
+    query: {
+      enabled: !!address && !!tokenConfig && !!routerAddress,
+      refetchInterval: 15_000,
+    },
+    chainId,
+  });
+
+  const { phase, txHash, error: swapError, execute, reset } = useSwapExecution({
+    tokenSymbol: fromToken,
+    amountIn: fromAmount,
+    slippagePercent: parseFloat(slippage) || 0.5,
+    quotedAmountOut: amountOut || undefined,
+    prefetchedAllowance: prefetchedAllowance ?? undefined,
+  });
+
+  // ── 双向绑定：from → to ──
+  // 用户编辑支付金额时，优先用链上精确报价；若报价未返回则用 baseRate 即时计算
+  useEffect(() => {
+    if (activeField !== 'from') return;
+    if (!fromAmount || parseFloat(fromAmount) <= 0) {
+      setToAmount('');
+      return;
+    }
+    if (amountOut) {
+      setToAmount(amountOut);
+    } else if (baseRate > 0) {
+      const parsed = parseFloat(fromAmount);
+      if (!isNaN(parsed) && parsed > 0) {
+        setToAmount((parsed * baseRate).toFixed(6));
+      }
+    }
+  }, [activeField, fromAmount, amountOut, baseRate]);
+
+  // ── 双向绑定：to → from ──
+  // 用户编辑获得金额时，用 baseRate 反推支付金额
+  const handleToAmountChange = useCallback((value: string) => {
+    setActiveField('to');
+    setToAmount(value);
+    if (!value || parseFloat(value) <= 0) {
+      setFromAmount('');
+      return;
+    }
+    if (baseRate > 0) {
+      const parsed = parseFloat(value);
+      if (!isNaN(parsed) && parsed > 0) {
+        setFromAmount((parsed / baseRate).toFixed(6));
+      } else {
+        setFromAmount('');
+      }
+    }
+  }, [baseRate]);
+
+  const handleFromAmountChange = useCallback((value: string) => {
+    setActiveField('from');
+    setFromAmount(value);
+  }, []);
+
+  const isSwapping = phase === 'approving' || phase === 'swapping' || phase === 'confirming';
+  const swapDone = phase === 'success';
+  const hasError = phase === 'error';
+
   const priceImpact = fromAmount ? Math.min(parseFloat(fromAmount) * 0.0012, 2.5).toFixed(2) : '0.00';
-  const fee = fromAmount ? (parseFloat(fromAmount) * 0.003).toFixed(4) : '0.0000';
+
+  // 处理 swap 成功
+  useEffect(() => {
+    if (swapDone && amountOut) {
+      onSwapSuccess(amountOut);
+      const timer = setTimeout(() => reset(), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [swapDone, amountOut, onSwapSuccess, reset]);
 
   const handleSwap = useCallback(() => {
-    if (disabled) return;
-    if (!fromAmount || parseFloat(fromAmount) <= 0) return;
-    setIsSwapping(true);
-    setTimeout(() => {
-      setIsSwapping(false);
-      setSwapDone(true);
-      onSwapSuccess(toAmount);
-      setTimeout(() => setSwapDone(false), 3000);
-    }, 2000);
-  }, [disabled, fromAmount, onSwapSuccess, toAmount]);
+    if (disabled || !fromAmount || parseFloat(fromAmount) <= 0) return;
+    execute();
+  }, [disabled, fromAmount, execute]);
+
+  const phaseLabel = useMemo(() => {
+    if (phase === 'approving') return t('exchange.swap.approving', { defaultValue: '授权中...' });
+    if (phase === 'swapping') return t('exchange.swap.swapping');
+    if (phase === 'confirming') return t('exchange.swap.confirming', { defaultValue: '确认中...' });
+    return '';
+  }, [phase, t]);
 
   if (!ready) {
     return <div className="relative w-full max-w-[520px] h-40 rounded-3xl bg-white/5 animate-pulse" aria-busy="true" />;
+  }
+
+  // 无可用代币提示
+  if (isConnected && availableTokens.length === 0) {
+    return (
+      <div data-cmp="SwapCard" className="relative w-full max-w-[520px]">
+        <div className={`relative rounded-3xl p-6 ${styles.swapMainCard}`}>
+          <p className="text-sm text-center text-muted-foreground py-8">
+            {t('exchange.swap.noTokensAvailable', { defaultValue: '当前链暂无可兑换代币' })}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -62,6 +197,7 @@ export default function SwapCard({
       <div className={`absolute inset-0 rounded-3xl pointer-events-none ${styles.swapOuterGlow}`} />
 
       <div className={`relative rounded-3xl p-6 ${styles.swapMainCard}`}>
+        {/* 标题栏 */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-lg font-bold text-foreground">{t('exchange.swap.title')}</h2>
@@ -71,7 +207,7 @@ export default function SwapCard({
             <button
               className="w-9 h-9 rounded-xl flex items-center justify-center"
               style={{ background: 'rgba(124,77,255,0.15)', border: '1px solid rgba(124,77,255,0.2)' }}
-              onClick={() => { setFromAmount(''); setSwapDone(false); }}
+              onClick={() => { setFromAmount(''); setToAmount(''); reset(); }}
             >
               <RefreshCw size={14} style={{ color: '#b39ddb' }} />
             </button>
@@ -85,6 +221,7 @@ export default function SwapCard({
           </div>
         </div>
 
+        {/* 滑点设置 */}
         <div
           className="rounded-2xl p-4 mb-4 overflow-hidden transition-all duration-300"
           style={{
@@ -123,105 +260,148 @@ export default function SwapCard({
           </div>
         </div>
 
-        <div className="rounded-2xl p-4 mb-1" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(124,77,255,0.15)' }}>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs text-muted-foreground">{t('exchange.swap.pay')}</span>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">{t('exchange.swap.balance')}: <span style={{ color: '#b39ddb' }}>12,500.00</span></span>
-              <button className="text-xs px-2 py-0.5 rounded-md font-medium" style={{ background: 'rgba(124,77,255,0.2)', color: '#00e5ff' }} onClick={() => setFromAmount('12500')} disabled={disabled}>{t('exchange.swap.max')}</button>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <button
-                className="flex items-center gap-2 px-3 py-2 rounded-xl"
-                style={{ background: 'rgba(124,77,255,0.15)', border: '1px solid rgba(124,77,255,0.3)', minWidth: '120px' }}
-                onClick={() => setShowFromDropdown(!showFromDropdown)}
-                disabled={disabled}
-              >
-                <TokenIcon symbol={fromToken} size={26} />
-                <span className="text-sm font-semibold text-foreground">{fromToken}</span>
-                <ChevronDown size={14} style={{ color: '#7986cb', transform: showFromDropdown ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
-              </button>
-
-              <div
-                className="absolute top-12 left-0 w-48 rounded-2xl z-50 overflow-hidden"
-                style={{
-                  display: showFromDropdown ? 'block' : 'none',
-                  background: 'rgba(14,12,40,0.98)',
-                  border: '1px solid rgba(124,77,255,0.3)',
-                  backdropFilter: 'blur(20px)',
-                }}
-              >
-                <div className="p-2">
-                  <p className="text-xs text-muted-foreground px-3 py-2">{t('exchange.swap.selectPayToken')}</p>
-                  {SUPPORTED_TOKENS.map((coin) => (
-                    <button
-                      key={coin}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl"
-                      style={{ background: fromToken === coin ? 'rgba(124,77,255,0.2)' : 'transparent' }}
-                      onClick={() => { setFromToken(coin); setShowFromDropdown(false); }}
-                    >
-                      <TokenIcon symbol={coin} size={28} />
-                      <div className="text-left">
-                        <p className="text-sm font-semibold text-foreground">{coin}</p>
-                        <p className="text-xs text-muted-foreground">{coin === 'BNB' || coin === 'SOL' ? t('exchange.swap.tokenTypeMajor') : t('exchange.swap.tokenTypeStable')}</p>
-                      </div>
-                      <div className="ml-auto text-right">
-                        <p className="text-xs" style={{ color: '#69f0ae' }}>≈$1.00</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
+        {/* ── 兑换区域：支付 + 箭头 + 获得 ── */}
+        <div className={styles.swapFieldsWrap}>
+          {/* 支付区 */}
+          <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(124,77,255,0.15)' }}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs text-muted-foreground">{t('exchange.swap.pay')}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">
+                  {t('exchange.swap.balance')}:{' '}
+                  <span style={{ color: '#b39ddb' }}>
+                    {balanceLoading ? '...' : formattedBalance}
+                  </span>
+                </span>
+                <button
+                  className="text-xs px-2 py-0.5 rounded-md font-medium"
+                  style={{ background: 'rgba(124,77,255,0.2)', color: '#00e5ff' }}
+                  onClick={() => {
+                    const bal = formattedBalance !== '0.00' ? formattedBalance : '';
+                    handleFromAmountChange(bal);
+                  }}
+                  disabled={disabled}
+                >
+                  {t('exchange.swap.max')}
+                </button>
               </div>
             </div>
+            <div className="flex items-center gap-3">
+              {/* 代币选择按钮 */}
+              <div className="relative">
+                <button
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl"
+                  style={{ background: 'rgba(124,77,255,0.15)', border: '1px solid rgba(124,77,255,0.3)', minWidth: '120px' }}
+                  onClick={() => setShowFromDropdown(!showFromDropdown)}
+                  disabled={disabled}
+                >
+                  <TokenIcon symbol={fromToken} size={26} />
+                  <span className="text-sm font-semibold text-foreground">{fromToken}</span>
+                  <ChevronDown size={14} style={{ color: '#7986cb', transform: showFromDropdown ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                </button>
 
-            <input
-              type="number"
-              className="flex-1 bg-transparent outline-none text-right text-2xl font-bold text-foreground placeholder:text-gray-500"
-              placeholder="0.00"
-              value={fromAmount}
-              onChange={(e) => setFromAmount(e.target.value)}
-              disabled={disabled}
-            />
+                <div
+                  className="absolute top-12 left-0 w-48 rounded-2xl z-50 overflow-hidden"
+                  style={{
+                    display: showFromDropdown ? 'block' : 'none',
+                    background: 'rgba(14,12,40,0.98)',
+                    border: '1px solid rgba(124,77,255,0.3)',
+                    backdropFilter: 'blur(20px)',
+                  }}
+                >
+                  <div className="p-2">
+                    <p className="text-xs text-muted-foreground px-3 py-2">{t('exchange.swap.selectPayToken')}</p>
+                    {availableTokens.map((coin) => (
+                      <button
+                        key={coin}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl"
+                        style={{ background: fromToken === coin ? 'rgba(124,77,255,0.2)' : 'transparent' }}
+                        onClick={() => { onFromTokenChange(coin); setShowFromDropdown(false); }}
+                      >
+                        <TokenIcon symbol={coin} size={28} />
+                        <div className="text-left">
+                          <p className="text-sm font-semibold text-foreground">{coin}</p>
+                          <p className="text-xs text-muted-foreground">{t('exchange.swap.tokenTypeStable')}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 支付金额输入框 */}
+              <input
+                type="number"
+                className={`flex-1 bg-transparent outline-none text-right text-2xl font-bold text-foreground placeholder:text-gray-500 ${styles.noSpinner}`}
+                placeholder="0.00"
+                value={fromAmount}
+                onChange={(e) => handleFromAmountChange(e.target.value)}
+                disabled={disabled}
+              />
+            </div>
+          </div>
+
+          {/* ── 箭头区域：居于两卡片之间，纯箭头无背景 ── */}
+          <div className={styles.swapArrowRow}>
+            <div className={styles.swapArrowBadge}>
+              <ArrowDown size={20} className={styles.arrowActive} />
+              <ArrowUp size={20} className={styles.arrowDisabled} />
+            </div>
+          </div>
+
+          {/* 获得区 */}
+          <div className="rounded-2xl p-4" style={{ background: 'rgba(124,77,255,0.06)', border: '1px solid rgba(124,77,255,0.2)' }}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs text-muted-foreground">{t('exchange.swap.receive')}</span>
+              <span className="text-xs text-muted-foreground">
+                {t('exchange.swap.balance')}:{' '}
+                <span style={{ color: '#b39ddb' }}>
+                  {sapBalanceLoading ? '...' : sapFormattedBalance}
+                </span>
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              {/* SAP 代币按钮（固定，不可选择） */}
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: 'rgba(124,77,255,0.2)', border: '1px solid rgba(124,77,255,0.4)', minWidth: '120px' }}>
+                <TokenIcon symbol="SAP" size={26} />
+                <span className="text-sm font-bold" style={{ color: '#00e5ff' }}>SAP</span>
+              </div>
+
+              {/* 获得金额输入框（双向绑定） */}
+              <input
+                type="number"
+                className={`flex-1 bg-transparent outline-none text-right text-2xl font-bold text-foreground placeholder:text-gray-500 ${styles.noSpinner}`}
+                placeholder="0.0000"
+                value={toAmount}
+                onChange={(e) => handleToAmountChange(e.target.value)}
+                disabled={disabled}
+              />
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-center my-2 relative z-10">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(124,77,255,0.4), rgba(0,229,255,0.3))', border: '1px solid rgba(124,77,255,0.5)' }}>
-            <ArrowUpDown size={16} style={{ color: '#00e5ff' }} />
+        {/* 汇率信息 */}
+        <div className="flex items-center justify-between mt-3 mb-5 px-1">
+          <div className="flex items-center gap-1.5">
+            <Zap size={12} style={{ color: '#ffd740' }} />
+            <span className="text-xs" style={{ color: '#ffd740' }}>
+              {baseRate > 0
+                ? t('exchange.swap.rateLine', { from: fromToken, rate: baseRate.toFixed(4) })
+                : t('exchange.swap.rateLine', { from: fromToken, rate: '--' })}
+            </span>
           </div>
+          {quoteError ? (
+            <span className="text-xs" style={{ color: '#ff4081' }}>
+              {t('exchange.swap.quoteError', { defaultValue: '报价获取失败' })}
+            </span>
+          ) : null}
         </div>
 
-        <div className="rounded-2xl p-4 mb-5" style={{ background: 'rgba(124,77,255,0.06)', border: '1px solid rgba(124,77,255,0.2)' }}>
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs text-muted-foreground">{t('exchange.swap.receive')}</span>
-            <span className="text-xs text-muted-foreground">{t('exchange.swap.balance')}: <span style={{ color: '#b39ddb' }}>8,432.50</span></span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: 'rgba(124,77,255,0.2)', border: '1px solid rgba(124,77,255,0.4)', minWidth: '120px' }}>
-              <TokenIcon symbol="SAP" size={26} />
-              <span className="text-sm font-bold" style={{ color: '#00e5ff' }}>SAP</span>
-            </div>
-            <div className="flex-1 text-right">
-              <p className="text-2xl font-bold" style={{ background: 'linear-gradient(135deg, #7c4dff, #00e5ff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                {toAmount || '0.0000'}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center justify-between mt-2">
-            <div className="flex items-center gap-1.5">
-              <Zap size={12} style={{ color: '#ffd740' }} />
-              <span className="text-xs" style={{ color: '#ffd740' }}>{t('exchange.swap.rateLine', { from: fromToken, rate })}</span>
-            </div>
-            <span className="text-xs text-muted-foreground">≈ ${toAmount ? (parseFloat(toAmount) * 0.351).toFixed(2) : '0.00'}</span>
-          </div>
-        </div>
-
+        {/* 交易详情 */}
         <div className="rounded-xl p-3 mb-5 space-y-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(124,77,255,0.1)' }}>
           {[
             { label: t('exchange.swap.priceImpact'), value: `${priceImpact}%`, color: parseFloat(priceImpact) > 1 ? '#ff4081' : '#69f0ae' },
-            { label: t('exchange.swap.feeLabel', { percent: '0.3' }), value: `${fee} ${fromToken}`, color: '#b39ddb' },
+            { label: t('exchange.swap.feeLabel', { percent: '0.3' }), value: fee ? `${fee} ${fromToken}` : '--', color: '#b39ddb' },
             { label: t('exchange.swap.slippageTolerance'), value: `${slippage}%`, color: '#b39ddb' },
             { label: t('exchange.swap.eta'), value: t('exchange.swap.etaValue'), color: '#b39ddb' },
           ].map((row) => (
@@ -235,6 +415,23 @@ export default function SwapCard({
           ))}
         </div>
 
+        {/* 错误提示 */}
+        {hasError && swapError ? (
+          <div className="rounded-xl p-3 mb-4" style={{ background: 'rgba(255,64,129,0.1)', border: '1px solid rgba(255,64,129,0.3)' }}>
+            <p className="text-xs" style={{ color: '#ff4081' }}>{swapError}</p>
+          </div>
+        ) : null}
+
+        {/* 成功提示 */}
+        {swapDone && txHash ? (
+          <div className="rounded-xl p-3 mb-4" style={{ background: 'rgba(105,240,174,0.1)', border: '1px solid rgba(105,240,174,0.3)' }}>
+            <p className="text-xs" style={{ color: '#69f0ae' }}>
+              {t('exchange.swap.txSuccess', { defaultValue: '交易成功' })}: {txHash.slice(0, 10)}...{txHash.slice(-8)}
+            </p>
+          </div>
+        ) : null}
+
+        {/* 兑换按钮 */}
         <button
           className="w-full h-14 rounded-2xl font-bold text-base transition-all duration-300 relative overflow-hidden"
           style={{
@@ -257,7 +454,7 @@ export default function SwapCard({
                 : swapDone
                   ? t('exchange.swap.swapSuccessBtn')
                   : isSwapping
-                    ? t('exchange.swap.swapping')
+                    ? phaseLabel || t('exchange.swap.swapping')
                     : !fromAmount || parseFloat(fromAmount) <= 0
                       ? t('exchange.swap.enterAmount')
                       : t('exchange.swap.swapNow')}
@@ -267,7 +464,7 @@ export default function SwapCard({
 
         {disabled ? (
           <p className="text-xs text-center mt-3" style={{ color: '#ffb74d' }}>
-            {resolvedReason}
+            {disabledReason ?? t('exchange.swap.disabledReason')}
           </p>
         ) : null}
 

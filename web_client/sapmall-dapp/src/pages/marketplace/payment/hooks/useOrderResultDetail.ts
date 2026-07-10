@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { orderApi, type GetOrderResp, type OrderStatusResp } from '../../../../services/api/orderApi';
 
 const PAID_STATUS = 3;
-const POLL_MS = 3000;
+const POLL_MS = 5000;
 const MAX_POLL_ATTEMPTS = 40;
 
 function mergeOrderWithStatusTx(

@@ -1,8 +1,20 @@
 import { useTranslation } from 'react-i18next';
 import styles from './SapTokenVisual.module.scss';
+import { useSwapQuote } from '../hooks/useSwapQuote';
 
-export default function SapTokenVisual() {
+interface SapTokenVisualProps {
+  /** 当前选中的代币符号，由父组件统一管理 */
+  tokenSymbol?: string;
+}
+
+export default function SapTokenVisual({ tokenSymbol = 'USDC' }: SapTokenVisualProps) {
   const { t, ready } = useTranslation();
+
+  // 用 1 单位代币获取合约汇率
+  const { rate, isLoading } = useSwapQuote({
+    tokenSymbol,
+    amountIn: '1',
+  });
 
   if (!ready) {
     return <div className="relative flex flex-col items-center h-[320px] w-full rounded-3xl bg-white/5 animate-pulse" aria-busy="true" />;
@@ -35,9 +47,19 @@ export default function SapTokenVisual() {
       </div>
 
       <div className={`mt-4 px-6 py-3 rounded-2xl text-center border border-violet-400/30 bg-violet-500/10 ${styles.pricePanel}`}>
-        <p className="text-xs text-muted-foreground mb-1">{t('exchange.sapVisual.currentPrice')}</p>
-        <p className="text-xl font-bold text-foreground">$0.3510</p>
-        <span className="text-xs text-emerald-300">{t('exchange.sapVisual.changeLabel')}</span>
+        <p className="text-xs text-muted-foreground mb-1">
+          {t('exchange.sapVisual.exchangeRate', { defaultValue: '合约汇率' })}
+        </p>
+        <p className="text-xl font-bold text-foreground">
+          {isLoading
+            ? '...'
+            : rate > 0
+              ? `1 ${tokenSymbol} = ${rate.toFixed(4)} SAP`
+              : '--'}
+        </p>
+        <span className="text-xs text-muted-foreground mt-1 block">
+          {t('exchange.sapVisual.rateSource', { defaultValue: '来源：平台兑换合约' })}
+        </span>
       </div>
     </div>
   );

@@ -15,13 +15,14 @@ import (
 )
 
 // PaymentPaidEvent 的 event signature
-// event PaymentPaid(string indexed intentId, string indexed orderRef, address indexed payer, address token, uint256 amount, uint256 timestamp)
-var paymentPaidEventSig = crypto.Keccak256Hash([]byte("PaymentPaid(string,string,address,address,uint256,uint256)"))
+// event PaymentPaid(string indexed intentId, string indexed orderRef, address indexed payer, address seller, address token, uint256 amount, uint256 timestamp)
+var paymentPaidEventSig = crypto.Keccak256Hash([]byte("PaymentPaid(string,string,address,address,address,uint256,uint256)"))
 
 type PaymentEvent struct {
 	IntentIdHash string   // keccak256 hash of intentId (indexed string stored as hash)
 	OrderRefHash string   // keccak256 hash of orderRef (indexed string stored as hash)
 	Payer        common.Address
+	Seller       common.Address
 	Token        common.Address
 	Amount       *big.Int
 	Timestamp    *big.Int
@@ -56,6 +57,11 @@ func VerifyPaymentTx(ctx context.Context, rpcURL string, contractAddr string, tx
 	contract := common.HexToAddress(contractAddr)
 	event, err := parsePaymentPaidEvent(receipt, contract)
 	if err != nil {
+		// 交易已上链但 revert 时不会有 PaymentPaid 事件，交由上层按 receipt.Status 标记失败
+		if receipt.Status == types.ReceiptStatusFailed {
+			gasFeeUSDC := calcGasFeeUSDC(receipt)
+			return &VerifyResult{Receipt: receipt, Event: nil, GasFeeUSDC: gasFeeUSDC}, nil
+		}
 		return nil, err
 	}
 
@@ -106,15 +112,12 @@ func decodePaymentPaidLog(log *types.Log) (*PaymentEvent, error) {
 		Payer:        common.BytesToAddress(log.Topics[3].Bytes()),
 	}
 
-	// 非 indexed 参数在 Data 中：token(address), amount(uint256), timestamp(uint256)
-	// 每个参数 32 字节
-	if len(log.Data) >= 96 {
-		event.Token = common.BytesToAddress(log.Data[12:32]) // address 左对齐，取后 20 字节
-		event.Amount = new(big.Int).SetBytes(log.Data[32:64])
-		event.Timestamp = new(big.Int).SetBytes(log.Data[64:96])
-	} else if len(log.Data) >= 64 {
-		event.Token = common.BytesToAddress(log.Data[12:32])
-		event.Amount = new(big.Int).SetBytes(log.Data[32:64])
+	// 非 indexed 参数在 Data 中：seller(address), token(address), amount(uint256), timestamp(uint256)
+	if len(log.Data) >= 128 {
+		event.Seller = common.BytesToAddress(log.Data[12:32])
+		event.Token = common.BytesToAddress(log.Data[44:64])
+		event.Amount = new(big.Int).SetBytes(log.Data[64:96])
+		event.Timestamp = new(big.Int).SetBytes(log.Data[96:128])
 	} else {
 		return nil, fmt.Errorf("invalid PaymentPaid event data length: %d", len(log.Data))
 	}

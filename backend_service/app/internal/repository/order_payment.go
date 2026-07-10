@@ -12,6 +12,7 @@ type OrderPaymentRepository interface {
 	Create(ctx context.Context, orderPayment *model.OrderPayment) error
 	GetByID(ctx context.Context, id int64) (*model.OrderPayment, error)
 	GetByIntentId(ctx context.Context, intentId string) (*model.OrderPayment, error)
+	GetByTxHash(ctx context.Context, txHash string) (*model.OrderPayment, error)
 	GetByOrderID(ctx context.Context, orderID int64) (*model.OrderPayment, error)
 	ListByOrderIDs(ctx context.Context, orderIDs []int64) (map[int64]*model.OrderPayment, error)
 	Update(ctx context.Context, orderPayment *model.OrderPayment) error
@@ -50,6 +51,15 @@ func (r *orderPaymentRepository) GetByID(ctx context.Context, id int64) (*model.
 func (r *orderPaymentRepository) GetByIntentId(ctx context.Context, intentId string) (*model.OrderPayment, error) {
 	var row model.OrderPayment
 	err := r.DB(ctx).Where("intent_id = ? AND is_deleted = ?", intentId, 0).First(&row).Error
+	if err != nil {
+		return nil, err
+	}
+	return &row, nil
+}
+
+func (r *orderPaymentRepository) GetByTxHash(ctx context.Context, txHash string) (*model.OrderPayment, error) {
+	var row model.OrderPayment
+	err := r.DB(ctx).Where("tx_hash = ? AND is_deleted = ?", txHash, 0).First(&row).Error
 	if err != nil {
 		return nil, err
 	}

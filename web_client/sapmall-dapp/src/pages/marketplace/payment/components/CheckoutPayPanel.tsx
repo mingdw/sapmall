@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
@@ -49,6 +50,10 @@ interface Props {
   canRetryPayment?: boolean;
   busy: boolean;
   contactValid: boolean;
+  showManualConfirm?: boolean;
+  manualConfirming?: boolean;
+  manualCooldownSec?: number;
+  onManualConfirm?: () => void;
 }
 
 const CheckoutPayPanel: React.FC<Props> = ({
@@ -65,6 +70,10 @@ const CheckoutPayPanel: React.FC<Props> = ({
   canRetryPayment = false,
   busy,
   contactValid,
+  showManualConfirm = false,
+  manualConfirming = false,
+  manualCooldownSec = 0,
+  onManualConfirm,
 }) => {
   const { t } = useTranslation();
   const { isConnected, chainId, address } = useAccount();
@@ -158,8 +167,7 @@ const CheckoutPayPanel: React.FC<Props> = ({
   const isAuthCancelled = phase === 'authCancelled';
   const isPayCancelled = phase === 'payCancelled';
   const isPayError = phase === 'error' && errorKey === 'paymentFailed';
-  const canContinuePayment =
-    canRetryPayment &&
+  const walletPayReady =
     isConnected &&
     networkOk &&
     !busy &&
@@ -168,8 +176,15 @@ const CheckoutPayPanel: React.FC<Props> = ({
     !tokenBalance.isLoading &&
     tokenBalance.numeric + 1e-9 >= payAmountDue &&
     hasSufficientBalances;
+  const canContinuePayment = canRetryPayment && walletPayReady;
+  // 创单失败等无 intent 场景：允许重新发起完整支付流程
+  const canRetryCreateOrder =
+    phase === 'error' &&
+    !canRetryPayment &&
+    contactValid &&
+    walletPayReady;
 
-  const canSubmit = canPayOnChain || canContinuePayment;
+  const canSubmit = canPayOnChain || canContinuePayment || canRetryCreateOrder;
 
   const payAmountDisplay = formatAmountNumber(finalTotal, finalCurrency);
 
@@ -177,29 +192,34 @@ const CheckoutPayPanel: React.FC<Props> = ({
     ? t(`payment.pay.buttonBusy.${phase}`)
     : isAuthCancelled
       ? t('payment.pay.continueApprove')
-      : isPayCancelled || isPayError
+      : isPayCancelled || (isPayError && canRetryPayment)
         ? t('payment.pay.continuePay')
-        : t('payment.pay.confirmPay', { amount: payAmountDisplay, token: finalCurrency });
+        : isPayError
+          ? t('payment.actions.retry')
+          : t('payment.pay.confirmPay', { amount: payAmountDisplay, token: finalCurrency });
 
   const showContactHint = !contactValid && phase === 'idle';
+
+  const tokenPayBlocked =
+    phase === 'idle' && !isOnChainPaySupported(paymentMethod, activeChainId);
 
   const contextAlerts = useMemo(() => {
     const alerts: string[] = [];
     if (!isConnected) alerts.push(t('payment.pay.connectWallet'));
     else if (!networkOk) alerts.push(t('payment.pay.switchNetworkManual'));
-    if (isSapPayment(paymentMethod) && !tokenBalance.configured && isConnected) {
+    if (tokenPayBlocked && isSapPayment(paymentMethod)) {
       alerts.push(t('payment.pay.sapPayUnavailable'));
-    }
-    if (!isOnChainPaySupported(paymentMethod, activeChainId) && phase === 'idle') {
+    } else if (tokenPayBlocked) {
       alerts.push(t('payment.pay.tokenPayComingSoon', { token: paymentMethod }));
     }
     return alerts;
   }, [
+    activeChainId,
     isConnected,
     networkOk,
     paymentMethod,
     phase,
-    tokenBalance.configured,
+    tokenPayBlocked,
     t,
   ]);
 
@@ -321,6 +341,12 @@ const CheckoutPayPanel: React.FC<Props> = ({
         </ul>
       ) : null}
 
+      {tokenPayBlocked && isSapPayment(paymentMethod) ? (
+        <Link to="/exchange" className={styles.sapPayExchangeLink}>
+          {t('payment.pay.goExchange')}
+        </Link>
+      ) : null}
+
       <div className={styles.payDetailSection}>
         <button
           type="button"
@@ -380,6 +406,25 @@ const CheckoutPayPanel: React.FC<Props> = ({
         >
           {payButtonLabel}
         </Button>
+
+        {showManualConfirm ? (
+          <div className={styles.manualConfirmBlock}>
+            <p className={styles.manualConfirmHint}>{t('payment.status.pollExhaustedHint')}</p>
+            <Button
+              type="default"
+              size="large"
+              block
+              disabled={manualConfirming || manualCooldownSec > 0}
+              onClick={onManualConfirm}
+              className={styles.manualConfirmBtn}
+              icon={manualConfirming ? <Spin size="small" /> : undefined}
+            >
+              {manualCooldownSec > 0
+                ? t('payment.status.manualConfirmCooldown', { seconds: manualCooldownSec })
+                : t('payment.actions.manualConfirmStatus')}
+            </Button>
+          </div>
+        ) : null}
       </div>
 
       <p className={styles.payLegalHint}>{t('payment.pay.legalHint')}</p>

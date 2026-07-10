@@ -46,6 +46,9 @@ function assertIntentBundle(bundle: PaymentIntentBundle) {
   if (!bundle.intentId?.trim()) {
     throw new PayOrderError('invalidIntent', '缺少 intentId');
   }
+  if (!bundle.sellerAddress?.startsWith('0x')) {
+    throw new PayOrderError('invalidIntent', '缺少卖家收款地址');
+  }
   const orderRefBytes = new TextEncoder().encode(bundle.orderCode);
   if (orderRefBytes.length === 0 || orderRefBytes.length > MAX_ORDER_REF_BYTES) {
     throw new PayOrderError('invalidIntent', 'orderRef 长度无效');
@@ -212,7 +215,7 @@ export async function executePayOrder(params: {
       address: router,
       abi: paymentRouterAbi,
       functionName: 'payOrder',
-      args: [bundle.intentId, bundle.orderCode, token, amount],
+      args: [bundle.intentId, bundle.orderCode, bundle.sellerAddress as Address, token, amount],
       gas: BigInt(gasLimits.payOrder),
     });
     await params.onPaySubmitted?.(payHash);

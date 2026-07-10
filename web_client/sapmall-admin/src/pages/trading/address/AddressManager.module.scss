@@ -1,0 +1,326 @@
+/* ===== 收货地址管理 — 简洁卡片式布局 ===== */
+
+.addrPage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  color: #cbd5e1;
+  font-size: 13px;
+  line-height: 1.55;
+
+  :global(.ant-input),
+  :global(.ant-select-selection-item),
+  :global(.ant-select-selection-search-input) {
+    color: #e2e8f0 !important;
+  }
+  :global(.ant-input::placeholder),
+  :global(.ant-select-selection-placeholder) {
+    color: #64748b !important;
+  }
+}
+
+/* ===== 工具栏 ===== */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.searchBox {
+  width: 240px;
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.addrCount {
+  font-size: 12px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.addBtn {
+  height: 32px !important;
+  padding: 0 16px !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+}
+
+/* ===== 地址卡片网格 ===== */
+.addrGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 14px;
+}
+
+/* ===== 单张地址卡片 ===== */
+.addrCard {
+  position: relative;
+  padding: 18px 20px;
+  border: 1px solid rgba(51, 65, 85, 0.28);
+  border-radius: 12px;
+  background: rgba(30, 41, 59, 0.22);
+  backdrop-filter: blur(6px);
+  transition: border-color 0.2s ease, background 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: rgba(30, 41, 59, 0.32);
+  }
+}
+
+/* 默认地址卡片 — 左侧绿色细条 */
+.addrCardDefault {
+  border-color: rgba(16, 185, 129, 0.3);
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
+    background: #10b981;
+  }
+}
+
+/* ===== 卡片头部：姓名 + 标签 ===== */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cardHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.receiverName {
+  font-size: 15px;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.receiverPhone {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.tagRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.defaultTag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 8px;
+  border-radius: 4px;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.1);
+  white-space: nowrap;
+}
+
+.labelTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* ===== 卡片地址区域 ===== */
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.addressLine {
+  color: #e2e8f0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.addressMeta {
+  font-size: 11px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.metaDot {
+  color: #475569;
+  user-select: none;
+}
+
+/* ===== 卡片底部操作区 ===== */
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(51, 65, 85, 0.2);
+}
+
+.actionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.actionDefault {
+  color: #fbbf24;
+  &:hover:not(:disabled) {
+    color: #fcd34d;
+    background: rgba(245, 158, 11, 0.1);
+  }
+}
+
+.actionEdit {
+  color: #60a5fa;
+  &:hover:not(:disabled) {
+    color: #93c5fd;
+    background: rgba(59, 130, 246, 0.1);
+  }
+}
+
+.actionDelete {
+  color: #f87171;
+  &:hover:not(:disabled) {
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.1);
+  }
+}
+
+/* ===== 新增地址卡片（虚线占位） ===== */
+.addCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 140px;
+  border: 2px dashed rgba(71, 85, 105, 0.35);
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #64748b;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    background: rgba(59, 130, 246, 0.04);
+    color: #60a5fa;
+  }
+}
+
+.addCardIcon {
+  font-size: 24px;
+}
+
+.addCardText {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ===== 空状态 ===== */
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+
+  .emptyIcon {
+    font-size: 48px;
+    color: #475569;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  h3 {
+    font-size: 16px;
+    color: #94a3b8;
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0 0 20px;
+  }
+}
+
+/* ===== Modal ===== */
+.modalTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .addrGrid {
+    grid-template-columns: 1fr;
+  }
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .searchBox {
+    width: 100%;
+  }
+  .toolbarRight {
+    justify-content: space-between;
+  }
+}

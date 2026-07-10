@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Menu as MenuIcon, Globe, ChevronDown, X, Wallet } from 'lucide-react';
+import { Menu as MenuIcon, Globe, X, CheckCircle } from 'lucide-react';
 import logoMarkSrc from '../../assets/logo-mark.svg';
-import WalletConnect from './components/WalletConnect';
+import Web3WalletButton from './components/Web3WalletButton';
+import headerControlStyles from './HeaderControl.module.scss';
+import { HEADER_CTRL_ICON_SIZE, HEADER_CTRL_ICON_STROKE } from './headerControlButton';
 
 const HeaderPageDetail: React.FC = () => {
   const { t, i18n, ready } = useTranslation();
@@ -78,15 +80,6 @@ const HeaderPageDetail: React.FC = () => {
     i18n.changeLanguage(lang);
   };
 
-  // 钱包连接回调
-  const handleWalletConnect = (address: string) => {
-    console.log('钱包已连接:', address);
-  };
-
-  const handleWalletDisconnect = () => {
-    console.log('钱包已断开连接');
-  };
-
   return (
     <header className="bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50">
       {/* 分割线宽度控制 - 95%宽度，居中，包含分割线 */}
@@ -131,52 +124,57 @@ const HeaderPageDetail: React.FC = () => {
           </button>
 
           {/* 右侧控制区域 */}
-          <div className="hidden md:flex items-center space-x-4">
-            {/* 语言切换 */}
-            <div className="language-dropdown relative">
+          <div className="hidden md:flex items-center gap-3">
+            {/* 语言切换 — 与官网 .lang-trigger 一致 */}
+            <div className={headerControlStyles.languageDropdown}>
               <button
-                className="flex items-center space-x-2 text-gray-300 hover:text-blue-400 transition-colors font-semibold"
+                type="button"
+                className={headerControlStyles.langTrigger}
                 onClick={() => setLanguageMenuOpen(!languageMenuOpen)}
               >
-                <Globe size={16} />
+                <Globe size={HEADER_CTRL_ICON_SIZE} strokeWidth={HEADER_CTRL_ICON_STROKE} />
                 <span>{i18n.language === 'zh' ? '中文' : 'English'}</span>
-                <ChevronDown size={12} />
               </button>
-              <div className={`absolute right-0 top-full mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl min-w-[120px] z-50 transition-all duration-300 ${
-                languageMenuOpen 
-                  ? 'opacity-100 visible translate-y-0' 
-                  : 'opacity-0 invisible -translate-y-2'
-              }`}>
-                <div className="py-2">
-                  <button
-                    className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-gray-300 hover:bg-gray-700 hover:text-white"
-                    onClick={() => {
-                      handleLanguageChange('zh');
-                      setLanguageMenuOpen(false);
-                    }}
-                  >
-                    <span>中文</span>
-                    <i className={`fas fa-check text-blue-400 ${i18n.language === 'zh' ? 'opacity-100' : 'opacity-0'}`}></i>
-                  </button>
-                  <button
-                    className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-gray-300 hover:bg-gray-700 hover:text-white"
-                    onClick={() => {
-                      handleLanguageChange('en');
-                      setLanguageMenuOpen(false);
-                    }}
-                  >
-                    <span>English</span>
-                    <i className={`fas fa-check text-blue-400 ${i18n.language === 'en' ? 'opacity-100' : 'opacity-0'}`}></i>
-                  </button>
-                </div>
+              <div
+                className={`${headerControlStyles.dropdownMenu} ${
+                  languageMenuOpen ? headerControlStyles.dropdownMenuShow : ''
+                }`}
+              >
+                <button
+                  type="button"
+                  className={headerControlStyles.dropdownItem}
+                  onClick={() => {
+                    handleLanguageChange('zh');
+                    setLanguageMenuOpen(false);
+                  }}
+                >
+                  <CheckCircle
+                    size={14}
+                    className={headerControlStyles.dropdownItemCheck}
+                    style={{ opacity: i18n.language === 'zh' ? 1 : 0 }}
+                  />
+                  中文
+                </button>
+                <button
+                  type="button"
+                  className={headerControlStyles.dropdownItem}
+                  onClick={() => {
+                    handleLanguageChange('en');
+                    setLanguageMenuOpen(false);
+                  }}
+                >
+                  <CheckCircle
+                    size={14}
+                    className={headerControlStyles.dropdownItemCheck}
+                    style={{ opacity: i18n.language === 'en' ? 1 : 0 }}
+                  />
+                  English
+                </button>
               </div>
             </div>
 
             {/* 钱包连接组件 */}
-            <WalletConnect
-              onConnect={handleWalletConnect}
-              onDisconnect={handleWalletDisconnect}
-            />
+            <Web3WalletButton />
           </div>
         </div>
 
@@ -221,13 +219,7 @@ const HeaderPageDetail: React.FC = () => {
                 </nav>
 
                 <div className="mt-8 pt-8 border-t border-gray-700">
-                  <button
-                    className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 rounded-lg font-medium hover:from-blue-600 hover:to-purple-700 transition-all"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Wallet size={16} />
-                    <span>连接钱包</span>
-                  </button>
+                  <Web3WalletButton />
                 </div>
               </div>
             </div>

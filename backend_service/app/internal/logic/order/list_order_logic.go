@@ -87,9 +87,34 @@ func (l *ListOrderLogic) ListOrder(req *types.ListOrderReq) (resp *types.BaseRes
 		return customererrors.DatabaseErrorResp("查询订单支付信息失败"), nil
 	}
 
+	// 收集所有 chainId，批量查询链名称
+	chainNameMap := make(map[int64]string)
+	chainIdSet := make(map[int64]bool)
+	for _, p := range paymentMap {
+		if p.ChainId > 0 {
+			chainIdSet[p.ChainId] = true
+		}
+	}
+	if len(chainIdSet) > 0 {
+		networkRepo := repository.NewChain_networkRepository(l.svcCtx.GormDB)
+		for chainID := range chainIdSet {
+			network, err := networkRepo.GetByChainId(l.ctx, int(chainID))
+			if err != nil {
+				l.Errorf("get chain network failed, chainId=%d, err=%v", chainID, err)
+				continue
+			}
+			chainNameMap[chainID] = network.Name
+		}
+	}
+
 	result := make([]types.AdminOrderSummary, 0, len(orderList))
 	for _, item := range orderList {
-		result = append(result, toAdminOrderSummary(item, paymentMap[item.ID]))
+		payment := paymentMap[item.ID]
+		var chainName string
+		if payment != nil {
+			chainName = chainNameMap[payment.ChainId]
+		}
+		result = append(result, toAdminOrderSummary(item, payment, chainName))
 	}
 
 	return customererrors.SuccessData(types.ListOrderResp{

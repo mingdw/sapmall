@@ -37,9 +37,12 @@ function MoneyText({
 }) {
   if (amount == null) return <span className={styles.mutedValue}>—</span>;
   return (
-    <span className={styles.moneyRed}>
-      {prefix}
-      {formatAmount(amount, currency)}
+    <span>
+      <span className={styles.moneyRed}>
+        {prefix}
+        {amount.toFixed(2)}
+      </span>
+      <span className={styles.currencyUnit}>{currency || 'USDC'}</span>
     </span>
   );
 }
@@ -63,6 +66,7 @@ const OrderDetailDrawer: React.FC<Props> = ({ open, loading, detail, onClose }) 
   const order = detail?.order;
   const payment = detail?.payment;
   const currency = order?.currency || 'USDC';
+  const settleCurrency = order?.settleCurrency || payment?.tokenSymbol || currency;
 
   const drawerTheme = useMemo(
     () => ({
@@ -120,41 +124,46 @@ const OrderDetailDrawer: React.FC<Props> = ({ open, loading, detail, onClose }) 
                   />
                 </Descriptions.Item>
                 <Descriptions.Item label="下单时间">{formatTime(order.orderDate)}</Descriptions.Item>
-                <Descriptions.Item label="支付截止" span={2}>{formatTime(order.expireAt)}</Descriptions.Item>
+                <Descriptions.Item label="支付时间" span={2}>
+                  {formatTime(payment?.confirmedAt)}
+                </Descriptions.Item>
+                <Descriptions.Item label="订单总金额">
+                  <MoneyText amount={order.totalAmount} currency={currency} />
+                </Descriptions.Item>
+                <Descriptions.Item label="实付金额">
+                  <MoneyText amount={order.realAmount || order.payAmount} currency={settleCurrency} />
+                </Descriptions.Item>
               </Descriptions>
             </section>
 
             <section className={styles.sectionCard}>
               <h4 className={styles.sectionTitle}>费用明细</h4>
               <Descriptions column={1} size="small" colon={false} className={styles.detailDescriptions}>
-                {order.totalAmount != null ? (
-                  <Descriptions.Item label="商品总额">
-                    <MoneyText amount={order.totalAmount} currency={currency} />
-                  </Descriptions.Item>
-                ) : null}
-                {order.discountAmount != null && order.discountAmount > 0 ? (
-                  <Descriptions.Item label="优惠抵扣">
+                <Descriptions.Item label="商品总额">
+                  <MoneyText amount={order.totalAmount} currency={currency} />
+                </Descriptions.Item>
+                <Descriptions.Item label="优惠金额">
+                  {order.discountAmount != null && order.discountAmount > 0 ? (
                     <MoneyText amount={order.discountAmount} currency={currency} prefix="-" />
-                  </Descriptions.Item>
-                ) : null}
-                {order.payableAmount != null ? (
-                  <Descriptions.Item label="应付金额">
-                    <MoneyText amount={order.payableAmount} currency={currency} />
-                  </Descriptions.Item>
-                ) : null}
-                {order.platformFeeAmount != null ? (
-                  <Descriptions.Item label="手续费">
-                    <MoneyText amount={order.platformFeeAmount} currency={currency} />
-                  </Descriptions.Item>
-                ) : null}
-                {order.estGasFee != null ? (
-                  <Descriptions.Item label="预估 GAS 费">
-                    <MoneyText amount={order.estGasFee} currency={currency} />
-                  </Descriptions.Item>
-                ) : null}
-                {order.orderRemark ? (
-                  <Descriptions.Item label="买家留言">{order.orderRemark}</Descriptions.Item>
-                ) : null}
+                  ) : (
+                    <span className={styles.mutedValue}>—</span>
+                  )}
+                </Descriptions.Item>
+                <Descriptions.Item label="应付金额">
+                  <MoneyText amount={order.payableAmount} currency={currency} />
+                </Descriptions.Item>
+                <Descriptions.Item label="手续费">
+                  <MoneyText amount={order.platformFeeAmount} currency={currency} />
+                </Descriptions.Item>
+                <Descriptions.Item label="预估 Gas">
+                  <MoneyText amount={order.estGasFee} currency={currency} />
+                </Descriptions.Item>
+                <Descriptions.Item label="实际 Gas">
+                  <MoneyText amount={order.actGasFee} currency={currency} />
+                </Descriptions.Item>
+                <Descriptions.Item label="实付金额">
+                  <MoneyText amount={order.realAmount || order.payAmount} currency={settleCurrency} />
+                </Descriptions.Item>
               </Descriptions>
             </section>
 
@@ -226,18 +235,6 @@ const OrderDetailDrawer: React.FC<Props> = ({ open, loading, detail, onClose }) 
                   {payment.paidAt ? (
                     <Descriptions.Item label="支付时间">{formatTime(payment.paidAt)}</Descriptions.Item>
                   ) : null}
-                  {payment.estGasFee != null ? (
-                    <Descriptions.Item label="预估 GAS 费">
-                      <MoneyText amount={payment.estGasFee} currency={currency} />
-                    </Descriptions.Item>
-                  ) : null}
-                  <Descriptions.Item label="实际 GAS 费">
-                    {payment.actGasFee != null ? (
-                      <MoneyText amount={payment.actGasFee} currency={currency} />
-                    ) : (
-                      <span className={styles.mutedValue}>—</span>
-                    )}
-                  </Descriptions.Item>
                 </Descriptions>
               </section>
             ) : null}
@@ -275,13 +272,6 @@ const OrderDetailDrawer: React.FC<Props> = ({ open, loading, detail, onClose }) 
                 </ul>
               </section>
             ) : null}
-
-            <section className={styles.payAmountCard}>
-              <span className={styles.payAmountCardLabel}>实付金额</span>
-              <span className={styles.payAmountCardValue}>
-                {formatAmount(order.realAmount || order.payAmount, currency)}
-              </span>
-            </section>
 
             <div className={styles.drawerFooter}>
               <button type="button" onClick={onClose} className={styles.footerCloseBtn}>

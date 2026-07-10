@@ -77,14 +77,19 @@
       "swapNow": "立即兑换",
       "securityNote": "智能合约已审计 · 资产安全有保障",
       "rateLine": "1 {{from}} = {{rate}} SAP",
-      "disabledReason": "请先连接钱包后再进行代币兑换"
+      "disabledReason": "请先连接钱包后再进行代币兑换",
+      "approving": "授权中...",
+      "confirming": "确认中...",
+      "quoteError": "报价获取失败",
+      "txSuccess": "交易成功",
+      "noTokensAvailable": "当前链暂无可兑换代币"
     },
     "marketStats": {
       "title": "市场数据",
-      "sapPrice": "SAP 当前价格",
-      "vol24h": "24h 交易量",
-      "tvl": "总锁仓量 (TVL)",
-      "holders": "持币地址数"
+      "swappedToken": "已兑{{symbol}}",
+      "totalLabel": "总共",
+      "swappedLabel": "，已兑换",
+      "noTokenStats": "暂无已兑换数据"
     },
     "chart": {
       "pair": "SAP / USD",
@@ -104,8 +109,8 @@
     "sapVisual": {
       "name": "SAP Token",
       "tagline": "SAPMall 生态核心代币",
-      "currentPrice": "当前价格",
-      "changeLabel": "▲ 5.82% (24h)"
+      "exchangeRate": "合约汇率",
+      "rateSource": "来源：平台兑换合约"
     }
   }
 }

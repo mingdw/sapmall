@@ -5,7 +5,7 @@ import styles from './StatCard.module.scss';
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: React.ReactNode;
+  icon: string | React.ReactNode;
   trend?: {
     value: string;
     type: 'positive' | 'negative' | 'neutral';
@@ -25,7 +25,7 @@ const StatCard: React.FC<StatCardProps> = ({
   return (
     <div className={`${styles.dashboardStatCard} ${styles[`stat${variant.charAt(0).toUpperCase() + variant.slice(1)}`]} ${className}`}>
       <div className={styles.statIcon}>
-        {icon}
+        {typeof icon === 'string' ? <i className={icon.startsWith('fa') ? icon : `fas fa-${icon}`} /> : icon}
       </div>
       <div className={styles.statContent}>
         <div className={styles.statValueRow}>

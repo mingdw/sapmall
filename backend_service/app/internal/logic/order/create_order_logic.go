@@ -68,6 +68,7 @@ type createOrderValidated struct {
 	intentID     string
 	amountRaw    string
 	expireAt     time.Time
+	sellerAddress string
 	operator     string
 }
 
@@ -78,6 +79,7 @@ type createOrderBundle struct {
 	promotions []model.OrderPromotion
 	delivery   *model.OrderDeliveryAddress
 	promoReq   []types.OrderPromotionItem
+	sellerAddress string
 }
 
 func (l *CreateOrderLogic) CreateOrder(req *types.CreateOrderReq) (resp *types.BaseResp, err error) {
@@ -163,13 +165,18 @@ func (l *CreateOrderLogic) validateCreateOrderAfterAuth(req *types.CreateOrderRe
 		return nil, customererrors.ParamErrorResp(cfgErr.Error())
 	}
 
+	sellerAddress, sellerErr := resolvePlatformSellerAddress(l.svcCtx.Config.OrderPayment.PlatformSellerAddress)
+	if sellerErr != nil {
+		return nil, customererrors.ParamErrorResp(sellerErr.Error())
+	}
+
 	orderCode := generateOrderCode()
 	if !validateOrderCodeLength(orderCode) {
 		return nil, customererrors.FailMsg("生成订单号失败")
 	}
 
 	amountRaw := payAmountToAmountRaw(req.PayAmount, chainCfg.TokenDecimals)
-	if amountRaw == "0" {
+	if !isPositiveAmountRaw(amountRaw) {
 		return nil, customererrors.ParamErrorResp("实付金额无效")
 	}
 
@@ -195,9 +202,10 @@ func (l *CreateOrderLogic) validateCreateOrderAfterAuth(req *types.CreateOrderRe
 		currency:     currency,
 		orderCode:    orderCode,
 		intentID:     generateIntentID(),
-		amountRaw:    amountRaw,
-		expireAt:     orderExpireAt(now, expireMins),
-		operator:     operator,
+		amountRaw:     amountRaw,
+		expireAt:      orderExpireAt(now, expireMins),
+		sellerAddress: sellerAddress,
+		operator:      operator,
 	}, nil
 }
 
@@ -227,35 +235,36 @@ func (l *CreateOrderLogic) assembleCreateOrderBundle(req *types.CreateOrderReq, 
 	now := time.Now()
 
 	orderRow := &model.Order{
-		OrderCode:         v.orderCode,
-		UserId:            v.userInfo.ID,
-		UserCode:          v.userInfo.UserCode,
-		SpuId:             snap.SpuId,
-		SpuCode:           snap.SpuCode,
-		SkuId:             snap.SkuId,
-		SkuCode:           snap.SkuCode,
-		SkuImgs:           strings.TrimSpace(req.SkuImgs),
-		ProductName:       snap.ProductName,
-		ProductPrice:      snap.ProductPrice,
-		ProductQuantity:   int(req.Quantity),
-		TotalAmount:       snap.TotalAmount,
-		ProductRemark:     snap.ProductRemark,
-		OrderStatus:       orderStatusPendingPay,
-		OrderStatusDesc:   orderStatusDescPendingPay,
-		PaymentStatus:     paymentStatusUnpaid,
-		PaymentStatusDesc: paymentStatusDescUnpaid,
-		OrderDate:         now,
+		OrderCode:               v.orderCode,
+		UserId:                  v.userInfo.ID,
+		UserCode:                v.userInfo.UserCode,
+		SpuId:                   snap.SpuId,
+		SpuCode:                 snap.SpuCode,
+		SkuId:                   snap.SkuId,
+		SkuCode:                 snap.SkuCode,
+		SkuImgs:                 strings.TrimSpace(req.SkuImgs),
+		ProductName:             snap.ProductName,
+		ProductPrice:            snap.ProductPrice,
+		ProductQuantity:         int(req.Quantity),
+		TotalAmount:             snap.TotalAmount,
+		ProductRemark:           snap.ProductRemark,
+		OrderStatus:             orderStatusPendingPay,
+		OrderStatusDesc:         orderStatusDescPendingPay,
+		PaymentStatus:           paymentStatusUnpaid,
+		PaymentStatusDesc:       paymentStatusDescUnpaid,
+		OrderDate:               now,
 		Currency:          v.currency,
+		SettleCurrency:    v.chainCfg.TokenSymbol,
 		DiscountAmount:    req.DiscountAmount,
 		PayableAmount:     req.PayableAmount,
-		PlatformFeeAmount: req.PlatformFeeAmount,
-		EstGasFee:         req.EstGasFee,
-		PayAmount:         req.PayAmount,
-		OrderRemark:       strings.TrimSpace(req.OrderRemark),
-		ExpireAt:          v.expireAt,
-		IsDeleted:         0,
-		Creator:           v.operator,
-		Updator:           v.operator,
+		PlatformFeeAmount:       req.PlatformFeeAmount,
+		EstGasFee:               req.EstGasFee,
+		PayAmount:               req.PayAmount,
+		OrderRemark:             strings.TrimSpace(req.OrderRemark),
+		ExpireAt:                v.expireAt,
+		IsDeleted:               0,
+		Creator:                 v.operator,
+		Updator:                 v.operator,
 	}
 
 	paymentRow := &model.OrderPayment{
@@ -280,11 +289,12 @@ func (l *CreateOrderLogic) assembleCreateOrderBundle(req *types.CreateOrderReq, 
 	}
 
 	return &createOrderBundle{
-		order:      orderRow,
-		payment:    paymentRow,
-		promotions: l.buildPromotionRows(req.Promotions, v.orderCode, v.operator),
-		delivery:   l.buildDeliveryRow(req.Delivery, v.userInfo, v.orderCode, v.operator),
-		promoReq:   req.Promotions,
+		order:         orderRow,
+		payment:       paymentRow,
+		promotions:    l.buildPromotionRows(req.Promotions, v.orderCode, v.operator),
+		delivery:      l.buildDeliveryRow(req.Delivery, v.userInfo, v.orderCode, v.operator),
+		promoReq:      req.Promotions,
+		sellerAddress: v.sellerAddress,
 	}
 }
 
@@ -336,7 +346,7 @@ func (l *CreateOrderLogic) persistCreateOrder(bundle *createOrderBundle) *types.
 func (l *CreateOrderLogic) buildCreateOrderResp(bundle *createOrderBundle) types.CreateOrderResp {
 	return types.CreateOrderResp{
 		Order:      toOrderInfo(bundle.order),
-		Payment:    toOrderPaymentInfo(bundle.payment),
+		Payment:    toOrderPaymentInfo(bundle.payment, bundle.sellerAddress),
 		Promotions: toPromotionItemsFromReq(bundle.promoReq),
 	}
 }

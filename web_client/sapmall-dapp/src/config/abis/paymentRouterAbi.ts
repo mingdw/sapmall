@@ -7,6 +7,7 @@ export const paymentRouterAbi = [
     inputs: [
       { name: 'intentId', type: 'string' },
       { name: 'orderRef', type: 'string' },
+      { name: 'seller', type: 'address' },
       { name: 'token', type: 'address' },
       { name: 'amount', type: 'uint256' },
     ],

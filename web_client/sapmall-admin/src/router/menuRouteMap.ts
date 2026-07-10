@@ -41,4 +41,9 @@ export const MENU_IFRAME_ALIASES: Record<string, string[]> = {
   categories:    ['categories', 'platform/categories'],
   dictionaries:  ['dictionaries', 'system/dictionaries'],
   chainnet:      ['chainnet', 'system/chainnet'],
+  smart:         ['smart', 'contract/smart'],
+  balance:       ['balance', 'assets/balance'],
+  rewards:       ['rewards', 'assets/rewards'],
+  transactions:  ['transactions', 'assets/transactions'],
+  addresses:     ['addresses', 'trading/addresses'],
 };

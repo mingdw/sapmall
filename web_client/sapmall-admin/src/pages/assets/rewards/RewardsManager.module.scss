@@ -1,0 +1,1060 @@
+.rewardsPage {
+  --rw-accent: #a78bfa;
+  --rw-accent-strong: #8b5cf6;
+  --rw-accent-soft: rgba(167, 139, 250, 0.12);
+  --rw-accent-border: rgba(167, 139, 250, 0.32);
+  --rw-surface: rgba(15, 23, 42, 0.48);
+  --rw-surface-border: rgba(51, 65, 85, 0.38);
+  --rw-surface-hover: rgba(51, 65, 85, 0.22);
+  --rw-text: #e2e8f0;
+  --rw-text-muted: #94a3b8;
+  --rw-text-subtle: #64748b;
+
+  padding: 8px 0 16px;
+  color: #cbd5e1;
+  font-size: 13px;
+  line-height: 1.55;
+  max-width: 1280px;
+
+  :global(.ant-empty-description) {
+    color: var(--rw-text-subtle) !important;
+  }
+  :global(.ant-input),
+  :global(.ant-select-selection-item),
+  :global(.ant-select-selection-search-input) {
+    color: var(--rw-text) !important;
+    -webkit-text-fill-color: var(--rw-text) !important;
+  }
+  :global(.ant-input::placeholder) {
+    color: var(--rw-text-subtle) !important;
+  }
+  :global(.ant-select-selection-placeholder) {
+    color: var(--rw-text-subtle) !important;
+  }
+  :global(.ant-table-cell) {
+    color: #cbd5e1 !important;
+  }
+}
+
+/* ===== Page Header ===== */
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.pageHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pageTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--rw-text);
+  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  i { color: var(--rw-accent); font-size: 18px; }
+}
+.pageSubtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--rw-text-subtle);
+  line-height: 1.6;
+}
+
+/* ===== User Info Bar ===== */
+.userInfoBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border: 1px solid var(--rw-surface-border);
+  border-radius: 10px;
+  background: var(--rw-surface);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.userInfoAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--rw-accent);
+  background: var(--rw-accent-soft);
+  border: 1px solid var(--rw-accent-border);
+  flex-shrink: 0;
+}
+.userInfoMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.userInfoName {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--rw-text);
+}
+.userInfoSub {
+  font-size: 12px;
+  color: var(--rw-text-subtle);
+}
+.userInfoMeta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+.userInfoMetaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.userInfoMetaLabel {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--rw-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.userInfoMetaValue {
+  font-size: 13px;
+  color: var(--rw-text);
+}
+
+/* ===== Tabs ===== */
+.rewardsTabs {
+  :global(.ant-tabs-nav) { margin-bottom: 20px; }
+  :global(.ant-tabs-nav::before) {
+    border-bottom-color: rgba(51, 65, 85, 0.45) !important;
+  }
+  :global(.ant-tabs-tab) {
+    padding: 10px 2px !important;
+    margin: 0 24px 0 0 !important;
+    font-size: 14px;
+    color: var(--rw-text-muted) !important;
+    transition: color 0.2s ease;
+  }
+  :global(.ant-tabs-tab:hover) { color: var(--rw-text) !important; }
+  :global(.ant-tabs-tab-active .ant-tabs-tab-btn) {
+    color: #f8fafc !important;
+    font-weight: 600;
+  }
+  :global(.ant-tabs-ink-bar) {
+    background: var(--rw-accent) !important;
+    height: 2px !important;
+    border-radius: 2px;
+  }
+  :global(.ant-tabs-content-holder) {
+    border: none;
+    background: transparent;
+    padding: 0;
+  }
+}
+.tabLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  i { font-size: 13px; }
+}
+
+/* ===== Stats Cards ===== */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.statsCard {
+  padding: 18px 20px;
+  border: 1px solid var(--rw-surface-border);
+  border-radius: 12px;
+  background: var(--rw-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.2s ease;
+  &:hover { border-color: rgba(167, 139, 250, 0.28); }
+}
+.statsCardHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.statsCardIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.statsCardLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rw-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.statsCardValue {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--rw-text);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.statsCardUnit {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--rw-text-muted);
+  margin-left: 4px;
+}
+.statsCardHint {
+  font-size: 12px;
+  color: var(--rw-text-subtle);
+}
+
+/* ===== Query Card (shared container) ===== */
+.queryCard {
+  background: rgba(30, 41, 59, 0.32);
+  border: 1px solid rgba(51, 65, 85, 0.28);
+  border-radius: 10px;
+  padding: 18px 20px;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease;
+  margin-bottom: 20px;
+
+  &:hover {
+    border-color: rgba(167, 139, 250, 0.18);
+  }
+}
+.sectionLabel {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--rw-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  i { font-size: 13px; }
+}
+
+/* ===== Tier Progress ===== */
+.tierCard {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 20px;
+  border: 1px solid var(--rw-surface-border);
+  border-radius: 12px;
+  background: var(--rw-surface);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.tierBadge {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.tierInfo {
+  flex: 1;
+  min-width: 200px;
+}
+.tierNameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.tierName {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--rw-text);
+}
+.tierPoints {
+  font-size: 13px;
+  color: var(--rw-text-muted);
+}
+.tierProgressBar {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(51, 65, 85, 0.45);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.tierProgressFill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--rw-accent), var(--rw-accent-strong));
+  transition: width 0.4s ease;
+}
+.tierProgressMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--rw-text-subtle);
+}
+.tierBenefits {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tierBenefitItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--rw-text-muted);
+  i { color: var(--rw-accent); font-size: 11px; }
+}
+
+/* ===== Source Breakdown ===== */
+.sourceList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sourceItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.3);
+  border: 1px solid rgba(51, 65, 85, 0.22);
+  transition: border-color 0.15s ease;
+  &:hover { border-color: rgba(167, 139, 250, 0.22); }
+}
+.sourceIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.sourceInfo {
+  flex: 1;
+  min-width: 0;
+}
+.sourceName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--rw-text);
+}
+.sourceBar {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(51, 65, 85, 0.4);
+  overflow: hidden;
+  margin-top: 4px;
+}
+.sourceBarFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+.sourceAmount {
+  text-align: right;
+  flex-shrink: 0;
+}
+.sourceAmountValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--rw-text);
+  font-variant-numeric: tabular-nums;
+}
+.sourceAmountPercent {
+  font-size: 11px;
+  color: var(--rw-text-subtle);
+}
+
+/* ===== Filter Bar ===== */
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filterGroup {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.filterBtn {
+  padding: 5px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--rw-surface-border);
+  background: var(--rw-surface);
+  color: var(--rw-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  &:hover { border-color: rgba(167, 139, 250, 0.3); color: var(--rw-text); }
+}
+.filterBtnActive {
+  background: var(--rw-accent-soft);
+  border-color: var(--rw-accent-border);
+  color: var(--rw-accent);
+}
+
+/* ===== Table ===== */
+.rewardsTable {
+  :global(.ant-table) { background: transparent; }
+  :global(.ant-table-thead > tr > th) {
+    background: transparent !important;
+    color: var(--rw-text-subtle) !important;
+    font-size: 12px;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.45) !important;
+    padding: 11px 12px !important;
+    &::before { display: none !important; }
+  }
+  :global(.ant-table-tbody > tr > td) {
+    background: transparent !important;
+    color: #cbd5e1 !important;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.22) !important;
+    padding: 10px 12px !important;
+    font-size: 13px;
+    transition: background 0.2s ease;
+  }
+  :global(.ant-table-tbody > tr:hover > td) {
+    background: var(--rw-surface-hover) !important;
+  }
+  :global(.ant-table-placeholder .ant-table-cell) {
+    border-bottom: none !important;
+    padding: 32px 12px !important;
+  }
+}
+
+/* ===== Status Pills ===== */
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.statusAvailable {
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+}
+.statusClaimed {
+  color: var(--rw-text-muted);
+  background: rgba(100, 116, 139, 0.12);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+}
+.statusPending {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.22);
+}
+.statusExpired {
+  color: #fca5a5;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+/* ===== Source Tag ===== */
+.sourceTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ===== Mono Text ===== */
+.monoText {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== Amount ===== */
+.amountValue {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--rw-text);
+}
+.amountUnit {
+  font-size: 11px;
+  color: var(--rw-text-subtle);
+  margin-left: 2px;
+}
+
+/* ===== Action Button ===== */
+.claimBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rw-accent);
+  background: var(--rw-accent-soft);
+  border: 1px solid var(--rw-accent-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: #c4b5fd;
+    background: rgba(167, 139, 250, 0.2);
+    border-color: rgba(167, 139, 250, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--rw-surface-border);
+  background: var(--rw-surface);
+  color: var(--rw-text-muted);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  &:hover:not(:disabled) {
+    border-color: rgba(167, 139, 250, 0.35);
+    color: var(--rw-accent);
+    background: var(--rw-accent-soft);
+  }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+/* ===== Empty State ===== */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 72px 24px;
+  border: 1px dashed var(--rw-surface-border);
+  border-radius: 12px;
+  background: var(--rw-surface);
+}
+.emptyTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--rw-text);
+}
+.emptyHint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--rw-text-subtle);
+  text-align: center;
+  max-width: 360px;
+}
+
+/* ===== Tier Comparison ===== */
+.tierComparison {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+.tierCompareCard {
+  padding: 16px 18px;
+  border: 1px solid var(--rw-surface-border);
+  border-radius: 10px;
+  background: var(--rw-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s ease;
+  &:hover { border-color: rgba(167, 139, 250, 0.22); }
+}
+.tierCompareCardCurrent {
+  border-color: var(--rw-accent-border);
+  background: var(--rw-accent-soft);
+}
+.tierCompareHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tierCompareIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.tierCompareName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--rw-text);
+}
+.tierComparePoints {
+  font-size: 12px;
+  color: var(--rw-text-subtle);
+}
+.tierCompareBenefits {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tierCompareBenefit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--rw-text-muted);
+  i { color: var(--rw-accent); font-size: 10px; }
+}
+.tierCurrentBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--rw-accent);
+  background: var(--rw-accent-soft);
+  border: 1px solid var(--rw-accent-border);
+  border-radius: 4px;
+  margin-left: auto;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1100px) {
+  .statsGrid { grid-template-columns: repeat(2, 1fr); }
+  .tierComparison { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .statsGrid { grid-template-columns: 1fr; }
+  .tierComparison { grid-template-columns: 1fr; }
+  .userInfoMeta { margin-left: 0; }
+  .tierCard { flex-direction: column; align-items: flex-start; }
+  .rewardBanner { flex-direction: column; align-items: flex-start; }
+}
+
+/* ===== Reward Banner (Tier Progress + Quick Claim) ===== */
+.rewardBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 20px;
+  border: 1px solid var(--rw-surface-border);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.06), rgba(15, 23, 42, 0.48));
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.rewardBannerTier {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.rewardBannerBadge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.rewardBannerTierInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.rewardBannerTierName {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--rw-text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.rewardBannerTierPoints {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rw-text-muted);
+  font-family: ui-monospace, monospace;
+}
+
+.rewardBannerProgress {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(51, 65, 85, 0.45);
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.rewardBannerProgressFill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--rw-accent), var(--rw-accent-strong));
+  transition: width 0.4s ease;
+}
+
+.rewardBannerProgressMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--rw-text-subtle);
+}
+
+.rewardBannerClaim {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.rewardBannerClaimInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.rewardBannerClaimLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--rw-text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rewardBannerClaimValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #6ee7b7;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.rewardBannerClaimUnit {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--rw-text-muted);
+  margin-left: 4px;
+}
+
+.rewardBannerClaimBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--rw-accent), var(--rw-accent-strong));
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* ===== Recent Rewards List ===== */
+.recentList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.recentItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.recentIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.recentBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.recentTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.recentDesc {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--rw-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recentMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--rw-text-subtle);
+}
+
+.recentSource {
+  color: var(--rw-text-muted);
+}
+
+.recentDot {
+  color: #475569;
+  user-select: none;
+}
+
+.recentAmount {
+  text-align: right;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* ===== Quest Section (Upgrade Tasks) ===== */
+.questHint {
+  font-size: 13px;
+  color: var(--rw-text-muted);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+.questHintNum {
+  font-weight: 700;
+  color: var(--rw-accent);
+  font-variant-numeric: tabular-nums;
+}
+.questGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.questCard {
+  padding: 16px 18px;
+  border: 1px solid var(--rw-surface-border);
+  border-radius: 10px;
+  background: var(--rw-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s ease;
+  &:hover { border-color: rgba(167, 139, 250, 0.22); }
+}
+.questHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.questIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.questTitleWrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.questTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--rw-text);
+}
+.questReward {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--rw-accent);
+  i { font-size: 10px; }
+}
+.questCompleteBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.questDesc {
+  font-size: 12px;
+  color: var(--rw-text-subtle);
+  line-height: 1.5;
+}
+.questProgressRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.questProgressBar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(51, 65, 85, 0.45);
+  overflow: hidden;
+}
+.questProgressFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.questProgressText {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--rw-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ===== Tier Locked Badge ===== */
+.tierLockedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--rw-text-subtle);
+  background: rgba(100, 116, 139, 0.12);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+  border-radius: 4px;
+  margin-left: auto;
+  i { font-size: 9px; }
+}
+
+/* ===== Earn Methods Section ===== */
+.earnGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.earnCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--rw-surface-border);
+  border-radius: 10px;
+  background: var(--rw-surface);
+  transition: border-color 0.2s ease;
+  &:hover { border-color: rgba(167, 139, 250, 0.22); }
+}
+.earnIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.earnTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--rw-text);
+  margin-bottom: 4px;
+}
+.earnDesc {
+  font-size: 12px;
+  color: var(--rw-text-subtle);
+  line-height: 1.5;
+}
+
+/* ===== Responsive for Quest & Earn ===== */
+@media (max-width: 1100px) {
+  .questGrid { grid-template-columns: repeat(2, 1fr); }
+  .earnGrid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .questGrid { grid-template-columns: 1fr; }
+  .earnGrid { grid-template-columns: 1fr; }
+}
+

@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"math/big"
 	"sort"
-	"strconv"
 	"strings"
+	"sync"
 	"time"
 
-	consts "sapphire-mall/app/internal/const"
 	platformconfig "sapphire-mall/app/internal/contract/abi/bin"
 	"sapphire-mall/app/internal/model"
 	"sapphire-mall/app/internal/repository"
@@ -26,112 +25,203 @@ import (
 )
 
 const (
-	syncChainStatusSynced = 2
-	listenerActor         = "platform_config_listener"
+	syncChainStatusSynced  = 2
+	configListenerActor    = "platform_config_listener"
 )
 
-// RunPlatformConfigListener 在独立 goroutine 中轮询 PlatformConfig 合约日志并回写 sys_config。
-// 游标存 sys_config.chain.listener.last_processed_block（无/空/无效时首次按 BootstrapLookbackBlocks 回溯扫描，见 scanPlatformConfigOnce）；起始块见 chain.listener.start_block。
-// ctx 取消时退出（与 HTTP 服务同生命周期）。
-func RunPlatformConfigListener(ctx context.Context, svc *svc.ServiceContext) {
-	interval := time.Duration(svc.Config.ChainListener.PollIntervalSec) * time.Second
-	if interval <= 0 {
-		interval = 12 * time.Second
-	}
-	chunk := svc.Config.ChainListener.MaxBlocksChunk
-	if chunk <= 0 {
-		chunk = 3000
-	}
+// configListenerManager 管理所有链的 Config 监听器
+type configListenerManager struct {
+	svc     *svc.ServiceContext
+	wg      sync.WaitGroup
+	mu      sync.RWMutex
+	running map[int64]context.CancelFunc // chainID -> cancel function
+}
 
-	logx.Infof("platform_config_listener started poll=%s chunk=%d", interval, chunk)
-	ticker := time.NewTicker(interval)
+var configManager = &configListenerManager{
+	running: make(map[int64]context.CancelFunc),
+}
+
+// RunPlatformConfigListener 启动 Config 监听器管理器
+// 为每条启用的链启动独立的监听协程，使用各自的轮询间隔和游标
+func RunPlatformConfigListener(ctx context.Context, svc *svc.ServiceContext) {
+	logx.Infof("platform_config_listener manager started")
+	configManager.svc = svc
+
+	// 启动监听器管理协程
+	go configManager.manage(ctx)
+}
+
+// manage 监听器管理协程
+func (m *configListenerManager) manage(ctx context.Context) {
+	// 初始扫描
+	m.syncListeners(ctx)
+
+	ticker := time.NewTicker(60 * time.Second)
 	defer ticker.Stop()
 
 	for {
 		select {
 		case <-ctx.Done():
-			logx.Infof("platform_config_listener stopped")
+			logx.Infof("platform_config_listener manager stopping")
+			m.stopAll()
 			return
 		case <-ticker.C:
-			if err := scanPlatformConfigOnce(ctx, svc, chunk); err != nil {
-				logx.Errorf("platform_config_listener scan: %v", err)
-			}
+			m.syncListeners(ctx)
 		}
 	}
 }
 
-func scanPlatformConfigOnce(ctx context.Context, svc *svc.ServiceContext, maxChunk int) error {
-	scanCtx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
-	defer cancel()
-
-	rpcURL := strings.TrimSpace(svc.Config.ChainMonitor.RPCURL)
-	addrHex := strings.TrimSpace(svc.Config.PlatformConfig.ContractAddress)
-	if rpcURL == "" || addrHex == "" || !common.IsHexAddress(addrHex) {
-		return fmt.Errorf("chain listener: rpc or contract address not configured")
+// syncListeners 同步监听器状态
+func (m *configListenerManager) syncListeners(ctx context.Context) {
+	networkRepo := repository.NewChain_networkRepository(m.svc.GormDB)
+	networks, _, err := networkRepo.ListByCondition(ctx, "", "", nil, 0, 200)
+	if err != nil {
+		logx.Errorf("platform_config_listener sync: list networks error: %v", err)
+		return
 	}
+
+	activeChains := make(map[int64]bool)
+
+	for _, network := range networks {
+		// 检查是否启用 Config 监听器
+		if network.ConfigListenerEnabled != 0 {
+			continue
+		}
+		// 检查链是否启用
+		if network.Status != 0 {
+			continue
+		}
+		// 检查合约地址
+		contractAddr := strings.TrimSpace(network.PlatformConfigAddress)
+		rpcURL := strings.TrimSpace(network.RpcUrl)
+		if rpcURL == "" || contractAddr == "" || !common.IsHexAddress(contractAddr) {
+			continue
+		}
+
+		activeChains[int64(network.ChainId)] = true
+
+		// 检查是否已在运行
+		m.mu.RLock()
+		_, running := m.running[int64(network.ChainId)]
+		m.mu.RUnlock()
+
+		if !running {
+			m.startChainListener(ctx, network)
+		}
+	}
+
+	// 停止已禁用的链
+	m.mu.Lock()
+	for chainID, cancel := range m.running {
+		if !activeChains[chainID] {
+			logx.Infof("platform_config_listener stopping for chain=%d", chainID)
+			cancel()
+			delete(m.running, chainID)
+		}
+	}
+	m.mu.Unlock()
+}
+
+// startChainListener 为单条链启动监听器
+func (m *configListenerManager) startChainListener(ctx context.Context, network *model.Chain_network) {
+	chainCtx, cancel := context.WithCancel(ctx)
+
+	m.mu.Lock()
+	m.running[int64(network.ChainId)] = cancel
+	m.mu.Unlock()
+
+	m.wg.Add(1)
+	go func() {
+		defer m.wg.Done()
+		defer func() {
+			m.mu.Lock()
+			delete(m.running, int64(network.ChainId))
+			m.mu.Unlock()
+		}()
+
+		// 获取轮询间隔
+		pollInterval := network.GetConfigPollInterval()
+		if pollInterval <= 0 {
+			pollInterval = 12
+		}
+		interval := time.Duration(pollInterval) * time.Second
+
+		logx.Infof("platform_config_listener started for chain=%d interval=%s", network.ChainId, interval)
+
+		ticker := time.NewTicker(interval)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-chainCtx.Done():
+				logx.Infof("platform_config_listener stopped for chain=%d", network.ChainId)
+				return
+			case <-ticker.C:
+				if err := scanPlatformConfigForChainOnce(chainCtx, m.svc, network); err != nil {
+					logx.Errorf("platform_config_listener chain=%d error: %v", network.ChainId, err)
+				}
+			}
+		}
+	}()
+}
+
+// stopAll 停止所有监听器
+func (m *configListenerManager) stopAll() {
+	m.mu.Lock()
+	for chainID, cancel := range m.running {
+		cancel()
+		delete(m.running, chainID)
+	}
+	m.mu.Unlock()
+	m.wg.Wait()
+}
+
+// scanPlatformConfigForChainOnce 扫描单条链的 PlatformConfig 事件
+func scanPlatformConfigForChainOnce(ctx context.Context, svc *svc.ServiceContext, network *model.Chain_network) error {
+	chainID := network.ChainId
+	rpcURL := strings.TrimSpace(network.RpcUrl)
+	contractAddrHex := strings.TrimSpace(network.PlatformConfigAddress)
+
+	if rpcURL == "" || contractAddrHex == "" || !common.IsHexAddress(contractAddrHex) {
+		return nil
+	}
+
+	// 校验起始区块是否配置
+	if err := ValidateStartBlock("config_listener", network.ConfigListenerStartBlock, contractAddrHex); err != nil {
+		return err
+	}
+
+	scanCtx, cancel := context.WithTimeout(ctx, 120*time.Second)
+	defer cancel()
 
 	client, err := ethclient.DialContext(scanCtx, rpcURL)
 	if err != nil {
-		return fmt.Errorf("dial rpc: %w", err)
+		return fmt.Errorf("dial rpc chain=%d: %w", chainID, err)
 	}
 	defer client.Close()
 
-	cfgRepo := repository.NewConfigRepository(svc.GormDB)
-	startBlock, err := loadStartBlockFromDB(scanCtx, cfgRepo)
-	if err != nil {
-		return err
-	}
-	if startBlock == 0 {
-		return nil
+	contractAddr := common.HexToAddress(contractAddrHex)
+
+	// 使用独立的 config_listener 游标
+	var lastProcessed int64
+	if network.ConfigListenerLastBlock > 0 {
+		lastProcessed = network.ConfigListenerLastBlock
+	} else {
+		lastProcessed = network.ConfigListenerStartBlock - 1
 	}
 
 	latest, err := client.BlockNumber(scanCtx)
 	if err != nil {
-		return fmt.Errorf("block number: %w", err)
+		return fmt.Errorf("block number chain=%d: %w", chainID, err)
 	}
 
-	lastProcessed, fromDB, err := loadLastProcessedBlock(scanCtx, cfgRepo, startBlock)
-	if err != nil {
-		return err
-	}
-
-	bootstrapLookback := svc.Config.ChainListener.BootstrapLookbackBlocks
-	if bootstrapLookback <= 0 {
-		bootstrapLookback = 128
-	}
-	lb := uint64(bootstrapLookback)
-
-	if !fromDB {
-		// 首次：从 max(startBlock, latest-lookback+1) 起扫，避免「只扫 latest」在链头前进后漏掉上一块内的日志
-		if latest > 0 {
-			var minFrom uint64
-			if latest >= lb {
-				minFrom = latest - lb + 1
-			} else {
-				minFrom = 1
-			}
-			if minFrom < startBlock {
-				minFrom = startBlock
-			}
-			if minFrom > latest {
-				lastProcessed = startBlock - 1
-			} else {
-				lastProcessed = minFrom - 1
-			}
-			logx.Infof("platform_config_listener last_processed unset/invalid, bootstrap first_scan_from=%d last_processed=%d (latest=%d start_block=%d lookback_blocks=%d)",
-				lastProcessed+1, lastProcessed, latest, startBlock, bootstrapLookback)
-		}
-	} else if lastProcessed < startBlock-1 {
-		lastProcessed = startBlock - 1
-	}
-
-	contractAddr := common.HexToAddress(addrHex)
-
-	from := lastProcessed + 1
+	from := uint64(lastProcessed + 1)
 	if from > latest {
 		return nil
 	}
-	to := from + uint64(maxChunk) - 1
+
+	chunk := calculateChunkSize(network.BlockTime)
+	to := from + uint64(chunk) - 1
 	if to > latest {
 		to = latest
 	}
@@ -142,17 +232,18 @@ func scanPlatformConfigOnce(ctx context.Context, svc *svc.ServiceContext, maxChu
 		Addresses: []common.Address{contractAddr},
 	})
 	if err != nil {
-		return fmt.Errorf("filter logs %d-%d: %w", from, to, err)
+		return fmt.Errorf("filter logs chain=%d %d-%d: %w", chainID, from, to, err)
 	}
 
-	logx.Infof("platform_config_listener filter contract=%s from=%d to=%d latest=%d logs=%d",
-		contractAddr.Hex(), from, to, latest, len(logs))
+	logx.Infof("platform_config_listener chain=%d contract=%s from=%d to=%d latest=%d logs=%d",
+		chainID, contractAddrHex, from, to, latest, len(logs))
 
 	platformContract, err := platformconfig.NewPlatformConfig(contractAddr, client)
 	if err != nil {
-		return fmt.Errorf("bind platform config: %w", err)
+		return fmt.Errorf("bind platform config chain=%d: %w", chainID, err)
 	}
 
+	cfgRepo := repository.NewConfigRepository(svc.GormDB)
 	keyHashToKey, err := buildIndexedKeyMap(scanCtx, cfgRepo)
 	if err != nil {
 		return err
@@ -170,92 +261,25 @@ func scanPlatformConfigOnce(ctx context.Context, svc *svc.ServiceContext, maxChu
 
 	for _, lg := range logs {
 		if err := dispatchPlatformConfigLog(scanCtx, cfgRepo, platformContract, keyHashToKey, lg); err != nil {
-			logx.Errorf("platform_config_listener handle log block=%d txIndex=%d index=%d: %v", lg.BlockNumber, lg.TxIndex, lg.Index, err)
+			logx.Errorf("platform_config_listener handle log chain=%d block=%d txIndex=%d index=%d: %v",
+				chainID, lg.BlockNumber, lg.TxIndex, lg.Index, err)
 		}
 	}
 
-	if err := saveLastProcessedBlock(scanCtx, cfgRepo, to); err != nil {
-		return fmt.Errorf("save last block: %w", err)
+	// 更新独立的 config_listener 游标
+	networkRepo := repository.NewChain_networkRepository(svc.GormDB)
+	if updateErr := networkRepo.UpdateColumnsByID(scanCtx, network.ID, map[string]interface{}{
+		"config_listener_last_block": int64(to),
+		"updator":                    configListenerActor,
+	}); updateErr != nil {
+		return fmt.Errorf("update config_listener_last_block chain=%d: %w", chainID, updateErr)
 	}
-	logx.Infof("platform_config_listener advanced last_block=%d (scanned %d-%d, logs=%d)", to, from, to, len(logs))
+
+	logx.Infof("platform_config_listener chain=%d advanced last_block=%d (scanned %d-%d, logs=%d)",
+		chainID, to, from, to, len(logs))
 	return nil
 }
 
-func loadStartBlockFromDB(ctx context.Context, cfgRepo repository.ConfigRepository) (uint64, error) {
-	row, err := cfgRepo.GetByConfigKey(ctx, consts.SYS_CONFIG_KEY_CHAIN_LISTENER_START_BLOCK)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			logx.Infof("platform_config_listener skip: sys_config %q not found", consts.SYS_CONFIG_KEY_CHAIN_LISTENER_START_BLOCK)
-			return 0, nil
-		}
-		return 0, fmt.Errorf("get start block config: %w", err)
-	}
-	v := strings.TrimSpace(row.ConfigValue)
-	if v == "" {
-		logx.Infof("platform_config_listener skip: %q empty", consts.SYS_CONFIG_KEY_CHAIN_LISTENER_START_BLOCK)
-		return 0, nil
-	}
-	n, err := strconv.ParseUint(v, 10, 64)
-	if err != nil || n == 0 {
-		return 0, fmt.Errorf("invalid start block %q: %w", v, err)
-	}
-	return n, nil
-}
-
-// loadLastProcessedBlock 读取链监听游标。第二个返回值表示是否从 DB 读到了合法非空数字；
-// 若为 false，调用方应使用链上最新高度做兜底（见 scanPlatformConfigOnce）。
-func loadLastProcessedBlock(ctx context.Context, cfgRepo repository.ConfigRepository, startBlock uint64) (uint64, bool, error) {
-	row, err := cfgRepo.GetByConfigKey(ctx, consts.SYS_CONFIG_KEY_CHAIN_LISTENER_LAST_PROCESSED_BLOCK)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return 0, false, nil
-		}
-		return 0, false, fmt.Errorf("get last processed block: %w", err)
-	}
-	v := strings.TrimSpace(row.ConfigValue)
-	if v == "" {
-		return 0, false, nil
-	}
-	n, perr := strconv.ParseUint(v, 10, 64)
-	if perr != nil {
-		logx.Infof("platform_config_listener invalid last_processed %q, will bootstrap from tip: %v", v, perr)
-		return 0, false, nil
-	}
-	if n < startBlock-1 {
-		n = startBlock - 1
-	}
-	return n, true, nil
-}
-
-func saveLastProcessedBlock(ctx context.Context, cfgRepo repository.ConfigRepository, last uint64) error {
-	val := strconv.FormatUint(last, 10)
-	row, err := cfgRepo.GetByConfigKey(ctx, consts.SYS_CONFIG_KEY_CHAIN_LISTENER_LAST_PROCESSED_BLOCK)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return cfgRepo.Create(ctx, &model.Config{
-				ConfigKey:       consts.SYS_CONFIG_KEY_CHAIN_LISTENER_LAST_PROCESSED_BLOCK,
-				ConfigName:      "链监听已处理区块(系统)",
-				ConfigValue:     val,
-				ConfigType:      "number",
-				ConfigGroup:     "chain",
-				Description:     "PlatformConfig 日志扫描游标，由 listener 自动维护",
-				IsSystem:        1,
-				IsEncrypted:     0,
-				IsEditable:      0,
-				SyncChainStatus: 0,
-				Sort:            999999,
-				Status:          1,
-				Creator:         listenerActor,
-				Updator:         listenerActor,
-			})
-		}
-		return err
-	}
-	return cfgRepo.UpdateColumnsByID(ctx, row.ID, map[string]interface{}{
-		"config_value": val,
-		"updator":      listenerActor,
-	})
-}
 func buildIndexedKeyMap(ctx context.Context, cfgRepo repository.ConfigRepository) (map[common.Hash]string, error) {
 	const maxKeys = 5000
 	list, _, err := cfgRepo.List(ctx, 0, maxKeys)
@@ -319,7 +343,7 @@ func applyConfigUpdated(ctx context.Context, cfgRepo repository.ConfigRepository
 		"config_value":      ev.NewValue,
 		"status":            int(ev.Status),
 		"sync_chain_status": syncChainStatusSynced,
-		"updator":           listenerActor,
+		"updator":           configListenerActor,
 	})
 }
 
@@ -340,7 +364,7 @@ func applyConfigCreated(ctx context.Context, cfgRepo repository.ConfigRepository
 		"config_type":       ev.ValueType,
 		"status":            int(ev.Status),
 		"sync_chain_status": syncChainStatusSynced,
-		"updator":           listenerActor,
+		"updator":           configListenerActor,
 	})
 }
 
@@ -356,7 +380,7 @@ func applyConfigDeleted(ctx context.Context, cfgRepo repository.ConfigRepository
 		}
 		return err
 	}
-	return cfgRepo.SoftDelete(ctx, row.ID, listenerActor)
+	return cfgRepo.SoftDelete(ctx, row.ID, configListenerActor)
 }
 
 func applyConfigStatusChanged(ctx context.Context, cfgRepo repository.ConfigRepository, keyMap map[common.Hash]string, ev *platformconfig.PlatformConfigConfigStatusChanged) error {
@@ -374,7 +398,7 @@ func applyConfigStatusChanged(ctx context.Context, cfgRepo repository.ConfigRepo
 	return cfgRepo.UpdateColumnsByID(ctx, row.ID, map[string]interface{}{
 		"status":            int(ev.NewStatus),
 		"sync_chain_status": syncChainStatusSynced,
-		"updator":           listenerActor,
+		"updator":           configListenerActor,
 	})
 }
 
@@ -397,6 +421,6 @@ func applyConfigUintValueUpdated(ctx context.Context, cfgRepo repository.ConfigR
 	return cfgRepo.UpdateColumnsByID(ctx, row.ID, map[string]interface{}{
 		"config_value":      val,
 		"sync_chain_status": syncChainStatusSynced,
-		"updator":           listenerActor,
+		"updator":           configListenerActor,
 	})
 }

@@ -35,20 +35,21 @@ type (
 		ProductName             string  `json:"productName,optional"` // product_name
 		ProductPrice            float64 `json:"productPrice,optional"` // product_price
 		ProductQuantity         int64   `json:"productQuantity,optional"` // product_quantity
-		ProductTotal            float64 `json:"productTotal,optional"` // product_total
+		TotalAmount             float64 `json:"totalAmount,optional"` // total_amount 商品行小计
 		ProductRemark           string  `json:"productRemark,optional"` // product_remark
 		OrderStatus             int64   `json:"orderStatus"` // order_status：10待支付 30已支付 40待发货 50已发货 60已完成 70已取消 80已过期 90支付失败
 		OrderStatusDesc         string  `json:"orderStatusDesc,optional"`
 		PaymentStatus           int64   `json:"paymentStatus"` // payment_status（冗余）：1未支付 2链上确认中 3已支付 4已关闭
 		PaymentStatusDesc       string  `json:"paymentStatusDesc,optional"`
 		OrderDate               string  `json:"orderDate,optional"` // order_date RFC3339
-		Currency                string  `json:"currency,optional"` // 默认 USDC
-		SaleSubtotal            float64 `json:"saleSubtotal,optional"`
-		PromotionDiscountAmount float64 `json:"promotionDiscountAmount,optional"`
-		PayableAmount           float64 `json:"payableAmount,optional"`
-		PlatformFeeAmount       float64 `json:"platformFeeAmount,optional"`
-		EstimatedGasFee         float64 `json:"estimatedGasFee,optional"`
-		PayAmount               float64 `json:"payAmount,optional"`
+		Currency          string  `json:"currency,optional"` // 默认 USDC
+		DiscountAmount    float64 `json:"discountAmount,optional"` // discount_amount 促销金额
+		PayableAmount     float64 `json:"payableAmount,optional"`
+		PlatformFeeAmount float64 `json:"platformFeeAmount,optional"`
+		EstGasFee         float64 `json:"estGasFee,optional"` // est_gas_fee
+		ActGasFee         float64 `json:"actGasFee,optional"` // act_gas_fee
+		PayAmount         float64 `json:"payAmount,optional"`
+		RealAmount        float64 `json:"realAmount,optional"` // real_amount
 		OrderRemark             string  `json:"orderRemark,optional"` // order_remark / 买家留言
 		ExpireAt                string  `json:"expireAt,optional"` // 订单支付超时 order.expire_at
 	}
@@ -75,6 +76,7 @@ type (
 		PaidAt                string  `json:"paidAt,optional"`
 		ConfirmedAt           string  `json:"confirmedAt,optional"`
 		FailReason            string  `json:"failReason,optional"`
+		SellerAddress         string  `json:"sellerAddress,optional"` // payOrder 卖家地址
 		ActualGasFee          float64 `json:"actualGasFee,optional"` // 实际 GAS 费
 	}
 
@@ -90,20 +92,19 @@ type (
 		ProductName   string  `json:"productName,optional"`
 		ProductPrice  float64 `json:"productPrice,optional"`
 		Quantity      int64   `json:"quantity"` // product_quantity
-		ProductTotal  float64 `json:"productTotal,optional"`
+		TotalAmount   float64 `json:"totalAmount,optional"` // total_amount 商品行小计
 		ProductRemark string  `json:"productRemark,optional"`
 		// sys_order_payment（intent 生成）
 		PayerAddress string `json:"payerAddress"`
 		ChainId      int64  `json:"chainId,optional"`
 		TokenSymbol  string `json:"tokenSymbol,optional"` // 默认 USDC
 		// sys_order 金额（前端展示值，Phase 1 落库不重算）
-		SaleSubtotal            float64              `json:"saleSubtotal,optional"`
-		Promotions              []OrderPromotionItem `json:"promotions,optional"`
-		PromotionDiscountAmount float64              `json:"promotionDiscountAmount"`
-		PayableAmount           float64              `json:"payableAmount"`
-		PlatformFeeAmount       float64              `json:"platformFeeAmount"`
-		EstimatedGasFee         float64              `json:"estimatedGasFee"`
-		PayAmount               float64              `json:"payAmount"`
+		Promotions        []OrderPromotionItem `json:"promotions,optional"`
+		DiscountAmount    float64              `json:"discountAmount"` // discount_amount 促销金额
+		PayableAmount     float64              `json:"payableAmount"`
+		PlatformFeeAmount float64              `json:"platformFeeAmount"`
+		EstGasFee         float64              `json:"estGasFee"` // est_gas_fee
+		PayAmount         float64              `json:"payAmount"`
 		Currency                string               `json:"currency,optional"`
 		OrderRemark             string               `json:"orderRemark,optional"` // buyerMessage
 		// sys_order_delivery_address
@@ -139,10 +140,18 @@ type (
 		UserCode                string  `json:"userCode,optional"`
 		ProductName             string  `json:"productName,optional"`
 		ProductQuantity         int64   `json:"productQuantity,optional"`
-		ProductTotal            float64 `json:"productTotal,optional"`
+		TotalAmount             float64 `json:"totalAmount,optional"`
 		SkuImgs                 string  `json:"skuImgs,optional"`
 		PayAmount               float64 `json:"payAmount,optional"`
-		Currency                string  `json:"currency,optional"`
+		RealAmount              float64 `json:"realAmount,optional"`
+		Currency                string  `json:"currency,optional"`         // 计价币种
+		SettleCurrency          string  `json:"settleCurrency,optional"`   // 结算币种
+		PlatformFeeAmount       float64 `json:"platformFeeAmount,optional"` // 平台手续费
+		ActGasFee               float64 `json:"actGasFee,optional"`           // 实际Gas费
+		ChainId                 int64   `json:"chainId,optional"`           // 链 ID
+		ChainName               string  `json:"chainName,optional"`         // 链名称
+		TokenSymbol             string  `json:"tokenSymbol,optional"`       // 支付代币符号
+		ConfirmedAt             string  `json:"confirmedAt,optional"`       // 链上确认时间
 		OrderStatus             int64   `json:"orderStatus"`
 		OrderStatusDesc         string  `json:"orderStatusDesc,optional"`
 		PaymentStatus           int64   `json:"paymentStatus"`

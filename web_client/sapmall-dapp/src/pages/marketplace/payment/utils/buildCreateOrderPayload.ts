@@ -7,6 +7,7 @@ import type {
 import type { CheckoutContactDraft, PaymentMethod } from '../types/paymentTypes';
 import { calcPayAmountDueInToken, calcPlatformFeeUsdc } from './paymentFee';
 import { estimateGasFeeUsdc } from './estimateGasFee';
+import { sumPromotionAmount } from './buildCheckoutPromotionItems';
 
 export interface BuildCreateOrderPayloadInput {
   preview: OrderPreviewResult;
@@ -19,13 +20,16 @@ export interface BuildCreateOrderPayloadInput {
   buyerMessage?: string;
 }
 
-/** 将结算页数据组装为 POST /api/order/create 请求体 */
+/** 将结算页数据组装为 POST /api/order/create 请求体（字段与 sys_order 表对齐） */
 export function buildCreateOrderPayload(input: BuildCreateOrderPayloadInput): CreateOrderReq {
   const item = input.preview.items[0];
-  const discountAmount = input.preview.discountAmount ?? 0;
+  const totalAmount = input.preview.saleSubtotal ?? item?.subtotal ?? 0;
+  const discountAmount =
+    input.preview.discountAmount ??
+    (input.preview.promotions?.length ? sumPromotionAmount(input.preview.promotions) : 0);
   const payableAmount = input.preview.totalAmount;
   const chainId = input.chainId && input.chainId > 0 ? input.chainId : ARC_TESTNET_CHAIN_ID;
-  const gasFeeUsdc = estimateGasFeeUsdc(chainId);
+  const estGasFee = estimateGasFeeUsdc(chainId);
   const platformFeeAmount = calcPlatformFeeUsdc(payableAmount, input.paymentMethod);
   const payAmount = calcPayAmountDueInToken(payableAmount, input.paymentMethod);
 
@@ -39,7 +43,7 @@ export function buildCreateOrderPayload(input: BuildCreateOrderPayloadInput): Cr
     productName: item?.productName,
     productPrice: item?.unitPrice,
     quantity: input.quantity,
-    totalAmount: item?.subtotal,
+    totalAmount,
     payerAddress: input.payerAddress,
     chainId,
     tokenSymbol: input.paymentMethod,
@@ -51,7 +55,7 @@ export function buildCreateOrderPayload(input: BuildCreateOrderPayloadInput): Cr
     discountAmount,
     payableAmount,
     platformFeeAmount,
-    estGasFee: gasFeeUsdc,
+    estGasFee,
     payAmount,
     currency: 'USDC',
     orderRemark: input.buyerMessage?.trim() || undefined,

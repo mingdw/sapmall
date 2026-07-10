@@ -3,7 +3,6 @@ package order
 import (
 	"crypto/rand"
 	"fmt"
-	"math"
 	"math/big"
 	"strconv"
 	"strings"
@@ -41,12 +40,44 @@ func validateOrderCodeLength(code string) bool {
 }
 
 func payAmountToAmountRaw(payAmount float64, decimals int) string {
+	if payAmount <= 0 {
+		return "0"
+	}
 	if decimals < 0 {
 		decimals = 0
 	}
-	scale := math.Pow(10, float64(decimals))
-	raw := int64(math.Round(payAmount * scale))
-	return strconv.FormatInt(raw, 10)
+
+	// 18 位精度代币（如 SAP）乘积会超过 int64，必须用 big.Int
+	rat, ok := new(big.Rat).SetString(strconv.FormatFloat(payAmount, 'f', -1, 64))
+	if !ok || rat.Sign() <= 0 {
+		return "0"
+	}
+
+	scale := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(decimals)), nil)
+	scaled := new(big.Rat).Mul(rat, new(big.Rat).SetInt(scale))
+
+	// 四舍五入到最小单位整数
+	half := big.NewRat(1, 2)
+	scaled.Add(scaled, half)
+
+	rawInt := new(big.Int).Quo(scaled.Num(), scaled.Denom())
+	if rawInt.Sign() <= 0 {
+		return "0"
+	}
+	return rawInt.String()
+}
+
+func isPositiveAmountRaw(raw string) bool {
+	v, ok := new(big.Int).SetString(strings.TrimSpace(raw), 10)
+	return ok && v.Sign() > 0
+}
+
+func resolvePlatformSellerAddress(configured string) (string, error) {
+	normalized, ok := normalizePayerAddress(strings.TrimSpace(configured))
+	if !ok {
+		return "", fmt.Errorf("平台收款地址未配置或无效")
+	}
+	return normalized, nil
 }
 
 func orderExpireAt(now time.Time, expireMins int64) time.Time {

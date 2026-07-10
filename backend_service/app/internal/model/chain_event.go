@@ -17,7 +17,7 @@ type ChainEvent struct {
 	BusinessCode    string    `json:"businessCode" gorm:"column:business_code"`
 	ChainID         int       `json:"chainId" gorm:"column:chain_id;not null"`
 	ContractAddress string    `json:"contractAddress" gorm:"column:contract_address;not null"`
-	TxHash          string    `json:"txHash" gorm:"column:tx_hash;not null"`
+	TxHash          string    `json:"txHash" gorm:"column:tx_hash"`
 	BlockNumber     int64     `json:"blockNumber" gorm:"column:block_number"`
 	TxIndex         int       `json:"txIndex" gorm:"column:tx_index"`
 	LogIndex        int       `json:"logIndex" gorm:"column:log_index"`

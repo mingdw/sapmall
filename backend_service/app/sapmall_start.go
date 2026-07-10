@@ -39,6 +39,8 @@ func main() {
 	defer listenerCancel()
 	if c.ChainListener.Enable {
 		go listener.RunPlatformConfigListener(listenerCtx, ctx)
+		go listener.RunSwapListener(listenerCtx, ctx)
+		go listener.RunPaymentListener(listenerCtx, ctx)
 	}
 
 	// 设置 Swagger 路由

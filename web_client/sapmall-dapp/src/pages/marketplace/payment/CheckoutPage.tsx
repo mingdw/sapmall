@@ -81,7 +81,13 @@ const CheckoutPage: React.FC = () => {
   const pollEnabled =
     Boolean(payment.orderCode) &&
     (payment.phase === 'confirming' || Boolean(payment.txHash && payment.phase === 'paying'));
-  const { status: pollStatus } = usePaymentStatusPoll(
+  const {
+    status: pollStatus,
+    pollExhausted,
+    manualConfirming,
+    manualCooldownSec,
+    manualConfirm,
+  } = usePaymentStatusPoll(
     payment.orderCode,
     payment.txHash,
     pollChainId,
@@ -148,6 +154,17 @@ const CheckoutPage: React.FC = () => {
     navigateToMarketplace(navigate);
   }, [navigate, preview?.items, productCode]);
 
+  const handleManualConfirm = useCallback(async () => {
+    const result = await manualConfirm();
+    if (result === 'still_confirming') {
+      MessageUtils.info(t('payment.status.chainCongested'));
+      return;
+    }
+    if (result === 'error') {
+      MessageUtils.info(t('payment.status.manualConfirmFailed'));
+    }
+  }, [manualConfirm, t]);
+
   const handleRetryPayment = useCallback(async () => {
     if (payment.phase === 'error' && payment.errorKey === 'paymentFailed') {
       await payment.resumeAndContinue();
@@ -166,12 +183,12 @@ const CheckoutPage: React.FC = () => {
     }
     setContactTouched(true);
     if (!isContactValid(contact)) return;
-    if (isSapPayment(paymentMethod)) {
-      MessageUtils.info(t('payment.pay.sapPayComingSoon'));
-      return;
-    }
     if (!isOnChainPaySupported(paymentMethod, payment.chainId ?? walletChainId)) {
-      MessageUtils.info(t('payment.pay.tokenPayComingSoon', { token: paymentMethod }));
+      MessageUtils.info(
+        isSapPayment(paymentMethod)
+          ? t('payment.pay.sapPayUnavailable')
+          : t('payment.pay.tokenPayComingSoon', { token: paymentMethod }),
+      );
       return;
     }
     const createPayload = buildCreateOrderPayload({
@@ -280,6 +297,10 @@ const CheckoutPage: React.FC = () => {
                 canRetryPayment={payment.canRetryWithIntent(payment.phase, payment.errorKey)}
                 busy={busy}
                 contactValid={contactValid}
+                showManualConfirm={pollExhausted && payment.phase === 'confirming'}
+                manualConfirming={manualConfirming}
+                manualCooldownSec={manualCooldownSec}
+                onManualConfirm={handleManualConfirm}
               />
             </div>
           </div>

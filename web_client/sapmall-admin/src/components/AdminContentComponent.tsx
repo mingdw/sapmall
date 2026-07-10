@@ -3,6 +3,7 @@ import { Typography, Button } from 'antd';
 import { CircleHelp } from 'lucide-react';
 import ComponentMapper from './ComponentMapper';
 import { CategoryTreeResp } from '../services/types/categoryTypes';
+import { normalizeFaIcon } from '../utils';
 import './AdminContentComponent.css';
 
 const { Title, Text } = Typography;
@@ -124,7 +125,7 @@ const AdminContentComponent: React.FC<AdminContentComponentProps> = ({
         {/* 卡片标题头部 - 参考原型图设计 */}
         <div className="admin-content-card-header">
           <div className="admin-content-card-title">
-            <i className={`fas ${selectedMenu.icon || 'fa-cog'}`}></i>
+            <i className={normalizeFaIcon(selectedMenu.icon)}></i>
             <span>{selectedMenu.name}</span>
           </div>
           {/* 常见问题按钮 - 可能没有，根据菜单配置决定 */}

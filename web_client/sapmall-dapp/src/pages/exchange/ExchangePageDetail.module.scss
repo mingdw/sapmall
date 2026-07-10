@@ -386,3 +386,139 @@
   font-size: 12px;
   line-height: 1.6;
 }
+
+/* ========== SwapCard 新增样式 ========== */
+
+.noSpinner {
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  -moz-appearance: textfield;
+}
+
+.swapFieldsWrap {
+  position: relative;
+}
+
+.swapArrowRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 20px;
+  height: 40px;
+  position: relative;
+  z-index: 10;
+}
+
+.swapArrowBadge {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.arrowActive {
+  color: #00e5ff;
+}
+
+.arrowDisabled {
+  color: rgba(121, 134, 203, 0.3);
+  pointer-events: none;
+}
+
+.toAmountInput {
+  background: transparent;
+  outline: none;
+  border: none;
+  text-align: right;
+  font-size: 1.5rem;
+  font-weight: 700;
+  width: 100%;
+  color: transparent;
+  background-image: linear-gradient(135deg, #7c4dff, #00e5ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  &::placeholder {
+    color: rgba(107, 114, 128, 0.5);
+    -webkit-text-fill-color: rgba(107, 114, 128, 0.5);
+  }
+}
+
+.ratePanel {
+  background: rgba(124, 77, 255, 0.06);
+  border: 1px solid rgba(124, 77, 255, 0.2);
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(124, 77, 255, 0.15);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #7c4dff, #00e5ff);
+  transition: width 0.4s ease;
+}
+
+/* ========== 双色进度条：已兑换 vs 未兑换 ========== */
+
+.progressTrackDual {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  overflow: visible;
+  display: flex;
+  position: relative;
+}
+
+.progressFillSwapped {
+  height: 100%;
+  background: linear-gradient(90deg, #7c4dff, #00e5ff);
+  transition: width 0.4s ease;
+  border-radius: 999px 0 0 999px;
+}
+
+.progressFillRemaining {
+  height: 100%;
+  background: rgba(124, 77, 255, 0.18);
+  transition: width 0.4s ease;
+  border-radius: 0 999px 999px 0;
+}
+
+.dotSwapped {
+  background: #00e5ff;
+  box-shadow: 0 0 4px rgba(0, 229, 255, 0.5);
+}
+
+.dotRemaining {
+  background: rgba(124, 77, 255, 0.35);
+}
+
+.progressPercentLabel {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(14, 12, 40, 0.92);
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: left 0.4s ease;
+  z-index: 2;
+}

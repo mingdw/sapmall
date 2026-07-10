@@ -77,14 +77,19 @@
       "swapNow": "Swap now",
       "securityNote": "Audited contracts · Funds protected",
       "rateLine": "1 {{from}} = {{rate}} SAP",
-      "disabledReason": "Connect your wallet to swap"
+      "disabledReason": "Connect your wallet to swap",
+      "approving": "Approving...",
+      "confirming": "Confirming...",
+      "quoteError": "Quote failed",
+      "txSuccess": "Transaction success",
+      "noTokensAvailable": "No swap tokens available on this chain"
     },
     "marketStats": {
       "title": "Market data",
-      "sapPrice": "SAP price",
-      "vol24h": "24h volume",
-      "tvl": "TVL",
-      "holders": "Holders"
+      "swappedToken": "Swapped {{symbol}}",
+      "totalLabel": "Total",
+      "swappedLabel": ", swapped",
+      "noTokenStats": "No swap data yet"
     },
     "chart": {
       "pair": "SAP / USD",
@@ -104,8 +109,8 @@
     "sapVisual": {
       "name": "SAP Token",
       "tagline": "Core token of the SAPMall ecosystem",
-      "currentPrice": "Price",
-      "changeLabel": "▲ 5.82% (24h)"
+      "exchangeRate": "Contract rate",
+      "rateSource": "Source: Platform swap contract"
     }
   }
 }

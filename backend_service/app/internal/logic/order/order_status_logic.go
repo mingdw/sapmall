@@ -13,6 +13,7 @@ import (
 	"sapphire-mall/app/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"gorm.io/gorm"
 )
 
 type OrderStatusLogic struct {
@@ -199,26 +200,39 @@ func (l *OrderStatusLogic) syncChainStatus(orderID int64, paymentRow *model.Orde
 }
 
 func (l *OrderStatusLogic) markPaid(orderID int64, blockNumber int64, actGasFee float64) {
-	orderRepo := repository.NewOrderRepository(l.svcCtx.GormDB)
-	paymentRepo := repository.NewOrderPaymentRepository(l.svcCtx.GormDB)
 	now := time.Now()
 
-	_ = orderRepo.UpdateColumnsByID(l.ctx, orderID, map[string]interface{}{
-		"order_status":        OrderStatusPaid,
-		"order_status_desc":   OrderStatusDesc(OrderStatusPaid),
-		"payment_status":      PaymentStatusPaid,
-		"payment_status_desc": PaymentStatusDesc(PaymentStatusPaid),
-		"act_gas_fee":         actGasFee,
-	})
+	err := l.svcCtx.GormDB.WithContext(l.ctx).Transaction(func(tx *gorm.DB) error {
+		orderRepo := repository.NewOrderRepository(tx)
+		paymentRepo := repository.NewOrderPaymentRepository(tx)
 
-	_ = paymentRepo.UpdateColumnsByOrderID(l.ctx, orderID, map[string]interface{}{
-		"payment_status":      PaymentStatusPaid,
-		"payment_status_desc": PaymentStatusDesc(PaymentStatusPaid),
-		"block_number":        blockNumber,
-		"confirmed_at":        now,
-		"paid_at":             now,
-		"act_gas_fee":         actGasFee,
+		if err := orderRepo.UpdateColumnsByID(l.ctx, orderID, map[string]interface{}{
+			"order_status":        OrderStatusToShip,
+			"order_status_desc":   OrderStatusDesc(OrderStatusToShip),
+			"payment_status":      PaymentStatusPaid,
+			"payment_status_desc": PaymentStatusDesc(PaymentStatusPaid),
+			"act_gas_fee":         actGasFee,
+		}); err != nil {
+			return err
+		}
+
+		if err := paymentRepo.UpdateColumnsByOrderID(l.ctx, orderID, map[string]interface{}{
+			"payment_status":      PaymentStatusPaid,
+			"payment_status_desc": PaymentStatusDesc(PaymentStatusPaid),
+			"block_number":        blockNumber,
+			"confirmed_at":        now,
+			"paid_at":             now,
+			"act_gas_fee":         actGasFee,
+		}); err != nil {
+			return err
+		}
+
+		return EnsurePendingLogisticsOnPaid(l.ctx, tx, orderID, "order_status")
 	})
+	if err != nil {
+		l.Errorf("markPaid failed, orderID=%d err=%v", orderID, err)
+		return
+	}
 
 	// 支付成功后，从延时队列移除
 	l.removeOrderFromDelayQueue(orderID)

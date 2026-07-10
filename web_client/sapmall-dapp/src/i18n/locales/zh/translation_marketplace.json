@@ -172,6 +172,7 @@
       "finalTotal": "付款总金额",
       "totalSaving": "共减: {{amount}} USDC",
       "sapFeeBadge": "减 3% 手续费",
+      "sapComingSoonBadge": "即将上线",
       "sapFeeHint": "全网络可用，支付免 0.3% 手续费",
       "goodsAmount": "商品金额",
       "discount": "优惠减免",
@@ -311,7 +312,11 @@
       "error": "支付未完成",
       "txHash": "交易哈希",
       "viewExplorer": "在区块浏览器查看",
-      "expireHint": "请在 {{time}} 前完成支付"
+      "expireHint": "请在 {{time}} 前完成支付",
+      "pollExhaustedHint": "自动查询已结束，如长时间未更新可手动确认支付状态",
+      "chainCongested": "当前链上拥堵，请稍后再试",
+      "manualConfirmFailed": "暂时无法查询支付状态，请稍后再试",
+      "manualConfirmCooldown": "{{seconds}} 秒后可再次确认"
     },
     "phase": {
       "submitting": "payment.status.creatingOrder",
@@ -332,7 +337,8 @@
     "actions": {
       "retry": "重试",
       "backToMall": "返回商城",
-      "backToPrevious": "返回上一级"
+      "backToPrevious": "返回上一级",
+      "manualConfirmStatus": "手动确认状态"
     },
     "result": {
       "breadcrumb": "支付结果",

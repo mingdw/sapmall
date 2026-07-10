@@ -800,59 +800,6 @@
   }
 }
 
-/* auth area final polish: centered + consistent actions */
-.sectionList .authControlWrap {
-  width: 100%;
-  max-width: 520px;
-  display: flex;
-  align-items: center;
-  justify-content: center !important;
-  gap: 12px;
-}
-
-.sectionList .authStatusPill {
-  min-width: 110px;
-  height: 28px;
-  padding: 0 12px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  border: 1px solid transparent;
-}
-
-.sectionList .authStatusDanger {
-  color: #fecaca;
-  background: rgba(185, 28, 28, 0.28);
-  border-color: rgba(248, 113, 113, 0.5);
-}
-
-.sectionList .authStatusPending {
-  color: #fde68a;
-  background: rgba(146, 64, 14, 0.28);
-  border-color: rgba(251, 191, 36, 0.5);
-}
-
-.sectionList .authStatusSuccess {
-  color: #bbf7d0;
-  background: rgba(6, 78, 59, 0.28);
-  border-color: rgba(52, 211, 153, 0.5);
-}
-
-.sectionList .authActionUnifiedBtn {
-  min-width: 100px !important;
-}
-
-@media (max-width: 900px) {
-  .sectionList .authControlWrap {
-    justify-content: flex-start !important;
-    max-width: 100%;
-  }
-}
-
 /* auth row: current status + unified action buttons */
 .authControlWrap {
   justify-content: flex-end;
@@ -2230,7 +2177,8 @@
   gap: 8px;
 }
 
-/* auth status beside form title + compact action button */
+/* ===== 认证信息区域：统一简洁样式 ===== */
+
 .formLabelTitleRow {
   display: inline-flex;
   align-items: center;
@@ -2238,91 +2186,93 @@
   min-width: 0;
 }
 
+/* 状态标签：纯文字小标签 */
 .sectionList .labelStatusPill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 500;
   line-height: 1;
-  padding: 2px 8px;
-  border-radius: 999px;
+  padding: 0 8px;
+  height: 20px;
+  border-radius: 4px;
   border: 1px solid transparent;
   white-space: nowrap;
 }
 
-.sectionList .labelStatusPill i {
-  font-size: 11px;
+/* 状态颜色 */
+.sectionList .authStatusSuccess {
+  color: #6ee7b7;
+  background: rgba(6, 78, 59, 0.3);
+  border-color: rgba(52, 211, 153, 0.4);
 }
 
+.sectionList .authStatusPending {
+  color: #fcd34d;
+  background: rgba(120, 53, 15, 0.3);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.sectionList .authStatusDanger {
+  color: #fca5a5;
+  background: rgba(127, 29, 29, 0.3);
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+/* 操作按钮：与状态标签协调的轻量风格 */
 .sectionList .authControlWrap {
   width: 100%;
-  justify-content: flex-end !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .sectionList .authActionUnifiedBtn {
-  min-width: auto !important;
-  height: 24px !important;
-  padding: 0 10px !important;
+  min-width: 96px !important;
+  height: 26px !important;
+  padding: 0 14px !important;
   border-radius: 999px !important;
+  border: 1px solid rgba(96, 165, 250, 0.3) !important;
+  background: rgba(30, 58, 138, 0.25) !important;
+  color: #93c5fd !important;
   font-size: 12px !important;
   font-weight: 500 !important;
-  box-shadow: 0 1px 6px rgba(37, 99, 235, 0.14) !important;
+  box-shadow: none !important;
+  transition: all 0.18s ease !important;
+}
+
+.sectionList .authActionUnifiedBtn:hover {
+  border-color: rgba(96, 165, 250, 0.55) !important;
+  background: rgba(30, 58, 138, 0.4) !important;
+  color: #bfdbfe !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15) !important;
+}
+
+.sectionList .authActionUnifiedBtn:active {
+  transform: translateY(0) !important;
+  box-shadow: none !important;
+}
+
+.authStatusBtn {
+  min-width: 96px !important;
+  height: 26px !important;
+  pointer-events: none;
+  cursor: default !important;
+}
+
+.authActionBtn {
+  min-width: 96px !important;
+  height: 26px !important;
 }
 
 @media (max-width: 900px) {
   .formLabelTitleRow {
     flex-wrap: wrap;
   }
-}
 
-/* auth operation buttons: softer AdminButton tone */
-.sectionList .authActionUnifiedBtn {
-  min-width: 108px !important;
-  height: 28px !important;
-  border-radius: 999px !important;
-  border: 1px solid rgba(147, 197, 253, 0.35) !important;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.22), rgba(14, 165, 233, 0.18)) !important;
-  color: #dbeafe !important;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.18) !important;
-  font-weight: 500 !important;
-}
-
-.sectionList .authActionUnifiedBtn:hover {
-  border-color: rgba(147, 197, 253, 0.5) !important;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(14, 165, 233, 0.24)) !important;
-  color: #eff6ff !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2) !important;
-}
-
-.sectionList .authActionUnifiedBtn:active {
-  transform: translateY(0) !important;
-  box-shadow: 0 1px 6px rgba(37, 99, 235, 0.16) !important;
-}
-
-/* profile auth rows: centered and visually unified */
-.authControlWrap {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.authStatusBtn {
-  min-width: 108px !important;
-  height: 28px !important;
-  pointer-events: none;
-  cursor: default !important;
-}
-
-.authActionBtn {
-  min-width: 108px !important;
-  height: 28px !important;
-}
-
-@media (max-width: 900px) {
-  .authControlWrap {
+  .sectionList .authControlWrap {
     justify-content: flex-start;
   }
 }
@@ -3278,4 +3228,108 @@
     width: 100%;
     min-width: 0;
   }
+}
+
+/* ===== 对齐 SecurityManager 视觉规范 ===== */
+
+.profileManager {
+  font-size: 13px;
+  color: #cbd5e1;
+  gap: 24px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* 卡片间距统一为 24px */
+.sectionList {
+  gap: 24px;
+}
+
+/* 卡片容器：与安全页 .queryCard 一致 */
+.infoCard {
+  background: rgba(30, 41, 59, 0.32);
+  border: 1px solid rgba(51, 65, 85, 0.28);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.18);
+  }
+}
+
+/* 卡片头部：去掉底部分割线，改为 margin-bottom 间距 */
+.cardHeader {
+  padding: 18px 20px 0;
+  border-bottom: none;
+}
+
+.cardTitleRow {
+  gap: 8px;
+}
+
+/* 卡片标题：与 .sectionLabel 一致 (13px / 600 / #94a3b8) */
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  gap: 8px;
+}
+
+.cardTitle i {
+  font-size: 13px;
+}
+
+.cardSubtitle {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* 卡片内容区 */
+.cardBody {
+  padding: 14px 20px 18px;
+}
+
+/* 表单标签标题：与 .settingTitle 一致 (13px / 500 / #e2e8f0) */
+.formLabelTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
+.formLabelDesc {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* 概览卡片也对齐 */
+.overviewCard {
+  background: rgba(30, 41, 59, 0.32);
+  border: 1px solid rgba(51, 65, 85, 0.28);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+}
+
+.overviewName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+/* 各区域图标颜色 */
+.cardIconShield {
+  color: #60a5fa;
+}
+
+.cardIconUser {
+  color: #818cf8;
+}
+
+.cardIconContact {
+  color: #34d399;
+}
+
+.cardIconHistory {
+  color: #f59e0b;
 }

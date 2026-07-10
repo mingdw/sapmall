@@ -1,4 +1,4 @@
-﻿// Code scaffolded by goctl. Safe to edit.
+// Code scaffolded by goctl. Safe to edit.
 // goctl 1.9.2
 
 package common
@@ -92,6 +92,7 @@ func toCommonChainNetworkInfo(item *model.Chain_network, tokens []*model.Chain_p
 		PlatformConfigAddress:  item.PlatformConfigAddress,
 		PaymentRouterAddress:   item.PaymentRouterAddress,
 		SettlementVaultAddress: item.SettlementVaultAddress,
+		SwapRouterAddress:      item.SwapRouterAddress,
 		Sort:                   int64(item.Sort),
 		Status:                 int64(item.Status),
 	}

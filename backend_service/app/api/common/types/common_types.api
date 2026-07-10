@@ -82,6 +82,7 @@ type (
 		PlatformConfigAddress  string                     `json:"platformConfigAddress,optional"`
 		PaymentRouterAddress   string                     `json:"paymentRouterAddress,optional"`
 		SettlementVaultAddress string                     `json:"settlementVaultAddress,optional"`
+		SwapRouterAddress      string                     `json:"swapRouterAddress,optional"`
 		Sort                   int64                      `json:"sort"`
 		Status                 int64                      `json:"status"`
 		PaymentTokens          []CommonPaymentTokenInfo   `json:"paymentTokens,optional"`

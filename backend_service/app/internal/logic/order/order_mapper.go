@@ -24,40 +24,41 @@ func toOrderInfo(o *model.Order) types.OrderInfo {
 
 func MapOrderInfo(o *model.Order) types.OrderInfo {
 	return types.OrderInfo{
-		OrderCode:         o.OrderCode,
-		SpuId:             o.SpuId,
-		SpuCode:           o.SpuCode,
-		SkuId:             o.SkuId,
-		SkuCode:           o.SkuCode,
-		SkuImgs:           o.SkuImgs,
-		ProductName:       o.ProductName,
-		ProductPrice:      o.ProductPrice,
-		ProductQuantity:   int64(o.ProductQuantity),
-		TotalAmount:       o.TotalAmount,
-		ProductRemark:     o.ProductRemark,
-		OrderStatus:       int64(o.OrderStatus),
-		OrderStatusDesc:   o.OrderStatusDesc,
-		PaymentStatus:     int64(o.PaymentStatus),
-		PaymentStatusDesc: o.PaymentStatusDesc,
-		OrderDate:         formatTimeRFC3339(o.OrderDate),
+		OrderCode:               o.OrderCode,
+		SpuId:                   o.SpuId,
+		SpuCode:                 o.SpuCode,
+		SkuId:                   o.SkuId,
+		SkuCode:                 o.SkuCode,
+		SkuImgs:                 o.SkuImgs,
+		ProductName:             o.ProductName,
+		ProductPrice:            o.ProductPrice,
+		ProductQuantity:         int64(o.ProductQuantity),
+		TotalAmount:             o.TotalAmount,
+		ProductRemark:           o.ProductRemark,
+		OrderStatus:             int64(o.OrderStatus),
+		OrderStatusDesc:         o.OrderStatusDesc,
+		PaymentStatus:           int64(o.PaymentStatus),
+		PaymentStatusDesc:       o.PaymentStatusDesc,
+		OrderDate:               formatTimeRFC3339(o.OrderDate),
 		Currency:          o.Currency,
+		SettleCurrency:    o.SettleCurrency,
 		DiscountAmount:    o.DiscountAmount,
 		PayableAmount:     o.PayableAmount,
-		PlatformFeeAmount: o.PlatformFeeAmount,
-		EstGasFee:         o.EstGasFee,
-		ActGasFee:         o.ActGasFee,
-		PayAmount:         o.PayAmount,
-		RealAmount:        o.RealAmount,
-		OrderRemark:       o.OrderRemark,
-		ExpireAt:          formatTimeRFC3339(o.ExpireAt),
+		PlatformFeeAmount:       o.PlatformFeeAmount,
+		EstGasFee:               o.EstGasFee,
+		ActGasFee:               o.ActGasFee,
+		PayAmount:               o.PayAmount,
+		RealAmount:              o.RealAmount,
+		OrderRemark:             o.OrderRemark,
+		ExpireAt:                formatTimeRFC3339(o.ExpireAt),
 	}
 }
 
-func toOrderPaymentInfo(p *model.OrderPayment) types.OrderPaymentInfo {
-	return MapOrderPaymentInfo(p)
+func toOrderPaymentInfo(p *model.OrderPayment, sellerAddress string) types.OrderPaymentInfo {
+	return MapOrderPaymentInfo(p, sellerAddress)
 }
 
-func MapOrderPaymentInfo(p *model.OrderPayment) types.OrderPaymentInfo {
+func MapOrderPaymentInfo(p *model.OrderPayment, sellerAddress string) types.OrderPaymentInfo {
 	return types.OrderPaymentInfo{
 		IntentId:              p.IntentId,
 		OrderCode:             p.OrderCode,
@@ -81,6 +82,7 @@ func MapOrderPaymentInfo(p *model.OrderPayment) types.OrderPaymentInfo {
 		PaidAt:                formatTimeRFC3339(p.PaidAt),
 		ConfirmedAt:           formatTimeRFC3339(p.ConfirmedAt),
 		FailReason:            p.FailReason,
+		SellerAddress:         sellerAddress,
 	}
 }
 

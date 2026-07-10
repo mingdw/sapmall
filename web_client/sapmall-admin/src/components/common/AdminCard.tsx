@@ -3,7 +3,7 @@ import styles from './AdminCard.module.scss';
 
 interface AdminCardProps {
   title?: string;
-  icon?: React.ReactNode;
+  icon?: string | React.ReactNode;
   actions?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
@@ -26,7 +26,7 @@ const AdminCard: React.FC<AdminCardProps> = ({
             <div className={styles.governanceHeaderRow}>
               {title && (
                 <h3 className={styles.adminSectionTitle}>
-                  {icon && <span className={styles.adminSectionIcon}>{icon}</span>}
+                  {icon && <span className={styles.adminSectionIcon}>{typeof icon === 'string' ? <i className={icon} /> : icon}</span>}
                   {title}
                 </h3>
               )}

@@ -1,0 +1,164 @@
+// 复用官网 SiteNav：.lang-trigger / .launch-btn / .dropdown-menu（暗色 dapp 适配）
+
+$accent: #149eca;
+$accent-hover: #0e7ea3;
+$accent-soft: rgba(20, 158, 202, 0.12);
+$border: rgba(148, 163, 184, 0.35);
+$surface: rgba(31, 41, 55, 0.88);
+$text-secondary: #94a3b8;
+$text: #e2e8f0;
+$radius-sm: 6px;
+$ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+.languageDropdown {
+  position: relative;
+}
+
+.langTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  background: $surface;
+  color: $text-secondary;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    border-color: $accent;
+    color: $accent;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(20, 158, 202, 0.45);
+    outline-offset: 2px;
+  }
+}
+
+.launchBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.7rem;
+  border: none;
+  border-radius: $radius-sm;
+  background: $accent;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.25s ease,
+    opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: $accent-hover;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(20, 158, 202, 0.28);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(20, 158, 202, 0.55);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.launchBtnIcon,
+.launchBtnLabel {
+  display: inline-flex;
+  align-items: center;
+}
+
+.launchBtnSpinner {
+  width: 0.65rem;
+  height: 0.65rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: headerLaunchBtnSpin 0.65s linear infinite;
+}
+
+@keyframes headerLaunchBtnSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 120px;
+  background: rgba(15, 23, 42, 0.97);
+  border: 1px solid $border;
+  border-radius: $radius-sm;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: all 0.25s $ease-out;
+  z-index: 50;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+.dropdownMenuShow {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.625rem 1rem;
+  border: none;
+  background: transparent;
+  color: $text;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: $accent-soft;
+    color: #fff;
+  }
+}
+
+.dropdownItemCheck {
+  margin-right: 0.5rem;
+  color: $accent;
+  flex-shrink: 0;
+}
+
+.headerControlGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.headerControlActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}

@@ -65,3 +65,17 @@ export const throttle = <T extends (...args: any[]) => any>(
     }
   };
 };
+
+/**
+ * 规范化 Font Awesome 图标类名
+ * 兼容 "fa-xxx"（短格式）和 "fas fa-xxx"（完整格式）两种写法
+ * @param icon 图标类名字符串
+ * @param fallback 缺省图标（短格式，如 'fa-cog'）
+ * @returns 规范化后的完整 className，如 'fas fa-cog'
+ */
+export const normalizeFaIcon = (icon?: string, fallback = 'fa-cog'): string => {
+  const raw = (icon || '').trim();
+  if (!raw) return `fas ${fallback}`;
+  if (/^(fas|far|fab|fa-solid|fa-regular|fa-brands)\s/.test(raw)) return raw;
+  return `fas ${raw}`;
+};

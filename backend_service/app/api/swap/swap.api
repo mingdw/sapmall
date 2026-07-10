@@ -1,0 +1,23 @@
+syntax = "v1"
+
+import "types/swap_types.api"
+
+// 代币兑换：创建兑换记录、更新状态、查询状态
+@server (
+    group:      swap
+    prefix:     /api/swap
+    middleware: AuthMiddleware, RespMiddleware
+)
+service sapmall {
+    @doc "创建兑换记录（用户点击兑换时调用，状态为待处理）"
+    @handler CreateSwap
+    post /create (CreateSwapReq) returns (BaseResp)
+
+    @doc "更新兑换状态（授权通过后更新为处理中）"
+    @handler UpdateSwap
+    post /update (UpdateSwapReq) returns (BaseResp)
+
+    @doc "查询兑换状态（前端轮询）"
+    @handler GetSwapStatus
+    post /status (GetSwapStatusReq) returns (BaseResp)
+}

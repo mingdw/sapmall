@@ -1,65 +1,122 @@
-import { TrendingUp, TrendingDown, BarChart2, Users, Layers, Activity } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { TrendingUp } from 'lucide-react';
 import styles from '../ExchangePageDetail.module.scss';
+import TokenIcon from './TokenIcon';
+import { useSapExchangeRemaining } from '../hooks/useSapExchangeRemaining';
+import { useSwapTokenStats } from '../hooks/useSwapTokenStats';
 
-interface StatItem {
-  labelKey: 'sapPrice' | 'vol24h' | 'tvl' | 'holders';
-  value: string;
-  change: string;
-  positive: boolean;
-  icon: 'trending-up' | 'bar' | 'users' | 'layers' | 'activity';
-}
-
-const STATS: StatItem[] = [
-  { labelKey: 'sapPrice', value: '$0.351', change: '+5.82%', positive: true, icon: 'trending-up' },
-  { labelKey: 'vol24h', value: '$2.84M', change: '+12.4%', positive: true, icon: 'bar' },
-  { labelKey: 'tvl', value: '$18.6M', change: '+3.1%', positive: true, icon: 'layers' },
-  { labelKey: 'holders', value: '142,580', change: '+1,240', positive: true, icon: 'users' },
-];
-
-function IconComponent({ type }: { type: StatItem['icon'] }) {
-  const iconClass = `h-[18px] w-[18px] ${styles.accentCyan}`;
-  if (type === 'trending-up') return <TrendingUp className={iconClass} />;
-  if (type === 'bar') return <BarChart2 className={iconClass} />;
-  if (type === 'users') return <Users className={iconClass} />;
-  if (type === 'layers') return <Layers className={iconClass} />;
-  return <Activity className={iconClass} />;
+/** 紧凑数字格式：>=1K 用 K/M/B 缩写，始终保留 2 位小数 */
+function formatCompact(val: string): string {
+  const n = parseFloat(val);
+  if (isNaN(n)) return '--';
+  const abs = Math.abs(n);
+  if (abs >= 1e9) return (n / 1e9).toFixed(2) + 'B';
+  if (abs >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+  if (abs >= 1e3) return (n / 1e3).toFixed(2) + 'K';
+  return n.toFixed(2);
 }
 
 export default function MarketStats() {
   const { t, ready } = useTranslation();
 
+  const { remaining, totalCap, usedPercent, isLoading: statsLoading } = useSapExchangeRemaining();
+  const { tokenStats, isLoading: tokenStatsLoading } = useSwapTokenStats();
+
   if (!ready) {
     return <div className="w-full h-48 rounded-3xl bg-white/5 animate-pulse" aria-busy="true" />;
   }
 
+  const swappedSAPNum = parseFloat(totalCap) - parseFloat(remaining);
+  const remainingSAPNum = parseFloat(remaining);
+
+  // 百分比 = 已兑换 / 未兑换 × 100（已兑换占未兑换的比值）
+  const ratioPercent = remainingSAPNum > 0
+    ? (swappedSAPNum / remainingSAPNum) * 100
+    : 0;
+
+  const swappedDisplay = statsLoading ? '--' : formatCompact(swappedSAPNum.toString());
+  const totalCapDisplay = statsLoading ? '--' : formatCompact(totalCap);
+
   return (
     <div data-cmp="MarketStats" className="w-full">
       <div className="flex items-center gap-3 mb-6">
-        <Activity size={18} className="text-violet-500" />
-        <h3 className="text-sm font-semibold text-foreground">{t('exchange.marketStats.title')}</h3>
+        <TrendingUp size={18} className="text-violet-500" />
+        <h3 className="text-sm font-semibold text-foreground">
+          {t('exchange.marketStats.title', { defaultValue: '市场数据' })}
+        </h3>
       </div>
 
+      {/* 按代币展示已兑换数量 */}
       <div className="flex flex-col gap-3">
-        {STATS.map((stat) => (
-          <div key={stat.labelKey} className={`rounded-2xl p-4 ${styles.statsItem}`}>
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-2">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${styles.statsIconWrap}`}>
-                  <IconComponent type={stat.icon} />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">{t(`exchange.marketStats.${stat.labelKey}`)}</p>
-                  <p className="text-base font-bold text-foreground mt-0.5">{stat.value}</p>
-                </div>
-              </div>
-              <div className={`flex items-center gap-1 px-2 py-1 rounded-lg ${stat.positive ? styles.changePositive : styles.changeNegative}`}>
-                {stat.positive ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-                <span className="text-xs font-semibold">{stat.change}</span>
+        {tokenStats.map((stat, i) => (
+          <div key={`token-${i}`} className={`rounded-2xl p-4 ${styles.statsItem}`}>
+            <div className="flex items-center gap-3">
+              <TokenIcon symbol={stat.symbol} size={32} />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-muted-foreground">
+                  {t('exchange.marketStats.swappedToken', {
+                    defaultValue: '已兑{{symbol}}',
+                    symbol: stat.symbol,
+                  })}
+                </p>
+                <p className="text-base font-bold text-foreground mt-0.5 truncate">
+                  {tokenStatsLoading ? '...' : `${formatCompact(stat.amount)} ${stat.symbol}`}
+                </p>
               </div>
             </div>
           </div>
         ))}
+
+        {tokenStats.length === 0 && !tokenStatsLoading ? (
+          <div className={`rounded-2xl p-4 ${styles.statsItem}`}>
+            <p className="text-xs text-muted-foreground text-center">
+              {t('exchange.marketStats.noTokenStats', { defaultValue: '暂无已兑换数据' })}
+            </p>
+          </div>
+        ) : null}
+      </div>
+
+      {/* 进度条区域 */}
+      <div className="mt-4">
+        {/* 双色进度条：已兑换 vs 未兑换，百分比内嵌在进度条比例位置 */}
+        <div className={styles.progressTrackDual}>
+          <div
+            className={styles.progressFillSwapped}
+            style={{ width: `${Math.min(usedPercent, 100)}%` }}
+          />
+          <div
+            className={styles.progressFillRemaining}
+            style={{ width: `${Math.max(100 - usedPercent, 0)}%` }}
+          />
+          {/* 百分比标签：定位在已兑换与未兑换的分界处 */}
+          <span
+            className={styles.progressPercentLabel}
+            style={{
+              left: `${Math.min(Math.max(usedPercent, 8), 92)}%`,
+            }}
+          >
+            {ratioPercent.toFixed(2)}%
+          </span>
+        </div>
+
+        {/* 进度条下方：总共 xx SAP，已兑换 xx（不同颜色区分） */}
+        <div className="flex items-center gap-2 mt-2.5">
+          <div className="flex items-center gap-1.5">
+            <span className={`inline-block w-2 h-2 rounded-full ${styles.dotSwapped}`} />
+            <span className="text-xs text-muted-foreground">
+              {t('exchange.marketStats.totalLabel', { defaultValue: '总共' })}
+            </span>
+            <span className="text-xs font-semibold" style={{ color: '#b39ddb' }}>
+              {totalCapDisplay} SAP
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {t('exchange.marketStats.swappedLabel', { defaultValue: '，已兑换' })}
+            </span>
+            <span className="text-xs font-semibold" style={{ color: '#00e5ff' }}>
+              {swappedDisplay}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

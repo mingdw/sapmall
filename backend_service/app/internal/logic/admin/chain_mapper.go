@@ -51,6 +51,7 @@ func toChainPaymentTokenInfoList(items []*model.Chain_payment_token) []types.Cha
 func toChainNetworkInfo(item *model.Chain_network, tokens []*model.Chain_payment_token) types.ChainNetworkInfo {
 	info := types.ChainNetworkInfo{
 		ID:                     item.ID,
+		ProjectID:              item.ProjectID,
 		ChainID:                int64(item.ChainId),
 		Code:                   item.Code,
 		Name:                   item.Name,
@@ -58,20 +59,36 @@ func toChainNetworkInfo(item *model.Chain_network, tokens []*model.Chain_payment
 		WsURL:                  item.WsUrl,
 		ExplorerURL:            item.ExplorerUrl,
 		NativeSymbol:           item.NativeSymbol,
+		BlockTime:              int64(item.BlockTime),
+		SafeConfirmations:      int64(item.SafeConfirmations),
 		PlatformConfigAddress:  item.PlatformConfigAddress,
 		PaymentRouterAddress:   item.PaymentRouterAddress,
 		SettlementVaultAddress: item.SettlementVaultAddress,
+		SwapRouterAddress:      item.SwapRouterAddress,
 		SignerKeyRef:           item.SignerKeyRef,
-		ListenerEnabled:        int64(item.ListenerEnabled),
-		ListenerStartBlock:     item.ListenerStartBlock,
-		ListenerLastBlock:      item.ListenerLastBlock,
-		Sort:                   int64(item.Sort),
-		Status:                 int64(item.Status),
-		Remark:                 item.Remark,
-		CreatedAt:              formatChainTime(item.CreateAt),
-		UpdatedAt:              formatChainTime(item.UpdateAt),
-		Creator:                item.Creator,
-		Updator:                item.Updator,
+		// Swap 监听器配置
+		SwapListenerEnabled:      int64(item.SwapListenerEnabled),
+		SwapListenerPollInterval: int64(item.SwapListenerPollInterval),
+		SwapListenerStartBlock:   item.SwapListenerStartBlock,
+		SwapListenerLastBlock:    item.SwapListenerLastBlock,
+		// Config 监听器配置
+		ConfigListenerEnabled:      int64(item.ConfigListenerEnabled),
+		ConfigListenerPollInterval: int64(item.ConfigListenerPollInterval),
+		ConfigListenerStartBlock:   item.ConfigListenerStartBlock,
+		ConfigListenerLastBlock:    item.ConfigListenerLastBlock,
+		// Payment 监听器配置
+		PaymentListenerEnabled:      int64(item.PaymentListenerEnabled),
+		PaymentListenerPollInterval: int64(item.PaymentListenerPollInterval),
+		PaymentListenerStartBlock:   item.PaymentListenerStartBlock,
+		PaymentListenerLastBlock:    item.PaymentListenerLastBlock,
+		// 其他
+		Sort:      int64(item.Sort),
+		Status:    int64(item.Status),
+		Remark:    item.Remark,
+		CreatedAt: formatChainTime(item.CreateAt),
+		UpdatedAt: formatChainTime(item.UpdateAt),
+		Creator:   item.Creator,
+		Updator:   item.Updator,
 	}
 	if len(tokens) > 0 {
 		info.PaymentTokens = toChainPaymentTokenInfoList(tokens)
