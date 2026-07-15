@@ -86,6 +86,9 @@ jobs:
           script: |
             DEPLOY_DIR="/opt/sapmall/deploy/${{ github.sha }}"
 
+            # 停止后端服务（避免 "Text file busy" 错误）
+            sudo systemctl stop sapmall-backend
+
             # 创建备份目录
             mkdir -p /opt/sapmall/backup
 
