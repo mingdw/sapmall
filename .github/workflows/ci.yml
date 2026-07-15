@@ -5,6 +5,7 @@ on:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:  # 添加手动触发
 
 jobs:
   # ====== 前端构建检查 ======
