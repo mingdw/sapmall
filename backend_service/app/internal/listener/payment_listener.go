@@ -359,6 +359,11 @@ func handlePaymentPaidLog(
 			chainID, event.Payer.Hex(), payment.PayerAddress)
 		return nil
 	}
+	if payment.SellerCode != nil && *payment.SellerCode != "" && !strings.EqualFold(event.Seller.Hex(), *payment.SellerCode) {
+		logx.Infof("payment_listener [chain=%d] 卖家地址不匹配: event=%s expected=%s",
+			chainID, event.Seller.Hex(), *payment.SellerCode)
+		return nil
+	}
 	if !strings.EqualFold(event.Token.Hex(), payment.TokenAddress) {
 		logx.Infof("payment_listener [chain=%d] 代币地址不匹配: event=%s expected=%s",
 			chainID, event.Token.Hex(), payment.TokenAddress)
@@ -486,7 +491,8 @@ func markPaymentPaid(ctx context.Context, svc *svc.ServiceContext, payment *mode
 		}
 
 		if err := orderlogic.EnsurePendingLogisticsOnPaid(ctx, tx, payment.OrderId, "payment_listener"); err != nil {
-			return err
+			// 物流建单失败不应回滚支付入账
+			logx.Errorf("payment_listener ensure logistics failed (payment kept): orderId=%d err=%v", payment.OrderId, err)
 		}
 
 		logx.Infof("payment_listener 订单支付成功: orderId=%d block=%d", payment.OrderId, blockNumber)

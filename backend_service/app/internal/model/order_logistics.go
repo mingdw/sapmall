@@ -21,8 +21,8 @@ type OrderLogistics struct {
 	DistrictName       string    `json:"districtName" gorm:"column:district_name"`
 	Street             string    `json:"street" gorm:"column:street"`
 	DetailAddress      string    `json:"detailAddress" gorm:"column:detail_address"`
-	SendId             int64     `json:"sendId" gorm:"column:send_id"`
-	SendCode           string    `json:"sendCode" gorm:"column:send_code"`
+	SellerId           int64     `json:"sellerId" gorm:"column:seller_id;default:0"`
+	SellerCode         string    `json:"sellerCode" gorm:"column:seller_code;default:''"`
 	LogisticsCode      string    `json:"logisticsCode" gorm:"column:logistics_code"`
 	LogisticsName      string    `json:"logisticsName" gorm:"column:logistics_name"`
 	PlatformTrackingNo string    `json:"platformTrackingNo" gorm:"column:platform_tracking_no"`
@@ -38,7 +38,7 @@ type OrderLogistics struct {
 	ExceptionRemark    string    `json:"exceptionRemark" gorm:"column:exception_remark"`
 	CreatedAt          time.Time `json:"createdAt" gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt          time.Time `json:"updatedAt" gorm:"column:updated_at;autoUpdateTime"`
-	IsDeleted          int       `json:"isDeleted" gorm:"column:is_deleted;default:0"`
+	IsDeleted          int       `json:"isDeleted" gorm:"column:is_deleted;default:0"` // 0否 1是
 	Creator            string    `json:"creator" gorm:"column:creator"`
 	Updator            string    `json:"updator" gorm:"column:updator"`
 }

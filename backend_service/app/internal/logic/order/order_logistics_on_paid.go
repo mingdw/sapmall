@@ -41,12 +41,11 @@ const (
 
 // EnsurePendingLogisticsOnPaid 链上支付确认成功后创建待发货物流单（幂等）。
 //
-// 业务约定（Phase 1 虚拟商品）：
-//   - delivery_type 固定为 4（虚拟发货）
-//   - sys_order.order_status 更新为 40（待发货）
-//   - send_id / send_code 取自 sys_product_spu 卖家
+// 业务约定：
+//   - 用户确认/创建订单时不写物流单；仅在支付成功后生成
+//   - Phase 1 虚拟商品：delivery_type=4，logistics_status=待发货
+//   - seller_id / seller_code 优先取订单卖家快照，缺失时回退 SPU
 //   - platform_tracking_no 格式：LG + orderCode
-//   - 省市区/街道/详细地址暂不写入（虚拟物品无需实体配送地址）
 func EnsurePendingLogisticsOnPaid(ctx context.Context, db *gorm.DB, orderID int64, operator string) error {
 	if orderID <= 0 {
 		return fmt.Errorf("invalid orderID: %d", orderID)
@@ -69,16 +68,13 @@ func EnsurePendingLogisticsOnPaid(ctx context.Context, db *gorm.DB, orderID int6
 		return fmt.Errorf("load order: %w", err)
 	}
 
-	deliveryRepo := repository.NewOrderDeliveryAddressRepository(db)
-	deliveryRow, _ := deliveryRepo.GetByOrderID(ctx, orderID)
-
 	spuRepo := repository.NewProductSpuRepository(repository.NewRepository(db))
 	var spuRow *model.ProductSpu
 	if orderRow.SpuId > 0 {
 		spuRow, _ = spuRepo.GetProductSpu(ctx, orderRow.SpuId)
 	}
 
-	row := buildPendingLogisticsRow(orderRow, deliveryRow, spuRow, operator)
+	row := buildPendingLogisticsRow(orderRow, spuRow, operator)
 	if err := logisticsRepo.Create(ctx, row); err != nil {
 		return fmt.Errorf("create logistics: %w", err)
 	}
@@ -92,7 +88,6 @@ func EnsurePendingLogisticsOnPaid(ctx context.Context, db *gorm.DB, orderID int6
 
 func buildPendingLogisticsRow(
 	orderRow *model.Order,
-	deliveryRow *model.OrderDeliveryAddress,
 	spuRow *model.ProductSpu,
 	operator string,
 ) *model.OrderLogistics {
@@ -110,15 +105,28 @@ func buildPendingLogisticsRow(
 		Updator:            operator,
 	}
 
-	if deliveryRow != nil {
-		row.ReceiverName = deliveryRow.ReceiverName
-		row.ReceiverPhone = deliveryRow.ReceiverPhone
-		row.ReceiverEmail = deliveryRow.ReceiverEmail
+	var sellerId int64
+	var sellerCode string
+	if orderRow.SellerId != nil && *orderRow.SellerId > 0 {
+		sellerId = *orderRow.SellerId
 	}
+	if orderRow.SellerCode != nil {
+		sellerCode = strings.TrimSpace(*orderRow.SellerCode)
+	}
+	if sellerId <= 0 && spuRow != nil && spuRow.UserID > 0 {
+		sellerId = spuRow.UserID
+	}
+	if sellerCode == "" && spuRow != nil {
+		sellerCode = strings.TrimSpace(spuRow.UserCode)
+	}
+	row.SellerId = sellerId
+	row.SellerCode = sellerCode
 
-	if spuRow != nil {
-		row.SendId = spuRow.UserID
-		row.SendCode = spuRow.UserCode
+	// 从订单创单快照带入收货联系人
+	row.ReceiverName = derefStr(orderRow.ReceiverName)
+	row.ReceiverPhone = derefStr(orderRow.ReceiverPhone)
+	if orderRow.ReceiverEmail != nil {
+		row.ReceiverEmail = strings.TrimSpace(*orderRow.ReceiverEmail)
 	}
 
 	return row

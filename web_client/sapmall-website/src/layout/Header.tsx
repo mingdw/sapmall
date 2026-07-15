@@ -4,6 +4,7 @@ import { Drawer } from 'antd';
 import { Menu as MenuIcon, Rocket, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logoMarkSrc from '../assets/logo-mark.svg';
+import { siteLinks } from '../config/siteLinks';
 import i18n from '../i18n';
 
 /** 备用布局 Header，与 HomePage 浅色风格一致 */
@@ -21,7 +22,7 @@ const Header: React.FC = () => {
   ];
 
   const launchDApp = () => {
-    window.open('http://localhost:7102', '_blank');
+    window.open(siteLinks.dappUrl, '_blank');
   };
 
   const switchLanguage = (lang: string) => {

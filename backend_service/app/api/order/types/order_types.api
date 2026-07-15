@@ -17,7 +17,7 @@ type (
 		Amount    float64 `json:"amount"` // decimal(12,2)
 	}
 
-	// sys_order_delivery_address（创建订单时写入）
+	// 收货联系信息：创单写入 sys_order 快照；支付成功后同步到 sys_order_logistics
 	OrderDeliveryInput {
 		ReceiverName  string `json:"receiverName,optional"`
 		ReceiverPhone string `json:"receiverPhone,optional"`
@@ -107,7 +107,7 @@ type (
 		PayAmount         float64              `json:"payAmount"`
 		Currency                string               `json:"currency,optional"`
 		OrderRemark             string               `json:"orderRemark,optional"` // buyerMessage
-		// sys_order_delivery_address
+		// sys_order_logistics.receiver_*
 		Delivery OrderDeliveryInput `json:"delivery,optional"`
 	}
 

@@ -54,11 +54,11 @@ func MapOrderInfo(o *model.Order) types.OrderInfo {
 	}
 }
 
-func toOrderPaymentInfo(p *model.OrderPayment, sellerAddress string) types.OrderPaymentInfo {
-	return MapOrderPaymentInfo(p, sellerAddress)
+func toOrderPaymentInfo(p *model.OrderPayment) types.OrderPaymentInfo {
+	return MapOrderPaymentInfo(p)
 }
 
-func MapOrderPaymentInfo(p *model.OrderPayment, sellerAddress string) types.OrderPaymentInfo {
+func MapOrderPaymentInfo(p *model.OrderPayment) types.OrderPaymentInfo {
 	return types.OrderPaymentInfo{
 		IntentId:              p.IntentId,
 		OrderCode:             p.OrderCode,
@@ -82,9 +82,11 @@ func MapOrderPaymentInfo(p *model.OrderPayment, sellerAddress string) types.Orde
 		PaidAt:                formatTimeRFC3339(p.PaidAt),
 		ConfirmedAt:           formatTimeRFC3339(p.ConfirmedAt),
 		FailReason:            p.FailReason,
-		SellerAddress:         sellerAddress,
+		// seller_code 即 payOrder 卖家收款钱包快照
+		SellerAddress:         sellerCodeOrEmpty(p.SellerCode),
 	}
 }
+
 
 func toPromotionItems(list []model.OrderPromotion) []types.OrderPromotionItem {
 	return MapPromotionItems(list)

@@ -1,0 +1,132 @@
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    # 后端服务
+    upstream backend_servers {
+        server 127.0.0.1:8888;
+    }
+
+    # 管理后台 + API 服务器 - 端口 7101
+    server {
+        listen 7101;
+        server_name localhost;
+
+        # 后端 API 路由
+        location /api/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger UI 路由
+        location /swagger-ui/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger JSON 路由
+        location /swagger.json {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # 管理后台 - 静态文件
+        location / {
+            alias /opt/sapmall/web_client/sapmall-admin/build/;
+            try_files $uri $uri/ /index.html;
+        }
+    }
+
+    # DApp应用 + API 服务器 - 端口 7102
+    server {
+        listen 7102;
+        server_name localhost;
+
+        # 后端 API 路由
+        location /api/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger UI 路由
+        location /swagger-ui/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger JSON 路由
+        location /swagger.json {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # DApp应用 - 静态文件
+        location / {
+            alias /opt/sapmall/web_client/sapmall-dapp/build/;
+            try_files $uri $uri/ /index.html;
+        }
+    }
+
+    # 官网首页 + API 服务器 - 端口 7103
+    server {
+        listen 7103;
+        server_name localhost;
+
+        # 后端 API 路由
+        location /api/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger UI 路由
+        location /swagger-ui/ {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # Swagger JSON 路由
+        location /swagger.json {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # 官网首页 - 静态文件
+        location / {
+            alias /opt/sapmall/web_client/sapmall-website/build/;
+            try_files $uri $uri/ /index.html;
+        }
+    }
+}

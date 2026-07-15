@@ -60,7 +60,7 @@ const AdminIframeEmbedded: React.FC = () => {
 
   // 构建iframe URL
   const buildIframeUrl = useCallback((): string => {
-    const baseUrl = 'http://localhost:7101';
+    const baseUrl = process.env.REACT_APP_ADMIN_URL || 'http://localhost:7101';
     
     if (!user || !address) {
       throw new Error('用户信息缺失');

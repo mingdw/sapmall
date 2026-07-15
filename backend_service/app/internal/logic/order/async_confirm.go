@@ -82,6 +82,7 @@ func AsyncConfirmOrder(ctx context.Context, svcCtx *svc.ServiceContext, orderID 
 						paymentRow.AmountRaw,
 						paymentRow.TokenAddress,
 						paymentRow.PayerAddress,
+						sellerCodeOrEmpty(paymentRow.SellerCode),
 					); vErr != nil {
 						l.Errorf("async_confirm: verify params failed, orderID=%d err=%v", orderID, vErr)
 						setOrderFailed(ctx, svcCtx, orderID, paymentRepo, fmt.Sprintf("参数验证失败: %v", vErr))
@@ -130,7 +131,11 @@ func setOrderPaid(ctx context.Context, svcCtx *svc.ServiceContext, orderID int64
 			return err
 		}
 
-		return EnsurePendingLogisticsOnPaid(ctx, tx, orderID, "async_confirm")
+		// 物流建单失败不应回滚支付入账
+		if err := EnsurePendingLogisticsOnPaid(ctx, tx, orderID, "async_confirm"); err != nil {
+			logx.WithContext(ctx).Errorf("async_confirm: ensure logistics failed (payment kept), orderID=%d err=%v", orderID, err)
+		}
+		return nil
 	})
 
 	if err != nil {

@@ -181,6 +181,7 @@ func (l *OrderStatusLogic) syncChainStatus(orderID int64, paymentRow *model.Orde
 				paymentRow.AmountRaw,
 				paymentRow.TokenAddress,
 				paymentRow.PayerAddress,
+				sellerCodeOrEmpty(paymentRow.SellerCode),
 			)
 			if vErr != nil {
 				l.Infof("syncChainStatus: event params mismatch, orderCode=%s, err=%v", paymentRow.OrderCode, vErr)
@@ -227,7 +228,11 @@ func (l *OrderStatusLogic) markPaid(orderID int64, blockNumber int64, actGasFee 
 			return err
 		}
 
-		return EnsurePendingLogisticsOnPaid(l.ctx, tx, orderID, "order_status")
+		// 物流建单失败不应回滚支付入账（避免卡在 order_status=20）
+		if err := EnsurePendingLogisticsOnPaid(l.ctx, tx, orderID, "order_status"); err != nil {
+			l.Errorf("markPaid: ensure logistics failed (payment kept), orderID=%d err=%v", orderID, err)
+		}
+		return nil
 	})
 	if err != nil {
 		l.Errorf("markPaid failed, orderID=%d err=%v", orderID, err)

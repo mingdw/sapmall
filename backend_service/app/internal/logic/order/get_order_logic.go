@@ -6,6 +6,7 @@ package order
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"sapphire-mall/app/internal/customererrors"
 	"sapphire-mall/app/internal/model"
@@ -80,28 +81,47 @@ func (l *GetOrderLogic) GetOrder(req *types.GetOrderReq) (resp *types.BaseResp, 
 		return customererrors.DatabaseErrorResp("查询促销明细失败"), nil
 	}
 
-	var deliveryRow model.OrderDeliveryAddress
-	deliveryErr := l.svcCtx.GormDB.WithContext(l.ctx).
-		Where("order_id = ? AND is_deleted = ?", orderRow.ID, 0).
-		First(&deliveryRow).Error
-
 	var delivery types.OrderDeliveryInput
 	hasDelivery := false
-	if deliveryErr == nil {
-		delivery = types.OrderDeliveryInput{
-			ReceiverName:  deliveryRow.ReceiverName,
-			ReceiverPhone: deliveryRow.ReceiverPhone,
-			ReceiverEmail: deliveryRow.ReceiverEmail,
+
+	var logisticsRow model.OrderLogistics
+	logisticsErr := l.svcCtx.GormDB.WithContext(l.ctx).
+		Where("order_id = ? AND is_deleted = ?", orderRow.ID, 0).
+		First(&logisticsRow).Error
+	if logisticsErr == nil {
+		if strings.TrimSpace(logisticsRow.ReceiverName) != "" ||
+			strings.TrimSpace(logisticsRow.ReceiverPhone) != "" ||
+			strings.TrimSpace(logisticsRow.ReceiverEmail) != "" {
+			delivery = types.OrderDeliveryInput{
+				ReceiverName:  logisticsRow.ReceiverName,
+				ReceiverPhone: logisticsRow.ReceiverPhone,
+				ReceiverEmail: logisticsRow.ReceiverEmail,
+			}
+			hasDelivery = true
 		}
-		hasDelivery = true
-	} else if !errors.Is(deliveryErr, gorm.ErrRecordNotFound) {
-		l.Errorf("get order delivery failed, orderId=%d, err=%v", orderRow.ID, deliveryErr)
-		return customererrors.DatabaseErrorResp("查询收货信息失败"), nil
+	} else if !errors.Is(logisticsErr, gorm.ErrRecordNotFound) {
+		l.Errorf("get order logistics failed, orderId=%d, err=%v", orderRow.ID, logisticsErr)
+		return customererrors.DatabaseErrorResp("查询物流/收货信息失败"), nil
+	}
+
+	// 支付成功前尚无物流单：回退订单上的收货快照
+	if !hasDelivery {
+		name := derefStr(orderRow.ReceiverName)
+		phone := derefStr(orderRow.ReceiverPhone)
+		email := derefStr(orderRow.ReceiverEmail)
+		if strings.TrimSpace(name) != "" || strings.TrimSpace(phone) != "" || strings.TrimSpace(email) != "" {
+			delivery = types.OrderDeliveryInput{
+				ReceiverName:  name,
+				ReceiverPhone: phone,
+				ReceiverEmail: email,
+			}
+			hasDelivery = true
+		}
 	}
 
 	respData := types.GetOrderResp{
 		Order:      toOrderInfo(orderRow),
-		Payment:    toOrderPaymentInfo(&paymentRow, l.platformSellerAddress()),
+		Payment:    toOrderPaymentInfo(&paymentRow),
 		Promotions: toPromotionItems(promotionRows),
 	}
 	if hasDelivery {
@@ -110,10 +130,3 @@ func (l *GetOrderLogic) GetOrder(req *types.GetOrderReq) (resp *types.BaseResp, 
 	return customererrors.SuccessData(respData), nil
 }
 
-func (l *GetOrderLogic) platformSellerAddress() string {
-	addr, err := resolvePlatformSellerAddress(l.svcCtx.Config.OrderPayment.PlatformSellerAddress)
-	if err != nil {
-		return ""
-	}
-	return addr
-}

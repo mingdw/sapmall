@@ -72,13 +72,6 @@ func isPositiveAmountRaw(raw string) bool {
 	return ok && v.Sign() > 0
 }
 
-func resolvePlatformSellerAddress(configured string) (string, error) {
-	normalized, ok := normalizePayerAddress(strings.TrimSpace(configured))
-	if !ok {
-		return "", fmt.Errorf("平台收款地址未配置或无效")
-	}
-	return normalized, nil
-}
 
 func orderExpireAt(now time.Time, expireMins int64) time.Time {
 	if expireMins <= 0 {
@@ -99,3 +92,18 @@ func hasDeliveryInput(name, phone, email string) bool {
 		strings.TrimSpace(phone) != "" ||
 		strings.TrimSpace(email) != ""
 }
+
+func sellerCodeOrEmpty(v *string) string {
+	if v == nil {
+		return ""
+	}
+	return strings.TrimSpace(*v)
+}
+
+func derefStr(v *string) string {
+	if v == nil {
+		return ""
+	}
+	return *v
+}
+

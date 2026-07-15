@@ -11,6 +11,8 @@ type OrderPayment struct {
 	OrderCode             string    `json:"orderCode" gorm:"column:order_code"`
 	IntentId              string    `json:"intentId" gorm:"column:intent_id;unique"`
 	PayerAddress          string    `json:"payerAddress" gorm:"column:payer_address"`
+	SellerId              *int64    `json:"sellerId" gorm:"column:seller_id"`
+	SellerCode            *string   `json:"sellerCode" gorm:"column:seller_code"`
 	ChainId               int64     `json:"chainId" gorm:"column:chain_id"`
 	TokenSymbol           string    `json:"tokenSymbol" gorm:"column:token_symbol"`
 	TokenAddress          string    `json:"tokenAddress" gorm:"column:token_address"`

@@ -68,7 +68,8 @@ type createOrderValidated struct {
 	intentID     string
 	amountRaw    string
 	expireAt     time.Time
-	sellerAddress string
+	sellerId     int64
+	sellerCode   string
 	operator     string
 }
 
@@ -77,9 +78,7 @@ type createOrderBundle struct {
 	order      *model.Order
 	payment    *model.OrderPayment
 	promotions []model.OrderPromotion
-	delivery   *model.OrderDeliveryAddress
 	promoReq   []types.OrderPromotionItem
-	sellerAddress string
 }
 
 func (l *CreateOrderLogic) CreateOrder(req *types.CreateOrderReq) (resp *types.BaseResp, err error) {
@@ -165,10 +164,26 @@ func (l *CreateOrderLogic) validateCreateOrderAfterAuth(req *types.CreateOrderRe
 		return nil, customererrors.ParamErrorResp(cfgErr.Error())
 	}
 
-	sellerAddress, sellerErr := resolvePlatformSellerAddress(l.svcCtx.Config.OrderPayment.PlatformSellerAddress)
-	if sellerErr != nil {
-		return nil, customererrors.ParamErrorResp(sellerErr.Error())
+	spuRepo := repository.NewProductSpuRepository(repository.NewRepository(l.svcCtx.GormDB))
+	spu, spuErr := spuRepo.GetProductSpu(l.ctx, sku.ProductSpuID)
+	if spuErr != nil {
+		if errors.Is(spuErr, gorm.ErrRecordNotFound) {
+			return nil, customererrors.ParamErrorResp("商品 SPU 不存在")
+		}
+		l.Errorf("get product spu failed, spuId=%d, err=%v", sku.ProductSpuID, spuErr)
+		return nil, customererrors.DatabaseErrorResp("查询商品卖家失败")
 	}
+	if spu.IsDeleted != 0 {
+		return nil, customererrors.ParamErrorResp("商品已下架")
+	}
+	if spu.UserID <= 0 {
+		return nil, customererrors.ParamErrorResp("商品未绑定卖家")
+	}
+	sellerCode, sellerOk := normalizePayerAddress(spu.UserCode)
+	if !sellerOk {
+		return nil, customererrors.ParamErrorResp("商品卖家收款地址无效")
+	}
+	sellerId := spu.UserID
 
 	orderCode := generateOrderCode()
 	if !validateOrderCodeLength(orderCode) {
@@ -202,10 +217,11 @@ func (l *CreateOrderLogic) validateCreateOrderAfterAuth(req *types.CreateOrderRe
 		currency:     currency,
 		orderCode:    orderCode,
 		intentID:     generateIntentID(),
-		amountRaw:     amountRaw,
-		expireAt:      orderExpireAt(now, expireMins),
-		sellerAddress: sellerAddress,
-		operator:      operator,
+		amountRaw:    amountRaw,
+		expireAt:     orderExpireAt(now, expireMins),
+		sellerId:     sellerId,
+		sellerCode:   sellerCode,
+		operator:     operator,
 	}, nil
 }
 
@@ -238,6 +254,8 @@ func (l *CreateOrderLogic) assembleCreateOrderBundle(req *types.CreateOrderReq, 
 		OrderCode:               v.orderCode,
 		UserId:                  v.userInfo.ID,
 		UserCode:                v.userInfo.UserCode,
+		SellerId:                &v.sellerId,
+		SellerCode:              &v.sellerCode,
 		SpuId:                   snap.SpuId,
 		SpuCode:                 snap.SpuCode,
 		SkuId:                   snap.SkuId,
@@ -266,11 +284,14 @@ func (l *CreateOrderLogic) assembleCreateOrderBundle(req *types.CreateOrderReq, 
 		Creator:                 v.operator,
 		Updator:                 v.operator,
 	}
+	applyOrderDeliverySnapshot(orderRow, req.Delivery)
 
 	paymentRow := &model.OrderPayment{
 		OrderCode:             v.orderCode,
 		IntentId:              v.intentID,
 		PayerAddress:          v.payerAddress,
+		SellerId:              &v.sellerId,
+		SellerCode:            &v.sellerCode,
 		ChainId:               v.chainCfg.ChainID,
 		TokenSymbol:           v.chainCfg.TokenSymbol,
 		TokenAddress:          v.chainCfg.TokenAddress,
@@ -289,12 +310,10 @@ func (l *CreateOrderLogic) assembleCreateOrderBundle(req *types.CreateOrderReq, 
 	}
 
 	return &createOrderBundle{
-		order:         orderRow,
-		payment:       paymentRow,
-		promotions:    l.buildPromotionRows(req.Promotions, v.orderCode, v.operator),
-		delivery:      l.buildDeliveryRow(req.Delivery, v.userInfo, v.orderCode, v.operator),
-		promoReq:      req.Promotions,
-		sellerAddress: v.sellerAddress,
+		order:      orderRow,
+		payment:    paymentRow,
+		promotions: l.buildPromotionRows(req.Promotions, v.orderCode, v.operator),
+		promoReq:   req.Promotions,
 	}
 }
 
@@ -324,14 +343,6 @@ func (l *CreateOrderLogic) persistCreateOrder(bundle *createOrderBundle) *types.
 			}
 		}
 
-		if bundle.delivery != nil {
-			bundle.delivery.OrderId = bundle.order.ID
-			deliveryRepo := repository.NewOrderDeliveryAddressRepository(l.svcCtx.GormDB)
-			if err := deliveryRepo.Create(ctx, bundle.delivery); err != nil {
-				return err
-			}
-		}
-
 		return nil
 	})
 	
@@ -346,7 +357,7 @@ func (l *CreateOrderLogic) persistCreateOrder(bundle *createOrderBundle) *types.
 func (l *CreateOrderLogic) buildCreateOrderResp(bundle *createOrderBundle) types.CreateOrderResp {
 	return types.CreateOrderResp{
 		Order:      toOrderInfo(bundle.order),
-		Payment:    toOrderPaymentInfo(bundle.payment, bundle.sellerAddress),
+		Payment:    toOrderPaymentInfo(bundle.payment),
 		Promotions: toPromotionItemsFromReq(bundle.promoReq),
 	}
 }
@@ -465,26 +476,22 @@ func (l *CreateOrderLogic) buildPromotionRows(
 	return rows
 }
 
-func (l *CreateOrderLogic) buildDeliveryRow(
-	input types.OrderDeliveryInput,
-	userInfo *model.User,
-	orderCode, operator string,
-) *model.OrderDeliveryAddress {
+// applyOrderDeliverySnapshot 创单时把收货联系人落到订单快照；物流单待支付成功后再生成。
+func applyOrderDeliverySnapshot(orderRow *model.Order, input types.OrderDeliveryInput) {
 	name := strings.TrimSpace(input.ReceiverName)
 	phone := strings.TrimSpace(input.ReceiverPhone)
 	email := strings.TrimSpace(input.ReceiverEmail)
 	if !hasDeliveryInput(name, phone, email) {
-		return nil
+		return
 	}
-	return &model.OrderDeliveryAddress{
-		OrderCode:     orderCode,
-		UserId:        userInfo.ID,
-		UserCode:      userInfo.UserCode,
-		ReceiverName:  name,
-		ReceiverPhone: phone,
-		ReceiverEmail: email,
-		IsDeleted:     0,
-		Creator:       operator,
-		Updator:       operator,
+	if name != "" {
+		orderRow.ReceiverName = &name
+	}
+	if phone != "" {
+		orderRow.ReceiverPhone = &phone
+	}
+	if email != "" {
+		orderRow.ReceiverEmail = &email
 	}
 }
+

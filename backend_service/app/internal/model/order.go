@@ -10,6 +10,8 @@ type Order struct {
 	OrderCode               string    `json:"orderCode" gorm:"column:order_code;unique"`
 	UserId                  int64     `json:"userId" gorm:"column:user_id;required"`
 	UserCode                string    `json:"userCode" gorm:"column:user_code"`
+	SellerId                *int64    `json:"sellerId" gorm:"column:seller_id"`
+	SellerCode              *string   `json:"sellerCode" gorm:"column:seller_code"`
 	SpuId                   int64     `json:"spuId" gorm:"column:spu_id"`
 	SpuCode                 string    `json:"spuCode" gorm:"column:spu_code"`
 	SkuId                   int64     `json:"skuId" gorm:"column:sku_id"`
@@ -35,6 +37,9 @@ type Order struct {
 	PayAmount               float64   `json:"payAmount" gorm:"column:pay_amount"`
 	RealAmount              float64   `json:"realAmount" gorm:"column:real_amount"`
 	OrderRemark             string    `json:"orderRemark" gorm:"column:order_remark"`
+	ReceiverName            *string   `json:"receiverName" gorm:"column:receiver_name"`
+	ReceiverPhone           *string   `json:"receiverPhone" gorm:"column:receiver_phone"`
+	ReceiverEmail           *string   `json:"receiverEmail" gorm:"column:receiver_email"`
 	ExpireAt                time.Time `json:"expireAt" gorm:"column:expire_at"`
 	CreatedAt               time.Time `json:"createdAt" gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt               time.Time `json:"updatedAt" gorm:"column:updated_at;autoUpdateTime"`

@@ -430,6 +430,8 @@ CREATE TABLE `sys_order`  (
   `order_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编码，对应 payOrder.orderRef',
   `user_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '用户id',
   `user_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '用户编码',
+  `seller_id` bigint(20) NULL DEFAULT NULL COMMENT '卖家用户ID（冗余自商品SPU，可空）',
+  `seller_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '卖家用户编码/钱包（可空）',
   `spu_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'spu id',
   `spu_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'spu编码',
   `sku_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'sku id',
@@ -455,6 +457,9 @@ CREATE TABLE `sys_order`  (
   `pay_amount` decimal(12, 2) NOT NULL DEFAULT 0.00 COMMENT '实付金额（含预估gas）',
   `real_amount` decimal(12, 2) NULL DEFAULT NULL COMMENT '实付金额（含实际gas费）',
   `order_remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '买家留言',
+  `receiver_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '收货人姓名（创单快照，支付成功后写入物流单）',
+  `receiver_phone` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '收货人手机号',
+  `receiver_email` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '收货人邮箱',
   `expire_at` datetime NULL DEFAULT NULL COMMENT '支付超时时间',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -465,6 +470,8 @@ CREATE TABLE `sys_order`  (
   UNIQUE INDEX `uk_order_code`(`order_code`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_user_code`(`user_code`) USING BTREE,
+  INDEX `idx_seller_id`(`seller_id`) USING BTREE,
+  INDEX `idx_seller_code`(`seller_code`) USING BTREE,
   INDEX `idx_spu_id`(`spu_id`) USING BTREE,
   INDEX `idx_sku_id`(`sku_id`) USING BTREE,
   INDEX `idx_order_status`(`order_status`) USING BTREE,
@@ -506,6 +513,8 @@ CREATE TABLE `sys_order_payment`  (
   `order_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '订单编码',
   `intent_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '支付意图 opi_<uuid>',
   `payer_address` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '付款钱包',
+  `seller_id` bigint(20) NULL DEFAULT NULL COMMENT '卖家用户ID（冗余自商品SPU，可空）',
+  `seller_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '卖家收款钱包（payOrder seller 快照，可空）',
   `chain_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '链ID',
   `token_symbol` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'USDC' COMMENT '代币符号',
   `token_address` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '代币合约地址',
@@ -537,6 +546,8 @@ CREATE TABLE `sys_order_payment`  (
   INDEX `idx_payment_status`(`payment_status`) USING BTREE,
   INDEX `idx_chain_tx`(`chain_id`, `tx_hash`) USING BTREE,
   INDEX `idx_payer_address`(`payer_address`) USING BTREE,
+  INDEX `idx_seller_id`(`seller_id`) USING BTREE,
+  INDEX `idx_seller_code`(`seller_code`) USING BTREE,
   INDEX `idx_expire_at`(`expire_at`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 80 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '订单链上支付记录' ROW_FORMAT = DYNAMIC;
 
@@ -632,8 +643,8 @@ CREATE TABLE `sys_order_logistics`  (
   `district_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '区名称',
   `street` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '街道',
   `detail_address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '详细地址',
-  `send_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '发货人用户ID',
-  `send_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '发货人用户编码',
+  `seller_id` bigint(20) NULL DEFAULT 0 COMMENT '卖家用户ID（冗余自订单/商品SPU）',
+  `seller_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '卖家用户编码/钱包',
   `logistics_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '物流公司编码',
   `logistics_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '物流公司名称',
   `platform_tracking_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '平台物流单号',
@@ -649,18 +660,20 @@ CREATE TABLE `sys_order_logistics`  (
   `exception_remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '异常备注',
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `is_deleted` int(11) NULL DEFAULT 0 COMMENT '是否删除',
+  `is_deleted` int(11) NOT NULL DEFAULT 0 COMMENT '是否删除：0否 1是',
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '创建人',
   `updator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新人',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   INDEX `idx_order_code`(`order_code`) USING BTREE,
-  INDEX `idx_send_id`(`send_id`) USING BTREE,
-  INDEX `idx_logistics_status`(`logistics_status`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '订单物流信息表' ROW_FORMAT = DYNAMIC;
+  INDEX `idx_logistics_status`(`logistics_status`) USING BTREE,
+  INDEX `idx_seller_id`(`seller_id`) USING BTREE,
+  INDEX `idx_seller_code`(`seller_code`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '订单物流信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for sys_permission
+
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_permission`;
 CREATE TABLE `sys_permission`  (

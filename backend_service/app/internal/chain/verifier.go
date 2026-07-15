@@ -157,7 +157,7 @@ func calcGasFeeFromUsedAndPrice(gasUsed uint64, gasPrice *big.Int) float64 {
 }
 
 // VerifyPaymentParams 验证事件参数是否与订单匹配
-func VerifyPaymentParams(event *PaymentEvent, expectedIntentId string, expectedOrderCode string, expectedAmount string, expectedToken string, expectedPayer string) error {
+func VerifyPaymentParams(event *PaymentEvent, expectedIntentId string, expectedOrderCode string, expectedAmount string, expectedToken string, expectedPayer string, expectedSeller string) error {
 	if event == nil {
 		return fmt.Errorf("event is nil")
 	}
@@ -187,6 +187,13 @@ func VerifyPaymentParams(event *PaymentEvent, expectedIntentId string, expectedO
 		eventPayer := event.Payer.Hex()
 		if !strings.EqualFold(eventPayer, expectedPayer) {
 			return fmt.Errorf("payer mismatch: got %s, want %s", eventPayer, expectedPayer)
+		}
+	}
+
+	if expectedSeller != "" {
+		eventSeller := event.Seller.Hex()
+		if !strings.EqualFold(eventSeller, expectedSeller) {
+			return fmt.Errorf("seller mismatch: got %s, want %s", eventSeller, expectedSeller)
 		}
 	}
 

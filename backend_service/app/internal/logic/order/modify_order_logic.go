@@ -170,8 +170,17 @@ func (l *ModifyOrderLogic) deleteOrder(orderID int64, updator string) *types.Bas
 		if err := paymentRepo.SoftDeleteByOrderID(l.ctx, orderID, updator); err != nil {
 			return err
 		}
-		return tx.WithContext(l.ctx).
+		if err := tx.WithContext(l.ctx).
 			Model(&model.OrderPromotion{}).
+			Where("order_id = ? AND is_deleted = ?", orderID, 0).
+			Updates(map[string]interface{}{
+				"is_deleted": 1,
+				"updator":    updator,
+			}).Error; err != nil {
+			return err
+		}
+		return tx.WithContext(l.ctx).
+			Model(&model.OrderLogistics{}).
 			Where("order_id = ? AND is_deleted = ?", orderID, 0).
 			Updates(map[string]interface{}{
 				"is_deleted": 1,
