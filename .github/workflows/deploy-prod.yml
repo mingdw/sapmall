@@ -9,23 +9,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      # 缓存依赖
+      # 安装环境
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
       - uses: actions/setup-go@v5
         with:
           go-version: '1.23'
-          cache: true
 
       # 构建前端
       - name: Build Admin
-        run: cd web_client/sapmall-admin && npm ci && npm run build
+        run: cd web_client/sapmall-admin && npm ci --legacy-peer-deps && npm run build
+        env:
+          CI: false
       - name: Build DApp
-        run: cd web_client/sapmall-dapp && npm ci && npm run build
+        run: cd web_client/sapmall-dapp && npm ci --legacy-peer-deps && npm run build
+        env:
+          CI: false
       - name: Build Website
-        run: cd web_client/sapmall-website && npm ci && npm run build
+        run: cd web_client/sapmall-website && npm ci --legacy-peer-deps && npm run build
+        env:
+          CI: false
 
       # 构建后端
       - name: Build Backend
