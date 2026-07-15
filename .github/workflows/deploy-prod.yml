@@ -59,16 +59,28 @@ jobs:
         with:
           name: build-${{ github.sha }}
 
-      - name: Deploy to Server
-        uses: easingthemes/ssh-deploy@v6
+      # 上传前端构建产物
+      - name: Upload Frontend to Server
+        uses: appleboy/scp-action@v0.1.7
         with:
-          REMOTE_HOST: ${{ secrets.SERVER_HOST }}
-          REMOTE_USER: ${{ secrets.SERVER_USER }}
-          REMOTE_PORT: ${{ secrets.SERVER_PORT || '22' }}
-          REMOTE_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-          SOURCE: "sapmall-admin/build/,sapmall-dapp/build/,sapmall-website/build/,main"
-          TARGET: "/opt/sapmall/deploy/${{ github.sha }}/"
-          ARGS: "-avz"
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          source: "sapmall-admin/build/*,sapmall-dapp/build/*,sapmall-website/build/*"
+          target: "/opt/sapmall/deploy/${{ github.sha }}"
+          strip_components: 0
+
+      # 上传后端二进制文件
+      - name: Upload Backend to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          source: "backend_service/main"
+          target: "/opt/sapmall/deploy/${{ github.sha }}"
 
       - name: Activate Deployment
         uses: appleboy/ssh-action@v1
@@ -78,35 +90,37 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
+            DEPLOY_DIR="/opt/sapmall/deploy/${{ github.sha }}"
+
             # 创建备份目录
             mkdir -p /opt/sapmall/backup
-            
+
             # 备份当前版本（前端）
             TIMESTAMP=$(date +%Y%m%d_%H%M%S)
             if [ -d /opt/sapmall/web_client ]; then
               cp -r /opt/sapmall/web_client /opt/sapmall/backup/web_client_${TIMESTAMP}
             fi
-            
+
             # 备份当前版本（后端）
             if [ -f /opt/sapmall/backend_service/main ]; then
               cp /opt/sapmall/backend_service/main /opt/sapmall/backup/main_${TIMESTAMP}
             fi
-            
-            # 部署新版本前端（直接覆盖到 web_client 目录）
-            cp -rf /opt/sapmall/deploy/${{ github.sha }}/sapmall-admin/build/* /opt/sapmall/web_client/sapmall-admin/build/
-            cp -rf /opt/sapmall/deploy/${{ github.sha }}/sapmall-dapp/build/* /opt/sapmall/web_client/sapmall-dapp/build/
-            cp -rf /opt/sapmall/deploy/${{ github.sha }}/sapmall-website/build/* /opt/sapmall/web_client/sapmall-website/build/
-            
+
+            # 部署新版本前端
+            cp -rf ${DEPLOY_DIR}/sapmall-admin/build/* /opt/sapmall/web_client/sapmall-admin/build/
+            cp -rf ${DEPLOY_DIR}/sapmall-dapp/build/* /opt/sapmall/web_client/sapmall-dapp/build/
+            cp -rf ${DEPLOY_DIR}/sapmall-website/build/* /opt/sapmall/web_client/sapmall-website/build/
+
             # 部署后端
-            chmod +x /opt/sapmall/deploy/${{ github.sha }}/main
-            cp /opt/sapmall/deploy/${{ github.sha }}/main /opt/sapmall/backend_service/main
-            
+            chmod +x ${DEPLOY_DIR}/backend_service/main
+            cp ${DEPLOY_DIR}/backend_service/main /opt/sapmall/backend_service/main
+
             # 重启后端服务
             sudo systemctl restart sapmall-backend
-            
+
             # 重载 Nginx
             sudo systemctl reload nginx
-            
+
             # 健康检查
             sleep 3
             curl -f http://localhost:8888/api/health || {
@@ -125,5 +139,8 @@ jobs:
               sudo systemctl restart sapmall-backend
               exit 1
             }
-            
+
+            # 清理部署目录
+            rm -rf ${DEPLOY_DIR}
+
             echo "Deployment successful: ${{ github.sha }}"
