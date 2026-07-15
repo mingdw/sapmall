@@ -31,6 +31,7 @@ export const MENU_IFRAME_ALIASES: Record<string, string[]> = {
   security:      ['security', 'personal/security'],
   notifications: ['notifications', 'personal/notifications'],
   dashboard:     ['dashboard', 'platform/dashboard'],
+  overview:      ['overview', 'business/overview'],
   orders:        ['orders', 'trading/orders', 'personal/orders'],
   cart:          ['cart', 'business/products'],
   settings:      ['settings', 'system/settings'],

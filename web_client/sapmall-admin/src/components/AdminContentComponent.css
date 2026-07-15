@@ -1,6 +1,7 @@
 /* 管理后台内容卡片样式 - 完全匹配原型图深色主题 */
 .admin-content-main {
-  height: 100%;
+  height: auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -14,8 +15,9 @@
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow-x: hidden;
-  overflow-y: visible;
+  overflow: visible;
+  /* 外侧内容卡片本体底部留白，避免子内容贴边框 */
+  padding-bottom: 8px;
 }
 
 .admin-content-main:hover {
@@ -84,17 +86,16 @@
 
 /* 卡片内容区域 - 完全匹配原型图深色主题 */
 .admin-content-card-body {
-  flex: 1;
+  flex: 0 1 auto;
   margin: 0;
-  padding: 24px;
+  /* 右侧与底部明确留白，避免贴外侧内容卡边框 */
+  padding: 24px 32px 48px 24px;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
-  overflow-x: hidden;
-  overflow-y: visible;
-  scrollbar-gutter: stable;
+  overflow: visible;
   background: transparent;
-  min-height: 400px; /* 确保有足够的内容高度 */
+  min-height: 0;
 }
 
 .admin-content-card-body > * {
@@ -586,7 +587,7 @@
 
 @media (max-width: 768px) {
   .admin-content-card-body {
-    padding: 16px;
+    padding: 16px 20px 36px 16px;
   }
 
   .matrix-welcome-container {

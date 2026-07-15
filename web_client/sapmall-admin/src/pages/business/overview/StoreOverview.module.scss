@@ -1,0 +1,1212 @@
+/* 店铺概览 — 对齐「我的订单」页字号与克制暗色风格 */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  min-width: 0;
+  color: #cbd5e1;
+  font-size: 13px;
+  padding-right: 4px;
+  padding-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.pageBottomSpacer {
+  height: 24px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+/* ——— 通用分区卡 ——— */
+
+.sectionCard {
+  background: rgba(30, 41, 59, 0.32);
+  border: 1px solid rgba(51, 65, 85, 0.28);
+  border-radius: 10px;
+  padding: 18px 20px;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.18);
+  }
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.sectionLabel {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    background: #3b82f6;
+  }
+}
+
+/* ——— 商家信息条 ——— */
+
+.identityBar {
+  background: rgba(30, 41, 59, 0.32);
+  border: 1px solid rgba(51, 65, 85, 0.28);
+  border-radius: 10px;
+  padding: 16px 20px;
+  backdrop-filter: blur(8px);
+}
+
+.identityMain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+}
+
+.walletBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.walletLabel {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.walletAddr {
+  font-size: 15px;
+  font-weight: 650;
+  color: #e2e8f0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.2px;
+}
+
+.identityMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.metaChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 500;
+
+  i {
+    color: #60a5fa;
+    font-size: 11px;
+  }
+}
+
+.certBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+
+  i {
+    font-size: 11px;
+  }
+}
+
+.cert_verified {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.cert_pending {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+.cert_unverified {
+  background: rgba(148, 163, 184, 0.1);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  color: #94a3b8;
+}
+
+.csEntryBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.12);
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 12px;
+  }
+
+  &:hover {
+    background: rgba(59, 130, 246, 0.22);
+    border-color: rgba(59, 130, 246, 0.55);
+    color: #bfdbfe;
+  }
+}
+
+.csEntryBadge {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ——— 时段切换 ——— */
+
+.periodTabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(15, 23, 42, 0.45);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid rgba(51, 65, 85, 0.4);
+}
+
+.periodBtn {
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #e2e8f0;
+  }
+}
+
+.periodActive {
+  background: rgba(59, 130, 246, 0.18);
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+/* ——— 统计小卡片（对齐「交易记录」statsCard） ——— */
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.todoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.statsCard {
+  padding: 14px 16px;
+  border: 1px solid rgba(51, 65, 85, 0.38);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.48);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s ease;
+  text-align: left;
+  color: inherit;
+
+  &:hover {
+    border-color: rgba(56, 189, 248, 0.25);
+  }
+}
+
+.statsCardClickable {
+  cursor: pointer;
+  width: 100%;
+
+  &:hover .statsCardAction {
+    color: #7dd3fc;
+  }
+}
+
+.statsCardHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statsCardIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.statsCardLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.statsCardValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.statsCardValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.statsCardTrend {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  line-height: 1.4;
+}
+
+.trend_positive {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+}
+
+.trend_negative {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.28);
+}
+
+.trend_neutral {
+  background: rgba(148, 163, 184, 0.1);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.statsCardHint {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.statsCardAction {
+  font-size: 11px;
+  font-weight: 500;
+  color: #38bdf8;
+  margin-left: auto;
+  transition: color 0.15s ease;
+}
+
+/* ——— 双栏 ——— */
+
+.twoCol {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.colMain,
+.colSide {
+  min-width: 0;
+
+  .sectionCard {
+    height: 100%;
+  }
+}
+
+/* ——— 趋势图 ——— */
+
+.chartWrap {
+  width: 100%;
+}
+
+.trendSvg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chartAxisText {
+  fill: #64748b;
+  font-size: 10px;
+}
+
+/* ——— 热销 ——— */
+
+.rankList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rankItem {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.rankIndex {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  flex-shrink: 0;
+}
+
+.rankTop {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.35);
+  color: #93c5fd;
+}
+
+.rankContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.rankNameRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.rankName {
+  font-size: 12px;
+  font-weight: 560;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rankRevenue {
+  font-size: 11px;
+  color: #94a3b8;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.rankBarTrack {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(51, 65, 85, 0.55);
+  overflow: hidden;
+}
+
+.rankBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: #3b82f6;
+}
+
+.rankMeta {
+  margin-top: 3px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* ——— 最近订单 ——— */
+
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.orderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: rgba(15, 23, 42, 0.28);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: inherit;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.28);
+    background: rgba(30, 41, 59, 0.45);
+  }
+}
+
+.orderMain {
+  min-width: 0;
+  flex: 1;
+}
+
+.orderTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.orderNo {
+  font-size: 12px;
+  font-weight: 600;
+  color: #60a5fa;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.orderStatus {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 0 6px;
+  line-height: 1.4;
+  border-radius: 4px;
+}
+
+.statusPending {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+
+.statusShipped {
+  background: rgba(59, 130, 246, 0.12);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.28);
+}
+
+.statusCompleted {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+}
+
+.statusAfterSale {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.28);
+}
+
+.orderDesc {
+  font-size: 12px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.orderSide {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.orderAmount {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ef4444;
+  font-variant-numeric: tabular-nums;
+}
+
+.orderTime {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* 客服面板共用细滚动条（对齐「我的订单」暗色细轨风格） */
+@mixin csThinScrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(71, 85, 105, 0.65) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(71, 85, 105, 0.55);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(100, 116, 139, 0.75);
+    }
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+.csOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 72px 24px 32px;
+  background: rgba(2, 6, 23, 0.58);
+  backdrop-filter: blur(2px);
+  animation: panelIn 0.18s ease-out;
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.csPanel {
+  display: flex;
+  flex-direction: column;
+  width: min(920px, 100%);
+  height: min(620px, calc(100vh - 96px));
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.98);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
+  animation: panelSlide 0.2s ease-out;
+}
+
+@keyframes panelSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.csTopBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+  flex-shrink: 0;
+}
+
+.csTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e2e8f0;
+
+  i {
+    color: #60a5fa;
+    font-size: 13px;
+  }
+}
+
+.csHint {
+  margin-top: 3px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.csClose {
+  background: rgba(30, 41, 59, 0.8);
+  color: #94a3b8;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid rgba(51, 65, 85, 0.4);
+
+  &:hover {
+    color: #e2e8f0;
+    border-color: rgba(59, 130, 246, 0.35);
+  }
+}
+
+.csBody {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+}
+
+.csBuyerList {
+  border-right: 1px solid rgba(51, 65, 85, 0.4);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.csBuyerListHead {
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+.csBuyerScroll {
+  overflow-y: auto;
+  flex: 1;
+  @include csThinScrollbar;
+}
+
+.csBuyerItem {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  text-align: left;
+  padding: 10px 12px;
+  border: none;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.22);
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: rgba(30, 41, 59, 0.55);
+  }
+}
+
+.csBuyerActive {
+  background: rgba(59, 130, 246, 0.12);
+  box-shadow: inset 2px 0 0 #3b82f6;
+}
+
+.csBuyerAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.28);
+}
+
+.csBuyerMeta {
+  flex: 1;
+  min-width: 0;
+}
+
+.csBuyerTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.csBuyerAddr {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e2e8f0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.csBuyerTime {
+  font-size: 10px;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.csBuyerPreview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.csBuyerLast {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.csBuyerUnread {
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.csChat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.csChatHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.35);
+  flex-shrink: 0;
+}
+
+.csChatBuyer {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e2e8f0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.csChatOrder {
+  margin-top: 2px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.csChatUnreadTag,
+.csChatReadTag {
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.csChatUnreadTag {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.28);
+}
+
+.csChatReadTag {
+  background: rgba(148, 163, 184, 0.1);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.csMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  @include csThinScrollbar;
+}
+
+.csMsg {
+  max-width: 82%;
+  align-self: flex-start;
+}
+
+.csMsgSelf {
+  align-self: flex-end;
+
+  .csMsgBubble {
+    background: rgba(59, 130, 246, 0.18);
+    border-color: rgba(59, 130, 246, 0.32);
+  }
+}
+
+.csMsgMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 10px;
+  color: #64748b;
+  margin-bottom: 3px;
+}
+
+.csMsgBubble {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(30, 41, 59, 0.75);
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  color: #cbd5e1;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.csMsgImage {
+  display: block;
+  max-width: 220px;
+  width: 100%;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.csMsgCaption {
+  margin-top: 6px;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.csCardBubble {
+  min-width: 180px;
+  padding: 10px 12px;
+}
+
+.csCardHead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #60a5fa;
+  font-weight: 600;
+  margin-bottom: 6px;
+
+  i {
+    font-size: 11px;
+  }
+}
+
+.csCardTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 2px;
+  word-break: break-all;
+}
+
+.csCardDesc {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.csCardAmount {
+  font-size: 13px;
+  font-weight: 700;
+  color: #f87171;
+  font-variant-numeric: tabular-nums;
+}
+
+.csComposerWrap {
+  border-top: 1px solid rgba(51, 65, 85, 0.4);
+  flex-shrink: 0;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.csToolRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 12px 0;
+}
+
+.csToolBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(51, 65, 85, 0.45);
+  background: rgba(30, 41, 59, 0.55);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  i {
+    font-size: 11px;
+  }
+
+  &:hover {
+    color: #e2e8f0;
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+}
+
+.csToolActive {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.csHiddenInput {
+  display: none;
+}
+
+.csPickerPanel {
+  margin: 8px 12px 0;
+  border: 1px solid rgba(51, 65, 85, 0.45);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  max-height: 140px;
+  overflow: auto;
+  padding: 8px;
+  @include csThinScrollbar;
+}
+
+.csPickerTitle {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 0 2px;
+}
+
+.csEmojiGrid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.csEmojiBtn {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  line-height: 1.4;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(59, 130, 246, 0.15);
+  }
+}
+
+.csPickerList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.csPickerItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  background: rgba(30, 41, 59, 0.45);
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  color: inherit;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.35);
+    background: rgba(30, 41, 59, 0.7);
+  }
+}
+
+.csPickerMain {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.csPickerSub {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.csPendingImage {
+  margin: 8px 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px dashed rgba(59, 130, 246, 0.35);
+  background: rgba(30, 41, 59, 0.4);
+
+  img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+}
+
+.csPendingRemove {
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  font-size: 11px;
+  border-radius: 5px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.csComposer {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px 12px;
+  align-items: flex-end;
+}
+
+.csTextarea {
+  flex: 1;
+  resize: none;
+  border-radius: 6px;
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  background: rgba(15, 23, 42, 0.55);
+  color: #e2e8f0;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  outline: none;
+  font-family: inherit;
+
+  &::placeholder {
+    color: #64748b;
+  }
+
+  &:focus {
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
+  }
+}
+
+.csSend {
+  border: none;
+  border-radius: 6px;
+  padding: 0 14px;
+  height: 36px;
+  background: rgba(59, 130, 246, 0.75);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(37, 99, 235, 0.9);
+  }
+}
+
+.csEmpty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* ——— 响应式 ——— */
+
+@media (max-width: 1200px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .kpiGrid,
+  .todoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .identityMain {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .csBody {
+    grid-template-columns: 1fr;
+  }
+
+  .csBuyerList {
+    max-height: 150px;
+    border-right: none;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+  }
+
+  .csPanel {
+    height: 520px;
+  }
+}

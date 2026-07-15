@@ -1,0 +1,107 @@
+name: Deploy Production Frontend
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Admin
+        run: cd web_client/sapmall-admin && npm ci --legacy-peer-deps && npm run build
+        env:
+          CI: false
+          REACT_APP_API_BASE_URL: ${{ secrets.ADMIN_API_BASE_URL }}
+
+      - name: Build DApp
+        run: cd web_client/sapmall-dapp && npm ci --legacy-peer-deps && npm run build
+        env:
+          CI: false
+          REACT_APP_API_BASE_URL: ${{ secrets.DAPP_API_BASE_URL }}
+          REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.WALLETCONNECT_PROJECT_ID }}
+          REACT_APP_SWAP_ROUTER_ADDRESS: ${{ secrets.SWAP_ROUTER_ADDRESS }}
+          REACT_APP_ADMIN_URL: ${{ secrets.ADMIN_URL }}
+
+      - name: Build Website
+        run: cd web_client/sapmall-website && npm ci --legacy-peer-deps && npm run build
+        env:
+          CI: false
+          REACT_APP_DAPP_URL: ${{ secrets.DAPP_URL }}
+          REACT_APP_HELP_PATH: /help
+          REACT_APP_WHITEPAPER_URL: ${{ secrets.WHITEPAPER_URL }}
+          REACT_APP_DEMO_URL: ${{ secrets.DEMO_URL }}
+          REACT_APP_GITHUB_URL: ${{ secrets.GITHUB_URL }}
+          REACT_APP_TWITTER_URL: ${{ secrets.TWITTER_URL }}
+          REACT_APP_TELEGRAM_URL: ${{ secrets.TELEGRAM_URL }}
+          REACT_APP_DISCORD_URL: ${{ secrets.DISCORD_URL }}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-${{ github.sha }}
+          path: |
+            web_client/sapmall-admin/build/
+            web_client/sapmall-dapp/build/
+            web_client/sapmall-website/build/
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-${{ github.sha }}
+
+      - name: Upload Frontend to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          source: "web_client/sapmall-admin/build/*,web_client/sapmall-dapp/build/*,web_client/sapmall-website/build/*"
+          target: "/opt/sapmall/deploy/frontend-${{ github.sha }}"
+          strip_components: 0
+
+      - name: Activate Frontend Deployment
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          script: |
+            DEPLOY_DIR="/opt/sapmall/deploy/frontend-${{ github.sha }}"
+
+            # 创建备份目录
+            mkdir -p /opt/sapmall/backup
+
+            # 备份当前前端
+            TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+            if [ -d /opt/sapmall/web_client ]; then
+              cp -r /opt/sapmall/web_client /opt/sapmall/backup/web_client_${TIMESTAMP}
+            fi
+
+            # 部署新版本前端
+            mkdir -p /opt/sapmall/web_client/sapmall-admin/build
+            mkdir -p /opt/sapmall/web_client/sapmall-dapp/build
+            mkdir -p /opt/sapmall/web_client/sapmall-website/build
+            cp -rf ${DEPLOY_DIR}/web_client/sapmall-admin/build/* /opt/sapmall/web_client/sapmall-admin/build/
+            cp -rf ${DEPLOY_DIR}/web_client/sapmall-dapp/build/* /opt/sapmall/web_client/sapmall-dapp/build/
+            cp -rf ${DEPLOY_DIR}/web_client/sapmall-website/build/* /opt/sapmall/web_client/sapmall-website/build/
+
+            # 重载 Nginx（无需停后端）
+            sudo systemctl reload nginx
+
+            # 清理部署目录
+            rm -rf ${DEPLOY_DIR}
+
+            echo "Frontend deployment successful: ${{ github.sha }}"

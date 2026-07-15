@@ -12,6 +12,7 @@ import ChainNetManager from '../pages/system/chainnet/ChainNetManager';
 import ContractManager from '../pages/contract/smart/ContractManager';
 import SystemSettingsPage from '../pages/system/settings/SystemSettingsPage';
 import ProductManagement from '../pages/business/products/ProductManagement';
+import StoreOverview from '../pages/business/overview/StoreOverview';
 import ProfileManager from '../pages/personal/profile/ProfileManager';
 import SecurityManager from '../pages/personal/security/SecurityManager';
 import NotificationManager from '../pages/personal/notifications/NotificationManager';
@@ -52,7 +53,8 @@ const AdminRouter: React.FC<AdminRouterProps> = ({ menuData }) => {
 
       {/* 合约管理 */}
       <Route path="/contract/smart" element={<ContractManager />} />
-      {/* 商品管理 */}
+      {/* 商家经营 */}
+      <Route path="/business/overview" element={<StoreOverview />} />
       <Route path="/business/products" element={<ProductManagement />} />
 
       {/* 资产管理 */}
