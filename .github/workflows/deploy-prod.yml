@@ -120,7 +120,7 @@ jobs:
 
             # 健康检查
             sleep 3
-            curl -f http://localhost:8888/health || {
+            curl -f http://localhost:8888/api/common/health || {
               echo "Health check failed, rolling back..."
               LATEST_FRONTUP=$(ls -td /opt/sapmall/backup/web_client_* | head -1)
               if [ -n "$LATEST_FRONTUP" ]; then
