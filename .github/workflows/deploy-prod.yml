@@ -20,14 +20,27 @@ jobs:
         run: cd web_client/sapmall-admin && npm ci --legacy-peer-deps && npm run build
         env:
           CI: false
+          REACT_APP_API_BASE_URL: ${{ secrets.ADMIN_API_BASE_URL }}
       - name: Build DApp
         run: cd web_client/sapmall-dapp && npm ci --legacy-peer-deps && npm run build
         env:
           CI: false
+          REACT_APP_API_BASE_URL: ${{ secrets.DAPP_API_BASE_URL }}
+          REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.WALLETCONNECT_PROJECT_ID }}
+          REACT_APP_SWAP_ROUTER_ADDRESS: ${{ secrets.SWAP_ROUTER_ADDRESS }}
+          REACT_APP_ADMIN_URL: ${{ secrets.ADMIN_URL }}
       - name: Build Website
         run: cd web_client/sapmall-website && npm ci --legacy-peer-deps && npm run build
         env:
           CI: false
+          REACT_APP_DAPP_URL: ${{ secrets.DAPP_URL }}
+          REACT_APP_HELP_PATH: /help
+          REACT_APP_WHITEPAPER_URL: ${{ secrets.WHITEPAPER_URL }}
+          REACT_APP_DEMO_URL: ${{ secrets.DEMO_URL }}
+          REACT_APP_GITHUB_URL: ${{ secrets.GITHUB_URL }}
+          REACT_APP_TWITTER_URL: ${{ secrets.TWITTER_URL }}
+          REACT_APP_TELEGRAM_URL: ${{ secrets.TELEGRAM_URL }}
+          REACT_APP_DISCORD_URL: ${{ secrets.DISCORD_URL }}
 
       - name: Build Backend
         run: |
