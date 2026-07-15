@@ -60,7 +60,7 @@ jobs:
           name: build-${{ github.sha }}
 
       - name: Deploy to Server
-        uses: easingthemes/ssh-deploy@v5
+        uses: easingthemes/ssh-deploy@v6
         with:
           REMOTE_HOST: ${{ secrets.SERVER_HOST }}
           REMOTE_USER: ${{ secrets.SERVER_USER }}
