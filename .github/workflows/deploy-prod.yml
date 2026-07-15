@@ -1,15 +1,14 @@
 name: Deploy Production
 
 on:
-  workflow_dispatch:  # 仅手动触发
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      # 安装环境
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -17,7 +16,6 @@ jobs:
         with:
           go-version: '1.23'
 
-      # 构建前端
       - name: Build Admin
         run: cd web_client/sapmall-admin && npm ci --legacy-peer-deps && npm run build
         env:
@@ -31,14 +29,12 @@ jobs:
         env:
           CI: false
 
-      # 构建后端
       - name: Build Backend
         run: |
           cd backend_service
           go mod tidy
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o main ./app/sapmall_start.go
 
-      # 上传构建产物
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -59,35 +55,23 @@ jobs:
         with:
           name: build-${{ github.sha }}
 
-      # 上传前端构建产物
-      - name: Upload Frontend to Server
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@v6
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          port: ${{ secrets.SERVER_PORT || '22' }}
-          source: "sapmall-admin/build/*,sapmall-dapp/build/*,sapmall-website/build/*"
-          target: "/opt/sapmall/deploy/${{ github.sha }}"
-          strip_components: 0
-
-      # 上传后端二进制文件
-      - name: Upload Backend to Server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          port: ${{ secrets.SERVER_PORT || '22' }}
-          source: "backend_service/main"
-          target: "/opt/sapmall/deploy/${{ github.sha }}"
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.SERVER_HOST }}
+          REMOTE_USER: ${{ secrets.SERVER_USER }}
+          REMOTE_PORT: ${{ secrets.SERVER_PORT || '22' }}
+          SOURCE: "sapmall-admin/build/,sapmall-dapp/build/,sapmall-website/build/,backend_service/main"
+          TARGET: "/opt/sapmall/deploy/${{ github.sha }}/"
+          ARGS: "-avz"
 
       - name: Activate Deployment
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_PASSWORD }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
             DEPLOY_DIR="/opt/sapmall/deploy/${{ github.sha }}"
@@ -125,13 +109,11 @@ jobs:
             sleep 3
             curl -f http://localhost:8888/api/health || {
               echo "Health check failed, rolling back..."
-              # 回滚前端
               LATEST_FRONTUP=$(ls -td /opt/sapmall/backup/web_client_* | head -1)
               if [ -n "$LATEST_FRONTUP" ]; then
                 rm -rf /opt/sapmall/web_client
                 cp -rf "$LATEST_FRONTUP" /opt/sapmall/web_client
               fi
-              # 回滚后端
               LATEST_BACKEND=$(ls -t /opt/sapmall/backup/main_* | head -1)
               if [ -n "$LATEST_BACKEND" ]; then
                 cp -f "$LATEST_BACKEND" /opt/sapmall/backend_service/main
