@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  # ====== 前端构建检查 ======
+  frontend-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [sapmall-admin, sapmall-dapp, sapmall-website]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: web_client/${{ matrix.app }}/package-lock.json
+      
+      - name: Install Dependencies
+        run: cd web_client/${{ matrix.app }} && npm ci
+      
+      - name: Build
+        run: cd web_client/${{ matrix.app }} && npm run build
+
+  # ====== 后端构建检查 ======
+  backend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache: true
+      
+      - name: Tidy Modules
+        run: cd backend_service && go mod tidy
+      
+      - name: Vet
+        run: cd backend_service && go vet ./...
+      
+      - name: Build
+        run: |
+          cd backend_service
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /dev/null ./app/sapmall_start.go

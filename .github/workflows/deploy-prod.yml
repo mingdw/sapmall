@@ -1,0 +1,125 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch:  # 仅手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      # 缓存依赖
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+          cache: true
+
+      # 构建前端
+      - name: Build Admin
+        run: cd web_client/sapmall-admin && npm ci && npm run build
+      - name: Build DApp
+        run: cd web_client/sapmall-dapp && npm ci && npm run build
+      - name: Build Website
+        run: cd web_client/sapmall-website && npm ci && npm run build
+
+      # 构建后端
+      - name: Build Backend
+        run: |
+          cd backend_service
+          go mod tidy
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o main ./app/sapmall_start.go
+
+      # 上传构建产物
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ github.sha }}
+          path: |
+            web_client/sapmall-admin/build/
+            web_client/sapmall-dapp/build/
+            web_client/sapmall-website/build/
+            backend_service/main
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ github.sha }}
+
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@v5
+        with:
+          REMOTE_HOST: ${{ secrets.SERVER_HOST }}
+          REMOTE_USER: ${{ secrets.SERVER_USER }}
+          REMOTE_PORT: ${{ secrets.SERVER_PORT || '22' }}
+          REMOTE_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+          SOURCE: "sapmall-admin/build/,sapmall-dapp/build/,sapmall-website/build/,main"
+          TARGET: "/opt/sapmall/deploy/${{ github.sha }}/"
+          ARGS: "-avz"
+
+      - name: Activate Deployment
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          script: |
+            # 创建备份目录
+            mkdir -p /opt/sapmall/backup
+            
+            # 备份当前版本（前端）
+            TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+            if [ -d /opt/sapmall/web_client ]; then
+              cp -r /opt/sapmall/web_client /opt/sapmall/backup/web_client_${TIMESTAMP}
+            fi
+            
+            # 备份当前版本（后端）
+            if [ -f /opt/sapmall/backend_service/main ]; then
+              cp /opt/sapmall/backend_service/main /opt/sapmall/backup/main_${TIMESTAMP}
+            fi
+            
+            # 部署新版本前端（直接覆盖到 web_client 目录）
+            cp -rf /opt/sapmall/deploy/${{ github.sha }}/sapmall-admin/build/* /opt/sapmall/web_client/sapmall-admin/build/
+            cp -rf /opt/sapmall/deploy/${{ github.sha }}/sapmall-dapp/build/* /opt/sapmall/web_client/sapmall-dapp/build/
+            cp -rf /opt/sapmall/deploy/${{ github.sha }}/sapmall-website/build/* /opt/sapmall/web_client/sapmall-website/build/
+            
+            # 部署后端
+            chmod +x /opt/sapmall/deploy/${{ github.sha }}/main
+            cp /opt/sapmall/deploy/${{ github.sha }}/main /opt/sapmall/backend_service/main
+            
+            # 重启后端服务
+            sudo systemctl restart sapmall-backend
+            
+            # 重载 Nginx
+            sudo systemctl reload nginx
+            
+            # 健康检查
+            sleep 3
+            curl -f http://localhost:8888/api/health || {
+              echo "Health check failed, rolling back..."
+              # 回滚前端
+              LATEST_FRONTUP=$(ls -td /opt/sapmall/backup/web_client_* | head -1)
+              if [ -n "$LATEST_FRONTUP" ]; then
+                rm -rf /opt/sapmall/web_client
+                cp -rf "$LATEST_FRONTUP" /opt/sapmall/web_client
+              fi
+              # 回滚后端
+              LATEST_BACKEND=$(ls -t /opt/sapmall/backup/main_* | head -1)
+              if [ -n "$LATEST_BACKEND" ]; then
+                cp -f "$LATEST_BACKEND" /opt/sapmall/backend_service/main
+              fi
+              sudo systemctl restart sapmall-backend
+              exit 1
+            }
+            
+            echo "Deployment successful: ${{ github.sha }}"
