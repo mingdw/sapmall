@@ -62,7 +62,7 @@ jobs:
           REMOTE_HOST: ${{ secrets.SERVER_HOST }}
           REMOTE_USER: ${{ secrets.SERVER_USER }}
           REMOTE_PORT: ${{ secrets.SERVER_PORT || '22' }}
-          SOURCE: "sapmall-admin/build/ sapmall-dapp/build/ sapmall-website/build/ backend_service/main"
+          SOURCE: "web_client/sapmall-admin/build/ web_client/sapmall-dapp/build/ web_client/sapmall-website/build/ backend_service/main"
           TARGET: "/opt/sapmall/deploy/${{ github.sha }}/"
           ARGS: "-avz"
 
