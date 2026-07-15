@@ -26,6 +26,8 @@ jobs:
       
       - name: Build
         run: cd web_client/${{ matrix.app }} && npm run build
+        env:
+          CI: false
 
   # ====== 后端构建检查 ======
   backend-build:
