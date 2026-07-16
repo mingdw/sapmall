@@ -1,4 +1,4 @@
-name: Deploy Production
+name: Deploy Production All
 
 on:
   workflow_dispatch:
@@ -75,9 +75,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
-          source: "web_client/sapmall-admin/build/*,web_client/sapmall-dapp/build/*,web_client/sapmall-website/build/*"
+          # 不要用 build/*：drone-scp 常匹配不到文件，报 tar: empty archive
+          source: "web_client/sapmall-admin/build,web_client/sapmall-dapp/build,web_client/sapmall-website/build"
           target: "/opt/sapmall/deploy/${{ github.sha }}"
           strip_components: 0
+          overwrite: true
 
       - name: Upload Backend to Server
         uses: appleboy/scp-action@v0.1.7

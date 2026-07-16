@@ -59,6 +59,21 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend-${{ github.sha }}
+          path: .
+
+      - name: Verify frontend artifacts
+        run: |
+          set -e
+          for d in \
+            web_client/sapmall-admin/build \
+            web_client/sapmall-dapp/build \
+            web_client/sapmall-website/build
+          do
+            echo "=== $d ==="
+            test -d "$d"
+            test -f "$d/index.html"
+            ls -la "$d" | head -20
+          done
 
       - name: Upload Frontend to Server
         uses: appleboy/scp-action@v0.1.7
@@ -67,9 +82,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
-          source: "web_client/sapmall-admin/build/*,web_client/sapmall-dapp/build/*,web_client/sapmall-website/build/*"
+          # 不要用 build/*：drone-scp 常匹配不到文件，报 tar: empty archive
+          source: "web_client/sapmall-admin/build,web_client/sapmall-dapp/build,web_client/sapmall-website/build"
           target: "/opt/sapmall/deploy/frontend-${{ github.sha }}"
           strip_components: 0
+          overwrite: true
 
       - name: Activate Frontend Deployment
         uses: appleboy/ssh-action@v1

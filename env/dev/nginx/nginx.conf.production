@@ -8,10 +8,92 @@ http {
     include       mime.types;
     default_type  application/octet-stream;
 
+    # WebSocket 升级头（API / 后续客服长连接）
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
+
     # 后端服务
     upstream backend_servers {
         server 127.0.0.1:8888;
     }
+
+    # 内部应用 upstream（公网 80 反代目标）
+    upstream sapmall_admin {
+        server 127.0.0.1:7101;
+    }
+
+    upstream sapmall_dapp {
+        server 127.0.0.1:7102;
+    }
+
+    upstream sapmall_website {
+        server 127.0.0.1:7103;
+    }
+
+    # -------------------------------------------------------------------------
+    # 公网入口：子域名反向代理（Cloudflare A 记录指向本机后，回源 80 端口）
+    #   sapmall.xyz / www.sapmall.xyz  → 官网 (7103)
+    #   dapp.sapmall.xyz               → DApp (7102)
+    #   admin.sapmall.xyz              → 管理后台 (7101)
+    # Cloudflare SSL 建议先用 Flexible；源站仅需监听 80，无需证书
+    # -------------------------------------------------------------------------
+
+    # 官网
+    server {
+        listen 80;
+        server_name sapmall.xyz www.sapmall.xyz;
+
+        location / {
+            proxy_pass http://sapmall_website;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+        }
+    }
+
+    # DApp
+    server {
+        listen 80;
+        server_name dapp.sapmall.xyz;
+
+        location / {
+            proxy_pass http://sapmall_dapp;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+        }
+    }
+
+    # 管理后台
+    server {
+        listen 80;
+        server_name admin.sapmall.xyz;
+
+        location / {
+            proxy_pass http://sapmall_admin;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+        }
+    }
+
+    # -------------------------------------------------------------------------
+    # 内部服务：静态资源 + API（仅本机 7101-7103，由上方公网入口反代）
+    # -------------------------------------------------------------------------
 
     # 管理后台 + API 服务器 - 端口 7101
     server {
