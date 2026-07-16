@@ -41,6 +41,9 @@ jobs:
           REACT_APP_TELEGRAM_URL: ${{ secrets.TELEGRAM_URL }}
           REACT_APP_DISCORD_URL: ${{ secrets.DISCORD_URL }}
 
+      # upload-artifact@v4 会取多路径的最短公共父目录作为根。
+      # 若只上传 web_client/...，下载后会丢掉 web_client/ 前缀，导致 scp 报 tar: empty archive。
+      # 额外带一个仓库根下的文件（与全量部署带 backend_service/main 同理），强制保留完整路径。
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -49,6 +52,7 @@ jobs:
             web_client/sapmall-admin/build/
             web_client/sapmall-dapp/build/
             web_client/sapmall-website/build/
+            .gitignore
           retention-days: 7
 
   deploy:
@@ -59,6 +63,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend-${{ github.sha }}
+
+      - name: Verify artifact layout
+        run: |
+          set -e
+          for d in \
+            web_client/sapmall-admin/build \
+            web_client/sapmall-dapp/build \
+            web_client/sapmall-website/build
+          do
+            echo "=== $d ==="
+            test -d "$d"
+            test -f "$d/index.html"
+          done
 
       - name: Upload Frontend to Server
         uses: appleboy/scp-action@v0.1.7
