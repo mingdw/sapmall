@@ -6,10 +6,10 @@ import "types/common_types.api"
 @server (
 	group:      common
 	prefix:     /api/common
-	middleware: RespMiddleware
+	middleware: LanguageMiddleware,RespMiddleware
 )
 service sapmall {
-	@doc "健康检查"
+	@doc "健康检�?
 	@handler HealthCheck
 	get /health (HealthCheckReq) returns (HealthCheckResp)
 
@@ -17,7 +17,7 @@ service sapmall {
 	@handler GetVersion
 	get /version returns (VersionResp)
 
-	@doc "获取随机数"
+	@doc "获取随机�?
 	@handler GetNonceByAddress
 	get /:wallet_address/nonce (GetNonceByAddressReq) returns (GetNonceByAddressResp)
 
@@ -29,7 +29,7 @@ service sapmall {
 	@handler GetCategoryTree
 	get /:category_type/categories (GetCategoryTreeReq) returns (BaseResp)
 
-	@doc "获取链配置信息（含支持的支付代币，无需授权）"
+	@doc "获取链配置信息（含支持的支付代币，无需授权�?
 	@handler GetChainConfig
 	get /chain_config (GetChainConfigReq) returns (BaseResp)
 }

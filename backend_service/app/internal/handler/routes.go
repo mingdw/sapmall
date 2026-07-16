@@ -242,7 +242,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 获取导航目录结构
@@ -326,7 +326,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 查询产品详细信息

@@ -8,7 +8,7 @@ import (
 	//     jwt: Auth
 	group: product
 	prefix:     /api/product
-	middleware: RespMiddleware
+	middleware: LanguageMiddleware,RespMiddleware
 )
 service sapmall {
 	@doc "分页查询多个产品"

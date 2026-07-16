@@ -223,24 +223,32 @@ class BaseClient {
       // 构建完整URL
       const fullURL = this.buildURL(url);
 
-      // 构建请求头
+      // 构建请求头（勿被 ...options 覆盖，否则会丢掉 Accept-Language）
+      const {
+        timeout,
+        skipAuth: _skipAuth,
+        locale: _locale,
+        silent,
+        headers: optionHeaders,
+        ...fetchOptions
+      } = options;
       const headers = this.buildHeaders(options);
 
       // 创建请求配置
       const requestConfig: RequestInit = {
+        ...fetchOptions,
         method: options.method || 'GET',
         headers: {
           ...headers,
-          ...options.headers,
+          ...(optionHeaders as Record<string, string> | undefined),
         },
-        ...options,
       };
 
       // 创建超时Promise
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => {
           reject(new ApiError('请求超时', 408, 408, null, true, false));
-        }, options.timeout || this.timeout);
+        }, timeout || this.timeout);
       });
 
       // 执行请求
@@ -250,7 +258,7 @@ class BaseClient {
       ]);
 
       // 处理响应
-      return this.handleResponse<T>(response, options.silent);
+      return this.handleResponse<T>(response, silent);
     } catch (error) {
       if (error instanceof ApiError) {
         // 统一处理错误
