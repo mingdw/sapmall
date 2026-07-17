@@ -3,7 +3,7 @@ import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
 import { configVariable, defineConfig } from "hardhat/config";
 
 const sharedPrivateKey = configVariable("CONTRACT_PRIVATE_KEY");
-const arcTestnetRpcUrl = process.env.ARC_TESTNET_RPC_URL ?? "https://rpc.testnet.arc.network";
+const arcTestnetRpcUrl = process.env.ARC_TESTNET_RPC_URL ?? "https://rpc.testnet.arc.io";
 
 export default defineConfig({
   plugins: [hardhatToolboxViemPlugin],

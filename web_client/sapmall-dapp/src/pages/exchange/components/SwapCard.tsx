@@ -72,7 +72,7 @@ export default function SwapCard({
     args: address && sapTokenConfig ? [address] : undefined,
     query: {
       enabled: !!address && !!sapTokenConfig,
-      refetchInterval: 10_000,
+      refetchInterval: 30_000,
     },
     chainId,
   });
@@ -93,7 +93,7 @@ export default function SwapCard({
     args: address && tokenConfig ? [address, routerAddress!] : undefined,
     query: {
       enabled: !!address && !!tokenConfig && !!routerAddress,
-      refetchInterval: 15_000,
+      refetchInterval: 45_000,
     },
     chainId,
   });

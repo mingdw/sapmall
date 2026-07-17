@@ -1,29 +1,17 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
-import {
-  injectedWallet,
-  metaMaskWallet,
-  walletConnectWallet,
-} from '@rainbow-me/rainbowkit/wallets';
-import { http } from 'wagmi';
-import {
-  mainnet,
-  polygon,
-  bsc,
-  arbitrum,
-  optimism,
-  sepolia,
-  goerli,
-  holesky,
-  base,
-  baseSepolia,
-} from 'wagmi/chains';
-import { arcTestnet, ARC_TESTNET_RPC_URL } from './chains/arcTestnet';
+import { fallback, http, type Transport } from 'wagmi';
+import { baseSepolia } from 'wagmi/chains';
+import { arcTestnet, ARC_TESTNET_RPC_URLS } from './chains/arcTestnet';
 import { lineaSepolia, LINEA_SEPOLIA_RPC_URL } from './chains/lineaSepolia';
+import {
+  injectedOnlyWalletGroups,
+  recommendedWalletGroups,
+} from './walletConnectors';
 
-// 获取 WalletConnect Project ID
-// RainbowKit v2 要求 projectId 非空，否则会在初始化时报错。
-// 这里提供一个开发兜底值，避免应用直接崩溃；如需真正使用 WalletConnect，
-// 仍需在环境变量中配置你自己的 Project ID。
+/** Base Sepolia 官方公共 RPC（勿用无 CORS 的默认公共节点） */
+export const BASE_SEPOLIA_RPC_URL = 'https://sepolia.base.org';
+
+// RainbowKit v2 要求 projectId 非空；生产仍须配置真实 Project ID
 const PLACEHOLDER_WC_PROJECT_ID = 'sapmall-dev-placeholder-project-id';
 
 const walletConnectProjectId =
@@ -33,74 +21,61 @@ const hasValidWalletConnectProjectId =
   walletConnectProjectId.length > 0 &&
   walletConnectProjectId !== PLACEHOLDER_WC_PROJECT_ID;
 
-// 如果未设置 Project ID，在开发环境给出警告
 if (!hasValidWalletConnectProjectId && process.env.NODE_ENV === 'development') {
   console.warn(
     '⚠️ WalletConnect Project ID 未设置。' +
-    'MetaMask SDK 依赖 WalletConnect 中继，未配置将无法唤起锁定钱包。' +
-    '请在 .env.local 中配置 REACT_APP_WALLETCONNECT_PROJECT_ID。' +
-    '获取地址：https://cloud.walletconnect.com'
+      'MetaMask SDK 依赖 WalletConnect 中继，未配置将无法唤起锁定钱包。' +
+      '请在 .env.local 中配置 REACT_APP_WALLETCONNECT_PROJECT_ID。' +
+      '获取地址：https://cloud.walletconnect.com'
   );
 }
 
 /**
- * 钱包连接策略：
- *
- * 有效 WalletConnect Project ID：
- *   - metaMaskWallet：使用 MetaMask SDK，无论 MetaMask 是否锁定/未登录都能唤起弹窗
- *   - walletConnectWallet：通用 WalletConnect 协议，支持移动端钱包
- *   首次连接需通过 WalletConnect 中继建立信道（3-10秒），后续复用 session 秒连。
- *
- * 无有效 Project ID（开发兜底）：
- *   - injectedWallet：直连浏览器扩展，速度快但 MetaMask 锁定时无法唤起
+ * 仅保留业务支付链，避免 wagmi 对 mainnet 等无关链请求公共 RPC（CORS / 无效请求刷屏）。
+ * 展示用「即将上线」网络仍可由 walletUiNetworks / 后端 chain_config 渲染，无需挂进 wagmi。
  */
+const paymentChains = [lineaSepolia, arcTestnet, baseSepolia] as const;
+
+const rpcHttpOptions = {
+  batch: true,
+  retryCount: 1,
+  retryDelay: 1_500,
+  timeout: 20_000,
+} as const;
+
+/** 单节点 HTTP transport */
+function createRpcTransport(url: string): Transport {
+  return http(url, rpcHttpOptions);
+}
+
+/**
+ * Arc Testnet：按官方节点列表做 fallback
+ * @see https://docs.arc.io/arc/references/rpc-endpoints
+ */
+function createArcTestnetTransport(): Transport {
+  return fallback(
+    ARC_TESTNET_RPC_URLS.map((url) => http(url, rpcHttpOptions)),
+    { rank: false },
+  );
+}
+
 const walletList = hasValidWalletConnectProjectId
-  ? [
-      {
-        groupName: 'Recommended',
-        wallets: [metaMaskWallet, walletConnectWallet],
-      },
-    ]
-  : [
-      {
-        groupName: 'Installed',
-        wallets: [injectedWallet],
-      },
-    ];
+  ? recommendedWalletGroups
+  : injectedOnlyWalletGroups;
 
 export const config = getDefaultConfig({
   appName: 'Sapphire Mall',
   projectId: walletConnectProjectId,
   wallets: walletList,
-  chains: [
-    lineaSepolia,
-    arcTestnet,
-    baseSepolia,
-    mainnet,
-    base,
-    sepolia,
-    goerli,
-    holesky,
-    polygon,
-    bsc,
-    arbitrum,
-    optimism,
-  ],
+  chains: paymentChains,
   transports: {
-    [lineaSepolia.id]: http(LINEA_SEPOLIA_RPC_URL),
-    [mainnet.id]: http(),
-    [base.id]: http(),
-    [baseSepolia.id]: http(),
-    [arcTestnet.id]: http(ARC_TESTNET_RPC_URL),
-    [sepolia.id]: http(),
-    [goerli.id]: http(),
-    [holesky.id]: http(),
-    [polygon.id]: http(),
-    [bsc.id]: http(),
-    [arbitrum.id]: http(),
-    [optimism.id]: http(),
+    [lineaSepolia.id]: createRpcTransport(LINEA_SEPOLIA_RPC_URL),
+    [arcTestnet.id]: createArcTestnetTransport(),
+    [baseSepolia.id]: createRpcTransport(BASE_SEPOLIA_RPC_URL),
   },
   ssr: false,
+  // 降低多链区块/余额默认同步频率（毫秒）
+  pollingInterval: 12_000,
 });
 
 export const chains = config.chains;

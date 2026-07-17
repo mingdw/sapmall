@@ -1,0 +1,70 @@
+/* RainbowKit 钱包弹窗视觉增强 — 对齐 SapMall DApp 深色风格 */
+
+[data-rk] {
+  --rk-colors-modalBackground: #0f172a;
+}
+
+/*
+ * 仅做透明度入场，避免对 dialog 使用 transform。
+ * transform 会破坏 RainbowKit wide 模式的左右分栏布局。
+ */
+[data-rk] [aria-labelledby='rk_connect_title'] {
+  animation: sapmall-rk-fade-in 0.22s ease-out;
+}
+
+@keyframes sapmall-rk-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 钱包选项行：更大点击区、细边框、悬停高亮 */
+[data-rk] button[data-testid^='rk-wallet-option'] {
+  border-radius: 14px !important;
+  border: 1px solid rgba(148, 163, 184, 0.14) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.92) 0%,
+    rgba(15, 23, 42, 0.95) 100%
+  ) !important;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease !important;
+  margin-bottom: 8px !important;
+}
+
+[data-rk] button[data-testid^='rk-wallet-option']:hover {
+  border-color: rgba(129, 140, 248, 0.55) !important;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.18) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(49, 46, 129, 0.45) 0%,
+    rgba(30, 41, 59, 0.95) 100%
+  ) !important;
+}
+
+/* 分组标题 */
+[data-rk] [id^='rk_connect_title'],
+[data-rk] h1,
+[data-rk] h2 {
+  letter-spacing: 0.01em;
+}
+
+/* 仅美化滚动条，勿改 dialog 子树布局 */
+[data-rk] [role='dialog'] {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(129, 140, 248, 0.45) transparent;
+}
+
+[data-rk] [role='dialog']::-webkit-scrollbar {
+  width: 6px;
+}
+
+[data-rk] [role='dialog']::-webkit-scrollbar-thumb {
+  background: rgba(129, 140, 248, 0.4);
+  border-radius: 999px;
+}

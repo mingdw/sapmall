@@ -30,7 +30,7 @@ export function useSapExchangeRemaining(): UseSapExchangeRemainingResult {
     functionName: 'getSwapStats',
     query: {
       enabled: !!routerAddress,
-      refetchInterval: 30_000,
+      refetchInterval: 60_000,
     },
   });
 

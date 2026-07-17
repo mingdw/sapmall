@@ -13,18 +13,14 @@ export type WalletUiNetwork = {
   switchable?: boolean;
 };
 
-/** 硬编码降级：后端链配置未加载时使用 */
+/**
+ * 硬编码降级：仅业务支付链（须与 wagmi chains 一致）。
+ * 「即将上线」主网等由后端 chain_config 下发展示，避免前端再挂未使用链触发 RPC。
+ */
 export const WALLET_UI_NETWORKS: WalletUiNetwork[] = [
   { id: LINEA_SEPOLIA_CHAIN_ID, nameKey: 'lineaSepolia', switchable: true },
   { id: ARC_TESTNET_CHAIN_ID, nameKey: 'arcTestnet', switchable: true },
   { id: 84532, nameKey: 'baseSepolia', switchable: true },
-  { id: 1, nameKey: 'ethereum', switchable: false },
-  { id: 8453, nameKey: 'base', switchable: false },
-  { id: 11155111, nameKey: 'sepolia', switchable: false },
-  { id: 5, nameKey: 'goerli', switchable: false },
-  { id: 17000, nameKey: 'holesky', switchable: false },
-  { id: 56, nameKey: 'bsc', switchable: false },
-  { id: 137, nameKey: 'polygon', switchable: false },
 ];
 
 export type WalletUiNetworkItem = {

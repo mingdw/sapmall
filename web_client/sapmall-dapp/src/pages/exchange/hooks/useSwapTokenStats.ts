@@ -72,7 +72,7 @@ export function useSwapTokenStats(): UseSwapTokenStatsResult {
     contracts: contracts.length > 0 ? contracts : undefined,
     query: {
       enabled: contracts.length > 0,
-      refetchInterval: 30_000,
+      refetchInterval: 60_000,
     },
   });
 
