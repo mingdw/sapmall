@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import { RewardsOverview, RewardHistory, VipTierCard } from './components';
@@ -18,6 +19,7 @@ const formatAmount = (val: number): string =>
   val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const RewardsManager: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('overview');
   const tierInfo = mockTierInfo;
   const summary = mockRewardsSummary;
@@ -66,6 +68,11 @@ const RewardsManager: React.FC = () => {
   return (
     <ConfigProvider theme={rewardsTheme}>
       <div className={styles.rewardsPage}>
+        <div className={styles.pageHeader}>
+          <div className={styles.pageHeaderLeft}>
+            <h2 className={styles.pageTitle}>{t('assets.rewards.title')}</h2>
+          </div>
+        </div>
         {/* 等级进度 + 快捷领取横幅 */}
         <div className={styles.rewardBanner}>
           <div className={styles.rewardBannerTier}>

@@ -1,10 +1,17 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Button, Spin, Result } from 'antd';
 import { ArrowLeft, RefreshCw, Home } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useUserStore } from '../store/userStore';
 import { useAccount } from 'wagmi';
 import { x1Testnet } from 'wagmi/chains';
+
+/** 归一化为 Admin 识别的 zh | en */
+function normalizeAdminLang(lang?: string | null): 'zh' | 'en' {
+  if (!lang) return 'zh';
+  return lang.toLowerCase().startsWith('en') ? 'en' : 'zh';
+}
 
 // 菜单项映射：DApp 菜单 key → Admin 实际 component 路径
 const menuItemMapping: { [key: string]: string } = {
@@ -45,23 +52,29 @@ interface OpenMerchantDepositMessage {
 const AdminIframeEmbedded: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const { user, validateUserAccess } = useUserStore();
   const { address } = useAccount();
-  
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
   // 简化的状态管理
   const [status, setStatus] = useState<ComponentStatus>({ state: 'loading' });
+
+  const adminLang = useMemo(
+    () => normalizeAdminLang(i18n.language),
+    [i18n.language]
+  );
 
   // 获取目标菜单项
   const targetMenu = useMemo(() => {
     const menuParam = searchParams.get('menu') || 'dashboard';
     return menuItemMapping[menuParam] || menuParam;
   }, [searchParams]);
-  
 
-  // 构建iframe URL
+  // 构建iframe URL（携带 lang，首屏与 DApp 同步）
   const buildIframeUrl = useCallback((): string => {
     const baseUrl = process.env.REACT_APP_ADMIN_URL || 'http://localhost:7101';
-    
+
     if (!user || !address) {
       throw new Error('用户信息缺失');
     }
@@ -73,11 +86,12 @@ const AdminIframeEmbedded: React.FC = () => {
       userAddress: address,
       userRoles: user.roles?.join(',') || '',
       nickname: user.nickname || '',
-      status: user.status.toString()
+      status: user.status.toString(),
+      lang: adminLang,
     });
-    
+
     return `${baseUrl}/#/admin?${params.toString()}`;
-  }, [user, address, targetMenu]);
+  }, [user, address, targetMenu, adminLang]);
 
   // 简化的加载逻辑
   const loadAdminInterface = useCallback(async () => {
@@ -158,6 +172,29 @@ const AdminIframeEmbedded: React.FC = () => {
     return () => window.removeEventListener('message', handleMessage);
   }, [navigate]);
 
+  // DApp 语言变更时实时同步到 Admin iframe（无需重建）
+  useEffect(() => {
+    const postLocale = (lang: string) => {
+      const win = iframeRef.current?.contentWindow;
+      if (!win) return;
+      win.postMessage({ type: 'SET_LOCALE', lang: normalizeAdminLang(lang) }, '*');
+    };
+
+    const handleLanguageChanged = (lang: string) => {
+      postLocale(lang);
+    };
+
+    i18n.on('languageChanged', handleLanguageChanged);
+    // 已加载完成时补发一次，避免竞态
+    if (status.state === 'success') {
+      postLocale(i18n.language);
+    }
+
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, [i18n, status.state]);
+
   // 简化的渲染逻辑
   const renderContent = () => {
     if (status.state === 'loading') {
@@ -203,14 +240,15 @@ const AdminIframeEmbedded: React.FC = () => {
         <div className="outer-container">
           <div className="inner-container">
             <iframe
+              ref={iframeRef}
               src={status.iframeUrl}
               className="w-full h-full border-0"
               title="Admin Content"
-              style={{ 
+              style={{
                 width: '100%',
                 height: '100vh',
                 border: 'none',
-                outline: 'none'
+                outline: 'none',
               }}
             />
           </div>

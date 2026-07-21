@@ -1,0 +1,34 @@
+{
+  "business": {
+    "products": {
+      "title": "Products",
+      "statusDraft": "Draft",
+      "statusPending": "Pending review",
+      "statusActive": "Listed",
+      "statusInactive": "Unlisted",
+      "statusSelling": "On sale",
+      "chainNotOn": "Not on-chain",
+      "chainSyncing": "Syncing",
+      "chainOn": "On-chain",
+      "chainFailed": "Sync failed",
+      "timeToday": "Today",
+      "timeYesterday": "Yesterday",
+      "timeWeek": "Last 7 days",
+      "timeMonth": "Last 30 days",
+      "searchPlaceholder": "Search name / SKU",
+      "createProduct": "Create product",
+      "productName": "Product name",
+      "price": "Price",
+      "stock": "Stock",
+      "category": "Category",
+      "chainStatus": "On-chain status"
+    },
+    "overview": {
+      "title": "Business overview",
+      "salesTrend": "Sales trend",
+      "recentOrders": "Recent orders",
+      "topProducts": "Top products",
+      "todos": "To-dos"
+    }
+  }
+}

@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ConfigProvider, Table, Tabs, Tag, Tooltip } from 'antd';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
+import { useTranslation } from 'react-i18next';
 import type { OrderSummary } from '../../../../services/api/orderApi';
 import {
   ORDER_STATUS,
-  PAYMENT_STATUS_TABS,
+  getPaymentStatusTabs,
   paymentStatusTagColor,
 } from '../constants';
 import OrderProductThumb from './OrderProductThumb';
@@ -37,14 +38,14 @@ function shortAddress(addr?: string): string {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 }
 
-function formatCountdown(seconds: number): string {
-  if (seconds <= 0) return '已过期';
+function formatCountdown(seconds: number, expiredLabel: string): string {
+  if (seconds <= 0) return expiredLabel;
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-function useCountdown(orderDate?: string, orderStatus?: number): string | null {
+function useCountdown(orderDate?: string, orderStatus?: number): number | null {
   const [remaining, setRemaining] = useState<number | null>(null);
 
   useEffect(() => {
@@ -77,16 +78,19 @@ function useCountdown(orderDate?: string, orderStatus?: number): string | null {
   }, [orderDate, orderStatus]);
 
   if (remaining === null) return null;
-  return formatCountdown(remaining);
+  return remaining;
 }
 
 const CountdownCell: React.FC<{ orderDate?: string; orderStatus?: number }> = ({
   orderDate,
   orderStatus,
 }) => {
-  const text = useCountdown(orderDate, orderStatus);
-  if (text === null) return <span className={styles.mutedText}>—</span>;
-  const isExpired = text === '已过期';
+  const { t } = useTranslation();
+  const remaining = useCountdown(orderDate, orderStatus);
+  if (remaining === null) return <span className={styles.mutedText}>—</span>;
+  const expiredLabel = t('trading.order.expired');
+  const text = formatCountdown(remaining, expiredLabel);
+  const isExpired = remaining <= 0;
   return (
     <span className={isExpired ? styles.countdownExpired : styles.countdownActive}>
       {text}
@@ -107,6 +111,9 @@ const OrderListPanel: React.FC<Props> = ({
   onOpenDetail,
   renderActions,
 }) => {
+  const { t } = useTranslation();
+  const paymentTabs = getPaymentStatusTabs(t);
+
   const tableTheme = useMemo(
     () => ({
       components: {
@@ -126,7 +133,7 @@ const OrderListPanel: React.FC<Props> = ({
 
   const columns: ColumnsType<OrderSummary> = [
     {
-      title: '订单号',
+      title: t('trading.order.colOrderNo'),
       dataIndex: 'orderCode',
       width: 168,
       render: (code: string) => (
@@ -136,7 +143,7 @@ const OrderListPanel: React.FC<Props> = ({
       ),
     },
     {
-      title: '商品',
+      title: t('trading.order.colProducts'),
       dataIndex: 'productName',
       ellipsis: true,
       width: 240,
@@ -153,7 +160,7 @@ const OrderListPanel: React.FC<Props> = ({
         ),
     },
     {
-      title: '订单总金额',
+      title: t('trading.order.colTotalAmount', { defaultValue: '订单总金额' }),
       dataIndex: 'totalAmount',
       width: 140,
       render: (amount: number, record) => {
@@ -167,7 +174,7 @@ const OrderListPanel: React.FC<Props> = ({
       },
     },
     {
-      title: '实付金额',
+      title: t('trading.order.colPayAmount', { defaultValue: '实付金额' }),
       dataIndex: 'payAmount',
       width: 140,
       render: (amount: number, record) => {
@@ -182,7 +189,7 @@ const OrderListPanel: React.FC<Props> = ({
       },
     },
     {
-      title: '手续费',
+      title: t('trading.order.colFee', { defaultValue: '手续费' }),
       dataIndex: 'platformFeeAmount',
       width: 120,
       render: (amount: number, record) => {
@@ -196,7 +203,7 @@ const OrderListPanel: React.FC<Props> = ({
       },
     },
     {
-      title: '实际Gas',
+      title: t('trading.order.colGas', { defaultValue: '实际Gas' }),
       dataIndex: 'actGasFee',
       width: 120,
       render: (amount: number, record) => {
@@ -211,7 +218,7 @@ const OrderListPanel: React.FC<Props> = ({
       },
     },
     {
-      title: '链',
+      title: t('trading.order.colChain', { defaultValue: '链' }),
       key: 'chain',
       width: 100,
       render: (_: unknown, record) =>
@@ -224,7 +231,7 @@ const OrderListPanel: React.FC<Props> = ({
         ),
     },
     {
-      title: '支付状态',
+      title: t('trading.order.colPayStatus'),
       dataIndex: 'paymentStatus',
       width: 110,
       render: (_: number, record) => (
@@ -234,13 +241,13 @@ const OrderListPanel: React.FC<Props> = ({
       ),
     },
     {
-      title: '下单时间',
+      title: t('trading.order.dateRange'),
       dataIndex: 'orderDate',
       width: 168,
       render: (v: string) => <span className={styles.mutedText}>{formatDateTime(v)}</span>,
     },
     {
-      title: '支付倒计时',
+      title: t('trading.order.colCountdown', { defaultValue: '支付倒计时' }),
       key: 'countdown',
       width: 100,
       render: (_: unknown, record) => (
@@ -248,13 +255,13 @@ const OrderListPanel: React.FC<Props> = ({
       ),
     },
     {
-      title: '确认时间',
+      title: t('trading.order.colConfirmedAt', { defaultValue: '确认时间' }),
       dataIndex: 'confirmedAt',
       width: 168,
       render: (v: string) => <span className={styles.mutedText}>{formatDateTime(v)}</span>,
     },
     {
-      title: '支付钱包',
+      title: t('trading.order.colPayer', { defaultValue: '支付钱包' }),
       dataIndex: 'payerAddress',
       width: 120,
       render: (addr: string) => (
@@ -264,7 +271,7 @@ const OrderListPanel: React.FC<Props> = ({
       ),
     },
     {
-      title: '操作',
+      title: t('trading.order.colActions'),
       key: 'actions',
       width: 120,
       render: (_: unknown, record) => renderActions(record),
@@ -276,11 +283,11 @@ const OrderListPanel: React.FC<Props> = ({
     pageSize,
     total,
     showSizeChanger: true,
-    showTotal: (t) => `共 ${t} 条`,
+    showTotal: (count) => t('trading.order.totalCount', { count }),
     onChange: onPageChange,
   };
 
-  const tabItems = PAYMENT_STATUS_TABS.map((tab) => ({
+  const tabItems = paymentTabs.map((tab) => ({
     key: tab.key,
     label: (
       <span>
@@ -302,7 +309,7 @@ const OrderListPanel: React.FC<Props> = ({
             pagination={pagination}
             scroll={{ x: 1700 }}
             locale={{
-              emptyText: <span className={styles.tableEmptyText}>暂无订单数据</span>,
+              emptyText: <span className={styles.tableEmptyText}>{t('trading.order.empty')}</span>,
             }}
             className={styles.orderTable}
           />
@@ -313,7 +320,7 @@ const OrderListPanel: React.FC<Props> = ({
 
   return (
     <div className={styles.listSection}>
-      <h4 className={styles.sectionLabel}>订单列表</h4>
+      <h4 className={styles.sectionLabel}>{t('trading.order.title')}</h4>
       <Tabs
         activeKey={activePaymentTab}
         onChange={onTabChange}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal } from 'antd';
-import { PREVIEW_CONTENT } from '../constants';
+import { useTranslation } from 'react-i18next';
 import styles from '../NotificationManager.module.scss';
 
 interface Props {
@@ -12,13 +12,25 @@ interface Props {
 type PreviewTab = 'email' | 'mobile' | 'browser';
 
 const PreviewModal: React.FC<Props> = ({ open, notificationId, onClose }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<PreviewTab>('email');
-  const content = notificationId ? PREVIEW_CONTENT[notificationId] : null;
+
+  // 获取预览内容的国际化文本
+  const getPreviewContent = (id: string | null) => {
+    if (!id) return null;
+    const key = id.replace(/-/g, '');
+    return {
+      title: t(`personal.notifications.previewContent.${key}Title`),
+      body: t(`personal.notifications.previewContent.${key}Body`),
+    };
+  };
+
+  const content = getPreviewContent(notificationId);
 
   const tabs: { key: PreviewTab; label: string; icon: string }[] = [
-    { key: 'email', label: '邮件通知', icon: 'fa-envelope' },
-    { key: 'mobile', label: '手机通知', icon: 'fa-mobile-alt' },
-    { key: 'browser', label: '浏览器通知', icon: 'fa-desktop' },
+    { key: 'email', label: t('personal.notifications.email'), icon: 'fa-envelope' },
+    { key: 'mobile', label: t('personal.notifications.mobile'), icon: 'fa-mobile-alt' },
+    { key: 'browser', label: t('personal.notifications.browser'), icon: 'fa-desktop' },
   ];
 
   return (
@@ -26,7 +38,7 @@ const PreviewModal: React.FC<Props> = ({ open, notificationId, onClose }) => {
       title={
         <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <i className="fas fa-eye" style={{ color: '#60a5fa' }}></i>
-          通知预览
+          {t('personal.notifications.preview')}
         </span>
       }
       open={open}
@@ -65,15 +77,15 @@ const PreviewModal: React.FC<Props> = ({ open, notificationId, onClose }) => {
           </div>
           <div className={styles.emailContent}>
             <div className={styles.emailSubject}>
-              <span>主题: </span>
+              <span>{t('personal.notifications.emailPreview.subject')}: </span>
               <span className={styles.emailSubjectText}>{content?.title || '--'}</span>
             </div>
             <div className={styles.emailBody}>
-              <p className={styles.emailGreeting}>尊敬的用户：</p>
+              <p className={styles.emailGreeting}>{t('personal.notifications.emailPreview.greeting')}</p>
               <p className={styles.emailParagraph}>{content?.body || '--'}</p>
-              <button className={styles.emailActionBtn} type="button">查看详情</button>
+              <button className={styles.emailActionBtn} type="button">{t('personal.notifications.emailPreview.viewDetail')}</button>
               <p className={styles.emailSignature}>
-                此致，<br />Sapphire Mall 团队
+                {t('personal.notifications.emailPreview.signature')}<br />{t('personal.notifications.emailPreview.team')}
               </p>
             </div>
           </div>
@@ -100,8 +112,8 @@ const PreviewModal: React.FC<Props> = ({ open, notificationId, onClose }) => {
                     <i className="fas fa-shopping-bag"></i>
                   </div>
                   <div>
-                    <div className={styles.mobileAppName}>Sapphire Mall</div>
-                    <div className={styles.mobileNotifTime}>刚刚</div>
+                  <div className={styles.mobileAppName}>{t('personal.notifications.mobilePreview.appName')}</div>
+                  <div className={styles.mobileNotifTime}>{t('personal.notifications.mobilePreview.justNow')}</div>
                   </div>
                 </div>
                 <div className={styles.mobileNotifTitle}>{content?.title || '--'}</div>
@@ -122,8 +134,8 @@ const PreviewModal: React.FC<Props> = ({ open, notificationId, onClose }) => {
                 <i className="fas fa-shopping-bag"></i>
               </div>
               <div>
-                <div className={styles.browserNotifSite}>Sapphire Mall</div>
-                <div className={styles.browserNotifTime}>刚刚</div>
+                <div className={styles.browserNotifSite}>{t('personal.notifications.browserPreview.siteName')}</div>
+                <div className={styles.browserNotifTime}>{t('personal.notifications.browserPreview.justNow')}</div>
               </div>
               <span className={styles.browserNotifClose}>×</span>
             </div>

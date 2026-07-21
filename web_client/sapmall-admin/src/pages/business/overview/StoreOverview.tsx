@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   MerchantIdentityBar,
   KpiSection,
@@ -16,11 +17,13 @@ import styles from './StoreOverview.module.scss';
  * Mock 数据驱动，风格对齐「我的订单」页。
  */
 const StoreOverview: React.FC = () => {
+  const { t } = useTranslation();
   const [period, setPeriod] = useState<KpiPeriod>('today');
   const data = storeOverviewMock;
 
   return (
     <div className={styles.page}>
+      <h4 className={styles.sectionLabel}>{t('business.overview.title')}</h4>
       <MerchantIdentityBar
         merchant={data.merchant}
         conversations={data.conversations}

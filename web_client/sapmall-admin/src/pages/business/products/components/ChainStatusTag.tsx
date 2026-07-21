@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { getChainStatusConfig } from '../utils';
 import type { ChainStatus } from '../types';
 import styles from './StatusTag.module.scss';
@@ -8,8 +9,9 @@ interface ChainStatusTagProps {
 }
 
 const ChainStatusTag: React.FC<ChainStatusTagProps> = ({ chainStatus }) => {
-  const config = getChainStatusConfig(chainStatus);
-  
+  const { t } = useTranslation();
+  const config = getChainStatusConfig(chainStatus, t);
+
   // 根据链上状态获取对应的样式类名
   const getChainStatusClassName = (chainStatus?: ChainStatus): string => {
     switch (chainStatus) {

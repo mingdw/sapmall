@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+﻿import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Tag, Tooltip } from 'antd';
 import MessageUtils from '../../../utils/messageUtils';
 import type { KycSubmitPayload, MerchantDepositIntent, ProfileData } from './types';
@@ -109,6 +110,7 @@ const mapDepositToIntent = (deposit?: any): MerchantDepositIntent | null => {
 };
 
 const ProfileManager: React.FC = () => {
+  const { t } = useTranslation();
   const [savedProfile, setSavedProfile] = useState<ProfileData>(EMPTY_PROFILE);
   const [draftProfile, setDraftProfile] = useState<ProfileData>(EMPTY_PROFILE);
   const [initializing, setInitializing] = useState(true);
@@ -123,7 +125,7 @@ const ProfileManager: React.FC = () => {
     const currentUser = useUserStore.getState().getCurrentUser();
     const userId = currentUser?.userId;
     if (!userId) {
-      throw new Error('未获取到用户ID，请先登录');
+      throw new Error(t('personal.profile.msg.userIdNotFound'));
     }
 
     const resp = await userApi.getUserInfo(userId);
@@ -136,8 +138,11 @@ const ProfileManager: React.FC = () => {
       username: currentUser?.userAddress || basicInfo?.userCode || '',
       nickname: basicInfo?.nickname || '',
       walletAddress: currentUser?.userAddress || basicInfo?.userCode || '',
-      userRole: roles[0]?.roleName || '普通用户',
-      statusText: basicInfo?.status === 1 ? '账户已禁用' : '账户状态正常',
+      userRole: roles[0]?.roleName || t('personal.profile.defaultRole'),
+      statusText:
+        basicInfo?.status === 1
+          ? t('personal.profile.accountStatusDisabledFull')
+          : t('personal.profile.accountStatusNormalFull'),
       brief: basicInfo?.typeDesc || '',
       gender: mapGender(basicInfo?.gender),
       birthday: basicInfo?.birthday || '',
@@ -167,9 +172,9 @@ const ProfileManager: React.FC = () => {
     setSavedProfile(profile);
     setDraftProfile(profile);
     if (!silent) {
-      MessageUtils.success('用户信息已同步');
+      MessageUtils.success(t('personal.profile.msg.profileSynced'));
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     let cancelled = false;
@@ -178,7 +183,7 @@ const ProfileManager: React.FC = () => {
         setInitializing(true);
         await loadProfile(true);
       } catch {
-        if (!cancelled) MessageUtils.error('加载用户信息失败');
+        if (!cancelled) MessageUtils.error(t('personal.profile.msg.loadProfileFailed'));
       } finally {
         if (!cancelled) setInitializing(false);
       }
@@ -203,9 +208,9 @@ const ProfileManager: React.FC = () => {
         document.execCommand('copy');
         document.body.removeChild(textarea);
       }
-      MessageUtils.success('钱包地址复制成功');
+      MessageUtils.success(t('personal.profile.msg.walletCopied'));
     } catch {
-      MessageUtils.error('复制失败，请手动复制');
+      MessageUtils.error(t('personal.profile.msg.copyFailed'));
     }
   };
 
@@ -233,7 +238,7 @@ const ProfileManager: React.FC = () => {
         apiPayload.birthday = payload.birthday;
       }
       if (Object.keys(apiPayload).length === 0) {
-        MessageUtils.warning('没有可提交的修改内容');
+        MessageUtils.warning(t('personal.profile.msg.noChanges'));
         return false;
       }
 
@@ -241,14 +246,14 @@ const ProfileManager: React.FC = () => {
       await loadProfile(true);
       return true;
     } catch {
-      MessageUtils.error('修改失败，请稍后重试');
+      MessageUtils.error(t('personal.profile.msg.modifyFailed'));
       return false;
     }
   };
 
   const handleKycCompleted = (payload: KycSubmitPayload) => {
     setKycModalOpen(false);
-    MessageUtils.success(`KYC申请已提交：${payload.basicInfo.realName}`);
+    MessageUtils.success(t('personal.profile.msg.kycSubmitted', { name: payload.basicInfo.realName }));
     loadProfile(true).catch(() => undefined);
   };
 
@@ -269,7 +274,7 @@ const ProfileManager: React.FC = () => {
 
     if (window.parent && window.parent !== window) {
       window.parent.postMessage(messagePayload, '*');
-      MessageUtils.info('已通知DApp打开保证金缴纳页面');
+      MessageUtils.info(t('personal.profile.msg.dappDepositNotified'));
       return;
     }
 
@@ -286,7 +291,7 @@ const ProfileManager: React.FC = () => {
       intent.expireAt || '',
     )}&returnPath=${encodeURIComponent('/admin?menu=profile')}`;
     window.open(depositUrl, '_blank');
-    MessageUtils.info('已在新页面打开保证金缴纳入口');
+    MessageUtils.info(t('personal.profile.msg.depositPageOpened'));
   };
 
   const handleMerchantSubmitApplication = () => {
@@ -294,11 +299,11 @@ const ProfileManager: React.FC = () => {
     userApi
       .applyMerchantCert()
       .then(() => {
-        MessageUtils.success('商家申请已提交，请前往DApp缴纳保证金');
+        MessageUtils.success(t('personal.profile.msg.merchantApplied'));
         return loadProfile(true);
       })
       .catch(() => {
-        MessageUtils.error('提交商家申请失败');
+        MessageUtils.error(t('personal.profile.msg.merchantApplyFailed'));
       })
       .finally(() => {
         setMerchantLoading(false);
@@ -312,7 +317,7 @@ const ProfileManager: React.FC = () => {
       if (!resp?.exists || !resp?.deposit) {
         setMerchantIntent(null);
         if (showFailedMessage) {
-          MessageUtils.warning('暂未查询到申请单，请稍后重试');
+          MessageUtils.warning(t('personal.profile.msg.noApplicationFound'));
         }
         return false;
       }
@@ -320,7 +325,7 @@ const ProfileManager: React.FC = () => {
       return true;
     } catch {
       if (showFailedMessage) {
-        MessageUtils.error('查询申请单失败，请稍后重试');
+        MessageUtils.error(t('personal.profile.msg.queryApplicationFailed'));
       }
       return false;
     } finally {
@@ -334,7 +339,7 @@ const ProfileManager: React.FC = () => {
 
   const handleMerchantOpenDapp = () => {
     if (!merchantIntent) {
-      MessageUtils.warning('申请单信息缺失，请先刷新申请单');
+      MessageUtils.warning(t('personal.profile.msg.applicationMissing'));
       return;
     }
     openMerchantDepositPage(merchantIntent);
@@ -342,12 +347,13 @@ const ProfileManager: React.FC = () => {
   };
 
   const handleMerchantMarkPaid = () => {
-    MessageUtils.info('请等待链上回调，页面将以后端状态为准');
+    MessageUtils.info(t('personal.profile.msg.waitChainCallback'));
     loadProfile(true).catch(() => undefined);
   };
 
   return (
     <div className={styles.profileManager}>
+      <h4 className={styles.sectionLabel}>{t('personal.profile.title')}</h4>
       <section className={styles.overviewCard}>
         <div className={styles.overviewMain}>
           <div className={styles.avatarBox}>
@@ -365,11 +371,13 @@ const ProfileManager: React.FC = () => {
                 }`}
               >
                 <i className={`fas ${userStatusCode === 1 ? 'fa-ban' : 'fa-check-circle'}`}></i>
-                {userStatusCode === 1 ? '禁用' : '正常'}
+                {userStatusCode === 1
+                  ? t('personal.profile.accountStatusDisabled')
+                  : t('personal.profile.accountStatusNormal')}
               </span>
             </div>
             <div className={styles.walletLine}>
-              <span className={styles.walletLabel}>钱包地址</span>
+              <span className={styles.walletLabel}>{t('personal.profile.walletAddress')}</span>
               <Tooltip title={draftProfile.walletAddress}>
                 <span className={styles.walletValue}>{formatWalletAddress(draftProfile.walletAddress)}</span>
               </Tooltip>
@@ -382,9 +390,11 @@ const ProfileManager: React.FC = () => {
               />
             </div>
             <div className={styles.overviewHint}>
-              <span>{draftProfile.statusText || '账户状态正常'}</span>
-              <span>用户编号：{draftProfile.userId || '--'}</span>
-              <span className={styles.savedBadge}>已同步最新数据</span>
+              <span>{draftProfile.statusText || t('personal.profile.accountStatusNormalFull')}</span>
+              <span>
+                {t('personal.profile.userIdLabel')}：{draftProfile.userId || '--'}
+              </span>
+              <span className={styles.savedBadge}>{t('personal.profile.syncedBadge')}</span>
             </div>
           </div>
         </div>

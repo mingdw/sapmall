@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+﻿﻿import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, message } from 'antd';
 import type {
   SecurityData,
@@ -23,6 +24,7 @@ import { formatDate } from './utils/securityUtils';
 import styles from './SecurityManager.module.scss';
 
 const SecurityManager: React.FC = () => {
+  const { t } = useTranslation();
   const [securityData, setSecurityData] = useState<SecurityData>(mockSecurityData);
   const [activityFilter, setActivityFilter] = useState<ActivityFilterType>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,16 +93,16 @@ const SecurityManager: React.FC = () => {
 
   const handleDisconnectDevice = (deviceId: string) => {
     Modal.confirm({
-      title: '确认断开连接',
+      title: t('personal.security.disconnectDevice'),
       content: '断开后该设备将无法继续使用当前会话，确定要断开吗？',
-      okText: '确认',
-      cancelText: '取消',
+      okText: t('common.confirm'),
+      cancelText: t('common.cancel'),
       onOk: () => {
         setSecurityData((prev) => ({
           ...prev,
           devices: prev.devices.filter((d) => d.id !== deviceId),
         }));
-        message.success('设备已断开连接');
+        message.success(t('personal.security.deviceDisconnected'));
         // TODO: Call API
         // securityApi.disconnectDevice(deviceId);
       },
@@ -110,14 +112,14 @@ const SecurityManager: React.FC = () => {
   const handleOpenTwoFactorModal = () => {
     if (securityData.accessControl.twoFactorEnabled) {
       Modal.confirm({
-        title: '关闭双重认证',
-        content: '关闭双重认证将降低您的账户安全性，确定要关闭吗？',
-        okText: '确认关闭',
-        cancelText: '取消',
+        title: t('personal.security.modal.closeTwoFactorTitle'),
+        content: t('personal.security.modal.closeTwoFactorDesc'),
+        okText: t('personal.security.modal.confirmClose'),
+        cancelText: t('personal.security.modal.cancel'),
         okButtonProps: { danger: true },
         onOk: () => {
           handleToggleAccessControl('twoFactorEnabled');
-          message.success('双重认证已关闭');
+          message.success(t('personal.security.msg.twoFactorDisabled'));
         },
       });
       return;
@@ -129,19 +131,19 @@ const SecurityManager: React.FC = () => {
 
   const handleCompleteTwoFactor = () => {
     if (verificationCode.length !== 6) {
-      message.warning('请输入6位验证码');
+      message.warning(t('personal.security.msg.enterVerificationCode'));
       return;
     }
     // TODO: Call API
     // await securityApi.enableTwoFactor(verificationCode);
     handleToggleAccessControl('twoFactorEnabled');
     setTwoFactorModalOpen(false);
-    message.success('双重认证已启用');
+    message.success(t('personal.security.msg.twoFactorEnabled'));
   };
 
   const handleAddWhitelistAddress = () => {
     if (!newWhitelistAddress.trim()) {
-      message.warning('请输入钱包地址');
+      message.warning(t('personal.security.msg.enterWalletAddress'));
       return;
     }
     setSecurityData((prev) => ({
@@ -152,7 +154,7 @@ const SecurityManager: React.FC = () => {
       ],
     }));
     setNewWhitelistAddress('');
-    message.success('地址已添加到白名单');
+    message.success(t('personal.security.modal.addressAdded'));
     // TODO: Call API
     // securityApi.addWhitelistAddress(newWhitelistAddress);
   };
@@ -162,19 +164,19 @@ const SecurityManager: React.FC = () => {
       ...prev,
       whitelistAddresses: prev.whitelistAddresses.filter((a) => a.address !== address),
     }));
-    message.success('地址已从白名单移除');
+    message.success(t('personal.security.modal.addressRemoved'));
     // TODO: Call API
     // securityApi.removeWhitelistAddress(address);
   };
 
   const handleConfirmFreeze = () => {
     if (freezeConfirmation !== 'FREEZE') {
-      message.warning('请输入 FREEZE 确认冻结');
+      message.warning(t('personal.security.msg.enterFreezeConfirm'));
       return;
     }
     setFreezeModalOpen(false);
     setFreezeConfirmation('');
-    message.success('账户已冻结，请联系客服解冻');
+    message.success(t('personal.security.modal.accountFrozen'));
     // TODO: Call API
     // securityApi.freezeAccount();
   };
@@ -200,6 +202,7 @@ const SecurityManager: React.FC = () => {
 
   return (
     <div className={styles.securityPage}>
+      <h4 className={styles.sectionLabel}>{t('personal.security.title')}</h4>
       <SecurityScoreCard score={securityData.score} onReassess={handleReassessScore} />
 
       <WalletSecurityCard

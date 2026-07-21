@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next';
+
 /** 订单主状态 */
 export const ORDER_STATUS = {
   PENDING_PAY: 10,
@@ -19,18 +21,36 @@ export const PAYMENT_STATUS = {
   CLOSED: 4,
 } as const;
 
-export const ORDER_STATUS_OPTIONS = [
-  { label: '全部状态', value: 0 },
-  { label: '待支付', value: ORDER_STATUS.PENDING_PAY },
-  { label: '链上确认中', value: ORDER_STATUS.ON_CHAIN_CONFIRMING },
-  { label: '已支付', value: ORDER_STATUS.PAID },
-  { label: '待发货', value: ORDER_STATUS.TO_SHIP },
-  { label: '已发货', value: ORDER_STATUS.SHIPPED },
-  { label: '已完成', value: ORDER_STATUS.COMPLETED },
-  { label: '已取消', value: ORDER_STATUS.CANCELLED },
-  { label: '已过期', value: ORDER_STATUS.EXPIRED },
-  { label: '支付失败', value: ORDER_STATUS.PAY_FAILED },
-];
+const ORDER_STATUS_OPTION_DEFS = [
+  { labelKey: 'trading.order.statusAll', value: 0 },
+  { labelKey: 'trading.order.statusPendingPay', value: ORDER_STATUS.PENDING_PAY },
+  { labelKey: 'trading.order.statusOnChain', value: ORDER_STATUS.ON_CHAIN_CONFIRMING },
+  { labelKey: 'trading.order.statusPaid', value: ORDER_STATUS.PAID },
+  { labelKey: 'trading.order.statusToShip', value: ORDER_STATUS.TO_SHIP },
+  { labelKey: 'trading.order.statusShipped', value: ORDER_STATUS.SHIPPED },
+  { labelKey: 'trading.order.statusCompleted', value: ORDER_STATUS.COMPLETED },
+  { labelKey: 'trading.order.statusCancelled', value: ORDER_STATUS.CANCELLED },
+  { labelKey: 'trading.order.statusExpired', value: ORDER_STATUS.EXPIRED },
+  { labelKey: 'trading.order.statusPayFailed', value: ORDER_STATUS.PAY_FAILED },
+] as const;
+
+/** @deprecated 请使用 getOrderStatusOptions(t)；保留兼容旧代码 */
+export const ORDER_STATUS_OPTIONS = ORDER_STATUS_OPTION_DEFS.map((opt) => ({
+  label: opt.labelKey,
+  value: opt.value,
+}));
+
+export function getOrderStatusOptions(t: TFunction) {
+  return ORDER_STATUS_OPTION_DEFS.map((opt) => ({
+    label: t(opt.labelKey),
+    value: opt.value,
+  }));
+}
+
+export function getOrderStatusLabel(t: TFunction, status: number): string {
+  const found = ORDER_STATUS_OPTION_DEFS.find((o) => o.value === status);
+  return found ? t(found.labelKey) : String(status);
+}
 
 /** 订单状态标签颜色映射 */
 export const ORDER_STATUS_TAG_COLORS: Record<number, { color: string; bg: string }> = {
@@ -45,22 +65,49 @@ export const ORDER_STATUS_TAG_COLORS: Record<number, { color: string; bg: string
   [ORDER_STATUS.PAY_FAILED]: { color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)' },
 };
 
-/** 列表 Tab：按支付状态分组 */
-export const PAYMENT_STATUS_TABS = [
-  { key: 'all', label: '全部', value: 0 },
-  { key: String(PAYMENT_STATUS.UNPAID), label: '未支付', value: PAYMENT_STATUS.UNPAID },
-  { key: String(PAYMENT_STATUS.CONFIRMING), label: '确认中', value: PAYMENT_STATUS.CONFIRMING },
-  { key: String(PAYMENT_STATUS.PAID), label: '已支付', value: PAYMENT_STATUS.PAID },
-  { key: String(PAYMENT_STATUS.CLOSED), label: '已关闭', value: PAYMENT_STATUS.CLOSED },
+const PAYMENT_STATUS_TAB_DEFS = [
+  { key: 'all', labelKey: 'trading.order.payTabAll', value: 0 },
+  { key: String(PAYMENT_STATUS.UNPAID), labelKey: 'trading.order.payTabUnpaid', value: PAYMENT_STATUS.UNPAID },
+  { key: String(PAYMENT_STATUS.CONFIRMING), labelKey: 'trading.order.payTabConfirming', value: PAYMENT_STATUS.CONFIRMING },
+  { key: String(PAYMENT_STATUS.PAID), labelKey: 'trading.order.payTabPaid', value: PAYMENT_STATUS.PAID },
+  { key: String(PAYMENT_STATUS.CLOSED), labelKey: 'trading.order.payTabClosed', value: PAYMENT_STATUS.CLOSED },
 ] as const;
 
-export const PAYMENT_STATUS_OPTIONS = [
-  { label: '全部支付', value: 0 },
-  { label: '未支付', value: PAYMENT_STATUS.UNPAID },
-  { label: '确认中', value: PAYMENT_STATUS.CONFIRMING },
-  { label: '已支付', value: PAYMENT_STATUS.PAID },
-  { label: '已关闭', value: PAYMENT_STATUS.CLOSED },
-];
+/** @deprecated 请使用 getPaymentStatusTabs(t) */
+export const PAYMENT_STATUS_TABS = PAYMENT_STATUS_TAB_DEFS.map((tab) => ({
+  key: tab.key,
+  label: tab.labelKey,
+  value: tab.value,
+}));
+
+export function getPaymentStatusTabs(t: TFunction) {
+  return PAYMENT_STATUS_TAB_DEFS.map((tab) => ({
+    key: tab.key,
+    label: t(tab.labelKey),
+    value: tab.value,
+  }));
+}
+
+const PAYMENT_STATUS_OPTION_DEFS = [
+  { labelKey: 'trading.order.payAll', value: 0 },
+  { labelKey: 'trading.order.payTabUnpaid', value: PAYMENT_STATUS.UNPAID },
+  { labelKey: 'trading.order.payTabConfirming', value: PAYMENT_STATUS.CONFIRMING },
+  { labelKey: 'trading.order.payTabPaid', value: PAYMENT_STATUS.PAID },
+  { labelKey: 'trading.order.payTabClosed', value: PAYMENT_STATUS.CLOSED },
+] as const;
+
+/** @deprecated 请使用 getPaymentStatusOptions(t) */
+export const PAYMENT_STATUS_OPTIONS = PAYMENT_STATUS_OPTION_DEFS.map((opt) => ({
+  label: opt.labelKey,
+  value: opt.value,
+}));
+
+export function getPaymentStatusOptions(t: TFunction) {
+  return PAYMENT_STATUS_OPTION_DEFS.map((opt) => ({
+    label: t(opt.labelKey),
+    value: opt.value,
+  }));
+}
 
 export function orderStatusTagColor(status: number): string {
   switch (status) {

@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type {
   NotificationData,
   TypeFilterTab,
@@ -12,23 +13,59 @@ export type {
   FrequencyOption,
 };
 
-export const TYPE_FILTER_TABS: { key: TypeFilterTab; label: string }[] = [
-  { key: 'all', label: '全部' },
-  { key: 'transaction', label: '交易通知' },
-  { key: 'security', label: '安全通知' },
-  { key: 'system', label: '系统通知' },
+const TYPE_FILTER_DEFS: { key: TypeFilterTab; labelKey: string }[] = [
+  { key: 'all', labelKey: 'personal.notifications.filterAll' },
+  { key: 'transaction', labelKey: 'personal.notifications.filterTransaction' },
+  { key: 'security', labelKey: 'personal.notifications.filterSecurity' },
+  { key: 'system', labelKey: 'personal.notifications.filterSystem' },
 ];
 
-export const FREQUENCY_OPTIONS: { value: FrequencyOption; label: string }[] = [
-  { value: 'immediate', label: '实时' },
-  { value: 'daily', label: '每日' },
-  { value: 'weekly', label: '每周' },
+/** @deprecated 请使用 getTypeFilterTabs(t) */
+export const TYPE_FILTER_TABS: { key: TypeFilterTab; label: string }[] = TYPE_FILTER_DEFS.map(
+  (d) => ({ key: d.key, label: d.labelKey })
+);
+
+export function getTypeFilterTabs(t: TFunction) {
+  return TYPE_FILTER_DEFS.map((d) => ({ key: d.key, label: t(d.labelKey) }));
+}
+
+const FREQUENCY_DEFS: { value: FrequencyOption; labelKey: string }[] = [
+  { value: 'immediate', labelKey: 'personal.notifications.freqImmediate' },
+  { value: 'daily', labelKey: 'personal.notifications.freqDaily' },
+  { value: 'weekly', labelKey: 'personal.notifications.freqWeekly' },
 ];
 
-export const IMPORTANCE_CONFIG: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  high: { label: '重要', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.12)', border: 'rgba(239, 68, 68, 0.3)' },
-  medium: { label: '中等', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.12)', border: 'rgba(245, 158, 11, 0.3)' },
-  low: { label: '低', color: '#94a3b8', bg: 'rgba(148, 163, 184, 0.12)', border: 'rgba(148, 163, 184, 0.3)' },
+/** @deprecated 请使用 getFrequencyOptions(t) */
+export const FREQUENCY_OPTIONS: { value: FrequencyOption; label: string }[] = FREQUENCY_DEFS.map(
+  (d) => ({ value: d.value, label: d.labelKey })
+);
+
+export function getFrequencyOptions(t: TFunction) {
+  return FREQUENCY_DEFS.map((d) => ({ value: d.value, label: t(d.labelKey) }));
+}
+
+export const IMPORTANCE_CONFIG: Record<
+  string,
+  { labelKey: string; color: string; bg: string; border: string }
+> = {
+  high: {
+    labelKey: 'personal.notifications.importanceHigh',
+    color: '#ef4444',
+    bg: 'rgba(239, 68, 68, 0.12)',
+    border: 'rgba(239, 68, 68, 0.3)',
+  },
+  medium: {
+    labelKey: 'personal.notifications.importanceMedium',
+    color: '#f59e0b',
+    bg: 'rgba(245, 158, 11, 0.12)',
+    border: 'rgba(245, 158, 11, 0.3)',
+  },
+  low: {
+    labelKey: 'personal.notifications.importanceLow',
+    color: '#94a3b8',
+    bg: 'rgba(148, 163, 184, 0.12)',
+    border: 'rgba(148, 163, 184, 0.3)',
+  },
 };
 
 export const PREVIEW_CONTENT: Record<string, { title: string; body: string }> = {

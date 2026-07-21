@@ -1,0 +1,61 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "reset": "Reset",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info",
+    "all": "All",
+    "actions": "Actions",
+    "refresh": "Refresh",
+    "retry": "Retry",
+    "back": "Back",
+    "close": "Close",
+    "view": "View",
+    "detail": "Details",
+    "status": "Status",
+    "yes": "Yes",
+    "no": "No",
+    "enable": "Enable",
+    "disable": "Disable",
+    "create": "Create",
+    "update": "Update",
+    "export": "Export",
+    "import": "Import",
+    "filter": "Filter",
+    "noData": "No data",
+    "pleaseSelect": "Please select",
+    "pleaseInput": "Please enter",
+    "startDate": "Start date",
+    "endDate": "End date"
+  },
+  "navigation": {
+    "dashboard": "Dashboard"
+  },
+  "dashboard": {
+    "title": "SapMall Admin Dashboard",
+    "welcome": "Welcome to SapMall Admin Dashboard"
+  },
+  "layout": {
+    "menuLoadFailed": "Failed to load menu",
+    "menuLoadFailedHint": "Unable to load user menus. Check your network or contact an administrator.",
+    "reloadMenu": "Reload",
+    "welcomeTitle": "Welcome to the Admin Console",
+    "welcomeEnterNamed": "Click to open 「{{name}}」",
+    "welcomeEnterDefault": "Click to open the platform overview",
+    "enterOverview": "Open overview",
+    "externalLink": "External link",
+    "externalLinkHint": "This menu item points to an external URL",
+    "openLink": "Open link",
+    "faq": "FAQ"
+  }
+}

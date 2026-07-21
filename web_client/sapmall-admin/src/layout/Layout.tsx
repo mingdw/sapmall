@@ -1,11 +1,15 @@
+/**
+ * @deprecated 未被 App 引用。实际布局请使用 AdminLayout。
+ * 语言切换权威在 DApp 页头，通过 iframe URL lang + postMessage 同步到 Admin。
+ * 保留此文件仅作历史参考，请勿再接入独立语言切换器。
+ */
 import React, { useState } from 'react';
-import { Layout as AntLayout, Menu, Button, Dropdown, Avatar } from 'antd';
-import { 
-  LayoutDashboard, 
-  User, 
+import { Layout as AntLayout, Menu, Button, Avatar } from 'antd';
+import {
+  LayoutDashboard,
+  User,
   PanelLeftClose,
   PanelLeftOpen,
-  Globe
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,7 +20,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
 
   const menuItems = [
@@ -26,21 +30,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       label: t('navigation.dashboard'),
     },
   ];
-
-  const languageItems = [
-    {
-      key: 'zh',
-      label: '中文',
-    },
-    {
-      key: 'en',
-      label: 'English',
-    },
-  ];
-
-  const handleLanguageChange = ({ key }: { key: string }) => {
-    i18n.changeLanguage(key);
-  };
 
   return (
     <AntLayout className="min-h-screen">
@@ -67,23 +56,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             className="text-lg"
           />
           <div className="flex items-center space-x-4">
-            <Dropdown
-              menu={{ 
-                items: languageItems, 
-                onClick: handleLanguageChange 
-              }}
-              placement="bottomRight"
-            >
-              <Button type="text" icon={<Globe size={16} />}>
-                {i18n.language === 'zh' ? '中文' : 'English'}
-              </Button>
-            </Dropdown>
             <Avatar icon={<User size={16} />} />
           </div>
         </AntHeader>
-        <Content className="p-6 bg-gray-50">
-          {children}
-        </Content>
+        <Content className="p-6 bg-gray-50">{children}</Content>
       </AntLayout>
     </AntLayout>
   );

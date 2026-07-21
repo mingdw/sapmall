@@ -6,7 +6,7 @@ import "types/user_types.api"
 @server (
 	group:      user
 	prefix:     /api/user
-	middleware: AuthMiddleware,RespMiddleware
+	middleware: AuthMiddleware,LanguageMiddleware,RespMiddleware
 )
 service sapmall {
 	@doc "获取用户信息"

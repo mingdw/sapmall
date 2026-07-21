@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Table, 
   Button, 
@@ -32,6 +33,7 @@ import ProductForm from './components/ProductFormnew';
 import styles from './ProductManagement.module.scss';
 
 const ProductManagement: React.FC = () => {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<ProductSPU[]>([]);
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<any>(null);
@@ -653,7 +655,7 @@ const ProductManagement: React.FC = () => {
         />
 
         {/* 区域二：商品管理 */}
-        <AdminCard icon="fas fa-boxes" title="商品管理">
+        <AdminCard icon="fas fa-boxes" title={t('business.products.title')}>
           {/* 筛选区域和表格合并为一个整体区域 */}
           <div className={styles.filterAndTableContainer}>
             {/* 筛选工具栏 */}

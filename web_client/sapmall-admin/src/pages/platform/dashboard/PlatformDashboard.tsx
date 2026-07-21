@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import AdminCard from '../../../components/common/AdminCard';
 import StatCard from '../../../components/common/StatCard';
 import SystemStatusCard from '../../../components/common/SystemStatusCard';
@@ -95,8 +95,7 @@ const PlatformDashboard: React.FC<PlatformDashboardProps> = ({ menuData }) => {
   ];
 
   return (
-    <div className={styles.dashboard}>
-      {/* 平台核心数据概览 */}
+    <div className={styles.dashboard}>{/* 平台核心数据概览 */}
       <AdminCard
         title="平台核心数据"
         icon="fas fa-chart-line"

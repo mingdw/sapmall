@@ -1,5 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
+import { isInternalPath } from '../../config/siteLinks';
 
 export type ActionButtonProps = {
   icon?: LucideIcon;
@@ -41,12 +43,20 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   );
 
   if (href && !disabled) {
+    const openExternal = external || !isInternalPath(href);
+    if (!openExternal && isInternalPath(href)) {
+      return (
+        <Link to={href} className={classes} onClick={onClick}>
+          {content}
+        </Link>
+      );
+    }
     return (
       <a
         href={href}
         className={classes}
-        target={external ? '_blank' : undefined}
-        rel={external ? 'noopener noreferrer' : undefined}
+        target={openExternal ? '_blank' : undefined}
+        rel={openExternal ? 'noopener noreferrer' : undefined}
         onClick={onClick}
       >
         {content}

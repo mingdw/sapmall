@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
-import { Input, Select, Row, Col, Space } from 'antd';
+﻿import React, { useState } from 'react';
+import { Input, Select } from 'antd';
+import { useTranslation } from 'react-i18next';
 import AdminButton from '../../../../components/common/AdminButton';
-import { PRODUCT_STATUS_OPTIONS, CHAIN_STATUS_OPTIONS, TIME_RANGE_OPTIONS, type ViewMode } from '../constants';
+import {
+  getProductStatusOptions,
+  getChainStatusOptions,
+  getTimeRangeOptions,
+  type ViewMode,
+} from '../constants';
 import type { ProductListParams } from '../types';
 import styles from '../ProductManagement.module.scss';
 
@@ -24,26 +30,25 @@ interface ProductToolbarProps {
 
 const ProductToolbar: React.FC<ProductToolbarProps> = ({
   searchParams,
-  viewMode,
-  onSearch,
   onFilterChange,
   onClearFilters,
-  onViewModeChange,
   onAdd,
   selectedCount,
   onBatchDelete,
-  onBatchDeactivate,
   onExport,
   onQuery,
 }) => {
+  const { t } = useTranslation();
   const [productName, setProductName] = useState(searchParams.productName || '');
   const [productCode, setProductCode] = useState(searchParams.productCode || '');
 
+  const productStatusOptions = getProductStatusOptions(t);
+  const chainStatusOptions = getChainStatusOptions(t);
+  const timeRangeOptions = getTimeRangeOptions(t);
+
   const handleQuery = () => {
-    // 更新搜索参数
     onFilterChange('productName', productName);
     onFilterChange('productCode', productCode);
-    // 触发查询
     onQuery();
   };
 
@@ -55,13 +60,11 @@ const ProductToolbar: React.FC<ProductToolbarProps> = ({
 
   return (
     <div className={styles.toolbarContainer}>
-      {/* 筛选条件和操作按钮在同一行，按顺序排列，自动换行 */}
       <div className={styles.toolbarRow}>
-        {/* 商品名称 */}
         <div className={styles.filterItem}>
-          <label className={styles.filterLabel}>商品名称：</label>
+          <label className={styles.filterLabel}>{t('business.products.productName')}：</label>
           <Input
-            placeholder="请输入商品名称"
+            placeholder={t('business.products.searchPlaceholder')}
             value={productName}
             onChange={(e) => setProductName(e.target.value)}
             onPressEnter={handleQuery}
@@ -69,7 +72,6 @@ const ProductToolbar: React.FC<ProductToolbarProps> = ({
           />
         </div>
 
-        {/* 商品编码 */}
         <div className={styles.filterItem}>
           <label className={styles.filterLabel}>商品编码：</label>
           <Input
@@ -81,9 +83,8 @@ const ProductToolbar: React.FC<ProductToolbarProps> = ({
           />
         </div>
 
-        {/* 商品状态 */}
         <div className={styles.filterItem}>
-          <label className={styles.filterLabel}>商品状态：</label>
+          <label className={styles.filterLabel}>{t('common.status')}：</label>
           <Select
             className={styles.filterSelect}
             popupClassName="product-filter-dropdown"
@@ -91,7 +92,7 @@ const ProductToolbar: React.FC<ProductToolbarProps> = ({
             onChange={(value) => onFilterChange('status', value || '')}
             allowClear={false}
           >
-            {PRODUCT_STATUS_OPTIONS.map((option) => (
+            {productStatusOptions.map((option) => (
               <Option key={String(option.value)} value={option.value}>
                 {option.label}
               </Option>
@@ -99,9 +100,8 @@ const ProductToolbar: React.FC<ProductToolbarProps> = ({
           </Select>
         </div>
 
-        {/* 链上状态 */}
         <div className={styles.filterItem}>
-          <label className={styles.filterLabel}>链上状态：</label>
+          <label className={styles.filterLabel}>{t('business.products.chainStatus')}：</label>
           <Select
             className={styles.filterSelect}
             popupClassName="product-filter-dropdown"
@@ -109,7 +109,7 @@ const ProductToolbar: React.FC<ProductToolbarProps> = ({
             onChange={(value) => onFilterChange('chainStatus', value || '')}
             allowClear={false}
           >
-            {CHAIN_STATUS_OPTIONS.map((option) => (
+            {chainStatusOptions.map((option) => (
               <Option key={option.value} value={option.value}>
                 {option.label}
               </Option>
@@ -117,7 +117,6 @@ const ProductToolbar: React.FC<ProductToolbarProps> = ({
           </Select>
         </div>
 
-        {/* 时间范围 */}
         <div className={styles.filterItem}>
           <label className={styles.filterLabel}>时间范围：</label>
           <Select
@@ -127,7 +126,7 @@ const ProductToolbar: React.FC<ProductToolbarProps> = ({
             onChange={(value) => onFilterChange('timeRange', value || '')}
             allowClear={false}
           >
-            {TIME_RANGE_OPTIONS.map((option) => (
+            {timeRangeOptions.map((option) => (
               <Option key={option.value} value={option.value}>
                 {option.label}
               </Option>
@@ -135,7 +134,6 @@ const ProductToolbar: React.FC<ProductToolbarProps> = ({
           </Select>
         </div>
 
-        {/* 操作按钮，每个按钮作为独立的 flex 项 */}
         <AdminButton
           variant="query"
           size="xs"
@@ -143,7 +141,7 @@ const ProductToolbar: React.FC<ProductToolbarProps> = ({
           onClick={handleQuery}
           className={styles.firstButton}
         >
-          查询
+          {t('common.search')}
         </AdminButton>
         <AdminButton
           variant="reset"
@@ -151,19 +149,18 @@ const ProductToolbar: React.FC<ProductToolbarProps> = ({
           icon="fas fa-redo"
           onClick={handleReset}
         >
-          重置
+          {t('common.reset')}
         </AdminButton>
-        
-        {/* 强制换行，让后续按钮显示在下一行 */}
+
         <div className={styles.lineBreak}></div>
-        
+
         <AdminButton
           variant="add"
           size="xs"
           icon="fas fa-plus"
           onClick={onAdd}
         >
-          新增
+          {t('business.products.createProduct')}
         </AdminButton>
         <AdminButton
           variant="delete"

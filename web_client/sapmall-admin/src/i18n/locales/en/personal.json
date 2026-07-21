@@ -1,0 +1,485 @@
+{
+  "personal": {
+    "profile": {
+      "title": "Profile",
+      "basicInfo": "Basic info",
+      "nickname": "Nickname",
+      "email": "Email",
+      "phone": "Phone",
+      "walletAddress": "Wallet address",
+      "saveChanges": "Save changes",
+      "avatar": "Avatar",
+      "bio": "Bio",
+      "merchantDeposit": "Merchant deposit",
+      "accountStatusDisabled": "Disabled",
+      "accountStatusNormal": "Active",
+      "accountStatusDisabledFull": "Account disabled",
+      "accountStatusNormalFull": "Account is active",
+      "userIdLabel": "User ID",
+      "syncedBadge": "Synced with latest data",
+      "defaultRole": "Standard user",
+      "editAvatar": "Edit avatar",
+      "startKyc": "Start verification",
+      "viewKyc": "View verification",
+      "msg": {
+        "userIdNotFound": "User ID not found. Please sign in first.",
+        "profileSynced": "Profile synced successfully",
+        "loadProfileFailed": "Failed to load profile",
+        "walletCopied": "Wallet address copied",
+        "copyFailed": "Copy failed. Please copy manually.",
+        "noChanges": "No changes to submit",
+        "modifyFailed": "Update failed. Please try again later.",
+        "kycSubmitted": "KYC application submitted: {{name}}",
+        "dappDepositNotified": "DApp notified to open deposit page",
+        "depositPageOpened": "Deposit page opened in a new tab",
+        "merchantApplied": "Merchant application submitted. Please pay deposit in DApp.",
+        "merchantApplyFailed": "Failed to submit merchant application",
+        "noApplicationFound": "No application found. Please try again later.",
+        "queryApplicationFailed": "Failed to load application. Please try again later.",
+        "applicationMissing": "Application details missing. Please refresh first.",
+        "waitChainCallback": "Waiting for on-chain callback. Status follows backend updates.",
+        "fieldUpdateSuccess": "{{field}} updated successfully",
+        "nicknameEmpty": "Nickname cannot be empty",
+        "genderUpdated": "Gender updated to {{gender}}",
+        "selectBirthdayFirst": "Please select a birthday first"
+      },
+      "sections": {
+        "auth": {
+          "title": "Verification",
+          "subtitle": "Manage KYC, security, and merchant verification status",
+          "kycTitle": "KYC",
+          "kycDesc": "Identity and document review",
+          "goVerify": "Verify now",
+          "viewProgress": "View progress",
+          "collapseDetail": "Hide details",
+          "viewDetail": "View verification details",
+          "verifiedName": "Verified name",
+          "verifiedPhone": "Verified phone",
+          "verifiedEmail": "Verified email",
+          "verifiedStatus": "Verification status",
+          "securityTitle": "Security verification",
+          "securityDesc": "Account protection status",
+          "securityViewDetail": "View details",
+          "merchantTitle": "Merchant verification",
+          "merchantDesc": "Merchant identity and qualification review",
+          "applyMerchant": "Apply as merchant",
+          "viewApplication": "View application"
+        },
+        "basic": {
+          "title": "Basic info",
+          "subtitle": "Manage identity and display information"
+        },
+        "contact": {
+          "title": "Contact",
+          "subtitle": "Used for notifications, verification, and security alerts"
+        },
+        "logs": {
+          "title": "Activity log",
+          "subtitle": "Recent account actions for self-review and audit",
+          "empty": "No activity yet",
+          "loadMore": "Load more"
+        }
+      },
+      "gender": {
+        "male": "Male",
+        "female": "Female",
+        "unknown": "Not set"
+      },
+      "kyc": {
+        "verified": "Verified",
+        "pending": "Under review",
+        "notVerified": "Not verified",
+        "modalTitle": "KYC identity verification",
+        "steps": {
+          "basic": {
+            "title": "Basic information",
+            "description": "Provide legal name, nationality, and ID number"
+          },
+          "upload": {
+            "title": "Upload documents",
+            "description": "Mainland China: ID card; others: passport"
+          },
+          "face": {
+            "title": "Face verification",
+            "description": "Complete online face verification"
+          },
+          "review": {
+            "title": "Pending review",
+            "description": "Review within 1-3 business days"
+          }
+        },
+        "msg": {
+          "uploadIdBoth": "Please upload front and back ID photos",
+          "uploadPassport": "Please upload passport information page",
+          "faceVerifyFirst": "Please complete face verification first",
+          "faceVerifySuccess": "Face verification passed (mock)",
+          "completeIdBoth": "Please complete front and back ID photos",
+          "completePassport": "Please complete passport information page"
+        },
+        "forms": {
+          "realName": "Legal name",
+          "realNameRequired": "Please enter your legal name",
+          "realNameMin": "Name must be at least 2 characters",
+          "realNamePlaceholder": "Enter your legal name",
+          "nationality": "Nationality / region",
+          "nationalityRequired": "Please select nationality/region",
+          "nationalityPlaceholder": "Select nationality/region",
+          "nationalityMainland": "Mainland China",
+          "nationalityOther": "Other countries/regions",
+          "idNumber": "ID number",
+          "passportNumber": "Passport number",
+          "idNumberRequired": "Please enter ID number",
+          "passportNumberRequired": "Please enter passport number",
+          "idNumberInvalid": "Please enter a valid ID number",
+          "passportNumberInvalid": "Please enter a valid passport number",
+          "idNumberPlaceholder": "Enter 18-digit ID number",
+          "passportNumberPlaceholder": "Enter passport number",
+          "idFrontPhoto": "ID front photo",
+          "idBackPhoto": "ID back photo",
+          "passportPhoto": "Passport information page",
+          "uploadHint": "Click to upload or drag file here",
+          "faceHint": "Ensure good lighting and a clear face",
+          "faceStart": "Start face verification",
+          "faceDone": "Face verification completed",
+          "reviewTitle": "Your KYC application has been submitted",
+          "reviewDesc": "We will complete review within 1-3 business days. Please wait."
+        },
+        "prev": "Previous",
+        "next": "Next",
+        "complete": "Complete"
+      },
+      "merchant": {
+        "status": {
+          "pendingPayment": "Deposit pending",
+          "confirming": "On-chain confirming",
+          "paid": "Activated",
+          "paidAuth": "Verified",
+          "notApplied": "Not applied",
+          "notVerified": "Not verified"
+        },
+        "action": {
+          "payDeposit": "Pay deposit",
+          "viewPayProgress": "View payment progress",
+          "viewStatus": "View status",
+          "apply": "Apply now"
+        },
+        "intent": {
+          "pendingPaymentTitle": "Deposit payment pending",
+          "pendingPaymentDesc": "Complete deposit payment in DApp before expiry, or the application will lapse.",
+          "confirmingTitle": "On-chain confirming",
+          "confirmingDesc": "Waiting for block confirmations. Merchant status updates automatically when confirmed.",
+          "completedTitle": "Application complete",
+          "completedDesc": "Deposit confirmed. Your account now has merchant verification.",
+          "refundedTitle": "Deposit refunded",
+          "refundedDesc": "Refund completed. Check the refund transaction hash.",
+          "failedTitle": "Application failed",
+          "failedDesc": "Application failed. Review the reason and submit again.",
+          "expiredTitle": "Application expired",
+          "expiredDesc": "Application expired. Submit again and pay promptly.",
+          "processingTitle": "Processing",
+          "processingDesc": "Application is being processed. Refresh later for latest status.",
+          "statusCodeFallback": "Status code {{code}}"
+        },
+        "timeline": {
+          "apply": "Submit application",
+          "pay": "Pay deposit",
+          "confirm": "On-chain confirm"
+        },
+        "detailModalTitle": "Merchant application details",
+        "loadingDetail": "Loading application details...",
+        "panelApplication": "Application info",
+        "panelChain": "On-chain & transaction info",
+        "intentId": "Intent ID",
+        "depositAmount": "Deposit amount",
+        "expireAt": "Valid until",
+        "createdAt": "Created at",
+        "updatedAt": "Updated at",
+        "chainId": "Chain ID",
+        "contractAddress": "Contract address",
+        "tokenAddress": "Token address",
+        "txHash": "Transaction hash",
+        "confirmations": "Confirmations",
+        "failReason": "Failure reason: {{reason}}",
+        "refundHash": "Refund hash: {{hash}}",
+        "noDetail": "No application details found. Refresh and try again.",
+        "goDappPay": "Pay deposit in DApp",
+        "markPaid": "I have paid",
+        "terms": {
+          "modalTitle": "Merchant legal terms confirmation",
+          "intro1": "Please read the merchant onboarding and deposit terms below in full.",
+          "intro2": "You may submit the merchant application only after scrolling to the bottom and agreeing.",
+          "agreePrefix": "I have read and agree to",
+          "agreeLink": "Merchant Onboarding & Deposit Terms",
+          "scrollTip": "Scroll to the bottom of the terms first",
+          "checkTip": "Check agree before submitting",
+          "close": "Close",
+          "submit": "Apply",
+          "downloadName": "merchant-onboarding-deposit-terms-full.txt",
+          "section1": {
+            "title": "1. Merchant eligibility and responsibility",
+            "content": "Applicants must provide true, complete, and lawful information and have legal capacity and required qualifications. False information or missing qualifications may lead to termination and liability."
+          },
+          "section2": {
+            "title": "2. Compliance and consumer protection",
+            "content": "Merchants must comply with applicable laws, avoid prohibited or infringing goods, and handle orders, after-sales, and complaints promptly."
+          },
+          "section3": {
+            "title": "3. Deposit rules",
+            "content": "Merchants must pay the required deposit as performance and risk coverage. The platform may deduct part or all of the deposit for fraud, breach, or infringement."
+          },
+          "section4": {
+            "title": "4. Data and privacy",
+            "content": "User data may be used only for lawful order fulfillment and support. Merchants must protect data and prevent leakage or misuse."
+          },
+          "section5": {
+            "title": "5. Platform governance",
+            "content": "The platform may supervise merchant behavior and take warnings, delisting, freezing, or removal actions. Suspected illegal activity may be reported to authorities."
+          },
+          "section6": {
+            "title": "6. Disputes and updates",
+            "content": "Disputes should be resolved through negotiation first, then the published dispute mechanism. Terms may be updated with notice."
+          }
+        }
+      },
+      "logs": {
+        "biz": {
+          "profile": "Profile",
+          "security": "Security",
+          "kyc": "KYC",
+          "merchant": "Merchant",
+          "deposit": "Deposit",
+          "auth": "Login",
+          "other": "Other"
+        },
+        "result": {
+          "success": "Success",
+          "failed": "Failed",
+          "partial": "Partial"
+        }
+      },
+      "forms": {
+        "userId": {
+          "title": "User ID",
+          "description": "System-assigned unique identifier"
+        },
+        "username": {
+          "title": "Username",
+          "description": "Login account is wallet address"
+        },
+        "registerTime": {
+          "title": "Registered at",
+          "description": "Account creation time"
+        },
+        "nickname": {
+          "title": "Nickname",
+          "description": "Display name",
+          "placeholder": "Enter nickname",
+          "submitTitle": "Submit nickname",
+          "submitAria": "Submit nickname"
+        },
+        "gender": {
+          "title": "Gender",
+          "description": "User gender"
+        },
+        "birthday": {
+          "title": "Birthday",
+          "description": "Date of birth",
+          "placeholder": "Select birthday",
+          "submitTitle": "Submit birthday",
+          "submitAria": "Submit birthday"
+        },
+        "email": {
+          "title": "Email",
+          "description": "For important notifications and verification",
+          "placeholder": "Enter email",
+          "verified": "Verified",
+          "unverified": "Unverified"
+        },
+        "phone": {
+          "title": "Phone",
+          "description": "For security verification and alerts",
+          "placeholder": "Enter phone number",
+          "verified": "Verified",
+          "unverified": "Unverified"
+        },
+        "readonlyHint": "Read only",
+        "securityEnabled": "Protection enabled",
+        "securityDisabled": "Protection disabled"
+      }
+    },
+    "security": {
+      "title": "Security",
+      "scoreTitle": "Security score",
+      "scoreSuggestion": "Your account security is medium. Consider enabling more protections.",
+      "scoreSuggestionLow": "Your account security is low. Please improve security settings as soon as possible.",
+      "scoreSuggestionMedium": "Your account security is medium. Consider enabling more protections.",
+      "scoreSuggestionHigh": "Your account security is high. Keep up the good security habits.",
+      "walletSecurity": "Wallet security",
+      "accessControl": "Access control",
+      "devices": "Devices",
+      "activity": "Security activity",
+      "whitelist": "Address whitelist",
+      "twoFactor": "Two-factor auth",
+      "autoLock": "Auto lock",
+      "currentDevice": "Current device",
+      "removeDevice": "Remove device",
+      "disconnectDevice": "Disconnect",
+      "deviceDisconnected": "Device disconnected",
+      "filterAll": "All",
+      "filterLogin": "Login",
+      "filterTransaction": "Transaction",
+      "filterSettings": "Settings",
+      "reassess": "Reassess",
+      "assessing": "Assessing...",
+      "transactionConfirmation": "Transaction confirmation",
+      "transactionConfirmationDesc": "Confirm transaction details before each transaction",
+      "highValueAlert": "High value alert",
+      "highValueAlertDesc": "Warn when transaction amount exceeds threshold",
+      "contractInteractionWarning": "Contract warning",
+      "contractInteractionWarningDesc": "Show risk warnings when interacting with smart contracts",
+      "twoFactorDesc": "Use Google Authenticator or other authenticator apps",
+      "twoFactorEnabled": "Enabled",
+      "twoFactorDisabled": "Setup",
+      "autoLockDesc": "Auto-lock wallet after period of inactivity",
+      "addressWhitelistDesc": "Only allow transfers to whitelisted addresses when enabled",
+      "manage": "Manage",
+      "lastActive": "Last active",
+      "ip": "IP",
+      "emergency": "Emergency",
+      "freezeAccount": "Emergency freeze",
+      "freezeAccountDesc": "If you suspect suspicious activity or your wallet is compromised, you can freeze your account immediately.",
+      "freeze": "Freeze",
+      "accountRecovery": "Account recovery",
+      "accountRecoveryDesc": "Set up recovery options to regain access in emergency situations.",
+      "setRecovery": "Set recovery",
+      "modal": {
+        "twoFactorTitle": "Setup two-factor authentication",
+        "twoFactorStep1": "Download and install one of the following authenticator apps on your phone:",
+        "twoFactorRecommended": "Google Authenticator (Recommended)",
+        "twoFactorApp2": "Microsoft Authenticator",
+        "twoFactorApp3": "Authy",
+        "next": "Next",
+        "prev": "Previous",
+        "complete": "Complete setup",
+        "twoFactorStep2": "Scan the QR code with your authenticator app:",
+        "twoFactorManual": "If you cannot scan, enter this key manually:",
+        "twoFactorStep3": "Enter the 6-digit code from your authenticator app:",
+        "verificationCode": "Verification code",
+        "closeTwoFactorTitle": "Disable two-factor authentication",
+        "closeTwoFactorDesc": "Disabling two-factor authentication will reduce your account security. Are you sure?",
+        "confirmClose": "Confirm disable",
+        "cancel": "Cancel",
+        "whitelistTitle": "Manage address whitelist",
+        "addNewAddress": "Add new address",
+        "addressPlaceholder": "Enter wallet address",
+        "add": "Add",
+        "address": "Address",
+        "addedAt": "Added at",
+        "operation": "Operation",
+        "delete": "Delete",
+        "noWhitelist": "No whitelisted addresses",
+        "addressAdded": "Address added to whitelist",
+        "addressRemoved": "Address removed from whitelist",
+        "freezeTitle": "Confirm account freeze",
+        "freezeWarning": "Warning: This will freeze your account",
+        "freezeWarningDesc": "After freezing, you will not be able to perform any transactions. You must contact support to unfreeze. Please confirm you really need to do this.",
+        "freezeConfirmPlaceholder": "Enter \"FREEZE\" to confirm:",
+        "freezeConfirm": "Confirm freeze",
+        "accountFrozen": "Account frozen. Please contact support to unfreeze.",
+        "recoveryTitle": "Set recovery options",
+        "recoveryDesc": "Choose a recovery method to regain access in emergency situations:",
+        "recoveryEmail": "Email recovery",
+        "recoveryEmailDesc": "Receive recovery link via registered email",
+        "recoveryPhone": "Phone recovery",
+        "recoveryPhoneDesc": "Receive verification code via linked phone number",
+        "recoveryMnemonic": "Mnemonic recovery",
+        "recoveryMnemonicDesc": "Use mnemonic phrase to recover wallet access"
+      },
+      "msg": {
+        "enterVerificationCode": "Please enter 6-digit verification code",
+        "twoFactorEnabled": "Two-factor authentication enabled",
+        "twoFactorDisabled": "Two-factor authentication disabled",
+        "enterWalletAddress": "Please enter wallet address",
+        "enterFreezeConfirm": "Please enter FREEZE to confirm"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "channels": "Channels",
+      "types": "Notification types",
+      "email": "Email",
+      "mobile": "Mobile",
+      "browser": "Browser",
+      "filterAll": "All",
+      "filterTransaction": "Transactions",
+      "filterSecurity": "Security",
+      "filterSystem": "System",
+      "freqImmediate": "Immediate",
+      "freqDaily": "Daily",
+      "freqWeekly": "Weekly",
+      "importanceHigh": "High",
+      "importanceMedium": "Medium",
+      "importanceLow": "Low",
+      "preview": "Preview",
+      "channelSettings": "Channel Settings",
+      "emailTitle": "Email Notifications",
+      "emailDesc": "Set the email address to receive notifications",
+      "emailPlaceholder": "Enter email for notifications",
+      "mobileTitle": "Mobile Notifications",
+      "mobileDesc": "Set the phone number to receive notifications",
+      "mobilePlaceholder": "Enter phone for notifications",
+      "browserTitle": "Browser Notifications",
+      "browserDesc": "Enable to receive real-time notifications in browser",
+      "saveChannelSettings": "Save Channel Settings",
+      "saveTypeSettings": "Save Type Settings",
+      "channelSaved": "Channel settings saved",
+      "typeSaved": "Type settings saved",
+      "allEnabled": "All enabled",
+      "allDisabled": "All disabled",
+      "previewModalTitle": "Notification Preview",
+      "emailPreview": {
+        "subject": "Subject",
+        "greeting": "Dear user,",
+        "viewDetail": "View Details",
+        "signature": "Best regards,",
+        "team": "Sapphire Mall Team"
+      },
+      "mobilePreview": {
+        "appName": "Sapphire Mall",
+        "justNow": "Just now"
+      },
+      "browserPreview": {
+        "siteName": "Sapphire Mall",
+        "justNow": "Just now"
+      },
+      "typeItems": {
+        "transactionConfirmation": "Transaction Confirmation",
+        "transactionConfirmationDesc": "System will send confirmation when you initiate a transaction",
+        "transactionComplete": "Transaction Complete",
+        "transactionCompleteDesc": "System will notify when your transaction is completed",
+        "loginAlert": "Login Alert",
+        "loginAlertDesc": "System will notify when your account logs in from a new device",
+        "securityChange": "Security Change",
+        "securityChangeDesc": "System will notify when your security settings change",
+        "systemMaintenance": "System Maintenance",
+        "systemMaintenanceDesc": "System will notify in advance of planned maintenance",
+        "newFeature": "New Feature Announcement",
+        "newFeatureDesc": "System will notify when new features are released"
+      },
+      "previewContent": {
+        "transactionConfirmationTitle": "Transaction Confirmation",
+        "transactionConfirmationBody": "You have a transaction pending confirmation. Please handle it promptly.",
+        "transactionCompleteTitle": "Transaction Complete",
+        "transactionCompleteBody": "Your transaction has been completed successfully. Check order history for details.",
+        "loginAlertTitle": "Login Alert",
+        "loginAlertBody": "Your account logged in from a new device. If this wasn't you, please take action immediately.",
+        "securityChangeTitle": "Security Settings Changed",
+        "securityChangeBody": "Your security settings have been changed. If this wasn't you, please contact support immediately.",
+        "systemMaintenanceTitle": "System Maintenance",
+        "systemMaintenanceBody": "The system will undergo maintenance soon. Some features may be temporarily unavailable.",
+        "newFeatureTitle": "New Feature Announcement",
+        "newFeatureBody": "New features have been released. Come and try them out!"
+      }
+    }
+  }
+}

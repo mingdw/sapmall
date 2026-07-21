@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+﻿import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Table, Drawer, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { TxRecord, TxType, TxStatus, TxDirection, TokenSymbol, TxFilter } from './types';
@@ -102,6 +103,7 @@ const TOKEN_FILTERS: { label: string; value: TokenSymbol | 'all' }[] = [
 ];
 
 const TransactionsManager: React.FC = () => {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<TxFilter>({
     type: 'all',
     status: 'all',
@@ -303,6 +305,7 @@ const TransactionsManager: React.FC = () => {
   return (
     <ConfigProvider theme={transactionsTheme}>
       <div className={styles.txPage}>
+        <h2 className={styles.filterLabel}>{t('assets.transactions.title')}</h2>
         {/* 统计概览 */}
         <div className={styles.statsBar}>
           {STATS_CARDS.map((card) => (

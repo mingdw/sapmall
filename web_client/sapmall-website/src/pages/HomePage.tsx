@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
         <SiteNav activeSection={activeSection} onLaunchDApp={launchDApp} />
 
         <main id="main-content">
-          <HeroSection onLaunchDApp={launchDApp} />
+          <HeroSection />
           <CoreValuesSection />
           <PlatformFeaturesSection />
           <RoadmapSection />

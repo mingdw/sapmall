@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Rocket, BookOpen, Play } from 'lucide-react';
+import { Layers, BookOpen, Play } from 'lucide-react';
 import RevealOnScroll from '../RevealOnScroll';
 import ActionButton from './ActionButton';
 import { siteLinks } from '../../config/siteLinks';
@@ -13,13 +13,9 @@ type HeroStats = {
   apy: number;
 };
 
-type HeroSectionProps = {
-  onLaunchDApp: () => void;
-};
-
 const TARGET_STATS = { tvl: 124800, users: 8472, transactions: 44830, apy: 14 };
 
-const HeroSection: React.FC<HeroSectionProps> = ({ onLaunchDApp }) => {
+const HeroSection: React.FC = () => {
   const { t } = useTranslation();
   const [stats, setStats] = useState<HeroStats>({ tvl: 0, users: 0, transactions: 0, apy: 0 });
 
@@ -76,14 +72,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onLaunchDApp }) => {
               </div>
             </RevealOnScroll>
             <RevealOnScroll variant="left" delay={staggerDelay(4)}>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <ActionButton icon={Rocket} variant="primary" size="lg" onClick={onLaunchDApp}>
-                  {t('hero.buttons.startTrading')}
+              <div className="hero-cta-group" role="group" aria-label={t('hero.buttons.groupLabel')}>
+                <ActionButton icon={Layers} variant="primary" size="md" href={siteLinks.presentation}>
+                  {t('hero.buttons.platformIntro')}
                 </ActionButton>
-                <ActionButton icon={BookOpen} variant="outline-accent" size="lg" href={siteLinks.whitepaper} external>
+                <ActionButton icon={BookOpen} variant="outline-accent" size="md" href={siteLinks.whitepaper}>
                   {t('hero.buttons.readWhitepaper')}
                 </ActionButton>
-                <ActionButton icon={Play} variant="outline-muted" size="lg" href={siteLinks.demo} external>
+                <ActionButton icon={Play} variant="outline-muted" size="md" href={siteLinks.demo}>
                   {t('hero.buttons.watchDemo')}
                 </ActionButton>
               </div>

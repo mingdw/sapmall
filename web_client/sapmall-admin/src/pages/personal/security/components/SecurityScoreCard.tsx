@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { SecurityScore as SecurityScoreType } from '../types';
 import { getScoreColor, calcDashArray } from '../utils/securityUtils';
 import styles from '../SecurityManager.module.scss';
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const SecurityScoreCard: React.FC<Props> = ({ score, onReassess }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [displayScore, setDisplayScore] = useState(score.score);
   const [animating, setAnimating] = useState(false);
@@ -72,7 +74,7 @@ const SecurityScoreCard: React.FC<Props> = ({ score, onReassess }) => {
           <span className={styles.scoreText}>{displayScore}%</span>
         </div>
         <div className={styles.scoreInfo}>
-          <h3 className={styles.scoreTitle}>安全评分</h3>
+          <h3 className={styles.scoreTitle}>{t('personal.security.scoreTitle')}</h3>
           <p className={styles.scoreDesc}>{score.suggestion}</p>
           <button
             type="button"
@@ -81,7 +83,7 @@ const SecurityScoreCard: React.FC<Props> = ({ score, onReassess }) => {
             onClick={handleReassess}
           >
             <i className={`fas ${loading ? 'fa-sync-alt' : 'fa-redo-alt'}`}></i>
-            {loading ? '评估中...' : '重新评估'}
+            {loading ? t('personal.security.assessing') : t('personal.security.reassess')}
           </button>
         </div>
       </div>

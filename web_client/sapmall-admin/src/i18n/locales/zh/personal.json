@@ -1,0 +1,485 @@
+{
+  "personal": {
+    "profile": {
+      "title": "个人资料",
+      "basicInfo": "基本信息",
+      "nickname": "昵称",
+      "email": "邮箱",
+      "phone": "手机",
+      "walletAddress": "钱包地址",
+      "saveChanges": "保存修改",
+      "avatar": "头像",
+      "bio": "简介",
+      "merchantDeposit": "商家充值",
+      "accountStatusDisabled": "禁用",
+      "accountStatusNormal": "正常",
+      "accountStatusDisabledFull": "账户已禁用",
+      "accountStatusNormalFull": "账户状态正常",
+      "userIdLabel": "用户编号",
+      "syncedBadge": "已同步最新数据",
+      "defaultRole": "普通用户",
+      "editAvatar": "编辑头像",
+      "startKyc": "开启认证",
+      "viewKyc": "查看认证",
+      "msg": {
+        "userIdNotFound": "未获取到用户ID，请先登录",
+        "profileSynced": "用户信息已同步",
+        "loadProfileFailed": "加载用户信息失败",
+        "walletCopied": "钱包地址复制成功",
+        "copyFailed": "复制失败，请手动复制",
+        "noChanges": "没有可提交的修改内容",
+        "modifyFailed": "修改失败，请稍后重试",
+        "kycSubmitted": "KYC申请已提交：{{name}}",
+        "dappDepositNotified": "已通知DApp打开保证金缴纳页面",
+        "depositPageOpened": "已在新页面打开保证金缴纳入口",
+        "merchantApplied": "商家申请已提交，请前往DApp缴纳保证金",
+        "merchantApplyFailed": "提交商家申请失败",
+        "noApplicationFound": "暂未查询到申请单，请稍后重试",
+        "queryApplicationFailed": "查询申请单失败，请稍后重试",
+        "applicationMissing": "申请单信息缺失，请先刷新申请单",
+        "waitChainCallback": "请等待链上回调，页面将以后端状态为准",
+        "fieldUpdateSuccess": "{{field}}修改成功",
+        "nicknameEmpty": "昵称不能为空",
+        "genderUpdated": "性别已更新为{{gender}}",
+        "selectBirthdayFirst": "请先选择生日"
+      },
+      "sections": {
+        "auth": {
+          "title": "认证信息",
+          "subtitle": "统一管理KYC、安全认证与商家认证状态",
+          "kycTitle": "KYC认证",
+          "kycDesc": "身份实名与证件信息审核",
+          "goVerify": "去认证",
+          "viewProgress": "查看进度",
+          "collapseDetail": "收起详情",
+          "viewDetail": "查看认证信息",
+          "verifiedName": "认证姓名",
+          "verifiedPhone": "认证手机",
+          "verifiedEmail": "认证邮箱",
+          "verifiedStatus": "认证状态",
+          "securityTitle": "安全认证",
+          "securityDesc": "账户安全保护机制状态",
+          "securityViewDetail": "查看详情",
+          "merchantTitle": "商家认证",
+          "merchantDesc": "商家身份审核与资质认证",
+          "applyMerchant": "申请成为商家",
+          "viewApplication": "查看申请单"
+        },
+        "basic": {
+          "title": "基础资料",
+          "subtitle": "维护用户身份与展示信息"
+        },
+        "contact": {
+          "title": "联系方式",
+          "subtitle": "用于通知、验证和安全告警"
+        },
+        "logs": {
+          "title": "操作记录",
+          "subtitle": "近期账户相关操作，便于自查与安全审计",
+          "empty": "暂无操作记录",
+          "loadMore": "加载更多"
+        }
+      },
+      "gender": {
+        "male": "男",
+        "female": "女",
+        "unknown": "未设置"
+      },
+      "kyc": {
+        "verified": "已认证",
+        "pending": "审核中",
+        "notVerified": "未认证",
+        "modalTitle": "KYC身份认证",
+        "steps": {
+          "basic": {
+            "title": "填写基本信息",
+            "description": "提供真实姓名、国籍与证件号"
+          },
+          "upload": {
+            "title": "上传证件照片",
+            "description": "大陆上传身份证，其它上传护照信息页"
+          },
+          "face": {
+            "title": "人脸验证",
+            "description": "完成在线人脸验证"
+          },
+          "review": {
+            "title": "等待审核",
+            "description": "1-3个工作日内完成审核"
+          }
+        },
+        "msg": {
+          "uploadIdBoth": "请上传身份证正反面照片",
+          "uploadPassport": "请上传护照信息页照片",
+          "faceVerifyFirst": "请先完成人脸验证",
+          "faceVerifySuccess": "人脸验证通过（模拟）",
+          "completeIdBoth": "请补全身份证正反面照片",
+          "completePassport": "请补全护照信息页照片"
+        },
+        "forms": {
+          "realName": "真实姓名",
+          "realNameRequired": "请输入真实姓名",
+          "realNameMin": "姓名长度至少 2 位",
+          "realNamePlaceholder": "请输入您的真实姓名",
+          "nationality": "国籍 / 地区",
+          "nationalityRequired": "请选择国籍/地区",
+          "nationalityPlaceholder": "请选择国籍/地区",
+          "nationalityMainland": "中国大陆",
+          "nationalityOther": "其他国家/地区",
+          "idNumber": "身份证号",
+          "passportNumber": "护照号",
+          "idNumberRequired": "请输入身份证号",
+          "passportNumberRequired": "请输入护照号",
+          "idNumberInvalid": "请输入正确的身份证号",
+          "passportNumberInvalid": "请输入正确的护照号",
+          "idNumberPlaceholder": "请输入18位身份证号码",
+          "passportNumberPlaceholder": "请输入护照号码",
+          "idFrontPhoto": "身份证正面照片",
+          "idBackPhoto": "身份证背面照片",
+          "passportPhoto": "护照信息页照片",
+          "uploadHint": "点击上传或拖拽文件到此处",
+          "faceHint": "请确保光线充足，面部清晰可见",
+          "faceStart": "开始人脸验证",
+          "faceDone": "已完成人脸验证",
+          "reviewTitle": "您的KYC认证申请已提交",
+          "reviewDesc": "我们将在1-3个工作日内完成审核，请耐心等待"
+        },
+        "prev": "上一步",
+        "next": "下一步",
+        "complete": "完成"
+      },
+      "merchant": {
+        "status": {
+          "pendingPayment": "待缴纳保证金",
+          "confirming": "链上确认中",
+          "paid": "已开通",
+          "paidAuth": "已认证",
+          "notApplied": "未申请",
+          "notVerified": "未认证"
+        },
+        "action": {
+          "payDeposit": "去缴纳保证金",
+          "viewPayProgress": "查看支付进度",
+          "viewStatus": "查看状态",
+          "apply": "去申请"
+        },
+        "intent": {
+          "pendingPaymentTitle": "待支付保证金",
+          "pendingPaymentDesc": "请在有效期内前往 DApp 完成保证金支付，超时后申请单将失效。",
+          "confirmingTitle": "链上确认中",
+          "confirmingDesc": "系统正在等待区块确认，确认完成后将自动更新商家认证状态。",
+          "completedTitle": "申请完成",
+          "completedDesc": "保证金已确认到账，当前账户已具备商家认证资格。",
+          "refundedTitle": "保证金已退还",
+          "refundedDesc": "当前申请单已完成退款流程，请关注退还交易哈希。",
+          "failedTitle": "申请失败",
+          "failedDesc": "申请流程执行失败，请查看失败原因并重新发起申请。",
+          "expiredTitle": "申请已过期",
+          "expiredDesc": "申请单已过有效期，请重新发起申请并及时完成支付。",
+          "processingTitle": "申请处理中",
+          "processingDesc": "系统正在处理申请单信息，请稍后刷新查看最新状态。",
+          "statusCodeFallback": "状态码 {{code}}"
+        },
+        "timeline": {
+          "apply": "提交申请",
+          "pay": "支付保证金",
+          "confirm": "链上确认"
+        },
+        "detailModalTitle": "商家申请单详情",
+        "loadingDetail": "正在加载申请单详情...",
+        "panelApplication": "申请单信息",
+        "panelChain": "链上与交易信息",
+        "intentId": "意图单ID",
+        "depositAmount": "保证金金额",
+        "expireAt": "有效期至",
+        "createdAt": "创建时间",
+        "updatedAt": "更新时间",
+        "chainId": "链ID",
+        "contractAddress": "合约地址",
+        "tokenAddress": "代币地址",
+        "txHash": "交易哈希",
+        "confirmations": "确认数",
+        "failReason": "失败原因：{{reason}}",
+        "refundHash": "退还哈希：{{hash}}",
+        "noDetail": "当前未查询到申请单详情，请稍后刷新页面重试。",
+        "goDappPay": "前往DApp缴纳保证金",
+        "markPaid": "我已完成支付",
+        "terms": {
+          "modalTitle": "商家认证法律条款确认",
+          "intro1": "请完整阅读以下平台商家入驻及保证金相关条款。",
+          "intro2": "仅在滚动阅读完成并勾选同意后，才可提交商家认证申请。",
+          "agreePrefix": "我已完整阅读并同意",
+          "agreeLink": "《商家入驻与保证金服务条款》",
+          "scrollTip": "请先向下滚动，阅读至条款最底部",
+          "checkTip": "请勾选「我同意」后，再提交申请",
+          "close": "关闭",
+          "submit": "去申请",
+          "downloadName": "商家入驻与保证金服务条款（完整版）.txt",
+          "section1": {
+            "title": "一、商家入驻资格与主体责任",
+            "content": "申请人应保证提交信息真实、完整、合法，并具备相应民事行为能力与经营资质。若因虚假信息或资质缺失导致纠纷、处罚或损失，平台有权终止服务并追究责任。"
+          },
+          "section2": {
+            "title": "二、交易合规与用户权益保护",
+            "content": "商家应严格遵守国家及地区法律法规，禁止售卖违禁商品、侵犯知识产权商品或存在欺诈风险的商品。商家应及时处理订单、售后与投诉，保障消费者合法权益。"
+          },
+          "section3": {
+            "title": "三、保证金规则",
+            "content": "商家需按平台要求缴纳保证金，作为履约与风险处理的保障。若发生欺诈、严重违约、侵权等行为，平台可依据规则扣除部分或全部保证金并采取限制措施。"
+          },
+          "section4": {
+            "title": "四、数据与隐私保护",
+            "content": "商家在经营过程中获取的用户信息仅可用于订单履行、售后服务等合法用途，不得泄露、出售或非法使用。商家须落实安全措施，防止数据泄露与滥用。"
+          },
+          "section5": {
+            "title": "五、平台治理与违规处理",
+            "content": "平台有权基于风控、合规与运营规则对商家经营行为进行监督。对违规行为可采取警告、下架、冻结、清退等措施；涉嫌违法的，将依法移交监管或司法机关。"
+          },
+          "section6": {
+            "title": "六、争议解决与条款更新",
+            "content": "因本协议引发的争议，双方应优先协商解决；协商不成时，按平台公示的争议解决机制执行。平台可根据法律或业务变化更新条款，并通过公告等方式通知商家。"
+          }
+        }
+      },
+      "logs": {
+        "biz": {
+          "profile": "资料",
+          "security": "安全",
+          "kyc": "认证",
+          "merchant": "商家",
+          "deposit": "保证金",
+          "auth": "登录",
+          "other": "其他"
+        },
+        "result": {
+          "success": "成功",
+          "failed": "失败",
+          "partial": "部分"
+        }
+      },
+      "forms": {
+        "userId": {
+          "title": "用户ID",
+          "description": "系统分配的唯一标识符"
+        },
+        "username": {
+          "title": "用户名",
+          "description": "登录账号即钱包地址"
+        },
+        "registerTime": {
+          "title": "注册时间",
+          "description": "账户创建时间"
+        },
+        "nickname": {
+          "title": "昵称",
+          "description": "用户展示名称",
+          "placeholder": "请输入昵称",
+          "submitTitle": "提交昵称修改",
+          "submitAria": "提交昵称修改"
+        },
+        "gender": {
+          "title": "性别",
+          "description": "用户性别信息"
+        },
+        "birthday": {
+          "title": "生日",
+          "description": "用户出生日期",
+          "placeholder": "请选择生日",
+          "submitTitle": "提交生日修改",
+          "submitAria": "提交生日修改"
+        },
+        "email": {
+          "title": "电子邮箱",
+          "description": "用于接收重要通知和验证",
+          "placeholder": "请输入电子邮箱",
+          "verified": "已验证",
+          "unverified": "未验证"
+        },
+        "phone": {
+          "title": "手机号码",
+          "description": "用于安全验证和重要通知",
+          "placeholder": "请输入手机号码",
+          "verified": "已验证",
+          "unverified": "未验证"
+        },
+        "readonlyHint": "禁止修改",
+        "securityEnabled": "已启用保护",
+        "securityDisabled": "未启用保护"
+      }
+    },
+    "security": {
+      "title": "安全设置",
+      "scoreTitle": "安全评分",
+      "scoreSuggestion": "您的账户安全级别中等，建议完善更多安全设置",
+      "scoreSuggestionLow": "您的账户安全级别较低，请尽快完善安全设置",
+      "scoreSuggestionMedium": "您的账户安全级别中等，建议完善更多安全设置",
+      "scoreSuggestionHigh": "您的账户安全级别较高，继续保持良好的安全习惯",
+      "walletSecurity": "钱包安全",
+      "accessControl": "访问控制",
+      "devices": "登录设备",
+      "activity": "安全活动",
+      "whitelist": "地址白名单",
+      "twoFactor": "双重验证",
+      "autoLock": "自动锁定",
+      "currentDevice": "当前设备",
+      "removeDevice": "移除设备",
+      "disconnectDevice": "断开连接",
+      "deviceDisconnected": "设备已断开连接",
+      "filterAll": "全部",
+      "filterLogin": "登录",
+      "filterTransaction": "交易",
+      "filterSettings": "设置",
+      "reassess": "重新评估",
+      "assessing": "评估中...",
+      "transactionConfirmation": "交易确认",
+      "transactionConfirmationDesc": "每笔交易前需要确认交易详情",
+      "highValueAlert": "高额交易提醒",
+      "highValueAlertDesc": "交易金额超过设定阈值时发出警告",
+      "contractInteractionWarning": "合约交互警告",
+      "contractInteractionWarningDesc": "与智能合约交互时显示风险提示",
+      "twoFactorDesc": "使用Google Authenticator或其他认证应用",
+      "twoFactorEnabled": "已启用",
+      "twoFactorDisabled": "设置",
+      "autoLockDesc": "一段时间不活动后自动锁定钱包",
+      "addressWhitelistDesc": "启用后只能向白名单地址转账",
+      "manage": "管理",
+      "lastActive": "最后活动",
+      "ip": "IP",
+      "emergency": "紧急操作",
+      "freezeAccount": "紧急冻结账户",
+      "freezeAccountDesc": "如果您发现可疑活动或认为您的钱包已被盗用，可以紧急冻结账户",
+      "freeze": "紧急冻结",
+      "accountRecovery": "账户恢复",
+      "accountRecoveryDesc": "设置账户恢复选项，以便在紧急情况下恢复对钱包的访问",
+      "setRecovery": "设置恢复选项",
+      "modal": {
+        "twoFactorTitle": "设置双重认证",
+        "twoFactorStep1": "请在您的手机上下载并安装以下任一认证应用：",
+        "twoFactorRecommended": "Google Authenticator (推荐)",
+        "twoFactorApp2": "Microsoft Authenticator",
+        "twoFactorApp3": "Authy",
+        "next": "下一步",
+        "prev": "上一步",
+        "complete": "完成设置",
+        "twoFactorStep2": "使用认证应用扫描下方二维码：",
+        "twoFactorManual": "如果无法扫描，请手动输入密钥：",
+        "twoFactorStep3": "请输入认证应用显示的6位验证码：",
+        "verificationCode": "验证码",
+        "closeTwoFactorTitle": "关闭双重认证",
+        "closeTwoFactorDesc": "关闭双重认证将降低您的账户安全性，确定要关闭吗？",
+        "confirmClose": "确认关闭",
+        "cancel": "取消",
+        "whitelistTitle": "管理地址白名单",
+        "addNewAddress": "添加新地址",
+        "addressPlaceholder": "输入钱包地址",
+        "add": "添加",
+        "address": "地址",
+        "addedAt": "添加时间",
+        "operation": "操作",
+        "delete": "删除",
+        "noWhitelist": "暂无白名单地址",
+        "addressAdded": "地址已添加到白名单",
+        "addressRemoved": "地址已从白名单移除",
+        "freezeTitle": "确认冻结账户",
+        "freezeWarning": "警告：此操作将冻结您的账户",
+        "freezeWarningDesc": "冻结后您将无法进行任何交易，需要联系客服才能解冻。请确认您真的需要执行此操作。",
+        "freezeConfirmPlaceholder": "请输入 \"FREEZE\" 确认冻结：",
+        "freezeConfirm": "确认冻结",
+        "accountFrozen": "账户已冻结，请联系客服解冻",
+        "recoveryTitle": "设置恢复选项",
+        "recoveryDesc": "选择一种恢复方式，以便在紧急情况下恢复对钱包的访问：",
+        "recoveryEmail": "邮箱恢复",
+        "recoveryEmailDesc": "通过注册邮箱接收恢复链接",
+        "recoveryPhone": "手机号恢复",
+        "recoveryPhoneDesc": "通过绑定手机号接收验证码",
+        "recoveryMnemonic": "助记词恢复",
+        "recoveryMnemonicDesc": "使用助记词恢复钱包访问"
+      },
+      "msg": {
+        "enterVerificationCode": "请输入6位验证码",
+        "twoFactorEnabled": "双重认证已启用",
+        "twoFactorDisabled": "双重认证已关闭",
+        "enterWalletAddress": "请输入钱包地址",
+        "enterFreezeConfirm": "请输入 FREEZE 确认冻结"
+      }
+    },
+    "notifications": {
+      "title": "通知设置",
+      "channels": "通知渠道",
+      "types": "通知类型",
+      "email": "邮件",
+      "mobile": "手机",
+      "browser": "浏览器",
+      "filterAll": "全部",
+      "filterTransaction": "交易通知",
+      "filterSecurity": "安全通知",
+      "filterSystem": "系统通知",
+      "freqImmediate": "实时",
+      "freqDaily": "每日",
+      "freqWeekly": "每周",
+      "importanceHigh": "重要",
+      "importanceMedium": "中等",
+      "importanceLow": "低",
+      "preview": "预览",
+      "channelSettings": "通知渠道设置",
+      "emailTitle": "邮件通知",
+      "emailDesc": "设置接收通知的邮箱地址",
+      "emailPlaceholder": "请输入接收通知的邮箱",
+      "mobileTitle": "手机通知",
+      "mobileDesc": "设置接收通知的手机号码",
+      "mobilePlaceholder": "请输入接收通知的手机号码",
+      "browserTitle": "浏览器通知",
+      "browserDesc": "启用后，您将在浏览器中收到实时通知提醒",
+      "saveChannelSettings": "保存通知渠道设置",
+      "saveTypeSettings": "保存通知类型设置",
+      "channelSaved": "通知渠道设置已保存",
+      "typeSaved": "通知类型设置已保存",
+      "allEnabled": "已全部启用",
+      "allDisabled": "已全部禁用",
+      "previewModalTitle": "通知预览",
+      "emailPreview": {
+        "subject": "主题",
+        "greeting": "尊敬的用户：",
+        "viewDetail": "查看详情",
+        "signature": "此致，",
+        "team": "Sapphire Mall 团队"
+      },
+      "mobilePreview": {
+        "appName": "Sapphire Mall",
+        "justNow": "刚刚"
+      },
+      "browserPreview": {
+        "siteName": "Sapphire Mall",
+        "justNow": "刚刚"
+      },
+      "typeItems": {
+        "transactionConfirmation": "交易确认通知",
+        "transactionConfirmationDesc": "当您发起交易时，系统将发送确认通知",
+        "transactionComplete": "交易完成通知",
+        "transactionCompleteDesc": "当您的交易完成时，系统将发送通知",
+        "loginAlert": "登录提醒",
+        "loginAlertDesc": "当您的账户在新设备上登录时，系统将发送通知",
+        "securityChange": "安全设置变更",
+        "securityChangeDesc": "当您的安全设置发生变更时，系统将发送通知",
+        "systemMaintenance": "系统维护通知",
+        "systemMaintenanceDesc": "当系统计划维护时，系统将提前发送通知",
+        "newFeature": "新功能公告",
+        "newFeatureDesc": "当平台发布新功能时，系统将发送通知"
+      },
+      "previewContent": {
+        "transactionConfirmationTitle": "交易确认通知",
+        "transactionConfirmationBody": "您有一笔交易需要确认，请及时处理。",
+        "transactionCompleteTitle": "交易完成通知",
+        "transactionCompleteBody": "您的交易已成功完成，详情请查看订单记录。",
+        "loginAlertTitle": "登录提醒",
+        "loginAlertBody": "您的账户在新设备上登录，如非本人操作请立即处理。",
+        "securityChangeTitle": "安全设置变更",
+        "securityChangeBody": "您的安全设置已发生变更，如非本人操作请立即联系客服。",
+        "systemMaintenanceTitle": "系统维护通知",
+        "systemMaintenanceBody": "系统将于近期进行维护升级，届时部分功能可能暂时不可用。",
+        "newFeatureTitle": "新功能公告",
+        "newFeatureBody": "平台发布了新功能，快来体验吧！"
+      }
+    }
+  }
+}

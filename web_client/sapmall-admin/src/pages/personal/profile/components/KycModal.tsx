@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Form, Input, Select, Steps, Upload } from 'antd';
 import type { UploadFile } from 'antd/es/upload/interface';
 import AdminModal from '../../../../components/common/AdminModal';
@@ -13,18 +14,33 @@ interface KycModalProps {
   onCompleted: (payload: KycSubmitPayload) => void;
 }
 
-const steps = [
-  { title: '填写基本信息', description: '提供真实姓名、国籍与证件号' },
-  { title: '上传证件照片', description: '大陆上传身份证，其它上传护照信息页' },
-  { title: '人脸验证', description: '完成在线人脸验证' },
-  { title: '等待审核', description: '1-3个工作日内完成审核' },
-];
-
 const beforeUpload = () => false;
 const mainlandIdPattern = /(^\d{15}$)|(^\d{17}[\dXx]$)/;
 const passportPattern = /^[A-Za-z0-9]{5,20}$/;
 
 const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
+  const { t } = useTranslation();
+  const steps = useMemo(
+    () => [
+      {
+        title: t('personal.profile.kyc.steps.basic.title'),
+        description: t('personal.profile.kyc.steps.basic.description'),
+      },
+      {
+        title: t('personal.profile.kyc.steps.upload.title'),
+        description: t('personal.profile.kyc.steps.upload.description'),
+      },
+      {
+        title: t('personal.profile.kyc.steps.face.title'),
+        description: t('personal.profile.kyc.steps.face.description'),
+      },
+      {
+        title: t('personal.profile.kyc.steps.review.title'),
+        description: t('personal.profile.kyc.steps.review.description'),
+      },
+    ],
+    [t],
+  );
   const [form] = Form.useForm<KycBasicForm>();
   const [currentStep, setCurrentStep] = useState(0);
   const [frontFiles, setFrontFiles] = useState<UploadFile[]>([]);
@@ -68,12 +84,16 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
     }
 
     if (currentStep === 1 && !canGoNext) {
-      MessageUtils.warning(isMainland ? '请上传身份证正反面照片' : '请上传护照信息页照片');
+      MessageUtils.warning(
+        isMainland
+          ? t('personal.profile.kyc.msg.uploadIdBoth')
+          : t('personal.profile.kyc.msg.uploadPassport'),
+      );
       return;
     }
 
     if (currentStep === 2 && !faceVerified) {
-      MessageUtils.warning('请先完成人脸验证');
+      MessageUtils.warning(t('personal.profile.kyc.msg.faceVerifyFirst'));
       return;
     }
 
@@ -86,7 +106,7 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
 
   const handleFaceVerify = () => {
     setFaceVerified(true);
-    MessageUtils.success('人脸验证通过（模拟）');
+    MessageUtils.success(t('personal.profile.kyc.msg.faceVerifySuccess'));
   };
 
   const handleComplete = async () => {
@@ -96,7 +116,11 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
         ? frontFiles.length === 0 || backFiles.length === 0
         : frontFiles.length === 0;
       if (missingDocFiles) {
-        MessageUtils.warning(isMainland ? '请补全身份证正反面照片' : '请补全护照信息页照片');
+        MessageUtils.warning(
+          isMainland
+            ? t('personal.profile.kyc.msg.completeIdBoth')
+            : t('personal.profile.kyc.msg.completePassport'),
+        );
         return;
       }
 
@@ -121,7 +145,7 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
       title={
         <div className={styles.kycModalTitle}>
           <i className="fas fa-shield-alt"></i>
-          <span>KYC身份认证</span>
+          <span>{t('personal.profile.kyc.modalTitle')}</span>
         </div>
       }
       footer={null}
@@ -141,48 +165,61 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
             <Form<KycBasicForm> form={form} layout="vertical" requiredMark={false}>
               <Form.Item
                 name="realName"
-                label="真实姓名"
+                label={t('personal.profile.kyc.forms.realName')}
                 rules={[
-                  { required: true, message: '请输入真实姓名' },
-                  { min: 2, message: '姓名长度至少 2 位' },
+                  { required: true, message: t('personal.profile.kyc.forms.realNameRequired') },
+                  { min: 2, message: t('personal.profile.kyc.forms.realNameMin') },
                 ]}
               >
-                <Input placeholder="请输入您的真实姓名" />
+                <Input placeholder={t('personal.profile.kyc.forms.realNamePlaceholder')} />
               </Form.Item>
               <Form.Item
                 name="nationality"
-                label="国籍 / 地区"
-                rules={[
-                  { required: true, message: '请选择国籍/地区' },
-                ]}
+                label={t('personal.profile.kyc.forms.nationality')}
+                rules={[{ required: true, message: t('personal.profile.kyc.forms.nationalityRequired') }]}
               >
                 <Select
-                  placeholder="请选择国籍/地区"
+                  placeholder={t('personal.profile.kyc.forms.nationalityPlaceholder')}
                   options={[
-                    { label: '中国大陆', value: 'cn_mainland' },
-                    { label: '其他国家/地区', value: 'other' },
+                    { label: t('personal.profile.kyc.forms.nationalityMainland'), value: 'cn_mainland' },
+                    { label: t('personal.profile.kyc.forms.nationalityOther'), value: 'other' },
                   ]}
                 />
               </Form.Item>
               <Form.Item
                 name="documentNumber"
-                label={isMainland ? '身份证号' : '护照号'}
+                label={
+                  isMainland
+                    ? t('personal.profile.kyc.forms.idNumber')
+                    : t('personal.profile.kyc.forms.passportNumber')
+                }
                 rules={[
-                  { required: true, message: isMainland ? '请输入身份证号' : '请输入护照号' },
+                  {
+                    required: true,
+                    message: isMainland
+                      ? t('personal.profile.kyc.forms.idNumberRequired')
+                      : t('personal.profile.kyc.forms.passportNumberRequired'),
+                  },
                   {
                     validator: async (_, value: string) => {
                       if (!value) return;
                       if (isMainland && !mainlandIdPattern.test(value)) {
-                        throw new Error('请输入正确的身份证号');
+                        throw new Error(t('personal.profile.kyc.forms.idNumberInvalid'));
                       }
                       if (!isMainland && !passportPattern.test(value)) {
-                        throw new Error('请输入正确的护照号');
+                        throw new Error(t('personal.profile.kyc.forms.passportNumberInvalid'));
                       }
                     },
                   },
                 ]}
               >
-                <Input placeholder={isMainland ? '请输入18位身份证号码' : '请输入护照号码'} />
+                <Input
+                  placeholder={
+                    isMainland
+                      ? t('personal.profile.kyc.forms.idNumberPlaceholder')
+                      : t('personal.profile.kyc.forms.passportNumberPlaceholder')
+                  }
+                />
               </Form.Item>
             </Form>
           )}
@@ -190,7 +227,11 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
           {currentStep === 1 && (
             <div className={styles.uploadGrid}>
               <div>
-                <div className={styles.uploadLabel}>{isMainland ? '身份证正面照片' : '护照信息页照片'}</div>
+                <div className={styles.uploadLabel}>
+                  {isMainland
+                    ? t('personal.profile.kyc.forms.idFrontPhoto')
+                    : t('personal.profile.kyc.forms.passportPhoto')}
+                </div>
                 <Upload.Dragger
                   multiple={false}
                   maxCount={1}
@@ -201,13 +242,13 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
                   <p className="ant-upload-drag-icon">
                     <i className="fas fa-id-card"></i>
                   </p>
-                  <p className="ant-upload-text">点击上传或拖拽文件到此处</p>
+                  <p className="ant-upload-text">{t('personal.profile.kyc.forms.uploadHint')}</p>
                 </Upload.Dragger>
               </div>
 
               {isMainland && (
                 <div>
-                  <div className={styles.uploadLabel}>身份证背面照片</div>
+                  <div className={styles.uploadLabel}>{t('personal.profile.kyc.forms.idBackPhoto')}</div>
                   <Upload.Dragger
                     multiple={false}
                     maxCount={1}
@@ -218,7 +259,7 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
                     <p className="ant-upload-drag-icon">
                       <i className="fas fa-id-card"></i>
                     </p>
-                    <p className="ant-upload-text">点击上传或拖拽文件到此处</p>
+                    <p className="ant-upload-text">{t('personal.profile.kyc.forms.uploadHint')}</p>
                   </Upload.Dragger>
                 </div>
               )}
@@ -229,14 +270,16 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
             <div className={styles.faceVerify}>
               <div className={styles.facePreview}>
                 <i className="fas fa-user-circle"></i>
-                <p>请确保光线充足，面部清晰可见</p>
+                <p>{t('personal.profile.kyc.forms.faceHint')}</p>
               </div>
               <AdminButton
                 variant="primary"
                 icon="fas fa-camera"
                 onClick={handleFaceVerify}
               >
-                {faceVerified ? '已完成人脸验证' : '开始人脸验证'}
+                {faceVerified
+                  ? t('personal.profile.kyc.forms.faceDone')
+                  : t('personal.profile.kyc.forms.faceStart')}
               </AdminButton>
             </div>
           )}
@@ -246,8 +289,8 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
               <div className={styles.reviewIcon}>
                 <i className="fas fa-clock"></i>
               </div>
-              <h3>您的KYC认证申请已提交</h3>
-              <p>我们将在1-3个工作日内完成审核，请耐心等待</p>
+              <h3>{t('personal.profile.kyc.forms.reviewTitle')}</h3>
+              <p>{t('personal.profile.kyc.forms.reviewDesc')}</p>
             </div>
           )}
         </div>
@@ -255,7 +298,7 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
         <div className={styles.kycModalFooter}>
           {currentStep > 0 && (
             <AdminButton variant="outline" icon="fas fa-arrow-left" onClick={handlePrev}>
-              上一步
+              {t('personal.profile.kyc.prev')}
             </AdminButton>
           )}
 
@@ -266,7 +309,7 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
               onClick={handleNext}
               disabled={!canGoNext && currentStep !== 0}
             >
-              下一步
+              {t('personal.profile.kyc.next')}
             </AdminButton>
           )}
 
@@ -277,7 +320,7 @@ const KycModal: React.FC<KycModalProps> = ({ open, onCancel, onCompleted }) => {
               onClick={handleComplete}
               loading={submitting}
             >
-              完成
+              {t('personal.profile.kyc.complete')}
             </AdminButton>
           )}
         </div>

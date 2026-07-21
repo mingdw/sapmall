@@ -1,4 +1,11 @@
 // 通用工具函数
+import i18n from '../i18n';
+import { isEnglishUi } from '../i18n/normalizeLang';
+
+/** 当前 UI 对应的 BCP 47 locale */
+function getUiLocale(): string {
+  return isEnglishUi(i18n.language) ? 'en-US' : 'zh-CN';
+}
 
 /**
  * 格式化日期
@@ -7,7 +14,7 @@
  */
 export const formatDate = (date: string | Date): string => {
   const d = new Date(date);
-  return d.toLocaleDateString('zh-CN', {
+  return d.toLocaleDateString(getUiLocale(), {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -23,7 +30,7 @@ export const formatDate = (date: string | Date): string => {
  * @returns 格式化后的货币字符串
  */
 export const formatCurrency = (amount: number, currency = 'CNY'): string => {
-  return new Intl.NumberFormat('zh-CN', {
+  return new Intl.NumberFormat(getUiLocale(), {
     style: 'currency',
     currency,
   }).format(amount);

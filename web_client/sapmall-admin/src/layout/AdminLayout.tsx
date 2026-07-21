@@ -27,24 +27,24 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
   iframeParams,
   onLogout 
 }) => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
   const [selectedMenuId, setSelectedMenuId] = useState<number | null>(null);
   const [selectedMenu, setSelectedMenu] = useState<CategoryTreeResp | null>(null);
   
-  // 内容区域引用，用于滚动提�?
+  // 内容区域引用，用于滚动提示
   const contentRef = useRef<HTMLDivElement>(null);
 
   // 处理iframe参数
   useIframeParams(iframeParams);
 
-  // 确保商品目录（menu_type=0）已加载并缓存（兜底：避免某些场景下初始化未触发�?
+  // 确保商品目录（menu_type=0）已加载并缓存（兜底：避免某些场景下初始化未触发）
   const { hasHydrated, productCategories, fetchProductCategories } = useCategoryStore();
   useEffect(() => {
     if (!hasHydrated) return;
     if (productCategories.length > 0) return;
     fetchProductCategories().catch((error) => {
-      console.error('AdminLayout 初始化商品目录数据失�?', error);
+      console.error('AdminLayout 初始化商品目录数据失败', error);
     });
   }, [hasHydrated, productCategories.length, fetchProductCategories]);
   
@@ -56,7 +56,21 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
     setActiveMenuByUrl,
     refreshMenus,
     fetchUserMenus
-  } = useMenuData(); 
+  } = useMenuData();
+
+  // 语言切换后强制重拉后台菜单（Accept-Language 变化）
+  useEffect(() => {
+    const onLocaleChanged = () => {
+      refreshMenus().catch((error) => {
+        console.error('语言切换后刷新菜单失败', error);
+      });
+    };
+    window.addEventListener('admin:locale-changed', onLocaleChanged);
+    return () => window.removeEventListener('admin:locale-changed', onLocaleChanged);
+  }, [refreshMenus]);
+
+  // 仅用于订阅语言变化，触发菜单文案区域重渲染（菜单名来自 API）
+  void i18n.language; 
 
   // 根据iframe参数设置选中的菜单项
   useEffect(() => {
@@ -214,9 +228,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
         <div className="p-4 text-center">
           <div className="flex flex-col items-center justify-center h-64">
             <i className="fas fa-exclamation-triangle text-4xl text-yellow-500 mb-4"></i>
-            <Text type="secondary" className="text-lg mb-2 text-white">菜单获取失败</Text>
+            <Text type="secondary" className="text-lg mb-2 text-white">{t('layout.menuLoadFailed')}</Text>
             <Text type="secondary" className="text-sm mb-4 text-gray-300">
-              无法获取用户菜单，请检查网络连接或联系管理�?
+              {t('layout.menuLoadFailedHint')}
             </Text>
             <Button 
               type="primary" 
@@ -224,7 +238,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
               onClick={refreshMenus}
               size="small"
             >
-              重新获取
+              {t('layout.reloadMenu')}
             </Button>
           </div>
         </div>

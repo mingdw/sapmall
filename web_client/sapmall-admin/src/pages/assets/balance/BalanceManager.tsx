@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import { BalanceOverview, TransactionHistory, BalanceOperations } from './components';
@@ -42,6 +43,7 @@ function computeTokenTotals(chains: ChainBalanceInfo[]) {
 }
 
 const BalanceManager: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('overview');
   const profile = mockUserProfile;
 
@@ -84,6 +86,11 @@ const BalanceManager: React.FC = () => {
   return (
     <ConfigProvider theme={balanceTheme}>
       <div className={styles.balancePage}>
+        <div className={styles.pageHeader}>
+          <div className={styles.pageHeaderLeft}>
+            <h2 className={styles.pageTitle}>{t('assets.balance.title')}</h2>
+          </div>
+        </div>
         {/* 代币汇总统计 */}
         <div className={styles.tokenSummaryGrid}>
           {tokenEntries.map(([symbol, info]) => {

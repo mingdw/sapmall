@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+﻿import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Spin, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import type { ChainNetworkInfo } from '../../../services/api/chainApi';
@@ -9,6 +10,7 @@ import { contractTheme } from './contractTheme';
 import styles from './ContractManager.module.scss';
 
 const ContractManager: React.FC = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [chainList, setChainList] = useState<ChainNetworkInfo[]>([]);
   const [activeTab, setActiveTab] = useState('overview');
@@ -80,7 +82,7 @@ const ContractManager: React.FC = () => {
           <div className={styles.pageHeaderLeft}>
             <h2 className={styles.pageTitle}>
               <i className="fas fa-file-contract" />
-              合约管理
+              {t('contract.smart.title')}
             </h2>
             <p className={styles.pageSubtitle}>
               管理智能合约部署、监控链上事件与监听器运行状态

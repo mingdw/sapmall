@@ -220,14 +220,21 @@ code {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.625rem;
+  gap: 0.5rem;
   border-radius: var(--radius-sm);
-  font-weight: 600;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   line-height: 1.25;
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.25s var(--ease-out);
+  transition:
+    background-color 0.22s var(--ease-out),
+    border-color 0.22s var(--ease-out),
+    color 0.22s var(--ease-out),
+    box-shadow 0.22s var(--ease-out),
+    transform 0.22s var(--ease-out);
   border: 1px solid transparent;
+  text-decoration: none;
 }
 
 .action-btn:active {
@@ -240,52 +247,84 @@ code {
   align-items: center;
 }
 
+.action-btn__icon {
+  opacity: 0.92;
+}
+
 .action-btn--lg {
-  padding: 0.875rem 1.625rem;
-  font-size: 1rem;
+  padding: 0.8125rem 1.5rem;
+  font-size: 0.9375rem;
 }
 
 .action-btn--md {
-  padding: 0.75rem 1.375rem;
-  font-size: 0.9375rem;
+  padding: 0.625rem 1.125rem;
+  font-size: 0.875rem;
 }
 
 .action-btn--primary {
   background: var(--color-accent);
   color: #fff;
   border-color: var(--color-accent);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset;
 }
 
 .action-btn--primary:hover {
   background: var(--color-accent-hover);
   border-color: var(--color-accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(20, 158, 202, 0.28);
+  box-shadow: 0 8px 22px rgba(20, 158, 202, 0.22);
 }
 
 .action-btn--outline-accent {
-  background: transparent;
+  background: var(--color-surface);
   color: var(--color-accent-text);
-  border-color: var(--color-accent);
+  border-color: rgba(20, 158, 202, 0.35);
 }
 
 .action-btn--outline-accent:hover {
   background: var(--color-accent-soft);
+  border-color: var(--color-accent);
 }
 
 .action-btn--outline-muted {
   background: transparent;
   color: var(--color-text-secondary);
-  border-color: var(--color-border);
+  border-color: var(--color-border-strong);
 }
 
 .action-btn--outline-muted:hover {
-  background: var(--color-surface-muted);
-  border-color: var(--color-text-muted);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: rgba(0, 0, 0, 0.14);
 }
 
 .action-btn--block {
   width: 100%;
+}
+
+/* Hero CTA：统一尺寸与节奏 */
+.hero-cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.hero-cta-group .action-btn {
+  min-height: 2.5rem;
+  padding-inline: 1.125rem;
+}
+
+@media (max-width: 639px) {
+  .hero-cta-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-cta-group .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* Hero */

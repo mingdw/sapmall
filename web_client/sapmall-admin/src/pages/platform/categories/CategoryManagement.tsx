@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { message, Modal, Spin } from 'antd';
 import AdminCard from '../../../components/common/AdminCard';
 import CategoryTree from './components/CategoryTree';
@@ -13,6 +14,7 @@ import styles from './CategoryManagement.module.scss';
 import type { Category, AttributeGroup, Attribute } from './types';
 
 const CategoryManagement: React.FC = () => {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -158,7 +160,7 @@ const CategoryManagement: React.FC = () => {
 
   return (
     <div className={styles.categoryManagement}>
-      <AdminCard icon="fas fa-sitemap" showHeader={false}>
+      <AdminCard icon="fas fa-sitemap" title={t('platform.categories.title')}>
         <Spin spinning={loading} tip="加载中...">
           <div className={styles.container}>
             {/* 左侧：目录树 */}

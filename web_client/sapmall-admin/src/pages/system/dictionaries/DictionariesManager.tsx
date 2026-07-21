@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Empty, Modal, Spin } from 'antd';
 import AdminCard from '../../../components/common/AdminCard';
 import MessageUtils from '../../../utils/messageUtils';
@@ -16,6 +17,7 @@ import DictItemModal from './components/modals/DictItemModal';
 import styles from './DictionariesManager.module.scss';
 
 const DictionariesManager: React.FC = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [itemLoading, setItemLoading] = useState(false);
   const [categoryList, setCategoryList] = useState<DictCategoryInfo[]>([]);
@@ -221,7 +223,7 @@ const DictionariesManager: React.FC = () => {
 
   return (
     <div className={styles.dictionariesPage}>
-      <AdminCard icon="fas fa-book" showHeader={false}>
+      <AdminCard icon="fas fa-book" title={t('system.dictionaries.title')}>
         <Spin spinning={loading && categoryList.length === 0} tip="加载中...">
           <div className={styles.container}>
             <div className={styles.leftPanel}>

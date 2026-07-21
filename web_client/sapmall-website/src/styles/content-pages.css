@@ -1,0 +1,1055 @@
+/* 子页顶栏、PPT、白皮书、演示页样式 */
+
+.subpage-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(247, 246, 243, 0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.subpage-bar--overlay {
+  background: rgba(247, 246, 243, 0.72);
+}
+
+.subpage-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.75rem;
+}
+
+.subpage-bar__left,
+.subpage-bar__right {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.subpage-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.2s var(--ease-out);
+}
+
+.subpage-back:hover {
+  color: var(--color-accent-text);
+}
+
+.subpage-brand {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+@media (min-width: 640px) {
+  .subpage-brand {
+    display: inline-flex;
+  }
+}
+
+.subpage-brand__mark {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.subpage-brand__name {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+}
+
+.subpage--immersive {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.subpage--immersive .ppt-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* PPT — PowerPoint 风格：左缩略图 + 右主视图 */
+.ppt-page {
+  background:
+    radial-gradient(ellipse 60% 40% at 0% 0%, rgba(20, 158, 202, 0.05), transparent 55%),
+    var(--color-canvas);
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ppt-workspace {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 11.5rem minmax(0, 1fr);
+  gap: 0;
+  /* 宽度与首页 .site-container 一致（72rem / 92%） */
+  padding: 0.75rem 0 1rem;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1100px) {
+  .ppt-workspace {
+    grid-template-columns: 13.5rem minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 899px) {
+  .ppt-workspace {
+    grid-template-columns: 1fr;
+    padding: 0.75rem 0 1rem;
+  }
+
+  .ppt-filmstrip {
+    display: none !important;
+  }
+}
+
+.ppt-filmstrip {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: calc(100dvh - 5.5rem);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  overflow: hidden;
+}
+
+.ppt-filmstrip__label {
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ppt-filmstrip__list {
+  flex: 1;
+  overflow: auto;
+  padding: 0.65rem 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.ppt-thumb {
+  display: grid;
+  grid-template-columns: 1.1rem 1fr;
+  gap: 0.35rem;
+  align-items: start;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.ppt-thumb__num {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding-top: 0.15rem;
+}
+
+.ppt-thumb__preview {
+  display: block;
+  border: 1.5px solid var(--color-border);
+  border-radius: 4px;
+  background: #fff;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ppt-thumb:hover .ppt-thumb__preview {
+  border-color: rgba(20, 158, 202, 0.45);
+}
+
+.ppt-thumb--active .ppt-thumb__preview {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.ppt-thumb--active .ppt-thumb__num {
+  color: var(--color-accent-text);
+}
+
+.ppt-thumb__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  pointer-events: none;
+}
+
+.ppt-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-left: none;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+@media (max-width: 899px) {
+  .ppt-main {
+    border-left: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+}
+
+.ppt-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.25rem 0.5rem;
+  min-height: 0;
+  position: relative;
+}
+
+.ppt-stage--fs {
+  position: fixed;
+  inset: 0 0 3.5rem 0;
+  z-index: 50;
+  padding: 1.5rem 4rem 1rem;
+  background: #1a1a1a;
+}
+
+.ppt-fs-side {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.ppt-fs-side:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.ppt-fs-side:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.ppt-fs-side--prev {
+  left: 0.75rem;
+}
+
+.ppt-fs-side--next {
+  right: 0.75rem;
+}
+
+.ppt-fs-exit {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+}
+
+.ppt-slide {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: calc(100dvh - 10.5rem);
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: ppt-enter 0.35s var(--ease-out);
+}
+
+.ppt-slide--native {
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  aspect-ratio: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+.ppt-slide--native .ppt-canvas {
+  animation: ppt-enter 0.35s var(--ease-out);
+}
+
+.ppt-stage--fs .ppt-slide {
+  max-height: calc(100dvh - 5.5rem);
+  width: min(100%, calc((100dvh - 5.5rem) * 16 / 9));
+  border-radius: 0;
+}
+
+@keyframes ppt-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ppt-slide {
+    animation: none;
+  }
+}
+
+.ppt-slide__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.25rem, 4vw, 3rem) clamp(1.5rem, 5vw, 4rem);
+  overflow: hidden;
+}
+
+.ppt-slide__body--title {
+  align-items: flex-start;
+}
+
+.ppt-slide__body--compact {
+  justify-content: flex-start;
+}
+
+.ppt-eyebrow {
+  font-size: clamp(0.65rem, 1.1vw, 0.75rem);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent-text);
+  margin: 0 0 0.75rem;
+}
+
+.ppt-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4.5vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin: 0 0 0.75rem;
+  max-width: 18ch;
+}
+
+.ppt-title--sm {
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  max-width: 22ch;
+}
+
+.ppt-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 3vw, 2.1rem);
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 0 1.25rem;
+  color: var(--color-text);
+}
+
+.ppt-subtitle {
+  font-size: clamp(0.9rem, 1.6vw, 1.125rem);
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 36ch;
+}
+
+.ppt-hint {
+  margin-top: 1.25rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.ppt-bullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.ppt-bullets li {
+  position: relative;
+  padding-left: 1.25rem;
+  font-size: clamp(0.875rem, 1.4vw, 1.0625rem);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.ppt-bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 2px;
+  background: var(--color-accent);
+}
+
+.ppt-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.ppt-card {
+  padding: 0.875rem 1rem;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.ppt-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(0.9rem, 1.3vw, 1.05rem);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.ppt-card p {
+  margin: 0;
+  font-size: clamp(0.75rem, 1.1vw, 0.875rem);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.ppt-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.ppt-stat {
+  text-align: center;
+  padding: 1rem 0.5rem;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-soft);
+}
+
+.ppt-stat__value {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  color: var(--color-accent-text);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.ppt-stat__label {
+  font-size: clamp(0.65rem, 1vw, 0.8125rem);
+  color: var(--color-text-secondary);
+}
+
+.ppt-slide__meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-canvas);
+}
+
+.ppt-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem 0.85rem;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.ppt-toolbar--fs {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  padding: 0.65rem 1.25rem;
+  background: rgba(20, 20, 22, 0.94);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.ppt-toolbar--fs .ppt-toolbar__status {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.ppt-toolbar--fs .ppt-nav-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.ppt-toolbar--fs .ppt-nav-btn--primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.ppt-toolbar--fs .ppt-icon-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.ppt-toolbar__center {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.ppt-toolbar__status {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ppt-toolbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ppt-icon-btn--active {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+  color: var(--color-accent-text);
+}
+
+.ppt-toolbar--fs .ppt-icon-btn--active {
+  background: rgba(20, 158, 202, 0.35);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+.ppt-workspace--fs {
+  max-width: none;
+  width: 100%;
+  padding: 0;
+}
+
+.ppt-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+}
+
+.ppt-nav-btn:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent-text);
+}
+
+.ppt-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ppt-nav-btn--primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+.ppt-nav-btn--primary:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+  color: #fff;
+}
+
+.ppt-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.ppt-icon-btn:hover {
+  color: var(--color-accent-text);
+  border-color: var(--color-accent);
+}
+
+@media (max-width: 767px) {
+  .ppt-slide {
+    aspect-ratio: auto;
+    min-height: 20rem;
+    max-height: none;
+    width: 100%;
+  }
+
+  .ppt-cards,
+  .ppt-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ppt-nav-btn span {
+    display: none;
+  }
+}
+
+/* 白皮书：整体宽度与幻灯片页一致（依赖 .site-container，勿覆盖 width） */
+.wp-page {
+  padding: 1.5rem 0 4rem;
+  min-height: calc(100vh - 3.75rem);
+}
+
+.wp-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .wp-layout {
+    grid-template-columns: 17.5rem minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+.wp-sidebar {
+  display: none;
+  position: sticky;
+  top: 5rem;
+  max-height: calc(100vh - 6rem);
+  overflow: auto;
+  padding-right: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .wp-sidebar {
+    display: block;
+  }
+}
+
+.wp-sidebar__label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 0 0 0.75rem;
+}
+
+.wp-tree__root {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  padding: 0.4rem 0.35rem;
+  border: none;
+  background: transparent;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.wp-tree__list {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0 0 0 0.35rem;
+  border-left: 1px solid var(--color-border);
+}
+
+.wp-tree__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 0.45rem 0.65rem;
+  margin-left: 0.15rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  line-height: 1.35;
+  transition: background 0.15s, color 0.15s;
+}
+
+.wp-tree__item:hover {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.wp-tree__item--active {
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+  font-weight: 500;
+  box-shadow: inset 2px 0 0 var(--color-accent);
+}
+
+.wp-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.wp-mobile-toc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.wp-section {
+  scroll-margin-top: 5.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.wp-section__title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0 0 1rem;
+  color: var(--color-text);
+}
+
+.wp-prose__p {
+  margin: 0 0 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+  font-size: 0.9875rem;
+}
+
+.wp-prose__list {
+  margin: 0 0 1rem;
+  padding-left: 1.15rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  font-size: 0.9875rem;
+}
+
+.wp-prose__list li + li {
+  margin-top: 0.4rem;
+}
+
+.wp-prose__note {
+  margin: 1rem 0;
+  padding: 0.875rem 1rem;
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.wp-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.35);
+  z-index: 60;
+}
+
+.wp-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(20rem, 88vw);
+  background: var(--color-surface);
+  z-index: 61;
+  padding: 1.25rem;
+  overflow: auto;
+  box-shadow: 8px 0 32px rgba(0, 0, 0, 0.08);
+}
+
+.wp-drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.wp-drawer__head button {
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+/* 演示 */
+.demo-page {
+  padding: 2.25rem 0 4.5rem;
+}
+
+.demo-layout {
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+.demo-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.demo-header__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.5vw, 1.85rem);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  line-height: 1.25;
+}
+
+.demo-header__desc {
+  margin: 0.65rem auto 0;
+  max-width: 32rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.demo-player {
+  background: #0b0f14;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.demo-player__stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #0b0f14;
+}
+
+.demo-player__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.demo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem 1.25rem;
+  margin-top: 1.15rem;
+}
+
+.demo-meta__youtube {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.demo-meta__youtube:hover {
+  color: var(--color-accent, var(--color-primary));
+}
+
+.demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+}
+
+.demo-actions__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 1px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.demo-actions__link:hover {
+  border-bottom-color: currentColor;
+  color: var(--color-accent, var(--color-primary));
+}
+
+@media (max-width: 640px) {
+  .demo-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.wp-nested {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.wp-nested__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.wp-kv {
+  margin: 0 0 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.wp-kv__row {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.wp-kv__row dt {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.wp-kv__row dd {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.wp-arch {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0 0 1.5rem;
+  padding: 1rem;
+  background: var(--color-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.wp-arch__layer {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.wp-arch__name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent-text);
+  padding-top: 0.35rem;
+}
+
+.wp-arch__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.wp-arch__chip {
+  display: inline-flex;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.wp-arch__arrow {
+  width: 1px;
+  height: 0.65rem;
+  margin-left: 2.5rem;
+  background: var(--color-border-strong);
+}
+

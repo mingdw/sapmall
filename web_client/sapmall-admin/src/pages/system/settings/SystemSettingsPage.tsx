@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+﻿import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Empty, Form, Input, InputNumber, List, Popconfirm, Select, Spin, Switch, Tooltip } from 'antd';
 import { Search } from 'lucide-react';
 import AdminCard from '../../../components/common/AdminCard';
@@ -61,6 +62,7 @@ const isChainSyncing = (syncChainStatus?: number): boolean =>
   syncChainStatus === SYNC_CHAIN_STATUS.SYNCING;
 
 const SystemSettingsPage: React.FC = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [statusTogglingId, setStatusTogglingId] = useState<number>();
@@ -405,7 +407,7 @@ const SystemSettingsPage: React.FC = () => {
   return (
     <div className={styles.settingsPage}>
       <AdminCard
-        title="系统参数维护"
+        title={t('system.settings.title')}
         icon="fas fa-sliders-h"
       >
         <div className={styles.filterToolbar}>

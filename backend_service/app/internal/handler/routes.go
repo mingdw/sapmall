@@ -347,7 +347,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.RespMiddleware},
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
 			[]rest.Route{
 				{
 					// 查询用户的申请单

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Button } from 'antd';
 import { CircleHelp } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import ComponentMapper from './ComponentMapper';
 import { CategoryTreeResp } from '../services/types/categoryTypes';
 import { normalizeFaIcon } from '../utils';
@@ -19,13 +20,11 @@ const AdminContentComponent: React.FC<AdminContentComponentProps> = ({
   firstMenuName,
   onEnterDefaultMenu,
 }) => {
+  const { t } = useTranslation();
   const [showWelcomeText, setShowWelcomeText] = useState(false);
 
-  // 处理常见问题点击
   const handleHelpClick = () => {
-    // 这里可以打开帮助弹窗或跳转到帮助页面
     console.log('打开常见问题帮助');
-    // 可以根据 selectedMenu 的 help_key 或相关字段来显示对应的帮助内容
   };
 
   useEffect(() => {
@@ -42,7 +41,6 @@ const AdminContentComponent: React.FC<AdminContentComponentProps> = ({
     return () => window.clearTimeout(timer);
   }, [selectedMenu]);
 
-  // 渲染内容
   const renderContent = () => {
     if (!selectedMenu) {
       return (
@@ -71,10 +69,12 @@ const AdminContentComponent: React.FC<AdminContentComponentProps> = ({
 
               <div className={`matrix-welcome-text ${showWelcomeText ? 'show' : ''}`}>
                 <Title level={3} className="matrix-title">
-                  欢迎使用后台管理系统
+                  {t('layout.welcomeTitle')}
                 </Title>
                 <Text className="matrix-subtitle">
-                  {firstMenuName ? `点击按钮进入「${firstMenuName}」` : '点击按钮进入平台概览'}
+                  {firstMenuName
+                    ? t('layout.welcomeEnterNamed', { name: firstMenuName })
+                    : t('layout.welcomeEnterDefault')}
                 </Text>
                 <div className="matrix-welcome-actions">
                   <Button
@@ -83,7 +83,7 @@ const AdminContentComponent: React.FC<AdminContentComponentProps> = ({
                     onClick={onEnterDefaultMenu}
                     disabled={!onEnterDefaultMenu}
                   >
-                    点击平台概览
+                    {t('layout.enterOverview')}
                   </Button>
                 </div>
               </div>
@@ -93,7 +93,6 @@ const AdminContentComponent: React.FC<AdminContentComponentProps> = ({
       );
     }
 
-    // 检查是否为外部链接
     if (selectedMenu.is_external && selectedMenu.external_url) {
       return (
         <div className="admin-content-external">
@@ -101,51 +100,47 @@ const AdminContentComponent: React.FC<AdminContentComponentProps> = ({
             <i className="fas fa-external-link-alt"></i>
           </div>
           <Title level={3} type="secondary" className="external-title">
-            外部链接
+            {t('layout.externalLink')}
           </Title>
           <Text type="secondary" className="external-subtitle">
-            此菜单项指向外部链接
+            {t('layout.externalLinkHint')}
           </Text>
           <div className="external-actions">
-            <button 
+            <button
               className="external-button"
               onClick={() => window.open(selectedMenu.external_url, '_blank')}
             >
               <i className="fas fa-external-link-alt"></i>
-              打开链接
+              {t('layout.openLink')}
             </button>
           </div>
         </div>
       );
     }
 
-    // 根据component字段渲染对应的组件
     return (
       <div className="admin-content-main">
-        {/* 卡片标题头部 - 参考原型图设计 */}
         <div className="admin-content-card-header">
           <div className="admin-content-card-title">
             <i className={normalizeFaIcon(selectedMenu.icon)}></i>
             <span>{selectedMenu.name}</span>
           </div>
-          {/* 常见问题按钮 - 可能没有，根据菜单配置决定 */}
           {selectedMenu.help_key && (
-            <Button 
-              type="link" 
+            <Button
+              type="link"
               size="small"
               icon={<CircleHelp size={16} />}
               onClick={handleHelpClick}
               className="admin-content-help-btn"
             >
-              常见问题
+              {t('layout.faq')}
             </Button>
           )}
         </div>
-        
-        {/* 内容区域 */}
+
         <div className="admin-content-card-body">
-          <ComponentMapper 
-            componentName={selectedMenu.component} 
+          <ComponentMapper
+            componentName={selectedMenu.component}
             menuData={selectedMenu}
           />
         </div>

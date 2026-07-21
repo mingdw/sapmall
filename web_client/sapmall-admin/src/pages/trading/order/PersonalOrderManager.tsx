@@ -16,6 +16,7 @@ import {
   canResumePay,
 } from './constants';
 import styles from './PersonalOrderManager.module.scss';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_FILTERS: OrderFilterValues = {
   orderStatus: 0,
@@ -30,6 +31,7 @@ function matchPaymentTab(order: OrderSummary, tabKey: string): boolean {
 }
 
 const PersonalOrderManager: React.FC = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<OrderFilterValues>(DEFAULT_FILTERS);
   const [appliedFilters, setAppliedFilters] = useState<OrderFilterValues>(DEFAULT_FILTERS);
@@ -55,7 +57,7 @@ const PersonalOrderManager: React.FC = () => {
       });
       setAllOrders(Array.isArray(resp.data?.list) ? resp.data.list : []);
     } catch {
-      MessageUtils.error('加载订单列表失败');
+      MessageUtils.error(t('trading.order.loadFailed', { defaultValue: '加载订单列表失败' }));
     } finally {
       setLoading(false);
     }

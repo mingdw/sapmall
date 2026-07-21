@@ -5,8 +5,15 @@ export const siteLinks = {
   dappUrl: dappBase,
   dappMarketplace: `${dappBase.replace(/\/$/, '')}/marketplace`,
   dappHelp: `${dappBase.replace(/\/$/, '')}${process.env.REACT_APP_HELP_PATH || '/help'}`,
-  whitepaper: process.env.REACT_APP_WHITEPAPER_URL || 'https://github.com',
-  demo: process.env.REACT_APP_DEMO_URL || 'https://www.youtube.com',
+  /** 站内内容页 */
+  presentation: '/presentation',
+  whitepaper: '/whitepaper',
+  demo: '/demo',
+  /** 产品演示 YouTube（可被环境变量覆盖） */
+  demoVideoId: process.env.REACT_APP_DEMO_YOUTUBE_ID || 'OUI7sCNBWMQ',
+  demoYoutube:
+    process.env.REACT_APP_DEMO_YOUTUBE_URL ||
+    'https://youtu.be/OUI7sCNBWMQ?si=5Tt5m520slu_UwGo',
   github: process.env.REACT_APP_GITHUB_URL || 'https://github.com',
   twitter: process.env.REACT_APP_TWITTER_URL || 'https://twitter.com',
   telegram: process.env.REACT_APP_TELEGRAM_URL || 'https://t.me',
@@ -16,6 +23,11 @@ export const siteLinks = {
   terms: '/terms',
   cookies: '/cookies',
 } as const;
+
+/** 是否为站内相对路径（用于 Router Link） */
+export function isInternalPath(href: string): boolean {
+  return href.startsWith('/') && !href.startsWith('//');
+}
 
 /** 支付网络：active=true 可切换支付；false 为待加入（仅展示） */
 export type PaymentNetwork = {

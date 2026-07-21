@@ -1,7 +1,14 @@
 // 商品管理工具函数
 
-import { ProductStatus, PRODUCT_STATUS_CONFIG, CHAIN_STATUS_CONFIG } from './constants';
-import type { ProductStats, ChainStatus } from './types';
+import type { TFunction } from 'i18next';
+import {
+  ProductStatus,
+  PRODUCT_STATUS_CONFIG,
+  CHAIN_STATUS_CONFIG,
+  getProductStatusLabel,
+  getChainStatusLabel,
+} from './constants';
+import type { ChainStatus } from './types';
 
 /**
  * 解析趋势字符串，转换为StatCard需要的格式
@@ -10,7 +17,7 @@ import type { ProductStats, ChainStatus } from './types';
  */
 export const parseTrend = (trendStr?: string): { value: string; type: 'positive' | 'negative' | 'neutral' } | undefined => {
   if (!trendStr) return undefined;
-  
+
   const trimmed = trendStr.trim();
   if (trimmed.startsWith('+')) {
     return {
@@ -37,7 +44,7 @@ export const parseTrend = (trendStr?: string): { value: string; type: 'positive'
  */
 export const parseProductImages = (images?: string): string[] => {
   if (!images) return [];
-  
+
   try {
     // 尝试解析JSON
     if (images.trim().startsWith('[') || images.trim().startsWith('{')) {
@@ -76,11 +83,16 @@ export const formatDateTime = (date?: string | Date): string => {
 /**
  * 获取商品状态标签配置
  * @param status 商品状态
- * @returns 状态配置对象
+ * @param t 可选翻译函数，传入时返回本地化 text/label
  */
-export const getProductStatusConfig = (status: ProductStatus) => {
-  return PRODUCT_STATUS_CONFIG[status] || PRODUCT_STATUS_CONFIG[ProductStatus.DRAFT];
-};
+export function getProductStatusConfig(status: ProductStatus, t?: TFunction) {
+  const base = PRODUCT_STATUS_CONFIG[status] || PRODUCT_STATUS_CONFIG[ProductStatus.DRAFT];
+  if (t) {
+    const text = getProductStatusLabel(t, status);
+    return { ...base, text, label: text };
+  }
+  return base;
+}
 
 /**
  * 检查是否为有效的商品状态
@@ -94,18 +106,30 @@ export const isValidProductStatus = (status: any): status is ProductStatus => {
 /**
  * 获取链上状态标签配置
  * @param chainStatus 链上状态
- * @returns 状态配置对象
+ * @param t 可选翻译函数，传入时返回本地化 text
  */
-export const getChainStatusConfig = (chainStatus?: ChainStatus) => {
+export function getChainStatusConfig(chainStatus?: ChainStatus, t?: TFunction) {
   if (!chainStatus) {
-    return { color: 'default' as const, text: '未上链' };
+    const fallback = { color: 'default' as const, text: '未上链' };
+    if (t) {
+      return { ...fallback, text: t('business.products.chainNotOn') };
+    }
+    return fallback;
   }
   const validStatuses: Array<keyof typeof CHAIN_STATUS_CONFIG> = ['未上链', '同步中', '已上链', '同步失败'];
   if (validStatuses.includes(chainStatus as keyof typeof CHAIN_STATUS_CONFIG)) {
-    return CHAIN_STATUS_CONFIG[chainStatus as keyof typeof CHAIN_STATUS_CONFIG];
+    const base = CHAIN_STATUS_CONFIG[chainStatus as keyof typeof CHAIN_STATUS_CONFIG];
+    if (t) {
+      return { ...base, text: getChainStatusLabel(t, chainStatus as keyof typeof CHAIN_STATUS_CONFIG) };
+    }
+    return base;
   }
-  return { color: 'default' as const, text: '未上链' };
-};
+  const fallback = { color: 'default' as const, text: '未上链' };
+  if (t) {
+    return { ...fallback, text: t('business.products.chainNotOn') };
+  }
+  return fallback;
+}
 
 /**
  * 根据链ID获取区块链浏览器URL

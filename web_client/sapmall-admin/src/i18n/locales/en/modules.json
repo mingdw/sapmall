@@ -1,0 +1,69 @@
+{
+  "platform": {
+    "dashboard": {
+      "title": "Platform overview"
+    },
+    "categories": {
+      "title": "Categories",
+      "addCategory": "Add category",
+      "editCategory": "Edit category",
+      "attributes": "Attributes",
+      "categoryName": "Category name",
+      "parentCategory": "Parent category"
+    },
+    "merchants": {
+      "title": "Merchants"
+    },
+    "orders": {
+      "title": "Platform orders"
+    }
+  },
+  "system": {
+    "settings": {
+      "title": "System settings"
+    },
+    "dictionaries": {
+      "title": "Dictionaries",
+      "categories": "Categories",
+      "items": "Items",
+      "addCategory": "Add category",
+      "addItem": "Add item"
+    },
+    "chainnet": {
+      "title": "Chain networks",
+      "networks": "Networks",
+      "tokens": "Payment tokens",
+      "addNetwork": "Add network",
+      "addToken": "Add token"
+    }
+  },
+  "assets": {
+    "balance": {
+      "title": "Balances",
+      "overview": "Balance overview",
+      "available": "Available",
+      "frozen": "Frozen",
+      "total": "Total"
+    },
+    "rewards": {
+      "title": "Rewards",
+      "history": "Reward history",
+      "overview": "Rewards overview"
+    },
+    "transactions": {
+      "title": "Transactions",
+      "type": "Type",
+      "amount": "Amount",
+      "time": "Time"
+    }
+  },
+  "contract": {
+    "smart": {
+      "title": "Smart contracts",
+      "overview": "Contract overview",
+      "address": "Contract address",
+      "network": "Network",
+      "status": "Status"
+    }
+  }
+}

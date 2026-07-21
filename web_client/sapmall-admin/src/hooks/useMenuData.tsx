@@ -22,7 +22,9 @@ export const useMenuData = () => {
     buildCategoryTree,
     getCategoryById,
     isCacheValid,
-    setLastFetchTime
+    setLastFetchTime,
+    clearCache,
+    clearCategoryListCache,
   } = useCategoryStore();
 
   const { isUserLoggedIn, getCurrentUser } = useUserStore();
@@ -145,11 +147,14 @@ export const useMenuData = () => {
     }
   }, [isUserLoggedIn, isLoading, isFetching, hasHydrated, categories, isCacheValid, setLoading, setCategories, setCategoryList, setLastFetchTime, flattenMenuTree, buildCategoryTree]);
 
-  // 刷新菜单数据
+  // 刷新菜单数据（强制清缓存后重拉，语言切换时需调用）
   const refreshMenus = useCallback(async () => {
+    clearCache();
+    clearCategoryListCache();
     setHasInitialized(false);
+    setIsFetching(false);
     await fetchUserMenus();
-  }, [fetchUserMenus]);
+  }, [fetchUserMenus, clearCache, clearCategoryListCache]);
 
   // 根据URL设置当前选中的菜单
   const setActiveMenuByUrl = useCallback((url: string) => {

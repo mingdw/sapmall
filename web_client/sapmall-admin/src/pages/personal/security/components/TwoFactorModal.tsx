@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, Input, Button } from 'antd';
 
 interface Props {
@@ -20,16 +21,17 @@ const TwoFactorModal: React.FC<Props> = ({
   onComplete,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const renderContent = () => {
     switch (step) {
       case 1:
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <p style={{ color: '#cbd5e1', fontSize: 13, margin: 0 }}>
-              请在您的手机上下载并安装以下任一认证应用：
+              {t('personal.security.modal.twoFactorStep1')}
             </p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {['Google Authenticator (推荐)', 'Microsoft Authenticator', 'Authy'].map((app) => (
+              {[t('personal.security.modal.twoFactorRecommended'), t('personal.security.modal.twoFactorApp2'), t('personal.security.modal.twoFactorApp3')].map((app) => (
                 <li key={app} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#94a3b8', fontSize: 13 }}>
                   <i className="fas fa-check-circle" style={{ color: '#22c55e' }}></i>
                   {app}
@@ -37,14 +39,14 @@ const TwoFactorModal: React.FC<Props> = ({
               ))}
             </ul>
             <Button type="primary" onClick={() => onStepChange(2)}>
-              下一步
+              {t('personal.security.modal.next')}
             </Button>
           </div>
         );
       case 2:
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <p style={{ color: '#cbd5e1', fontSize: 13, margin: 0 }}>使用认证应用扫描下方二维码：</p>
+            <p style={{ color: '#cbd5e1', fontSize: 13, margin: 0 }}>{t('personal.security.modal.twoFactorStep2')}</p>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <div style={{
                 width: 192, height: 192, background: 'rgba(30, 41, 59, 0.8)',
@@ -61,15 +63,15 @@ const TwoFactorModal: React.FC<Props> = ({
               background: 'rgba(30, 41, 59, 0.5)', borderRadius: 8, padding: 12, textAlign: 'center',
             }}>
               <p style={{ color: '#64748b', fontSize: 12, margin: '0 0 4px' }}>
-                如果无法扫描，请手动输入密钥：
+                {t('personal.security.modal.twoFactorManual')}
               </p>
               <code style={{ color: '#60a5fa', fontFamily: 'ui-monospace, monospace', fontSize: 13, letterSpacing: 1 }}>
                 JBSWY3DPEHPK3PXP
               </code>
             </div>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <Button onClick={() => onStepChange(1)}>上一步</Button>
-              <Button type="primary" onClick={() => onStepChange(3)}>下一步</Button>
+              <Button onClick={() => onStepChange(1)}>{t('personal.security.modal.prev')}</Button>
+              <Button type="primary" onClick={() => onStepChange(3)}>{t('personal.security.modal.next')}</Button>
             </div>
           </div>
         );
@@ -77,17 +79,17 @@ const TwoFactorModal: React.FC<Props> = ({
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <p style={{ color: '#cbd5e1', fontSize: 13, margin: 0 }}>
-              请输入认证应用显示的6位验证码：
+              {t('personal.security.modal.twoFactorStep3')}
             </p>
             <Input
-              placeholder="验证码"
+              placeholder={t('personal.security.modal.verificationCode')}
               maxLength={6}
               value={verificationCode}
               onChange={(e) => onCodeChange(e.target.value)}
             />
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <Button onClick={() => onStepChange(2)}>上一步</Button>
-              <Button type="primary" onClick={onComplete}>完成设置</Button>
+              <Button onClick={() => onStepChange(2)}>{t('personal.security.modal.prev')}</Button>
+              <Button type="primary" onClick={onComplete}>{t('personal.security.modal.complete')}</Button>
             </div>
           </div>
         );
@@ -98,7 +100,7 @@ const TwoFactorModal: React.FC<Props> = ({
 
   return (
     <Modal
-      title="设置双重认证"
+      title={t('personal.security.modal.twoFactorTitle')}
       open={open}
       onCancel={onClose}
       footer={null}

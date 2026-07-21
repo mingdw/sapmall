@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+﻿﻿import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { message } from 'antd';
 import type {
   NotificationData,
@@ -15,6 +16,7 @@ import {
 import styles from './NotificationManager.module.scss';
 
 const NotificationManager: React.FC = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState<NotificationData>(mockNotificationData);
   const [typeFilter, setTypeFilter] = useState<TypeFilterTab>('all');
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -48,7 +50,7 @@ const NotificationManager: React.FC = () => {
   };
 
   const handleSaveChannels = () => {
-    message.success('通知渠道设置已保存');
+    message.success(t('personal.notifications.channelSaved'));
     // TODO: Call API
     // notificationApi.updateChannels(data.channels);
   };
@@ -84,7 +86,7 @@ const NotificationManager: React.FC = () => {
       ...prev,
       types: prev.types.map((t) => ({ ...t, enabled: true })),
     }));
-    message.success('已全部启用');
+    message.success(t('personal.notifications.allEnabled'));
     // TODO: Call API
   };
 
@@ -93,7 +95,7 @@ const NotificationManager: React.FC = () => {
       ...prev,
       types: prev.types.map((t) => ({ ...t, enabled: false })),
     }));
-    message.success('已全部禁用');
+    message.success(t('personal.notifications.allDisabled'));
     // TODO: Call API
   };
 
@@ -103,13 +105,14 @@ const NotificationManager: React.FC = () => {
   };
 
   const handleSaveTypes = () => {
-    message.success('通知类型设置已保存');
+    message.success(t('personal.notifications.typeSaved'));
     // TODO: Call API
     // notificationApi.updateTypes(data.types);
   };
 
   return (
     <div className={styles.notificationPage}>
+      <h4 className={styles.sectionLabel}>{t('personal.notifications.title')}</h4>
       <ChannelSettingsCard
         channels={data.channels}
         onToggle={handleChannelToggle}

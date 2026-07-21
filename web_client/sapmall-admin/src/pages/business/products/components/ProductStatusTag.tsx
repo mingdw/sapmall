@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { getProductStatusConfig } from '../utils';
 import { ProductStatus } from '../constants';
 import styles from './StatusTag.module.scss';
@@ -8,8 +9,9 @@ interface ProductStatusTagProps {
 }
 
 const ProductStatusTag: React.FC<ProductStatusTagProps> = ({ status }) => {
-  const config = getProductStatusConfig(status);
-  
+  const { t } = useTranslation();
+  const config = getProductStatusConfig(status, t);
+
   // 根据状态获取对应的样式类名
   const getStatusClassName = (status: ProductStatus): string => {
     switch (status) {

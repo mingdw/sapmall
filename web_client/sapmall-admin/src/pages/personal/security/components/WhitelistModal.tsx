@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, Input, Button } from 'antd';
 import type { WhitelistAddress } from '../constants';
 import { formatAddress } from '../utils/securityUtils';
@@ -22,9 +23,12 @@ const WhitelistModal: React.FC<Props> = ({
   onAdd,
   onRemove,
   onClose,
-}) => (
+}) => {
+  const { t } = useTranslation();
+
+  return (
   <Modal
-    title="管理地址白名单"
+    title={t('personal.security.modal.whitelistTitle')}
     open={open}
     onCancel={onClose}
     footer={null}
@@ -34,24 +38,24 @@ const WhitelistModal: React.FC<Props> = ({
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div>
         <label style={{ display: 'block', color: '#cbd5e1', fontSize: 13, marginBottom: 6 }}>
-          添加新地址
+          {t('personal.security.modal.addNewAddress')}
         </label>
         <div style={{ display: 'flex', gap: 8 }}>
           <Input
-            placeholder="输入钱包地址"
+            placeholder={t('personal.security.modal.addressPlaceholder')}
             value={newAddress}
             onChange={(e) => onNewAddressChange(e.target.value)}
             style={{ flex: 1 }}
           />
-          <Button type="primary" onClick={onAdd}>添加</Button>
+          <Button type="primary" onClick={onAdd}>{t('personal.security.modal.add')}</Button>
         </div>
       </div>
       <table className={styles.whitelistTable}>
         <thead>
           <tr>
-            <th>地址</th>
-            <th>添加时间</th>
-            <th style={{ textAlign: 'right' }}>操作</th>
+            <th>{t('personal.security.modal.address')}</th>
+            <th>{t('personal.security.modal.addedAt')}</th>
+            <th style={{ textAlign: 'right' }}>{t('personal.security.modal.operation')}</th>
           </tr>
         </thead>
         <tbody>
@@ -67,7 +71,7 @@ const WhitelistModal: React.FC<Props> = ({
                   className={styles.btnDanger}
                   onClick={() => onRemove(item.address)}
                 >
-                  删除
+                  {t('personal.security.modal.delete')}
                 </button>
               </td>
             </tr>
@@ -75,7 +79,7 @@ const WhitelistModal: React.FC<Props> = ({
           {addresses.length === 0 && (
             <tr>
               <td colSpan={3} style={{ textAlign: 'center', color: '#475569', padding: 24 }}>
-                暂无白名单地址
+                {t('personal.security.modal.noWhitelist')}
               </td>
             </tr>
           )}
@@ -84,5 +88,6 @@ const WhitelistModal: React.FC<Props> = ({
     </div>
   </Modal>
 );
+};
 
 export default WhitelistModal;

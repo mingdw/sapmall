@@ -1,6 +1,7 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ActivityRecord, ActivityFilterType } from '../constants';
-import { ACTIVITY_PAGE_SIZE, ACTIVITY_FILTER_OPTIONS } from '../constants';
+import { ACTIVITY_PAGE_SIZE, getActivityFilterOptions } from '../constants';
 import styles from '../SecurityManager.module.scss';
 
 interface Props {
@@ -25,6 +26,8 @@ const ActivityHistoryCard: React.FC<Props> = ({
   onSearchChange,
   onPageChange,
 }) => {
+  const { t } = useTranslation();
+  const filterOptions = getActivityFilterOptions(t);
   const totalPages = Math.ceil(total / ACTIVITY_PAGE_SIZE);
   const startIdx = (page - 1) * ACTIVITY_PAGE_SIZE + 1;
   const endIdx = Math.min(page * ACTIVITY_PAGE_SIZE, total);
@@ -33,12 +36,12 @@ const ActivityHistoryCard: React.FC<Props> = ({
     <div className={styles.listCard}>
       <h4 className={styles.sectionLabel}>
         <i className="fas fa-history" style={{ fontSize: 13, color: '#8b5cf6' }}></i>
-        最近活动记录
+        {t('personal.security.activity')}
       </h4>
 
       <div className={styles.activityToolbar}>
         <div className={styles.filterGroup}>
-          {ACTIVITY_FILTER_OPTIONS.map((opt) => (
+          {filterOptions.map((opt) => (
             <button
               key={opt.key}
               type="button"
@@ -56,7 +59,7 @@ const ActivityHistoryCard: React.FC<Props> = ({
           <i className={`fas fa-search ${styles.searchIcon}`}></i>
           <input
             type="text"
-            placeholder="搜索活动..."
+            placeholder={t('common.search')}
             value={searchQuery}
             onChange={(e) => {
               onSearchChange(e.target.value);
@@ -110,7 +113,7 @@ const ActivityHistoryCard: React.FC<Props> = ({
             <i className="fas fa-chevron-left"></i>
           </button>
           <span className={styles.paginationInfo}>
-            显示 {startIdx}-{endIdx} / {total}
+            {startIdx}-{endIdx} / {total}
           </span>
           <button
             type="button"

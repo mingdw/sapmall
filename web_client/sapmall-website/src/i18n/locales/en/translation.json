@@ -26,7 +26,8 @@
       "globalService": "Global Service"
     },
     "buttons": {
-      "startTrading": "Start Trading",
+      "groupLabel": "Quick links",
+      "platformIntro": "Platform Intro",
       "readWhitepaper": "Read Whitepaper",
       "watchDemo": "Watch Demo"
     }
@@ -274,7 +275,8 @@
     "comingSoon": "Coming soon",
     "exampleData": "Sample metrics for demonstration",
     "skipToContent": "Skip to main content",
-    "step": "Step"
+    "step": "Step",
+    "backHome": "Back to home"
   },
   "howItWorks": {
     "title": "How Sapphire Mall works",
@@ -433,5 +435,460 @@
     "termsBody": "By using Sapphire Mall you agree to transact at your own risk on public blockchains. Virtual goods are subject to seller terms and applicable laws. The platform provides infrastructure only and does not custody user funds beyond smart-contract flows described in our documentation.",
     "cookieTitle": "Cookie Policy",
     "cookieBody": "We use essential cookies and local storage to remember language preferences and improve site performance. We do not use third-party advertising cookies. You can clear cookies via your browser settings at any time."
+  },
+  "presentation": {
+    "seoTitle": "Platform Introduction",
+    "seoDesc": "Browse Sapphire Mall as a slide deck — positioning, solution, and roadmap.",
+    "toolbar": "Slide controls",
+    "prev": "Previous",
+    "next": "Next",
+    "slide": "Slide",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "keyboardHint": "Use arrow keys or Space to navigate",
+    "thumbnails": "Slide thumbnails",
+    "slides": {
+      "cover": {
+        "navTitle": "Cover",
+        "title": "Sapphire Mall Introduction",
+        "subtitle": "A community-driven decentralized marketplace for virtual goods",
+        "footer": "Sapphire Mall Brand Team"
+      },
+      "toc": {
+        "navTitle": "Contents",
+        "title": "Contents",
+        "items": [
+          "Platform Intro",
+          "E-commerce Pain Points",
+          "Decentralization Advantages",
+          "Roles & Revenue",
+          "Features & Entry",
+          "Future Roadmap"
+        ]
+      },
+      "intro": {
+        "navTitle": "Platform Intro",
+        "title": "Platform Introduction",
+        "intro": "Sapphire Mall is a blockchain-based decentralized marketplace for virtual goods, centered on DAO governance with SAP (ERC-20) as the ecosystem token. Payment strengths:",
+        "bullets": [
+          {
+            "title": "Stablecoin payments",
+            "desc": "Arc Testnet integration for USDC, EURC, cirBTC and more. Goods priced in USDC with near-instant on-chain settlement and low gas."
+          },
+          {
+            "title": "Bridge-free cross-chain",
+            "desc": "Pay with assets from multiple chains without manual bridging. PaymentRouter and SettlementVault unify fund routing."
+          },
+          {
+            "title": "SAP incentives",
+            "desc": "SAP as a native payment option with fee discounts and community incentives — a trade–reward–govern loop."
+          }
+        ]
+      },
+      "overview": {
+        "navTitle": "Core Overview",
+        "title": "Platform Core Overview",
+        "subtitle": "Core building blocks and operating logic of Sapphire Mall",
+        "rows": [
+          {
+            "title": "Blockchain foundation",
+            "desc": "Built on blockchain with smart contracts for core logic — secure, transparent, and immutable."
+          },
+          {
+            "title": "Stablecoins + SAP",
+            "desc": "Arc-based stablecoin payments plus SAP for second-level settlement and cross-chain exchange."
+          },
+          {
+            "title": "Community co-governance",
+            "desc": "DAO governance lets buyers, creators, and contributors decide and share upside."
+          },
+          {
+            "title": "Multilingual & global",
+            "desc": "Built-in bilingual support and responsive UX for a global audience."
+          }
+        ]
+      },
+      "architecture": {
+        "navTitle": "Architecture",
+        "title": "Technical Architecture",
+        "subtitle": "How the stack and payment system work",
+        "rows": [
+          {
+            "title": "Dual-track payments",
+            "desc": "Stablecoins for stability and SAP for governance incentives."
+          },
+          {
+            "title": "Rules on contracts",
+            "desc": "Core rules live on-chain; order and asset state are publicly verifiable."
+          },
+          {
+            "title": "Traceable orders",
+            "desc": "Full order lifecycle is recorded on-chain for auditability and fairness."
+          },
+          {
+            "title": "Multi-chain ready",
+            "desc": "Roadmap includes Ethereum, Polygon, BSC and more to expand users and assets."
+          }
+        ]
+      },
+      "painpoints": {
+        "navTitle": "Pain Points",
+        "title": "Traditional E-commerce Pain Points",
+        "bullets": [
+          "Opaque listing fees, deposits, and marketing spend — hard for merchants to audit.",
+          "Funds sit in centralized escrow with counterparty and misappropriation risk.",
+          "Disputes follow unilateral platform rules that users cannot verify.",
+          "Unclear rights and revenue sharing for virtual goods hurt creators.",
+          "High cross-border costs and weak governance — users miss platform upside.",
+          "Long, opaque settlement cycles between platforms and merchants."
+        ]
+      },
+      "web2limits": {
+        "navTitle": "Web2 Limits",
+        "title": "Web2 E-commerce Limits",
+        "subtitle": "Typical problems and trust crises in traditional commerce",
+        "cells": [
+          {
+            "title": "Opaque fees",
+            "desc": "Listing fees, deposits, and marketing budgets are hard to audit; platforms hold absolute power."
+          },
+          {
+            "title": "Custody risk",
+            "desc": "Centralized escrow and clearing create counterparty and misappropriation risk."
+          },
+          {
+            "title": "Unfair disputes",
+            "desc": "Outcomes rely on unilateral rules; users cannot verify fairness."
+          },
+          {
+            "title": "Costly cross-border",
+            "desc": "Heavy regulation and fees, with limited paths for user governance."
+          }
+        ]
+      },
+      "merchant": {
+        "navTitle": "Merchant Impact",
+        "title": "Merchant Limits & Impact",
+        "subtitle": "Pain points transfer downstream and hurt merchant vitality",
+        "cols": [
+          {
+            "title": "Long settlement cycles",
+            "desc": "Opaque settlement ties up working capital and slows turnover."
+          },
+          {
+            "title": "Weak creator rights",
+            "desc": "Unclear rights, copyright, and revenue splits undermine creator income."
+          },
+          {
+            "title": "Data monopoly",
+            "desc": "Platforms own user data; merchants cannot build their own customer assets."
+          }
+        ]
+      },
+      "decentral": {
+        "navTitle": "Decentralization",
+        "title": "Decentralization Advantages",
+        "bullets": [
+          "Fast on-chain settlement and payments",
+          "Fair, open, transparent dispute handling",
+          "Globalization and UX",
+          "Community and multi-role value alignment",
+          "Community-driven platform"
+        ]
+      },
+      "settlement": {
+        "navTitle": "On-chain Settlement",
+        "title": "On-chain Settlement & Payments",
+        "subtitle": "An efficient, transparent on-chain clearing system",
+        "cards": [
+          {
+            "title": "Stablecoin options",
+            "desc": "EURC, USDC and more with cross-chain payments — familiar and stable."
+          },
+          {
+            "title": "On-chain clearing path",
+            "desc": "Clear settlement paths with real-time status — short cycles, transparent process."
+          },
+          {
+            "title": "Token incentives",
+            "desc": "SAP powers incentives and governance, binding value to participants."
+          },
+          {
+            "title": "Auditable status",
+            "desc": "Orders and assets on-chain — anyone can query and audit."
+          }
+        ]
+      },
+      "global": {
+        "navTitle": "Global Experience",
+        "title": "Globalization & Experience",
+        "subtitle": "A borderless, friendly Web3 user experience",
+        "cards": [
+          {
+            "title": "Built-in i18n",
+            "desc": "Chinese/English in the DApp and docs to serve global users."
+          },
+          {
+            "title": "Clear trade feedback",
+            "desc": "Wallet, network, and balance feedback reduce user mistakes."
+          },
+          {
+            "title": "Responsive Web3 UI",
+            "desc": "Dark Web3 visuals and responsive layout for desktop and mobile."
+          }
+        ]
+      },
+      "community": {
+        "navTitle": "Community Value",
+        "title": "Community & Value Alignment",
+        "subtitle": "Share platform value via DAO governance and multi-role design",
+        "cards": [
+          {
+            "title": "DAO governance",
+            "desc": "SAP holders propose and vote on fees, features, and treasury use."
+          },
+          {
+            "title": "Multi-role revenue",
+            "desc": "Buyers, creators, and contributors share outcomes under one rule set."
+          },
+          {
+            "title": "Transparent treasury",
+            "desc": "Fees enter the DAO treasury; use is decided by the community."
+          },
+          {
+            "title": "Consensus-driven ops",
+            "desc": "Decisions shift from a single operator to community consensus."
+          }
+        ]
+      },
+      "roles": {
+        "navTitle": "Roles & Revenue",
+        "title": "Roles & Revenue Model",
+        "bullets": [
+          {
+            "title": "Users / Buyers",
+            "desc": "Browse and buy virtual goods; earn SAP via governance, review, arbitration, and tasks."
+          },
+          {
+            "title": "Creators / Merchants",
+            "desc": "List after certification (IPFS-ready); creators keep sales; platform takes fees by rule."
+          },
+          {
+            "title": "Contributors / Jurors",
+            "desc": "Review listings and disputes for incentives; qualifications link to SAP."
+          },
+          {
+            "title": "Platform / DAO treasury",
+            "desc": "Fees fund buybacks, incentives, or building — decided by the DAO."
+          }
+        ]
+      },
+      "rolesDetail": {
+        "navTitle": "Roles Detail",
+        "title": "Roles & Revenue Model",
+        "bullets": [
+          {
+            "title": "Users / Buyers",
+            "desc": "Browse and buy; join governance, review, arbitration, and tasks for SAP or rights."
+          },
+          {
+            "title": "Creators / Merchants",
+            "desc": "List after certification; creators keep sales revenue; platform fees by rule."
+          },
+          {
+            "title": "Contributors / Jurors",
+            "desc": "Review and adjudicate for incentives; jury and deposits link to SAP."
+          },
+          {
+            "title": "Platform / DAO treasury",
+            "desc": "Fees enter the treasury for buybacks, incentives, or build-out."
+          }
+        ]
+      },
+      "fourRoles": {
+        "navTitle": "Four Major Roles",
+        "title": "Four Major Roles",
+        "subtitle": "Clear identities and duties for every participant",
+        "cards": [
+          {
+            "title": "Users / Buyers",
+            "desc": "Browse and buy virtual goods; join governance, review, and arbitration for SAP."
+          },
+          {
+            "title": "Creators / Merchants",
+            "desc": "List after certification with IPFS-ready storage; keep full sales revenue."
+          },
+          {
+            "title": "Contributors / Jurors",
+            "desc": "Review products and disputes to keep the ecosystem healthy — earn incentives."
+          },
+          {
+            "title": "Platform / DAO treasury",
+            "desc": "Core fund manager receiving fees and allocating per DAO decisions."
+          }
+        ]
+      },
+      "roleIncentives": {
+        "navTitle": "Role Incentives",
+        "title": "Role Earnings & Incentives",
+        "subtitle": "Economic returns and motivation for every role",
+        "cards": [
+          {
+            "title": "Creator sales income",
+            "desc": "Creators set prices and keep sales; the platform takes a small fee."
+          },
+          {
+            "title": "Juror review rewards",
+            "desc": "Contributors acting as jurors earn SAP or equity by contribution."
+          },
+          {
+            "title": "Buyer governance rights",
+            "desc": "SAP holders vote on direction and share ecosystem growth."
+          },
+          {
+            "title": "Treasury allocation",
+            "desc": "Treasury funds buybacks, incentives, and long-term build tied to growth."
+          }
+        ]
+      },
+      "featuresEntry": {
+        "navTitle": "Features & Entry",
+        "title": "Existing Features & Entry Points",
+        "bullets": [
+          "DApp client (sapmall-dapp)",
+          "Official website (sapmall-website)",
+          "Admin console (sapmall-admin)"
+        ]
+      },
+      "dappFeatures": {
+        "navTitle": "DApp Features",
+        "title": "DApp Core Features",
+        "subtitle": "Key capabilities of the Sapphire Mall DApp",
+        "cards": [
+          {
+            "title": "Marketplace browse",
+            "desc": "Classify, filter, list, and open details for tokenized goods."
+          },
+          {
+            "title": "Ecosystem campaigns",
+            "desc": "Aggregate campaigns and reward rules — e.g. Bags activities."
+          },
+          {
+            "title": "Asset exchange",
+            "desc": "SAPV/stablecoin exchange views, separate from campaign tokens."
+          },
+          {
+            "title": "DAO governance",
+            "desc": "View proposals and vote in community governance UI."
+          },
+          {
+            "title": "Help center",
+            "desc": "FAQ and flows for campaigns, wallets, and payments."
+          }
+        ]
+      },
+      "websiteOverview": {
+        "navTitle": "Website Overview",
+        "title": "Official Website Overview",
+        "subtitle": "Sapphire Mall website and brand value",
+        "cards": [
+          {
+            "title": "Brand narrative",
+            "desc": "Vision, strengths, and business model for users and partners."
+          },
+          {
+            "title": "Product guidance",
+            "desc": "Navigate users to DApp modules: market, DAO, Bags, and more."
+          },
+          {
+            "title": "Ecosystem entry",
+            "desc": "Community, docs, and partner links as an external hub."
+          },
+          {
+            "title": "News & announcements",
+            "desc": "Updates, releases, and media — transparent and timely."
+          }
+        ]
+      },
+      "adminModules": {
+        "navTitle": "Admin Modules",
+        "title": "Admin Function Modules",
+        "subtitle": "Multi-role back-office capabilities",
+        "cards": [
+          {
+            "title": "Ops dashboard",
+            "desc": "Real-time orders, users, and revenue for decisions."
+          },
+          {
+            "title": "User & merchant admin",
+            "desc": "Unified status and permission management."
+          },
+          {
+            "title": "Product management",
+            "desc": "List, delist, and edit goods via ProductManagement."
+          },
+          {
+            "title": "System configuration",
+            "desc": "Dictionaries, parameters, and configs for flexibility."
+          }
+        ]
+      },
+      "roadmap": {
+        "navTitle": "Future Roadmap",
+        "title": "Future Development Plan",
+        "bullets": [
+          "Payment & asset planning",
+          "Growth & community planning",
+          "Creators & commercialization",
+          "Security & engineering delivery"
+        ]
+      },
+      "paymentPlan": {
+        "navTitle": "Payment & Assets",
+        "title": "Payment & Asset Planning",
+        "subtitle": "Deepen payment systems and asset capabilities",
+        "cards": [
+          {
+            "title": "More payment assets",
+            "desc": "Expand beyond dual-track payments with more compliant stablecoins."
+          },
+          {
+            "title": "Multi-chain UX",
+            "desc": "Multi-chain deploy plus clearer cross-chain asset views and switching."
+          },
+          {
+            "title": "Core contract depth",
+            "desc": "Iterate trading, merchant auth, and goods forms from MVP to V2/V3."
+          }
+        ]
+      },
+      "thanks": {
+        "navTitle": "Thank You",
+        "title": "Thank You",
+        "subtitle": "Join Sapphire Mall and help build the decentralized virtual goods ecosystem",
+        "footer": "Sapphire Mall"
+      }
+    },
+    "startAutoplay": "Autoplay",
+    "stopAutoplay": "Stop autoplay",
+    "autoplaying": "Playing",
+    "autoplayHint": "Autoplay (shortcut: A)"
+  },
+  "whitepaper": {
+    "seoTitle": "Whitepaper",
+    "seoDesc": "Read the Sapphire Mall whitepaper: market problems, Arc payments, roles, architecture, and tokenomics.",
+    "eyebrow": "Official docs",
+    "docTitle": "Sapphire Mall Whitepaper",
+    "version": "v0.5.0",
+    "toc": "Contents"
+  },
+  "demo": {
+    "seoTitle": "Product Demo",
+    "seoDesc": "Watch the Sapphire Mall product demo.",
+    "title": "Product Demo",
+    "subtitle": "A short walkthrough of marketplace, stablecoin checkout, and DAO governance.",
+    "openYoutube": "Open on YouTube",
+    "toPresentation": "Platform Intro",
+    "toWhitepaper": "Read Whitepaper"
   }
 }

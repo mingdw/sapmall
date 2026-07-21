@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type {
   SecurityScore,
   WalletSecuritySettings,
@@ -22,12 +23,20 @@ export type {
 
 export const ACTIVITY_PAGE_SIZE = 6;
 
-export const ACTIVITY_FILTER_OPTIONS: { key: ActivityFilterType; label: string }[] = [
-  { key: 'all', label: '全部' },
-  { key: 'login', label: '登录' },
-  { key: 'transaction', label: '交易' },
-  { key: 'settings', label: '设置' },
+const ACTIVITY_FILTER_DEFS: { key: ActivityFilterType; labelKey: string }[] = [
+  { key: 'all', labelKey: 'personal.security.filterAll' },
+  { key: 'login', labelKey: 'personal.security.filterLogin' },
+  { key: 'transaction', labelKey: 'personal.security.filterTransaction' },
+  { key: 'settings', labelKey: 'personal.security.filterSettings' },
 ];
+
+/** @deprecated 请使用 getActivityFilterOptions(t) */
+export const ACTIVITY_FILTER_OPTIONS: { key: ActivityFilterType; label: string }[] =
+  ACTIVITY_FILTER_DEFS.map((d) => ({ key: d.key, label: d.labelKey }));
+
+export function getActivityFilterOptions(t: TFunction) {
+  return ACTIVITY_FILTER_DEFS.map((d) => ({ key: d.key, label: t(d.labelKey) }));
+}
 
 export const mockSecurityData: SecurityData = {
   score: {

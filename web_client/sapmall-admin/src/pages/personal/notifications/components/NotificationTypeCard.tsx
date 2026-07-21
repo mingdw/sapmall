@@ -1,11 +1,16 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type {
   NotificationTypeItem,
   TypeFilterTab,
   NotificationChannel,
   FrequencyOption,
 } from '../types';
-import { TYPE_FILTER_TABS, FREQUENCY_OPTIONS, IMPORTANCE_CONFIG } from '../constants';
+import {
+  getTypeFilterTabs,
+  getFrequencyOptions,
+  IMPORTANCE_CONFIG,
+} from '../constants';
 import styles from '../NotificationManager.module.scss';
 
 interface Props {
@@ -21,12 +26,6 @@ interface Props {
   onSave: () => void;
 }
 
-const CHANNEL_ICONS: { key: NotificationChannel; icon: string; label: string }[] = [
-  { key: 'email', icon: 'fa-envelope', label: '邮件通知' },
-  { key: 'mobile', icon: 'fa-mobile-alt', label: '手机通知' },
-  { key: 'browser', icon: 'fa-desktop', label: '浏览器通知' },
-];
-
 const NotificationTypeCard: React.FC<Props> = ({
   types,
   filter,
@@ -39,18 +38,27 @@ const NotificationTypeCard: React.FC<Props> = ({
   onPreview,
   onSave,
 }) => {
-  const filtered = filter === 'all' ? types : types.filter((t) => t.category === filter);
+  const { t } = useTranslation();
+  const typeTabs = getTypeFilterTabs(t);
+  const frequencyOptions = getFrequencyOptions(t);
+  const filtered = filter === 'all' ? types : types.filter((item) => item.category === filter);
+
+  const channelIcons: { key: NotificationChannel; icon: string; label: string }[] = [
+    { key: 'email', icon: 'fa-envelope', label: t('personal.notifications.email') },
+    { key: 'mobile', icon: 'fa-mobile-alt', label: t('personal.notifications.mobile') },
+    { key: 'browser', icon: 'fa-desktop', label: t('personal.notifications.browser') },
+  ];
 
   return (
     <div className={styles.listCard}>
       <h4 className={styles.sectionLabel}>
         <i className="fas fa-list-alt" style={{ fontSize: 13, color: '#06b6d4' }}></i>
-        通知类型设置
+        {t('personal.notifications.types')}
       </h4>
 
       <div className={styles.toolbar}>
         <div className={styles.filterGroup}>
-          {TYPE_FILTER_TABS.map((tab) => (
+          {typeTabs.map((tab) => (
             <button
               key={tab.key}
               type="button"
@@ -64,11 +72,11 @@ const NotificationTypeCard: React.FC<Props> = ({
         <div className={styles.actionGroup}>
           <button type="button" className={styles.btnOutline} onClick={onEnableAll}>
             <i className="fas fa-check-circle"></i>
-            全部启用
+            {t('common.enable')}
           </button>
           <button type="button" className={styles.btnOutline} onClick={onDisableAll}>
             <i className="fas fa-times-circle"></i>
-            全部禁用
+            {t('common.disable')}
           </button>
         </div>
       </div>
@@ -86,26 +94,32 @@ const NotificationTypeCard: React.FC<Props> = ({
                   <i className={`fas ${item.icon}`}></i>
                 </div>
                 <h4 className={styles.notifTitle}>
-                  {item.title}
+                  {t(`personal.notifications.typeItems.${item.id.replace(/-/g, '')}`)}
                   {impCfg && (
                     <span
                       className={styles.importanceBadge}
-                      style={{ color: impCfg.color, background: impCfg.bg, border: `1px solid ${impCfg.border}` }}
+                      style={{
+                        color: impCfg.color,
+                        background: impCfg.bg,
+                        border: `1px solid ${impCfg.border}`,
+                      }}
                     >
-                      {impCfg.label}
+                      {t(impCfg.labelKey)}
                     </span>
                   )}
                 </h4>
               </div>
-              <p className={styles.notifDesc}>{item.description}</p>
+              <p className={styles.notifDesc}>{t(`personal.notifications.typeItems.${item.id.replace(/-/g, '')}Desc`)}</p>
               <div className={styles.channelRow}>
                 <div className={styles.channelOptions}>
-                  {CHANNEL_ICONS.map((ch) => (
+                  {channelIcons.map((ch) => (
                     <button
                       key={ch.key}
                       type="button"
                       title={ch.label}
-                      className={`${styles.channelOption} ${item.channels[ch.key] ? styles.channelOptionActive : ''}`}
+                      className={`${styles.channelOption} ${
+                        item.channels[ch.key] ? styles.channelOptionActive : ''
+                      }`}
                       onClick={() => onToggleChannel(item.id, ch.key)}
                     >
                       <i className={`fas ${ch.icon}`}></i>
@@ -116,10 +130,14 @@ const NotificationTypeCard: React.FC<Props> = ({
                   <select
                     className={styles.frequencySelect}
                     value={item.frequency || 'immediate'}
-                    onChange={(e) => onFrequencyChange(item.id, e.target.value as FrequencyOption)}
+                    onChange={(e) =>
+                      onFrequencyChange(item.id, e.target.value as FrequencyOption)
+                    }
                   >
-                    {FREQUENCY_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    {frequencyOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
                     ))}
                   </select>
                 )}
@@ -132,11 +150,13 @@ const NotificationTypeCard: React.FC<Props> = ({
                 onClick={() => onPreview(item.id)}
               >
                 <i className="fas fa-eye"></i>
-                预览
+                {t('personal.notifications.preview')}
               </button>
               <button
                 type="button"
-                className={`${styles.toggleSwitch} ${item.enabled ? styles.toggleOn : styles.toggleOff}`}
+                className={`${styles.toggleSwitch} ${
+                  item.enabled ? styles.toggleOn : styles.toggleOff
+                }`}
                 onClick={() => onToggleType(item.id)}
               >
                 <span className={styles.toggleKnob} />
@@ -150,7 +170,7 @@ const NotificationTypeCard: React.FC<Props> = ({
         <div className={styles.notifInfo}>
           <button type="button" className={styles.btnPrimary} onClick={onSave}>
             <i className="fas fa-save"></i>
-            保存通知设置
+            {t('common.save')}
           </button>
         </div>
       </div>

@@ -1,5 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { DatePicker, Form, Input, Modal, Radio, Spin } from 'antd';
 import MessageUtils from '../../../../utils/messageUtils';
 import type {
@@ -107,10 +109,10 @@ const SectionCard: React.FC<{
   );
 };
 
-const getGenderText = (gender: ProfileGender): string => {
-  if (gender === 'male') return '男';
-  if (gender === 'female') return '女';
-  return '未设置';
+const getGenderText = (gender: ProfileGender, t: TFunction): string => {
+  if (gender === 'male') return t('personal.profile.gender.male');
+  if (gender === 'female') return t('personal.profile.gender.female');
+  return t('personal.profile.gender.unknown');
 };
 
 const formatWalletAddress = (address?: string): string => {
@@ -119,14 +121,15 @@ const formatWalletAddress = (address?: string): string => {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
-const getKycText = (status: KycStatus): string => {
-  if (status === 'verified') return '已认证';
-  if (status === 'pending') return '审核中';
-  return '未认证';
+const getKycText = (status: KycStatus, t: TFunction): string => {
+  if (status === 'verified') return t('personal.profile.kyc.verified');
+  if (status === 'pending') return t('personal.profile.kyc.pending');
+  return t('personal.profile.kyc.notVerified');
 };
 
 const getMerchantStatusMeta = (
   status: MerchantDepositStatus,
+  t: TFunction,
 ): {
   text: string;
   className: string;
@@ -135,45 +138,39 @@ const getMerchantStatusMeta = (
 } => {
   if (status === 'pending_payment') {
     return {
-      text: '待缴纳保证金',
+      text: t('personal.profile.merchant.status.pendingPayment'),
       className: styles.authStatusPending,
       icon: 'fas fa-wallet',
-      actionText: '去缴纳保证金',
+      actionText: t('personal.profile.merchant.action.payDeposit'),
     };
   }
   if (status === 'confirming') {
     return {
-      text: '链上确认中',
+      text: t('personal.profile.merchant.status.confirming'),
       className: styles.authStatusPending,
       icon: 'fas fa-clock',
-      actionText: '查看支付进度',
+      actionText: t('personal.profile.merchant.action.viewPayProgress'),
     };
   }
   if (status === 'paid') {
     return {
-      text: '已开通',
+      text: t('personal.profile.merchant.status.paid'),
       className: styles.authStatusSuccess,
       icon: 'fas fa-check-circle',
-      actionText: '查看状态',
+      actionText: t('personal.profile.merchant.action.viewStatus'),
     };
   }
   return {
-    text: '未申请',
+    text: t('personal.profile.merchant.status.notApplied'),
     className: styles.authStatusDanger,
     icon: 'fas fa-store-slash',
-    actionText: '去申请',
+    actionText: t('personal.profile.merchant.action.apply'),
   };
 };
 
-const getMerchantStatusText = (status: MerchantDepositStatus): string => {
-  if (status === 'pending_payment') return '待缴纳保证金';
-  if (status === 'confirming') return '链上确认中';
-  if (status === 'paid') return '已认证';
-  return '未认证';
-};
-
 const getIntentStatusMeta = (
-  depositStatus?: number,
+  depositStatus: number | undefined,
+  t: TFunction,
 ): {
   title: string;
   description: string;
@@ -182,82 +179,80 @@ const getIntentStatusMeta = (
 } => {
   if (depositStatus === 1) {
     return {
-      title: '待支付保证金',
-      description: '请在有效期内前往 DApp 完成保证金支付，超时后申请单将失效。',
+      title: t('personal.profile.merchant.intent.pendingPaymentTitle'),
+      description: t('personal.profile.merchant.intent.pendingPaymentDesc'),
       icon: 'fas fa-wallet',
       tone: 'warning',
     };
   }
   if (depositStatus === 2) {
     return {
-      title: '链上确认中',
-      description: '系统正在等待区块确认，确认完成后将自动更新商家认证状态。',
+      title: t('personal.profile.merchant.intent.confirmingTitle'),
+      description: t('personal.profile.merchant.intent.confirmingDesc'),
       icon: 'fas fa-spinner',
       tone: 'info',
     };
   }
   if (depositStatus === 3) {
     return {
-      title: '申请完成',
-      description: '保证金已确认到账，当前账户已具备商家认证资格。',
+      title: t('personal.profile.merchant.intent.completedTitle'),
+      description: t('personal.profile.merchant.intent.completedDesc'),
       icon: 'fas fa-check-circle',
       tone: 'success',
     };
   }
   if (depositStatus === 4) {
     return {
-      title: '保证金已退还',
-      description: '当前申请单已完成退款流程，请关注退还交易哈希。',
+      title: t('personal.profile.merchant.intent.refundedTitle'),
+      description: t('personal.profile.merchant.intent.refundedDesc'),
       icon: 'fas fa-rotate-left',
       tone: 'info',
     };
   }
   if (depositStatus === 5) {
     return {
-      title: '申请失败',
-      description: '申请流程执行失败，请查看失败原因并重新发起申请。',
+      title: t('personal.profile.merchant.intent.failedTitle'),
+      description: t('personal.profile.merchant.intent.failedDesc'),
       icon: 'fas fa-circle-xmark',
       tone: 'danger',
     };
   }
   if (depositStatus === 6) {
     return {
-      title: '申请已过期',
-      description: '申请单已过有效期，请重新发起申请并及时完成支付。',
+      title: t('personal.profile.merchant.intent.expiredTitle'),
+      description: t('personal.profile.merchant.intent.expiredDesc'),
       icon: 'fas fa-hourglass-end',
       tone: 'danger',
     };
   }
   return {
-    title: '申请处理中',
-    description: '系统正在处理申请单信息，请稍后刷新查看最新状态。',
+    title: t('personal.profile.merchant.intent.processingTitle'),
+    description: t('personal.profile.merchant.intent.processingDesc'),
     icon: 'fas fa-file-lines',
     tone: 'info',
   };
 };
 
-const getOperationBizLabel = (module: string): string => {
-  const map: Record<string, string> = {
-    profile: '资料',
-    security: '安全',
-    kyc: '认证',
-    merchant: '商家',
-    deposit: '保证金',
-    auth: '登录',
-  };
-  return map[module] || module || '其他';
+const getOperationBizLabel = (module: string, t: TFunction): string => {
+  const key = `personal.profile.logs.biz.${module}`;
+  const translated = t(key, { defaultValue: '' });
+  if (translated && translated !== key) {
+    return translated;
+  }
+  return module || t('personal.profile.logs.biz.other');
 };
 
 const getOperationResultMeta = (
   status: ProfileOperationLogItem['resultStatus'],
+  t: TFunction,
 ): { className: string; text: string } => {
   if (status === 'failed') {
-    return { className: styles.operationLogResultFail, text: '失败' };
+    return { className: styles.operationLogResultFail, text: t('personal.profile.logs.result.failed') };
   }
   if (status === 'partial') {
-    return { className: styles.operationLogResultPartial, text: '部分' };
+    return { className: styles.operationLogResultPartial, text: t('personal.profile.logs.result.partial') };
   }
-  return { className: styles.operationLogResultOk, text: '成功' };
+  return { className: styles.operationLogResultOk, text: t('personal.profile.logs.result.success') };
 };
 
 const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
@@ -274,6 +269,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
   onMerchantOpenDapp,
   onMerchantMarkPaid,
 }) => {
+  const { t } = useTranslation();
   const [showKycDetail, setShowKycDetail] = React.useState(false);
   const [showMerchantDetailModal, setShowMerchantDetailModal] = React.useState(false);
   const [operationLogVisibleCount, setOperationLogVisibleCount] = React.useState(OPERATION_LOG_PAGE_SIZE);
@@ -314,13 +310,13 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
   };
 
   const handleSubmitField = (fieldLabel: string) => {
-    MessageUtils.success(`${fieldLabel}修改成功`);
+    MessageUtils.success(t('personal.profile.msg.fieldUpdateSuccess', { field: fieldLabel }));
   };
 
   const handleSubmitNickname = async () => {
     const trimmedNickname = profile.nickname.trim();
     if (!trimmedNickname) {
-      MessageUtils.warning('昵称不能为空');
+      MessageUtils.warning(t('personal.profile.msg.nicknameEmpty'));
       return;
     }
     setSubmittingNickname(true);
@@ -328,7 +324,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
     setSubmittingNickname(false);
     if (success) {
       setLastSubmittedNickname(trimmedNickname);
-      handleSubmitField('昵称');
+      handleSubmitField(t('personal.profile.forms.nickname.title'));
     }
   };
 
@@ -342,7 +338,9 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
     const success = await onSubmitProfileField({ gender: nextGender });
     setSubmittingGender(false);
     if (success) {
-      MessageUtils.success(`性别已更新为${getGenderText(nextGender)}`);
+      MessageUtils.success(
+        t('personal.profile.msg.genderUpdated', { gender: getGenderText(nextGender, t) }),
+      );
       return;
     }
     updateProfileField('gender', previousGender);
@@ -350,7 +348,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
 
   const handleSubmitBirthday = async () => {
     if (!profile.birthday) {
-      MessageUtils.warning('请先选择生日');
+      MessageUtils.warning(t('personal.profile.msg.selectBirthdayFirst'));
       return;
     }
     setSubmittingBirthday(true);
@@ -358,7 +356,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
     setSubmittingBirthday(false);
     if (success) {
       setLastSubmittedBirthday(profile.birthday);
-      handleSubmitField('生日');
+      handleSubmitField(t('personal.profile.forms.birthday.title'));
     }
   };
 
@@ -371,27 +369,31 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
       : styles.authStatusDanger;
   const securityEnabled = profile.emailVerified && profile.phoneVerified;
   const securityStatusClass = securityEnabled ? styles.authStatusSuccess : styles.authStatusDanger;
-  const securityStatusText = securityEnabled ? '已启用保护' : '未启用保护';
-  const merchantMeta = getMerchantStatusMeta(profile.merchantDepositStatus);
+  const securityStatusText = securityEnabled
+    ? t('personal.profile.forms.securityEnabled')
+    : t('personal.profile.forms.securityDisabled');
+  const merchantMeta = getMerchantStatusMeta(profile.merchantDepositStatus, t);
   const isMerchantNotApplied = profile.merchantDepositStatus === 'not_applied';
-  const merchantActionText = isMerchantNotApplied ? '申请成为商家' : '查看申请单';
-  const intentStatusMeta = getIntentStatusMeta(merchantIntent?.depositStatus);
+  const merchantActionText = isMerchantNotApplied
+    ? t('personal.profile.sections.auth.applyMerchant')
+    : t('personal.profile.sections.auth.viewApplication');
+  const intentStatusMeta = getIntentStatusMeta(merchantIntent?.depositStatus, t);
   const intentTimelineSteps = [
     {
       key: 'apply',
-      title: '提交申请',
+      title: t('personal.profile.merchant.timeline.apply'),
       time: merchantIntent?.createdAt || '--',
       state: merchantIntent ? 'done' : 'pending',
     },
     {
       key: 'pay',
-      title: '支付保证金',
+      title: t('personal.profile.merchant.timeline.pay'),
       time: merchantIntent?.paidAt || '--',
       state: merchantIntent?.depositStatus && merchantIntent.depositStatus >= 2 ? 'done' : 'active',
     },
     {
       key: 'confirm',
-      title: '链上确认',
+      title: t('personal.profile.merchant.timeline.confirm'),
       time: merchantIntent?.confirmedAt || '--',
       state: merchantIntent?.depositStatus === 3 ? 'done' : 'pending',
     },
@@ -405,14 +407,18 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
 
   return (
     <div className={styles.sectionList}>
-      <SectionCard icon="fa-shield-alt" title="认证信息" subtitle="统一管理KYC、安全认证与商家认证状态">
+      <SectionCard
+        icon="fa-shield-alt"
+        title={t('personal.profile.sections.auth.title')}
+        subtitle={t('personal.profile.sections.auth.subtitle')}
+      >
         <SectionForm>
           <SectionFormItem
-            title="KYC认证"
-            description="身份实名与证件信息审核"
+            title={t('personal.profile.sections.auth.kycTitle')}
+            description={t('personal.profile.sections.auth.kycDesc')}
             statusNode={
               <span className={`${styles.labelStatusPill} ${kycStatusClass}`}>
-                {getKycText(profile.kycStatus)}
+                {getKycText(profile.kycStatus, t)}
               </span>
             }
           >
@@ -425,7 +431,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                   className={styles.authActionUnifiedBtn}
                   onClick={onOpenKyc}
                 >
-                  去认证
+                  {t('personal.profile.sections.auth.goVerify')}
                 </AdminButton>
               ) : profile.kycStatus === 'pending' ? (
                 <AdminButton
@@ -435,7 +441,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                   className={styles.authActionUnifiedBtn}
                   onClick={onOpenKyc}
                 >
-                  查看进度
+                  {t('personal.profile.sections.auth.viewProgress')}
                 </AdminButton>
               ) : (
                 <AdminButton
@@ -445,7 +451,9 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                   className={styles.authActionUnifiedBtn}
                   onClick={() => setShowKycDetail((prev) => !prev)}
                 >
-                  {showKycDetail ? '收起详情' : '查看认证信息'}
+                  {showKycDetail
+                    ? t('personal.profile.sections.auth.collapseDetail')
+                    : t('personal.profile.sections.auth.viewDetail')}
                 </AdminButton>
               )}
             </div>
@@ -454,27 +462,27 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
           {isKycVerified && showKycDetail && (
             <div className={styles.kycDetailPanel}>
               <div className={styles.kycDetailRow}>
-                <span>认证姓名</span>
+                <span>{t('personal.profile.sections.auth.verifiedName')}</span>
                 <span>{profile.nickname || profile.username}</span>
               </div>
               <div className={styles.kycDetailRow}>
-                <span>认证手机</span>
+                <span>{t('personal.profile.sections.auth.verifiedPhone')}</span>
                 <span>{profile.phone}</span>
               </div>
               <div className={styles.kycDetailRow}>
-                <span>认证邮箱</span>
+                <span>{t('personal.profile.sections.auth.verifiedEmail')}</span>
                 <span>{profile.email}</span>
               </div>
               <div className={styles.kycDetailRow}>
-                <span>认证状态</span>
-                <span>{getKycText(profile.kycStatus)}</span>
+                <span>{t('personal.profile.sections.auth.verifiedStatus')}</span>
+                <span>{getKycText(profile.kycStatus, t)}</span>
               </div>
             </div>
           )}
 
           <SectionFormItem
-            title="安全认证"
-            description="账户安全保护机制状态"
+            title={t('personal.profile.sections.auth.securityTitle')}
+            description={t('personal.profile.sections.auth.securityDesc')}
             statusNode={
               <span className={`${styles.labelStatusPill} ${securityStatusClass}`}>
                 {securityStatusText}
@@ -488,14 +496,14 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                 icon="fas fa-eye"
                 className={styles.authActionUnifiedBtn}
               >
-                查看详情
+                {t('personal.profile.sections.auth.securityViewDetail')}
               </AdminButton>
             </div>
           </SectionFormItem>
 
           <SectionFormItem
-            title="商家认证"
-            description="商家身份审核与资质认证"
+            title={t('personal.profile.sections.auth.merchantTitle')}
+            description={t('personal.profile.sections.auth.merchantDesc')}
             statusNode={
               <span className={`${styles.labelStatusPill} ${merchantMeta.className}`}>
                 {merchantMeta.text}
@@ -523,41 +531,52 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
               </AdminButton>
             </div>
           </SectionFormItem>
-
         </SectionForm>
       </SectionCard>
-
-      <SectionCard icon="fa-user-circle" title="基础资料" subtitle="维护用户身份与展示信息">
+      <SectionCard
+        icon="fa-user-circle"
+        title={t('personal.profile.sections.basic.title')}
+        subtitle={t('personal.profile.sections.basic.subtitle')}
+      >
         <SectionForm>
-          <SectionFormItem title="用户ID" description="系统分配的唯一标识符">
+          <SectionFormItem
+            title={t('personal.profile.forms.userId.title')}
+            description={t('personal.profile.forms.userId.description')}
+          >
             <div className={styles.readonlyFieldRow}>
               <Input className={styles.inlineField} value={profile.userId} disabled bordered={false} />
               <span className={styles.fieldActionSlot}>
-                <span className={styles.readonlyFieldAction} title="禁止修改">
+                <span className={styles.readonlyFieldAction} title={t('personal.profile.forms.readonlyHint')}>
                   <i className="fas fa-lock"></i>
                 </span>
               </span>
             </div>
           </SectionFormItem>
 
-          <SectionFormItem title="用户名" description="登录账号即钱包地址">
+          <SectionFormItem
+            title={t('personal.profile.forms.username.title')}
+            description={t('personal.profile.forms.username.description')}
+          >
             <div className={styles.readonlyFieldRow}>
               <Input
                 className={styles.inlineField}
                 value={formatWalletAddress(profile.walletAddress || profile.username)}
                 disabled
                 bordered={false}
-                placeholder="钱包地址"
+                placeholder={t('personal.profile.walletAddress')}
               />
               <span className={styles.fieldActionSlot}>
-                <span className={styles.readonlyFieldAction} title="禁止修改">
+                <span className={styles.readonlyFieldAction} title={t('personal.profile.forms.readonlyHint')}>
                   <i className="fas fa-lock"></i>
                 </span>
               </span>
             </div>
           </SectionFormItem>
 
-          <SectionFormItem title="注册时间" description="账户创建时间">
+          <SectionFormItem
+            title={t('personal.profile.forms.registerTime.title')}
+            description={t('personal.profile.forms.registerTime.description')}
+          >
             <div className={styles.readonlyFieldRow}>
               <Input
                 className={styles.inlineField}
@@ -566,20 +585,23 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                 bordered={false}
               />
               <span className={styles.fieldActionSlot}>
-                <span className={styles.readonlyFieldAction} title="禁止修改">
+                <span className={styles.readonlyFieldAction} title={t('personal.profile.forms.readonlyHint')}>
                   <i className="fas fa-lock"></i>
                 </span>
               </span>
             </div>
           </SectionFormItem>
 
-          <SectionFormItem title="昵称" description="用户展示名称">
+          <SectionFormItem
+            title={t('personal.profile.forms.nickname.title')}
+            description={t('personal.profile.forms.nickname.description')}
+          >
             <div className={styles.readonlyFieldRow}>
               <Input
                 className={styles.inlineField}
                 value={profile.nickname}
                 onChange={(event) => updateProfileField('nickname', event.target.value)}
-                placeholder="请输入昵称"
+                placeholder={t('personal.profile.forms.nickname.placeholder')}
                 bordered={false}
               />
               <span className={styles.fieldActionSlot}>
@@ -587,8 +609,8 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                   <button
                     type="button"
                     className={styles.fieldSubmitIconBtn}
-                    title="提交昵称修改"
-                    aria-label="提交昵称修改"
+                    title={t('personal.profile.forms.nickname.submitTitle')}
+                    aria-label={t('personal.profile.forms.nickname.submitAria')}
                     disabled={submittingNickname}
                     onClick={handleSubmitNickname}
                   >
@@ -599,7 +621,10 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
             </div>
           </SectionFormItem>
 
-          <SectionFormItem title="性别" description="用户性别信息">
+          <SectionFormItem
+            title={t('personal.profile.forms.gender.title')}
+            description={t('personal.profile.forms.gender.description')}
+          >
             <div className={styles.readonlyFieldRow}>
               <Radio.Group
                 className={styles.genderRadioGroup}
@@ -607,14 +632,17 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                 disabled={submittingGender}
                 onChange={(event) => handleGenderChange(event.target.value as ProfileGender)}
               >
-                <Radio value="male">{getGenderText('male')}</Radio>
-                <Radio value="female">{getGenderText('female')}</Radio>
+                <Radio value="male">{getGenderText('male', t)}</Radio>
+                <Radio value="female">{getGenderText('female', t)}</Radio>
               </Radio.Group>
               <span className={styles.fieldActionSlot}></span>
             </div>
           </SectionFormItem>
 
-          <SectionFormItem title="生日" description="用户出生日期">
+          <SectionFormItem
+            title={t('personal.profile.forms.birthday.title')}
+            description={t('personal.profile.forms.birthday.description')}
+          >
             <div className={styles.readonlyFieldRow}>
               <DatePicker
                 className={styles.inlineField}
@@ -623,7 +651,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                   updateProfileField('birthday', value ? value.format('YYYY-MM-DD') : '')
                 }
                 format="YYYY-MM-DD"
-                placeholder="请选择生日"
+                placeholder={t('personal.profile.forms.birthday.placeholder')}
                 allowClear
                 bordered={false}
                 inputReadOnly
@@ -633,8 +661,8 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                   <button
                     type="button"
                     className={styles.fieldSubmitIconBtn}
-                    title="提交生日修改"
-                    aria-label="提交生日修改"
+                    title={t('personal.profile.forms.birthday.submitTitle')}
+                    aria-label={t('personal.profile.forms.birthday.submitAria')}
                     disabled={submittingBirthday}
                     onClick={handleSubmitBirthday}
                   >
@@ -645,7 +673,10 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
             </div>
           </SectionFormItem>
 
-          <SectionFormItem title="注册时间" description="账户创建时间">
+          <SectionFormItem
+            title={t('personal.profile.forms.registerTime.title')}
+            description={t('personal.profile.forms.registerTime.description')}
+          >
             <div className={styles.readonlyFieldRow}>
               <Input
                 className={styles.inlineField}
@@ -654,61 +685,78 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                 bordered={false}
               />
               <span className={styles.fieldActionSlot}>
-                <span className={styles.readonlyFieldAction} title="禁止修改">
+                <span className={styles.readonlyFieldAction} title={t('personal.profile.forms.readonlyHint')}>
                   <i className="fas fa-lock"></i>
                 </span>
               </span>
             </div>
           </SectionFormItem>
-
         </SectionForm>
       </SectionCard>
 
-      <SectionCard icon="fa-address-book" title="联系方式" subtitle="用于通知、验证和安全告警">
+      <SectionCard
+        icon="fa-address-book"
+        title={t('personal.profile.sections.contact.title')}
+        subtitle={t('personal.profile.sections.contact.subtitle')}
+      >
         <SectionForm>
-          <SectionFormItem title="电子邮箱" description="用于接收重要通知和验证">
+          <SectionFormItem
+            title={t('personal.profile.forms.email.title')}
+            description={t('personal.profile.forms.email.description')}
+          >
             <div className={styles.fieldWithMeta}>
               <Input
                 className={styles.inlineField}
                 value={profile.email}
                 onChange={(event) => updateProfileField('email', event.target.value)}
-                placeholder="请输入电子邮箱"
+                placeholder={t('personal.profile.forms.email.placeholder')}
                 bordered={false}
               />
               <span className={`${styles.verifyTag} ${profile.emailVerified ? styles.verifyOk : styles.verifyWarn}`}>
                 <i className={`fas ${profile.emailVerified ? 'fa-check-circle' : 'fa-exclamation-circle'}`}></i>
-                {profile.emailVerified ? '已验证' : '未验证'}
+                {profile.emailVerified
+                  ? t('personal.profile.forms.email.verified')
+                  : t('personal.profile.forms.email.unverified')}
               </span>
             </div>
           </SectionFormItem>
 
-          <SectionFormItem title="手机号码" description="用于安全验证和重要通知">
+          <SectionFormItem
+            title={t('personal.profile.forms.phone.title')}
+            description={t('personal.profile.forms.phone.description')}
+          >
             <div className={styles.fieldWithMeta}>
               <Input
                 className={styles.inlineField}
                 value={profile.phone}
                 onChange={(event) => updateProfileField('phone', event.target.value)}
-                placeholder="请输入手机号码"
+                placeholder={t('personal.profile.forms.phone.placeholder')}
                 bordered={false}
               />
               <span className={`${styles.verifyTag} ${profile.phoneVerified ? styles.verifyOk : styles.verifyWarn}`}>
                 <i className={`fas ${profile.phoneVerified ? 'fa-check-circle' : 'fa-exclamation-circle'}`}></i>
-                {profile.phoneVerified ? '已验证' : '未验证'}
+                {profile.phoneVerified
+                  ? t('personal.profile.forms.phone.verified')
+                  : t('personal.profile.forms.phone.unverified')}
               </span>
             </div>
           </SectionFormItem>
         </SectionForm>
       </SectionCard>
 
-      <SectionCard icon="fa-history" title="操作记录" subtitle="近期账户相关操作，便于自查与安全审计">
+      <SectionCard
+        icon="fa-history"
+        title={t('personal.profile.sections.logs.title')}
+        subtitle={t('personal.profile.sections.logs.subtitle')}
+      >
         <div className={styles.operationLogPanel}>
           {profile.operationLogs.length === 0 ? (
-            <div className={styles.operationLogEmpty}>暂无操作记录</div>
+            <div className={styles.operationLogEmpty}>{t('personal.profile.sections.logs.empty')}</div>
           ) : (
             <>
               <ul className={styles.operationLogList}>
                 {operationLogsVisible.map((item) => {
-                  const resultMeta = getOperationResultMeta(item.resultStatus);
+                  const resultMeta = getOperationResultMeta(item.resultStatus, t);
                   return (
                     <li key={item.id} className={styles.operationLogItem}>
                       <div className={styles.operationLogIcon}>
@@ -724,7 +772,9 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                         <div className={styles.operationLogMeta}>
                           <span className={styles.operationLogTime}>{item.createdAt}</span>
                           <span className={styles.operationLogDot}>·</span>
-                          <span className={styles.operationLogModule}>{getOperationBizLabel(item.bizModule)}</span>
+                          <span className={styles.operationLogModule}>
+                            {getOperationBizLabel(item.bizModule, t)}
+                          </span>
                           <span className={styles.operationLogDot}>·</span>
                           <span className={styles.operationLogAction}>{item.actionType}</span>
                         </div>
@@ -741,7 +791,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                     onClick={handleOperationLogLoadMore}
                   >
                     <i className="fas fa-chevron-down"></i>
-                    加载更多
+                    {t('personal.profile.sections.logs.loadMore')}
                   </button>
                 </div>
               )}
@@ -751,7 +801,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
       </SectionCard>
 
       <Modal
-        title="商家申请单详情"
+        title={t('personal.profile.merchant.detailModalTitle')}
         open={showMerchantDetailModal}
         onCancel={() => setShowMerchantDetailModal(false)}
         footer={null}
@@ -762,7 +812,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
           {merchantDetailLoading && (
             <div className={styles.merchantDetailLoadingWrap}>
               <Spin size="large" />
-              <span>正在加载申请单详情...</span>
+              <span>{t('personal.profile.merchant.loadingDetail')}</span>
             </div>
           )}
 
@@ -779,7 +829,10 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                   </div>
                 </div>
                 <span className={styles.merchantStatusChip}>
-                  {merchantIntent.depositStatusDesc || `状态码 ${merchantIntent.depositStatus}`}
+                  {merchantIntent.depositStatusDesc ||
+                    t('personal.profile.merchant.intent.statusCodeFallback', {
+                      code: merchantIntent.depositStatus,
+                    })}
                 </span>
               </div>
 
@@ -805,51 +858,53 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
 
               <div className={styles.merchantInfoGrid}>
                 <div className={styles.merchantIntentPanel}>
-                  <div className={styles.merchantPanelTitle}>申请单信息</div>
+                  <div className={styles.merchantPanelTitle}>
+                    {t('personal.profile.merchant.panelApplication')}
+                  </div>
                   <div className={styles.merchantIntentRow}>
-                    <span>意图单ID</span>
+                    <span>{t('personal.profile.merchant.intentId')}</span>
                     <span>{merchantIntent.intentId || '--'}</span>
                   </div>
                   <div className={styles.merchantIntentRow}>
-                    <span>保证金金额</span>
+                    <span>{t('personal.profile.merchant.depositAmount')}</span>
                     <span>
                       {merchantIntent.amount || '--'} {merchantIntent.token || ''}
                     </span>
                   </div>
                   <div className={styles.merchantIntentRow}>
-                    <span>有效期至</span>
+                    <span>{t('personal.profile.merchant.expireAt')}</span>
                     <span>{merchantIntent.expireAt || '--'}</span>
                   </div>
                   <div className={styles.merchantIntentRow}>
-                    <span>创建时间</span>
+                    <span>{t('personal.profile.merchant.createdAt')}</span>
                     <span>{merchantIntent.createdAt || '--'}</span>
                   </div>
                   <div className={styles.merchantIntentRow}>
-                    <span>更新时间</span>
+                    <span>{t('personal.profile.merchant.updatedAt')}</span>
                     <span>{merchantIntent.updatedAt || '--'}</span>
                   </div>
                 </div>
 
                 <div className={styles.merchantIntentPanel}>
-                  <div className={styles.merchantPanelTitle}>链上与交易信息</div>
+                  <div className={styles.merchantPanelTitle}>{t('personal.profile.merchant.panelChain')}</div>
                   <div className={styles.merchantIntentRow}>
-                    <span>链ID</span>
+                    <span>{t('personal.profile.merchant.chainId')}</span>
                     <span>{merchantIntent.chainId || '--'}</span>
                   </div>
                   <div className={styles.merchantIntentRow}>
-                    <span>合约地址</span>
+                    <span>{t('personal.profile.merchant.contractAddress')}</span>
                     <span>{merchantIntent.contractAddress || '--'}</span>
                   </div>
                   <div className={styles.merchantIntentRow}>
-                    <span>代币地址</span>
+                    <span>{t('personal.profile.merchant.tokenAddress')}</span>
                     <span>{merchantIntent.tokenAddress || '--'}</span>
                   </div>
                   <div className={styles.merchantIntentRow}>
-                    <span>交易哈希</span>
+                    <span>{t('personal.profile.merchant.txHash')}</span>
                     <span>{merchantIntent.txHash || '--'}</span>
                   </div>
                   <div className={styles.merchantIntentRow}>
-                    <span>确认数</span>
+                    <span>{t('personal.profile.merchant.confirmations')}</span>
                     <span>{merchantIntent.confirmations ?? '--'}</span>
                   </div>
                 </div>
@@ -857,8 +912,12 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
 
               {(merchantIntent.failReason || merchantIntent.refundTxHash) && (
                 <div className={styles.merchantHintBlock}>
-                  {merchantIntent.failReason ? <p>失败原因：{merchantIntent.failReason}</p> : null}
-                  {merchantIntent.refundTxHash ? <p>退还哈希：{merchantIntent.refundTxHash}</p> : null}
+                  {merchantIntent.failReason ? (
+                    <p>{t('personal.profile.merchant.failReason', { reason: merchantIntent.failReason })}</p>
+                  ) : null}
+                  {merchantIntent.refundTxHash ? (
+                    <p>{t('personal.profile.merchant.refundHash', { hash: merchantIntent.refundTxHash })}</p>
+                  ) : null}
                 </div>
               )}
             </>
@@ -866,7 +925,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
 
           {!merchantDetailLoading && !merchantIntent && (
             <div className={styles.merchantHintBlock}>
-              <p>当前未查询到申请单详情，请稍后刷新页面重试。</p>
+              <p>{t('personal.profile.merchant.noDetail')}</p>
             </div>
           )}
 
@@ -879,7 +938,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                 loading={merchantLoading}
                 onClick={onMerchantOpenDapp}
               >
-                前往DApp缴纳保证金
+                {t('personal.profile.merchant.goDappPay')}
               </AdminButton>
             </div>
           )}
@@ -893,7 +952,7 @@ const ProfileSectionList: React.FC<ProfileSectionListProps> = ({
                 loading={merchantLoading}
                 onClick={onMerchantMarkPaid}
               >
-                我已完成支付
+                {t('personal.profile.merchant.markPaid')}
               </AdminButton>
             </div>
           )}

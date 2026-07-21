@@ -9,6 +9,7 @@ import (
 	"sapphire-mall/app/internal/svc"
 	"sapphire-mall/app/internal/types"
 	"sapphire-mall/app/internal/user"
+	"sapphire-mall/pkg/i18n"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,7 +36,8 @@ func (l *GetRoleMenuLogic) GetRoleMenu() (resp *types.BaseResp, err error) {
 		logx.Errorf("获取用户信息失败: %v", err)
 		return customererrors.FailMsg("获取用户信息失败"), nil
 	}
-	logx.Infof("获取用户菜单，用户ID: %d, 用户昵称: %s", userInfo.ID, userInfo.Nickname)
+	logx.Infof("获取用户菜单，用户ID: %d, 用户昵称: %s, locale: %s",
+		userInfo.ID, userInfo.Nickname, i18n.LocaleFrom(l.ctx))
 
 	// 2. 获取用户角色信息
 	userRoleRepository := repository.NewUserRoleRepository(l.svcCtx.GormDB)
@@ -56,11 +58,29 @@ func (l *GetRoleMenuLogic) GetRoleMenu() (resp *types.BaseResp, err error) {
 		allMenus = append(allMenus, roleMenus...)
 	}
 
+	// 3. 非默认语言时加载 sys_category 翻译（与商品类目树同源）
+	categoryNames, err := l.loadCategoryNameTranslations()
+	if err != nil {
+		logx.Errorf("加载菜单翻译失败: %v", err)
+		return customererrors.FailMsg("加载菜单翻译失败"), nil
+	}
+
 	// 4. 构建菜单树结构
-	menuTree := l.buildMenuTree(allMenus)
+	menuTree := l.buildMenuTree(allMenus, categoryNames)
 
 	// 5. 返回菜单数据
 	return customererrors.SuccessData(menuTree), nil
+}
+
+// loadCategoryNameTranslations 按当前 locale 批量读取 sys_category 名称翻译。
+// zh-CN 为默认语言，直接使用表内 name，不查翻译表。
+func (l *GetRoleMenuLogic) loadCategoryNameTranslations() (i18n.FieldsMap, error) {
+	locale := i18n.LocaleFrom(l.ctx)
+	if locale == i18n.DefaultLocale {
+		return nil, nil
+	}
+	transRepo := repository.NewTranslationRepository(l.svcCtx.GormDB)
+	return transRepo.BatchGetFields(l.ctx, i18n.TableSysCategory, locale)
 }
 
 // MenuTreeNode 菜单树节点结构
@@ -81,8 +101,8 @@ type MenuTreeNode struct {
 	Children    []*MenuTreeNode `json:"children,omitempty"`
 }
 
-// buildMenuTree 构建菜单树结构
-func (l *GetRoleMenuLogic) buildMenuTree(menus []model.Category) []*MenuTreeNode {
+// buildMenuTree 构建菜单树结构；有翻译时覆盖 name/title。
+func (l *GetRoleMenuLogic) buildMenuTree(menus []model.Category, categoryNames i18n.FieldsMap) []*MenuTreeNode {
 	// 先按菜单ID去重，避免用户拥有多个角色时同一菜单重复挂载
 	uniqueMenus := make([]model.Category, 0, len(menus))
 	seenMenuIDs := make(map[int64]struct{}, len(menus))
@@ -105,10 +125,11 @@ func (l *GetRoleMenuLogic) buildMenuTree(menus []model.Category) []*MenuTreeNode
 
 	// 第一遍遍历：创建所有菜单节点
 	for _, menu := range uniqueMenus {
+		name := categoryNames.Name(int64(menu.ID), menu.Name)
 		node := &MenuTreeNode{
 			ID:          int64(menu.ID),
-			Name:        menu.Name,
-			Title:       menu.Name,
+			Name:        name,
+			Title:       name,
 			Icon:        menu.Icon,
 			URL:         menu.Code,
 			Sort:        menu.Sort,

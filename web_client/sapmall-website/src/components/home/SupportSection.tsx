@@ -126,17 +126,30 @@ const SupportSection: React.FC<SupportSectionProps> = ({ onLaunchDApp }) => {
             </RevealOnScroll>
 
             <div className="grid sm:grid-cols-2 gap-4 mb-6">
-              {docCards.map((card, index) => (
-                <RevealOnScroll key={card.title} variant="up" delay={staggerDelay(index)}>
-                  <a href={card.href} target="_blank" rel="noopener noreferrer" className="doc-card">
+              {docCards.map((card, index) => {
+                const internal = card.href.startsWith('/') && !card.href.startsWith('//');
+                const className = 'doc-card';
+                const body = (
+                  <>
                     <div className="card-head card-head--sm">
                       <span className="card-head__icon" aria-hidden><card.icon strokeWidth={2.25} /></span>
                       <h4 className="card-head__title">{card.title}</h4>
                     </div>
                     <p className="doc-card__desc">{card.desc}</p>
-                  </a>
-                </RevealOnScroll>
-              ))}
+                  </>
+                );
+                return (
+                  <RevealOnScroll key={card.title} variant="up" delay={staggerDelay(index)}>
+                    {internal ? (
+                      <a href={card.href} className={className}>{body}</a>
+                    ) : (
+                      <a href={card.href} target="_blank" rel="noopener noreferrer" className={className}>
+                        {body}
+                      </a>
+                    )}
+                  </RevealOnScroll>
+                );
+              })}
             </div>
           </div>
 

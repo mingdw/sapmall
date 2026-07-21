@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Empty, Modal, Spin, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import AdminButton from '../../../components/common/AdminButton';
@@ -20,6 +21,7 @@ import {
 } from './components';
 
 const ChainNetManager: React.FC = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [chainList, setChainList] = useState<ChainNetworkInfo[]>([]);
   const [activeTabKey, setActiveTabKey] = useState<string>('');
@@ -201,6 +203,7 @@ const ChainNetManager: React.FC = () => {
   return (
     <ConfigProvider theme={chainnetTheme}>
       <div className={styles.chainnetPage}>
+        <h2 className={styles.emptyTitle}>{t('system.chainnet.title')}</h2>
       <Spin spinning={loading}>
         {chainList.length === 0 ? (
           <div className={styles.emptyState}>

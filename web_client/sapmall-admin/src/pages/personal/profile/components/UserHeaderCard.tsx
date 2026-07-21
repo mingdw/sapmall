@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import AdminButton from '../../../../components/common/AdminButton';
 import type { KycStatus, ProfileData } from '../types';
 import styles from '../ProfileManager.module.scss';
@@ -9,10 +11,10 @@ interface UserHeaderCardProps {
   onStartKyc: () => void;
 }
 
-const getKycStatusText = (status: KycStatus): string => {
-  if (status === 'verified') return '已认证';
-  if (status === 'pending') return '审核中';
-  return '未认证';
+const getKycStatusText = (status: KycStatus, t: TFunction): string => {
+  if (status === 'verified') return t('personal.profile.kyc.verified');
+  if (status === 'pending') return t('personal.profile.kyc.pending');
+  return t('personal.profile.kyc.notVerified');
 };
 
 const getKycStatusClass = (status: KycStatus): string => {
@@ -26,7 +28,11 @@ const UserHeaderCard: React.FC<UserHeaderCardProps> = ({
   onCopyAddress,
   onStartKyc,
 }) => {
-  const kycButtonText = profile.kycStatus === 'not_verified' ? '开启认证' : '查看认证';
+  const { t } = useTranslation();
+  const kycButtonText =
+    profile.kycStatus === 'not_verified'
+      ? t('personal.profile.startKyc')
+      : t('personal.profile.viewKyc');
 
   return (
     <div className={styles.userHeaderCard}>
@@ -34,7 +40,7 @@ const UserHeaderCard: React.FC<UserHeaderCardProps> = ({
         <div className={styles.avatar}>
           <i className="fas fa-user"></i>
         </div>
-        <button className={styles.avatarEditButton} type="button" aria-label="编辑头像">
+        <button className={styles.avatarEditButton} type="button" aria-label={t('personal.profile.editAvatar')}>
           <i className="fas fa-pen"></i>
         </button>
       </div>
@@ -54,7 +60,7 @@ const UserHeaderCard: React.FC<UserHeaderCardProps> = ({
           <span className={styles.userRole}>{profile.userRole}</span>
           <span className={`${styles.kycStatus} ${getKycStatusClass(profile.kycStatus)}`}>
             <i className="fas fa-id-card"></i>
-            {getKycStatusText(profile.kycStatus)}
+            {getKycStatusText(profile.kycStatus, t)}
           </span>
           <AdminButton
             variant="primary"

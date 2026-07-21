@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal } from 'antd';
 import styles from '../SecurityManager.module.scss';
 
@@ -7,15 +8,18 @@ interface Props {
   onClose: () => void;
 }
 
-const RECOVERY_OPTIONS = [
-  { icon: 'fa-envelope', title: '邮箱恢复', desc: '通过注册邮箱接收恢复链接' },
-  { icon: 'fa-phone', title: '手机号恢复', desc: '通过绑定手机号接收验证码' },
-  { icon: 'fa-key', title: '助记词恢复', desc: '使用助记词恢复钱包访问' },
-];
+const RecoveryModal: React.FC<Props> = ({ open, onClose }) => {
+  const { t } = useTranslation();
 
-const RecoveryModal: React.FC<Props> = ({ open, onClose }) => (
+  const RECOVERY_OPTIONS = [
+    { icon: 'fa-envelope', title: t('personal.security.modal.recoveryEmail'), desc: t('personal.security.modal.recoveryEmailDesc') },
+    { icon: 'fa-phone', title: t('personal.security.modal.recoveryPhone'), desc: t('personal.security.modal.recoveryPhoneDesc') },
+    { icon: 'fa-key', title: t('personal.security.modal.recoveryMnemonic'), desc: t('personal.security.modal.recoveryMnemonicDesc') },
+  ];
+
+  return (
   <Modal
-    title="设置恢复选项"
+    title={t('personal.security.modal.recoveryTitle')}
     open={open}
     onCancel={onClose}
     footer={null}
@@ -24,7 +28,7 @@ const RecoveryModal: React.FC<Props> = ({ open, onClose }) => (
   >
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <p style={{ color: '#cbd5e1', fontSize: 13, margin: 0 }}>
-        选择一种恢复方式，以便在紧急情况下恢复对钱包的访问：
+        {t('personal.security.modal.recoveryDesc')}
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {RECOVERY_OPTIONS.map((opt) => (
@@ -41,6 +45,7 @@ const RecoveryModal: React.FC<Props> = ({ open, onClose }) => (
       </div>
     </div>
   </Modal>
-);
+  );
+};
 
 export default RecoveryModal;
