@@ -236,7 +236,7 @@ main() {
     log_info "=========================================="
     
     # 设置信号处理
-    trap cleanup EXIT INT TERM
+    trap cleanup INT TERM
     
     # 执行检查步骤
     check_env

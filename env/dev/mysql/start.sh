@@ -40,7 +40,7 @@ fi
 # 使用项目中的 schema/data SQL 文件
 PROJECT_ROOT="$(cd "$cwd/../../.." && pwd)"
 INIT_SCHEMA_FILE="$PROJECT_ROOT/backend_service/docs/sapphire_mall_schema.sql"
-INIT_DATA_FILE="$PROJECT_ROOT/backend_service/docs/sapphire_mall_data.sql"
+INIT_DATA_FILE="$PROJECT_ROOT/backend_service/docs/saphire_mall_data.sql"
 
 if [ ! -f "$INIT_SCHEMA_FILE" ]; then
     echo -e "${RED}错误: sapphire_mall_schema.sql 文件不存在: $INIT_SCHEMA_FILE${NC}"
@@ -48,7 +48,7 @@ if [ ! -f "$INIT_SCHEMA_FILE" ]; then
 fi
 
 if [ ! -f "$INIT_DATA_FILE" ]; then
-    echo -e "${RED}错误: sapphire_mall_data.sql 文件不存在: $INIT_DATA_FILE${NC}"
+    echo -e "${RED}错误: saphire_mall_data.sql 文件不存在: $INIT_DATA_FILE${NC}"
     exit 1
 fi
 
