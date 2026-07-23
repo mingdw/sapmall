@@ -40,3 +40,12 @@ Swagger:
   Title: "Sapphire Mall API"
   Description: "Sapphire Mall 后端服务 API 文档"
   Version: "1.0.0"
+# CCTP 跨链兑换 Relayer（源链 USDC -> Arc Testnet）
+# Enabled=true 才会轮询 Iris attestation；RelayerPrivateKey 为空时只推进到 attested，不自动 mint
+Cctp:
+  Enabled: true
+  IrisBaseURL: "https://iris-api-sandbox.circle.com"
+  RelayerPrivateKey: ""
+  ArcRPC: "https://rpc.testnet.arc.io"
+  ArcMessageTransmitter: "0xE737e5cEBEEBa77EFE34D4aa090756590b1CE275"
+  PollIntervalSec: 12

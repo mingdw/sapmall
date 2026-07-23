@@ -82,10 +82,10 @@ const ActivityHistoryCard: React.FC<Props> = ({
             </div>
             <div className={styles.activityBody}>
               <div className={styles.activityHeader}>
-                <h4 className={styles.activityTitle}>{activity.title}</h4>
+                <h4 className={styles.activityTitle}>{t(activity.title)}</h4>
                 <span className={styles.activityTime}>{activity.time}</span>
               </div>
-              <p className={styles.activityDetail}>{activity.detail}</p>
+              <p className={styles.activityDetail}>{t(activity.detail)}</p>
             </div>
             <div className={styles.activityStatus}>
               {activity.status === 'success' && (

@@ -268,10 +268,414 @@
 }
 
 .exchangeTabBtnActive {
+  color: #e8ecff;
+  border-color: rgba(124, 77, 255, 0.35);
+  background: rgba(124, 77, 255, 0.14);
+}
+
+/* 左侧：同链/跨链模式（单按钮下拉，无竖线分隔、无渐变底） */
+.swapModeSelect {
+  position: relative;
+  min-width: 0;
+}
+
+.swapModeTabBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #a7b0d5;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.swapModeTabBtn:hover {
+  color: #e5e9ff;
+  background: rgba(124, 77, 255, 0.12);
+}
+
+.swapModeTabBtnActive {
+  color: #e8ecff;
+  border-color: rgba(124, 77, 255, 0.35);
+  background: rgba(124, 77, 255, 0.14);
+}
+
+.swapModeSelectLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.swapModeTabBtn svg:last-child {
+  flex-shrink: 0;
+  color: #9aa3cc;
+  transition: transform 0.2s ease, color 0.15s ease;
+}
+
+.swapModeChevronOpen {
+  transform: rotate(180deg);
+}
+
+.swapModeMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid rgba(124, 77, 255, 0.35);
+  background: rgba(16, 18, 36, 0.98);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.swapModeOption {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #a7b0d5;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.swapModeOption:hover {
+  background: rgba(124, 77, 255, 0.12);
+  color: #e5e9ff;
+}
+
+.swapModeOptionActive {
+  background: rgba(124, 77, 255, 0.14);
+  color: #e8ecff;
+  border: 1px solid rgba(124, 77, 255, 0.35);
+}
+
+/* CCTP 步骤条：圆点 + 短文案，避免大块 chip */
+.cctpStepBar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0;
+  margin-bottom: 20px;
+  padding: 0 2px;
+}
+
+.cctpStepItem {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.cctpStepLine {
+  position: absolute;
+  top: 9px;
+  right: 50%;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.cctpStepLineActive {
+  background: linear-gradient(90deg, rgba(105, 240, 174, 0.55), rgba(124, 77, 255, 0.45));
+}
+
+.cctpStepDot {
+  position: relative;
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 600;
+  color: #7986cb;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cctpStepDotActive {
   color: #fff;
-  border-color: rgba(124, 77, 255, 0.45);
-  background: linear-gradient(135deg, rgba(124, 77, 255, 0.55), rgba(68, 138, 255, 0.45));
-  box-shadow: 0 8px 20px rgba(124, 77, 255, 0.25);
+  background: rgba(124, 77, 255, 0.55);
+  border-color: rgba(124, 77, 255, 0.7);
+  box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.18);
+}
+
+.cctpStepDotDone {
+  color: #0b1a14;
+  background: #69f0ae;
+  border-color: rgba(105, 240, 174, 0.8);
+}
+
+.cctpStepLabel {
+  margin-top: 6px;
+  max-width: 100%;
+  padding: 0 2px;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #6b7599;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cctpStepLabelActive {
+  color: #c9d2ff;
+  font-weight: 500;
+}
+
+.cctpStepLabelDone {
+  color: #8fd9b5;
+}
+
+/* 支付区顶行：紧凑源链下拉（与余额同字号）——保留供其它场景复用 */
+.cctpSourceSelect {
+  flex-shrink: 0;
+}
+
+.cctpSourceSelectBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 6px 0 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(124, 77, 255, 0.28);
+  background: rgba(124, 77, 255, 0.12);
+  color: #c5cce8;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.cctpSourceSelectBtn:hover:not(:disabled) {
+  background: rgba(124, 77, 255, 0.2);
+  border-color: rgba(124, 77, 255, 0.4);
+  color: #fff;
+}
+
+.cctpSourceSelectBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cctpSourceSelectName {
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cctpSourceChevronOpen {
+  transform: rotate(180deg);
+}
+
+.cctpSourceSelectBtn svg {
+  flex-shrink: 0;
+  color: #9aa3cc;
+  transition: transform 0.15s ease;
+}
+
+.cctpSourceMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  min-width: 148px;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(124, 77, 255, 0.35);
+  background: rgba(16, 18, 36, 0.98);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.cctpSourceOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #c5cce8;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.cctpSourceOption:hover:not(:disabled) {
+  background: rgba(124, 77, 255, 0.16);
+  color: #fff;
+}
+
+.cctpSourceOptionActive:not(:disabled) {
+  background: rgba(124, 77, 255, 0.28);
+  color: #fff;
+}
+
+.cctpSourceOptionDisabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  color: #7a849f;
+}
+
+.cctpSourceOptionDisabled:hover {
+  background: transparent;
+  color: #7a849f;
+}
+
+.cctpSourceOptionName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 500;
+  color: inherit;
+}
+
+.cctpSourceOptionBalance {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  color: #7ec8ff;
+}
+
+.cctpSourceOptionActive:not(:disabled) .cctpSourceOptionBalance {
+  color: #9ad8ff;
+}
+
+.cctpSourceOptionDisabled .cctpSourceOptionBalance {
+  color: #5c667f;
+}
+
+.cctpSourceChainIcon {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+/* 跨链标题位：源链下拉（对齐同链标题字号） */
+.cctpTitleSource {
+  min-width: 0;
+  max-width: calc(100% - 48px);
+}
+
+.cctpTitleSourceBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #f4f7ff;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  cursor: pointer;
+}
+
+.cctpTitleSourceBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cctpTitleSourceBtn:hover:not(:disabled) .cctpTitleSourceName {
+  color: #00e5ff;
+}
+
+.cctpTitleSourceName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.cctpTitleSourceBtn svg:last-child {
+  flex-shrink: 0;
+  color: #9aa3cc;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.cctpTitleSourceBtn:hover:not(:disabled) svg:last-child {
+  color: #c5cce8;
+}
+
+.cctpTitleSourceMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 30;
+  min-width: 280px;
+  max-height: 280px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(124, 77, 255, 0.35);
+  background: rgba(16, 18, 36, 0.98);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  /* 细滚动条，贴合深色面板 */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 77, 255, 0.45) rgba(255, 255, 255, 0.04);
+}
+
+.cctpTitleSourceMenu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cctpTitleSourceMenu::-webkit-scrollbar-track {
+  margin: 6px 0;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 999px;
+}
+
+.cctpTitleSourceMenu::-webkit-scrollbar-thumb {
+  background: rgba(124, 77, 255, 0.4);
+  border-radius: 999px;
+}
+
+.cctpTitleSourceMenu::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 77, 255, 0.65);
+}
+
+.cctpTitleSourceMenu::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .depositPanel {
@@ -407,7 +811,7 @@
   align-items: center;
   justify-content: flex-start;
   padding-left: 20px;
-  height: 40px;
+  min-height: 40px;
   position: relative;
   z-index: 10;
 }
@@ -418,6 +822,28 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
+}
+
+.swapRateInline {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  line-height: 1.2;
+  color: #ffd740;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.swapRateError {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 12px);
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: #ff4081;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .arrowActive {
@@ -521,4 +947,142 @@
   pointer-events: none;
   transition: left 0.4s ease;
   z-index: 2;
+}
+
+/* CCTP 兑换信息区 / 成功态 / 说明 */
+.cctpInfoPanel {
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(124, 77, 255, 0.12);
+}
+
+.cctpInfoPanelError {
+  border-color: rgba(255, 64, 129, 0.35);
+  background: rgba(255, 64, 129, 0.08);
+}
+
+.cctpInfoFail {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.cctpInfoFailIcon {
+  color: #ff4081;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.cctpInfoFailText {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #ff4081;
+  word-break: break-word;
+}
+
+.cctpInfoRows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cctpInfoRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cctpInfoLabel {
+  font-size: 12px;
+  color: rgba(179, 157, 219, 0.85);
+  flex-shrink: 0;
+}
+
+.cctpInfoValue {
+  font-size: 12px;
+  color: #e8e0ff;
+  text-align: right;
+  word-break: break-all;
+}
+
+.cctpInfoMono {
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #e8e0ff;
+  word-break: break-all;
+  text-align: right;
+}
+
+.cctpInfoLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #00e5ff;
+  text-decoration: none;
+  font-size: 11px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+    color: #69f0ae;
+  }
+}
+
+.cctpInfoLinkMuted {
+  cursor: default;
+
+  &:hover {
+    text-decoration: none;
+    color: #00e5ff;
+  }
+}
+
+.cctpSuccessBtn {
+  width: 100%;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #69f0ae;
+  background: rgba(105, 240, 174, 0.1);
+  border: 1px solid rgba(105, 240, 174, 0.35);
+  pointer-events: none;
+  user-select: none;
+}
+
+.cctpNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+.cctpNoticeIcon {
+  color: #ffb74d;
+  flex-shrink: 0;
+  margin-top: 1px;
+  width: 12px;
+  height: 12px;
+}
+
+.cctpNoticeText {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.45;
+  color: #6b7599;
 }

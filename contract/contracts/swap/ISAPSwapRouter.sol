@@ -62,6 +62,18 @@ interface ISAPSwapRouter {
         SwapDirection direction
     ) external returns (uint256 amountOut);
 
+    /// @notice 带 EIP-2612 Permit 的兑换
+    function swapWithPermit(
+        address tokenIn,
+        uint256 amountIn,
+        uint256 minAmountOut,
+        SwapDirection direction,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external returns (uint256 amountOut);
+
     /// @notice 查询兑换报价
     /// @param tokenIn 输入代币地址
     /// @param amountIn 输入金额

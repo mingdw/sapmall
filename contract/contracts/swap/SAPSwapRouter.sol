@@ -7,6 +7,7 @@ import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/acce
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 
 import {ISAPSwapRouter} from "./ISAPSwapRouter.sol";
 
@@ -139,6 +140,39 @@ contract SAPSwapRouter is
     /// @param amountIn 输入金额
     /// @param minAmountOut 最小输出金额（滑点保护）
     /// @return amountOut 实际输出SAP数量
+
+    /// @notice 带 EIP-2612 Permit 的兑换（减少单独 approve 签名）
+    /// @dev 若 tokenIn 不支持 permit，调用将 revert，前端应回退到 approve+swap
+    function swapWithPermit(
+        address tokenIn,
+        uint256 amountIn,
+        uint256 minAmountOut,
+        SwapDirection direction,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external whenNotPaused nonReentrant returns (uint256 amountOut) {
+        if (amountIn == 0) revert ZeroAmount();
+        if (amountIn < MIN_SWAP_AMOUNT) revert AmountBelowMinimum();
+        if (direction != SwapDirection.STABLE_TO_SAP) {
+            revert("SAP_TO_STABLE not supported yet");
+        }
+
+        IERC20Permit(tokenIn).permit(msg.sender, address(this), amountIn, deadline, v, r, s);
+        amountOut = _swapStableToSAP(tokenIn, amountIn, minAmountOut);
+
+        emit SwapExecuted(
+            msg.sender,
+            direction,
+            tokenIn,
+            amountIn,
+            amountOut,
+            _calculateFee(amountIn),
+            block.timestamp
+        );
+    }
+
     function swap(
         address tokenIn,
         uint256 amountIn,

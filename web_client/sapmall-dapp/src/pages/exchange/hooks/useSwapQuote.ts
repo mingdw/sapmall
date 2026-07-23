@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useReadContract, useAccount } from 'wagmi';
-import { erc20Abi, formatUnits, parseUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { swapRouterAbi, SwapDirection } from '../../../config/abis/swapRouterAbi';
 import { useSwapRouterAddress } from './useSwapRouterAddress';
 import { useExchangeTokenConfig } from './useExchangeTokenConfig';
@@ -8,6 +8,8 @@ import { useExchangeTokenConfig } from './useExchangeTokenConfig';
 interface UseSwapQuoteParams {
   tokenSymbol: string;
   amountIn: string;
+  /** 指定报价链（跨链兑换时在 Arc 上 quote） */
+  chainId?: number;
 }
 
 interface UseSwapQuoteResult {
@@ -19,10 +21,11 @@ interface UseSwapQuoteResult {
   error: Error | null;
 }
 
-export function useSwapQuote({ tokenSymbol, amountIn }: UseSwapQuoteParams): UseSwapQuoteResult {
-  const { chainId } = useAccount();
-  const routerAddress = useSwapRouterAddress();
-  const tokenConfig = useExchangeTokenConfig(tokenSymbol);
+export function useSwapQuote({ tokenSymbol, amountIn, chainId: chainIdOverride }: UseSwapQuoteParams): UseSwapQuoteResult {
+  const { chainId: walletChainId } = useAccount();
+  const chainId = chainIdOverride ?? walletChainId;
+  const routerAddress = useSwapRouterAddress(chainId);
+  const tokenConfig = useExchangeTokenConfig(tokenSymbol, chainId);
 
   const amountInBigInt = useMemo(() => {
     if (!amountIn || !tokenConfig) return undefined;

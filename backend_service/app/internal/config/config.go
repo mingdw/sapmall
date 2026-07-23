@@ -62,4 +62,16 @@ type Config struct {
 		QueueKey        string `json:",optional"` // Redis ZSET key，默认 order:delay_queue
 		ExpireMins      int    `json:",optional"` // 订单超时时间（分钟），默认 30
 	}
+	// Cctp CCTP 跨链兑换 Relayer（配置见 etc/*.yaml）
+	Cctp CctpConfig `json:",optional"`
+}
+
+// CctpConfig CCTP Relayer 配置（写入 etc/sapmall*.yaml）
+type CctpConfig struct {
+	Enabled               bool   `json:",optional"` // 是否启动 Relayer 轮询
+	IrisBaseURL           string `json:",optional"` // Circle Iris API，测试网默认 sandbox
+	RelayerPrivateKey     string `json:",optional"` // Arc 上执行 receiveMessage 的私钥（可空=仅 attestation）
+	ArcRPC                string `json:",optional"` // Arc JSON-RPC
+	ArcMessageTransmitter string `json:",optional"` // MessageTransmitterV2 地址
+	PollIntervalSec       int    `json:",optional"` // 轮询间隔秒，默认 12
 }

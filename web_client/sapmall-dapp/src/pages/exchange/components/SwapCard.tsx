@@ -2,10 +2,11 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useReadContract } from 'wagmi';
 import { erc20Abi, formatUnits } from 'viem';
-import { ArrowDown, ArrowUp, ChevronDown, Settings, RefreshCw, Info, Zap, Shield } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronDown, Settings, RefreshCw, Info, Shield } from 'lucide-react';
 import TokenIcon from './TokenIcon';
 import styles from '../ExchangePageDetail.module.scss';
 import { useChainConfigStore } from '../../../store/chainConfigStore';
+import { buildWalletUiNetworks, resolveCurrentWalletNetwork } from '../../../config/walletUiNetworks';
 import { useSwapQuote } from '../hooks/useSwapQuote';
 import { useExchangeTokenBalance } from '../hooks/useExchangeTokenBalance';
 import { useSwapExecution } from '../hooks/useSwapExecution';
@@ -32,6 +33,12 @@ export default function SwapCard({
   const { t, ready } = useTranslation();
   const { address, chainId, isConnected } = useAccount();
   const store = useChainConfigStore();
+
+  // 与导航栏网络切换展示同一套链名称
+  const currentChainName = useMemo(() => {
+    const networks = buildWalletUiNetworks((key) => t(key));
+    return resolveCurrentWalletNetwork(chainId, networks).name;
+  }, [chainId, t, store.loaded, store.chains]);
 
   // 从链配置获取当前链支持的支付代币（排除 SAP）
   const availableTokens = useMemo(() => {
@@ -197,10 +204,10 @@ export default function SwapCard({
       <div className={`absolute inset-0 rounded-3xl pointer-events-none ${styles.swapOuterGlow}`} />
 
       <div className={`relative rounded-3xl p-6 ${styles.swapMainCard}`}>
-        {/* 标题栏 */}
+        {/* 标题栏：展示与导航栏一致的当前链名称 */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-lg font-bold text-foreground">{t('exchange.swap.title')}</h2>
+            <h2 className="text-lg font-bold text-foreground">{currentChainName}</h2>
             <p className="text-xs text-muted-foreground mt-0.5">{t('exchange.swap.subtitle')}</p>
           </div>
           <div className="flex items-center gap-2">
@@ -341,12 +348,22 @@ export default function SwapCard({
             </div>
           </div>
 
-          {/* ── 箭头区域：居于两卡片之间，纯箭头无背景 ── */}
+          {/* ── 箭头保持左侧原位；汇率同行水平居中 ── */}
           <div className={styles.swapArrowRow}>
             <div className={styles.swapArrowBadge}>
               <ArrowDown size={20} className={styles.arrowActive} />
               <ArrowUp size={20} className={styles.arrowDisabled} />
             </div>
+            <span className={styles.swapRateInline}>
+              {baseRate > 0
+                ? t('exchange.swap.rateLine', { from: fromToken, rate: baseRate.toFixed(4) })
+                : t('exchange.swap.rateLine', { from: fromToken, rate: '--' })}
+            </span>
+            {quoteError ? (
+              <span className={styles.swapRateError}>
+                {t('exchange.swap.quoteError', { defaultValue: '报价获取失败' })}
+              </span>
+            ) : null}
           </div>
 
           {/* 获得区 */}
@@ -378,23 +395,6 @@ export default function SwapCard({
               />
             </div>
           </div>
-        </div>
-
-        {/* 汇率信息 */}
-        <div className="flex items-center justify-between mt-3 mb-5 px-1">
-          <div className="flex items-center gap-1.5">
-            <Zap size={12} style={{ color: '#ffd740' }} />
-            <span className="text-xs" style={{ color: '#ffd740' }}>
-              {baseRate > 0
-                ? t('exchange.swap.rateLine', { from: fromToken, rate: baseRate.toFixed(4) })
-                : t('exchange.swap.rateLine', { from: fromToken, rate: '--' })}
-            </span>
-          </div>
-          {quoteError ? (
-            <span className="text-xs" style={{ color: '#ff4081' }}>
-              {t('exchange.swap.quoteError', { defaultValue: '报价获取失败' })}
-            </span>
-          ) : null}
         </div>
 
         {/* 交易详情 */}

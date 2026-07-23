@@ -594,4 +594,44 @@ git push origin feature/new-feature
 - 确保测试覆盖率
 - 更新相关文档
 
-这个开发指南涵盖了从环境准备到代码部署的完整流程，帮助开发者快速上手项目开发。 
+这个开发指南涵盖了从环境准备到代码部署的完整流程，帮助开发者快速上手项目开发。
+
+## CCTP 跨链兑换（Phase 2–3）
+
+### 数据库迁移
+
+```bash
+mysql -u ... -p ... < docs/migrations/20260722_sys_cctp_swap_intent.sql
+# 若表已存在，再执行：docs/migrations/20260723_alter_sys_cctp_swap_intent_meta.sql
+```
+
+### YAML 配置（`etc/sapmall*.yaml`）
+
+CCTP Relayer 写在配置文件 `Cctp` 段，不要用环境变量：
+
+```yaml
+Cctp:
+  Enabled: true
+  IrisBaseURL: "https://iris-api-sandbox.circle.com"
+  RelayerPrivateKey: ""   # 可选；填写后自动 Arc mint
+  ArcRPC: "https://rpc.testnet.arc.network"
+  ArcMessageTransmitter: "0xE737e5cEBEEBa77EFE34D4aa090756590b1CE275"
+  PollIntervalSec: 12
+```
+
+### 本地启用 Relayer
+
+1. 执行 SQL 迁移创建 `sys_cctp_swap_intent` 表。
+2. 在对应 yaml 中将 `Cctp.Enabled` 设为 `true`。
+3. （可选）填写 `Cctp.RelayerPrivateKey` + `Cctp.ArcRPC`，relayer 会在 attestation 就绪后于 Arc 调用 `MessageTransmitter.receiveMessage` 完成 mint。
+4. 未配置私钥时，意图会停在 `status=2 (attested)`，需自行在 Arc 调用 `receiveMessage` 或补全 yaml。
+
+### API 路由
+
+| Method | Path | 说明 |
+|--------|------|------|
+| POST | `/api/cctp/intent/create` | 创建意图，返回 burn 参数 |
+| POST | `/api/cctp/intent/burn-submitted` | 提交 burn tx |
+| GET | `/api/cctp/intent/:intent_id` | 查询状态 |
+| POST | `/api/cctp/intent/swap-submitted` | 提交 Arc swap tx |
+ 

@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Table, Button, Modal, Form, Input, InputNumber, Select, message } from 'antd';
 import { Plus } from 'lucide-react';
 import type { ColumnsType } from 'antd/es/table';
 import type { AdjustmentRecord, AdjustmentType, UserProfile } from '../types';
 import {
-  ADJUSTMENT_TYPE_LABELS,
+  getAdjustmentTypeLabels,
   ADJUSTMENT_TYPE_ICONS,
-  ADJUSTMENT_STATUS_LABELS,
+  getAdjustmentStatusLabels,
 } from '../constants';
 import styles from '../BalanceManager.module.scss';
 
 const { Option } = Select;
 const { TextArea } = Input;
+
+const ADJUSTMENT_TYPE_KEYS: AdjustmentType[] = ['credit', 'debit', 'freeze', 'unfreeze'];
 
 const statusClassMap: Record<string, string> = {
   completed: styles.statusConfirmed,
@@ -25,25 +28,29 @@ interface BalanceOperationsProps {
 }
 
 const BalanceOperations: React.FC<BalanceOperationsProps> = ({ profile, adjustments: initialAdjustments }) => {
+  const { t } = useTranslation();
   const [adjustments, setAdjustments] = useState<AdjustmentRecord[]>(initialAdjustments);
   const [modalOpen, setModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [form] = Form.useForm();
 
+  const adjustmentTypeLabels = getAdjustmentTypeLabels(t);
+  const adjustmentStatusLabels = getAdjustmentStatusLabels(t);
+
   const columns: ColumnsType<AdjustmentRecord> = [
     {
-      title: '操作类型',
+      title: t('assets.balance.operations.colType'),
       key: 'type',
       width: 100,
       render: (_, r) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <i className={ADJUSTMENT_TYPE_ICONS[r.type]} style={{ fontSize: 13, color: r.type === 'credit' || r.type === 'unfreeze' ? '#6ee7b7' : r.type === 'debit' ? '#fca5a5' : '#fbbf24' }} />
-          <span style={{ fontSize: 13, color: '#cbd5e1' }}>{ADJUSTMENT_TYPE_LABELS[r.type]}</span>
+          <span style={{ fontSize: 13, color: '#cbd5e1' }}>{adjustmentTypeLabels[r.type]}</span>
         </div>
       ),
     },
     {
-      title: '金额',
+      title: t('assets.balance.operations.colAmount'),
       key: 'amount',
       width: 140,
       sorter: (a, b) => a.amount - b.amount,
@@ -54,13 +61,13 @@ const BalanceOperations: React.FC<BalanceOperationsProps> = ({ profile, adjustme
       ),
     },
     {
-      title: '链',
+      title: t('assets.balance.operations.colChain'),
       key: 'chain',
       width: 120,
       render: (_, r) => <span style={{ fontSize: 12, color: '#94a3b8' }}>{r.chainName}</span>,
     },
     {
-      title: '原因',
+      title: t('assets.balance.operations.colReason'),
       key: 'reason',
       width: 220,
       render: (_, r) => (
@@ -71,23 +78,23 @@ const BalanceOperations: React.FC<BalanceOperationsProps> = ({ profile, adjustme
       ),
     },
     {
-      title: '操作人',
+      title: t('assets.balance.operations.colOperator'),
       key: 'operator',
       width: 120,
       render: (_, r) => <span style={{ fontSize: 13, color: '#94a3b8' }}>{r.operator}</span>,
     },
     {
-      title: '状态',
+      title: t('assets.balance.operations.colStatus'),
       key: 'status',
       width: 90,
       render: (_, r) => (
         <span className={`${styles.statusPill} ${statusClassMap[r.status]}`}>
-          {ADJUSTMENT_STATUS_LABELS[r.status]}
+          {adjustmentStatusLabels[r.status]}
         </span>
       ),
     },
     {
-      title: '创建时间',
+      title: t('assets.balance.operations.colCreatedAt'),
       key: 'createdAt',
       width: 170,
       sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
@@ -115,7 +122,7 @@ const BalanceOperations: React.FC<BalanceOperationsProps> = ({ profile, adjustme
         reviewer: 'admin',
       };
       setAdjustments((prev) => [newRecord, ...prev]);
-      message.success('调账操作已完成');
+      message.success(t('assets.balance.operations.msgAdjustmentCompleted'));
       setModalOpen(false);
       form.resetFields();
     } catch {
@@ -135,7 +142,7 @@ const BalanceOperations: React.FC<BalanceOperationsProps> = ({ profile, adjustme
           onClick={() => setModalOpen(true)}
           style={{ background: 'rgba(251,191,36,0.9)', borderColor: 'rgba(251,191,36,0.4)' }}
         >
-          新增调账
+          {t('assets.balance.operations.addAdjustment')}
         </Button>
       </div>
 
@@ -146,7 +153,7 @@ const BalanceOperations: React.FC<BalanceOperationsProps> = ({ profile, adjustme
           columns={columns}
           rowKey="id"
           size="small"
-          pagination={{ pageSize: 10, showSizeChanger: false, showTotal: (t) => `共 ${t} 条记录` }}
+          pagination={{ pageSize: 10, showSizeChanger: false, showTotal: (total) => t('assets.balance.operations.totalRecords', { count: total }) }}
         />
       </div>
 
@@ -159,29 +166,29 @@ const BalanceOperations: React.FC<BalanceOperationsProps> = ({ profile, adjustme
         title={
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
             <i className="fas fa-balance-scale" style={{ color: '#fbbf24' }} />
-            新增余额调整
+            {t('assets.balance.operations.modalTitle')}
           </span>
         }
-        okText="确认调账"
-        cancelText="取消"
+        okText={t('assets.balance.operations.confirmAdjustment')}
+        cancelText={t('assets.balance.operations.cancelText')}
         className={styles.balanceModal}
         width={520}
       >
         <Form form={form} layout="vertical" className={styles.adjustForm}>
-          <Form.Item name="type" label="操作类型" rules={[{ required: true, message: '请选择操作类型' }]}>
-            <Select placeholder="选择操作类型">
-              {(Object.keys(ADJUSTMENT_TYPE_LABELS) as AdjustmentType[]).map((t) => (
-                <Option key={t} value={t}>
+          <Form.Item name="type" label={t('assets.balance.operations.formType')} rules={[{ required: true, message: t('assets.balance.operations.validation.selectType') }]}>
+            <Select placeholder={t('assets.balance.operations.placeholderType')}>
+              {ADJUSTMENT_TYPE_KEYS.map((key) => (
+                <Option key={key} value={key}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                    <i className={ADJUSTMENT_TYPE_ICONS[t]} />
-                    {ADJUSTMENT_TYPE_LABELS[t]}
+                    <i className={ADJUSTMENT_TYPE_ICONS[key]} />
+                    {adjustmentTypeLabels[key]}
                   </span>
                 </Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="chainId" label="目标链" rules={[{ required: true, message: '请选择链' }]}>
-            <Select placeholder="选择链网络">
+          <Form.Item name="chainId" label={t('assets.balance.operations.formTargetChain')} rules={[{ required: true, message: t('assets.balance.operations.validation.selectChain') }]}>
+            <Select placeholder={t('assets.balance.operations.placeholderChain')}>
               {profile.chainBalances.map((c) => (
                 <Option key={c.chainId} value={c.chainId}>
                   {c.chainName} (#{c.chainId})
@@ -190,22 +197,22 @@ const BalanceOperations: React.FC<BalanceOperationsProps> = ({ profile, adjustme
             </Select>
           </Form.Item>
           <div style={{ display: 'flex', gap: 12 }}>
-            <Form.Item name="amount" label="金额" rules={[{ required: true, message: '请输入金额' }]} style={{ flex: 1 }}>
+            <Form.Item name="amount" label={t('assets.balance.operations.formAmount')} rules={[{ required: true, message: t('assets.balance.operations.validation.enterAmount') }]} style={{ flex: 1 }}>
               <InputNumber placeholder="0.00" min={0} style={{ width: '100%' }} />
             </Form.Item>
-            <Form.Item name="tokenSymbol" label="代币" rules={[{ required: true, message: '请选择代币' }]} style={{ width: 120 }}>
-              <Select placeholder="选择">
+            <Form.Item name="tokenSymbol" label={t('assets.balance.operations.formToken')} rules={[{ required: true, message: t('assets.balance.operations.validation.selectToken') }]} style={{ width: 120 }}>
+              <Select placeholder={t('assets.balance.operations.placeholderToken')}>
                 <Option value="SAP">SAP</Option>
                 <Option value="USDC">USDC</Option>
                 <Option value="EURC">EURC</Option>
               </Select>
             </Form.Item>
           </div>
-          <Form.Item name="reason" label="调账原因" rules={[{ required: true, message: '请输入调账原因' }]}>
-            <Input placeholder="如：活动奖励补发、异常交易冻结等" />
+          <Form.Item name="reason" label={t('assets.balance.operations.formReason')} rules={[{ required: true, message: t('assets.balance.operations.validation.enterReason') }]}>
+            <Input placeholder={t('assets.balance.operations.placeholderReason')} />
           </Form.Item>
-          <Form.Item name="memo" label="备注（选填）">
-            <TextArea rows={2} placeholder="补充说明..." />
+          <Form.Item name="memo" label={t('assets.balance.operations.formMemoOptional')}>
+            <TextArea rows={2} placeholder={t('assets.balance.operations.placeholderMemo')} />
           </Form.Item>
         </Form>
       </Modal>

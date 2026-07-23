@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type {
   UserProfile,
   TransactionRecord,
@@ -9,30 +10,48 @@ import type {
   UserStatus,
 } from './types';
 
-// ========== 标签映射 ==========
+// ========== 标签映射（i18n） ==========
 
-export const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
-  payment: '支付', refund: '退款', swap: '兑换', reward: '奖励',
-};
+export const getTransactionTypeLabels = (t: TFunction): Record<TransactionType, string> => ({
+  payment: t('assets.balance.txType.payment'),
+  refund: t('assets.balance.txType.refund'),
+  swap: t('assets.balance.txType.swap'),
+  reward: t('assets.balance.txType.reward'),
+});
+
 export const TRANSACTION_TYPE_ICONS: Record<TransactionType, string> = {
   payment: 'fas fa-shopping-cart', refund: 'fas fa-undo', swap: 'fas fa-exchange-alt', reward: 'fas fa-gift',
 };
-export const TRANSACTION_STATUS_LABELS: Record<TransactionStatus, string> = {
-  confirmed: '已确认', pending: '确认中', failed: '失败',
-};
-export const USER_STATUS_LABELS: Record<UserStatus, string> = {
-  active: '正常', inactive: '未激活', frozen: '已冻结',
-};
-export const ADJUSTMENT_TYPE_LABELS: Record<AdjustmentType, string> = {
-  credit: '充值', debit: '扣减', freeze: '冻结', unfreeze: '解冻',
-};
+
+export const getTransactionStatusLabels = (t: TFunction): Record<TransactionStatus, string> => ({
+  confirmed: t('assets.balance.txStatus.confirmed'),
+  pending: t('assets.balance.txStatus.pending'),
+  failed: t('assets.balance.txStatus.failed'),
+});
+
+export const getUserStatusLabels = (t: TFunction): Record<UserStatus, string> => ({
+  active: t('assets.balance.userStatus.active'),
+  inactive: t('assets.balance.userStatus.inactive'),
+  frozen: t('assets.balance.userStatus.frozen'),
+});
+
+export const getAdjustmentTypeLabels = (t: TFunction): Record<AdjustmentType, string> => ({
+  credit: t('assets.balance.adjustmentType.credit'),
+  debit: t('assets.balance.adjustmentType.debit'),
+  freeze: t('assets.balance.adjustmentType.freeze'),
+  unfreeze: t('assets.balance.adjustmentType.unfreeze'),
+});
+
 export const ADJUSTMENT_TYPE_ICONS: Record<AdjustmentType, string> = {
   credit: 'fas fa-plus-circle', debit: 'fas fa-minus-circle',
   freeze: 'fas fa-lock', unfreeze: 'fas fa-lock-open',
 };
-export const ADJUSTMENT_STATUS_LABELS: Record<AdjustmentStatus, string> = {
-  completed: '已完成', pending: '待审核', rejected: '已拒绝',
-};
+
+export const getAdjustmentStatusLabels = (t: TFunction): Record<AdjustmentStatus, string> => ({
+  completed: t('assets.balance.adjustmentStatus.completed'),
+  pending: t('assets.balance.adjustmentStatus.pending'),
+  rejected: t('assets.balance.adjustmentStatus.rejected'),
+});
 
 // ========== Mock 数据 — 当前登录用户 ==========
 

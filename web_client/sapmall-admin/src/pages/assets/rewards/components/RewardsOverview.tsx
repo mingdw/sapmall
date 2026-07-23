@@ -1,10 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { RewardsSummary, RewardSourceBreakdown, TierInfo, RewardRecord } from '../types';
 import {
-  REWARD_SOURCE_LABELS,
+  getRewardSourceLabels,
   REWARD_SOURCE_ICONS,
   REWARD_SOURCE_COLORS,
-  REWARD_STATUS_LABELS,
+  getRewardStatusLabels,
 } from '../constants';
 import styles from '../RewardsManager.module.scss';
 
@@ -15,11 +16,11 @@ interface RewardsOverviewProps {
   recentRecords: RewardRecord[];
 }
 
-const STATS_CARDS = [
-  { key: 'totalEarned', label: '累计获得', icon: 'fas fa-coins', color: '#fbbf24', bg: 'rgba(251,191,36,0.12)' },
-  { key: 'availableToClaim', label: '可领取', icon: 'fas fa-gift', color: '#6ee7b7', bg: 'rgba(16,185,129,0.12)' },
-  { key: 'pendingRewards', label: '待结算', icon: 'fas fa-hourglass-half', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)' },
-  { key: 'claimedThisMonth', label: '本月已领', icon: 'fas fa-check-circle', color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
+const STATS_CARD_CONFIG = [
+  { key: 'totalEarned', icon: 'fas fa-coins', color: '#fbbf24', bg: 'rgba(251,191,36,0.12)' },
+  { key: 'availableToClaim', icon: 'fas fa-gift', color: '#6ee7b7', bg: 'rgba(16,185,129,0.12)' },
+  { key: 'pendingRewards', icon: 'fas fa-hourglass-half', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)' },
+  { key: 'claimedThisMonth', icon: 'fas fa-check-circle', color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
 ] as const;
 
 const formatAmount = (val: number): string =>
@@ -33,11 +34,20 @@ const STATUS_CLASS_MAP: Record<string, string> = {
 };
 
 const RewardsOverview: React.FC<RewardsOverviewProps> = ({ summary, sourceBreakdown, tierInfo, recentRecords }) => {
+  const { t } = useTranslation();
+  const rewardSourceLabels = getRewardSourceLabels(t);
+  const rewardStatusLabels = getRewardStatusLabels(t);
+
+  const statsCards = STATS_CARD_CONFIG.map((card) => ({
+    ...card,
+    label: t(`assets.rewards.overviewSection.stats.${card.key}`),
+  }));
+
   return (
     <div>
       {/* 统计卡片 */}
       <div className={styles.statsGrid}>
-        {STATS_CARDS.map((card) => (
+        {statsCards.map((card) => (
           <div key={card.key} className={styles.statsCard}>
             <div className={styles.statsCardHead}>
               <div className={styles.statsCardIcon} style={{ background: card.bg, color: card.color }}>
@@ -57,7 +67,7 @@ const RewardsOverview: React.FC<RewardsOverviewProps> = ({ summary, sourceBreakd
       <div className={styles.queryCard}>
         <h4 className={styles.sectionLabel}>
           <i className="fas fa-chart-pie" style={{ color: 'var(--rw-accent)' }} />
-          奖励来源分布
+          {t('assets.rewards.overviewSection.sourceDistribution')}
         </h4>
         <div className={styles.sourceList}>
           {sourceBreakdown.map((item) => {
@@ -71,7 +81,7 @@ const RewardsOverview: React.FC<RewardsOverviewProps> = ({ summary, sourceBreakd
                   <i className={REWARD_SOURCE_ICONS[item.source]} />
                 </div>
                 <div className={styles.sourceInfo}>
-                  <span className={styles.sourceName}>{REWARD_SOURCE_LABELS[item.source]}</span>
+                  <span className={styles.sourceName}>{rewardSourceLabels[item.source]}</span>
                   <div className={styles.sourceBar}>
                     <div
                       className={styles.sourceBarFill}
@@ -93,7 +103,7 @@ const RewardsOverview: React.FC<RewardsOverviewProps> = ({ summary, sourceBreakd
       <div className={styles.queryCard}>
         <h4 className={styles.sectionLabel}>
           <i className="fas fa-bolt" style={{ color: 'var(--rw-accent)' }} />
-          最近奖励动态
+          {t('assets.rewards.overviewSection.recentActivity')}
         </h4>
         <div className={styles.recentList}>
           {recentRecords.map((record) => {
@@ -111,11 +121,11 @@ const RewardsOverview: React.FC<RewardsOverviewProps> = ({ summary, sourceBreakd
                   <div className={styles.recentTitleRow}>
                     <span className={styles.recentDesc}>{record.description}</span>
                     <span className={`${styles.statusPill} ${statusClass}`}>
-                      {REWARD_STATUS_LABELS[record.status]}
+                      {rewardStatusLabels[record.status]}
                     </span>
                   </div>
                   <div className={styles.recentMeta}>
-                    <span className={styles.recentSource}>{REWARD_SOURCE_LABELS[record.source]}</span>
+                    <span className={styles.recentSource}>{rewardSourceLabels[record.source]}</span>
                     <span className={styles.recentDot}>·</span>
                     <span className={styles.monoText}>{record.createdAt}</span>
                   </div>

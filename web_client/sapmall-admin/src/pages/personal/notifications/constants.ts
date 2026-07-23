@@ -68,15 +68,6 @@ export const IMPORTANCE_CONFIG: Record<
   },
 };
 
-export const PREVIEW_CONTENT: Record<string, { title: string; body: string }> = {
-  'transaction-confirmation': { title: '交易确认通知', body: '您有一笔交易需要确认，请及时处理。' },
-  'transaction-complete': { title: '交易完成通知', body: '您的交易已成功完成，详情请查看订单记录。' },
-  'login-alert': { title: '登录提醒', body: '您的账户在新设备上登录，如非本人操作请立即处理。' },
-  'security-change': { title: '安全设置变更', body: '您的安全设置已发生变更，如非本人操作请立即联系客服。' },
-  'system-maintenance': { title: '系统维护通知', body: '系统将于近期进行维护升级，届时部分功能可能暂时不可用。' },
-  'new-feature': { title: '新功能公告', body: '平台发布了新功能，快来体验吧！' },
-};
-
 export const mockNotificationData: NotificationData = {
   channels: {
     email: { enabled: true, value: 'user@example.com' },
@@ -86,8 +77,8 @@ export const mockNotificationData: NotificationData = {
   types: [
     {
       id: 'transaction-confirmation',
-      title: '交易确认通知',
-      description: '当您发起交易时，系统将发送确认通知',
+      title: 'Transaction Confirmation',
+      description: 'Sends confirmation when you initiate a transaction',
       icon: 'fa-exchange-alt',
       iconColor: '#3b82f6',
       category: 'transaction',
@@ -97,8 +88,8 @@ export const mockNotificationData: NotificationData = {
     },
     {
       id: 'transaction-complete',
-      title: '交易完成通知',
-      description: '当您的交易完成时，系统将发送通知',
+      title: 'Transaction Complete',
+      description: 'Notifies when your transaction is completed',
       icon: 'fa-check-circle',
       iconColor: '#22c55e',
       category: 'transaction',
@@ -108,8 +99,8 @@ export const mockNotificationData: NotificationData = {
     },
     {
       id: 'login-alert',
-      title: '登录提醒',
-      description: '当您的账户在新设备上登录时，系统将发送通知',
+      title: 'Login Alert',
+      description: 'Notifies when your account logs in from a new device',
       icon: 'fa-sign-in-alt',
       iconColor: '#f59e0b',
       category: 'security',
@@ -119,8 +110,8 @@ export const mockNotificationData: NotificationData = {
     },
     {
       id: 'security-change',
-      title: '安全设置变更',
-      description: '当您的安全设置发生变更时，系统将发送通知',
+      title: 'Security Change',
+      description: 'Notifies when your security settings change',
       icon: 'fa-shield-alt',
       iconColor: '#ef4444',
       category: 'security',
@@ -130,8 +121,8 @@ export const mockNotificationData: NotificationData = {
     },
     {
       id: 'system-maintenance',
-      title: '系统维护通知',
-      description: '当系统计划维护时，系统将提前发送通知',
+      title: 'System Maintenance',
+      description: 'Notifies in advance of planned system maintenance',
       icon: 'fa-server',
       iconColor: '#8b5cf6',
       category: 'system',
@@ -143,8 +134,8 @@ export const mockNotificationData: NotificationData = {
     },
     {
       id: 'new-feature',
-      title: '新功能公告',
-      description: '当平台发布新功能时，系统将发送通知',
+      title: 'New Feature Announcement',
+      description: 'Notifies when new features are released',
       icon: 'fa-bullhorn',
       iconColor: '#06b6d4',
       category: 'system',

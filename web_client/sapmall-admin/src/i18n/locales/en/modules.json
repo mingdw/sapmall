@@ -43,18 +43,292 @@
       "overview": "Balance overview",
       "available": "Available",
       "frozen": "Frozen",
-      "total": "Total"
+      "total": "Total",
+      "tabs": {
+        "overview": "Balance Overview",
+        "transactions": "Transactions",
+        "operations": "Balance Operations"
+      },
+      "tokenSummary": {
+        "distributedChains": "Distributed across {{count}} chains"
+      },
+      "txType": {
+        "payment": "Payment",
+        "refund": "Refund",
+        "swap": "Swap",
+        "reward": "Reward"
+      },
+      "txStatus": {
+        "confirmed": "Confirmed",
+        "pending": "Pending",
+        "failed": "Failed"
+      },
+      "userStatus": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "frozen": "Frozen"
+      },
+      "adjustmentType": {
+        "credit": "Credit",
+        "debit": "Debit",
+        "freeze": "Freeze",
+        "unfreeze": "Unfreeze"
+      },
+      "adjustmentStatus": {
+        "completed": "Completed",
+        "pending": "Pending Review",
+        "rejected": "Rejected"
+      },
+      "walletInfo": {
+        "title": "Wallet Info",
+        "selectChain": "Select chain network:",
+        "walletAddress": "Wallet address",
+        "copyAddress": "Copy address",
+        "accountStatus": "Account status",
+        "chain": "Chain",
+        "userId": "User ID",
+        "registeredAt": "Registered at",
+        "lastActiveAt": "Last active",
+        "myReceivingAddress": "My receiving address",
+        "downloadQR": "Download QR code",
+        "shareAddress": "Share address"
+      },
+      "txHistory": {
+        "filterAll": "All",
+        "searchPlaceholder": "Search tx hash, address...",
+        "export": "Export",
+        "totalRecords": "{{count}} records",
+        "detailTitle": "Transaction Details",
+        "viewDetail": "View details",
+        "colType": "Type",
+        "colAmount": "Amount",
+        "colFromTo": "From / To",
+        "colChain": "Chain",
+        "colStatus": "Status",
+        "colBlock": "Block",
+        "colConfirmations": "Confirmations",
+        "colTime": "Time",
+        "colAction": "Action",
+        "detailType": "Transaction type",
+        "detailAmount": "Amount",
+        "detailTxHash": "Transaction hash",
+        "detailSender": "Sender",
+        "detailReceiver": "Receiver",
+        "detailChain": "Chain",
+        "detailBlockHeight": "Block height",
+        "detailConfirmations": "Confirmations",
+        "detailStatus": "Status",
+        "detailTime": "Time",
+        "detailMemo": "Memo",
+        "viewOnExplorer": "View on explorer"
+      },
+      "operations": {
+        "addAdjustment": "New Adjustment",
+        "totalRecords": "{{count}} records",
+        "modalTitle": "New Balance Adjustment",
+        "confirmAdjustment": "Confirm",
+        "cancelText": "Cancel",
+        "colType": "Type",
+        "colAmount": "Amount",
+        "colChain": "Chain",
+        "colReason": "Reason",
+        "colOperator": "Operator",
+        "colStatus": "Status",
+        "colCreatedAt": "Created at",
+        "formType": "Operation type",
+        "formTargetChain": "Target chain",
+        "formAmount": "Amount",
+        "formToken": "Token",
+        "formReason": "Reason",
+        "formMemoOptional": "Memo (optional)",
+        "placeholderType": "Select operation type",
+        "placeholderChain": "Select chain network",
+        "placeholderToken": "Select",
+        "placeholderReason": "e.g. Activity reward, abnormal transaction freeze",
+        "placeholderMemo": "Additional notes...",
+        "msgAdjustmentCompleted": "Adjustment completed",
+        "validation": {
+          "selectType": "Please select operation type",
+          "selectChain": "Please select chain",
+          "enterAmount": "Please enter amount",
+          "selectToken": "Please select token",
+          "enterReason": "Please enter reason"
+        }
+      }
     },
     "rewards": {
       "title": "Rewards",
       "history": "Reward history",
-      "overview": "Rewards overview"
+      "overview": "Rewards overview",
+      "tabs": {
+        "overview": "Overview",
+        "history": "Reward History",
+        "tier": "VIP Tier"
+      },
+      "banner": {
+        "claimableReward": "Claimable reward",
+        "claimAll": "Claim All",
+        "pointsToNext": "{{points}} points to {{nextTier}}"
+      },
+      "sourceType": {
+        "trading_rebate": "Trading Rebate",
+        "community": "Community",
+        "referral": "Referral",
+        "staking": "Staking",
+        "merchant_bonus": "Merchant Bonus",
+        "airdrop": "Airdrop"
+      },
+      "status": {
+        "available": "Available",
+        "claimed": "Claimed",
+        "pending": "Pending",
+        "expired": "Expired"
+      },
+      "tier": {
+        "bronze": "Bronze",
+        "silver": "Silver",
+        "gold": "Gold",
+        "platinum": "Platinum",
+        "diamond": "Diamond"
+      },
+      "overviewSection": {
+        "stats": {
+          "totalEarned": "Total Earned",
+          "availableToClaim": "Available",
+          "pendingRewards": "Pending",
+          "claimedThisMonth": "Claimed This Month"
+        },
+        "sourceDistribution": "Reward Source Distribution",
+        "recentActivity": "Recent Activity"
+      },
+      "historySection": {
+        "filterAll": "All",
+        "colSource": "Source",
+        "colDescription": "Description",
+        "colAmount": "Amount",
+        "colStatus": "Status",
+        "colTime": "Time",
+        "colTxHash": "Tx Hash",
+        "colAction": "Action",
+        "claim": "Claim",
+        "claimedAt": "Claimed at {{time}}",
+        "claimed": "Claimed",
+        "waiting": "Waiting",
+        "totalRecords": "{{count}} records"
+      },
+      "tierSection": {
+        "upgradeQuests": "Upgrade Quests — Push for {{nextTier}}",
+        "questHint": "{{points}} points needed to reach {{nextTier}}. Complete the quests below to earn points faster.",
+        "questCompleted": "Completed",
+        "tierComparison": "Tier Benefits Comparison",
+        "currentBadge": "Current",
+        "registerToGet": "Free on signup",
+        "pointsUnit": "{{points}} points",
+        "earnMethodsTitle": "How to Earn Points",
+        "quests": {
+          "trading": { "title": "Trade & Spend", "desc": "Cumulative SAP-equivalent trading volume" },
+          "staking": { "title": "Stake SAP", "desc": "Stake SAP to earn continuous points" },
+          "referral": { "title": "Refer Friends", "desc": "Invite friends to complete their first trade" },
+          "community": { "title": "Join Community", "desc": "Complete community Q&A and testing tasks" }
+        },
+        "earnMethods": {
+          "trading": { "title": "Trading", "desc": "Earn 1 point per 1 SAP-equivalent spent" },
+          "staking": { "title": "Stake SAP", "desc": "Earn 1 point per day per 100 SAP staked" },
+          "referral": { "title": "Referral", "desc": "50 points per friend's first trade" },
+          "community": { "title": "Community", "desc": "Earn points from Q&A and testing events" }
+        },
+        "benefits": {
+          "bronze": ["0.5% trading rebate", "Community event access", "Standard withdrawal speed"],
+          "silver": ["0.8% trading rebate", "10% off withdrawal fees", "Early event notifications"],
+          "gold": ["1.5% trading rebate", "Priority support channel", "20% off withdrawal fees", "Priority community events"],
+          "platinum": ["2.0% trading rebate", "Dedicated account manager", "40% off withdrawal fees", "Beta feature access", "Expedited large withdrawals"],
+          "diamond": ["3.0% trading rebate", "1-on-1 VIP service", "Free withdrawal fees", "VIP exclusive events", "On-chain priority confirmation", "Custom API access"]
+        }
+      }
     },
     "transactions": {
       "title": "Transactions",
       "type": "Type",
       "amount": "Amount",
-      "time": "Time"
+      "time": "Time",
+      "txType": {
+        "payment": "Payment",
+        "refund": "Refund",
+        "swap": "Swap",
+        "transfer": "Transfer",
+        "stake": "Stake",
+        "unstake": "Unstake",
+        "claim": "Claim Reward",
+        "approval": "Approval",
+        "contract": "Contract"
+      },
+      "txStatus": {
+        "success": "Success",
+        "pending": "Pending",
+        "failed": "Failed",
+        "dropped": "Dropped"
+      },
+      "txDirection": {
+        "in": "In",
+        "out": "Out",
+        "self": "Self"
+      },
+      "stats": {
+        "totalCount": "Total Transactions",
+        "totalVolumeUSD": "Total Volume",
+        "successRate": "Success Rate",
+        "totalGasFeeUSD": "Total Gas Fee",
+        "pendingCount": "Pending",
+        "failedCount": "Failed"
+      },
+      "filterAll": "All",
+      "filter": {
+        "type": "Type",
+        "status": "Status",
+        "direction": "Direction",
+        "token": "Token",
+        "chain": "Chain",
+        "search": "Search"
+      },
+      "searchPlaceholder": "Search tx hash, address, contract method, memo, order ID...",
+      "reset": "Reset",
+      "exportCsv": "Export CSV",
+      "totalRecords": "{{count}} records",
+      "pendingBlock": "Pending",
+      "viewDetail": "View details",
+      "copy": "Copy",
+      "colDirection": "Direction",
+      "colType": "Type",
+      "colAmount": "Amount",
+      "colTxHash": "Tx Hash",
+      "colCounterparty": "Counterparty",
+      "colChain": "Chain",
+      "colStatus": "Status",
+      "colGas": "Gas Fee",
+      "colBlock": "Block",
+      "colTime": "Time",
+      "detailTitle": "Transaction Details",
+      "detailType": "Transaction type",
+      "detailDirection": "Direction",
+      "detailAmount": "Amount",
+      "detailStatus": "Status",
+      "detailTxHash": "Transaction hash",
+      "detailSender": "Sender (From)",
+      "detailReceiver": "Receiver (To)",
+      "detailContractAddress": "Contract address",
+      "detailContractMethod": "Contract method",
+      "detailChainNetwork": "Chain network",
+      "detailBlockHeight": "Block height",
+      "detailConfirmations": "Confirmations",
+      "detailTime": "Time",
+      "gasDetailTitle": "Gas Fee Details",
+      "gasUsed": "Gas Used",
+      "gasPrice": "Gas Price",
+      "gasNativeFee": "Native token fee",
+      "gasUsdEstimate": "USD estimate",
+      "detailMemo": "Memo",
+      "detailOrderId": "Related order",
+      "viewOnExplorer": "View on explorer"
     }
   },
   "contract": {

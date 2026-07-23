@@ -7,12 +7,13 @@ import { ARC_TESTNET_CHAIN_ID } from '../../../config/chains/arcTestnet';
 const ARC_TESTNET_SWAP_ROUTER = '0x754a5a7e0534a94fdbfacc5f5434db3585643ddf' as `0x${string}`;
 
 /**
- * 从链配置 Store 获取当前链的 SwapRouter 合约地址。
+ * 从链配置 Store 获取指定链（或当前钱包链）的 SwapRouter 合约地址。
  * 优先级：后端 chain_config.swapRouterAddress > 环境变量 > 硬编码降级 > undefined
  */
-export function useSwapRouterAddress(): `0x${string}` | undefined {
-  const { chainId } = useAccount();
+export function useSwapRouterAddress(chainIdOverride?: number): `0x${string}` | undefined {
+  const { chainId: walletChainId } = useAccount();
   const store = useChainConfigStore();
+  const chainId = chainIdOverride ?? walletChainId;
 
   return useMemo(() => {
     if (!chainId) return undefined;

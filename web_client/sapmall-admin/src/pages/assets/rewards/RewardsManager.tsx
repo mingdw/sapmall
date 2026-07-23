@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿﻿import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
@@ -10,7 +10,7 @@ import {
   mockSourceBreakdown,
   mockTierInfo,
   mockRewardRecords,
-  TIER_LABELS,
+  getTierLabels,
   TIER_COLORS,
 } from './constants';
 import styles from './RewardsManager.module.scss';
@@ -24,6 +24,7 @@ const RewardsManager: React.FC = () => {
   const tierInfo = mockTierInfo;
   const summary = mockRewardsSummary;
   const tierColor = TIER_COLORS[tierInfo.currentTier];
+  const tierLabels = getTierLabels(t);
 
   const tabItems: TabsProps['items'] = [
     {
@@ -31,7 +32,7 @@ const RewardsManager: React.FC = () => {
       label: (
         <span className={styles.tabLabel}>
           <i className="fas fa-chart-line" />
-          权益总览
+          {t('assets.rewards.tabs.overview')}
         </span>
       ),
       children: (
@@ -48,7 +49,7 @@ const RewardsManager: React.FC = () => {
       label: (
         <span className={styles.tabLabel}>
           <i className="fas fa-history" />
-          奖励记录
+          {t('assets.rewards.tabs.history')}
         </span>
       ),
       children: <RewardHistory records={mockRewardRecords} />,
@@ -58,7 +59,7 @@ const RewardsManager: React.FC = () => {
       label: (
         <span className={styles.tabLabel}>
           <i className="fas fa-crown" />
-          权益等级
+          {t('assets.rewards.tabs.tier')}
         </span>
       ),
       children: <VipTierCard tierInfo={tierInfo} />,
@@ -84,7 +85,7 @@ const RewardsManager: React.FC = () => {
             </div>
             <div className={styles.rewardBannerTierInfo}>
               <div className={styles.rewardBannerTierName}>
-                {tierInfo.currentLevelName}
+                {tierLabels[tierInfo.currentTier]}
                 <span className={styles.rewardBannerTierPoints}>
                   {tierInfo.currentPoints.toLocaleString()} pts
                 </span>
@@ -96,10 +97,13 @@ const RewardsManager: React.FC = () => {
                 />
               </div>
               <div className={styles.rewardBannerProgressMeta}>
-                <span>{TIER_LABELS[tierInfo.currentTier]}</span>
+                <span>{tierLabels[tierInfo.currentTier]}</span>
                 {tierInfo.nextTier && (
                   <span>
-                    距 {tierInfo.nextTierName} 还需 {(tierInfo.nextTierPoints - tierInfo.currentPoints).toLocaleString()} 积分
+                    {t('assets.rewards.banner.pointsToNext', {
+                      nextTier: tierLabels[tierInfo.nextTier],
+                      points: (tierInfo.nextTierPoints - tierInfo.currentPoints).toLocaleString(),
+                    })}
                   </span>
                 )}
               </div>
@@ -108,7 +112,7 @@ const RewardsManager: React.FC = () => {
 
           <div className={styles.rewardBannerClaim}>
             <div className={styles.rewardBannerClaimInfo}>
-              <span className={styles.rewardBannerClaimLabel}>可领取奖励</span>
+              <span className={styles.rewardBannerClaimLabel}>{t('assets.rewards.banner.claimableReward')}</span>
               <span className={styles.rewardBannerClaimValue}>
                 {formatAmount(summary.availableToClaim)}
                 <span className={styles.rewardBannerClaimUnit}>SAP</span>
@@ -120,7 +124,7 @@ const RewardsManager: React.FC = () => {
               disabled={summary.availableToClaim <= 0}
             >
               <i className="fas fa-hand-holding" />
-              一键领取
+              {t('assets.rewards.banner.claimAll')}
             </button>
           </div>
         </div>

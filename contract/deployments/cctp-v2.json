@@ -1,0 +1,41 @@
+{
+  "version": "cctp-v2",
+  "docs": {
+    "supportedChains": "https://developers.circle.com/cctp/concepts/supported-chains-and-domains",
+    "contractAddresses": "https://developers.circle.com/cctp/references/contract-addresses",
+    "usdcAddresses": "https://developers.circle.com/stablecoins/usdc-contract-addresses",
+    "faucet": "https://faucet.circle.com/"
+  },
+  "iris": {
+    "testnet": "https://iris-api-sandbox.circle.com",
+    "mainnet": "https://iris-api.circle.com",
+    "messagesPath": "/v2/messages/{sourceDomainId}"
+  },
+  "messageSentTopic": "0x2fa9ca894982930190727e75500a97d8dc500233a5065e0f3126c48fbe0343c0",
+  "tokenMessengerV2": "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA",
+  "messageTransmitterV2": "0xE737e5cEBEEBa77EFE34D4aa090756590b1CE275",
+  "destination": {
+    "key": "arcTestnet",
+    "chainId": 5042002,
+    "domain": 26,
+    "name": "Arc Testnet"
+  },
+  "excludedFromFaucetList": {
+    "celoSepolia": "水龙头可领 USDC，但不在 CCTP V2 domain 列表，无法跨入 Arc",
+    "zkSyncSepolia": "水龙头可领 USDC，但不在 CCTP V2 domain 列表，无法跨入 Arc"
+  },
+  "mvpRoute": {
+    "sources": [
+      "ethereumSepolia",
+      "arbitrumSepolia",
+      "avalancheFuji",
+      "baseSepolia",
+      "opSepolia",
+      "polygonAmoy",
+      "lineaSepolia",
+      "unichainSepolia",
+      "worldchainSepolia"
+    ],
+    "destination": "arcTestnet"
+  }
+}

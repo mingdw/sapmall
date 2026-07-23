@@ -1,0 +1,27 @@
+syntax = "v1"
+
+import "types/cctp_types.api"
+
+// CCTP 减签名跨链兑换（Base Sepolia USDC -> Arc USDC -> SAP）
+@server (
+    group:      cctp
+    prefix:     /api/cctp
+    middleware: AuthMiddleware, LanguageMiddleware, RespMiddleware
+)
+service sapmall {
+    @doc "创建 CCTP burn 意图，返回 depositForBurn V2 参数"
+    @handler CreateCctpIntent
+    post /intent/create (CreateCctpIntentReq) returns (BaseResp)
+
+    @doc "用户提交 burn 交易哈希"
+    @handler SubmitCctpBurn
+    post /intent/burn-submitted (SubmitCctpBurnReq) returns (BaseResp)
+
+    @doc "查询 CCTP 意图状态（前端轮询）"
+    @handler GetCctpIntent
+    get /intent/:intent_id (GetCctpIntentReq) returns (BaseResp)
+
+    @doc "用户提交 Arc 上 swap 交易哈希（可选）"
+    @handler SubmitCctpSwap
+    post /intent/swap-submitted (SubmitCctpSwapReq) returns (BaseResp)
+}

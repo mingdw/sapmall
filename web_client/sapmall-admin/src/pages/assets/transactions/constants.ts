@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type {
   TxType,
   TxStatus,
@@ -20,19 +21,19 @@ export const CHAIN_MAP: Record<number, ChainInfo> = Object.fromEntries(
   CHAIN_LIST.map((c) => [c.chainId, c]),
 );
 
-// ========== 标签映射 ==========
+// ========== 标签映射（i18n） ==========
 
-export const TX_TYPE_LABELS: Record<TxType, string> = {
-  payment: '商品支付',
-  refund: '退款',
-  swap: '兑换',
-  transfer: '转账',
-  stake: '质押',
-  unstake: '解除质押',
-  claim: '领取奖励',
-  approval: '授权',
-  contract: '合约交互',
-};
+export const getTxTypeLabels = (t: TFunction): Record<TxType, string> => ({
+  payment: t('assets.transactions.txType.payment'),
+  refund: t('assets.transactions.txType.refund'),
+  swap: t('assets.transactions.txType.swap'),
+  transfer: t('assets.transactions.txType.transfer'),
+  stake: t('assets.transactions.txType.stake'),
+  unstake: t('assets.transactions.txType.unstake'),
+  claim: t('assets.transactions.txType.claim'),
+  approval: t('assets.transactions.txType.approval'),
+  contract: t('assets.transactions.txType.contract'),
+});
 
 export const TX_TYPE_ICONS: Record<TxType, string> = {
   payment: 'fas fa-shopping-cart',
@@ -58,18 +59,18 @@ export const TX_TYPE_COLORS: Record<TxType, { bg: string; color: string }> = {
   contract:   { bg: 'rgba(244, 114, 182, 0.12)', color: '#f472b6' },
 };
 
-export const TX_STATUS_LABELS: Record<TxStatus, string> = {
-  success: '成功',
-  pending: '确认中',
-  failed: '失败',
-  dropped: '已丢弃',
-};
+export const getTxStatusLabels = (t: TFunction): Record<TxStatus, string> => ({
+  success: t('assets.transactions.txStatus.success'),
+  pending: t('assets.transactions.txStatus.pending'),
+  failed: t('assets.transactions.txStatus.failed'),
+  dropped: t('assets.transactions.txStatus.dropped'),
+});
 
-export const TX_DIRECTION_LABELS: Record<TxDirection, string> = {
-  in: '转入',
-  out: '转出',
-  self: '内部',
-};
+export const getTxDirectionLabels = (t: TFunction): Record<TxDirection, string> => ({
+  in: t('assets.transactions.txDirection.in'),
+  out: t('assets.transactions.txDirection.out'),
+  self: t('assets.transactions.txDirection.self'),
+});
 
 export const TX_DIRECTION_ICONS: Record<TxDirection, string> = {
   in: 'fas fa-arrow-down-left',

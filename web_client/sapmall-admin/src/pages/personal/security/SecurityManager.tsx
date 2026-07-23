@@ -94,7 +94,7 @@ const SecurityManager: React.FC = () => {
   const handleDisconnectDevice = (deviceId: string) => {
     Modal.confirm({
       title: t('personal.security.disconnectDevice'),
-      content: '断开后该设备将无法继续使用当前会话，确定要断开吗？',
+      content: t('personal.security.disconnectDeviceConfirm'),
       okText: t('common.confirm'),
       cancelText: t('common.cancel'),
       onOk: () => {
@@ -188,12 +188,6 @@ const SecurityManager: React.FC = () => {
         ...prev.score,
         score: newScore,
         level: newScore <= 30 ? 'low' : newScore <= 60 ? 'medium' : 'high',
-        suggestion:
-          newScore <= 30
-            ? '您的账户安全级别较低，请尽快完善安全设置'
-            : newScore <= 60
-            ? '您的账户安全级别中等，建议完善更多安全设置'
-            : '您的账户安全级别较高，继续保持良好的安全习惯',
       },
     }));
     // TODO: Call API

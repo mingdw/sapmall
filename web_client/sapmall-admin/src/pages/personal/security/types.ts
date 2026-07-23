@@ -1,7 +1,7 @@
 export interface SecurityScore {
   score: number;
   level: 'low' | 'medium' | 'high';
-  suggestion: string;
+  suggestion?: string;
 }
 
 export interface WalletSecuritySettings {

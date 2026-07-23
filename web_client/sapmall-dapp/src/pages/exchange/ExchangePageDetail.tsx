@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Toaster, toast } from 'sonner';
-import { CheckCircle, Award, Layers, Wallet, ArrowRightLeft, Landmark } from 'lucide-react';
+import { CheckCircle, Award, Layers, Wallet, ArrowRightLeft, Landmark, Globe, ChevronDown } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
@@ -9,6 +9,7 @@ import { useChainConfigStore } from '../../store/chainConfigStore';
 import i18n from '../../i18n';
 import ParticleBackground from './components/ParticleBackground';
 import SwapCard from './components/SwapCard';
+import CctpSwapPanel from './components/CctpSwapPanel';
 import MarketStats from './components/MarketStats';
 import PriceChart from './components/PriceChart';
 import RecentTransactions from './components/RecentTransactions';
@@ -17,6 +18,7 @@ import TokenIcon from './components/TokenIcon';
 import styles from './ExchangePageDetail.module.scss';
 
 type ExchangeTab = 'swap' | 'merchantDeposit';
+type SwapMode = 'sameChain' | 'crossChain';
 type MerchantDepositLite = {
   amount?: string;
   token?: string;
@@ -61,18 +63,34 @@ const ExchangePageDetail: React.FC = () => {
       .filter((token) => token.symbol.toUpperCase() !== 'SAP')
       .map((token) => token.symbol);
   }, [chainId, chainConfigStore]);
+
+  const [activeTab, setActiveTab] = useState<ExchangeTab>('swap');
+  const [swapMode, setSwapMode] = useState<SwapMode>('sameChain');
+  const [swapModeMenuOpen, setSwapModeMenuOpen] = useState(false);
+  const swapModeMenuRef = useRef<HTMLDivElement>(null);
+
+  // 底部「支持的兑换币种」：跨链 CCTP 仅展示 USDC
+  const displaySupportedCoins = useMemo(() => {
+    if (activeTab === 'swap' && swapMode === 'crossChain') {
+      return ['USDC'];
+    }
+    return supportedCoins;
+  }, [activeTab, swapMode, supportedCoins]);
+
   // 当前选中的支付代币（提升到父组件，供 SwapCard / SapTokenVisual / MarketStats 共享）
   const [fromToken, setFromToken] = useState('');
 
-  // 默认选第一个可用代币（优先 USDC）
+  // 默认选第一个可用代币（优先 USDC）；跨链模式强制 USDC
   useEffect(() => {
+    if (swapMode === 'crossChain') {
+      if (fromToken.toUpperCase() !== 'USDC') setFromToken('USDC');
+      return;
+    }
     if (supportedCoins.length > 0 && !supportedCoins.includes(fromToken)) {
       const usdc = supportedCoins.find((s) => s.toUpperCase() === 'USDC');
       setFromToken(usdc || supportedCoins[0]);
     }
-  }, [supportedCoins, fromToken]);
-
-  const [activeTab, setActiveTab] = useState<ExchangeTab>('swap');
+  }, [supportedCoins, fromToken, swapMode]);
   const [depositProcessing, setDepositProcessing] = useState(false);
   const [depositPaid, setDepositPaid] = useState(false);
   const [depositTxHash, setDepositTxHash] = useState('');
@@ -158,6 +176,33 @@ const ExchangePageDetail: React.FC = () => {
     }
     setActiveTab('swap');
   }, [canOperateDeposit, searchParams]);
+
+  // 点击外部关闭同链/跨链模式下拉
+  useEffect(() => {
+    if (!swapModeMenuOpen) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (!swapModeMenuRef.current?.contains(event.target as Node)) {
+        setSwapModeMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    return () => document.removeEventListener('mousedown', onPointerDown);
+  }, [swapModeMenuOpen]);
+
+  const swapModeLabel =
+    swapMode === 'crossChain'
+      ? t('exchange.swapModes.crossChain', { defaultValue: '跨链兑换 (CCTP)' })
+      : t('exchange.swapModes.sameChain', { defaultValue: '同链兑换' });
+
+  const selectSwapMode = (mode: SwapMode) => {
+    if (!canOperateSwap) {
+      toast.warning(t('exchange.toasts.swapTabWallet'));
+      return;
+    }
+    setSwapMode(mode);
+    setActiveTab('swap');
+    setSwapModeMenuOpen(false);
+  };
 
   const handleSwapSuccess = (amount: string) => {
     toast.success(t('exchange.toasts.swapSuccess'), {
@@ -279,24 +324,61 @@ const ExchangePageDetail: React.FC = () => {
 
           <div className="flex-1 w-full flex flex-col items-center gap-5">
             <div className={`w-full max-w-[520px] ${styles.exchangeTabWrap}`}>
-              <button
-                type="button"
-                className={`${styles.exchangeTabBtn} ${activeTab === 'swap' ? styles.exchangeTabBtnActive : ''}`}
-                onClick={() => {
-                  if (!canOperateSwap) {
-                    toast.warning(t('exchange.toasts.swapTabWallet'));
-                    return;
-                  }
-                  setActiveTab('swap');
-                }}
-              >
-                <ArrowRightLeft size={15} />
-                {t('exchange.tabs.swap')}
-              </button>
+              {/* 左侧：同链/跨链模式（简洁下拉）；右侧：商家保证金 */}
+              <div className={styles.swapModeSelect} ref={swapModeMenuRef}>
+                <button
+                  type="button"
+                  className={`${styles.swapModeTabBtn} ${
+                    activeTab === 'swap' || swapModeMenuOpen ? styles.swapModeTabBtnActive : ''
+                  }`}
+                  aria-expanded={swapModeMenuOpen}
+                  onClick={() => {
+                    if (!canOperateSwap) {
+                      toast.warning(t('exchange.toasts.swapTabWallet'));
+                      return;
+                    }
+                    setActiveTab('swap');
+                    setSwapModeMenuOpen((open) => !open);
+                  }}
+                >
+                  {swapMode === 'crossChain' ? <Globe size={15} /> : <ArrowRightLeft size={15} />}
+                  <span className={styles.swapModeSelectLabel}>{swapModeLabel}</span>
+                  <ChevronDown size={14} className={swapModeMenuOpen ? styles.swapModeChevronOpen : undefined} />
+                </button>
+                {swapModeMenuOpen ? (
+                  <div className={styles.swapModeMenu} role="listbox">
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={swapMode === 'sameChain'}
+                      className={`${styles.swapModeOption} ${
+                        swapMode === 'sameChain' ? styles.swapModeOptionActive : ''
+                      }`}
+                      onClick={() => selectSwapMode('sameChain')}
+                    >
+                      <ArrowRightLeft size={14} />
+                      {t('exchange.swapModes.sameChain', { defaultValue: '同链兑换' })}
+                    </button>
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={swapMode === 'crossChain'}
+                      className={`${styles.swapModeOption} ${
+                        swapMode === 'crossChain' ? styles.swapModeOptionActive : ''
+                      }`}
+                      onClick={() => selectSwapMode('crossChain')}
+                    >
+                      <Globe size={14} />
+                      {t('exchange.swapModes.crossChain', { defaultValue: '跨链兑换 (CCTP)' })}
+                    </button>
+                  </div>
+                ) : null}
+              </div>
               <button
                 type="button"
                 className={`${styles.exchangeTabBtn} ${activeTab === 'merchantDeposit' ? styles.exchangeTabBtnActive : ''}`}
                 onClick={() => {
+                  setSwapModeMenuOpen(false);
                   if (!canOperateDeposit) {
                     toast.warning(!isConnected ? t('exchange.toasts.connectWallet') : t('exchange.toasts.depositTabNoPending'));
                     return;
@@ -314,24 +396,27 @@ const ExchangePageDetail: React.FC = () => {
                 {t('exchange.hints.walletRequired')}
               </p>
             ) : null}
-            {isConnected && !checkingAccess && !canOperateDeposit ? (
-              <p className="text-xs text-muted-foreground text-center">
-                {t('exchange.hints.depositLocked')}
-              </p>
-            ) : null}
             {checkingAccess ? (
               <p className="text-xs text-muted-foreground text-center">{t('exchange.hints.syncingDeposit')}</p>
             ) : null}
 
             {activeTab === 'swap' ? (
               <ErrorBoundary>
-                <SwapCard
-                  onSwapSuccess={handleSwapSuccess}
-                  disabled={!canOperateSwap}
-                  disabledReason={t('exchange.swap.disabledReason')}
-                  fromToken={fromToken}
-                  onFromTokenChange={setFromToken}
-                />
+                {swapMode === 'sameChain' ? (
+                  <SwapCard
+                    onSwapSuccess={handleSwapSuccess}
+                    disabled={!canOperateSwap}
+                    disabledReason={t('exchange.swap.disabledReason')}
+                    fromToken={fromToken}
+                    onFromTokenChange={setFromToken}
+                  />
+                ) : (
+                  <CctpSwapPanel
+                    onSwapSuccess={handleSwapSuccess}
+                    disabled={!canOperateSwap}
+                    disabledReason={t('exchange.swap.disabledReason')}
+                  />
+                )}
               </ErrorBoundary>
             ) : (
               <div className={`w-full max-w-[520px] rounded-3xl p-6 ${styles.depositPanel}`}>
@@ -399,7 +484,7 @@ const ExchangePageDetail: React.FC = () => {
             <div className={`w-full max-w-[520px] rounded-2xl p-4 ${styles.stableCoinPanel}`}>
               <p className="text-xs text-muted-foreground mb-3 text-center">{t('exchange.supportedCoins')}</p>
               <div className="flex items-center justify-center gap-6">
-                {supportedCoins.map((coin) => (
+                {displaySupportedCoins.map((coin) => (
                   <div key={coin} className="flex flex-col items-center gap-1.5">
                     <TokenIcon symbol={coin} size={36} />
                     <span className="text-xs text-muted-foreground">{coin}</span>

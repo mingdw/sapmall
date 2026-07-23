@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+﻿﻿import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
@@ -56,7 +56,7 @@ const BalanceManager: React.FC = () => {
       label: (
         <span className={styles.tabLabel}>
           <i className="fas fa-wallet" />
-          余额总览
+          {t('assets.balance.tabs.overview')}
         </span>
       ),
       children: <BalanceOverview profile={profile} />,
@@ -66,7 +66,7 @@ const BalanceManager: React.FC = () => {
       label: (
         <span className={styles.tabLabel}>
           <i className="fas fa-history" />
-          交易记录
+          {t('assets.balance.tabs.transactions')}
         </span>
       ),
       children: <TransactionHistory transactions={mockTransactions} />,
@@ -76,7 +76,7 @@ const BalanceManager: React.FC = () => {
       label: (
         <span className={styles.tabLabel}>
           <i className="fas fa-balance-scale" />
-          余额操作
+          {t('assets.balance.tabs.operations')}
         </span>
       ),
       children: <BalanceOperations profile={profile} adjustments={mockAdjustments} />,
@@ -120,7 +120,7 @@ const BalanceManager: React.FC = () => {
                   ))}
                 </div>
                 <div className={styles.tokenSummaryHint}>
-                  分布在 {chainCount} 条链上
+                  {t('assets.balance.tokenSummary.distributedChains', { count: chainCount })}
                 </div>
               </div>
             );

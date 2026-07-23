@@ -1,0 +1,79 @@
+syntax = "v1"
+
+info(
+	title: "cctp types"
+	desc: "CCTP cross-chain swap api types"
+	author: "sapmall"
+	version: "v0.1"
+)
+
+type (
+	CreateCctpIntentReq {
+		SourceChainId int64  `json:"sourceChainId"` // 源链 chainId
+		DestChainId   int64  `json:"destChainId"`   // 目标链 chainId，固定 Arc Testnet
+		AmountIn      string `json:"amountIn"`      // burn 金额（最小单位字符串）
+		TokenSymbol   string `json:"tokenSymbol,optional"`   // 代币符号，默认 USDC
+		TokenDecimals int64  `json:"tokenDecimals,optional"` // 小数精度，默认 6
+	}
+
+	CctpBurnParams {
+		SourceChainId        int64  `json:"sourceChainId"`
+		DestinationDomain    int64  `json:"destinationDomain"`
+		TokenMessenger       string `json:"tokenMessenger"`
+		Usdc                 string `json:"usdc"`
+		Amount               string `json:"amount"`
+		MintRecipient        string `json:"mintRecipient"` // bytes32，左填充用户地址
+		MinFinalityThreshold int64  `json:"minFinalityThreshold"`
+		DestinationCaller    string `json:"destinationCaller"` // bytes32(0)
+		MaxFee               string `json:"maxFee"`            // Fast Transfer 最大手续费（最小单位）
+	}
+
+	CreateCctpIntentResp {
+		IntentId      string         `json:"intentId"`
+		Status        int64          `json:"status"`
+		TokenSymbol   string         `json:"tokenSymbol"`
+		TokenDecimals int64          `json:"tokenDecimals"`
+		BurnParams    CctpBurnParams `json:"burnParams"`
+	}
+
+	SubmitCctpBurnReq {
+		IntentId   string `json:"intentId"`
+		BurnTxHash string `json:"burnTxHash"`
+		BurnGasFee string `json:"burnGasFee,optional"` // 源链实际 Gas（wei）
+	}
+
+	SubmitCctpSwapReq {
+		IntentId   string `json:"intentId"`
+		SwapTxHash string `json:"swapTxHash"`
+		SwapGasFee string `json:"swapGasFee,optional"` // 目标链实际 Gas
+	}
+
+	GetCctpIntentReq {
+		IntentId string `path:"intent_id"`
+	}
+
+	GetCctpIntentResp {
+		IntentId      string `json:"intentId"`
+		UserAddress   string `json:"userAddress"`
+		SourceChainId int64  `json:"sourceChainId"`
+		DestChainId   int64  `json:"destChainId"`
+		SourceDomain  int64  `json:"sourceDomain"`
+		DestDomain    int64  `json:"destDomain"`
+		TokenSymbol   string `json:"tokenSymbol"`
+		TokenDecimals int64  `json:"tokenDecimals"`
+		AmountIn      string `json:"amountIn"`
+		BurnTxHash    string `json:"burnTxHash,optional"`
+		BurnGasFee    string `json:"burnGasFee,optional"`
+		MessageHash   string `json:"messageHash,optional"`
+		MintTxHash    string `json:"mintTxHash,optional"`
+		MintGasFee    string `json:"mintGasFee,optional"`
+		SwapTxHash    string `json:"swapTxHash,optional"`
+		SwapGasFee    string `json:"swapGasFee,optional"`
+		Status        int64  `json:"status"`
+		StatusDesc    string `json:"statusDesc"`
+		ErrorMsg      string `json:"errorMsg,optional"`
+		CompletedAt   string `json:"completedAt,optional"`
+		CreatedAt     string `json:"createdAt,optional"`
+		UpdatedAt     string `json:"updatedAt,optional"`
+	}
+)

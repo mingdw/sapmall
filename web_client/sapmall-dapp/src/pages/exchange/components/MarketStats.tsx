@@ -19,14 +19,14 @@ function formatCompact(val: string): string {
 export default function MarketStats() {
   const { t, ready } = useTranslation();
 
-  const { remaining, totalCap, usedPercent, isLoading: statsLoading } = useSapExchangeRemaining();
+  const { remaining, totalCap, swapped, usedPercent, isLoading: statsLoading } = useSapExchangeRemaining();
   const { tokenStats, isLoading: tokenStatsLoading } = useSwapTokenStats();
 
   if (!ready) {
     return <div className="w-full h-48 rounded-3xl bg-white/5 animate-pulse" aria-busy="true" />;
   }
 
-  const swappedSAPNum = parseFloat(totalCap) - parseFloat(remaining);
+  const swappedSAPNum = parseFloat(swapped);
   const remainingSAPNum = parseFloat(remaining);
 
   // 百分比 = 已兑换 / 未兑换 × 100（已兑换占未兑换的比值）
@@ -34,7 +34,7 @@ export default function MarketStats() {
     ? (swappedSAPNum / remainingSAPNum) * 100
     : 0;
 
-  const swappedDisplay = statsLoading ? '--' : formatCompact(swappedSAPNum.toString());
+  const swappedDisplay = statsLoading ? '--' : formatCompact(swapped);
   const totalCapDisplay = statsLoading ? '--' : formatCompact(totalCap);
 
   return (
@@ -46,8 +46,24 @@ export default function MarketStats() {
         </h3>
       </div>
 
-      {/* 按代币展示已兑换数量 */}
+      {/* 按代币展示已兑换数量（含合约读取的已兑 SAP 总额） */}
       <div className="flex flex-col gap-3">
+        <div className={`rounded-2xl p-4 ${styles.statsItem}`}>
+          <div className="flex items-center gap-3">
+            <TokenIcon symbol="SAP" size={32} />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-muted-foreground">
+                {t('exchange.marketStats.swappedSap', {
+                  defaultValue: '已兑SAP总额',
+                })}
+              </p>
+              <p className="text-base font-bold text-foreground mt-0.5 truncate">
+                {statsLoading ? '...' : `${formatCompact(swapped)} SAP`}
+              </p>
+            </div>
+          </div>
+        </div>
+
         {tokenStats.map((stat, i) => (
           <div key={`token-${i}`} className={`rounded-2xl p-4 ${styles.statsItem}`}>
             <div className="flex items-center gap-3">
@@ -66,14 +82,6 @@ export default function MarketStats() {
             </div>
           </div>
         ))}
-
-        {tokenStats.length === 0 && !tokenStatsLoading ? (
-          <div className={`rounded-2xl p-4 ${styles.statsItem}`}>
-            <p className="text-xs text-muted-foreground text-center">
-              {t('exchange.marketStats.noTokenStats', { defaultValue: '暂无已兑换数据' })}
-            </p>
-          </div>
-        ) : null}
       </div>
 
       {/* 进度条区域 */}

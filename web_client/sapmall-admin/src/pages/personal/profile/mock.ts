@@ -2,12 +2,12 @@ import { ProfileData } from './types';
 
 export const profileMockData: ProfileData = {
   userId: 'UID_123456789',
-  username: '用户名',
-  nickname: '用户名',
+  username: 'username',
+  nickname: 'username',
   walletAddress: '0x1234...5678',
-  userRole: '普通用户',
-  statusText: '账户状态正常',
-  brief: '账户状态正常',
+  userRole: 'Standard user',
+  statusText: 'Account is active',
+  brief: 'Account is active',
   gender: 'unknown',
   birthday: '',
   registerTime: '2024-01-15 10:30:00',
@@ -28,7 +28,7 @@ export const profileMockData: ProfileData = {
       createdAt: '2026-04-20 14:32:01',
       bizModule: 'profile',
       actionType: 'PROFILE_SAVE',
-      summary: '保存个人基础资料',
+      summary: 'Saved basic profile',
       resultStatus: 'success',
     },
     {
@@ -36,7 +36,7 @@ export const profileMockData: ProfileData = {
       createdAt: '2026-04-19 10:05:22',
       bizModule: 'security',
       actionType: 'EMAIL_VERIFY_SENT',
-      summary: '发送邮箱验证邮件',
+      summary: 'Sent email verification',
       resultStatus: 'success',
     },
     {
@@ -44,7 +44,7 @@ export const profileMockData: ProfileData = {
       createdAt: '2026-04-18 09:12:00',
       bizModule: 'merchant',
       actionType: 'MERCHANT_TERMS_ACCEPT',
-      summary: '确认商家入驻与保证金条款',
+      summary: 'Accepted merchant onboarding & deposit terms',
       resultStatus: 'success',
     },
     {
@@ -52,7 +52,7 @@ export const profileMockData: ProfileData = {
       createdAt: '2026-04-17 16:40:00',
       bizModule: 'auth',
       actionType: 'LOGIN',
-      summary: '账号登录（Web 管理端）',
+      summary: 'Account login (Web admin)',
       resultStatus: 'success',
     },
     {
@@ -60,7 +60,7 @@ export const profileMockData: ProfileData = {
       createdAt: '2026-04-16 11:20:33',
       bizModule: 'deposit',
       actionType: 'DEPOSIT_INTENT_CREATE',
-      summary: '创建保证金缴纳意图单',
+      summary: 'Created deposit payment intent',
       resultStatus: 'success',
     },
     {
@@ -68,7 +68,7 @@ export const profileMockData: ProfileData = {
       createdAt: '2026-04-15 08:55:10',
       bizModule: 'kyc',
       actionType: 'KYC_SUBMIT',
-      summary: '提交 KYC 认证资料',
+      summary: 'Submitted KYC verification documents',
       resultStatus: 'partial',
     },
     {
@@ -76,7 +76,7 @@ export const profileMockData: ProfileData = {
       createdAt: '2026-04-10 19:01:00',
       bizModule: 'security',
       actionType: 'PHONE_BIND',
-      summary: '绑定手机号',
+      summary: 'Bound phone number',
       resultStatus: 'success',
     },
     {
@@ -84,7 +84,7 @@ export const profileMockData: ProfileData = {
       createdAt: '2026-04-08 13:22:45',
       bizModule: 'profile',
       actionType: 'AVATAR_UPDATE',
-      summary: '更新头像',
+      summary: 'Updated avatar',
       resultStatus: 'failed',
     },
   ],

@@ -10,8 +10,8 @@ http {
 
     # 后端服务配置 - IDE实例优先
     upstream backend_servers {
-        server ${HOST_IP}:8889;  # IDE实例（优先）
-        server ${HOST_IP}:8888 backup;  # 容器实例（备份）
+        server ${HOST_IP}:8888 max_fails=2 fail_timeout=5s;
+        server ${HOST_IP}:8889 backup;  # IDE 调试端口
     }
 
     # 管理后台配置 - IDE实例优先

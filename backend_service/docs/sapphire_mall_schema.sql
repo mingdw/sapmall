@@ -1139,4 +1139,40 @@ CREATE TABLE `sys_user_role`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 
+-- CCTP 跨链兑换意图表（源链 USDC -> Arc Testnet -> SAP）
+CREATE TABLE IF NOT EXISTS `sys_cctp_swap_intent` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `intent_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '业务意图ID，如 cctp_xxx',
+  `user_address` varchar(66) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '用户钱包地址',
+  `source_chain_id` int(11) NOT NULL DEFAULT 0 COMMENT '源链 chainId',
+  `dest_chain_id` int(11) NOT NULL DEFAULT 0 COMMENT '目标链 chainId',
+  `source_domain` int(11) NOT NULL DEFAULT 0 COMMENT 'CCTP 源 domain',
+  `dest_domain` int(11) NOT NULL DEFAULT 0 COMMENT 'CCTP 目标 domain',
+  `token_symbol` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'USDC' COMMENT '代币符号',
+  `token_decimals` int(11) NOT NULL DEFAULT 6 COMMENT '代币小数精度',
+  `amount_in` varchar(78) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'burn 金额（最小单位）',
+  `burn_tx_hash` varchar(88) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'depositForBurn 交易哈希',
+  `burn_gas_fee` varchar(78) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '源链 burn 实际 Gas（原生币 wei）',
+  `message_bytes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT 'CCTP message bytes',
+  `message_hash` varchar(88) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'message keccak256',
+  `attestation` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL COMMENT 'Circle attestation',
+  `mint_tx_hash` varchar(88) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Arc receiveMessage 交易哈希',
+  `mint_gas_fee` varchar(78) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '目标链 mint 实际 Gas（原生币最小单位）',
+  `swap_tx_hash` varchar(88) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Arc swap 交易哈希',
+  `swap_gas_fee` varchar(78) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '目标链 swap 实际 Gas（原生币最小单位）',
+  `status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '0 created 1 burned 2 attested 3 minted 4 swapped 5 failed',
+  `error_msg` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '失败原因',
+  `completed_at` datetime NULL DEFAULT NULL COMMENT '交易完成时间（swapped/failed）',
+  `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted` int(11) NOT NULL DEFAULT 0 COMMENT '是否删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_intent_id`(`intent_id`) USING BTREE,
+  INDEX `idx_user_address`(`user_address`) USING BTREE,
+  INDEX `idx_status`(`status`) USING BTREE,
+  INDEX `idx_burn_tx`(`burn_tx_hash`) USING BTREE,
+  INDEX `idx_completed_at`(`completed_at`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC COMMENT = 'CCTP 跨链兑换意图';
+
+
 SET FOREIGN_KEY_CHECKS = 1;

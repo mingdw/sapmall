@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Select, Button, Tag } from 'antd';
 import { Copy } from 'lucide-react';
 import type { UserProfile, ChainBalanceInfo, TokenSymbol } from '../types';
-import { USER_STATUS_LABELS } from '../constants';
+import { getUserStatusLabels } from '../constants';
 import styles from '../BalanceManager.module.scss';
 
 const { Option } = Select;
@@ -26,6 +27,7 @@ function formatAmount(val: number, decimals: number): string {
 }
 
 const BalanceOverview: React.FC<BalanceOverviewProps> = ({ profile }) => {
+  const { t } = useTranslation();
   const [selectedChainId, setSelectedChainId] = useState<number>(
     profile.chainBalances[0]?.chainId ?? 0,
   );
@@ -35,6 +37,7 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({ profile }) => {
     [profile.chainBalances, selectedChainId],
   );
 
+  const userStatusLabels = getUserStatusLabels(t);
   const statusCls = profile.status === 'active' ? styles.statusActive : profile.status === 'frozen' ? styles.statusFrozen : styles.statusInactive;
 
   const handleCopy = (text: string) => {
@@ -45,7 +48,7 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({ profile }) => {
     <div>
       {/* 链切换 */}
       <div className={styles.chainSelector}>
-        <span className={styles.chainSelectorLabel}>选择链网络：</span>
+        <span className={styles.chainSelectorLabel}>{t('assets.balance.walletInfo.selectChain')}</span>
         <Select
           value={selectedChainId}
           onChange={setSelectedChainId}
@@ -87,24 +90,24 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({ profile }) => {
       <div className={styles.walletPanel}>
         <h3 className={styles.walletPanelTitle}>
           <i className="fas fa-info-circle" />
-          钱包信息
+          {t('assets.balance.walletInfo.title')}
         </h3>
         <div className={styles.walletInfoGrid}>
           <div className={styles.walletInfoItem}>
-            <span className={styles.walletInfoLabel}>钱包地址</span>
+            <span className={styles.walletInfoLabel}>{t('assets.balance.walletInfo.walletAddress')}</span>
             <div className={styles.walletInfoValue}>
               <code className={styles.monoText} style={{ color: '#94a3b8' }}>{profile.walletAddress}</code>
-              <button className={styles.iconBtn} onClick={() => handleCopy(profile.walletAddress)} title="复制地址">
+              <button className={styles.iconBtn} onClick={() => handleCopy(profile.walletAddress)} title={t('assets.balance.walletInfo.copyAddress')}>
                 <Copy size={12} />
               </button>
             </div>
           </div>
           <div className={styles.walletInfoItem}>
-            <span className={styles.walletInfoLabel}>账户状态</span>
-            <span className={`${styles.statusPill} ${statusCls}`}>{USER_STATUS_LABELS[profile.status]}</span>
+            <span className={styles.walletInfoLabel}>{t('assets.balance.walletInfo.accountStatus')}</span>
+            <span className={`${styles.statusPill} ${statusCls}`}>{userStatusLabels[profile.status]}</span>
           </div>
           <div className={styles.walletInfoItem}>
-            <span className={styles.walletInfoLabel}>所属链</span>
+            <span className={styles.walletInfoLabel}>{t('assets.balance.walletInfo.chain')}</span>
             <span className={styles.walletInfoValue}>
               {currentChain?.chainName ?? '—'}
               {currentChain && (
@@ -115,15 +118,15 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({ profile }) => {
             </span>
           </div>
           <div className={styles.walletInfoItem}>
-            <span className={styles.walletInfoLabel}>用户 ID</span>
+            <span className={styles.walletInfoLabel}>{t('assets.balance.walletInfo.userId')}</span>
             <span className={styles.walletInfoValue} style={{ fontFamily: 'ui-monospace, monospace', fontSize: 12 }}>{profile.userId}</span>
           </div>
           <div className={styles.walletInfoItem}>
-            <span className={styles.walletInfoLabel}>注册时间</span>
+            <span className={styles.walletInfoLabel}>{t('assets.balance.walletInfo.registeredAt')}</span>
             <span className={styles.walletInfoValue}>{profile.registeredAt}</span>
           </div>
           <div className={styles.walletInfoItem}>
-            <span className={styles.walletInfoLabel}>最后活跃</span>
+            <span className={styles.walletInfoLabel}>{t('assets.balance.walletInfo.lastActiveAt')}</span>
             <span className={styles.walletInfoValue}>{profile.lastActiveAt}</span>
           </div>
         </div>
@@ -135,19 +138,19 @@ const BalanceOverview: React.FC<BalanceOverviewProps> = ({ profile }) => {
           <i className="fas fa-qrcode" />
         </div>
         <div className={styles.qrDetails}>
-          <span className={styles.qrLabel}>我的收款地址</span>
+          <span className={styles.qrLabel}>{t('assets.balance.walletInfo.myReceivingAddress')}</span>
           <div className={styles.qrAddress}>
             <code>{profile.walletAddress}</code>
-            <button className={styles.iconBtn} onClick={() => handleCopy(profile.walletAddress)} title="复制地址">
+            <button className={styles.iconBtn} onClick={() => handleCopy(profile.walletAddress)} title={t('assets.balance.walletInfo.copyAddress')}>
               <Copy size={12} />
             </button>
           </div>
           <div className={styles.qrActions}>
             <Button size="small" ghost icon={<i className="fas fa-download" style={{ marginRight: 4 }} />}>
-              下载二维码
+              {t('assets.balance.walletInfo.downloadQR')}
             </Button>
             <Button size="small" ghost icon={<i className="fas fa-share-alt" style={{ marginRight: 4 }} />}>
-              分享地址
+              {t('assets.balance.walletInfo.shareAddress')}
             </Button>
           </div>
         </div>

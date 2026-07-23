@@ -395,12 +395,39 @@
         "recoveryMnemonic": "Mnemonic recovery",
         "recoveryMnemonicDesc": "Use mnemonic phrase to recover wallet access"
       },
+      "disconnectDeviceConfirm": "Once disconnected, this device will no longer be able to use the current session. Are you sure?",
       "msg": {
         "enterVerificationCode": "Please enter 6-digit verification code",
         "twoFactorEnabled": "Two-factor authentication enabled",
         "twoFactorDisabled": "Two-factor authentication disabled",
         "enterWalletAddress": "Please enter wallet address",
         "enterFreezeConfirm": "Please enter FREEZE to confirm"
+      },
+      "activityMock": {
+        "loginSuccess": {
+          "title": "Login successful",
+          "detail": "Windows Chrome · IP: 192.168.1.1 · Beijing"
+        },
+        "purchaseProduct": {
+          "title": "Purchased \"Digital Art #3721\"",
+          "detail": "Tx hash: 0xabc...123 · Amount: 0.5 ETH"
+        },
+        "securityChange": {
+          "title": "Security settings changed",
+          "detail": "Enabled high-value alert · IP: 192.168.1.1"
+        },
+        "loginFailed": {
+          "title": "Failed login attempt",
+          "detail": "Android Chrome · IP: 103.24.56.78 · Shanghai"
+        },
+        "deposit": {
+          "title": "Deposited 1.5 ETH",
+          "detail": "Tx hash: 0xdef...456 · Source: External wallet"
+        },
+        "kycSubmit": {
+          "title": "KYC application submitted",
+          "detail": "Identity verification submitted, pending review · IP: 192.168.1.1"
+        }
       }
     },
     "notifications": {
@@ -453,32 +480,32 @@
         "justNow": "Just now"
       },
       "typeItems": {
-        "transactionConfirmation": "Transaction Confirmation",
-        "transactionConfirmationDesc": "System will send confirmation when you initiate a transaction",
-        "transactionComplete": "Transaction Complete",
-        "transactionCompleteDesc": "System will notify when your transaction is completed",
-        "loginAlert": "Login Alert",
-        "loginAlertDesc": "System will notify when your account logs in from a new device",
-        "securityChange": "Security Change",
-        "securityChangeDesc": "System will notify when your security settings change",
-        "systemMaintenance": "System Maintenance",
-        "systemMaintenanceDesc": "System will notify in advance of planned maintenance",
-        "newFeature": "New Feature Announcement",
-        "newFeatureDesc": "System will notify when new features are released"
+        "transactionconfirmation": "Transaction Confirmation",
+        "transactionconfirmationDesc": "System will send confirmation when you initiate a transaction",
+        "transactioncomplete": "Transaction Complete",
+        "transactioncompleteDesc": "System will notify when your transaction is completed",
+        "loginalert": "Login Alert",
+        "loginalertDesc": "System will notify when your account logs in from a new device",
+        "securitychange": "Security Change",
+        "securitychangeDesc": "System will notify when your security settings change",
+        "systemmaintenance": "System Maintenance",
+        "systemmaintenanceDesc": "System will notify in advance of planned maintenance",
+        "newfeature": "New Feature Announcement",
+        "newfeatureDesc": "System will notify when new features are released"
       },
       "previewContent": {
-        "transactionConfirmationTitle": "Transaction Confirmation",
-        "transactionConfirmationBody": "You have a transaction pending confirmation. Please handle it promptly.",
-        "transactionCompleteTitle": "Transaction Complete",
-        "transactionCompleteBody": "Your transaction has been completed successfully. Check order history for details.",
-        "loginAlertTitle": "Login Alert",
-        "loginAlertBody": "Your account logged in from a new device. If this wasn't you, please take action immediately.",
-        "securityChangeTitle": "Security Settings Changed",
-        "securityChangeBody": "Your security settings have been changed. If this wasn't you, please contact support immediately.",
-        "systemMaintenanceTitle": "System Maintenance",
-        "systemMaintenanceBody": "The system will undergo maintenance soon. Some features may be temporarily unavailable.",
-        "newFeatureTitle": "New Feature Announcement",
-        "newFeatureBody": "New features have been released. Come and try them out!"
+        "transactionconfirmationTitle": "Transaction Confirmation",
+        "transactionconfirmationBody": "You have a transaction pending confirmation. Please handle it promptly.",
+        "transactioncompleteTitle": "Transaction Complete",
+        "transactioncompleteBody": "Your transaction has been completed successfully. Check order history for details.",
+        "loginalertTitle": "Login Alert",
+        "loginalertBody": "Your account logged in from a new device. If this wasn't you, please take action immediately.",
+        "securitychangeTitle": "Security Settings Changed",
+        "securitychangeBody": "Your security settings have been changed. If this wasn't you, please contact support immediately.",
+        "systemmaintenanceTitle": "System Maintenance",
+        "systemmaintenanceBody": "The system will undergo maintenance soon. Some features may be temporarily unavailable.",
+        "newfeatureTitle": "New Feature Announcement",
+        "newfeatureBody": "New features have been released. Come and try them out!"
       }
     }
   }

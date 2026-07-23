@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Table, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { RewardRecord, RewardSourceType, RewardStatus } from '../types';
 import {
-  REWARD_SOURCE_LABELS,
+  getRewardSourceLabels,
   REWARD_SOURCE_ICONS,
   REWARD_SOURCE_COLORS,
-  REWARD_STATUS_LABELS,
+  getRewardStatusLabels,
 } from '../constants';
 import styles from '../RewardsManager.module.scss';
 
@@ -16,19 +17,10 @@ interface RewardHistoryProps {
 
 type FilterValue = 'all' | RewardSourceType | RewardStatus;
 
-const FILTER_GROUPS: { label: string; value: FilterValue }[] = [
-  { label: '全部', value: 'all' },
-  { label: '交易返佣', value: 'trading_rebate' },
-  { label: '社区活动', value: 'community' },
-  { label: '邀请奖励', value: 'referral' },
-  { label: '质押收益', value: 'staking' },
-  { label: '商家奖励', value: 'merchant_bonus' },
-  { label: '空投', value: 'airdrop' },
-  { label: '可领取', value: 'available' },
-  { label: '已领取', value: 'claimed' },
-  { label: '待结算', value: 'pending' },
-  { label: '已过期', value: 'expired' },
+const SOURCE_FILTER_KEYS: RewardSourceType[] = [
+  'trading_rebate', 'community', 'referral', 'staking', 'merchant_bonus', 'airdrop',
 ];
+const STATUS_FILTER_KEYS: RewardStatus[] = ['available', 'claimed', 'pending', 'expired'];
 
 const STATUS_CLASS_MAP: Record<RewardStatus, string> = {
   available: styles.statusAvailable,
@@ -47,18 +39,24 @@ const formatTxHash = (hash?: string): string => {
 };
 
 const RewardHistory: React.FC<RewardHistoryProps> = ({ records }) => {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<FilterValue>('all');
+
+  const rewardSourceLabels = getRewardSourceLabels(t);
+  const rewardStatusLabels = getRewardStatusLabels(t);
+
+  const filterGroups: { label: string; value: FilterValue }[] = [
+    { label: t('assets.rewards.historySection.filterAll'), value: 'all' },
+    ...SOURCE_FILTER_KEYS.map((key) => ({ label: rewardSourceLabels[key], value: key as FilterValue })),
+    ...STATUS_FILTER_KEYS.map((key) => ({ label: rewardStatusLabels[key], value: key as FilterValue })),
+  ];
 
   const filteredRecords = useMemo(() => {
     if (filter === 'all') return records;
-    const sourceTypes: RewardSourceType[] = [
-      'trading_rebate', 'community', 'referral', 'staking', 'merchant_bonus', 'airdrop',
-    ];
-    const statusTypes: RewardStatus[] = ['available', 'claimed', 'pending', 'expired'];
-    if (sourceTypes.includes(filter as RewardSourceType)) {
+    if (SOURCE_FILTER_KEYS.includes(filter as RewardSourceType)) {
       return records.filter((r) => r.source === filter);
     }
-    if (statusTypes.includes(filter as RewardStatus)) {
+    if (STATUS_FILTER_KEYS.includes(filter as RewardStatus)) {
       return records.filter((r) => r.status === filter);
     }
     return records;
@@ -66,7 +64,7 @@ const RewardHistory: React.FC<RewardHistoryProps> = ({ records }) => {
 
   const columns: ColumnsType<RewardRecord> = [
     {
-      title: '来源',
+      title: t('assets.rewards.historySection.colSource'),
       dataIndex: 'source',
       key: 'source',
       width: 140,
@@ -80,20 +78,20 @@ const RewardHistory: React.FC<RewardHistoryProps> = ({ records }) => {
             >
               <i className={REWARD_SOURCE_ICONS[source]} />
             </span>
-            {REWARD_SOURCE_LABELS[source]}
+            {rewardSourceLabels[source]}
           </span>
         );
       },
     },
     {
-      title: '描述',
+      title: t('assets.rewards.historySection.colDescription'),
       dataIndex: 'description',
       key: 'description',
       ellipsis: true,
       render: (desc: string) => <Tooltip title={desc}><span>{desc}</span></Tooltip>,
     },
     {
-      title: '金额',
+      title: t('assets.rewards.historySection.colAmount'),
       dataIndex: 'amount',
       key: 'amount',
       width: 120,
@@ -105,25 +103,25 @@ const RewardHistory: React.FC<RewardHistoryProps> = ({ records }) => {
       ),
     },
     {
-      title: '状态',
+      title: t('assets.rewards.historySection.colStatus'),
       dataIndex: 'status',
       key: 'status',
       width: 90,
       render: (status: RewardStatus) => (
         <span className={`${styles.statusPill} ${STATUS_CLASS_MAP[status]}`}>
-          {REWARD_STATUS_LABELS[status]}
+          {rewardStatusLabels[status]}
         </span>
       ),
     },
     {
-      title: '时间',
+      title: t('assets.rewards.historySection.colTime'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 170,
       render: (time: string) => <span className={styles.monoText}>{time}</span>,
     },
     {
-      title: '交易哈希',
+      title: t('assets.rewards.historySection.colTxHash'),
       dataIndex: 'txHash',
       key: 'txHash',
       width: 150,
@@ -136,7 +134,7 @@ const RewardHistory: React.FC<RewardHistoryProps> = ({ records }) => {
       ),
     },
     {
-      title: '操作',
+      title: t('assets.rewards.historySection.colAction'),
       key: 'action',
       width: 100,
       render: (_, record) => {
@@ -148,15 +146,15 @@ const RewardHistory: React.FC<RewardHistoryProps> = ({ records }) => {
               onClick={() => undefined}
             >
               <i className="fas fa-hand-holding" />
-              领取
+              {t('assets.rewards.historySection.claim')}
             </button>
           );
         }
         if (record.status === 'claimed' && record.claimedAt) {
           return (
-            <Tooltip title={`领取于 ${record.claimedAt}`}>
+            <Tooltip title={t('assets.rewards.historySection.claimedAt', { time: record.claimedAt })}>
               <span style={{ color: '#64748b', fontSize: 12 }}>
-                <i className="fas fa-check" /> 已领
+                <i className="fas fa-check" /> {t('assets.rewards.historySection.claimed')}
               </span>
             </Tooltip>
           );
@@ -164,7 +162,7 @@ const RewardHistory: React.FC<RewardHistoryProps> = ({ records }) => {
         if (record.status === 'expired') {
           return <span style={{ color: '#475569', fontSize: 12 }}>—</span>;
         }
-        return <span style={{ color: '#64748b', fontSize: 12 }}>等待中</span>;
+        return <span style={{ color: '#64748b', fontSize: 12 }}>{t('assets.rewards.historySection.waiting')}</span>;
       },
     },
   ];
@@ -174,7 +172,7 @@ const RewardHistory: React.FC<RewardHistoryProps> = ({ records }) => {
       {/* 筛选栏 */}
       <div className={styles.filterBar}>
         <div className={styles.filterGroup}>
-          {FILTER_GROUPS.map((item) => (
+          {filterGroups.map((item) => (
             <button
               key={item.value}
               type="button"
@@ -196,7 +194,7 @@ const RewardHistory: React.FC<RewardHistoryProps> = ({ records }) => {
           pagination={{
             pageSize: 10,
             showSizeChanger: false,
-            showTotal: (total) => `共 ${total} 条记录`,
+            showTotal: (total) => t('assets.rewards.historySection.totalRecords', { count: total }),
           }}
           scroll={{ x: 800 }}
         />

@@ -1,6 +1,7 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { TierInfo, VipTier } from '../types';
-import { TIER_LABELS, TIER_COLORS, TIER_POINT_THRESHOLDS } from '../constants';
+import { getTierLabels, TIER_COLORS, TIER_POINT_THRESHOLDS } from '../constants';
 import styles from '../RewardsManager.module.scss';
 
 interface VipTierCardProps {
@@ -10,14 +11,12 @@ interface VipTierCardProps {
 interface TierData {
   tier: VipTier;
   points: number;
-  benefits: string[];
   icon: string;
 }
 
 interface UpgradeQuest {
+  key: string;
   icon: string;
-  title: string;
-  desc: string;
   reward: number;
   current: number;
   target: number;
@@ -26,85 +25,34 @@ interface UpgradeQuest {
 }
 
 const ALL_TIERS: TierData[] = [
-  {
-    tier: 'bronze',
-    points: TIER_POINT_THRESHOLDS.bronze,
-    icon: 'fas fa-shield',
-    benefits: ['基础交易返佣 0.5%', '社区活动参与权', '标准提现速度'],
-  },
-  {
-    tier: 'silver',
-    points: TIER_POINT_THRESHOLDS.silver,
-    icon: 'fas fa-shield-alt',
-    benefits: ['交易返佣 0.8%', '提现手续费 9 折', '活动提前通知'],
-  },
-  {
-    tier: 'gold',
-    points: TIER_POINT_THRESHOLDS.gold,
-    icon: 'fas fa-crown',
-    benefits: ['交易返佣 1.5%', '专属客服通道', '提现手续费 8 折', '社区活动优先参与'],
-  },
-  {
-    tier: 'platinum',
-    points: TIER_POINT_THRESHOLDS.platinum,
-    icon: 'fas fa-gem',
-    benefits: ['交易返佣 2.0%', '专属客户经理', '提现手续费 6 折', '优先参与内测功能', '大额提现加速'],
-  },
-  {
-    tier: 'diamond',
-    points: TIER_POINT_THRESHOLDS.diamond,
-    icon: 'fas fa-diamond',
-    benefits: ['交易返佣 3.0%', '1v1 专属服务', '提现手续费全免', 'VIP 专享活动', '链上优先确认', '定制化 API 接口'],
-  },
+  { tier: 'bronze',   points: TIER_POINT_THRESHOLDS.bronze,   icon: 'fas fa-shield' },
+  { tier: 'silver',   points: TIER_POINT_THRESHOLDS.silver,   icon: 'fas fa-shield-alt' },
+  { tier: 'gold',     points: TIER_POINT_THRESHOLDS.gold,     icon: 'fas fa-crown' },
+  { tier: 'platinum', points: TIER_POINT_THRESHOLDS.platinum, icon: 'fas fa-gem' },
+  { tier: 'diamond',  points: TIER_POINT_THRESHOLDS.diamond,  icon: 'fas fa-diamond' },
 ];
 
 const NEXT_TIER_QUESTS: UpgradeQuest[] = [
-  {
-    icon: 'fas fa-exchange-alt',
-    title: '完成交易消费',
-    desc: '交易消费累计 SAP 等值资产',
-    reward: 5000,
-    current: 3200,
-    target: 5000,
-    color: '#a78bfa',
-    bg: 'rgba(167, 139, 250, 0.12)',
-  },
-  {
-    icon: 'fas fa-lock',
-    title: '增加 SAP 质押',
-    desc: '质押 SAP 获取持续积分收益',
-    reward: 3000,
-    current: 1500,
-    target: 3000,
-    color: '#fbbf24',
-    bg: 'rgba(251, 191, 36, 0.12)',
-  },
-  {
-    icon: 'fas fa-user-plus',
-    title: '邀请好友交易',
-    desc: '邀请好友完成首笔交易',
-    reward: 2000,
-    current: 1200,
-    target: 2000,
-    color: '#34d399',
-    bg: 'rgba(52, 211, 153, 0.12)',
-  },
-  {
-    icon: 'fas fa-users',
-    title: '参与社区活动',
-    desc: '完成社区问答/测试任务',
-    reward: 2200,
-    current: 1900,
-    target: 2200,
-    color: '#60a5fa',
-    bg: 'rgba(96, 165, 250, 0.12)',
-  },
+  { key: 'trading',   icon: 'fas fa-exchange-alt', reward: 5000, current: 3200, target: 5000, color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.12)' },
+  { key: 'staking',   icon: 'fas fa-lock',         reward: 3000, current: 1500, target: 3000, color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.12)' },
+  { key: 'referral',  icon: 'fas fa-user-plus',    reward: 2000, current: 1200, target: 2000, color: '#34d399', bg: 'rgba(52, 211, 153, 0.12)' },
+  { key: 'community', icon: 'fas fa-users',        reward: 2200, current: 1900, target: 2200, color: '#60a5fa', bg: 'rgba(96, 165, 250, 0.12)' },
+];
+
+const EARN_METHODS = [
+  { key: 'trading',   icon: 'fas fa-exchange-alt', color: '#a78bfa' },
+  { key: 'staking',   icon: 'fas fa-lock',         color: '#fbbf24' },
+  { key: 'referral',  icon: 'fas fa-user-plus',    color: '#34d399' },
+  { key: 'community', icon: 'fas fa-users',        color: '#60a5fa' },
 ];
 
 const VipTierCard: React.FC<VipTierCardProps> = ({ tierInfo }) => {
+  const { t } = useTranslation();
+  const tierLabels = getTierLabels(t);
   const pointsToNext = tierInfo.nextTier ? tierInfo.nextTierPoints - tierInfo.currentPoints : 0;
-  const nextTierData = tierInfo.nextTier ? ALL_TIERS.find((t) => t.tier === tierInfo.nextTier) : null;
-  const currentTierIdx = ALL_TIERS.findIndex((t) => t.tier === tierInfo.currentTier);
+  const nextTierData = tierInfo.nextTier ? ALL_TIERS.find((td) => td.tier === tierInfo.nextTier) : null;
+  const currentTierIdx = ALL_TIERS.findIndex((td) => td.tier === tierInfo.currentTier);
+  const nextTierName = tierInfo.nextTier ? tierLabels[tierInfo.nextTier] : '';
 
   return (
     <div>
@@ -113,10 +61,10 @@ const VipTierCard: React.FC<VipTierCardProps> = ({ tierInfo }) => {
         <div className={styles.queryCard}>
           <h4 className={styles.sectionLabel}>
             <i className="fas fa-rocket" style={{ color: 'var(--rw-accent)' }} />
-            升级任务 — 冲刺 {tierInfo.nextTierName}
+            {t('assets.rewards.tierSection.upgradeQuests', { nextTier: nextTierName })}
           </h4>
           <div className={styles.questHint}>
-            还需 <span className={styles.questHintNum}>{pointsToNext.toLocaleString()}</span> 积分升级至 {tierInfo.nextTierName}，完成以下任务加速获取积分
+            {t('assets.rewards.tierSection.questHint', { points: pointsToNext.toLocaleString(), nextTier: nextTierName })}
           </div>
           <div className={styles.questGrid}>
             {NEXT_TIER_QUESTS.map((quest, idx) => {
@@ -129,18 +77,18 @@ const VipTierCard: React.FC<VipTierCardProps> = ({ tierInfo }) => {
                       <i className={quest.icon} />
                     </div>
                     <div className={styles.questTitleWrap}>
-                      <span className={styles.questTitle}>{quest.title}</span>
+                      <span className={styles.questTitle}>{t(`assets.rewards.tierSection.quests.${quest.key}.title`)}</span>
                       <span className={styles.questReward}>
                         <i className="fas fa-coins" /> +{quest.reward.toLocaleString()} pts
                       </span>
                     </div>
                     {isComplete && (
                       <span className={styles.questCompleteBadge}>
-                        <i className="fas fa-check" /> 已完成
+                        <i className="fas fa-check" /> {t('assets.rewards.tierSection.questCompleted')}
                       </span>
                     )}
                   </div>
-                  <div className={styles.questDesc}>{quest.desc}</div>
+                  <div className={styles.questDesc}>{t(`assets.rewards.tierSection.quests.${quest.key}.desc`)}</div>
                   <div className={styles.questProgressRow}>
                     <div className={styles.questProgressBar}>
                       <div
@@ -166,13 +114,14 @@ const VipTierCard: React.FC<VipTierCardProps> = ({ tierInfo }) => {
       <div className={styles.queryCard}>
         <h4 className={styles.sectionLabel}>
           <i className="fas fa-trophy" style={{ color: 'var(--rw-accent)' }} />
-          等级权益对比
+          {t('assets.rewards.tierSection.tierComparison')}
         </h4>
         <div className={styles.tierComparison}>
           {ALL_TIERS.map((tierData, idx) => {
             const colors = TIER_COLORS[tierData.tier];
             const isCurrent = tierData.tier === tierInfo.currentTier;
             const isUnlocked = idx <= currentTierIdx;
+            const benefits = t(`assets.rewards.tierSection.benefits.${tierData.tier}`, { returnObjects: true }) as string[];
             return (
               <div
                 key={tierData.tier}
@@ -186,8 +135,8 @@ const VipTierCard: React.FC<VipTierCardProps> = ({ tierInfo }) => {
                   >
                     <i className={tierData.icon} />
                   </div>
-                  <span className={styles.tierCompareName}>{TIER_LABELS[tierData.tier]}</span>
-                  {isCurrent && <span className={styles.tierCurrentBadge}>当前</span>}
+                  <span className={styles.tierCompareName}>{tierLabels[tierData.tier]}</span>
+                  {isCurrent && <span className={styles.tierCurrentBadge}>{t('assets.rewards.tierSection.currentBadge')}</span>}
                   {!isUnlocked && (
                     <span className={styles.tierLockedBadge}>
                       <i className="fas fa-lock" /> {tierData.points.toLocaleString()} pts
@@ -195,10 +144,12 @@ const VipTierCard: React.FC<VipTierCardProps> = ({ tierInfo }) => {
                   )}
                 </div>
                 <div className={styles.tierComparePoints}>
-                  {tierData.points === 0 ? '注册即得' : `${tierData.points.toLocaleString()} 积分`}
+                  {tierData.points === 0
+                    ? t('assets.rewards.tierSection.registerToGet')
+                    : t('assets.rewards.tierSection.pointsUnit', { points: tierData.points.toLocaleString() })}
                 </div>
                 <div className={styles.tierCompareBenefits}>
-                  {tierData.benefits.map((benefit, bidx) => (
+                  {benefits.map((benefit, bidx) => (
                     <div key={bidx} className={styles.tierCompareBenefit}>
                       <i className={`fas ${isUnlocked ? 'fa-check' : 'fa-lock'}`} />
                       {benefit}
@@ -215,15 +166,10 @@ const VipTierCard: React.FC<VipTierCardProps> = ({ tierInfo }) => {
       <div className={styles.queryCard}>
         <h4 className={styles.sectionLabel}>
           <i className="fas fa-info-circle" style={{ color: 'var(--rw-accent)' }} />
-          积分获取方式
+          {t('assets.rewards.tierSection.earnMethodsTitle')}
         </h4>
         <div className={styles.earnGrid}>
-          {[
-            { icon: 'fas fa-exchange-alt', title: '交易消费', desc: '每消费 1 SAP 等值资产获得 1 积分', color: '#a78bfa' },
-            { icon: 'fas fa-lock', title: '质押 SAP', desc: '每质押 100 SAP 每天 1 积分', color: '#fbbf24' },
-            { icon: 'fas fa-user-plus', title: '邀请好友', desc: '好友首笔交易奖励 50 积分', color: '#34d399' },
-            { icon: 'fas fa-users', title: '社区贡献', desc: '参与问答/测试活动获得积分', color: '#60a5fa' },
-          ].map((item, idx) => (
+          {EARN_METHODS.map((item, idx) => (
             <div key={idx} className={styles.earnCard}>
               <div
                 className={styles.earnIcon}
@@ -232,8 +178,8 @@ const VipTierCard: React.FC<VipTierCardProps> = ({ tierInfo }) => {
                 <i className={item.icon} />
               </div>
               <div>
-                <div className={styles.earnTitle}>{item.title}</div>
-                <div className={styles.earnDesc}>{item.desc}</div>
+                <div className={styles.earnTitle}>{t(`assets.rewards.tierSection.earnMethods.${item.key}.title`)}</div>
+                <div className={styles.earnDesc}>{t(`assets.rewards.tierSection.earnMethods.${item.key}.desc`)}</div>
               </div>
             </div>
           ))}

@@ -12,6 +12,7 @@ import (
 	"strings"
 	"syscall"
 
+	cctprelayer "sapphire-mall/app/internal/cctp"
 	"sapphire-mall/app/internal/config"
 	"sapphire-mall/app/internal/handler"
 	"sapphire-mall/app/internal/listener"
@@ -35,6 +36,13 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 
+	var cctpRelayer *cctprelayer.Relayer
+	// CCTP Relayer???? etc/*.yaml ? Cctp ?
+	if c.Cctp.Enabled {
+		cctpRelayer = cctprelayer.NewRelayer(ctx.GormDB, c.Cctp)
+		cctpRelayer.Start()
+	}
+
 	listenerCtx, listenerCancel := context.WithCancel(context.Background())
 	defer listenerCancel()
 	if c.ChainListener.Enable {
@@ -43,31 +51,34 @@ func main() {
 		go listener.RunPaymentListener(listenerCtx, ctx)
 	}
 
-	// 设置 Swagger 路由
+	// ?? Swagger ??
 	setupSwaggerRoutes(server)
 
-	// 设置信号处理，确保调试模式可以正常停止
+	// ???????????
 	sigChan := make(chan os.Signal, 1)
-	// Windows 上主要使用 os.Interrupt (Ctrl+C)，Unix 系统上也可以使用 SIGTERM
+	// Windows ???? os.Interrupt (Ctrl+C)?Unix ???? SIGTERM
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
-	// 在 goroutine 中启动服务器
+	// ? goroutine ??? HTTP ??
 	go func() {
 		server.Start()
 	}()
 
-	// 等待中断信号
+	// ??????
 	<-sigChan
-	log.Println("收到停止信号，正在关闭服务器...")
+	log.Println("?????????????...")
 	listenerCancel()
+	if cctpRelayer != nil {
+		cctpRelayer.Stop()
+	}
 	ctx.Stop()
 	server.Stop()
-	log.Println("服务器已关闭")
+	log.Println("?????")
 }
 
-// setupSwaggerRoutes 设置 Swagger UI 相关路由
+// setupSwaggerRoutes ?? Swagger UI ????
 func setupSwaggerRoutes(server *rest.Server) {
-	// Swagger JSON 路由
+	// Swagger JSON ??
 	server.AddRoute(rest.Route{
 		Method: http.MethodGet,
 		Path:   "/swagger.json",
@@ -76,35 +87,35 @@ func setupSwaggerRoutes(server *rest.Server) {
 		}),
 	})
 
-	// 创建静态文件处理函数
+	// ???????????
 	staticHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Static handler called for: %s", r.URL.Path)
 
-		// 处理根路径
+		// ??????
 		if r.URL.Path == "/swagger-ui/" {
 			log.Printf("Serving index.html for root path")
 			http.ServeFile(w, r, "static/swagger-ui/index.html")
 			return
 		}
 
-		// 处理具体文件
+		// ??????
 		if strings.HasPrefix(r.URL.Path, "/swagger-ui/") {
-			// 移除前缀，获取相对路径
+			// ????????????
 			path := strings.TrimPrefix(r.URL.Path, "/swagger-ui/")
 			log.Printf("Trimmed path: %s", path)
 
-			// 构建完整的文件路径
+			// ??????????
 			fullPath := filepath.Join("static", "swagger-ui", path)
 			log.Printf("Full file path: %s", fullPath)
 
-			// 检查文件是否存在
+			// ?????????
 			if _, err := os.Stat(fullPath); os.IsNotExist(err) {
 				log.Printf("File does not exist: %s", fullPath)
 				http.NotFound(w, r)
 				return
 			}
 
-			// 直接服务文件
+			// ??????
 			log.Printf("Serving file: %s", fullPath)
 			http.ServeFile(w, r, fullPath)
 			return
@@ -113,7 +124,7 @@ func setupSwaggerRoutes(server *rest.Server) {
 		http.NotFound(w, r)
 	})
 
-	// 注册具体的静态文件路由
+	// ????????????
 	staticRoutes := []string{
 		"/swagger-ui/",
 		"/swagger-ui/swagger-ui.css",
@@ -136,7 +147,7 @@ func setupSwaggerRoutes(server *rest.Server) {
 		})
 	}
 
-	// 添加通配符路由作为后备
+	// ????????????
 	server.AddRoute(rest.Route{
 		Method:  http.MethodGet,
 		Path:    "/swagger-ui/*filepath",

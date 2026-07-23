@@ -6,10 +6,15 @@ import { getArcPaymentTokenConfig, type WalletErc20Config } from '../../../confi
 /**
  * 获取兑换页代币配置（地址 + 精度 + 符号）。
  * 优先从后端 chain_config 获取，降级到硬编码。
+ * @param chainIdOverride 指定链（跨链报价时传 Arc）
  */
-export function useExchangeTokenConfig(symbol: string): WalletErc20Config | undefined {
-  const { chainId } = useAccount();
+export function useExchangeTokenConfig(
+  symbol: string,
+  chainIdOverride?: number,
+): WalletErc20Config | undefined {
+  const { chainId: walletChainId } = useAccount();
   const store = useChainConfigStore();
+  const chainId = chainIdOverride ?? walletChainId;
 
   return useMemo(() => {
     if (!chainId || !symbol) return undefined;

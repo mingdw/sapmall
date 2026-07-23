@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type {
   RewardsSummary,
   RewardSourceBreakdown,
@@ -9,16 +10,16 @@ import type {
   VipTier,
 } from './types';
 
-// ========== 标签映射 ==========
+// ========== 标签映射（i18n） ==========
 
-export const REWARD_SOURCE_LABELS: Record<RewardSourceType, string> = {
-  trading_rebate: '交易返佣',
-  community: '社区活动',
-  referral: '邀请奖励',
-  staking: '质押收益',
-  merchant_bonus: '商家奖励',
-  airdrop: '空投',
-};
+export const getRewardSourceLabels = (t: TFunction): Record<RewardSourceType, string> => ({
+  trading_rebate: t('assets.rewards.sourceType.trading_rebate'),
+  community: t('assets.rewards.sourceType.community'),
+  referral: t('assets.rewards.sourceType.referral'),
+  staking: t('assets.rewards.sourceType.staking'),
+  merchant_bonus: t('assets.rewards.sourceType.merchant_bonus'),
+  airdrop: t('assets.rewards.sourceType.airdrop'),
+});
 
 export const REWARD_SOURCE_ICONS: Record<RewardSourceType, string> = {
   trading_rebate: 'fas fa-exchange-alt',
@@ -38,20 +39,20 @@ export const REWARD_SOURCE_COLORS: Record<RewardSourceType, { bg: string; color:
   airdrop: { bg: 'rgba(56, 189, 248, 0.12)', color: '#38bdf8' },
 };
 
-export const REWARD_STATUS_LABELS: Record<RewardStatus, string> = {
-  available: '可领取',
-  claimed: '已领取',
-  pending: '待结算',
-  expired: '已过期',
-};
+export const getRewardStatusLabels = (t: TFunction): Record<RewardStatus, string> => ({
+  available: t('assets.rewards.status.available'),
+  claimed: t('assets.rewards.status.claimed'),
+  pending: t('assets.rewards.status.pending'),
+  expired: t('assets.rewards.status.expired'),
+});
 
-export const TIER_LABELS: Record<VipTier, string> = {
-  bronze: '青铜',
-  silver: '白银',
-  gold: '黄金',
-  platinum: '铂金',
-  diamond: '钻石',
-};
+export const getTierLabels = (t: TFunction): Record<VipTier, string> => ({
+  bronze: t('assets.rewards.tier.bronze'),
+  silver: t('assets.rewards.tier.silver'),
+  gold: t('assets.rewards.tier.gold'),
+  platinum: t('assets.rewards.tier.platinum'),
+  diamond: t('assets.rewards.tier.diamond'),
+});
 
 export const TIER_COLORS: Record<VipTier, { color: string; bg: string; border: string }> = {
   bronze: { color: '#d97706', bg: 'rgba(217, 119, 6, 0.12)', border: 'rgba(217, 119, 6, 0.35)' },

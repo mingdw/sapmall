@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
-import { useReadContracts, useAccount } from 'wagmi';
+import { useReadContracts } from 'wagmi';
 import { formatUnits } from 'viem';
 import { swapRouterAbi } from '../../../config/abis/swapRouterAbi';
 import { useSwapRouterAddress } from './useSwapRouterAddress';
 import { useChainConfigStore } from '../../../store/chainConfigStore';
+import { ARC_TESTNET_CHAIN_ID } from '../../../config/chains/arcTestnet';
 
 export interface TokenSwapStat {
   symbol: string;
@@ -22,24 +23,18 @@ interface UseSwapTokenStatsResult {
  * 读取合约中每个支持代币的已兑换数量。
  *
  * 已兑换 = getStablecoinBalance(token) + totalWithdrawn(token)
- *   - getStablecoinBalance：合约当前持有的代币余额
- *   - totalWithdrawn：累计已提取的代币数量
- *
- * 代币列表来自后端 chain_config.paymentTokens（排除 SAP），
- * 精度和符号也以后端配置为准。
+ * 固定读 Arc Testnet（SAP 兑换发生在 Arc），与钱包当前链无关。
  */
 export function useSwapTokenStats(): UseSwapTokenStatsResult {
-  const routerAddress = useSwapRouterAddress();
-  const { chainId } = useAccount();
+  const routerAddress = useSwapRouterAddress(ARC_TESTNET_CHAIN_ID);
   const store = useChainConfigStore();
 
-  // 从链配置获取支付代币（排除 SAP，SAP 是输出代币）
+  // 从 Arc 链配置获取支付代币（排除 SAP，SAP 是输出代币）
   const paymentTokens = useMemo(() => {
-    if (!chainId) return [];
     return store
-      .getPaymentTokens(chainId)
+      .getPaymentTokens(ARC_TESTNET_CHAIN_ID)
       .filter((t) => t.symbol.toUpperCase() !== 'SAP');
-  }, [chainId, store]);
+  }, [store]);
 
   // 构建批量读取调用：每个代币读 getStablecoinBalance + totalWithdrawn
   const contracts = useMemo(() => {
@@ -49,6 +44,7 @@ export function useSwapTokenStats(): UseSwapTokenStatsResult {
       abi: typeof swapRouterAbi;
       functionName: string;
       args: readonly unknown[];
+      chainId: number;
     }[] = [];
     for (const token of paymentTokens) {
       const tokenAddr = token.contractAddress as `0x${string}`;
@@ -57,12 +53,14 @@ export function useSwapTokenStats(): UseSwapTokenStatsResult {
         abi: swapRouterAbi,
         functionName: 'getStablecoinBalance',
         args: [tokenAddr],
+        chainId: ARC_TESTNET_CHAIN_ID,
       });
       calls.push({
         address: routerAddress,
         abi: swapRouterAbi,
         functionName: 'totalWithdrawn',
         args: [tokenAddr],
+        chainId: ARC_TESTNET_CHAIN_ID,
       });
     }
     return calls;

@@ -395,12 +395,39 @@
         "recoveryMnemonic": "助记词恢复",
         "recoveryMnemonicDesc": "使用助记词恢复钱包访问"
       },
+      "disconnectDeviceConfirm": "断开后该设备将无法继续使用当前会话，确定要断开吗？",
       "msg": {
         "enterVerificationCode": "请输入6位验证码",
         "twoFactorEnabled": "双重认证已启用",
         "twoFactorDisabled": "双重认证已关闭",
         "enterWalletAddress": "请输入钱包地址",
         "enterFreezeConfirm": "请输入 FREEZE 确认冻结"
+      },
+      "activityMock": {
+        "loginSuccess": {
+          "title": "登录成功",
+          "detail": "Windows Chrome · IP: 192.168.1.1 · 北京"
+        },
+        "purchaseProduct": {
+          "title": "购买商品 \"数字艺术品#3721\"",
+          "detail": "交易哈希: 0xabc...123 · 金额: 0.5 ETH"
+        },
+        "securityChange": {
+          "title": "更改安全设置",
+          "detail": "启用高额交易提醒 · IP: 192.168.1.1"
+        },
+        "loginFailed": {
+          "title": "登录尝试失败",
+          "detail": "Android Chrome · IP: 103.24.56.78 · 上海"
+        },
+        "deposit": {
+          "title": "充值 1.5 ETH",
+          "detail": "交易哈希: 0xdef...456 · 来源: 外部钱包"
+        },
+        "kycSubmit": {
+          "title": "KYC认证申请提交",
+          "detail": "身份认证申请已提交，等待审核 · IP: 192.168.1.1"
+        }
       }
     },
     "notifications": {
@@ -453,32 +480,32 @@
         "justNow": "刚刚"
       },
       "typeItems": {
-        "transactionConfirmation": "交易确认通知",
-        "transactionConfirmationDesc": "当您发起交易时，系统将发送确认通知",
-        "transactionComplete": "交易完成通知",
-        "transactionCompleteDesc": "当您的交易完成时，系统将发送通知",
-        "loginAlert": "登录提醒",
-        "loginAlertDesc": "当您的账户在新设备上登录时，系统将发送通知",
-        "securityChange": "安全设置变更",
-        "securityChangeDesc": "当您的安全设置发生变更时，系统将发送通知",
-        "systemMaintenance": "系统维护通知",
-        "systemMaintenanceDesc": "当系统计划维护时，系统将提前发送通知",
-        "newFeature": "新功能公告",
-        "newFeatureDesc": "当平台发布新功能时，系统将发送通知"
+        "transactionconfirmation": "交易确认通知",
+        "transactionconfirmationDesc": "当您发起交易时，系统将发送确认通知",
+        "transactioncomplete": "交易完成通知",
+        "transactioncompleteDesc": "当您的交易完成时，系统将发送通知",
+        "loginalert": "登录提醒",
+        "loginalertDesc": "当您的账户在新设备上登录时，系统将发送通知",
+        "securitychange": "安全设置变更",
+        "securitychangeDesc": "当您的安全设置发生变更时，系统将发送通知",
+        "systemmaintenance": "系统维护通知",
+        "systemmaintenanceDesc": "当系统计划维护时，系统将提前发送通知",
+        "newfeature": "新功能公告",
+        "newfeatureDesc": "当平台发布新功能时，系统将发送通知"
       },
       "previewContent": {
-        "transactionConfirmationTitle": "交易确认通知",
-        "transactionConfirmationBody": "您有一笔交易需要确认，请及时处理。",
-        "transactionCompleteTitle": "交易完成通知",
-        "transactionCompleteBody": "您的交易已成功完成，详情请查看订单记录。",
-        "loginAlertTitle": "登录提醒",
-        "loginAlertBody": "您的账户在新设备上登录，如非本人操作请立即处理。",
-        "securityChangeTitle": "安全设置变更",
-        "securityChangeBody": "您的安全设置已发生变更，如非本人操作请立即联系客服。",
-        "systemMaintenanceTitle": "系统维护通知",
-        "systemMaintenanceBody": "系统将于近期进行维护升级，届时部分功能可能暂时不可用。",
-        "newFeatureTitle": "新功能公告",
-        "newFeatureBody": "平台发布了新功能，快来体验吧！"
+        "transactionconfirmationTitle": "交易确认通知",
+        "transactionconfirmationBody": "您有一笔交易需要确认，请及时处理。",
+        "transactioncompleteTitle": "交易完成通知",
+        "transactioncompleteBody": "您的交易已成功完成，详情请查看订单记录。",
+        "loginalertTitle": "登录提醒",
+        "loginalertBody": "您的账户在新设备上登录，如非本人操作请立即处理。",
+        "securitychangeTitle": "安全设置变更",
+        "securitychangeBody": "您的安全设置已发生变更，如非本人操作请立即联系客服。",
+        "systemmaintenanceTitle": "系统维护通知",
+        "systemmaintenanceBody": "系统将于近期进行维护升级，届时部分功能可能暂时不可用。",
+        "newfeatureTitle": "新功能公告",
+        "newfeatureBody": "平台发布了新功能，快来体验吧！"
       }
     }
   }

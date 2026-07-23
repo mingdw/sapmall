@@ -20,6 +20,13 @@ const SecurityScoreCard: React.FC<Props> = ({ score, onReassess }) => {
   const color = getScoreColor(displayScore);
   const dashArray = calcDashArray(displayScore, CIRCUMFERENCE);
 
+  const suggestionText =
+    score.level === 'low'
+      ? t('personal.security.scoreSuggestionLow')
+      : score.level === 'medium'
+      ? t('personal.security.scoreSuggestionMedium')
+      : t('personal.security.scoreSuggestionHigh');
+
   const handleReassess = useCallback(() => {
     if (loading) return;
     setLoading(true);
@@ -75,7 +82,7 @@ const SecurityScoreCard: React.FC<Props> = ({ score, onReassess }) => {
         </div>
         <div className={styles.scoreInfo}>
           <h3 className={styles.scoreTitle}>{t('personal.security.scoreTitle')}</h3>
-          <p className={styles.scoreDesc}>{score.suggestion}</p>
+          <p className={styles.scoreDesc}>{suggestionText}</p>
           <button
             type="button"
             className={`${styles.btnReassess} ${loading ? styles.btnReassessLoading : ''}`}

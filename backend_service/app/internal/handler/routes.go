@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	admin "sapphire-mall/app/internal/handler/admin"
+	cctp "sapphire-mall/app/internal/handler/cctp"
 	common "sapphire-mall/app/internal/handler/common"
 	order "sapphire-mall/app/internal/handler/order"
 	product "sapphire-mall/app/internal/handler/product"
@@ -409,5 +410,38 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/api/swap"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware, serverCtx.LanguageMiddleware, serverCtx.RespMiddleware},
+			[]rest.Route{
+				{
+					// 创建 CCTP burn 意图
+					Method:  http.MethodPost,
+					Path:    "/intent/create",
+					Handler: cctp.CreateCctpIntentHandler(serverCtx),
+				},
+				{
+					// 提交 burn 交易哈希
+					Method:  http.MethodPost,
+					Path:    "/intent/burn-submitted",
+					Handler: cctp.SubmitCctpBurnHandler(serverCtx),
+				},
+				{
+					// 查询 CCTP 意图状态
+					Method:  http.MethodGet,
+					Path:    "/intent/:intent_id",
+					Handler: cctp.GetCctpIntentHandler(serverCtx),
+				},
+				{
+					// 提交 Arc swap 交易哈希
+					Method:  http.MethodPost,
+					Path:    "/intent/swap-submitted",
+					Handler: cctp.SubmitCctpSwapHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/api/cctp"),
 	)
 }

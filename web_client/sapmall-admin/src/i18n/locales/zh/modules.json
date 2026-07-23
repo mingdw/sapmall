@@ -43,18 +43,292 @@
       "overview": "余额概览",
       "available": "可用",
       "frozen": "冻结",
-      "total": "合计"
+      "total": "合计",
+      "tabs": {
+        "overview": "余额总览",
+        "transactions": "交易记录",
+        "operations": "余额操作"
+      },
+      "tokenSummary": {
+        "distributedChains": "分布在 {{count}} 条链上"
+      },
+      "txType": {
+        "payment": "支付",
+        "refund": "退款",
+        "swap": "兑换",
+        "reward": "奖励"
+      },
+      "txStatus": {
+        "confirmed": "已确认",
+        "pending": "确认中",
+        "failed": "失败"
+      },
+      "userStatus": {
+        "active": "正常",
+        "inactive": "未激活",
+        "frozen": "已冻结"
+      },
+      "adjustmentType": {
+        "credit": "充值",
+        "debit": "扣减",
+        "freeze": "冻结",
+        "unfreeze": "解冻"
+      },
+      "adjustmentStatus": {
+        "completed": "已完成",
+        "pending": "待审核",
+        "rejected": "已拒绝"
+      },
+      "walletInfo": {
+        "title": "钱包信息",
+        "selectChain": "选择链网络：",
+        "walletAddress": "钱包地址",
+        "copyAddress": "复制地址",
+        "accountStatus": "账户状态",
+        "chain": "所属链",
+        "userId": "用户 ID",
+        "registeredAt": "注册时间",
+        "lastActiveAt": "最后活跃",
+        "myReceivingAddress": "我的收款地址",
+        "downloadQR": "下载二维码",
+        "shareAddress": "分享地址"
+      },
+      "txHistory": {
+        "filterAll": "全部",
+        "searchPlaceholder": "搜索交易哈希、地址...",
+        "export": "导出",
+        "totalRecords": "共 {{count}} 条记录",
+        "detailTitle": "交易详情",
+        "viewDetail": "查看详情",
+        "colType": "类型",
+        "colAmount": "金额",
+        "colFromTo": "来源 / 目标",
+        "colChain": "链",
+        "colStatus": "状态",
+        "colBlock": "区块",
+        "colConfirmations": "确认数",
+        "colTime": "时间",
+        "colAction": "操作",
+        "detailType": "交易类型",
+        "detailAmount": "金额",
+        "detailTxHash": "交易哈希",
+        "detailSender": "发送方",
+        "detailReceiver": "接收方",
+        "detailChain": "链",
+        "detailBlockHeight": "区块高度",
+        "detailConfirmations": "确认数",
+        "detailStatus": "状态",
+        "detailTime": "时间",
+        "detailMemo": "备注",
+        "viewOnExplorer": "区块浏览器查看"
+      },
+      "operations": {
+        "addAdjustment": "新增调账",
+        "totalRecords": "共 {{count}} 条记录",
+        "modalTitle": "新增余额调整",
+        "confirmAdjustment": "确认调账",
+        "cancelText": "取消",
+        "colType": "操作类型",
+        "colAmount": "金额",
+        "colChain": "链",
+        "colReason": "原因",
+        "colOperator": "操作人",
+        "colStatus": "状态",
+        "colCreatedAt": "创建时间",
+        "formType": "操作类型",
+        "formTargetChain": "目标链",
+        "formAmount": "金额",
+        "formToken": "代币",
+        "formReason": "调账原因",
+        "formMemoOptional": "备注（选填）",
+        "placeholderType": "选择操作类型",
+        "placeholderChain": "选择链网络",
+        "placeholderToken": "选择",
+        "placeholderReason": "如：活动奖励补发、异常交易冻结等",
+        "placeholderMemo": "补充说明...",
+        "msgAdjustmentCompleted": "调账操作已完成",
+        "validation": {
+          "selectType": "请选择操作类型",
+          "selectChain": "请选择链",
+          "enterAmount": "请输入金额",
+          "selectToken": "请选择代币",
+          "enterReason": "请输入调账原因"
+        }
+      }
     },
     "rewards": {
       "title": "奖励资产",
       "history": "奖励记录",
-      "overview": "奖励概览"
+      "overview": "奖励概览",
+      "tabs": {
+        "overview": "权益总览",
+        "history": "奖励记录",
+        "tier": "权益等级"
+      },
+      "banner": {
+        "claimableReward": "可领取奖励",
+        "claimAll": "一键领取",
+        "pointsToNext": "距 {{nextTier}} 还需 {{points}} 积分"
+      },
+      "sourceType": {
+        "trading_rebate": "交易返佣",
+        "community": "社区活动",
+        "referral": "邀请奖励",
+        "staking": "质押收益",
+        "merchant_bonus": "商家奖励",
+        "airdrop": "空投"
+      },
+      "status": {
+        "available": "可领取",
+        "claimed": "已领取",
+        "pending": "待结算",
+        "expired": "已过期"
+      },
+      "tier": {
+        "bronze": "青铜",
+        "silver": "白银",
+        "gold": "黄金",
+        "platinum": "铂金",
+        "diamond": "钻石"
+      },
+      "overviewSection": {
+        "stats": {
+          "totalEarned": "累计获得",
+          "availableToClaim": "可领取",
+          "pendingRewards": "待结算",
+          "claimedThisMonth": "本月已领"
+        },
+        "sourceDistribution": "奖励来源分布",
+        "recentActivity": "最近奖励动态"
+      },
+      "historySection": {
+        "filterAll": "全部",
+        "colSource": "来源",
+        "colDescription": "描述",
+        "colAmount": "金额",
+        "colStatus": "状态",
+        "colTime": "时间",
+        "colTxHash": "交易哈希",
+        "colAction": "操作",
+        "claim": "领取",
+        "claimedAt": "领取于 {{time}}",
+        "claimed": "已领",
+        "waiting": "等待中",
+        "totalRecords": "共 {{count}} 条记录"
+      },
+      "tierSection": {
+        "upgradeQuests": "升级任务 — 冲刺 {{nextTier}}",
+        "questHint": "还需 {{points}} 积分升级至 {{nextTier}}，完成以下任务加速获取积分",
+        "questCompleted": "已完成",
+        "tierComparison": "等级权益对比",
+        "currentBadge": "当前",
+        "registerToGet": "注册即得",
+        "pointsUnit": "{{points}} 积分",
+        "earnMethodsTitle": "积分获取方式",
+        "quests": {
+          "trading": { "title": "完成交易消费", "desc": "交易消费累计 SAP 等值资产" },
+          "staking": { "title": "增加 SAP 质押", "desc": "质押 SAP 获取持续积分收益" },
+          "referral": { "title": "邀请好友交易", "desc": "邀请好友完成首笔交易" },
+          "community": { "title": "参与社区活动", "desc": "完成社区问答/测试任务" }
+        },
+        "earnMethods": {
+          "trading": { "title": "交易消费", "desc": "每消费 1 SAP 等值资产获得 1 积分" },
+          "staking": { "title": "质押 SAP", "desc": "每质押 100 SAP 每天 1 积分" },
+          "referral": { "title": "邀请好友", "desc": "好友首笔交易奖励 50 积分" },
+          "community": { "title": "社区贡献", "desc": "参与问答/测试活动获得积分" }
+        },
+        "benefits": {
+          "bronze": ["基础交易返佣 0.5%", "社区活动参与权", "标准提现速度"],
+          "silver": ["交易返佣 0.8%", "提现手续费 9 折", "活动提前通知"],
+          "gold": ["交易返佣 1.5%", "专属客服通道", "提现手续费 8 折", "社区活动优先参与"],
+          "platinum": ["交易返佣 2.0%", "专属客户经理", "提现手续费 6 折", "优先参与内测功能", "大额提现加速"],
+          "diamond": ["交易返佣 3.0%", "1v1 专属服务", "提现手续费全免", "VIP 专享活动", "链上优先确认", "定制化 API 接口"]
+        }
+      }
     },
     "transactions": {
       "title": "资产流水",
       "type": "类型",
       "amount": "金额",
-      "time": "时间"
+      "time": "时间",
+      "txType": {
+        "payment": "商品支付",
+        "refund": "退款",
+        "swap": "兑换",
+        "transfer": "转账",
+        "stake": "质押",
+        "unstake": "解除质押",
+        "claim": "领取奖励",
+        "approval": "授权",
+        "contract": "合约交互"
+      },
+      "txStatus": {
+        "success": "成功",
+        "pending": "确认中",
+        "failed": "失败",
+        "dropped": "已丢弃"
+      },
+      "txDirection": {
+        "in": "转入",
+        "out": "转出",
+        "self": "内部"
+      },
+      "stats": {
+        "totalCount": "交易总数",
+        "totalVolumeUSD": "交易总额",
+        "successRate": "成功率",
+        "totalGasFeeUSD": "总 Gas 费",
+        "pendingCount": "确认中",
+        "failedCount": "失败交易"
+      },
+      "filterAll": "全部",
+      "filter": {
+        "type": "类型",
+        "status": "状态",
+        "direction": "方向",
+        "token": "代币",
+        "chain": "链",
+        "search": "搜索"
+      },
+      "searchPlaceholder": "搜索交易哈希、地址、合约方法、备注、订单号...",
+      "reset": "重置",
+      "exportCsv": "导出 CSV",
+      "totalRecords": "共 {{count}} 条记录",
+      "pendingBlock": "待出块",
+      "viewDetail": "查看详情",
+      "copy": "复制",
+      "colDirection": "方向",
+      "colType": "类型",
+      "colAmount": "金额",
+      "colTxHash": "交易哈希",
+      "colCounterparty": "对手方",
+      "colChain": "链",
+      "colStatus": "状态",
+      "colGas": "Gas 费",
+      "colBlock": "区块",
+      "colTime": "时间",
+      "detailTitle": "交易详情",
+      "detailType": "交易类型",
+      "detailDirection": "方向",
+      "detailAmount": "金额",
+      "detailStatus": "状态",
+      "detailTxHash": "交易哈希",
+      "detailSender": "发送方 (From)",
+      "detailReceiver": "接收方 (To)",
+      "detailContractAddress": "合约地址",
+      "detailContractMethod": "合约方法",
+      "detailChainNetwork": "链网络",
+      "detailBlockHeight": "区块高度",
+      "detailConfirmations": "确认数",
+      "detailTime": "时间",
+      "gasDetailTitle": "Gas 费用明细",
+      "gasUsed": "Gas Used",
+      "gasPrice": "Gas Price",
+      "gasNativeFee": "原生代币手续费",
+      "gasUsdEstimate": "USD 估值",
+      "detailMemo": "备注",
+      "detailOrderId": "关联订单",
+      "viewOnExplorer": "区块浏览器查看"
     }
   },
   "contract": {
