@@ -43,6 +43,16 @@ else
     BACKEND_DIR="$PROJECT_ROOT/backend_service"
 fi
 
+# 检查容器运行时是否安装
+if command -v podman &> /dev/null; then
+    CONTAINER_RUNTIME="podman"
+elif command -v docker &> /dev/null; then
+    CONTAINER_RUNTIME="docker"
+else
+    echo -e "${RED}错误: 未找到容器运行时. 请先安装 Docker 或 Podman.${NC}"
+    exit 1
+fi
+
 # 检查必要的环境变量
 check_env() {
     log_info "检查环境变量..."
@@ -202,21 +212,63 @@ start_app() {
         ./sapmall-server -f app/$CONFIG_FILE -p $APP_PORT &
         APP_PID=$!
     else
-        # 在本地环境中，使用 go run
-        go run app/sapmall_start.go -f app/$CONFIG_FILE &
-        APP_PID=$!
+        # 在本地环境中，使用 Docker 容器常驻运行，避免脚本退出时回收 go run 子进程。
+        local project_root
+        local container_name
+        local docker_config_file
+
+        project_root="$(cd "$BACKEND_DIR/.." && pwd)"
+        container_name="sapmall-backend_service"
+        docker_config_file="/tmp/sapmall-backend-service-dev.yaml"
+
+        log_info "生成容器开发配置: $docker_config_file"
+        sed \
+            -e '/^DB:/,/^Redis:/ s/^\([[:space:]]*Host:\).*/\1 host.docker.internal/' \
+            -e '/^Redis:/,/^Cos:/ s/^\([[:space:]]*Host:\).*/\1 host.docker.internal/' \
+            "$BACKEND_DIR/app/$CONFIG_FILE" > "$docker_config_file"
+
+        log_info "删除已有后端容器..."
+        $CONTAINER_RUNTIME rm -f "$container_name" >/dev/null 2>&1 || true
+
+        log_info "构建后端镜像..."
+        if ! $CONTAINER_RUNTIME build -t "$container_name" -f "$project_root/env/dev/backend_service/Dockerfile" "$BACKEND_DIR"; then
+            log_error "后端镜像构建失败"
+            exit 1
+        fi
+
+        log_info "启动后端容器..."
+        if ! $CONTAINER_RUNTIME run -d \
+            --name "$container_name" \
+            --add-host=host.docker.internal:host-gateway \
+            -p "$APP_PORT:8888" \
+            -v "$docker_config_file:/app/etc/sapmall_dev.yaml:ro" \
+            "$container_name" >/tmp/sapmall-backend-container.id; then
+            log_error "后端容器启动失败"
+            exit 1
+        fi
+        APP_PID="$container_name"
     fi
     
     # 等待服务启动
     sleep 3
     
     # 检查服务是否成功启动
-    if kill -0 $APP_PID 2>/dev/null; then
-        log_success "后端服务已启动 (PID: $APP_PID)"
-        echo $APP_PID > /tmp/sapmall-backend.pid
+    if [ "$APP_PID" = "sapmall-backend_service" ]; then
+        if [ -n "$($CONTAINER_RUNTIME ps -q -f name=sapmall-backend_service)" ]; then
+            log_success "后端服务容器已启动"
+            echo "$APP_PID" > /tmp/sapmall-backend.pid
+        else
+            log_error "后端服务容器启动失败"
+            exit 1
+        fi
     else
-        log_error "后端服务启动失败"
-        exit 1
+        if kill -0 $APP_PID 2>/dev/null; then
+            log_success "后端服务已启动 (PID: $APP_PID)"
+            echo $APP_PID > /tmp/sapmall-backend.pid
+        else
+            log_error "后端服务启动失败"
+            exit 1
+        fi
     fi
 }
 
