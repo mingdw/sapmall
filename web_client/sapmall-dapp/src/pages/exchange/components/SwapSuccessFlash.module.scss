@@ -1,0 +1,294 @@
+/* 兑换成功闪现：立体气泡 + 轻量字重，无外框底色 */
+
+.root {
+  position: relative;
+  width: 100%;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  pointer-events: none;
+  user-select: none;
+  animation: successStageIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* —— 立体气泡场 —— */
+.orbField {
+  position: absolute;
+  inset: -12px -8%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  /* 径向高光模拟玻璃球体体积感 */
+  background: radial-gradient(
+    circle at 32% 28%,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(105, 240, 174, 0.45) 28%,
+    rgba(0, 229, 255, 0.28) 55%,
+    rgba(124, 77, 255, 0.12) 78%,
+    transparent 100%
+  );
+  filter: blur(0.5px);
+  box-shadow:
+    inset 0 -6px 14px rgba(0, 0, 0, 0.18),
+    inset 0 4px 10px rgba(255, 255, 255, 0.35),
+    0 8px 20px rgba(0, 229, 255, 0.18);
+  will-change: transform, opacity;
+}
+
+.orbLg {
+  width: 42px;
+  height: 42px;
+  left: 12%;
+  top: 8%;
+  opacity: 0.55;
+  animation: orbFloatA 3.6s ease-in-out infinite;
+}
+
+.orbMd {
+  width: 28px;
+  height: 28px;
+  right: 14%;
+  top: 18%;
+  opacity: 0.5;
+  animation: orbFloatB 4.2s ease-in-out infinite;
+  animation-delay: -0.6s;
+}
+
+.orbSm {
+  width: 18px;
+  height: 18px;
+  left: 28%;
+  bottom: 6%;
+  opacity: 0.42;
+  animation: orbFloatC 3.2s ease-in-out infinite;
+  animation-delay: -1.2s;
+}
+
+.orbTiny {
+  width: 12px;
+  height: 12px;
+  right: 26%;
+  bottom: 10%;
+  opacity: 0.38;
+  animation: orbFloatA 2.8s ease-in-out infinite;
+  animation-delay: -0.3s;
+  background: radial-gradient(
+    circle at 30% 26%,
+    rgba(255, 255, 255, 0.65) 0%,
+    rgba(0, 229, 255, 0.5) 40%,
+    rgba(105, 240, 174, 0.2) 70%,
+    transparent 100%
+  );
+}
+
+/* —— 前景内容 —— */
+.content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconSphere {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #e8fff4;
+  background: radial-gradient(
+    circle at 30% 26%,
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(105, 240, 174, 0.55) 35%,
+    rgba(0, 200, 180, 0.45) 70%,
+    rgba(0, 150, 140, 0.35) 100%
+  );
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.55),
+    inset 0 -3px 8px rgba(0, 80, 60, 0.25),
+    0 6px 16px rgba(105, 240, 174, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+  animation: iconSphereIn 0.55s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+.iconHighlight {
+  position: absolute;
+  top: 5px;
+  left: 7px;
+  width: 10px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.iconRipple,
+.iconRippleDelay {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(105, 240, 174, 0.45);
+  animation: iconRippleOut 1.6s ease-out infinite;
+  pointer-events: none;
+}
+
+.iconRippleDelay {
+  animation-delay: 0.55s;
+}
+
+.iconCheck {
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 1px 1px rgba(0, 40, 30, 0.25));
+  animation: checkFade 0.35s ease-out 0.12s both;
+}
+
+.label {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  color: transparent;
+  background: linear-gradient(
+    120deg,
+    #b9f6ca 0%,
+    #69f0ae 40%,
+    #00e5ff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  animation: labelIn 0.45s ease-out 0.1s both;
+}
+
+/* —— 关键帧 —— */
+@keyframes successStageIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes iconSphereIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes checkFade {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes labelIn {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes iconRippleOut {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+}
+
+@keyframes orbFloatA {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  40% {
+    transform: translate3d(10px, -12px, 0) scale(1.06);
+  }
+  70% {
+    transform: translate3d(-6px, 6px, 0) scale(0.96);
+  }
+}
+
+@keyframes orbFloatB {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  35% {
+    transform: translate3d(-12px, 8px, 0) scale(1.08);
+  }
+  65% {
+    transform: translate3d(8px, -10px, 0) scale(0.94);
+  }
+}
+
+@keyframes orbFloatC {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(8px, -14px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .orb,
+  .iconSphere,
+  .iconCheck,
+  .label,
+  .iconRipple,
+  .iconRippleDelay {
+    animation: none !important;
+  }
+
+  .label {
+    opacity: 1;
+    filter: none;
+    -webkit-text-fill-color: #69f0ae;
+    color: #69f0ae;
+    background: none;
+  }
+}

@@ -29,20 +29,32 @@ export type WalletUiNetworkItem = {
   switchable: boolean;
 };
 
+/** status=0 启用可切换；须同时在 wagmi 中注册才能真正 switchChain */
+function isChainSwitchableByStatus(status: unknown, chainId: number): boolean {
+  if (Number(status) !== 0) return false;
+  return config.chains.some((c) => c.id === Number(chainId));
+}
+
 /**
  * 构建钱包导航链下拉列表
- * 优先使用后端 /api/common/chain_config（按 sort 排序）；未加载时降级硬编码 + i18n
+ * 优先使用后端 /api/common/chain_config（按 sort 升序）；未加载时降级硬编码 + i18n
+ * switchable 对应 sys_chain_network.status：0 启用 / 1 仅展示
  */
 export function buildWalletUiNetworks(
   translate: (key: string) => string,
 ): WalletUiNetworkItem[] {
   const store = useChainConfigStore.getState();
   if (store.loaded && store.chains.length > 0) {
-    return store.chains.map((chain) => ({
-      id: Number(chain.chainId),
-      name: chain.name,
-      switchable: chain.status === 0,
-    }));
+    return [...store.chains]
+      .sort((a, b) => Number(a.sort) - Number(b.sort) || Number(a.chainId) - Number(b.chainId))
+      .map((chain) => {
+        const id = Number(chain.chainId);
+        return {
+          id,
+          name: chain.name,
+          switchable: isChainSwitchableByStatus(chain.status, id),
+        };
+      });
   }
 
   return WALLET_UI_NETWORKS.map((network) => ({
@@ -53,16 +65,17 @@ export function buildWalletUiNetworks(
 }
 
 export function isWalletNetworkSwitchable(chainId: number): boolean {
+  const normalizedId = Number(chainId);
   const store = useChainConfigStore.getState();
   if (store.loaded) {
-    const chain = store.getChainByChainId(chainId);
-    if (chain) return chain.status === 0;
+    const chain = store.getChainByChainId(normalizedId);
+    if (chain) return isChainSwitchableByStatus(chain.status, normalizedId);
   }
 
-  const item = WALLET_UI_NETWORKS.find((n) => n.id === chainId);
+  const item = WALLET_UI_NETWORKS.find((n) => n.id === normalizedId);
   if (item?.switchable === true) return true;
   if (item?.switchable === false) return false;
-  return PAYMENT_CHAIN_IDS.includes(chainId);
+  return PAYMENT_CHAIN_IDS.includes(normalizedId);
 }
 
 /** 根据 wagmi chainId 解析导航栏当前应展示的链信息 */
@@ -80,7 +93,7 @@ export function resolveCurrentWalletNetwork(
       return {
         id: Number(fromStore.chainId),
         name: fromStore.name,
-        switchable: fromStore.status === 0,
+        switchable: isChainSwitchableByStatus(fromStore.status, normalizedId),
       };
     }
 

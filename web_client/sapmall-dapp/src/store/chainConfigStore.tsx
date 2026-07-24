@@ -38,7 +38,8 @@ interface ChainConfigState {
   lastFetchAt: number | null;
 
   // 操作
-  fetchChainConfig: () => Promise<void>;
+  /** force=true：忽略 TTL，应用启动时刷新后端配置 */
+  fetchChainConfig: (opts?: { force?: boolean }) => Promise<void>;
   getChainByChainId: (chainId: number) => ChainNetwork | undefined;
   getPaymentTokens: (chainId: number) => PaymentToken[];
   isTokenSupported: (chainId: number, symbol: string) => boolean;
@@ -60,14 +61,14 @@ export const useChainConfigStore = create<ChainConfigState>()(
       loading: false,
       lastFetchAt: null,
 
-      fetchChainConfig: async () => {
+      fetchChainConfig: async (opts) => {
         const state = get();
 
         // 防止重复请求
         if (state.loading) return;
 
-        // 检查缓存是否过期
-        if (state.loaded && state.lastFetchAt) {
+        // 检查缓存是否过期（启动强制刷新时跳过）
+        if (!opts?.force && state.loaded && state.lastFetchAt) {
           const elapsed = Date.now() - state.lastFetchAt;
           if (elapsed < CACHE_TTL) return;
         }
@@ -86,8 +87,18 @@ export const useChainConfigStore = create<ChainConfigState>()(
                 .map((chain) => ({
                   ...chain,
                   chainId: Number(chain.chainId),
+                  sort: Number(chain.sort) || 0,
+                  // status: 0 启用可切换，1 仅展示（与 sys_chain_network 注释一致）
+                  status: Number(chain.status),
+                  paymentTokens: (chain.paymentTokens ?? [])
+                    .map((token) => ({
+                      ...token,
+                      decimals: Number(token.decimals),
+                      sort: Number(token.sort) || 0,
+                    }))
+                    .sort((a, b) => a.sort - b.sort),
                 }))
-                .sort((a, b) => a.sort - b.sort),
+                .sort((a, b) => a.sort - b.sort || a.chainId - b.chainId),
               loaded: true,
               lastFetchAt: Date.now(),
             });
@@ -100,7 +111,8 @@ export const useChainConfigStore = create<ChainConfigState>()(
       },
 
       getChainByChainId: (chainId: number) => {
-        return get().chains.find((c) => c.chainId === chainId);
+        const id = Number(chainId);
+        return get().chains.find((c) => Number(c.chainId) === id);
       },
 
       getPaymentTokens: (chainId: number) => {
@@ -132,6 +144,14 @@ export const useChainConfigStore = create<ChainConfigState>()(
     }),
     {
       name: 'chain-config-storage',
+      //  bump：清掉旧缓存里错误的 status/sort，避免导航栏长期只开 Arc
+      version: 2,
+      migrate: () => ({
+        chains: [],
+        loaded: false,
+        loading: false,
+        lastFetchAt: null,
+      }),
       partialize: (state) => ({
         chains: state.chains,
         loaded: state.loaded,

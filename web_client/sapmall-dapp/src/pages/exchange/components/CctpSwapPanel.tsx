@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAccount, useReadContract } from 'wagmi';
+import { useAccount, useReadContract, useSwitchChain } from 'wagmi';
 import { erc20Abi, formatUnits, parseUnits } from 'viem';
-import { AlertCircle, AlertTriangle, ArrowDown, Check, ChevronDown, ExternalLink, RefreshCw, Settings, Shield } from 'lucide-react';
+import { AlertCircle, AlertTriangle, ArrowDown, ChevronDown, ExternalLink, RefreshCw, Settings, Shield } from 'lucide-react';
 import TokenIcon from './TokenIcon';
 import ChainNetworkIcon from '../../header/components/ChainNetworkIcon';
+import SwapSuccessFlash from './SwapSuccessFlash';
 import styles from '../ExchangePageDetail.module.scss';
 import {
   CCTP_CHAINS,
@@ -12,12 +13,15 @@ import {
   CCTP_SOURCE_KEYS,
   type CctpChainKey,
 } from '../../../config/cctp';
+import { ARC_TESTNET_CHAIN_ID } from '../../../config/chains/arcTestnet';
+import { config } from '../../../config/wagmi';
 import cctpApi from '../../../services/api/cctpApi';
 import { useCctpBurn } from '../hooks/useCctpBurn';
 import { useCctpIntentStatus } from '../hooks/useCctpIntentStatus';
 import { useCctpSwapOnArc } from '../hooks/useCctpSwapOnArc';
 import { useCctpSourceBalances } from '../hooks/useCctpSourceBalances';
 import { useSwapQuote } from '../hooks/useSwapQuote';
+import { ensureWalletOnChain } from '../../../utils/ensureWalletOnChain';
 import { resolveTxExplorerUrl, shortenTxHash } from '../../../utils/txExplorer';
 
 /** 将 wei 格式化为可读 Gas（原生币） */
@@ -50,13 +54,15 @@ export default function CctpSwapPanel({
 }: CctpSwapPanelProps) {
   const { t, ready } = useTranslation();
   const { address } = useAccount();
+  const { switchChainAsync } = useSwitchChain();
 
   const [sourceKey, setSourceKey] = useState<CctpChainKey>(CCTP_MVP_ROUTE.source);
   const [showSourceDropdown, setShowSourceDropdown] = useState(false);
   const sourceDropdownRef = useRef<HTMLDivElement>(null);
   /** 用户是否手动选过源链（手动选择后不再自动覆盖） */
   const userPickedSourceRef = useRef(false);
-  /** 到账后是否已自动触发过 Arc 兑换（防重复弹窗） */
+  /** Burn 确认后是否已切到 Arc；已铸造后是否已自动触发兑换 */
+  const arcPreparedRef = useRef<string | null>(null);
   const autoSwapStartedRef = useRef<string | null>(null);
   /** 同一 intent 只弹一次成功 toast，避免重复点击/重渲染连弹 */
   const successToastSentRef = useRef<string | null>(null);
@@ -65,6 +71,8 @@ export default function CctpSwapPanel({
   const [intentId, setIntentId] = useState<string | null>(null);
   const [flowError, setFlowError] = useState<string | null>(null);
   const [isStarting, setIsStarting] = useState(false);
+  /** 源链 Burn 确认后、正在切回 Arc */
+  const [isSwitchingToDest, setIsSwitchingToDest] = useState(false);
   const [localBurnGas, setLocalBurnGas] = useState('');
   const [localSwapGas, setLocalSwapGas] = useState('');
   const [slippage, setSlippage] = useState('0.5');
@@ -158,6 +166,7 @@ export default function CctpSwapPanel({
 
   const isBurning =
     isStarting ||
+    isSwitchingToDest ||
     burnPhase === 'switching' ||
     burnPhase === 'approving' ||
     burnPhase === 'burning' ||
@@ -177,10 +186,12 @@ export default function CctpSwapPanel({
     setIntentId(null);
     setFlowError(null);
     setIsStarting(false);
+    setIsSwitchingToDest(false);
     setLocalBurnGas('');
     setLocalSwapGas('');
     setShowSourceDropdown(false);
     userPickedSourceRef.current = false;
+    arcPreparedRef.current = null;
     autoSwapStartedRef.current = null;
     successToastSentRef.current = null;
     resetBurn();
@@ -241,9 +252,12 @@ export default function CctpSwapPanel({
 
     setFlowError(null);
     setIsStarting(true);
+    setIsSwitchingToDest(false);
     setLocalBurnGas('');
     setLocalSwapGas('');
     successToastSentRef.current = null;
+    arcPreparedRef.current = null;
+    autoSwapStartedRef.current = null;
 
     try {
       const amountIn = parseUnits(fromAmount, source.usdcDecimals).toString();
@@ -255,8 +269,7 @@ export default function CctpSwapPanel({
         tokenDecimals: source.usdcDecimals,
       });
 
-      // 先完成链上 Burn，成功后再写入 intentId 启动轮询；
-      // 否则授权/切链失败时会残留 intentId，状态卡在 0 并无限轮询
+      // 1) 源链：用户确认 Burn（含授权）并等待交易上链
       const burned = await executeBurn(created.burnParams);
       if (!burned) {
         return;
@@ -264,37 +277,116 @@ export default function CctpSwapPanel({
 
       setLocalBurnGas(burned.gasFee);
       await cctpApi.submitBurn(created.intentId, burned.hash, burned.gasFee);
+
+      // 2) 源链确认完成后：立即切回目标链 Arc，再等待到账
+      setIsSwitchingToDest(true);
+      try {
+        await ensureWalletOnChain(
+          config,
+          ARC_TESTNET_CHAIN_ID,
+          switchChainAsync,
+          'Arc Testnet',
+        );
+        arcPreparedRef.current = created.intentId;
+      } catch (switchErr) {
+        console.warn('[CCTP] 源链确认后切回 Arc 失败，到账后将重试', switchErr);
+        // 仍启动轮询；已铸造时的自动兑换会再次切链
+      } finally {
+        setIsSwitchingToDest(false);
+      }
+
+      // 3) 开始轮询目标链到账
       setIntentId(created.intentId);
     } catch (err) {
       setFlowError(err instanceof Error ? err.message : '跨链流程失败');
     } finally {
       setIsStarting(false);
+      setIsSwitchingToDest(false);
     }
-  }, [disabled, address, fromAmount, source, dest.chainId, executeBurn]);
+  }, [disabled, address, fromAmount, source, dest.chainId, executeBurn, switchChainAsync]);
 
   const handleArcSwap = useCallback(async () => {
     if (!intentId || !intent) return;
+    if (intent.status < 3 || intent.status >= 4) return;
     setFlowError(null);
+    if (swapPhase === 'error' || swapPhase === 'idle') {
+      resetSwap();
+    }
     const swapped = await executeSwap();
-    if (!swapped) return;
+    if (!swapped) {
+      autoSwapStartedRef.current = null;
+      return;
+    }
     try {
       setLocalSwapGas(swapped.gasFee);
       await cctpApi.submitSwap(intentId, swapped.hash, swapped.gasFee);
       await refreshIntent();
     } catch (err) {
+      autoSwapStartedRef.current = null;
       setFlowError(err instanceof Error ? err.message : '提交 swap 失败');
     }
-  }, [intentId, intent, executeSwap, refreshIntent]);
+  }, [intentId, intent, executeSwap, refreshIntent, swapPhase, resetSwap]);
 
-  // Mint 到账后自动拉起 Arc 兑换，减少一次「手动点兑换」
+  // 4) 目标链已铸造：钱包应已在 Arc → 自动唤起兑换确认
   useEffect(() => {
     if (!intentId || !intent) return;
     if (intent.status < 3 || intent.status >= 4) return;
-    if (isDone || isSwapping || disabled) return;
+    if (isDone || isSwapping || disabled || isStarting || isSwitchingToDest) return;
     if (autoSwapStartedRef.current === intentId) return;
     autoSwapStartedRef.current = intentId;
-    void handleArcSwap();
-  }, [intentId, intent, isDone, isSwapping, disabled, handleArcSwap]);
+
+    void (async () => {
+      try {
+        // 若 Burn 后切链失败，这里补切一次再弹兑换
+        if (arcPreparedRef.current !== intentId) {
+          await ensureWalletOnChain(
+            config,
+            ARC_TESTNET_CHAIN_ID,
+            switchChainAsync,
+            'Arc Testnet',
+          );
+          arcPreparedRef.current = intentId;
+        }
+        await handleArcSwap();
+      } catch (err) {
+        console.warn('[CCTP] 自动唤起 Arc 兑换失败', err);
+        autoSwapStartedRef.current = null;
+        setFlowError(
+          err instanceof Error
+            ? err.message
+            : t('exchange.cctp.swapWalletTimeout', {
+                defaultValue: '自动唤起兑换失败，请点击下方按钮重试',
+              }),
+        );
+      }
+    })();
+  }, [
+    intentId,
+    intent,
+    isDone,
+    isSwapping,
+    disabled,
+    isStarting,
+    isSwitchingToDest,
+    switchChainAsync,
+    handleArcSwap,
+    t,
+  ]);
+
+  // 兑换卡住时解锁，避免按钮永久 disabled
+  useEffect(() => {
+    if (!isSwapping) return undefined;
+    const timer = window.setTimeout(() => {
+      resetSwap();
+      autoSwapStartedRef.current = null;
+      setFlowError(
+        t('exchange.cctp.swapWalletTimeout', {
+          defaultValue: '钱包未弹出或响应超时，请再点击下方按钮确认兑换',
+        }),
+      );
+    }, 45_000);
+    return () => window.clearTimeout(timer);
+  }, [isSwapping, resetSwap, t]);
 
   // 仅在真正完成后弹一次成功 toast（展示 SAP 数量，避免重复）
   useEffect(() => {
@@ -310,6 +402,15 @@ export default function CctpSwapPanel({
     onSwapSuccess(sapDisplay);
   }, [isDone, intentId, toAmount, onSwapSuccess]);
 
+  // 成功闪现约 3s 后还原为可继续兑换（清空意图与表单）
+  useEffect(() => {
+    if (!isDone) return;
+    const timer = setTimeout(() => {
+      resetAll();
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [isDone, resetAll]);
+
   const phaseLabel = useMemo(() => {
     if (burnPhase === 'switching') {
       return t('exchange.cctp.switchingSource', { chain: source.name, defaultValue: `切换到 ${source.name}...` });
@@ -317,12 +418,17 @@ export default function CctpSwapPanel({
     if (burnPhase === 'approving') return t('exchange.cctp.approving', { defaultValue: '授权 USDC...' });
     if (burnPhase === 'burning') return t('exchange.cctp.burning', { defaultValue: 'Burn 跨链中...' });
     if (burnPhase === 'confirming') return t('exchange.cctp.confirmingBurn', { defaultValue: '确认 Burn 交易...' });
+    if (isSwitchingToDest) {
+      return t('exchange.cctp.switchingArcAfterBurn', {
+        defaultValue: '源链已确认，正在切换到 Arc...',
+      });
+    }
     if (swapPhase === 'switching') return t('exchange.cctp.switchingArc', { defaultValue: '切换到 Arc...' });
     if (swapPhase === 'approving') return t('exchange.cctp.approvingArc', { defaultValue: '授权兑换...' });
     if (swapPhase === 'swapping') return t('exchange.cctp.swapping', { defaultValue: 'Arc 兑换中...' });
     if (swapPhase === 'confirming') return t('exchange.cctp.confirmingSwap', { defaultValue: '确认兑换交易...' });
     return '';
-  }, [burnPhase, swapPhase, source.name, t]);
+  }, [burnPhase, swapPhase, source.name, isSwitchingToDest, t]);
 
   const displayError = flowError || burnError || swapError || intentPollError;
 
@@ -792,12 +898,13 @@ export default function CctpSwapPanel({
               background: isSwapping ? 'rgba(124,77,255,0.4)' : 'linear-gradient(135deg, #69f0ae, #00e5ff)',
               color: '#fff',
               opacity: isSwapping ? 0.7 : 1,
+              cursor: isSwapping ? 'wait' : 'pointer',
             }}
             onClick={() => void handleArcSwap()}
             disabled={isSwapping}
           >
             {isSwapping
-              ? phaseLabel || t('exchange.cctp.autoSwapping', { defaultValue: '到账成功，请确认兑换签名...' })
+              ? phaseLabel || t('exchange.cctp.autoSwapping', { defaultValue: '请在钱包中确认兑换...' })
               : t('exchange.cctp.swapOnArc', { defaultValue: '授权并兑换 SAP' })}
           </button>
         ) : intent && intent.status >= 1 && intent.status < 3 ? (
@@ -810,10 +917,9 @@ export default function CctpSwapPanel({
             {t('exchange.cctp.waitingRelay', { defaultValue: '等待跨链到账...' })}
           </button>
         ) : isDone ? (
-          <div className={styles.cctpSuccessBtn} role="status" aria-live="polite">
-            <Check size={20} strokeWidth={2.5} aria-hidden />
-            <span>{t('exchange.cctp.successBtn', { defaultValue: '兑换成功' })}</span>
-          </div>
+          <SwapSuccessFlash
+            label={t('exchange.cctp.successBtn', { defaultValue: '兑换成功' })}
+          />
         ) : null}
 
         {disabled ? (

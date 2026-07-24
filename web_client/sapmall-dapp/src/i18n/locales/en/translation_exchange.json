@@ -76,7 +76,7 @@
       "eta": "Est. arrival",
       "etaValue": "~15s",
       "connectWalletBtn": "Connect wallet",
-      "swapSuccessBtn": "✓ Swap complete!",
+      "swapSuccessBtn": "Swap successful",
       "swapping": "Swapping...",
       "enterAmount": "Enter amount",
       "swapNow": "Swap now",
@@ -104,7 +104,7 @@
       "approving": "Approving USDC...",
       "burning": "Burning for cross-chain...",
       "confirmingBurn": "Confirming burn tx...",
-      "waitingRelay": "Waiting for bridge arrival...",
+      "waitingRelay": "On Arc — waiting for cross-chain arrival...",
       "swapOnArc": "Approve & swap to SAP",
       "switchingArc": "Switching to Arc Testnet...",
       "approvingArc": "Approving for swap...",
@@ -131,7 +131,7 @@
       "statusSwapped": "swapped",
       "gasBurn": "Source",
       "gasSwap": "Destination",
-      "autoSwapping": "Minted — confirm swap signature...",
+      "autoSwapping": "Confirm the swap in your wallet...",
       "gasHint": "Burn requires Gas on {{chain}}: keep a little testnet ETH in addition to USDC.",
       "statusCreated": "created",
       "statusBurned": "burned",
@@ -139,7 +139,10 @@
       "statusMinted": "minted",
       "statusFailed": "failed",
       "intentId": "Intent ID",
-      "intentIdSoon": "Open in Admin (coming soon)"
+      "intentIdSoon": "Open in Admin (coming soon)",
+      "mintedPleaseConfirm": "USDC minted on destination. Tap Approve and swap SAP below to confirm in your wallet.",
+      "swapWalletTimeout": "Wallet did not respond. Tap the button below to confirm the swap again.",
+      "switchingArcAfterBurn": "Source confirmed. Switching to Arc..."
     },
     "marketStats": {
       "title": "Market data",

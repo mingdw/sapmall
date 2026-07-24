@@ -11,7 +11,7 @@ import {
   worldchainSepolia,
 } from 'wagmi/chains';
 import { arcTestnet, ARC_TESTNET_RPC_URLS } from './chains/arcTestnet';
-import { lineaSepolia, LINEA_SEPOLIA_RPC_URL } from './chains/lineaSepolia';
+import { lineaSepolia, LINEA_SEPOLIA_RPC_URLS } from './chains/lineaSepolia';
 import {
   injectedOnlyWalletGroups,
   recommendedWalletGroups,
@@ -60,7 +60,7 @@ const rpcHttpOptions = {
   batch: true,
   retryCount: 1,
   retryDelay: 1_500,
-  timeout: 20_000,
+  timeout: 12_000,
 } as const;
 
 /** 单节点 HTTP transport */
@@ -69,14 +69,21 @@ function createRpcTransport(url: string): Transport {
 }
 
 /**
+ * 多节点 fallback（公共 RPC 常出现 ERR_CONNECTION_CLOSED / 限流）
+ */
+function createFallbackTransport(urls: readonly string[]): Transport {
+  return fallback(
+    urls.map((url) => http(url, rpcHttpOptions)),
+    { rank: false },
+  );
+}
+
+/**
  * Arc Testnet：按官方节点列表做 fallback
  * @see https://docs.arc.io/arc/references/rpc-endpoints
  */
 function createArcTestnetTransport(): Transport {
-  return fallback(
-    ARC_TESTNET_RPC_URLS.map((url) => http(url, rpcHttpOptions)),
-    { rank: false },
-  );
+  return createFallbackTransport(ARC_TESTNET_RPC_URLS);
 }
 
 const walletList = hasValidWalletConnectProjectId
@@ -102,7 +109,8 @@ export const config = getDefaultConfig({
       ],
       { rank: false },
     ),
-    [lineaSepolia.id]: createRpcTransport(LINEA_SEPOLIA_RPC_URL),
+    // Linea 官方公共 RPC 易断连，多节点回退（CCTP Burn 前读 allowance 依赖此）
+    [lineaSepolia.id]: createFallbackTransport(LINEA_SEPOLIA_RPC_URLS),
     [unichainSepolia.id]: createRpcTransport('https://sepolia.unichain.org'),
     [worldchainSepolia.id]: fallback(
       [

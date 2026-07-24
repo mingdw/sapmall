@@ -4,6 +4,7 @@ import { useAccount, useReadContract } from 'wagmi';
 import { erc20Abi, formatUnits } from 'viem';
 import { ArrowDown, ArrowUp, ChevronDown, Settings, RefreshCw, Info, Shield } from 'lucide-react';
 import TokenIcon from './TokenIcon';
+import SwapSuccessFlash from './SwapSuccessFlash';
 import styles from '../ExchangePageDetail.module.scss';
 import { useChainConfigStore } from '../../../store/chainConfigStore';
 import { buildWalletUiNetworks, resolveCurrentWalletNetwork } from '../../../config/walletUiNetworks';
@@ -105,7 +106,7 @@ export default function SwapCard({
     chainId,
   });
 
-  const { phase, txHash, error: swapError, execute, reset } = useSwapExecution({
+  const { phase, error: swapError, execute, reset } = useSwapExecution({
     tokenSymbol: fromToken,
     amountIn: fromAmount,
     slippagePercent: parseFloat(slippage) || 0.5,
@@ -161,13 +162,16 @@ export default function SwapCard({
 
   const priceImpact = fromAmount ? Math.min(parseFloat(fromAmount) * 0.0012, 2.5).toFixed(2) : '0.00';
 
-  // 处理 swap 成功
+  // 兑换成功：展示成功闪现约 3s，再还原为可继续兑换的 CTA
   useEffect(() => {
-    if (swapDone && amountOut) {
-      onSwapSuccess(amountOut);
-      const timer = setTimeout(() => reset(), 3000);
-      return () => clearTimeout(timer);
-    }
+    if (!swapDone) return;
+    if (amountOut) onSwapSuccess(amountOut);
+    const timer = setTimeout(() => {
+      reset();
+      setFromAmount('');
+      setToAmount('');
+    }, 3000);
+    return () => clearTimeout(timer);
   }, [swapDone, amountOut, onSwapSuccess, reset]);
 
   const handleSwap = useCallback(() => {
@@ -422,45 +426,37 @@ export default function SwapCard({
           </div>
         ) : null}
 
-        {/* 成功提示 */}
-        {swapDone && txHash ? (
-          <div className="rounded-xl p-3 mb-4" style={{ background: 'rgba(105,240,174,0.1)', border: '1px solid rgba(105,240,174,0.3)' }}>
-            <p className="text-xs" style={{ color: '#69f0ae' }}>
-              {t('exchange.swap.txSuccess', { defaultValue: '交易成功' })}: {txHash.slice(0, 10)}...{txHash.slice(-8)}
-            </p>
-          </div>
-        ) : null}
-
-        {/* 兑换按钮 */}
-        <button
-          className="w-full h-14 rounded-2xl font-bold text-base transition-all duration-300 relative overflow-hidden"
-          style={{
-            background: swapDone
-              ? 'linear-gradient(135deg, #69f0ae, #00e5ff)'
-              : isSwapping
+        {/* 兑换按钮 / 成功闪现（无背景边框，约 3s 后还原） */}
+        {swapDone ? (
+          <SwapSuccessFlash label={t('exchange.swap.swapSuccessBtn')} />
+        ) : (
+          <button
+            type="button"
+            className="w-full h-14 rounded-2xl font-bold text-base transition-all duration-300 relative overflow-hidden"
+            style={{
+              background: isSwapping
                 ? 'rgba(124,77,255,0.4)'
                 : 'linear-gradient(135deg, #7c4dff 0%, #448aff 50%, #00e5ff 100%)',
-            color: '#fff',
-            cursor: disabled || !fromAmount || parseFloat(fromAmount) <= 0 ? 'not-allowed' : 'pointer',
-            opacity: disabled || !fromAmount || parseFloat(fromAmount) <= 0 ? 0.5 : 1,
-          }}
-          onClick={handleSwap}
-          disabled={disabled || !fromAmount || parseFloat(fromAmount) <= 0 || isSwapping}
-        >
-          <div className="relative flex items-center justify-center gap-2">
-            <span>
-              {disabled
-                ? t('exchange.swap.connectWalletBtn')
-                : swapDone
-                  ? t('exchange.swap.swapSuccessBtn')
+              color: '#fff',
+              cursor: disabled || !fromAmount || parseFloat(fromAmount) <= 0 ? 'not-allowed' : 'pointer',
+              opacity: disabled || !fromAmount || parseFloat(fromAmount) <= 0 ? 0.5 : 1,
+            }}
+            onClick={handleSwap}
+            disabled={disabled || !fromAmount || parseFloat(fromAmount) <= 0 || isSwapping}
+          >
+            <div className="relative flex items-center justify-center gap-2">
+              <span>
+                {disabled
+                  ? t('exchange.swap.connectWalletBtn')
                   : isSwapping
                     ? phaseLabel || t('exchange.swap.swapping')
                     : !fromAmount || parseFloat(fromAmount) <= 0
                       ? t('exchange.swap.enterAmount')
                       : t('exchange.swap.swapNow')}
-            </span>
-          </div>
-        </button>
+              </span>
+            </div>
+          </button>
+        )}
 
         {disabled ? (
           <p className="text-xs text-center mt-3" style={{ color: '#ffb74d' }}>

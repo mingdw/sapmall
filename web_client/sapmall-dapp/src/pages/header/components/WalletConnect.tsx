@@ -634,7 +634,8 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
         <div className={`${styles.dropdown} ${showNetworkMenu ? styles.show : ''} absolute right-0 top-full mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl min-w-[150px] z-50`}>
           <div className="py-2">
             {networks.map((network) => {
-              const canSwitch = isWalletNetworkSwitchable(network.id);
+              // 与 buildWalletUiNetworks 一致：status=0 且已注册 wagmi 才可切换
+              const canSwitch = network.switchable;
               return (
               <button
                 key={network.id.toString()}

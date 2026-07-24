@@ -1045,22 +1045,6 @@
   }
 }
 
-.cctpSuccessBtn {
-  width: 100%;
-  height: 56px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #69f0ae;
-  background: rgba(105, 240, 174, 0.1);
-  border: 1px solid rgba(105, 240, 174, 0.35);
-  pointer-events: none;
-  user-select: none;
-}
 
 .cctpNotice {
   display: flex;

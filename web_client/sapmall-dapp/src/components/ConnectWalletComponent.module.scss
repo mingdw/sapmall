@@ -1,0 +1,267 @@
+/* 连接钱包空态：立体悬浮光球（供 ConnectWalletComponent 使用） */
+
+.connectWalletContainer {
+  position: relative;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 24px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(124, 77, 255, 0.18), transparent 55%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(8, 12, 24, 0.96));
+}
+
+.backgroundDecoration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.floatingOrb {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 32% 28%,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(124, 77, 255, 0.45) 30%,
+    rgba(0, 229, 255, 0.25) 60%,
+    transparent 100%
+  );
+  box-shadow:
+    inset 0 -8px 18px rgba(0, 0, 0, 0.2),
+    inset 0 4px 12px rgba(255, 255, 255, 0.3),
+    0 12px 28px rgba(124, 77, 255, 0.2);
+  filter: blur(0.4px);
+  animation: connectOrbFloat 7s ease-in-out infinite;
+
+  &:nth-child(1) {
+    width: 140px;
+    height: 140px;
+    left: -20px;
+    top: 12%;
+    opacity: 0.55;
+  }
+
+  &:nth-child(2) {
+    width: 90px;
+    height: 90px;
+    right: 8%;
+    top: 28%;
+    opacity: 0.45;
+    animation-delay: -2s;
+    animation-duration: 8.5s;
+    background: radial-gradient(
+      circle at 30% 26%,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(0, 229, 255, 0.4) 35%,
+      rgba(105, 240, 174, 0.2) 65%,
+      transparent 100%
+    );
+  }
+
+  &:nth-child(3) {
+    width: 64px;
+    height: 64px;
+    left: 28%;
+    bottom: 14%;
+    opacity: 0.4;
+    animation-delay: -4s;
+    animation-duration: 6.2s;
+  }
+}
+
+.gridPattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.35) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 28px;
+  text-align: center;
+}
+
+.backButton {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(30, 41, 59, 0.5);
+  color: #cbd5e1;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.walletIcon {
+  margin-top: 8px;
+}
+
+.iconContainer {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e2e8f0;
+  background: radial-gradient(
+    circle at 30% 28%,
+    rgba(255, 255, 255, 0.25),
+    rgba(124, 77, 255, 0.45) 45%,
+    rgba(30, 41, 59, 0.9) 100%
+  );
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.35),
+    0 10px 28px rgba(124, 77, 255, 0.35);
+}
+
+.iconGlow {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 77, 255, 0.35), transparent 70%);
+  filter: blur(8px);
+  z-index: -1;
+  animation: connectGlowPulse 3s ease-in-out infinite;
+}
+
+.textContent {
+  max-width: 320px;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #94a3b8;
+}
+
+.connectButtonContainer {
+  width: 100%;
+  max-width: 280px;
+}
+
+.connectButton,
+.switchChainButton,
+.accountButton {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  background: linear-gradient(135deg, #7c4dff 0%, #448aff 50%, #00e5ff 100%);
+}
+
+.buttonGlow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transform: translateX(-100%);
+  animation: connectBtnSheen 2.8s ease-in-out infinite;
+}
+
+.supportedWallets {
+  margin-top: 4px;
+}
+
+.supportedTitle {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.walletList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.walletItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: #cbd5e1;
+  background: rgba(30, 41, 59, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.footerTip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+@keyframes connectOrbFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  40% {
+    transform: translate3d(18px, -22px, 0) scale(1.08);
+  }
+  70% {
+    transform: translate3d(-12px, 10px, 0) scale(0.94);
+  }
+}
+
+@keyframes connectGlowPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes connectBtnSheen {
+  0%,
+  40% {
+    transform: translateX(-100%);
+  }
+  70%,
+  100% {
+    transform: translateX(100%);
+  }
+}

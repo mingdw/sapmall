@@ -4,7 +4,9 @@ import { useChainConfigStore } from '../store/chainConfigStore';
 function getSwitchableChains() {
   const store = useChainConfigStore.getState();
   if (!store.loaded) return null;
-  return store.chains.filter((c) => c.status === 0);
+  return store.chains
+    .filter((c) => Number(c.status) === 0)
+    .sort((a, b) => Number(a.sort) - Number(b.sort) || Number(a.chainId) - Number(b.chainId));
 }
 
 /** 支付链 ID 列表（从后端配置获取，仅 status=0） */

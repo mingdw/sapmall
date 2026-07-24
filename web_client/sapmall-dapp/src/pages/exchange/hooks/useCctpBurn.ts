@@ -130,14 +130,24 @@ export function useCctpBurn(): UseCctpBurnResult {
         const tokenMessenger = burnParams.tokenMessenger as Address;
         const maxFee = BigInt(burnParams.maxFee || '0');
 
-        const allowance = await publicClient.readContract({
-          address: usdc,
-          abi: erc20Abi,
-          functionName: 'allowance',
-          args: [address, tokenMessenger],
-        });
+        // 读 allowance 依赖 dapp→源链 RPC；公共节点断连时勿阻塞钱包弹窗
+        let needApprove = true;
+        try {
+          const allowance = await publicClient.readContract({
+            address: usdc,
+            abi: erc20Abi,
+            functionName: 'allowance',
+            args: [address, tokenMessenger],
+          });
+          needApprove = allowance < amount;
+        } catch (allowanceErr) {
+          console.warn(
+            `[CCTP] 读取 ${source.name} allowance 失败，将走授权+Burn（RPC 可能不稳定）`,
+            allowanceErr,
+          );
+          needApprove = true;
+        }
 
-        const needApprove = allowance < amount;
         setPhase(needApprove ? 'approving' : 'burning');
 
         const burnCall = {

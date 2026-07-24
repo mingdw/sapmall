@@ -71,7 +71,7 @@
       "eta": "预计到账时间",
       "etaValue": "~15 秒",
       "connectWalletBtn": "请先连接钱包",
-      "swapSuccessBtn": "✓ 兑换成功！",
+      "swapSuccessBtn": "兑换成功",
       "swapping": "兑换中...",
       "enterAmount": "请输入金额",
       "swapNow": "立即兑换",
@@ -133,7 +133,7 @@
       "approving": "授权 USDC...",
       "burning": "Burn 跨链中...",
       "confirmingBurn": "确认 Burn 交易...",
-      "waitingRelay": "等待跨链到账...",
+      "waitingRelay": "已切换到 Arc，等待跨链到账...",
       "swapOnArc": "授权并兑换 SAP",
       "switchingArc": "切换到 Arc Testnet...",
       "approvingArc": "授权兑换...",
@@ -160,7 +160,7 @@
       "statusSwapped": "已完成",
       "gasBurn": "源链",
       "gasSwap": "目标链",
-      "autoSwapping": "到账成功，请确认兑换签名...",
+      "autoSwapping": "请在钱包中确认兑换...",
       "gasHint": "Burn 需要在 {{chain}} 上支付 Gas：除 USDC 外，钱包在该链还需有少量测试网 ETH。",
       "statusCreated": "已创建",
       "statusBurned": "源链锁定",
@@ -168,7 +168,10 @@
       "statusMinted": "已铸造",
       "statusFailed": "失败",
       "intentId": "Intent ID",
-      "intentIdSoon": "跳转管理端订单详情（即将支持）"
+      "intentIdSoon": "跳转管理端订单详情（即将支持）",
+      "mintedPleaseConfirm": "目标链已铸造 USDC，请点击下方「授权并兑换 SAP」在钱包中确认",
+      "swapWalletTimeout": "钱包未弹出或响应超时，请再点击下方按钮确认兑换",
+      "switchingArcAfterBurn": "源链已确认，正在切换到 Arc..."
     }
   }
 }

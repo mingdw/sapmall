@@ -139,30 +139,50 @@ export function useCctpSwapOnArc({
       }
 
       const tokenIn = arcUsdc as Address;
-      const allowance = await publicClient.readContract({
-        address: tokenIn,
-        abi: erc20Abi,
-        functionName: 'allowance',
-        args: [address, routerAddress],
-      });
 
-      let minAmountOutBigInt: bigint;
-      if (amountOut) {
-        const quotedOut = parseUnits(amountOut, 18);
-        const slippageMultiplier = BigInt(Math.floor((1 - slippagePercent / 100) * 10000));
-        minAmountOutBigInt = (quotedOut * slippageMultiplier) / 10000n;
-      } else {
-        const [quotedOut] = await publicClient.readContract({
-          address: routerAddress,
-          abi: swapRouterAbi,
-          functionName: 'quoteSwap',
-          args: [tokenIn, amountInBigInt, SwapDirection.STABLE_TO_SAP],
+      // 读 allowance / quote 依赖 Arc RPC；失败时不阻塞钱包弹窗
+      let needApprove = true;
+      try {
+        const allowance = await publicClient.readContract({
+          address: tokenIn,
+          abi: erc20Abi,
+          functionName: 'allowance',
+          args: [address, routerAddress],
         });
-        const slippageMultiplier = BigInt(Math.floor((1 - slippagePercent / 100) * 10000));
-        minAmountOutBigInt = (quotedOut * slippageMultiplier) / 10000n;
+        needApprove = allowance < amountInBigInt;
+      } catch (allowanceErr) {
+        console.warn('[CCTP] 读取 Arc USDC allowance 失败，将走授权+Swap', allowanceErr);
+        needApprove = true;
       }
 
-      const needApprove = allowance < amountInBigInt;
+      let minAmountOutBigInt: bigint;
+      try {
+        if (amountOut) {
+          const quotedOut = parseUnits(amountOut, 18);
+          const slippageMultiplier = BigInt(Math.floor((1 - slippagePercent / 100) * 10000));
+          minAmountOutBigInt = (quotedOut * slippageMultiplier) / 10000n;
+        } else {
+          const [quotedOut] = await publicClient.readContract({
+            address: routerAddress,
+            abi: swapRouterAbi,
+            functionName: 'quoteSwap',
+            args: [tokenIn, amountInBigInt, SwapDirection.STABLE_TO_SAP],
+          });
+          const slippageMultiplier = BigInt(Math.floor((1 - slippagePercent / 100) * 10000));
+          minAmountOutBigInt = (quotedOut * slippageMultiplier) / 10000n;
+        }
+      } catch (quoteErr) {
+        console.warn('[CCTP] Arc quoteSwap 失败，使用保守 minAmountOut=1', quoteErr);
+        // 极小下限，避免 RPC 抖动时完全卡死；链上仍受滑点/池子约束
+        minAmountOutBigInt = 1n;
+      }
+
+      if (minAmountOutBigInt <= 0n) {
+        setError('报价无效，请稍后重试');
+        setPhase('error');
+        return null;
+      }
+
       setPhase(needApprove ? 'approving' : 'swapping');
 
       const swapCall = {
