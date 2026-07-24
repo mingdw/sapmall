@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, Maximize2, Minimize2, Pause, Play } from 'lucide-react';
 import SEO from '../components/SEO';
-import SubpageChrome from '../layout/SubpageChrome';
+import ContentShell from '../layout/ContentShell';
 import SlideCanvas from '../components/presentation/SlideCanvas';
 import SlideRenderer from '../components/presentation/SlideRenderer';
 import { getPresentationSlides, getSlideTitleKey } from '../content/presentationSlides';
@@ -175,12 +175,17 @@ const PresentationPage: React.FC = () => {
   return (
     <>
       <SEO title={t('presentation.seoTitle')} description={t('presentation.seoDesc')} />
-      <SubpageChrome immersive className={fullscreen ? 'ppt-page--fullscreen' : ''}>
+      <ContentShell
+        breadcrumbCurrent={t('presentation.breadcrumb')}
+        chromeHidden={fullscreen}
+        showFooter={false}
+        className={fullscreen ? 'ppt-page--fullscreen' : ''}
+      >
         <main className={`ppt-page ${fullscreen ? 'ppt-page--fs' : ''}`} id="main-content">
           <div className={`site-container ppt-workspace ${fullscreen ? 'ppt-workspace--fs' : ''}`}>
             {!fullscreen && (
               <aside className="ppt-filmstrip" aria-label={t('presentation.thumbnails')}>
-                <p className="ppt-filmstrip__label">{t('presentation.slides')}</p>
+                <p className="ppt-filmstrip__label">{t('presentation.thumbnails')}</p>
                 <div className="ppt-filmstrip__list">
                   {slides.map((s, i) => (
                     <button
@@ -246,7 +251,7 @@ const PresentationPage: React.FC = () => {
             </div>
           </div>
         </main>
-      </SubpageChrome>
+      </ContentShell>
     </>
   );
 };

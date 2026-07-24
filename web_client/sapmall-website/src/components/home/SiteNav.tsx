@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Rocket, Globe, CheckCircle, Menu as MenuIcon, X } from 'lucide-react';
 import logoMarkSrc from '../../assets/logo-mark.svg';
@@ -7,15 +8,18 @@ import { useClickOutside } from '../../hooks/useClickOutside';
 import { useNavElevated } from '../../hooks/useNavElevated';
 import type { SectionId } from '../../hooks/useActiveSection';
 
-type NavItem = { href: string; id: SectionId; label: string };
+type NavItem = { hash: string; id: SectionId; label: string };
 
 type SiteNavProps = {
-  activeSection: SectionId;
+  /** 首页滚动高亮；子页传 null 不高亮任何项 */
+  activeSection: SectionId | null;
   onLaunchDApp: () => void;
 };
 
 const SiteNav: React.FC<SiteNavProps> = ({ activeSection, onLaunchDApp }) => {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
+  const isHome = pathname === '/';
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const [languageDropdownVisible, setLanguageDropdownVisible] = useState(false);
   const [currentLang, setCurrentLang] = useState(() =>
@@ -37,13 +41,16 @@ const SiteNav: React.FC<SiteNavProps> = ({ activeSection, onLaunchDApp }) => {
   useClickOutside(langRef, closeLang, languageDropdownVisible);
 
   const navItems: NavItem[] = [
-    { href: '#home', id: 'home', label: t('nav.home') },
-    { href: '#core-values', id: 'core-values', label: t('nav.coreValues') },
-    { href: '#features', id: 'features', label: t('nav.features') },
-    { href: '#roadmap', id: 'roadmap', label: t('nav.roadmap') },
-    { href: '#about', id: 'about', label: t('nav.about') },
-    { href: '#support', id: 'support', label: t('nav.support') },
+    { hash: '#home', id: 'home', label: t('nav.home') },
+    { hash: '#core-values', id: 'core-values', label: t('nav.coreValues') },
+    { hash: '#features', id: 'features', label: t('nav.features') },
+    { hash: '#roadmap', id: 'roadmap', label: t('nav.roadmap') },
+    { hash: '#about', id: 'about', label: t('nav.about') },
+    { hash: '#support', id: 'support', label: t('nav.support') },
   ];
+
+  /** 首页用锚点；子页回到首页对应区块 */
+  const sectionHref = (hash: string) => (isHome ? hash : `/${hash}`);
 
   const switchLanguage = (lang: string) => {
     setCurrentLang(lang);
@@ -51,7 +58,7 @@ const SiteNav: React.FC<SiteNavProps> = ({ activeSection, onLaunchDApp }) => {
     setLanguageDropdownVisible(false);
   };
 
-  const brandBlock = (
+  const brandBlock = isHome ? (
     <a href="#home" className="flex items-center gap-3 no-underline">
       <div className="logo-wrap">
         <img src={logoMarkSrc} alt="Sapphire Mall" />
@@ -61,6 +68,16 @@ const SiteNav: React.FC<SiteNavProps> = ({ activeSection, onLaunchDApp }) => {
         <div className="brand-tagline">{t('brand.tagline')}</div>
       </div>
     </a>
+  ) : (
+    <Link to="/" className="flex items-center gap-3 no-underline">
+      <div className="logo-wrap">
+        <img src={logoMarkSrc} alt="Sapphire Mall" />
+      </div>
+      <div>
+        <div className="brand-name">Sapphire Mall</div>
+        <div className="brand-tagline">{t('brand.tagline')}</div>
+      </div>
+    </Link>
   );
 
   return (
@@ -77,7 +94,7 @@ const SiteNav: React.FC<SiteNavProps> = ({ activeSection, onLaunchDApp }) => {
               {navItems.map((item) => (
                 <a
                   key={item.id}
-                  href={item.href}
+                  href={sectionHref(item.hash)}
                   className={`nav-link ${activeSection === item.id ? 'nav-link--active' : ''}`}
                 >
                   {item.label}
@@ -135,7 +152,12 @@ const SiteNav: React.FC<SiteNavProps> = ({ activeSection, onLaunchDApp }) => {
             </div>
             <nav>
               {navItems.map((link) => (
-                <a key={link.id} href={link.href} className="mobile-nav-link" onClick={() => setMobileMenuVisible(false)}>
+                <a
+                  key={link.id}
+                  href={sectionHref(link.hash)}
+                  className="mobile-nav-link"
+                  onClick={() => setMobileMenuVisible(false)}
+                >
                   {link.label}
                 </a>
               ))}

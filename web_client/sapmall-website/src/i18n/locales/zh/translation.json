@@ -276,7 +276,8 @@
     "exampleData": "以下为演示用示例数据",
     "skipToContent": "跳到主要内容",
     "step": "步骤",
-    "backHome": "返回首页"
+    "backHome": "返回首页",
+    "breadcrumb": "面包屑导航"
   },
   "howItWorks": {
     "title": "三步完成交易",
@@ -872,7 +873,8 @@
     "startAutoplay": "自动播放",
     "stopAutoplay": "停止播放",
     "autoplaying": "自动播放中",
-    "autoplayHint": "自动播放（快捷键 A）"
+    "autoplayHint": "自动播放（快捷键 A）",
+    "breadcrumb": "平台介绍"
   },
   "whitepaper": {
     "seoTitle": "白皮书",
@@ -880,7 +882,8 @@
     "eyebrow": "官方文档",
     "docTitle": "Sapphire Mall 产品白皮书",
     "version": "v0.5.0",
-    "toc": "目录"
+    "toc": "目录",
+    "breadcrumb": "阅读白皮书"
   },
   "demo": {
     "seoTitle": "产品演示",
@@ -889,6 +892,53 @@
     "subtitle": "三分钟了解商城选品、稳定币支付与 DAO 共治流程。",
     "openYoutube": "在 YouTube 打开",
     "toPresentation": "平台介绍",
-    "toWhitepaper": "阅读白皮书"
+    "toWhitepaper": "阅读白皮书",
+    "breadcrumb": "观看演示",
+    "playAll": "全部播放",
+    "cc": "字幕",
+    "playVideo": "播放：{{title}}",
+    "videos": {
+      "overview": {
+        "title": "Sapphire Mall 产品总览：商城、支付与共治",
+        "published": "2 个月前",
+        "views": "1.2 万次观看"
+      },
+      "marketplace": {
+        "title": "如何在去中心化商城完成商品浏览与下单？",
+        "published": "6 周前",
+        "views": "8.6 千次观看"
+      },
+      "checkout": {
+        "title": "稳定币结账演示：USDC 支付与订单确认",
+        "published": "1 个月前",
+        "views": "9.4 千次观看"
+      },
+      "governance": {
+        "title": "DAO 共治流程：提案、投票与执行一览",
+        "published": "3 周前",
+        "views": "5.1 千次观看"
+      },
+      "cctp": {
+        "title": "跨链 USDC 兑换 SAP：CCTP 流程演示",
+        "published": "2 周前",
+        "views": "3.8 千次观看"
+      },
+      "wallet": {
+        "title": "连接钱包与网络切换演示",
+        "published": "1 周前",
+        "views": "2.9 千次观看"
+      },
+      "seller": {
+        "title": "卖家上架商品与库存管理一览",
+        "published": "5 天前",
+        "views": "1.7 千次观看"
+      }
+    },
+    "scrollNext": "查看更多视频",
+    "categories": {
+      "popular": "热门上传",
+      "product": "Sapphire Mall · 产品功能",
+      "advanced": "进阶玩法"
+    }
   }
 }

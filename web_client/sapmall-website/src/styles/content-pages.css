@@ -1,5 +1,54 @@
 /* 子页顶栏、PPT、白皮书、演示页样式 */
 
+/* 内容子页：与首页同顶栏，内容区面包屑 */
+.content-shell__body {
+  min-height: 50vh;
+}
+
+.page-breadcrumb {
+  padding: 1.1rem 0 0.35rem;
+}
+
+.page-breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.page-breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.page-breadcrumb__link {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.page-breadcrumb__link:hover {
+  color: var(--color-accent-text, var(--color-primary));
+}
+
+.page-breadcrumb__sep {
+  display: inline-flex;
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.page-breadcrumb__current {
+  color: var(--color-text);
+  font-weight: 600;
+  cursor: default;
+}
+
 .subpage-bar {
   position: sticky;
   top: 0;
@@ -658,7 +707,7 @@
 
 /* 白皮书：整体宽度与幻灯片页一致（依赖 .site-container，勿覆盖 width） */
 .wp-page {
-  padding: 1.5rem 0 4rem;
+  padding: 0.75rem 0 4rem;
   min-height: calc(100vh - 3.75rem);
 }
 
@@ -854,44 +903,83 @@
   padding: 0.25rem;
 }
 
-/* 演示 */
+/* 演示：YouTube 风格多分类横滑（无可见滚动条，右侧箭头翻页） */
 .demo-page {
-  padding: 2.25rem 0 4.5rem;
+  padding: 0.5rem 0 4.5rem;
+  overflow-x: hidden;
 }
 
 .demo-layout {
-  max-width: 48rem;
+  max-width: 72rem;
   margin-inline: auto;
 }
 
-.demo-header {
-  margin-bottom: 1.5rem;
-  text-align: center;
+.demo-sections {
+  display: flex;
+  flex-direction: column;
 }
 
-.demo-header__title {
+.demo-section {
+  padding: 1.15rem 0 1.35rem;
+}
+
+.demo-section + .demo-section {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.demo-rail-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.demo-rail-header__title {
   margin: 0;
-  font-size: clamp(1.5rem, 2.5vw, 1.85rem);
-  font-weight: 650;
+  font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+  font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--color-text);
-  line-height: 1.25;
+  line-height: 1.3;
 }
 
-.demo-header__desc {
-  margin: 0.65rem auto 0;
-  max-width: 32rem;
-  font-size: 0.95rem;
-  line-height: 1.55;
-  color: var(--color-text-muted);
+.demo-play-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.demo-play-all:hover {
+  background: rgba(0, 0, 0, 0.06);
 }
 
 .demo-player {
+  margin-bottom: 0.5rem;
   background: #0b0f14;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-soft);
+}
+
+.demo-player + .demo-sections {
+  margin-top: 0.75rem;
+}
+
+.demo-player + .demo-sections .demo-section:first-child {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 1.35rem;
 }
 
 .demo-player__stage {
@@ -909,56 +997,242 @@
   display: block;
 }
 
-.demo-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.85rem 1.25rem;
-  margin-top: 1.15rem;
+.demo-player__caption {
+  padding: 0.9rem 1.1rem 1.05rem;
+  background: var(--color-surface, #fff);
+  border-top: 1px solid var(--color-border);
 }
 
-.demo-meta__youtube {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-  text-decoration: none;
-  transition: color 0.15s ease;
-}
-
-.demo-meta__youtube:hover {
-  color: var(--color-accent, var(--color-primary));
-}
-
-.demo-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem 1rem;
-}
-
-.demo-actions__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.875rem;
+.demo-player__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 650;
   color: var(--color-text);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  padding-bottom: 1px;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  line-height: 1.35;
 }
 
-.demo-actions__link:hover {
-  border-bottom-color: currentColor;
-  color: var(--color-accent, var(--color-primary));
+.demo-player__meta {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.demo-rail-wrap {
+  position: relative;
+}
+
+.demo-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(210px, 252px);
+  gap: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.1rem 0.15rem 0.35rem;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* 隐藏横向滚动条，改用右侧箭头 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.demo-rail::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.demo-rail-next {
+  position: absolute;
+  /* 对齐缩略图垂直中心（约 252×141 的一半） */
+  top: 4.4rem;
+  right: 0.35rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-text);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.demo-rail-next:hover {
+  background: #f8f8f8;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+}
+
+.demo-card {
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.demo-card__thumb-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.demo-card__thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+}
+
+.demo-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.demo-card__thumb-btn:hover .demo-card__img {
+  transform: scale(1.03);
+}
+
+.demo-card__duration {
+  position: absolute;
+  right: 0.4rem;
+  bottom: 0.4rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.82);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+}
+
+.demo-card__play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.demo-card__thumb-btn:hover .demo-card__play,
+.demo-card--active .demo-card__play {
+  opacity: 1;
+}
+
+.demo-card--active .demo-card__thumb {
+  outline: 2px solid var(--color-accent, #2563eb);
+  outline-offset: 2px;
+}
+
+.demo-card__body {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+  margin-top: 0.65rem;
+}
+
+.demo-card__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.demo-card__title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.demo-card__title button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.demo-card__title button:hover {
+  color: var(--color-accent-text, var(--color-primary));
+}
+
+.demo-card__channel,
+.demo-card__stats {
+  margin: 0.2rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
+.demo-card__cc {
+  display: inline-block;
+  margin-top: 0.35rem;
+  padding: 0.05rem 0.3rem;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.demo-card__more {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin: -0.25rem -0.35rem 0 0;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.demo-card__more:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--color-text);
 }
 
 @media (max-width: 640px) {
-  .demo-meta {
-    flex-direction: column;
-    align-items: flex-start;
+  .demo-rail {
+    grid-auto-columns: minmax(190px, 72vw);
+    gap: 0.85rem;
+  }
+
+  .demo-rail-next {
+    width: 2.25rem;
+    height: 2.25rem;
+    top: 16%;
   }
 }
 

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronRight, Menu, X } from 'lucide-react';
 import SEO from '../components/SEO';
-import SubpageChrome from '../layout/SubpageChrome';
+import ContentShell from '../layout/ContentShell';
 import {
   getWhitepaperSections,
   getWhitepaperTocLabel,
@@ -141,7 +141,7 @@ const WhitepaperPage: React.FC = () => {
   return (
     <>
       <SEO title={t('whitepaper.seoTitle')} description={t('whitepaper.seoDesc')} />
-      <SubpageChrome>
+      <ContentShell breadcrumbCurrent={t('whitepaper.breadcrumb')}>
         <main className="wp-page" id="main-content">
           <div className="site-container wp-layout">
             <aside className="wp-sidebar">
@@ -194,7 +194,7 @@ const WhitepaperPage: React.FC = () => {
             </>
           )}
         </main>
-      </SubpageChrome>
+      </ContentShell>
     </>
   );
 };
