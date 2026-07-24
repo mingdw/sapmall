@@ -4,27 +4,27 @@ package cctp
 // https://developers.circle.com/cctp/concepts/supported-chains-and-domains
 // https://faucet.circle.com/
 const (
-	EthereumSepoliaChainID  = 11155111
-	ArbitrumSepoliaChainID  = 421614
-	AvalancheFujiChainID    = 43113
-	BaseSepoliaChainID      = 84532
-	OPSepoliaChainID        = 11155420
-	PolygonAmoyChainID      = 80002
-	LineaSepoliaChainID     = 59141
-	UnichainSepoliaChainID  = 1301
+	EthereumSepoliaChainID   = 11155111
+	ArbitrumSepoliaChainID   = 421614
+	AvalancheFujiChainID     = 43113
+	BaseSepoliaChainID       = 84532
+	OPSepoliaChainID         = 11155420
+	PolygonAmoyChainID       = 80002
+	LineaSepoliaChainID      = 59141
+	UnichainSepoliaChainID   = 1301
 	WorldchainSepoliaChainID = 4801
-	ArcTestnetChainID       = 5042002
+	ArcTestnetChainID        = 5042002
 
-	EthereumSepoliaDomain  = 0
-	AvalancheFujiDomain    = 1
-	OPSepoliaDomain        = 2
-	ArbitrumSepoliaDomain  = 3
-	BaseSepoliaDomain      = 6
-	PolygonAmoyDomain      = 7
-	UnichainSepoliaDomain  = 10
-	LineaSepoliaDomain     = 11
+	EthereumSepoliaDomain   = 0
+	AvalancheFujiDomain     = 1
+	OPSepoliaDomain         = 2
+	ArbitrumSepoliaDomain   = 3
+	BaseSepoliaDomain       = 6
+	PolygonAmoyDomain       = 7
+	UnichainSepoliaDomain   = 10
+	LineaSepoliaDomain      = 11
 	WorldchainSepoliaDomain = 14
-	ArcTestnetDomain       = 26
+	ArcTestnetDomain        = 26
 
 	TokenMessengerV2      = "0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA"
 	EthereumSepoliaUSDC   = "0x1c7D4B196Cb0C7B01d157F041a657A09DDBf8aF4"
@@ -137,5 +137,4 @@ func StatusDesc(status int8) string {
 	default:
 		return "未知"
 	}
-}
 }
