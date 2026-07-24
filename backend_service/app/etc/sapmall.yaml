@@ -54,4 +54,4 @@ Cctp:
   RelayerPrivateKey: ""
   ArcRPC: "https://rpc.testnet.arc.io"
   ArcMessageTransmitter: "0xE737e5cEBEEBa77EFE34D4aa090756590b1CE275"
-  PollIntervalSec: 12
+  PollIntervalSec: 5

@@ -87,7 +87,8 @@
       "confirming": "Confirming...",
       "quoteError": "Quote failed",
       "txSuccess": "Transaction success",
-      "noTokensAvailable": "No swap tokens available on this chain"
+      "noTokensAvailable": "No swap tokens available on this chain",
+      "refresh": "Reset"
     },
     "cctp": {
       "title": "Cross-chain swap (CCTP)",

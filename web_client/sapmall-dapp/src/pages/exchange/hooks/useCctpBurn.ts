@@ -19,6 +19,7 @@ import { ensureWalletOnChain } from '../../../utils/ensureWalletOnChain';
 import { isChainMismatchError } from '../../../utils/wagmiChainMismatch';
 import { sendContractCallsBatched } from '../../../utils/sendContractCallsBatched';
 import { sumGasFees } from '../../../utils/txGasFee';
+import { startCctpPerf } from '../../../utils/cctpPerfLog';
 
 type WagmiChainId = (typeof config.chains)[number]['id'];
 
@@ -34,7 +35,10 @@ interface UseCctpBurnResult {
   phase: CctpBurnPhase;
   txHash: string | null;
   error: string | null;
-  executeBurn: (burnParams: CctpBurnParams) => Promise<CctpBurnResult | null>;
+  executeBurn: (
+    burnParams: CctpBurnParams,
+    options?: { prefetchedAllowance?: bigint },
+  ) => Promise<CctpBurnResult | null>;
   reset: () => void;
 }
 
@@ -91,7 +95,10 @@ export function useCctpBurn(): UseCctpBurnResult {
   }, []);
 
   const executeBurn = useCallback(
-    async (burnParams: CctpBurnParams): Promise<CctpBurnResult | null> => {
+    async (
+      burnParams: CctpBurnParams,
+      options?: { prefetchedAllowance?: bigint },
+    ): Promise<CctpBurnResult | null> => {
       if (!address) {
         setError('请先连接钱包');
         setPhase('error');
@@ -107,22 +114,31 @@ export function useCctpBurn(): UseCctpBurnResult {
         return null;
       }
 
+      const perf = startCctpPerf('executeBurn', {
+        source: source.name,
+        sourceChainId: source.chainId,
+        amount: amount.toString(),
+      });
+
       try {
         setError(null);
         setPhase('switching');
 
+        perf.mark('beforeEnsureSourceChain');
         const walletClient = await ensureWalletOnChain(
           config,
           source.chainId,
           switchChainAsync,
           source.name,
         );
+        perf.mark('afterEnsureSourceChain');
 
         const publicClient = getPublicClient(config, { chainId: source.chainId as WagmiChainId });
         const chain = config.chains.find((c) => c.id === source.chainId);
         if (!publicClient || !chain) {
           setError(`${source.name} RPC 未配置`);
           setPhase('error');
+          perf.done('FAIL-no-rpc');
           return null;
         }
 
@@ -131,24 +147,44 @@ export function useCctpBurn(): UseCctpBurnResult {
         const maxFee = BigInt(burnParams.maxFee || '0');
 
         // 读 allowance 依赖 dapp→源链 RPC；公共节点断连时勿阻塞钱包弹窗
+        // 若上游已预取 allowance（Direction B 并行化），直接使用，跳过 RPC 调用
         let needApprove = true;
-        try {
-          const allowance = await publicClient.readContract({
-            address: usdc,
-            abi: erc20Abi,
-            functionName: 'allowance',
-            args: [address, tokenMessenger],
+        if (options?.prefetchedAllowance !== undefined) {
+          needApprove = options.prefetchedAllowance < amount;
+          perf.mark('usedPrefetchedAllowance', {
+            needApprove,
+            allowance: options.prefetchedAllowance.toString(),
           });
-          needApprove = allowance < amount;
-        } catch (allowanceErr) {
-          console.warn(
-            `[CCTP] 读取 ${source.name} allowance 失败，将走授权+Burn（RPC 可能不稳定）`,
-            allowanceErr,
-          );
-          needApprove = true;
+        } else {
+          try {
+            perf.mark('beforeReadAllowance');
+            const allowance = await publicClient.readContract({
+              address: usdc,
+              abi: erc20Abi,
+              functionName: 'allowance',
+              args: [address, tokenMessenger],
+            });
+            needApprove = allowance < amount;
+            perf.mark('afterReadAllowance', {
+              needApprove,
+              allowance: allowance.toString(),
+            });
+          } catch (allowanceErr) {
+            console.warn(
+              `[CCTP] 读取 ${source.name} allowance 失败，将走授权+Burn（RPC 可能不稳定）`,
+              allowanceErr,
+            );
+            needApprove = true;
+            perf.mark('allowanceFailedAssumeApprove');
+          }
         }
 
         setPhase(needApprove ? 'approving' : 'burning');
+
+        // 固定 Gas Limit：跳过钱包 eth_estimateGas 预估，加速弹窗（Direction F）
+        // ERC20 approve ≈ 46k→留 80k；depositForBurn V2 ≈ 350k→留 500k
+        const GAS_APPROVE = 80_000n;
+        const GAS_BURN = 500_000n;
 
         const burnCall = {
           to: tokenMessenger,
@@ -163,6 +199,7 @@ export function useCctpBurn(): UseCctpBurnResult {
             maxFee,
             burnParams.minFinalityThreshold,
           ] as const,
+          gas: GAS_BURN,
         };
 
         const calls = needApprove
@@ -172,12 +209,17 @@ export function useCctpBurn(): UseCctpBurnResult {
                 abi: erc20Abi,
                 functionName: 'approve',
                 args: [tokenMessenger, maxUint256] as const,
+                gas: GAS_APPROVE,
               },
               burnCall,
             ]
           : [burnCall];
 
         // 需要授权时尽量 1 次弹窗完成 approve+burn；已授权则仅 burn
+        perf.mark('beforeSendCalls_walletPopup', {
+          needApprove,
+          callCount: calls.length,
+        });
         const { primaryHash: burnHash, hashes } = await sendContractCallsBatched({
           walletClient,
           account: address,
@@ -187,20 +229,31 @@ export function useCctpBurn(): UseCctpBurnResult {
             abi: c.abi as typeof erc20Abi,
             functionName: c.functionName,
             args: c.args as readonly unknown[],
+            ...(c.gas ? { gas: c.gas } : {}),
           })),
+        });
+        perf.mark('afterSendCalls_userSigned', {
+          hashCount: hashes.length,
+          burnHash: burnHash.slice(0, 10),
         });
 
         // 顺序回退时：先等 approve 再等 burn；并累计本链 Gas
         setPhase('confirming');
         const receipts: TransactionReceipt[] = [];
         for (const h of hashes) {
+          perf.mark('beforeWaitReceipt', { hash: h.slice(0, 10) });
           const receipt = await publicClient.waitForTransactionReceipt({
             hash: h,
             timeout: 180_000,
           });
+          perf.mark('afterWaitReceipt', {
+            hash: h.slice(0, 10),
+            status: receipt.status,
+          });
           if (receipt.status === 'reverted') {
             setError(needApprove && h === hashes[0] ? '授权交易被回滚' : 'Burn 交易被回滚');
             setPhase('error');
+            perf.done('FAIL-reverted');
             return null;
           }
           receipts.push(receipt);
@@ -208,15 +261,20 @@ export function useCctpBurn(): UseCctpBurnResult {
 
         setTxHash(burnHash);
         setPhase('success');
+        perf.done('ok');
         return { hash: burnHash, gasFee: sumGasFees(receipts) };
       } catch (err) {
         if (isUserRejected(err)) {
           setError(null);
           setPhase('idle');
+          perf.done('user-rejected');
           return null;
         }
         setError(extractRevertReason(err, source.name));
         setPhase('error');
+        perf.done('FAIL', {
+          message: err instanceof Error ? err.message : String(err),
+        });
         return null;
       }
     },

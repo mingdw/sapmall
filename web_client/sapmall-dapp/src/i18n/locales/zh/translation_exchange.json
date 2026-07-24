@@ -82,7 +82,8 @@
       "confirming": "确认中...",
       "quoteError": "报价获取失败",
       "txSuccess": "交易成功",
-      "noTokensAvailable": "当前链暂无可兑换代币"
+      "noTokensAvailable": "当前链暂无可兑换代币",
+      "refresh": "重置"
     },
     "marketStats": {
       "title": "市场数据",

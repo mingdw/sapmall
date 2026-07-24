@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useReadContract, useSwitchChain } from 'wagmi';
+import { getPublicClient } from 'wagmi/actions';
 import { erc20Abi, formatUnits, parseUnits } from 'viem';
 import { AlertCircle, AlertTriangle, ArrowDown, ChevronDown, ExternalLink, RefreshCw, Settings, Shield } from 'lucide-react';
 import TokenIcon from './TokenIcon';
@@ -23,6 +24,7 @@ import { useCctpSourceBalances } from '../hooks/useCctpSourceBalances';
 import { useSwapQuote } from '../hooks/useSwapQuote';
 import { ensureWalletOnChain } from '../../../utils/ensureWalletOnChain';
 import { resolveTxExplorerUrl, shortenTxHash } from '../../../utils/txExplorer';
+import { startCctpPerf } from '../../../utils/cctpPerfLog';
 
 /** 将 wei 格式化为可读 Gas（原生币） */
 function formatNativeGas(wei?: string | null): string | null {
@@ -64,6 +66,8 @@ export default function CctpSwapPanel({
   /** Burn 确认后是否已切到 Arc；已铸造后是否已自动触发兑换 */
   const arcPreparedRef = useRef<string | null>(null);
   const autoSwapStartedRef = useRef<string | null>(null);
+  /** 兑换签名进行中（含用户慢确认），禁止超时逻辑清锁再开第二笔 */
+  const swapInFlightRef = useRef(false);
   /** 同一 intent 只弹一次成功 toast，避免重复点击/重渲染连弹 */
   const successToastSentRef = useRef<string | null>(null);
   const [fromAmount, setFromAmount] = useState('');
@@ -111,7 +115,9 @@ export default function CctpSwapPanel({
     }
   }, [fromAmount, amountOut, baseRate]);
 
-  const { balances: sourceBalances, hasAnyResult } = useCctpSourceBalances(!!address);
+  // 跨链流程进行中时暂停后台多链余额查询，减少 RPC 网络争用（Direction A）
+  const flowActive = isStarting || !!intentId;
+  const { balances: sourceBalances, hasAnyResult } = useCctpSourceBalances(!!address && !flowActive);
 
   /** 源链下拉：按 USDC 余额降序（加载中/失败视为 0） */
   const sortedSourceKeys = useMemo(() => {
@@ -152,7 +158,8 @@ export default function CctpSwapPanel({
     args: address ? [address] : undefined,
     query: {
       enabled: !!address,
-      refetchInterval: 30_000,
+      // 跨链流程中暂停定时刷新，避免与 Burn/Swap 交易竞争 RPC（Direction A）
+      refetchInterval: flowActive ? false : 30_000,
     },
     chainId: source.chainId,
   });
@@ -193,6 +200,7 @@ export default function CctpSwapPanel({
     userPickedSourceRef.current = false;
     arcPreparedRef.current = null;
     autoSwapStartedRef.current = null;
+    swapInFlightRef.current = false;
     successToastSentRef.current = null;
     resetBurn();
     resetSwap();
@@ -250,6 +258,12 @@ export default function CctpSwapPanel({
     const parsed = parseFloat(fromAmount);
     if (!fromAmount || isNaN(parsed) || parsed <= 0) return;
 
+    const flowPerf = startCctpPerf('crossChainFlow', {
+      source: source.name,
+      sourceChainId: source.chainId,
+      amount: fromAmount,
+    });
+
     setFlowError(null);
     setIsStarting(true);
     setIsSwitchingToDest(false);
@@ -258,9 +272,32 @@ export default function CctpSwapPanel({
     successToastSentRef.current = null;
     arcPreparedRef.current = null;
     autoSwapStartedRef.current = null;
+    swapInFlightRef.current = false;
 
     try {
       const amountIn = parseUnits(fromAmount, source.usdcDecimals).toString();
+      const amountBigInt = BigInt(amountIn);
+
+      // 并行启动 createIntent（HTTP）和 readAllowance（RPC），节省串行等待（Direction B）
+      flowPerf.mark('beforeCreateIntent');
+      const allowancePromise = (async (): Promise<bigint | undefined> => {
+        try {
+          const pubClient = getPublicClient(config, {
+            chainId: source.chainId as (typeof config.chains)[number]['id'],
+          });
+          if (!pubClient || !address) return undefined;
+          const allowance = await pubClient.readContract({
+            address: source.usdc,
+            abi: erc20Abi,
+            functionName: 'allowance',
+            args: [address, source.tokenMessengerV2],
+          });
+          return allowance;
+        } catch {
+          return undefined;
+        }
+      })();
+
       const created = await cctpApi.createIntent({
         sourceChainId: source.chainId,
         destChainId: dest.chainId,
@@ -268,19 +305,32 @@ export default function CctpSwapPanel({
         tokenSymbol: 'USDC',
         tokenDecimals: source.usdcDecimals,
       });
+      flowPerf.mark('afterCreateIntent', { intentId: created.intentId });
+
+      // 等待预取 allowance 完成（通常已与 createIntent 并行完成）
+      const prefetchedAllowance = await allowancePromise;
+      flowPerf.mark('afterPrefetchedAllowance', {
+        prefetched: prefetchedAllowance?.toString(),
+      });
 
       // 1) 源链：用户确认 Burn（含授权）并等待交易上链
-      const burned = await executeBurn(created.burnParams);
+      flowPerf.mark('beforeExecuteBurn');
+      const burned = await executeBurn(created.burnParams, { prefetchedAllowance });
       if (!burned) {
+        flowPerf.done('burn-aborted');
         return;
       }
+      flowPerf.mark('afterExecuteBurn', { burnHash: burned.hash.slice(0, 10) });
 
       setLocalBurnGas(burned.gasFee);
+      flowPerf.mark('beforeSubmitBurn');
       await cctpApi.submitBurn(created.intentId, burned.hash, burned.gasFee);
+      flowPerf.mark('afterSubmitBurn');
 
       // 2) 源链确认完成后：立即切回目标链 Arc，再等待到账
       setIsSwitchingToDest(true);
       try {
+        flowPerf.mark('beforeSwitchToArc_afterBurn');
         await ensureWalletOnChain(
           config,
           ARC_TESTNET_CHAIN_ID,
@@ -288,8 +338,12 @@ export default function CctpSwapPanel({
           'Arc Testnet',
         );
         arcPreparedRef.current = created.intentId;
+        flowPerf.mark('afterSwitchToArc_afterBurn');
       } catch (switchErr) {
         console.warn('[CCTP] 源链确认后切回 Arc 失败，到账后将重试', switchErr);
+        flowPerf.mark('switchToArcFailed', {
+          message: switchErr instanceof Error ? switchErr.message : String(switchErr),
+        });
         // 仍启动轮询；已铸造时的自动兑换会再次切链
       } finally {
         setIsSwitchingToDest(false);
@@ -297,8 +351,12 @@ export default function CctpSwapPanel({
 
       // 3) 开始轮询目标链到账
       setIntentId(created.intentId);
+      flowPerf.done('waiting-mint', { intentId: created.intentId });
     } catch (err) {
       setFlowError(err instanceof Error ? err.message : '跨链流程失败');
+      flowPerf.done('FAIL', {
+        message: err instanceof Error ? err.message : String(err),
+      });
     } finally {
       setIsStarting(false);
       setIsSwitchingToDest(false);
@@ -308,22 +366,28 @@ export default function CctpSwapPanel({
   const handleArcSwap = useCallback(async () => {
     if (!intentId || !intent) return;
     if (intent.status < 3 || intent.status >= 4) return;
+    if (swapInFlightRef.current) return;
     setFlowError(null);
     if (swapPhase === 'error' || swapPhase === 'idle') {
       resetSwap();
     }
-    const swapped = await executeSwap();
-    if (!swapped) {
-      autoSwapStartedRef.current = null;
-      return;
-    }
+    swapInFlightRef.current = true;
     try {
-      setLocalSwapGas(swapped.gasFee);
-      await cctpApi.submitSwap(intentId, swapped.hash, swapped.gasFee);
-      await refreshIntent();
-    } catch (err) {
-      autoSwapStartedRef.current = null;
-      setFlowError(err instanceof Error ? err.message : '提交 swap 失败');
+      const swapped = await executeSwap();
+      if (!swapped) {
+        autoSwapStartedRef.current = null;
+        return;
+      }
+      try {
+        setLocalSwapGas(swapped.gasFee);
+        await cctpApi.submitSwap(intentId, swapped.hash, swapped.gasFee);
+        await refreshIntent();
+      } catch (err) {
+        autoSwapStartedRef.current = null;
+        setFlowError(err instanceof Error ? err.message : '提交 swap 失败');
+      }
+    } finally {
+      swapInFlightRef.current = false;
     }
   }, [intentId, intent, executeSwap, refreshIntent, swapPhase, resetSwap]);
 
@@ -332,13 +396,21 @@ export default function CctpSwapPanel({
     if (!intentId || !intent) return;
     if (intent.status < 3 || intent.status >= 4) return;
     if (isDone || isSwapping || disabled || isStarting || isSwitchingToDest) return;
+    if (swapInFlightRef.current) return;
     if (autoSwapStartedRef.current === intentId) return;
     autoSwapStartedRef.current = intentId;
+
+    const autoPerf = startCctpPerf('autoSwapAfterMint', {
+      intentId,
+      status: intent.status,
+      arcPrepared: arcPreparedRef.current === intentId,
+    });
 
     void (async () => {
       try {
         // 若 Burn 后切链失败，这里补切一次再弹兑换
         if (arcPreparedRef.current !== intentId) {
+          autoPerf.mark('needReSwitchToArc');
           await ensureWalletOnChain(
             config,
             ARC_TESTNET_CHAIN_ID,
@@ -346,11 +418,19 @@ export default function CctpSwapPanel({
             'Arc Testnet',
           );
           arcPreparedRef.current = intentId;
+          autoPerf.mark('reSwitchToArcDone');
+        } else {
+          autoPerf.mark('alreadyOnArcSkipSwitch');
         }
+        autoPerf.mark('beforeHandleArcSwap');
         await handleArcSwap();
+        autoPerf.done('dispatched');
       } catch (err) {
         console.warn('[CCTP] 自动唤起 Arc 兑换失败', err);
         autoSwapStartedRef.current = null;
+        autoPerf.done('FAIL', {
+          message: err instanceof Error ? err.message : String(err),
+        });
         setFlowError(
           err instanceof Error
             ? err.message
@@ -373,10 +453,14 @@ export default function CctpSwapPanel({
     t,
   ]);
 
-  // 兑换卡住时解锁，避免按钮永久 disabled
+  // 仅在「未进入钱包签名」时超时解锁；用户慢确认时绝不清 autoSwap 锁（否则会开第二笔）
   useEffect(() => {
     if (!isSwapping) return undefined;
     const timer = window.setTimeout(() => {
+      if (swapInFlightRef.current) {
+        console.warn('[CCTP:perf] swap 仍在进行（可能等待用户确认），跳过超时清锁');
+        return;
+      }
       resetSwap();
       autoSwapStartedRef.current = null;
       setFlowError(
@@ -384,7 +468,7 @@ export default function CctpSwapPanel({
           defaultValue: '钱包未弹出或响应超时，请再点击下方按钮确认兑换',
         }),
       );
-    }, 45_000);
+    }, 120_000);
     return () => window.clearTimeout(timer);
   }, [isSwapping, resetSwap, t]);
 

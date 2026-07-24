@@ -42,7 +42,7 @@ function hasIntentMeaningfulChange(
 export function useCctpIntentStatus({
   intentId,
   stopAtStatus = 3,
-  intervalMs = 5_000,
+  intervalMs = 2_000,
   enabled = true,
 }: UseCctpIntentStatusOptions): UseCctpIntentStatusResult {
   const [intent, setIntent] = useState<CctpIntentStatus | null>(null);

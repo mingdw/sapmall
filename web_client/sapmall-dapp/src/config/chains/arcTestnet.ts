@@ -13,14 +13,14 @@ export const ARC_TESTNET_RPC_URL = 'https://rpc.testnet.arc.io';
 export const ARC_TESTNET_WS_URL = 'wss://rpc.testnet.arc.io';
 
 /**
- * 官方公布的 Testnet HTTP 节点（主节点失败 / 429 时按序回退）
- * Primary (Circle) → Blockdaemon → dRPC → QuickNode
+ * 浏览器端优先用不容易 CORS 失败的节点；官方 Primary 放后（localhost 常见被拦）。
+ * @see https://docs.arc.io/arc/references/rpc-endpoints
  */
 export const ARC_TESTNET_RPC_URLS = [
-  ARC_TESTNET_RPC_URL,
   'https://rpc.blockdaemon.testnet.arc.io',
   'https://rpc.drpc.testnet.arc.io',
   'https://rpc.quicknode.testnet.arc.io',
+  ARC_TESTNET_RPC_URL,
 ] as const;
 
 export const ARC_TESTNET_WS_URLS = [

@@ -48,7 +48,7 @@ func NewRelayer(db *gorm.DB, cfg config.CctpConfig) *Relayer {
 	}
 	pollSec := cfg.PollIntervalSec
 	if pollSec <= 0 {
-		pollSec = 12
+		pollSec = 5 // Direction E: 12s→5s，加快 attestation 轮询
 	}
 	transmitter := strings.TrimSpace(cfg.ArcMessageTransmitter)
 	if transmitter == "" {

@@ -5,6 +5,7 @@ import {
   beginUserWalletChainSwitch,
   endUserWalletChainSwitch,
 } from './walletChainSwitchGuard';
+import { startCctpPerf } from './cctpPerfLog';
 
 type WagmiChainId = (typeof import('../config/wagmi').config.chains)[number]['id'];
 
@@ -54,6 +55,10 @@ export async function ensureWalletOnChain(
 ): Promise<WalletClient> {
   beginUserWalletChainSwitch();
   const label = chainLabel ?? `Chain ${targetChainId}`;
+  const perf = startCctpPerf('ensureWalletOnChain', {
+    targetChainId,
+    label,
+  });
 
   try {
     const account = getAccount(config);
@@ -63,15 +68,33 @@ export async function ensureWalletOnChain(
     }
 
     let connectorChainId = await readConnectorChainId(connector);
+    perf.mark('readConnectorChainId', {
+      connectorChainId,
+      wagmiChainId: account.chainId ?? null,
+      alreadyOnTarget: connectorChainId === targetChainId,
+    });
 
     if (connectorChainId !== targetChainId) {
+      perf.mark('switchChainAsync:requestWalletPopup', {
+        from: connectorChainId,
+        to: targetChainId,
+      });
+      const switchT0 = typeof performance !== 'undefined' ? performance.now() : Date.now();
       await switchChainAsync({ chainId: targetChainId as WagmiChainId });
+      perf.mark('switchChainAsync:resolved', {
+        ms: Math.round(
+          (typeof performance !== 'undefined' ? performance.now() : Date.now()) - switchT0,
+        ),
+        note: '含用户确认切链弹窗等待时间',
+      });
 
       // 等待用户在 MetaMask 确认切链，且 connector 真正落到目标链
       // （wagmi connection 可能已先更新，此时若立刻 getWalletClient 会报 mismatch）
       let synced = false;
+      let pollCount = 0;
       for (let i = 0; i < 60; i++) {
         await sleep(250);
+        pollCount = i + 1;
         connectorChainId = await readConnectorChainId(connector);
         const connectionChainId = getAccount(config).chainId;
         if (connectorChainId === targetChainId && connectionChainId === targetChainId) {
@@ -79,6 +102,14 @@ export async function ensureWalletOnChain(
           break;
         }
       }
+
+      perf.mark('waitConnectorSync', {
+        synced,
+        pollCount,
+        pollMs: pollCount * 250,
+        connectorChainId,
+        wagmiChainId: getAccount(config).chainId ?? null,
+      });
 
       if (!synced) {
         connectorChainId = await readConnectorChainId(connector);
@@ -90,12 +121,18 @@ export async function ensureWalletOnChain(
       }
     } else if (getAccount(config).chainId !== targetChainId) {
       // connector 已在目标链，但 wagmi connection 不同步 → 再调一次 switch 对齐 store
+      perf.mark('alignWagmiStoreOnly', {
+        connectorChainId,
+        wagmiChainId: getAccount(config).chainId ?? null,
+      });
       try {
         await switchChainAsync({ chainId: targetChainId as WagmiChainId });
       } catch {
         // 对齐失败时若 connector 正确，仍尝试取 client
       }
       await sleep(100);
+    } else {
+      perf.mark('alreadyOnTargetSkipSwitch');
     }
 
     await sleep(50);
@@ -106,7 +143,13 @@ export async function ensureWalletOnChain(
     if (!walletClient) {
       throw new Error(`无法连接 ${label}，请确认钱包已切换到该网络`);
     }
+    perf.done('ok', { hasWalletClient: true });
     return walletClient;
+  } catch (err) {
+    perf.done('FAIL', {
+      message: err instanceof Error ? err.message : String(err),
+    });
+    throw err;
   } finally {
     window.setTimeout(() => {
       endUserWalletChainSwitch();

@@ -73,5 +73,5 @@ type CctpConfig struct {
 	RelayerPrivateKey     string `json:",optional"` // Arc 上执行 receiveMessage 的私钥（可空=仅 attestation）
 	ArcRPC                string `json:",optional"` // Arc JSON-RPC
 	ArcMessageTransmitter string `json:",optional"` // MessageTransmitterV2 地址
-	PollIntervalSec       int    `json:",optional"` // 轮询间隔秒，默认 12
+	PollIntervalSec       int    `json:",optional"` // 轮询间隔秒，默认 5
 }

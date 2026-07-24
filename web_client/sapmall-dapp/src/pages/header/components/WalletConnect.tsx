@@ -69,6 +69,8 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   const [isProcessingConnection, setIsProcessingConnection] = useState(false);
   const [lastProcessedAddress, setLastProcessedAddress] = useState<string | null>(null);
   const signingRef = useRef<boolean>(false);
+  const networkMenuRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Wagmi hooks
   const { status: connectStatus, error } = useConnect();
@@ -199,12 +201,24 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     }
   }, [error, t]);
 
-  // 点击外部关闭下拉菜单
+  // 点击菜单外部关闭下拉（勿用 .relative：页面大量 relative 会导致点空白不收起）
   useEffect(() => {
+    if (!showNetworkMenu && !showUserDropdown) return undefined;
+
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest('.relative')) {
+      const target = event.target as Node;
+      if (
+        showNetworkMenu &&
+        networkMenuRef.current &&
+        !networkMenuRef.current.contains(target)
+      ) {
         setShowNetworkMenu(false);
+      }
+      if (
+        showUserDropdown &&
+        userMenuRef.current &&
+        !userMenuRef.current.contains(target)
+      ) {
         setShowUserDropdown(false);
       }
     };
@@ -213,7 +227,7 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [showNetworkMenu, showUserDropdown]);
 
   // 钱包连接成功后的处理
   const handleWalletConnected = async (walletAddress: string) => {
@@ -615,10 +629,13 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
   return (
     <div className={headerControlStyles.headerControlGroup}>
       {/* 网络切换下拉 - 完全按照原型实现 */}
-      <div className="relative">
+      <div className="relative" ref={networkMenuRef}>
         <button
           type="button"
-          onClick={() => setShowNetworkMenu(!showNetworkMenu)}
+          onClick={() => {
+            setShowNetworkMenu((open) => !open);
+            setShowUserDropdown(false);
+          }}
           className={headerControlStyles.langTrigger}
           aria-expanded={showNetworkMenu}
           aria-haspopup="listbox"
@@ -674,10 +691,13 @@ const WalletConnect: React.FC<WalletConnectProps> = ({ onConnect, onDisconnect }
       </div>
       
       {/* 用户菜单 - 完全按照原型实现 */}
-      <div className="relative">
+      <div className="relative" ref={userMenuRef}>
         <button
           type="button"
-          onClick={() => setShowUserDropdown(!showUserDropdown)}
+          onClick={() => {
+            setShowUserDropdown((open) => !open);
+            setShowNetworkMenu(false);
+          }}
           className={headerControlStyles.langTrigger}
           aria-expanded={showUserDropdown}
           aria-haspopup="menu"

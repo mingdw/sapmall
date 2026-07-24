@@ -16,6 +16,7 @@ import './styles/rainbowkit-overrides.css';
 import Layout from './layout/Layout';
 import { useCategoryStore } from './store/categoryStore';
 import { useChainConfigInit } from './hooks/useChainConfigInit';
+import { useCctpSourceBalancePrefetch } from './hooks/useCctpSourceBalancePrefetch';
 import '@rainbow-me/rainbowkit/styles.css';
 
 // 降低链上查询默认重试与焦点刷新，减轻公共 RPC 限流（429）
@@ -29,11 +30,17 @@ const queryClient = new QueryClient({
   },
 });
 
+/** 必须在 WagmiProvider 内：钱包连接后按链配置预取 CCTP 源链余额 */
+const CctpSourceBalancePrefetch: React.FC = () => {
+  useCctpSourceBalancePrefetch();
+  return null;
+};
+
 const App: React.FC = () => {
   const { i18n } = useTranslation();
   const clearCache = useCategoryStore((s) => s.clearCache);
 
-  // 初始化链配置
+  // 初始化链配置（可与钱包无关，放在 Provider 外即可）
   useChainConfigInit();
 
   // 根据当前语言选择对应的 Ant Design 语言包
@@ -70,6 +77,7 @@ const App: React.FC = () => {
           }}
         >
           <WagmiChainMismatchRecovery />
+          <CctpSourceBalancePrefetch />
           <ConfigProvider locale={antdLocale}>
             <Router>
               <div className="App">
