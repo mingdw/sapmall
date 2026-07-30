@@ -939,6 +939,10 @@
       "popular": "Popular uploads",
       "product": "Sapphire Mall · Product",
       "advanced": "Advanced features"
-    }
+    },
+    "loading": "Loading demos…",
+    "loadError": "Failed to load demo video config",
+    "empty": "No demo videos yet. Add categories in the config file.",
+    "showcase": "Case showcase"
   }
 }

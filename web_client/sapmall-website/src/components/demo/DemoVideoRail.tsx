@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, MoreVertical, Play } from 'lucide-react';
+import YoutubeThumbImg from './YoutubeThumbImg';
 import {
-  DEMO_CHANNEL_NAME,
-  youtubeThumb,
   youtubeWatchUrl,
   type DemoVideo,
   type DemoVideoCategory,
@@ -11,14 +10,24 @@ import {
 
 type DemoVideoRailProps = {
   category: DemoVideoCategory;
+  channelName: string;
   activeId: string | null;
+  /** 点击封面：选中并立即播放 */
   onPlay: (video: DemoVideo) => void;
+  /** 点击标题：仅选中，主预览区展示同款封面 */
+  onSelect?: (video: DemoVideo) => void;
 };
 
 /**
  * 单分类横滑：隐藏滚动条，右侧圆形箭头翻页；分类间分割线由外层控制
  */
-const DemoVideoRail: React.FC<DemoVideoRailProps> = ({ category, activeId, onPlay }) => {
+const DemoVideoRail: React.FC<DemoVideoRailProps> = ({
+  category,
+  channelName,
+  activeId,
+  onPlay,
+  onSelect,
+}) => {
   const { t } = useTranslation();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -69,7 +78,7 @@ const DemoVideoRail: React.FC<DemoVideoRailProps> = ({ category, activeId, onPla
     <section className="demo-section" aria-labelledby={`demo-cat-${category.id}`}>
       <header className="demo-rail-header">
         <h2 className="demo-rail-header__title" id={`demo-cat-${category.id}`}>
-          {t(category.titleKey)}
+          {category.title}
         </h2>
         <button type="button" className="demo-play-all" onClick={playAll}>
           <Play size={15} strokeWidth={2} fill="currentColor" aria-hidden />
@@ -92,17 +101,18 @@ const DemoVideoRail: React.FC<DemoVideoRailProps> = ({ category, activeId, onPla
                   type="button"
                   className="demo-card__thumb-btn"
                   onClick={() => onPlay(video)}
-                  aria-label={t('demo.playVideo', { title: t(video.titleKey) })}
+                  aria-label={t('demo.playVideo', { title: video.title })}
                   aria-pressed={isActive}
                 >
                   <span className="demo-card__thumb">
-                    <img
-                      src={youtubeThumb(video.youtubeId)}
-                      alt=""
-                      loading="lazy"
+                    <YoutubeThumbImg
+                      youtubeId={video.youtubeId}
+                      thumbUrl={video.thumbUrl}
                       className="demo-card__img"
                     />
-                    <span className="demo-card__duration">{video.duration}</span>
+                    {video.duration ? (
+                      <span className="demo-card__duration">{video.duration}</span>
+                    ) : null}
                     <span className="demo-card__play" aria-hidden>
                       <Play size={28} strokeWidth={1.5} fill="currentColor" />
                     </span>
@@ -112,16 +122,18 @@ const DemoVideoRail: React.FC<DemoVideoRailProps> = ({ category, activeId, onPla
                 <div className="demo-card__body">
                   <div className="demo-card__text">
                     <h3 className="demo-card__title">
-                      <button type="button" onClick={() => onPlay(video)}>
-                        {t(video.titleKey)}
+                      <button type="button" onClick={() => (onSelect ?? onPlay)(video)}>
+                        {video.title}
                       </button>
                     </h3>
-                    <p className="demo-card__channel">{DEMO_CHANNEL_NAME}</p>
-                    <p className="demo-card__stats">
-                      {t(video.viewsKey)}
-                      <span aria-hidden> · </span>
-                      {t(video.publishedKey)}
-                    </p>
+                    <p className="demo-card__channel">{channelName}</p>
+                    {(video.views || video.published) && (
+                      <p className="demo-card__stats">
+                        {video.views}
+                        {video.views && video.published ? <span aria-hidden> · </span> : null}
+                        {video.published}
+                      </p>
+                    )}
                     {video.hasCc ? (
                       <span className="demo-card__cc" title={t('demo.cc')}>
                         CC

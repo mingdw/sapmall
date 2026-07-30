@@ -939,6 +939,10 @@
       "popular": "热门上传",
       "product": "Sapphire Mall · 产品功能",
       "advanced": "进阶玩法"
-    }
+    },
+    "loading": "正在加载演示视频…",
+    "loadError": "演示视频配置加载失败，请检查 demo-videos.json 或 REACT_APP_DEMO_VIDEOS_URL",
+    "empty": "暂无演示视频，请在配置文件中添加分类与链接",
+    "showcase": "案例赏析"
   }
 }
