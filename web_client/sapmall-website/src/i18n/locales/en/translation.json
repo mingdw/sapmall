@@ -889,7 +889,7 @@
     "seoTitle": "Product Demo",
     "seoDesc": "Watch the Sapphire Mall product demo.",
     "title": "Product Demo",
-    "subtitle": "A short walkthrough of marketplace, stablecoin checkout, and DAO governance.",
+    "subtitle": "Watch the website overview and DApp demos for swap, payment, and admin.",
     "openYoutube": "Open on YouTube",
     "toPresentation": "Platform Intro",
     "toWhitepaper": "Read Whitepaper",
@@ -898,47 +898,20 @@
     "cc": "Subtitles",
     "playVideo": "Play: {{title}}",
     "videos": {
-      "overview": {
-        "title": "Sapphire Mall overview: marketplace, payments & governance",
-        "published": "2 months ago",
-        "views": "12K views"
+      "websiteIntro": {
+        "title": "Website Intro & Platform Overview",
+        "published": "Website & platform",
+        "views": "Product demo"
       },
-      "marketplace": {
-        "title": "Browse and place orders in the decentralized marketplace",
-        "published": "6 weeks ago",
-        "views": "8.6K views"
-      },
-      "checkout": {
-        "title": "Stablecoin checkout: USDC pay and order confirmation",
-        "published": "1 month ago",
-        "views": "9.4K views"
-      },
-      "governance": {
-        "title": "DAO governance: propose, vote, and execute",
-        "published": "3 weeks ago",
-        "views": "5.1K views"
-      },
-      "cctp": {
-        "title": "Cross-chain USDC to SAP via CCTP walkthrough",
-        "published": "2 weeks ago",
-        "views": "3.8K views"
-      },
-      "wallet": {
-        "title": "Connect wallet and switch networks",
-        "published": "1 week ago",
-        "views": "2.9K views"
-      },
-      "seller": {
-        "title": "Seller listing and inventory walkthrough",
-        "published": "5 days ago",
-        "views": "1.7K views"
+      "dappAdmin": {
+        "title": "DApp Swap, Payment & Admin Console",
+        "published": "Swap · Pay · Admin",
+        "views": "Product demo"
       }
     },
     "scrollNext": "Show more videos",
     "categories": {
-      "popular": "Popular uploads",
-      "product": "Sapphire Mall · Product",
-      "advanced": "Advanced features"
+      "product": "Sapphire Mall · Product"
     },
     "loading": "Loading demos…",
     "loadError": "Failed to load demo video config",

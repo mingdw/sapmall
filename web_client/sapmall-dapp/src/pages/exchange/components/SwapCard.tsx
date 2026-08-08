@@ -1,10 +1,10 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAccount, useReadContract } from 'wagmi';
 import { erc20Abi, formatUnits } from 'viem';
 import { ArrowDown, ArrowUp, ChevronDown, Settings, RefreshCw, Info, Shield } from 'lucide-react';
 import TokenIcon from './TokenIcon';
-import SwapSuccessFlash from './SwapSuccessFlash';
+import SwapSuccessResult from './SwapSuccessResult';
 import styles from '../ExchangePageDetail.module.scss';
 import { useChainConfigStore } from '../../../store/chainConfigStore';
 import { buildWalletUiNetworks, resolveCurrentWalletNetwork } from '../../../config/walletUiNetworks';
@@ -13,6 +13,7 @@ import { useExchangeTokenBalance } from '../hooks/useExchangeTokenBalance';
 import { useSwapExecution } from '../hooks/useSwapExecution';
 import { useSwapRouterAddress } from '../hooks/useSwapRouterAddress';
 import { useExchangeTokenConfig } from '../hooks/useExchangeTokenConfig';
+import { resolveTxExplorerUrl, shortenTxHash } from '../../../utils/txExplorer';
 
 interface SwapCardProps {
   onSwapSuccess?: (amount: string) => void;
@@ -106,13 +107,23 @@ export default function SwapCard({
     chainId,
   });
 
-  const { phase, error: swapError, execute, reset } = useSwapExecution({
+  const { phase, error: swapError, txHash, execute, reset } = useSwapExecution({
     tokenSymbol: fromToken,
     amountIn: fromAmount,
     slippagePercent: parseFloat(slippage) || 0.5,
     quotedAmountOut: amountOut || undefined,
     prefetchedAllowance: prefetchedAllowance ?? undefined,
   });
+
+  const successToastSentRef = useRef(false);
+  const [successSnapshot, setSuccessSnapshot] = useState<{
+    fromAmount: string;
+    toAmount: string;
+    fromToken: string;
+    txHash: string;
+    chainId: number;
+    chainName: string;
+  } | null>(null);
 
   // ── 双向绑定：from → to ──
   // 用户编辑支付金额时，优先用链上精确报价；若报价未返回则用 baseRate 即时计算
@@ -162,22 +173,72 @@ export default function SwapCard({
 
   const priceImpact = fromAmount ? Math.min(parseFloat(fromAmount) * 0.0012, 2.5).toFixed(2) : '0.00';
 
-  // 兑换成功：展示成功闪现约 3s，再还原为可继续兑换的 CTA
+  // 兑换成功：toast 一次并快照订单信息，停留成功态；「再兑换一笔」再重置
   useEffect(() => {
-    if (!swapDone) return;
-    if (amountOut) onSwapSuccess(amountOut);
-    const timer = setTimeout(() => {
-      reset();
-      setFromAmount('');
-      setToAmount('');
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [swapDone, amountOut, onSwapSuccess, reset]);
+    if (!swapDone) {
+      successToastSentRef.current = false;
+      return;
+    }
+    if (successToastSentRef.current) return;
+    successToastSentRef.current = true;
+    const paid = fromAmount;
+    const received = toAmount || amountOut || '';
+    setSuccessSnapshot({
+      fromAmount: paid,
+      toAmount: received,
+      fromToken,
+      txHash: txHash || '',
+      chainId: chainId ?? 0,
+      chainName: currentChainName,
+    });
+    if (received) onSwapSuccess(received);
+  }, [swapDone, fromAmount, toAmount, amountOut, fromToken, txHash, chainId, currentChainName, onSwapSuccess]);
+
+  const handleSwapAgain = useCallback(() => {
+    successToastSentRef.current = false;
+    setSuccessSnapshot(null);
+    reset();
+    setFromAmount('');
+    setToAmount('');
+  }, [reset]);
 
   const handleSwap = useCallback(() => {
     if (disabled || !fromAmount || parseFloat(fromAmount) <= 0) return;
     execute();
   }, [disabled, fromAmount, execute]);
+
+  const successRows = useMemo(() => {
+    if (!swapDone || !successSnapshot) return [];
+    const paidNum = parseFloat(successSnapshot.fromAmount);
+    const recvNum = parseFloat(successSnapshot.toAmount);
+    const rows: Array<{ label: string; value: string; href?: string }> = [
+      {
+        label: t('exchange.cctp.status', { defaultValue: '状态' }),
+        value: t('exchange.swap.txSuccess', { defaultValue: '交易成功' }),
+      },
+      {
+        label: t('exchange.swap.pay', { defaultValue: '支付' }),
+        value: `${Number.isFinite(paidNum) ? paidNum.toLocaleString(undefined, { maximumFractionDigits: 6 }) : successSnapshot.fromAmount} ${successSnapshot.fromToken}`,
+      },
+      {
+        label: t('exchange.swap.receive', { defaultValue: '获得' }),
+        value: `${Number.isFinite(recvNum) ? recvNum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 }) : successSnapshot.toAmount} SAP`,
+      },
+      {
+        // 同链：展示当前网络名称（如 Arc Testnet）
+        label: t('exchange.swap.chain', { defaultValue: '网络' }),
+        value: successSnapshot.chainName,
+      },
+    ];
+    if (successSnapshot.txHash && successSnapshot.chainId) {
+      rows.push({
+        label: t('exchange.cctp.swapTx', { defaultValue: 'Swap Tx' }),
+        value: shortenTxHash(successSnapshot.txHash),
+        href: resolveTxExplorerUrl(successSnapshot.chainId, successSnapshot.txHash),
+      });
+    }
+    return rows;
+  }, [swapDone, successSnapshot, t]);
 
   const phaseLabel = useMemo(() => {
     if (phase === 'approving') return t('exchange.swap.approving', { defaultValue: '授权中...' });
@@ -218,7 +279,13 @@ export default function SwapCard({
             <button
               className="w-9 h-9 rounded-xl flex items-center justify-center"
               style={{ background: 'rgba(124,77,255,0.15)', border: '1px solid rgba(124,77,255,0.2)' }}
-              onClick={() => { setFromAmount(''); setToAmount(''); reset(); }}
+              onClick={() => {
+                successToastSentRef.current = false;
+                setSuccessSnapshot(null);
+                setFromAmount('');
+                setToAmount('');
+                reset();
+              }}
             >
               <RefreshCw size={14} style={{ color: '#b39ddb' }} />
             </button>
@@ -426,9 +493,14 @@ export default function SwapCard({
           </div>
         ) : null}
 
-        {/* 兑换按钮 / 成功闪现（无背景边框，约 3s 后还原） */}
+        {/* 兑换按钮 / 成功订单结果 */}
         {swapDone ? (
-          <SwapSuccessFlash label={t('exchange.swap.swapSuccessBtn')} />
+          <SwapSuccessResult
+            title={t('exchange.swap.swapSuccessBtn', { defaultValue: '兑换成功' })}
+            rows={successRows}
+            onSwapAgain={handleSwapAgain}
+            swapAgainLabel={t('exchange.swap.swapAgain', { defaultValue: '再兑换一笔' })}
+          />
         ) : (
           <button
             type="button"

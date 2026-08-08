@@ -9,7 +9,7 @@ interface SwapSuccessFlashProps {
 /**
  * 兑换成功转场：无外框底色，立体气泡场 + 轻量 icon/文案。
  * 动效参考连接钱包页 floatingOrb 的悬浮光球质感。
- * 由父组件约 3s 后切回「继续兑换」CTA。
+ * 与「再兑换一笔」一并停留在成功态，由用户主动继续。
  */
 export default function SwapSuccessFlash({ label }: SwapSuccessFlashProps) {
   return (

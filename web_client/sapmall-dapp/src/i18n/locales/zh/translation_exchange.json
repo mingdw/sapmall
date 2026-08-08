@@ -83,7 +83,9 @@
       "quoteError": "报价获取失败",
       "txSuccess": "交易成功",
       "noTokensAvailable": "当前链暂无可兑换代币",
-      "refresh": "重置"
+      "refresh": "重置",
+      "swapAgain": "再兑换一笔",
+      "chain": "网络"
     },
     "marketStats": {
       "title": "市场数据",
@@ -172,7 +174,10 @@
       "intentIdSoon": "跳转管理端订单详情（即将支持）",
       "mintedPleaseConfirm": "目标链已铸造 USDC，请点击下方「授权并兑换 SAP」在钱包中确认",
       "swapWalletTimeout": "钱包未弹出或响应超时，请再点击下方按钮确认兑换",
-      "switchingArcAfterBurn": "源链已确认，正在切换到 Arc..."
+      "switchingArcAfterBurn": "源链已确认，正在切换到 Arc...",
+      "route": "路径",
+      "swapAgain": "再兑换一笔",
+      "destChain": "目标链 {{chain}}"
     }
   }
 }

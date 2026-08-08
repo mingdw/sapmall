@@ -1,317 +1,52 @@
 {
   "channelName": {
-    "zh": "Circle · BuildOnCircle",
-    "en": "Circle · BuildOnCircle"
+    "zh": "Sapphire Mall",
+    "en": "Sapphire Mall"
   },
   "categories": [
     {
-      "id": "popular",
-      "title": {
-        "zh": "热门上传",
-        "en": "Popular uploads"
-      },
-      "videos": [
-        {
-          "id": "cctp-demo",
-          "youtubeId": "UHP4ZxC83CA",
-          "url": "https://www.youtube.com/watch?v=UHP4ZxC83CA",
-          "duration": "",
-          "hasCc": true,
-          "title": {
-            "zh": "Cross-Chain Transfer Protocol (CCTP) 演示",
-            "en": "Cross-Chain Transfer Protocol (CCTP) - Demo"
-          },
-          "views": {
-            "zh": "来自 BuildOnCircle",
-            "en": "From BuildOnCircle"
-          },
-          "published": {
-            "zh": "官方演示",
-            "en": "Official demo"
-          }
-        },
-        {
-          "id": "gateway-intro",
-          "youtubeId": "4fIkHRY5MGg",
-          "url": "https://www.youtube.com/watch?v=4fIkHRY5MGg",
-          "duration": "06:50",
-          "hasCc": true,
-          "title": {
-            "zh": "Circle Gateway：跨链统一 USDC 余额",
-            "en": "Introducing Circle Gateway: A Unified USDC Balance Across Chains"
-          },
-          "views": {
-            "zh": "来自 BuildOnCircle",
-            "en": "From BuildOnCircle"
-          },
-          "published": {
-            "zh": "产品介绍",
-            "en": "Product intro"
-          }
-        },
-        {
-          "id": "paymaster",
-          "youtubeId": "tjyRC4pxRTk",
-          "url": "https://www.youtube.com/watch?v=tjyRC4pxRTk",
-          "duration": "",
-          "hasCc": true,
-          "title": {
-            "zh": "Circle Paymaster：用 USDC 支付 Gas | Episode 18",
-            "en": "Introducing Circle Paymaster – Pay Gas Fees with USDC | Episode 18"
-          },
-          "views": {
-            "zh": "Stablecoin 101",
-            "en": "Stablecoin 101"
-          },
-          "published": {
-            "zh": "系列更新",
-            "en": "Series update"
-          }
-        },
-        {
-          "id": "wallets",
-          "youtubeId": "hC7H_qFaJaY",
-          "url": "https://www.youtube.com/watch?v=hC7H_qFaJaY",
-          "duration": "",
-          "hasCc": true,
-          "title": {
-            "zh": "用 Circle Wallets 发送与管理 USDC | Episode 8",
-            "en": "Using Circle Wallets to Send and Manage USDC | Episode 8"
-          },
-          "views": {
-            "zh": "Stablecoin 101",
-            "en": "Stablecoin 101"
-          },
-          "published": {
-            "zh": "系列更新",
-            "en": "Series update"
-          }
-        },
-        {
-          "id": "web3-services",
-          "youtubeId": "qLOENH-NCRU",
-          "url": "https://www.youtube.com/watch?v=qLOENH-NCRU",
-          "duration": "02:00",
-          "hasCc": true,
-          "title": {
-            "zh": "用 Circle Web3 Services 构建真实世界应用",
-            "en": "Build for Real-World Utility with Circle’s Web3 Services"
-          },
-          "views": {
-            "zh": "来自 BuildOnCircle",
-            "en": "From BuildOnCircle"
-          },
-          "published": {
-            "zh": "概览短片",
-            "en": "Overview"
-          }
-        }
-      ]
-    },
-    {
       "id": "product",
       "title": {
-        "zh": "BuildOnCircle · 产品功能",
-        "en": "BuildOnCircle · Product"
+        "zh": "Sapphire Mall · 产品功能",
+        "en": "Sapphire Mall · Product"
       },
       "videos": [
         {
-          "id": "cctp-v2",
-          "youtubeId": "akq2DNfOUMs",
-          "url": "https://www.youtube.com/watch?v=akq2DNfOUMs",
+          "id": "website-intro",
+          "youtubeId": "cmnGDFQjIcg",
+          "url": "https://youtu.be/cmnGDFQjIcg",
           "duration": "",
-          "hasCc": true,
+          "hasCc": false,
           "title": {
-            "zh": "CCTP V2：跨链 USDC 转账详解",
-            "en": "Cross-Chain USDC Transfers with CCTP V2 Explained"
+            "zh": "官网简介与平台说明",
+            "en": "Website Intro & Platform Overview"
           },
           "views": {
-            "zh": "来自 BuildOnCircle",
-            "en": "From BuildOnCircle"
+            "zh": "产品演示",
+            "en": "Product demo"
           },
           "published": {
-            "zh": "技术讲解",
-            "en": "Technical deep dive"
+            "zh": "官网与平台介绍",
+            "en": "Website & platform"
           }
         },
         {
-          "id": "gateway-how",
-          "youtubeId": "uQnZUcxR-0M",
-          "url": "https://www.youtube.com/watch?v=uQnZUcxR-0M",
-          "duration": "07:30",
-          "hasCc": true,
-          "title": {
-            "zh": "Circle Gateway 如何工作？| Episode 16",
-            "en": "How Does Circle Gateway Work? | Explained | Episode 16"
-          },
-          "views": {
-            "zh": "Stablecoin 101",
-            "en": "Stablecoin 101"
-          },
-          "published": {
-            "zh": "系列更新",
-            "en": "Series update"
-          }
-        },
-        {
-          "id": "payments-p2",
-          "youtubeId": "5aviH1qVH1E",
-          "url": "https://www.youtube.com/watch?v=5aviH1qVH1E",
-          "duration": "08:12",
-          "hasCc": true,
-          "title": {
-            "zh": "真实世界支付中的 USDC（Part 2）| Episode 11",
-            "en": "How to Use USDC in Real-World Payments Application (Part 2) | Episode 11"
-          },
-          "views": {
-            "zh": "Stablecoin 101",
-            "en": "Stablecoin 101"
-          },
-          "published": {
-            "zh": "系列更新",
-            "en": "Series update"
-          }
-        },
-        {
-          "id": "wallets",
-          "youtubeId": "hC7H_qFaJaY",
-          "url": "https://www.youtube.com/watch?v=hC7H_qFaJaY",
+          "id": "dapp-admin-demo",
+          "youtubeId": "Q_B4NA0uPhk",
+          "url": "https://youtu.be/Q_B4NA0uPhk",
           "duration": "",
-          "hasCc": true,
+          "hasCc": false,
           "title": {
-            "zh": "用 Circle Wallets 发送与管理 USDC | Episode 8",
-            "en": "Using Circle Wallets to Send and Manage USDC | Episode 8"
+            "zh": "DApp 兑换、支付与后台管理",
+            "en": "DApp Swap, Payment & Admin Console"
           },
           "views": {
-            "zh": "Stablecoin 101",
-            "en": "Stablecoin 101"
+            "zh": "产品演示",
+            "en": "Product demo"
           },
           "published": {
-            "zh": "系列更新",
-            "en": "Series update"
-          }
-        },
-        {
-          "id": "gateway-intro",
-          "youtubeId": "4fIkHRY5MGg",
-          "url": "https://www.youtube.com/watch?v=4fIkHRY5MGg",
-          "duration": "06:50",
-          "hasCc": true,
-          "title": {
-            "zh": "Circle Gateway：跨链统一 USDC 余额",
-            "en": "Introducing Circle Gateway: A Unified USDC Balance Across Chains"
-          },
-          "views": {
-            "zh": "来自 BuildOnCircle",
-            "en": "From BuildOnCircle"
-          },
-          "published": {
-            "zh": "产品介绍",
-            "en": "Product intro"
-          }
-        }
-      ]
-    },
-    {
-      "id": "advanced",
-      "title": {
-        "zh": "进阶玩法 · CCTP / Gateway",
-        "en": "Advanced · CCTP / Gateway"
-      },
-      "videos": [
-        {
-          "id": "cctp-v2",
-          "youtubeId": "akq2DNfOUMs",
-          "url": "https://www.youtube.com/watch?v=akq2DNfOUMs",
-          "duration": "",
-          "hasCc": true,
-          "title": {
-            "zh": "CCTP V2：跨链 USDC 转账详解",
-            "en": "Cross-Chain USDC Transfers with CCTP V2 Explained"
-          },
-          "views": {
-            "zh": "来自 BuildOnCircle",
-            "en": "From BuildOnCircle"
-          },
-          "published": {
-            "zh": "技术讲解",
-            "en": "Technical deep dive"
-          }
-        },
-        {
-          "id": "cctp-demo",
-          "youtubeId": "UHP4ZxC83CA",
-          "url": "https://www.youtube.com/watch?v=UHP4ZxC83CA",
-          "duration": "",
-          "hasCc": true,
-          "title": {
-            "zh": "Cross-Chain Transfer Protocol (CCTP) 演示",
-            "en": "Cross-Chain Transfer Protocol (CCTP) - Demo"
-          },
-          "views": {
-            "zh": "来自 BuildOnCircle",
-            "en": "From BuildOnCircle"
-          },
-          "published": {
-            "zh": "官方演示",
-            "en": "Official demo"
-          }
-        },
-        {
-          "id": "paymaster",
-          "youtubeId": "tjyRC4pxRTk",
-          "url": "https://www.youtube.com/watch?v=tjyRC4pxRTk",
-          "duration": "",
-          "hasCc": true,
-          "title": {
-            "zh": "Circle Paymaster：用 USDC 支付 Gas | Episode 18",
-            "en": "Introducing Circle Paymaster – Pay Gas Fees with USDC | Episode 18"
-          },
-          "views": {
-            "zh": "Stablecoin 101",
-            "en": "Stablecoin 101"
-          },
-          "published": {
-            "zh": "系列更新",
-            "en": "Series update"
-          }
-        },
-        {
-          "id": "gateway-how",
-          "youtubeId": "uQnZUcxR-0M",
-          "url": "https://www.youtube.com/watch?v=uQnZUcxR-0M",
-          "duration": "07:30",
-          "hasCc": true,
-          "title": {
-            "zh": "Circle Gateway 如何工作？| Episode 16",
-            "en": "How Does Circle Gateway Work? | Explained | Episode 16"
-          },
-          "views": {
-            "zh": "Stablecoin 101",
-            "en": "Stablecoin 101"
-          },
-          "published": {
-            "zh": "系列更新",
-            "en": "Series update"
-          }
-        },
-        {
-          "id": "payments-p2",
-          "youtubeId": "5aviH1qVH1E",
-          "url": "https://www.youtube.com/watch?v=5aviH1qVH1E",
-          "duration": "08:12",
-          "hasCc": true,
-          "title": {
-            "zh": "真实世界支付中的 USDC（Part 2）| Episode 11",
-            "en": "How to Use USDC in Real-World Payments Application (Part 2) | Episode 11"
-          },
-          "views": {
-            "zh": "Stablecoin 101",
-            "en": "Stablecoin 101"
-          },
-          "published": {
-            "zh": "系列更新",
-            "en": "Series update"
+            "zh": "兑换 · 支付 · 管理端",
+            "en": "Swap · Pay · Admin"
           }
         }
       ]

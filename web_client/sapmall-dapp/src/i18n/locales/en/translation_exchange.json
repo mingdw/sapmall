@@ -88,7 +88,9 @@
       "quoteError": "Quote failed",
       "txSuccess": "Transaction success",
       "noTokensAvailable": "No swap tokens available on this chain",
-      "refresh": "Reset"
+      "refresh": "Reset",
+      "swapAgain": "Swap again",
+      "chain": "Network"
     },
     "cctp": {
       "title": "Cross-chain swap (CCTP)",
@@ -143,7 +145,10 @@
       "intentIdSoon": "Open in Admin (coming soon)",
       "mintedPleaseConfirm": "USDC minted on destination. Tap Approve and swap SAP below to confirm in your wallet.",
       "swapWalletTimeout": "Wallet did not respond. Tap the button below to confirm the swap again.",
-      "switchingArcAfterBurn": "Source confirmed. Switching to Arc..."
+      "switchingArcAfterBurn": "Source confirmed. Switching to Arc...",
+      "route": "Route",
+      "swapAgain": "Swap again",
+      "destChain": "Destination {{chain}}"
     },
     "marketStats": {
       "title": "Market data",

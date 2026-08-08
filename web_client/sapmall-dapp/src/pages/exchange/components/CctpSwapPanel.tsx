@@ -6,7 +6,7 @@ import { erc20Abi, formatUnits, parseUnits } from 'viem';
 import { AlertCircle, AlertTriangle, ArrowDown, ChevronDown, ExternalLink, RefreshCw, Settings, Shield } from 'lucide-react';
 import TokenIcon from './TokenIcon';
 import ChainNetworkIcon from '../../header/components/ChainNetworkIcon';
-import SwapSuccessFlash from './SwapSuccessFlash';
+import SwapSuccessResult from './SwapSuccessResult';
 import styles from '../ExchangePageDetail.module.scss';
 import {
   CCTP_CHAINS,
@@ -472,28 +472,20 @@ export default function CctpSwapPanel({
     return () => window.clearTimeout(timer);
   }, [isSwapping, resetSwap, t]);
 
-  // 仅在真正完成后弹一次成功 toast（展示 SAP 数量，避免重复）
+  // 完成后仅 toast 一次，停留在成功态展示订单信息；由「再兑换一笔」手动重置
   useEffect(() => {
     if (!isDone || !intentId) return;
     if (successToastSentRef.current === intentId) return;
-    const sapRaw = toAmount && parseFloat(toAmount) > 0 ? toAmount : '';
-    if (!sapRaw) return;
     successToastSentRef.current = intentId;
-    const sapDisplay = Number(sapRaw).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 4,
-    });
-    onSwapSuccess(sapDisplay);
+    const sapRaw = toAmount && parseFloat(toAmount) > 0 ? toAmount : '';
+    const sapDisplay = sapRaw
+      ? Number(sapRaw).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 4,
+        })
+      : '';
+    onSwapSuccess(sapDisplay || 'SAP');
   }, [isDone, intentId, toAmount, onSwapSuccess]);
-
-  // 成功闪现约 3s 后还原为可继续兑换（清空意图与表单）
-  useEffect(() => {
-    if (!isDone) return;
-    const timer = setTimeout(() => {
-      resetAll();
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [isDone, resetAll]);
 
   const phaseLabel = useMemo(() => {
     if (burnPhase === 'switching') {
@@ -572,9 +564,95 @@ export default function CctpSwapPanel({
     return t(key, { defaultValue: defaults[code] });
   }, [isDone, intent?.status, intent?.statusDesc, intentLoading, t]);
 
-  const showInfoPanel = !!intentId || !!intent || !!displayError;
+  // 成功态改由 SwapSuccessResult 展示订单信息，避免与进行中信息面板重复
+  const showInfoPanel = !isDone && (!!intentId || !!intent || !!displayError);
   // 失败时优先展示后端 error_msg
   const failReason = displayError || (intent?.status === 5 ? intent.errorMsg : '') || '';
+
+  const sapReceivedDisplay = useMemo(() => {
+    const sapRaw = toAmount && parseFloat(toAmount) > 0 ? toAmount : '';
+    if (!sapRaw) return '--';
+    return `${Number(sapRaw).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 4,
+    })} SAP`;
+  }, [toAmount]);
+
+  const successRows = useMemo(() => {
+    if (!isDone) return [];
+    const rows: Array<{ label: string; value: string; href?: string }> = [
+      {
+        label: t('exchange.cctp.status', { defaultValue: '状态' }),
+        value: t('exchange.cctp.statusSwapped', { defaultValue: '已完成' }),
+      },
+      {
+        label: t('exchange.swap.pay', { defaultValue: '支付' }),
+        value: `${amountDisplay} ${intent?.tokenSymbol || 'USDC'}`,
+      },
+      {
+        label: t('exchange.swap.receive', { defaultValue: '获得' }),
+        value: sapReceivedDisplay,
+      },
+      {
+        // 跨链：网络展示为「源链->目标链」
+        label: t('exchange.swap.chain', { defaultValue: '网络' }),
+        value: `${source.name}->${dest.name}`,
+      },
+      {
+        label: t('exchange.cctp.time', { defaultValue: '时间' }),
+        value: timeDisplay,
+      },
+      {
+        label: t('exchange.cctp.gasFee', { defaultValue: 'Gas 费' }),
+        value: gasDisplay,
+      },
+    ];
+    if (burnHash) {
+      rows.push({
+        label: t('exchange.cctp.burnTx', { defaultValue: 'Burn Tx' }),
+        value: shortenTxHash(burnHash),
+        href: burnExplorer,
+      });
+    }
+    if (mintHash) {
+      rows.push({
+        label: t('exchange.cctp.mintTx', { defaultValue: 'Mint Tx' }),
+        value: shortenTxHash(mintHash),
+        href: mintExplorer,
+      });
+    }
+    if (swapHash) {
+      rows.push({
+        label: t('exchange.cctp.swapTx', { defaultValue: 'Swap Tx' }),
+        value: shortenTxHash(swapHash),
+        href: swapExplorer,
+      });
+    }
+    if (intentId) {
+      rows.push({
+        label: t('exchange.cctp.intentId', { defaultValue: 'Intent ID' }),
+        value: intentId.length > 18 ? `${intentId.slice(0, 10)}...${intentId.slice(-6)}` : intentId,
+      });
+    }
+    return rows;
+  }, [
+    isDone,
+    t,
+    amountDisplay,
+    intent?.tokenSymbol,
+    sapReceivedDisplay,
+    source.name,
+    dest.name,
+    timeDisplay,
+    gasDisplay,
+    burnHash,
+    burnExplorer,
+    mintHash,
+    mintExplorer,
+    swapHash,
+    swapExplorer,
+    intentId,
+  ]);
 
   const renderTxLink = (label: string, hash: string, href?: string) => {
     if (!hash) return null;
@@ -618,68 +696,90 @@ export default function CctpSwapPanel({
       <div className={`absolute inset-0 rounded-3xl pointer-events-none ${styles.swapOuterGlow}`} />
 
       <div className={`relative rounded-3xl p-6 ${styles.swapMainCard}`}>
-        <div className="flex items-center justify-between mb-4">
-          {/* 标题位：源链下拉（替代「跨链兑换」标题） */}
-          <div className={`relative ${styles.cctpTitleSource}`} ref={sourceDropdownRef}>
-            <button
-              type="button"
-              className={styles.cctpTitleSourceBtn}
-              onClick={() => {
-                if (formLocked) return;
-                setShowSourceDropdown((open) => !open);
-              }}
-              disabled={formLocked}
-              aria-expanded={showSourceDropdown}
-              aria-label={t('exchange.cctp.sourceChain', { defaultValue: '源链' })}
+        <div className="flex items-center justify-between mb-4 gap-2">
+          {/* 标题位：源链下拉 + 目标链展示 */}
+          <div className={styles.cctpTitleRoute}>
+            <div className={`relative ${styles.cctpTitleSource}`} ref={sourceDropdownRef}>
+              <button
+                type="button"
+                className={styles.cctpTitleSourceBtn}
+                onClick={() => {
+                  if (formLocked) return;
+                  setShowSourceDropdown((open) => !open);
+                }}
+                disabled={formLocked}
+                aria-expanded={showSourceDropdown}
+                aria-label={t('exchange.cctp.sourceChain', { defaultValue: '源链' })}
+              >
+                <ChainNetworkIcon
+                  chainId={source.chainId}
+                  alt={source.name}
+                  className={styles.cctpSourceChainIcon}
+                />
+                <span className={styles.cctpTitleSourceName}>{source.name}</span>
+                <ChevronDown
+                  size={16}
+                  className={showSourceDropdown ? styles.cctpSourceChevronOpen : undefined}
+                />
+              </button>
+              {showSourceDropdown ? (
+                <div className={styles.cctpTitleSourceMenu} role="listbox">
+                  {sortedSourceKeys.map((key) => {
+                    const chain = CCTP_CHAINS[key];
+                    const selected = key === sourceKey;
+                    const bal = sourceBalances[key];
+                    const balLoading = !bal || bal.loading;
+                    const disabledOption = !balLoading && !bal.selectable;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        role="option"
+                        aria-selected={selected}
+                        aria-disabled={disabledOption}
+                        disabled={disabledOption}
+                        className={`${styles.cctpSourceOption} ${
+                          selected ? styles.cctpSourceOptionActive : ''
+                        } ${disabledOption ? styles.cctpSourceOptionDisabled : ''}`}
+                        onClick={() => handleSelectSource(key)}
+                      >
+                        <ChainNetworkIcon
+                          chainId={chain.chainId}
+                          alt={chain.name}
+                          className={styles.cctpSourceChainIcon}
+                        />
+                        <span className={styles.cctpSourceOptionName}>{chain.name}</span>
+                        <span className={styles.cctpSourceOptionBalance}>
+                          {balLoading ? '...' : `${bal?.formatted ?? '0.00'} USDC`}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </div>
+
+            <span className={styles.cctpTitleRouteArrow} aria-hidden>
+              -&gt;
+            </span>
+
+            <div
+              className={styles.cctpTitleDest}
+              title={dest.name}
+              aria-label={t('exchange.cctp.destChain', {
+                defaultValue: '目标链 {{chain}}',
+                chain: dest.name,
+              })}
             >
               <ChainNetworkIcon
-                chainId={source.chainId}
-                alt={source.name}
+                chainId={dest.chainId}
+                alt={dest.name}
                 className={styles.cctpSourceChainIcon}
               />
-              <span className={styles.cctpTitleSourceName}>{source.name}</span>
-              <ChevronDown
-                size={16}
-                className={showSourceDropdown ? styles.cctpSourceChevronOpen : undefined}
-              />
-            </button>
-            {showSourceDropdown ? (
-              <div className={styles.cctpTitleSourceMenu} role="listbox">
-                {sortedSourceKeys.map((key) => {
-                  const chain = CCTP_CHAINS[key];
-                  const selected = key === sourceKey;
-                  const bal = sourceBalances[key];
-                  const balLoading = !bal || bal.loading;
-                  const disabledOption = !balLoading && !bal.selectable;
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      role="option"
-                      aria-selected={selected}
-                      aria-disabled={disabledOption}
-                      disabled={disabledOption}
-                      className={`${styles.cctpSourceOption} ${
-                        selected ? styles.cctpSourceOptionActive : ''
-                      } ${disabledOption ? styles.cctpSourceOptionDisabled : ''}`}
-                      onClick={() => handleSelectSource(key)}
-                    >
-                      <ChainNetworkIcon
-                        chainId={chain.chainId}
-                        alt={chain.name}
-                        className={styles.cctpSourceChainIcon}
-                      />
-                      <span className={styles.cctpSourceOptionName}>{chain.name}</span>
-                      <span className={styles.cctpSourceOptionBalance}>
-                        {balLoading ? '...' : `${bal?.formatted ?? '0.00'} USDC`}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            ) : null}
+              <span className={styles.cctpTitleDestName}>{dest.name}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
               className="w-9 h-9 rounded-xl flex items-center justify-center"
@@ -974,7 +1074,14 @@ export default function CctpSwapPanel({
               ? phaseLabel || t('exchange.cctp.starting', { defaultValue: '处理中...' })
               : t('exchange.cctp.start', { defaultValue: '开始跨链兑换' })}
           </button>
-        ) : intent && intent.status >= 3 && intent.status < 4 && !isDone ? (
+        ) : isDone ? (
+          <SwapSuccessResult
+            title={t('exchange.cctp.successBtn', { defaultValue: '兑换成功' })}
+            rows={successRows}
+            onSwapAgain={resetAll}
+            swapAgainLabel={t('exchange.swap.swapAgain', { defaultValue: '再兑换一笔' })}
+          />
+        ) : intent && intent.status >= 3 && intent.status < 4 ? (
           <button
             type="button"
             className="w-full h-14 rounded-2xl font-bold text-base"
@@ -1000,10 +1107,6 @@ export default function CctpSwapPanel({
           >
             {t('exchange.cctp.waitingRelay', { defaultValue: '等待跨链到账...' })}
           </button>
-        ) : isDone ? (
-          <SwapSuccessFlash
-            label={t('exchange.cctp.successBtn', { defaultValue: '兑换成功' })}
-          />
         ) : null}
 
         {disabled ? (

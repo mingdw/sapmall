@@ -11,23 +11,14 @@ import {
 type DemoVideoRailProps = {
   category: DemoVideoCategory;
   channelName: string;
-  activeId: string | null;
-  /** 点击封面：选中并立即播放 */
+  /** 点击封面 / 全部播放 */
   onPlay: (video: DemoVideo) => void;
-  /** 点击标题：仅选中，主预览区展示同款封面 */
-  onSelect?: (video: DemoVideo) => void;
 };
 
 /**
  * 单分类横滑：隐藏滚动条，右侧圆形箭头翻页；分类间分割线由外层控制
  */
-const DemoVideoRail: React.FC<DemoVideoRailProps> = ({
-  category,
-  channelName,
-  activeId,
-  onPlay,
-  onSelect,
-}) => {
+const DemoVideoRail: React.FC<DemoVideoRailProps> = ({ category, channelName, onPlay }) => {
   const { t } = useTranslation();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -89,20 +80,14 @@ const DemoVideoRail: React.FC<DemoVideoRailProps> = ({
       <div className="demo-rail-wrap">
         <div className="demo-rail" ref={scrollerRef} role="list">
           {category.videos.map((video) => {
-            const isActive = video.id === activeId;
             const cardKey = `${category.id}-${video.id}`;
             return (
-              <article
-                key={cardKey}
-                className={`demo-card ${isActive ? 'demo-card--active' : ''}`}
-                role="listitem"
-              >
+              <article key={cardKey} className="demo-card" role="listitem">
                 <button
                   type="button"
                   className="demo-card__thumb-btn"
                   onClick={() => onPlay(video)}
                   aria-label={t('demo.playVideo', { title: video.title })}
-                  aria-pressed={isActive}
                 >
                   <span className="demo-card__thumb">
                     <YoutubeThumbImg
@@ -122,7 +107,7 @@ const DemoVideoRail: React.FC<DemoVideoRailProps> = ({
                 <div className="demo-card__body">
                   <div className="demo-card__text">
                     <h3 className="demo-card__title">
-                      <button type="button" onClick={() => (onSelect ?? onPlay)(video)}>
+                      <button type="button" onClick={() => onPlay(video)}>
                         {video.title}
                       </button>
                     </h3>
