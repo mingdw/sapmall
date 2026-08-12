@@ -140,7 +140,7 @@ const WhitepaperPage: React.FC = () => {
 
   return (
     <>
-      <SEO title={t('whitepaper.seoTitle')} description={t('whitepaper.seoDesc')} />
+      <SEO title={t('whitepaper.seoTitle')} description={t('whitepaper.seoDesc')} path="/whitepaper" />
       <ContentShell breadcrumbCurrent={t('whitepaper.breadcrumb')}>
         <main className="wp-page" id="main-content">
           <div className="site-container wp-layout">

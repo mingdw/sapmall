@@ -17,7 +17,7 @@ const DemoPage: React.FC = () => {
 
   return (
     <>
-      <SEO title={t('demo.seoTitle')} description={t('demo.seoDesc')} />
+      <SEO title={t('demo.seoTitle')} description={t('demo.seoDesc')} path="/demo" />
       <ContentShell breadcrumbCurrent={t('demo.breadcrumb')}>
         <main className="demo-page" id="main-content">
           <div className="site-container demo-layout">

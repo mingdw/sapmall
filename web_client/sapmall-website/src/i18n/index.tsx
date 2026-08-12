@@ -25,7 +25,9 @@ i18n
       escapeValue: false, // 不需要转义React内容
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      // ?lang=en|zh 供 sitemap / hreflang 爬虫使用，需优先于本地缓存
+      order: ['querystring', 'localStorage', 'navigator'],
+      lookupQuerystring: 'lang',
       caches: ['localStorage'],
     }
   });

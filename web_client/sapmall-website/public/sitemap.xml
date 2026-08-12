@@ -1,38 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
-  <!-- 首页 -->
+
   <url>
-    <loc>https://sapphiremall.com/</loc>
-    <lastmod>2025-01-11</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>https://sapmall.xyz/</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sapphiremall.com/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://sapphiremall.com/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sapphiremall.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sapmall.xyz/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://sapmall.xyz/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sapmall.xyz/"/>
   </url>
-  
-  <!-- 英文版首页 -->
+
   <url>
-    <loc>https://sapphiremall.com/?lang=en</loc>
-    <lastmod>2025-01-11</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>https://sapmall.xyz/whitepaper</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sapphiremall.com/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://sapphiremall.com/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sapphiremall.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sapmall.xyz/whitepaper?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://sapmall.xyz/whitepaper?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sapmall.xyz/whitepaper"/>
   </url>
-  
-  <!-- 中文版首页 -->
+
   <url>
-    <loc>https://sapphiremall.com/?lang=zh</loc>
-    <lastmod>2025-01-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://sapphiremall.com/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="zh" href="https://sapphiremall.com/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sapphiremall.com/"/>
+    <loc>https://sapmall.xyz/presentation</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sapmall.xyz/presentation?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://sapmall.xyz/presentation?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sapmall.xyz/presentation"/>
   </url>
-  
+
+  <url>
+    <loc>https://sapmall.xyz/demo</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sapmall.xyz/demo?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://sapmall.xyz/demo?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sapmall.xyz/demo"/>
+  </url>
+
+  <url>
+    <loc>https://sapmall.xyz/privacy</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sapmall.xyz/privacy?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://sapmall.xyz/privacy?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sapmall.xyz/privacy"/>
+  </url>
+
+  <url>
+    <loc>https://sapmall.xyz/terms</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sapmall.xyz/terms?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://sapmall.xyz/terms?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sapmall.xyz/terms"/>
+  </url>
+
+  <url>
+    <loc>https://sapmall.xyz/cookies</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://sapmall.xyz/cookies?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://sapmall.xyz/cookies?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sapmall.xyz/cookies"/>
+  </url>
+
 </urlset>

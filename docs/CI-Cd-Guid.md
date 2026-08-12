@@ -1,5 +1,9 @@
 # SAP Mall CI/CD 实践指南
 
+> **新服务器从零搭建请优先阅读**：[Server-Setup-And-Deploy.md](./Server-Setup-And-Deploy.md)  
+> 该文档覆盖专有用户、Redis/Nginx、MySQL 初始化、systemd、GitHub Secrets 与首次部署。  
+> 本文部分内容已过时（如 `SERVER_PASSWORD`、健康检查 `/api/health`、前端 `API_URL`），**以 `.github/workflows/*.yml` 与上述新文档为准**。
+
 ## 概述
 
 本文档描述 SAP Mall 项目基于 GitHub Actions 的 CI/CD 自动部署实践方案，适用于 CentOS 服务器环境。

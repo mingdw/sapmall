@@ -33,6 +33,7 @@ jobs:
         run: cd web_client/sapmall-website && npm ci --legacy-peer-deps && npm run build
         env:
           CI: false
+          REACT_APP_SITE_URL: https://sapmall.xyz
           REACT_APP_DAPP_URL: ${{ secrets.DAPP_URL }}
           REACT_APP_HELP_PATH: /help
           REACT_APP_WHITEPAPER_URL: ${{ secrets.WHITEPAPER_URL }}

@@ -174,7 +174,7 @@ const PresentationPage: React.FC = () => {
 
   return (
     <>
-      <SEO title={t('presentation.seoTitle')} description={t('presentation.seoDesc')} />
+      <SEO title={t('presentation.seoTitle')} description={t('presentation.seoDesc')} path="/presentation" />
       <ContentShell
         breadcrumbCurrent={t('presentation.breadcrumb')}
         chromeHidden={fullscreen}

@@ -1,3 +1,17 @@
-# https://www.robotstxt.org/robotstxt.html
+# DApp is an application surface — default: do not index.
+# Marketing / organic traffic should target https://sapmall.xyz
 User-agent: *
-Disallow:
+Disallow: /
+
+# Explicitly block high-churn / private-ish app routes if Allow is opened later
+User-agent: *
+Disallow: /marketplace/payment
+Disallow: /marketplace/payment/
+Disallow: /admin
+Disallow: /admin/
+Disallow: /exchange
+Disallow: /exchange/
+Disallow: /dao
+Disallow: /dao/
+Disallow: /rewards
+Disallow: /rewards/

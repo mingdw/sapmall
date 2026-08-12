@@ -20,7 +20,7 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-      <SEO />
+      <SEO path="/" />
       <div className="site-page">
         <SiteNav activeSection={activeSection} onLaunchDApp={launchDApp} />
 

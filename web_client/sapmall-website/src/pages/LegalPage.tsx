@@ -21,7 +21,7 @@ const LegalPage: React.FC<LegalPageProps> = ({ kind }) => {
 
   return (
     <>
-      <SEO title={title} />
+      <SEO title={title} path={`/${kind}`} />
       <div className="site-page legal-page">
         <div className="site-container py-16 max-w-2xl">
           <Link to="/" className="text-brand-600 text-sm font-medium mb-8 inline-block">← Sapphire Mall</Link>
