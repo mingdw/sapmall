@@ -19,12 +19,15 @@ jobs:
           go mod tidy
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o main ./app/sapmall_start.go
 
+      # upload-artifact@v4 会取最短公共父目录作为根；只传 backend_service/main 时
+      # 下载后可能变成 workspace/main，导致 scp 找不到 backend_service/main → tar: empty archive
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: backend-${{ github.sha }}
           path: |
             backend_service/main
+            .gitignore
           retention-days: 7
 
   deploy:
@@ -36,6 +39,14 @@ jobs:
         with:
           name: backend-${{ github.sha }}
 
+      - name: Verify artifact layout
+        run: |
+          set -e
+          echo "=== workspace layout ==="
+          ls -la
+          ls -la backend_service || true
+          test -f backend_service/main
+
       - name: Upload Backend to Server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -45,6 +56,8 @@ jobs:
           port: ${{ secrets.SERVER_PORT || '22' }}
           source: "backend_service/main"
           target: "/opt/sapmall/deploy/backend-${{ github.sha }}"
+          strip_components: 0
+          overwrite: true
 
       - name: Activate Backend Deployment
         uses: appleboy/ssh-action@v1
@@ -76,17 +89,26 @@ jobs:
             # 重启后端服务
             sudo systemctl restart sapmall-backend
 
-            # 健康检查
-            sleep 3
-            curl -f http://localhost:8888/api/common/health || {
-              echo "Health check failed, rolling back backend..."
+            # 健康检查（后端连 RDS + listener 初始化可能超过 3s）
+            HEALTH_OK=0
+            for i in $(seq 1 30); do
+              if curl -sf http://localhost:8888/api/common/health >/dev/null; then
+                HEALTH_OK=1
+                echo "Health check passed (attempt ${i})"
+                break
+              fi
+              sleep 2
+            done
+            if [ "$HEALTH_OK" -ne 1 ]; then
+              echo "Health check failed after 60s, rolling back backend..."
+              sudo journalctl -u sapmall-backend -n 50 --no-pager || true
               LATEST_BACKEND=$(ls -t /opt/sapmall/backup/main_* 2>/dev/null | head -1)
               if [ -n "$LATEST_BACKEND" ]; then
                 cp -f "$LATEST_BACKEND" /opt/sapmall/backend_service/main
               fi
               sudo systemctl restart sapmall-backend
               exit 1
-            }
+            fi
 
             # 清理部署目录
             rm -rf ${DEPLOY_DIR}
