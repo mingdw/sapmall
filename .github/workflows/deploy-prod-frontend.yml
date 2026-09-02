@@ -2,81 +2,125 @@ name: Deploy Production Frontend
 
 on:
   workflow_dispatch:
+    inputs:
+      target:
+        description: 'Deploy target'
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - admin
+          - dapp
+          - website
 
 jobs:
-  build:
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.apps.outputs.apps }}
+      apps_csv: ${{ steps.apps.outputs.apps_csv }}
+    steps:
+      - id: apps
+        run: |
+          case "${{ inputs.target }}" in
+            admin)
+              echo 'apps=["sapmall-admin"]' >> "$GITHUB_OUTPUT"
+              echo 'apps_csv=sapmall-admin' >> "$GITHUB_OUTPUT"
+              ;;
+            dapp)
+              echo 'apps=["sapmall-dapp"]' >> "$GITHUB_OUTPUT"
+              echo 'apps_csv=sapmall-dapp' >> "$GITHUB_OUTPUT"
+              ;;
+            website)
+              echo 'apps=["sapmall-website"]' >> "$GITHUB_OUTPUT"
+              echo 'apps_csv=sapmall-website' >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo 'apps=["sapmall-admin","sapmall-dapp","sapmall-website"]' >> "$GITHUB_OUTPUT"
+              echo 'apps_csv=sapmall-admin,sapmall-dapp,sapmall-website' >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJSON(needs.prepare.outputs.apps) }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: npm
+          cache-dependency-path: web_client/${{ matrix.app }}/package-lock.json
 
-      - name: Build Admin
-        run: cd web_client/sapmall-admin && npm ci --legacy-peer-deps && npm run build
+      - name: Install and build ${{ matrix.app }}
+        working-directory: web_client/${{ matrix.app }}
+        run: npm ci --legacy-peer-deps && npm run build
         env:
           CI: false
-          REACT_APP_API_BASE_URL: ${{ secrets.ADMIN_API_BASE_URL }}
+          REACT_APP_API_BASE_URL: ${{ matrix.app == 'sapmall-admin' && secrets.ADMIN_API_BASE_URL || (matrix.app == 'sapmall-dapp' && secrets.DAPP_API_BASE_URL || '') }}
+          REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ matrix.app == 'sapmall-dapp' && secrets.WALLETCONNECT_PROJECT_ID || '' }}
+          REACT_APP_SWAP_ROUTER_ADDRESS: ${{ matrix.app == 'sapmall-dapp' && secrets.SWAP_ROUTER_ADDRESS || '' }}
+          REACT_APP_ADMIN_URL: ${{ matrix.app == 'sapmall-dapp' && secrets.ADMIN_URL || '' }}
+          REACT_APP_SITE_URL: ${{ matrix.app == 'sapmall-website' && 'https://sapmall.xyz' || '' }}
+          REACT_APP_DAPP_URL: ${{ matrix.app == 'sapmall-website' && secrets.DAPP_URL || '' }}
+          REACT_APP_HELP_PATH: ${{ matrix.app == 'sapmall-website' && '/help' || '' }}
+          REACT_APP_WHITEPAPER_URL: ${{ matrix.app == 'sapmall-website' && secrets.WHITEPAPER_URL || '' }}
+          REACT_APP_DEMO_URL: ${{ matrix.app == 'sapmall-website' && secrets.DEMO_URL || '' }}
+          REACT_APP_GITHUB_URL: ${{ matrix.app == 'sapmall-website' && secrets.GITHUB_URL || '' }}
+          REACT_APP_TWITTER_URL: ${{ matrix.app == 'sapmall-website' && secrets.TWITTER_URL || '' }}
+          REACT_APP_TELEGRAM_URL: ${{ matrix.app == 'sapmall-website' && secrets.TELEGRAM_URL || '' }}
+          REACT_APP_DISCORD_URL: ${{ matrix.app == 'sapmall-website' && secrets.DISCORD_URL || '' }}
 
-      - name: Build DApp
-        run: cd web_client/sapmall-dapp && npm ci --legacy-peer-deps && npm run build
-        env:
-          CI: false
-          REACT_APP_API_BASE_URL: ${{ secrets.DAPP_API_BASE_URL }}
-          REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.WALLETCONNECT_PROJECT_ID }}
-          REACT_APP_SWAP_ROUTER_ADDRESS: ${{ secrets.SWAP_ROUTER_ADDRESS }}
-          REACT_APP_ADMIN_URL: ${{ secrets.ADMIN_URL }}
-
-      - name: Build Website
-        run: cd web_client/sapmall-website && npm ci --legacy-peer-deps && npm run build
-        env:
-          CI: false
-          REACT_APP_SITE_URL: https://sapmall.xyz
-          REACT_APP_DAPP_URL: ${{ secrets.DAPP_URL }}
-          REACT_APP_HELP_PATH: /help
-          REACT_APP_WHITEPAPER_URL: ${{ secrets.WHITEPAPER_URL }}
-          REACT_APP_DEMO_URL: ${{ secrets.DEMO_URL }}
-          REACT_APP_GITHUB_URL: ${{ secrets.GITHUB_URL }}
-          REACT_APP_TWITTER_URL: ${{ secrets.TWITTER_URL }}
-          REACT_APP_TELEGRAM_URL: ${{ secrets.TELEGRAM_URL }}
-          REACT_APP_DISCORD_URL: ${{ secrets.DISCORD_URL }}
-
-      # upload-artifact@v4 会取多路径的最短公共父目录作为根。
-      # 若只上传 web_client/...，下载后会丢掉 web_client/ 前缀，导致 scp 报 tar: empty archive。
-      # 额外带一个仓库根下的文件（与全量部署带 backend_service/main 同理），强制保留完整路径。
-      - name: Upload Artifacts
+      # 额外带 .gitignore 保留 web_client/ 前缀，避免 download 后 scp 报 tar: empty archive
+      - name: Upload artifact (${{ matrix.app }})
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-${{ github.sha }}
+          name: frontend-${{ github.sha }}-${{ matrix.app }}
           path: |
-            web_client/sapmall-admin/build/
-            web_client/sapmall-dapp/build/
-            web_client/sapmall-website/build/
+            web_client/${{ matrix.app }}/build/
             .gitignore
-          retention-days: 7
+          retention-days: 3
 
   deploy:
-    needs: build
+    needs: [prepare, build]
     runs-on: ubuntu-latest
     steps:
-      - name: Download Artifacts
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: frontend-${{ github.sha }}
+          pattern: frontend-${{ github.sha }}-*
+          merge-multiple: true
 
       - name: Verify artifact layout
+        env:
+          APPS_CSV: ${{ needs.prepare.outputs.apps_csv }}
         run: |
           set -e
-          for d in \
-            web_client/sapmall-admin/build \
-            web_client/sapmall-dapp/build \
-            web_client/sapmall-website/build
-          do
+          IFS=',' read -ra APPS <<< "$APPS_CSV"
+          for app in "${APPS[@]}"; do
+            d="web_client/${app}/build"
             echo "=== $d ==="
             test -d "$d"
             test -f "$d/index.html"
           done
+
+      - name: Prepare SCP sources
+        id: scp
+        env:
+          APPS_CSV: ${{ needs.prepare.outputs.apps_csv }}
+        run: |
+          sources=""
+          IFS=',' read -ra APPS <<< "$APPS_CSV"
+          for app in "${APPS[@]}"; do
+            sources="${sources:+$sources,}web_client/${app}/build"
+          done
+          echo "sources=$sources" >> "$GITHUB_OUTPUT"
 
       - name: Upload Frontend to Server
         uses: appleboy/scp-action@v0.1.7
@@ -85,8 +129,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
-          # 与 deploy-prod.yml 保持一致：传目录而非 build/*
-          source: "web_client/sapmall-admin/build,web_client/sapmall-dapp/build,web_client/sapmall-website/build"
+          source: ${{ steps.scp.outputs.sources }}
           target: "/opt/sapmall/deploy/frontend-${{ github.sha }}"
           strip_components: 0
           overwrite: true
@@ -100,28 +143,33 @@ jobs:
           port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
             DEPLOY_DIR="/opt/sapmall/deploy/frontend-${{ github.sha }}"
-
-            # 创建备份目录
-            mkdir -p /opt/sapmall/backup
-
-            # 备份当前前端
+            APPS="${{ needs.prepare.outputs.apps_csv }}"
             TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-            if [ -d /opt/sapmall/web_client ]; then
-              cp -r /opt/sapmall/web_client /opt/sapmall/backup/web_client_${TIMESTAMP}
-            fi
+            BACKUP_DIR="/opt/sapmall/backup/web_client_${TIMESTAMP}"
 
-            # 部署新版本前端
-            mkdir -p /opt/sapmall/web_client/sapmall-admin/build
-            mkdir -p /opt/sapmall/web_client/sapmall-dapp/build
-            mkdir -p /opt/sapmall/web_client/sapmall-website/build
-            cp -rf ${DEPLOY_DIR}/web_client/sapmall-admin/build/* /opt/sapmall/web_client/sapmall-admin/build/
-            cp -rf ${DEPLOY_DIR}/web_client/sapmall-dapp/build/* /opt/sapmall/web_client/sapmall-dapp/build/
-            cp -rf ${DEPLOY_DIR}/web_client/sapmall-website/build/* /opt/sapmall/web_client/sapmall-website/build/
+            mkdir -p /opt/sapmall/backup "$BACKUP_DIR"
 
-            # 重载 Nginx（无需停后端）
+            IFS=',' read -ra APP_LIST <<< "$APPS"
+            for app in "${APP_LIST[@]}"; do
+              src_build="${DEPLOY_DIR}/web_client/${app}/build"
+              dest_build="/opt/sapmall/web_client/${app}/build"
+
+              if [ ! -d "$src_build" ]; then
+                echo "missing deploy artifact: $src_build"
+                exit 1
+              fi
+
+              if [ -d "$dest_build" ]; then
+                mkdir -p "${BACKUP_DIR}/${app}"
+                cp -r "$dest_build" "${BACKUP_DIR}/${app}/"
+              fi
+
+              mkdir -p "$dest_build"
+              cp -rf "${src_build}/"* "$dest_build/"
+              echo "deployed ${app}"
+            done
+
             sudo systemctl reload nginx
+            rm -rf "${DEPLOY_DIR}"
 
-            # 清理部署目录
-            rm -rf ${DEPLOY_DIR}
-
-            echo "Frontend deployment successful: ${{ github.sha }}"
+            echo "Frontend deployment successful (${APPS}): ${{ github.sha }}"

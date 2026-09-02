@@ -4,44 +4,58 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-frontend:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [sapmall-admin, sapmall-dapp, sapmall-website]
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: npm
+          cache-dependency-path: web_client/${{ matrix.app }}/package-lock.json
+
+      - name: Install and build ${{ matrix.app }}
+        working-directory: web_client/${{ matrix.app }}
+        run: npm ci --legacy-peer-deps && npm run build
+        env:
+          CI: false
+          REACT_APP_API_BASE_URL: ${{ matrix.app == 'sapmall-admin' && secrets.ADMIN_API_BASE_URL || (matrix.app == 'sapmall-dapp' && secrets.DAPP_API_BASE_URL || '') }}
+          REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ matrix.app == 'sapmall-dapp' && secrets.WALLETCONNECT_PROJECT_ID || '' }}
+          REACT_APP_SWAP_ROUTER_ADDRESS: ${{ matrix.app == 'sapmall-dapp' && secrets.SWAP_ROUTER_ADDRESS || '' }}
+          REACT_APP_ADMIN_URL: ${{ matrix.app == 'sapmall-dapp' && secrets.ADMIN_URL || '' }}
+          REACT_APP_SITE_URL: ${{ matrix.app == 'sapmall-website' && 'https://sapmall.xyz' || '' }}
+          REACT_APP_DAPP_URL: ${{ matrix.app == 'sapmall-website' && secrets.DAPP_URL || '' }}
+          REACT_APP_HELP_PATH: ${{ matrix.app == 'sapmall-website' && '/help' || '' }}
+          REACT_APP_WHITEPAPER_URL: ${{ matrix.app == 'sapmall-website' && secrets.WHITEPAPER_URL || '' }}
+          REACT_APP_DEMO_URL: ${{ matrix.app == 'sapmall-website' && secrets.DEMO_URL || '' }}
+          REACT_APP_GITHUB_URL: ${{ matrix.app == 'sapmall-website' && secrets.GITHUB_URL || '' }}
+          REACT_APP_TWITTER_URL: ${{ matrix.app == 'sapmall-website' && secrets.TWITTER_URL || '' }}
+          REACT_APP_TELEGRAM_URL: ${{ matrix.app == 'sapmall-website' && secrets.TELEGRAM_URL || '' }}
+          REACT_APP_DISCORD_URL: ${{ matrix.app == 'sapmall-website' && secrets.DISCORD_URL || '' }}
+
+      - name: Upload artifact (${{ matrix.app }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-${{ github.sha }}-${{ matrix.app }}
+          path: |
+            web_client/${{ matrix.app }}/build/
+            .gitignore
+          retention-days: 3
+
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/setup-go@v5
         with:
           go-version: '1.23'
-
-      - name: Build Admin
-        run: cd web_client/sapmall-admin && npm ci --legacy-peer-deps && npm run build
-        env:
-          CI: false
-          REACT_APP_API_BASE_URL: ${{ secrets.ADMIN_API_BASE_URL }}
-      - name: Build DApp
-        run: cd web_client/sapmall-dapp && npm ci --legacy-peer-deps && npm run build
-        env:
-          CI: false
-          REACT_APP_API_BASE_URL: ${{ secrets.DAPP_API_BASE_URL }}
-          REACT_APP_WALLETCONNECT_PROJECT_ID: ${{ secrets.WALLETCONNECT_PROJECT_ID }}
-          REACT_APP_SWAP_ROUTER_ADDRESS: ${{ secrets.SWAP_ROUTER_ADDRESS }}
-          REACT_APP_ADMIN_URL: ${{ secrets.ADMIN_URL }}
-      - name: Build Website
-        run: cd web_client/sapmall-website && npm ci --legacy-peer-deps && npm run build
-        env:
-          CI: false
-          REACT_APP_SITE_URL: https://sapmall.xyz
-          REACT_APP_DAPP_URL: ${{ secrets.DAPP_URL }}
-          REACT_APP_HELP_PATH: /help
-          REACT_APP_WHITEPAPER_URL: ${{ secrets.WHITEPAPER_URL }}
-          REACT_APP_DEMO_URL: ${{ secrets.DEMO_URL }}
-          REACT_APP_GITHUB_URL: ${{ secrets.GITHUB_URL }}
-          REACT_APP_TWITTER_URL: ${{ secrets.TWITTER_URL }}
-          REACT_APP_TELEGRAM_URL: ${{ secrets.TELEGRAM_URL }}
-          REACT_APP_DISCORD_URL: ${{ secrets.DISCORD_URL }}
+          cache-dependency-path: backend_service/go.sum
 
       - name: Build Backend
         run: |
@@ -49,25 +63,40 @@ jobs:
           go mod tidy
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o main ./app/sapmall_start.go
 
-      - name: Upload Artifacts
+      - name: Upload Backend artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-${{ github.sha }}
+          name: backend-${{ github.sha }}
           path: |
-            web_client/sapmall-admin/build/
-            web_client/sapmall-dapp/build/
-            web_client/sapmall-website/build/
             backend_service/main
-          retention-days: 7
+            .gitignore
+          retention-days: 3
 
   deploy:
-    needs: build
+    needs: [build-frontend, build-backend]
     runs-on: ubuntu-latest
     steps:
-      - name: Download Artifacts
+      - name: Download frontend artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-${{ github.sha }}
+          pattern: frontend-${{ github.sha }}-*
+          merge-multiple: true
+
+      - name: Download backend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-${{ github.sha }}
+
+      - name: Verify artifact layout
+        run: |
+          set -e
+          for app in sapmall-admin sapmall-dapp sapmall-website; do
+            d="web_client/${app}/build"
+            echo "=== $d ==="
+            test -d "$d"
+            test -f "$d/index.html"
+          done
+          test -f backend_service/main
 
       - name: Upload Frontend to Server
         uses: appleboy/scp-action@v0.1.7
@@ -76,7 +105,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
-          # 不要用 build/*：drone-scp 常匹配不到文件，报 tar: empty archive
           source: "web_client/sapmall-admin/build,web_client/sapmall-dapp/build,web_client/sapmall-website/build"
           target: "/opt/sapmall/deploy/${{ github.sha }}"
           strip_components: 0
@@ -91,6 +119,8 @@ jobs:
           port: ${{ secrets.SERVER_PORT || '22' }}
           source: "backend_service/main"
           target: "/opt/sapmall/deploy/${{ github.sha }}"
+          strip_components: 0
+          overwrite: true
 
       - name: Activate Deployment
         uses: appleboy/ssh-action@v1
@@ -101,57 +131,60 @@ jobs:
           port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
             DEPLOY_DIR="/opt/sapmall/deploy/${{ github.sha }}"
-
-            # 停止后端服务（避免 "Text file busy" 错误）
-            sudo systemctl stop sapmall-backend
-
-            # 创建备份目录
-            mkdir -p /opt/sapmall/backup
-
-            # 备份当前版本（前端）
             TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+            BACKUP_DIR="/opt/sapmall/backup/web_client_${TIMESTAMP}"
+
+            sudo systemctl stop sapmall-backend
+            mkdir -p /opt/sapmall/backup "$BACKUP_DIR"
+
             if [ -d /opt/sapmall/web_client ]; then
-              cp -r /opt/sapmall/web_client /opt/sapmall/backup/web_client_${TIMESTAMP}
+              cp -r /opt/sapmall/web_client "$BACKUP_DIR/"
             fi
 
-            # 备份当前版本（后端）
             if [ -f /opt/sapmall/backend_service/main ]; then
-              cp /opt/sapmall/backend_service/main /opt/sapmall/backup/main_${TIMESTAMP}
+              cp /opt/sapmall/backend_service/main "/opt/sapmall/backup/main_${TIMESTAMP}"
             fi
 
-            # 部署新版本前端
-            cp -rf ${DEPLOY_DIR}/web_client/sapmall-admin/build/* /opt/sapmall/web_client/sapmall-admin/build/
-            cp -rf ${DEPLOY_DIR}/web_client/sapmall-dapp/build/* /opt/sapmall/web_client/sapmall-dapp/build/
-            cp -rf ${DEPLOY_DIR}/web_client/sapmall-website/build/* /opt/sapmall/web_client/sapmall-website/build/
+            for app in sapmall-admin sapmall-dapp sapmall-website; do
+              mkdir -p "/opt/sapmall/web_client/${app}/build"
+              cp -rf "${DEPLOY_DIR}/web_client/${app}/build/"* "/opt/sapmall/web_client/${app}/build/"
+            done
 
-            # 部署后端
-            chmod +x ${DEPLOY_DIR}/backend_service/main
-            cp ${DEPLOY_DIR}/backend_service/main /opt/sapmall/backend_service/main
+            chmod +x "${DEPLOY_DIR}/backend_service/main"
+            mkdir -p /opt/sapmall/backend_service
+            cp "${DEPLOY_DIR}/backend_service/main" /opt/sapmall/backend_service/main
 
-            # 重启后端服务
             sudo systemctl restart sapmall-backend
-
-            # 重载 Nginx
             sudo systemctl reload nginx
 
-            # 健康检查
-            sleep 3
-            curl -f http://localhost:8888/api/common/health || {
-              echo "Health check failed, rolling back..."
-              LATEST_FRONTUP=$(ls -td /opt/sapmall/backup/web_client_* | head -1)
-              if [ -n "$LATEST_FRONTUP" ]; then
+            HEALTH_OK=0
+            for i in $(seq 1 30); do
+              if curl -sf http://localhost:8888/api/common/health >/dev/null; then
+                HEALTH_OK=1
+                echo "Health check passed (attempt ${i})"
+                break
+              fi
+              sleep 2
+            done
+
+            if [ "$HEALTH_OK" -ne 1 ]; then
+              echo "Health check failed after 60s, rolling back..."
+              sudo journalctl -u sapmall-backend -n 50 --no-pager || true
+              LATEST_FRONTUP=$(ls -td /opt/sapmall/backup/web_client_* 2>/dev/null | head -1)
+              if [ -n "$LATEST_FRONTUP" ] && [ -d "${LATEST_FRONTUP}/web_client" ]; then
+                rm -rf /opt/sapmall/web_client
+                cp -rf "${LATEST_FRONTUP}/web_client" /opt/sapmall/
+              elif [ -n "$LATEST_FRONTUP" ]; then
                 rm -rf /opt/sapmall/web_client
                 cp -rf "$LATEST_FRONTUP" /opt/sapmall/web_client
               fi
-              LATEST_BACKEND=$(ls -t /opt/sapmall/backup/main_* | head -1)
+              LATEST_BACKEND=$(ls -t /opt/sapmall/backup/main_* 2>/dev/null | head -1)
               if [ -n "$LATEST_BACKEND" ]; then
                 cp -f "$LATEST_BACKEND" /opt/sapmall/backend_service/main
               fi
               sudo systemctl restart sapmall-backend
               exit 1
-            }
+            fi
 
-            # 清理部署目录
-            rm -rf ${DEPLOY_DIR}
-
+            rm -rf "${DEPLOY_DIR}"
             echo "Deployment successful: ${{ github.sha }}"
