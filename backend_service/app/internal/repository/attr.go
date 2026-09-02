@@ -9,6 +9,8 @@ import (
 
 type AttrRepository interface {
 	FindAll(ctx context.Context) ([]model.Attr, error)
+	GetAttrsByIDs(ctx context.Context, ids []uint) ([]model.Attr, error)
+	GetAttrsByCodes(ctx context.Context, codes []string) ([]model.Attr, error)
 	DeleteByAttrGroupID(ctx context.Context, id int64) error
 	GetAttrByCode(ctx context.Context, code string) (*model.Attr, error)
 	GetAttr(ctx context.Context, id uint) (*model.Attr, error)
@@ -30,6 +32,32 @@ type attrRepository struct {
 func (r *attrRepository) FindAll(ctx context.Context) ([]model.Attr, error) {
 	var attrs []model.Attr
 	if err := r.db.WithContext(ctx).Find(&attrs).Error; err != nil {
+		return nil, err
+	}
+	return attrs, nil
+}
+
+func (r *attrRepository) GetAttrsByIDs(ctx context.Context, ids []uint) ([]model.Attr, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	var attrs []model.Attr
+	if err := r.db.WithContext(ctx).
+		Where("id IN ? AND is_deleted = ?", ids, 0).
+		Find(&attrs).Error; err != nil {
+		return nil, err
+	}
+	return attrs, nil
+}
+
+func (r *attrRepository) GetAttrsByCodes(ctx context.Context, codes []string) ([]model.Attr, error) {
+	if len(codes) == 0 {
+		return nil, nil
+	}
+	var attrs []model.Attr
+	if err := r.db.WithContext(ctx).
+		Where("attr_code IN ? AND is_deleted = ?", codes, 0).
+		Find(&attrs).Error; err != nil {
 		return nil, err
 	}
 	return attrs, nil

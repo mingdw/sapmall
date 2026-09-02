@@ -108,8 +108,8 @@ func (l *SaveProductLogic) SaveProduct(req *types.SaveProductReq) (resp *types.B
 		logx.Errorf("查询商品详情失败: %v", err)
 		return customererrors.FailMsg(fmt.Sprintf("查询商品详情失败: %v", err)), nil
 	}
-
-	return customererrors.SuccessData(detailResp), nil
+	// GetProductDetail 已返回 BaseResp，直接透传，避免 data 再包一层导致前端拿不到 spu
+	return detailResp, nil
 }
 
 // parseImagesString 解析图片字符串（JSON数组格式或逗号分隔格式）转换为逗号分隔的字符串
@@ -307,12 +307,25 @@ func (l *SaveProductLogic) modifyAllAttributes(
 		key := fmt.Sprintf("%s_%d", attrInfo.Code, attrInfo.AttrType)
 		processedKeys[key] = true
 
+		syncCatalog := attrInfo.Code == "BASIC_ATTRS" && attrInfo.AttrType == 1
+		catalogAttrCodes := "[]"
+		if syncCatalog {
+			catalogAttrCodes, err = repository.ResolveCatalogAttrCodesFromBasicValue(ctx, l.svcCtx.GormDB, attrInfo.Value)
+			if err != nil {
+				logx.Errorf("解析目录属性code失败: %v", err)
+				catalogAttrCodes = "[]"
+			}
+		}
+
 		if existingAttr, exists := existingAttrMap[key]; exists {
 			// 属性已存在，执行UPDATE（保留原ID）
 			existingAttr.ProductSpuCode = spuCode
 			existingAttr.Name = attrInfo.Name
 			existingAttr.ValueType = attrInfo.ValueType
 			existingAttr.Value = attrInfo.Value
+			if syncCatalog {
+				existingAttr.CatalogAttrCodes = catalogAttrCodes
+			}
 			existingAttr.Sort = attrInfo.Sort
 			existingAttr.Status = attrInfo.Status
 			existingAttr.IsRequired = attrInfo.IsRequired
@@ -347,6 +360,9 @@ func (l *SaveProductLogic) modifyAllAttributes(
 				Creator:        updator,
 				Updator:        updator,
 			}
+			if syncCatalog {
+				newAttr.CatalogAttrCodes = catalogAttrCodes
+			}
 
 			err = attrParamRepository.CreateProductSpuAttrParams(ctx, newAttr)
 			if err != nil {
@@ -377,6 +393,7 @@ func (l *SaveProductLogic) modifyAllAttributes(
 
 // modifySkus 处理SKU的新增或更新
 // 采用 UPDATE + INSERT + DELETE 模式，通过 indexs 匹配现有记录，保留原ID，避免ID浪费
+// 更新/新增/删除均走批量 SQL，避免远端 RDS 逐条往返超时
 func (l *SaveProductLogic) modifySkus(
 	ctx context.Context,
 	skuRepository repository.ProductSkuRepository,
@@ -386,7 +403,6 @@ func (l *SaveProductLogic) modifySkus(
 	updator string,
 	now time.Time,
 ) error {
-	// 解析价格字符串为 float64
 	parsePrice := func(priceStr string) (float64, error) {
 		price, err := strconv.ParseFloat(priceStr, 64)
 		if err != nil {
@@ -395,23 +411,20 @@ func (l *SaveProductLogic) modifySkus(
 		return price, nil
 	}
 
-	// 步骤1: 查询现有SKU，构建映射表 key: indexs -> value: existingSku
 	existingSkus, err := skuRepository.ListProductSkus(ctx, spuId)
 	if err != nil {
 		logx.Errorf("查询现有SKU失败: %v", err)
 		return fmt.Errorf("查询现有SKU失败: %v", err)
 	}
 
-	// 构建现有SKU的映射表：key = indexs
-	existingSkuMap := make(map[string]*model.ProductSku)
+	existingSkuMap := make(map[string]*model.ProductSku, len(existingSkus))
 	for _, sku := range existingSkus {
 		existingSkuMap[sku.Indexs] = sku
 	}
 
-	// 步骤2: 处理每个SKU：UPDATE（存在）或 INSERT（不存在）
-	processedIndexs := make(map[string]bool) // 记录已处理的indexs
-	updateCount := 0
-	insertCount := 0
+	processedIndexs := make(map[string]bool, len(skus))
+	toUpdate := make([]*model.ProductSku, 0, len(skus))
+	toCreate := make([]*model.ProductSku, 0)
 
 	for _, skuInfo := range skus {
 		processedIndexs[skuInfo.Indexs] = true
@@ -422,19 +435,16 @@ func (l *SaveProductLogic) modifySkus(
 			return err
 		}
 
-		// 如果 skuCode 为空，自动生成唯一编码（格式：SPUCode-Indexs）
 		generatedSkuCode := skuInfo.SkuCode
 		if generatedSkuCode == "" {
 			generatedSkuCode = fmt.Sprintf("%s-%s", spuCode, skuInfo.Indexs)
 		}
 
 		if existingSku, exists := existingSkuMap[skuInfo.Indexs]; exists {
-			// SKU已存在，执行UPDATE（保留原ID和SaleCount）
 			existingSku.ProductSpuCode = spuCode
 			existingSku.SkuCode = generatedSkuCode
 			existingSku.Price = price
 			existingSku.Stock = skuInfo.Stock
-			// SaleCount 保持不变，不覆盖
 			existingSku.Status = skuInfo.Status
 			existingSku.AttrParams = skuInfo.AttrParams
 			existingSku.OwnerParams = skuInfo.OwnerParams
@@ -444,17 +454,10 @@ func (l *SaveProductLogic) modifySkus(
 			existingSku.Description = skuInfo.Description
 			existingSku.UpdatedAt = now
 			existingSku.Updator = updator
-			existingSku.IsDeleted = 0 // 确保未删除
-
-			err = skuRepository.UpdateProductSku(ctx, existingSku)
-			if err != nil {
-				logx.Errorf("更新SKU失败: Indexs=%s, SkuCode=%s, Error=%v", skuInfo.Indexs, generatedSkuCode, err)
-				return fmt.Errorf("更新SKU失败: %v", err)
-			}
-			updateCount++
+			existingSku.IsDeleted = 0
+			toUpdate = append(toUpdate, existingSku)
 		} else {
-			// SKU不存在，执行INSERT（新ID）
-			newSKU := &model.ProductSku{
+			toCreate = append(toCreate, &model.ProductSku{
 				ProductSpuID:   spuId,
 				ProductSpuCode: spuCode,
 				SkuCode:        generatedSkuCode,
@@ -474,32 +477,32 @@ func (l *SaveProductLogic) modifySkus(
 				IsDeleted:      0,
 				Creator:        updator,
 				Updator:        updator,
-			}
-
-			err = skuRepository.CreateProductSku(ctx, newSKU)
-			if err != nil {
-				logx.Errorf("创建SKU失败: Indexs=%s, SkuCode=%s, Error=%v", skuInfo.Indexs, generatedSkuCode, err)
-				return fmt.Errorf("创建SKU失败: %v", err)
-			}
-			insertCount++
+			})
 		}
 	}
 
-	// 步骤3: 删除多余的SKU（在现有SKU中存在，但在请求中不存在的）
-	deleteCount := 0
+	toDeleteIDs := make([]int64, 0)
 	for indexs, existingSku := range existingSkuMap {
 		if !processedIndexs[indexs] {
-			// 该SKU在请求中不存在，执行物理删除
-			err = skuRepository.DeleteProductSku(ctx, existingSku.ID)
-			if err != nil {
-				logx.Errorf("删除SKU失败: ID=%d, Indexs=%s, Error=%v", existingSku.ID, indexs, err)
-				return fmt.Errorf("删除SKU失败: %v", err)
-			}
-			deleteCount++
+			toDeleteIDs = append(toDeleteIDs, existingSku.ID)
 		}
 	}
 
-	logx.Infof("SKU处理完成（SPU ID=%d, Code=%s）: 更新 %d 个，新增 %d 个，删除 %d 个", spuId, spuCode, updateCount, insertCount, deleteCount)
+	if err := skuRepository.BatchUpdateProductSkus(ctx, toUpdate); err != nil {
+		logx.Errorf("批量更新SKU失败: count=%d, Error=%v", len(toUpdate), err)
+		return fmt.Errorf("批量更新SKU失败: %v", err)
+	}
+	if err := skuRepository.BatchCreateProductSkus(ctx, toCreate); err != nil {
+		logx.Errorf("批量创建SKU失败: count=%d, Error=%v", len(toCreate), err)
+		return fmt.Errorf("批量创建SKU失败: %v", err)
+	}
+	if err := skuRepository.BatchDeleteProductSkus(ctx, toDeleteIDs); err != nil {
+		logx.Errorf("批量删除SKU失败: count=%d, Error=%v", len(toDeleteIDs), err)
+		return fmt.Errorf("批量删除SKU失败: %v", err)
+	}
+
+	logx.Infof("SKU处理完成（SPU ID=%d, Code=%s）: 更新 %d 个，新增 %d 个，删除 %d 个",
+		spuId, spuCode, len(toUpdate), len(toCreate), len(toDeleteIDs))
 	return nil
 }
 

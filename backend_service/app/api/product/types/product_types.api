@@ -64,6 +64,8 @@ type (
     ListProductsReq {
         CategoryCodes string `json:"categoryCodes"` // 分类编码，多个用逗号分隔
         ProductName   string `json:"productName"`   // 商品名称
+        AttrCodes     string `json:"attrCodes,optional"` // 目录属性编码，多个用逗号分隔；同组OR、跨组AND
+        AttrIds       string `json:"attrIds,optional"`   // 兼容旧版：目录属性ID
         Page          int    `json:"page"`          // 页码
         PageSize      int    `json:"pageSize"`      // 每页数量
     }

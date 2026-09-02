@@ -846,12 +846,20 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
               basicAttributes={extractBasicAttributes(currentData.attrs)}
               saleAttributes={extractSaleAttributes(currentData.attrs)}
               onBasicAttributesChange={(basicAttrs) => {
-                // 需要将编辑器格式转换为后端格式
                 const productId = currentData.spu.id || 0;
                 const productCode = currentData.spu.code || '';
-                const basicAttr = buildBasicAttr(basicAttrs, productId, productCode, 0);
+                const existingBasicId =
+                  currentData.attrs?.base_attrs?.find(
+                    (a) => a.code === 'BASIC_ATTRS' || a.attrType === 1
+                  )?.id || 0;
+                const basicAttr = buildBasicAttr(
+                  basicAttrs,
+                  productId,
+                  productCode,
+                  existingBasicId
+                );
                 const baseAttrs = basicAttr ? [basicAttr] : [];
-                
+
                 onUpdateProduct({
                   attrs: {
                     ...currentData.attrs,
@@ -862,7 +870,16 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
               onSaleAttributesChange={(saleAttrs) => {
                 const productId = currentData.spu.id || 0;
                 const productCode = currentData.spu.code || '';
-                const saleAttr = buildSaleAttr(saleAttrs, productId, productCode, 0);
+                const existingSaleId =
+                  currentData.attrs?.sale_attrs?.find(
+                    (a) => a.code === 'SALE_ATTRS' || a.attrType === 2
+                  )?.id || 0;
+                const saleAttr = buildSaleAttr(
+                  saleAttrs,
+                  productId,
+                  productCode,
+                  existingSaleId
+                );
                 const saleAttrsList = saleAttr ? [saleAttr] : [];
                 
                 onUpdateProduct({
@@ -973,9 +990,15 @@ const ProductFormnew: React.FC<ProductFormnewProps> = ({
       const response = await productApi.saveProduct(saveData);
       
       if (response.code === 0 && response.data) {
-        // 使用后端返回的完整 ProductDetailResp 更新本地状态
-        const savedProductDetail: ProductDetailResp = response.data;
-        
+        // 兼容后端偶发双重包装：{ code, data: { spu, ... } } 或 { code, data: { data: { spu } } }
+        const raw = response.data as any;
+        const savedProductDetail: ProductDetailResp =
+          raw?.spu ? raw : (raw?.data?.spu ? raw.data : raw);
+
+        if (!savedProductDetail?.spu) {
+          throw new Error('暂存成功但返回数据缺少商品详情，请刷新后重试');
+        }
+
         // 更新 productData
         setProductData({
           spu: savedProductDetail.spu,

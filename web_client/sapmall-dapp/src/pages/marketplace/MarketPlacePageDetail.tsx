@@ -17,6 +17,27 @@ import { MarketplaceLocationState } from './paths';
 import { findCategoryById } from './utils/categoryUtils';
 import { useCategoryTreeRefresh } from './hooks/useCategoryTreeRefresh';
 
+const resolveAttrCodesFromFilters = (
+  filters: {[key: number]: number[]},
+  attrGroups: AttrGroupResp[],
+): string[] => {
+  const codes: string[] = [];
+  const seen = new Set<string>();
+  for (const group of attrGroups) {
+    const selectedIds = filters[group.id] || [];
+    for (const attr of group.attrs || []) {
+      if (selectedIds.includes(attr.id) && attr.code && !seen.has(attr.code)) {
+        seen.add(attr.code);
+        codes.push(attr.code);
+      }
+    }
+  }
+  return codes;
+};
+
+const formatAttrCodesParam = (codes: string[]): string =>
+  codes.filter(Boolean).join(',');
+
 const MarketPlacePageDetail: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -35,6 +56,7 @@ const MarketPlacePageDetail: React.FC = () => {
     feature: []
   });
   const [attrGroupFilters, setAttrGroupFilters] = useState<{[key: number]: number[]}>({});
+  const [appliedAttrCodes, setAppliedAttrCodes] = useState<string[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState(''); // 实际用于搜索的查询词
   const [searchInput, setSearchInput] = useState(''); // 搜索输入框的值
@@ -57,6 +79,31 @@ const MarketPlacePageDetail: React.FC = () => {
 
   useCategoryTreeRefresh();
 
+  const hasActiveSearch = useMemo(
+    () => Boolean(searchQuery.trim()) || appliedAttrCodes.length > 0,
+    [searchQuery, appliedAttrCodes],
+  );
+
+  const buildQueryParams = useCallback((
+    overrides: Partial<ProductQueryParams> = {},
+  ): ProductQueryParams => {
+    const params: ProductQueryParams = {
+      page: overrides.page ?? currentPage,
+      pageSize: overrides.pageSize ?? pageSize,
+      ...overrides,
+    };
+
+    if (params.productName === undefined && searchQuery.trim()) {
+      params.productName = searchQuery.trim();
+    }
+
+    if (params.attrCodes === undefined && appliedAttrCodes.length > 0) {
+      params.attrCodes = formatAttrCodesParam(appliedAttrCodes);
+    }
+
+    return params;
+  }, [appliedAttrCodes, currentPage, pageSize, searchQuery]);
+
   // 面包屑等入口通过 location.state 预选分类
   useEffect(() => {
     const state = location.state as MarketplaceLocationState | undefined;
@@ -66,6 +113,7 @@ const MarketPlacePageDetail: React.FC = () => {
     setSelectedCategory(categoryId == null || categoryId === 0 ? null : categoryId);
     setSearchQuery('');
     setSearchInput('');
+    setAppliedAttrCodes([]);
     setCurrentPage(1);
   }, [location.key, location.state]);
 
@@ -140,12 +188,11 @@ const MarketPlacePageDetail: React.FC = () => {
         }
       }
 
-      const queryParams: ProductQueryParams = {
-        categoryCodes: categoryCodes,
-        productName: query, // 使用传入的查询参数
-        page: page,
-        pageSize: pageSize,
-      };
+      const queryParams = buildQueryParams({
+        categoryCodes,
+        productName: query,
+        page,
+      });
 
       console.log('商品查询参数:', queryParams);
       console.log('当前状态 - selectedCategory:', selectedCategory, 'searchQuery:', query);
@@ -170,7 +217,7 @@ const MarketPlacePageDetail: React.FC = () => {
         setIsLoadingProducts(false);
       }
     }
-  }, [selectedCategory, pageSize, selectedCategoryData]);
+  }, [selectedCategory, selectedCategoryData, buildQueryParams]);
 
   const fetchProducts = useCallback(async (page: number = currentPage, resetPage: boolean = false) => {
     // 调用fetchProductsWithQuery，使用当前的searchQuery
@@ -182,6 +229,11 @@ const MarketPlacePageDetail: React.FC = () => {
     if (categories.length === 0) return; // 分类数据未加载时不执行
 
     if (selectedCategory === null || selectedCategory === 0) {
+      if (hasActiveSearch) {
+        fetchProducts(currentPage, false);
+        return;
+      }
+
       // 全部商品：获取前几个分类的商品数据
       const fetchInitialProducts = async () => {
         const currentRequestId = ++requestIdRef.current;
@@ -192,20 +244,17 @@ const MarketPlacePageDetail: React.FC = () => {
           if (categoriesToFetch.length > 0) {
             const categoryCodes = categoriesToFetch.map(cat => cat.code).join(',');
             
-            const queryParams: ProductQueryParams = {
-              categoryCodes: categoryCodes,
+            const queryParams = buildQueryParams({
+              categoryCodes,
               page: 1,
               pageSize: INITIAL_CATEGORY_PAGE_SIZE,
-            };
-
-            if (searchQuery) {
-              queryParams.productName = searchQuery;
-            }
+              productName: '',
+              attrCodes: '',
+            });
 
             console.log('获取初始分类商品:', {
               categoriesToFetch: categoriesToFetch.map(cat => ({ id: cat.id, name: cat.name, code: cat.code })),
               categoryCodes,
-              searchQuery
             });
 
             const response = await productApiService.getProducts(queryParams);
@@ -235,7 +284,7 @@ const MarketPlacePageDetail: React.FC = () => {
       // 选择特定分类：使用分页逻辑
       fetchProducts(currentPage, false);
     }
-  }, [categories.length, selectedCategory, displayedCategoriesCount, searchQuery, currentPage, pageSize]); // 合并所有依赖
+  }, [categories.length, selectedCategory, displayedCategoriesCount, hasActiveSearch, searchQuery, appliedAttrCodes, currentPage, pageSize, buildQueryParams, fetchProducts, firstLevelCategories]);
 
 
   // 处理分类选择 - 改为单选
@@ -244,6 +293,7 @@ const MarketPlacePageDetail: React.FC = () => {
     // 清空搜索条件
     setSearchQuery('');
     setSearchInput('');
+    setAppliedAttrCodes([]);
     // 重置到第一页
     setCurrentPage(1);
   };
@@ -255,6 +305,7 @@ const MarketPlacePageDetail: React.FC = () => {
     // 清空搜索条件
     setSearchQuery('');
     setSearchInput('');
+    setAppliedAttrCodes([]);
     // 重置到第一页
     setCurrentPage(1);
     console.log('选择子分类:', categoryId, subCategoryId);
@@ -293,14 +344,19 @@ const MarketPlacePageDetail: React.FC = () => {
       feature: []
     });
     setAttrGroupFilters({});
+    setAppliedAttrCodes([]);
     setSearchQuery('');
+    setSearchInput('');
+    setCurrentPage(1);
   };
 
   // 处理搜索
   const handleSearch = () => {
-    // 将输入框的值设置为搜索查询词，并回到第一页
+    const nextAttrCodes = resolveAttrCodesFromFilters(attrGroupFilters, allAttrGroups);
+    // 将输入框的值与属性筛选一并提交，即使关键词为空也可触发属性搜索
     setCurrentPage(1);
     setSearchQuery(searchInput);
+    setAppliedAttrCodes(nextAttrCodes);
   };
 
   // 处理分页变化
@@ -330,20 +386,17 @@ const MarketPlacePageDetail: React.FC = () => {
         if (newCategories.length > 0) {
           const categoryCodes = newCategories.map(cat => cat.code).join(',');
           
-          const queryParams: ProductQueryParams = {
-            categoryCodes: categoryCodes,
+          const queryParams = buildQueryParams({
+            categoryCodes,
             page: 1,
             pageSize: INITIAL_CATEGORY_PAGE_SIZE,
-          };
-
-          if (searchQuery) {
-            queryParams.productName = searchQuery;
-          }
+            productName: '',
+            attrCodes: '',
+          });
 
           console.log('加载更多分类:', {
             newCategories: newCategories.map(cat => ({ id: cat.id, name: cat.name, code: cat.code })),
             categoryCodes,
-            searchQuery
           });
 
           const response = await productApiService.getProducts(queryParams);
@@ -370,7 +423,7 @@ const MarketPlacePageDetail: React.FC = () => {
     };
 
     await fetchNewCategoriesProducts();
-  }, [firstLevelCategories, displayedCategoriesCount, searchQuery]);
+  }, [firstLevelCategories, displayedCategoriesCount, buildQueryParams]);
 
   // 处理分类更多按钮点击
   const handleCategoryMoreClick = (categoryId: number) => {
@@ -380,6 +433,7 @@ const MarketPlacePageDetail: React.FC = () => {
     setCurrentPage(1);
     setSearchQuery(''); // 清空搜索条件
     setSearchInput(''); // 清空搜索输入框
+    setAppliedAttrCodes([]);
   };
 
   const handleProductClick = (product: Product) => {
@@ -605,8 +659,8 @@ const MarketPlacePageDetail: React.FC = () => {
         <div className="space-y-6">
           {(() => {
             if (selectedCategory === null || selectedCategory === 0) {
-              // 如果有搜索条件，显示"全部商品"分类卡片
-              if (searchQuery) {
+              // 有关键词或属性筛选时，显示统一搜索结果列表
+              if (hasActiveSearch) {
                 return (
                   <ProductCategoryComponent
                     key="all-products-search"
@@ -619,6 +673,8 @@ const MarketPlacePageDetail: React.FC = () => {
                     onMoreClick={() => {
                       setSearchQuery('');
                       setSearchInput('');
+                      setAppliedAttrCodes([]);
+                      setAttrGroupFilters({});
                     }}
                     onProductClick={handleProductClick}
                     onProductBuy={handleProductBuy}
@@ -698,6 +754,7 @@ const MarketPlacePageDetail: React.FC = () => {
                       setSelectedCategory(null);
                       setSearchQuery('');
                       setSearchInput('');
+                      setAppliedAttrCodes([]);
                     }} // 点击返回商城按钮
                     onProductClick={handleProductClick}
                     onProductBuy={handleProductBuy}

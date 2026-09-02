@@ -10,9 +10,10 @@ type ProductSpuAttrParams struct {
 	Code           string    `gorm:"column:code;not null" json:"code"`                       // 编码
 	Name           string    `gorm:"column:name;not null" json:"name"`                       // 名称
 	AttrType       int       `gorm:"column:attr_type;not null" json:"attrType"`              // 类型：1-基本属性，2-销售属性，3-规格属性
-	ValueType      int       `gorm:"column:value_type;not null" json:"valueType"`            // 值类型：1-文本，2-图片，3-视频，4-音频，5-链接，6-其它
-	Value          string    `gorm:"column:value;not null" json:"value"`                     // 值
-	Sort           int       `gorm:"column:sort;not null" json:"sort"`                       // 排序
+	ValueType          int       `gorm:"column:value_type;not null" json:"valueType"`            // 值类型：1-文本，2-图片，3-视频，4-音频，5-链接，6-其它
+	Value              string    `gorm:"column:value;not null" json:"value"`                     // 值
+	CatalogAttrCodes   string    `gorm:"column:catalog_attr_codes;type:json" json:"catalogAttrCodes"` // 目录属性code数组(JSON)，仅BASIC_ATTRS用于筛选
+	Sort               int       `gorm:"column:sort;not null" json:"sort"`                       // 排序
 	Status         int       `gorm:"column:status;not null" json:"status"`                   // 状态
 	IsRequired     int       `gorm:"column:is_required;not null" json:"isRequired"`          // 是否必填
 	IsGeneric      int       `gorm:"column:is_generic;not null" json:"isGeneric"`            // 是否通用

@@ -75,7 +75,11 @@ func (r *productSpuAttrParamsRepository) GetProductSpuAttrParamByCode(ctx contex
 }
 
 func (r *productSpuAttrParamsRepository) CreateProductSpuAttrParams(ctx context.Context, params *model.ProductSpuAttrParams) error {
-	return r.DB(ctx).Create(params).Error
+	db := r.DB(ctx)
+	if params.Code != "BASIC_ATTRS" || params.AttrType != 1 {
+		return db.Omit("catalog_attr_codes").Create(params).Error
+	}
+	return db.Create(params).Error
 }
 
 func (r *productSpuAttrParamsRepository) BatchCreateProductSpuAttrParams(ctx context.Context, params []*model.ProductSpuAttrParams) error {
@@ -83,24 +87,28 @@ func (r *productSpuAttrParamsRepository) BatchCreateProductSpuAttrParams(ctx con
 }
 
 func (r *productSpuAttrParamsRepository) UpdateProductSpuAttrParams(ctx context.Context, params *model.ProductSpuAttrParams) error {
+	updates := map[string]interface{}{
+		"product_spu_id":   params.ProductSpuID,
+		"product_spu_code": params.ProductSpuCode,
+		"code":             params.Code,
+		"name":             params.Name,
+		"attr_type":        params.AttrType,
+		"value_type":       params.ValueType,
+		"value":            params.Value,
+		"sort":             params.Sort,
+		"status":           params.Status,
+		"is_required":      params.IsRequired,
+		"is_generic":       params.IsGeneric,
+		"updated_at":       params.UpdatedAt,
+		"updator":          params.Updator,
+	}
+	if params.Code == "BASIC_ATTRS" && params.AttrType == 1 {
+		updates["catalog_attr_codes"] = params.CatalogAttrCodes
+	}
 	return r.DB(ctx).
 		Model(&model.ProductSpuAttrParams{}).
 		Where("id = ?", params.ID).
-		Updates(map[string]interface{}{
-			"product_spu_id":   params.ProductSpuID,
-			"product_spu_code": params.ProductSpuCode,
-			"code":             params.Code,
-			"name":             params.Name,
-			"attr_type":        params.AttrType,
-			"value_type":       params.ValueType,
-			"value":            params.Value,
-			"sort":             params.Sort,
-			"status":           params.Status,
-			"is_required":      params.IsRequired,
-			"is_generic":       params.IsGeneric,
-			"updated_at":       params.UpdatedAt,
-			"updator":          params.Updator,
-		}).Error
+		Updates(updates).Error
 }
 
 func (r *productSpuAttrParamsRepository) DeleteProductSpuAttrParams(ctx context.Context, id int64) error {

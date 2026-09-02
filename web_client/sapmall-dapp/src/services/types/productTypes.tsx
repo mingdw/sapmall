@@ -56,6 +56,8 @@ export interface FilterOptions {
 export interface ProductQueryParams {
   categoryCodes?: string; // 分类编码，多个用逗号分隔
   productName?: string;   // 商品名称
+  attrCodes?: string;      // 目录属性编码，多个用逗号分隔
+  attrIds?: string;        // 兼容旧版：目录属性ID
   page?: number;          // 页码
   pageSize?: number;      // 每页数量
   // 前端扩展字段

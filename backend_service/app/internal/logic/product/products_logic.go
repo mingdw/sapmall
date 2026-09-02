@@ -33,6 +33,26 @@ func (l *ProductsLogic) Products(req *types.ListProductsReq) (resp *types.BaseRe
 	productRepository := repository.NewProductRepository(l.svcCtx.GormDB)
 
 	categoryRepository := repository.NewCategoryRepository(l.svcCtx.GormDB)
+	attrRepository := repository.NewAttrRepository(l.svcCtx.GormDB)
+
+	attrFilters, err := repository.BuildAttrFilterConditionsFromCodes(
+		l.ctx,
+		attrRepository,
+		repository.ParseAttrCodeStrings(req.AttrCodes),
+	)
+	if err != nil {
+		return nil, err
+	}
+	if len(attrFilters) == 0 && strings.TrimSpace(req.AttrIds) != "" {
+		attrFilters, err = repository.BuildAttrFilterConditionsFromIDs(
+			l.ctx,
+			attrRepository,
+			repository.ParseAttrIDStrings(req.AttrIds),
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	// 解析请求中的分类编码
 	var categoryCodes []string
@@ -89,7 +109,7 @@ func (l *ProductsLogic) Products(req *types.ListProductsReq) (resp *types.BaseRe
 			defer func() { <-sem }()
 
 			// 获取该分类下的商品
-			products, total, queryErr := productRepository.GetProductsBycategoryCode(l.ctx, code, req.ProductName, req.Page, req.PageSize)
+			products, total, queryErr := productRepository.GetProductsBycategoryCode(l.ctx, code, req.ProductName, attrFilters, req.Page, req.PageSize)
 			if queryErr != nil {
 				results[i] = &queryResult{index: i, err: queryErr}
 				return

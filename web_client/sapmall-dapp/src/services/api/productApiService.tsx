@@ -17,16 +17,18 @@ interface BackendProductListResp {
 export const productApiService = {
   // 获取商品列表
   getProducts: async (params: ProductQueryParams = {}): Promise<ProductListResp> => {
-    // 构建请求体，与后端API保持一致
+    // 构建请求体，与后端API保持一�?
     const requestBody = {
       categoryCodes: params.categoryCodes || '',
       productName: params.productName || params.search || '',
+      attrCodes: params.attrCodes || '',
+      attrIds: params.attrIds || '',
       page: params.page || 1,
       pageSize: params.pageSize || 20,
     };
 
     const response = await baseClient.post<BackendProductListResp>('/api/product/products', requestBody, {
-      skipAuth: true, // 商品列表不需要认证
+      skipAuth: true, // 商品列表不需要认�?
     });
     
     // 转换后端响应格式为前端期望的格式
@@ -37,7 +39,7 @@ export const productApiService = {
     
     // 检查data是否存在
     if (!response.data || !Array.isArray(response.data)) {
-      console.warn('后端返回的data字段为空或不是数组:', backendData);
+      console.warn('后端返回的data字段为空或不是数�?', backendData);
       return {
         code: response.code,
         msg: response.message,
@@ -52,7 +54,7 @@ export const productApiService = {
     
     response.data.forEach(categoryData => {
       if (categoryData.products && Array.isArray(categoryData.products)) {
-        // 为每个商品添加分类信息
+        // 为每个商品添加分类信�?
         const productsWithCategory = categoryData.products.map((product: any) => ({
           ...product,
           categoryId: categoryData.categoryId,
@@ -63,7 +65,7 @@ export const productApiService = {
         
         allProducts.push(...productsWithCategory);
         
-        // 如果是"全部商品"分类（categoryId为0或categoryCode为空），直接使用其productCount
+        // 如果�?全部商品"分类（categoryId�?或categoryCode为空），直接使用其productCount
         if (categoryData.categoryId === 0 || categoryData.categoryCode === '') {
           totalCount = categoryData.productCount || 0;
         } else {
@@ -167,7 +169,7 @@ export const productApiService = {
   // 获取商品分类
   getProductCategories: async (): Promise<any[]> => {
     const response = await baseClient.get<any[]>('/api/product/categories', {
-      skipAuth: true, // 商品分类不需要认证
+      skipAuth: true, // 商品分类不需要认�?
     });
     return response.data;
   },

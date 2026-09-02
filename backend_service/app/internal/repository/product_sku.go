@@ -2,18 +2,25 @@ package repository
 
 import (
 	"context"
+	"fmt"
+	"strings"
+	"time"
+
 	"sapphire-mall/app/internal/model"
 )
 
 type ProductSkuRepository interface {
 	GetProductSku(ctx context.Context, id int64) (*model.ProductSku, error)
 	GetProductSkuByCode(ctx context.Context, skuCode string) (*model.ProductSku, error)
-	GetProductSkuByIndexs(ctx context.Context, spuId int64, indexs string) (*model.ProductSku, error) // 根据SPU ID和indexs查询SKU
+	GetProductSkuByIndexs(ctx context.Context, spuId int64, indexs string) (*model.ProductSku, error)
 	ListProductSkus(ctx context.Context, productId int64) ([]*model.ProductSku, error)
 	CreateProductSku(ctx context.Context, sku *model.ProductSku) error
+	BatchCreateProductSkus(ctx context.Context, skus []*model.ProductSku) error
 	UpdateProductSku(ctx context.Context, sku *model.ProductSku) error
+	BatchUpdateProductSkus(ctx context.Context, skus []*model.ProductSku) error
 	DeleteProductSku(ctx context.Context, id int64) error
-	DeleteAllProductSkusBySpu(ctx context.Context, spuId int64, spuCode string) error // 物理删除指定SPU的所有SKU
+	BatchDeleteProductSkus(ctx context.Context, ids []int64) error
+	DeleteAllProductSkusBySpu(ctx context.Context, spuId int64, spuCode string) error
 }
 
 func NewProductSkuRepository(
@@ -77,6 +84,13 @@ func (r *productSkuRepository) CreateProductSku(ctx context.Context, sku *model.
 	return r.DB(ctx).Create(sku).Error
 }
 
+func (r *productSkuRepository) BatchCreateProductSkus(ctx context.Context, skus []*model.ProductSku) error {
+	if len(skus) == 0 {
+		return nil
+	}
+	return r.DB(ctx).CreateInBatches(skus, 100).Error
+}
+
 func (r *productSkuRepository) UpdateProductSku(ctx context.Context, sku *model.ProductSku) error {
 	updateMap := map[string]interface{}{
 		"product_spu_code": sku.ProductSpuCode,
@@ -94,7 +108,6 @@ func (r *productSkuRepository) UpdateProductSku(ctx context.Context, sku *model.
 		"updated_at":       sku.UpdatedAt,
 		"updator":          sku.Updator,
 	}
-	// 如果IsDeleted字段被设置，也更新它
 	if sku.IsDeleted != 0 {
 		updateMap["is_deleted"] = sku.IsDeleted
 	}
@@ -104,9 +117,118 @@ func (r *productSkuRepository) UpdateProductSku(ctx context.Context, sku *model.
 		Updates(updateMap).Error
 }
 
+// BatchUpdateProductSkus 用一条 CASE WHEN SQL 批量更新 SKU，减少远端 RDS 往返。
+func (r *productSkuRepository) BatchUpdateProductSkus(ctx context.Context, skus []*model.ProductSku) error {
+	if len(skus) == 0 {
+		return nil
+	}
+
+	ids := make([]int64, 0, len(skus))
+	for _, sku := range skus {
+		ids = append(ids, sku.ID)
+	}
+
+	args := make([]interface{}, 0, len(skus)*14+len(skus))
+	appendCase := func(b *strings.Builder, get func(*model.ProductSku) interface{}) {
+		for _, sku := range skus {
+			b.WriteString("WHEN ? THEN ? ")
+			args = append(args, sku.ID, get(sku))
+		}
+	}
+
+	var (
+		spuCodeCase   strings.Builder
+		skuCodeCase   strings.Builder
+		priceCase     strings.Builder
+		stockCase     strings.Builder
+		statusCase    strings.Builder
+		indexsCase    strings.Builder
+		attrCase      strings.Builder
+		ownerCase     strings.Builder
+		imagesCase    strings.Builder
+		titleCase     strings.Builder
+		subTitleCase  strings.Builder
+		descCase      strings.Builder
+		updatedAtCase strings.Builder
+		updatorCase   strings.Builder
+	)
+
+	appendCase(&spuCodeCase, func(s *model.ProductSku) interface{} { return s.ProductSpuCode })
+	appendCase(&skuCodeCase, func(s *model.ProductSku) interface{} { return s.SkuCode })
+	appendCase(&priceCase, func(s *model.ProductSku) interface{} { return s.Price })
+	appendCase(&stockCase, func(s *model.ProductSku) interface{} { return s.Stock })
+	appendCase(&statusCase, func(s *model.ProductSku) interface{} { return s.Status })
+	appendCase(&indexsCase, func(s *model.ProductSku) interface{} { return s.Indexs })
+	appendCase(&attrCase, func(s *model.ProductSku) interface{} { return s.AttrParams })
+	appendCase(&ownerCase, func(s *model.ProductSku) interface{} { return s.OwnerParams })
+	appendCase(&imagesCase, func(s *model.ProductSku) interface{} { return s.Images })
+	appendCase(&titleCase, func(s *model.ProductSku) interface{} { return s.Title })
+	appendCase(&subTitleCase, func(s *model.ProductSku) interface{} { return s.SubTitle })
+	appendCase(&descCase, func(s *model.ProductSku) interface{} { return s.Description })
+	appendCase(&updatedAtCase, func(s *model.ProductSku) interface{} {
+		if s.UpdatedAt.IsZero() {
+			return time.Now()
+		}
+		return s.UpdatedAt
+	})
+	appendCase(&updatorCase, func(s *model.ProductSku) interface{} { return s.Updator })
+
+	placeholders := make([]string, len(ids))
+	for i, id := range ids {
+		placeholders[i] = "?"
+		args = append(args, id)
+	}
+
+	sql := fmt.Sprintf(`
+UPDATE sys_product_sku SET
+	product_spu_code = CASE id %s END,
+	sku_code = CASE id %s END,
+	price = CASE id %s END,
+	stock = CASE id %s END,
+	status = CASE id %s END,
+	indexs = CASE id %s END,
+	attr_params = CASE id %s END,
+	owner_params = CASE id %s END,
+	images = CASE id %s END,
+	title = CASE id %s END,
+	sub_title = CASE id %s END,
+	description = CASE id %s END,
+	updated_at = CASE id %s END,
+	updator = CASE id %s END,
+	is_deleted = 0
+WHERE id IN (%s)`,
+		spuCodeCase.String(),
+		skuCodeCase.String(),
+		priceCase.String(),
+		stockCase.String(),
+		statusCase.String(),
+		indexsCase.String(),
+		attrCase.String(),
+		ownerCase.String(),
+		imagesCase.String(),
+		titleCase.String(),
+		subTitleCase.String(),
+		descCase.String(),
+		updatedAtCase.String(),
+		updatorCase.String(),
+		strings.Join(placeholders, ","),
+	)
+
+	return r.DB(ctx).Exec(sql, args...).Error
+}
+
 func (r *productSkuRepository) DeleteProductSku(ctx context.Context, id int64) error {
 	return r.DB(ctx).
 		Where("id = ?", id).
+		Delete(&model.ProductSku{}).Error
+}
+
+func (r *productSkuRepository) BatchDeleteProductSkus(ctx context.Context, ids []int64) error {
+	if len(ids) == 0 {
+		return nil
+	}
+	return r.DB(ctx).
+		Where("id IN ?", ids).
 		Delete(&model.ProductSku{}).Error
 }
 
