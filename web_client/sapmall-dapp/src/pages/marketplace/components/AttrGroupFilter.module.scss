@@ -49,19 +49,17 @@
 .filterGroupLabel {
   flex-shrink: 0;
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   height: var(--mp-filter-row-height, 1.375rem);
   min-width: 3rem;
   padding-right: 0.625rem;
-  margin-right: 0.125rem;
   font-size: 0.6875rem;
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0.03em;
   color: var(--mp-label-accent, #a5b4fc);
   white-space: nowrap;
-  align-self: flex-start;
 
   &::after {
     content: '';
@@ -82,9 +80,8 @@
 
 .filterGroupRow {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: flex-start;
-  align-content: flex-start;
   gap: 0.5rem;
   flex: 1;
   min-width: 0;
@@ -92,8 +89,10 @@
 
 .filterGroupTags {
   display: flex;
+  flex: 1;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;
   align-content: flex-start;
   gap: 0.4rem;
+  min-width: 0;
 }
