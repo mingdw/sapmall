@@ -625,9 +625,116 @@ ls -t main_* 2>/dev/null | tail -n +11 | xargs -r rm -f
 | 健康检查失败自动回滚 | `journalctl -u sapmall-backend`；核对 yaml 中 DB/Redis；健康路径为 `/api/common/health` |
 | Nginx 502 | 后端未起或未监听 8888：`ss -lntp \| grep 8888` 或 `netstat -lntp \| grep 8888` |
 | 前端白屏 / API 错域 | 检查构建用 Secret（`*_API_BASE_URL`）是否在构建时注入正确 |
-| sudo 要密码导致部署挂起 | 检查 `/etc/sudoers.d/sapmall` 中 `systemctl` 路径是否与 `which systemctl` 一致 |
 | `CREATE USER` 报已存在 | 用户已建好，直接 `GRANT` 即可 |
 | `yum` 镜像 404 | CentOS 7 EOL，改 vault 源（见下方） |
+
+### 5.4 CI/CD 部署常见报错
+
+#### 5.4.1 `sudo: a password is required`
+
+CI 日志中出现 `sudo: a terminal is required to read the password` 或 `sudo: a password is required`。
+
+**原因**：`sapmall` 用户的 sudo 免密配置缺失或不正确。
+
+**排查**：
+
+```bash
+# 确认 sudoers 文件是否存在
+sudo cat /etc/sudoers.d/sapmall
+
+# 确认 systemctl 路径
+which systemctl
+
+# 以 sapmall 测试免密
+su - sapmall -c "sudo -n systemctl status sapmall-backend"
+```
+
+**修复**：若文件不存在，按第 1.3 节重新创建；若路径不一致，用 `which systemctl` 的实际输出替换。
+
+#### 5.4.2 `Unit sapmall-backend.service could not be found`
+
+**原因**：systemd 服务文件未创建。
+
+**修复**：按第 1.5 节执行 `tee /etc/systemd/system/sapmall-backend.service` 创建服务文件并 `systemctl daemon-reload && systemctl enable`。
+
+#### 5.4.3 `bind: address already in use`（端口 8888 被占用）
+
+后端启动报 `listen tcp 0.0.0.0:8888: bind: address already in use`。
+
+**原因**：8888 端口被其他进程占用（如宝塔面板 `BT-Panel`、手动启动的后端实例等）。
+
+**排查**：
+
+```bash
+ss -lntp | grep 8888
+# 查看占用进程名和 PID
+```
+
+**修复**：
+
+```bash
+# 杀掉占用进程
+kill -9 <PID>
+
+# 若是 systemd 管理的进程
+sudo systemctl stop sapmall-backend
+
+# 确认端口已释放
+ss -lntp | grep 8888
+```
+
+> ⚠️ 不要手动 `./main -f ...` 启动后端，一律用 `sudo systemctl start/restart sapmall-backend`。手动启动的进程不受 systemd 管控，CI 部署时 `stop` 杀不掉它。
+
+#### 5.4.4 宝塔面板占用 8888 端口
+
+宝塔面板（`BT-Panel`）默认使用 8888 端口，与后端服务冲突。
+
+**方案 A：修改宝塔端口**
+
+```bash
+echo "8889" > /www/server/panel/data/port.pl
+/etc/init.d/bt restart
+```
+
+**方案 B：卸载宝塔面板**
+
+```bash
+wget http://download.bt.cn/install/bt-uninstall.sh -O bt-uninstall.sh && sh bt-uninstall.sh
+
+# 清理残留
+/etc/init.d/bt stop
+rm -rf /www/server/panel
+pkill -f BT-Panel
+pkill -f bt
+
+# 确认端口释放
+ss -lntp | grep 8888
+```
+
+> ⚠️ 卸载宝塔可能连带卸载 Nginx/MySQL 等组件，卸载后需确认这些服务是否正常。
+
+#### 5.4.5 通过 IP 无法访问前端页面（7101-7103）
+
+**原因**：防火墙未放行 7101-7103 端口。
+
+**修复**：
+
+```bash
+sudo firewall-cmd --permanent --add-port=7101/tcp
+sudo firewall-cmd --permanent --add-port=7102/tcp
+sudo firewall-cmd --permanent --add-port=7103/tcp
+sudo firewall-cmd --reload
+```
+
+同时确认云厂商安全组也放行了这些端口。
+
+访问地址（替换为实际 IP）：
+
+- 管理后台：`http://<服务器IP>:7101/`
+- DApp：`http://<服务器IP>:7102/`
+- 官网：`http://<服务器IP>:7103/`
+
+> ⚠️ 通过 IP+端口 访问会暴露后端 API（`/api/` 路径），生产环境 DNS 配好后建议关闭这些端口。
 
 **yum 源失效时（示例改 vault）**：
 
@@ -638,7 +745,7 @@ sudo yum -y clean all
 sudo yum -y makecache
 ```
 
-### 5.4 安全建议
+### 5.5 安全建议
 
 1. 生产 yaml、私钥、COS/链上密钥仅存服务器与密码管理器，**禁止**提交仓库。
 2. GitHub 只用 **SSH 密钥** Secret，限制该密钥权限与 sudo 命令白名单。
